@@ -38,7 +38,7 @@ class DashboardController extends Controller
                 'Islamic Calendar'
             ]
         ];
-        
+
         return $this->view('dashboard/index', $data);
     }
 }

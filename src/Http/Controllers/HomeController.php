@@ -95,10 +95,10 @@ class HomeController extends Controller
             error_log('HomeController@index: Exception: ' . $e->getMessage());
             error_log('HomeController@index: Stack trace: ' . $e->getTraceAsString());
             if ($this->logger) {
-                $this->logger->error('Error in HomeController@index', [
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
+            $this->logger->error('Error in HomeController@index', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             }
             
             return new Response(

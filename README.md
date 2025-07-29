@@ -28,20 +28,20 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 ### Prerequisites
 - PHP 8.1+
 - Composer
-- Web server (Apache/Nginx)
+   - Web server (Apache/Nginx)
 - MySQL/MariaDB (optional for now)
 
 ### Installation
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/islamwiki.git
-cd islamwiki
-
-# Install dependencies
-composer install
-
+   ```bash
+   # Clone the repository
+   git clone https://github.com/yourusername/islamwiki.git
+   cd islamwiki
+   
+   # Install dependencies
+   composer install
+   
 # Set up environment
-cp .env.example .env
+   cp .env.example .env
 # Edit .env with your configuration
 
 # Set permissions

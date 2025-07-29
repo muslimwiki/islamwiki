@@ -185,10 +185,10 @@ class FastRouter implements RequestHandlerInterface
                             $controller = new $controllerClass();
                         }
                         error_log("FastRouter: Controller instance created: " . get_class($controller));
-                        if (!method_exists($controller, $method)) {
+                    if (!method_exists($controller, $method)) {
                             error_log("FastRouter: Method $method not found in $controllerClass");
                             throw new \RuntimeException("Method {$method} not found in controller {$controllerClass}");
-                        }
+                    }
                         error_log("FastRouter: Calling $controllerClass->$method");
                         
                         // Convert GuzzleHttp\Psr7\ServerRequest to IslamWiki\Core\Http\Request
