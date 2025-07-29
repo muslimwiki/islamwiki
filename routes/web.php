@@ -19,23 +19,18 @@ use Psr\Http\Message\ServerRequestInterface;
 $router->get('/', 'IslamWiki\Http\Controllers\HomeController@index');
 
 // Authentication Routes
-$router->get('/login', 'IslamWiki\Http\Controllers\Auth\LoginController@showLoginForm');
-$router->post('/login', 'IslamWiki\Http\Controllers\Auth\LoginController@login');
+$router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
+$router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
     
-$router->get('/register', 'IslamWiki\Http\Controllers\Auth\RegisterController@showRegistrationForm');
-$router->post('/register', 'IslamWiki\Http\Controllers\Auth\RegisterController@register');
+$router->get('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
+$router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
     
-$router->get('/forgot-password', 'IslamWiki\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm');
-$router->post('/forgot-password', 'IslamWiki\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail');
-    
-$router->get('/reset-password/{token}', 'IslamWiki\Http\Controllers\Auth\ResetPasswordController@showResetForm');
-$router->post('/reset-password', 'IslamWiki\Http\Controllers\Auth\ResetPasswordController@reset');
+$router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
 
 // Authenticated Routes
 // Middleware can be added as a third parameter, e.g., ['auth']
 
-// Logout
-$router->post('/logout', 'IslamWiki\Http\Controllers\Auth\LoginController@logout');
+
 
 // Dashboard
 $router->get('/dashboard', 'IslamWiki\Http\Controllers\DashboardController@index');

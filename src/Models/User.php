@@ -1,6 +1,6 @@
-<?
+<?php
+
 declare(strict_types=1);
-php\np
 
 
 
@@ -27,24 +27,22 @@ class User
     protected array $fillable = [
         'username',
         'email',
-        'password',
+        'password_hash',
         'display_name',
         'bio',
-        'website',
-        'location',
-        'timezone',
-        'language',
-        'is_active',
+        'avatar_url',
         'is_admin',
+        'is_active',
+        'email_verified_at',
         'last_login_at',
-        'last_login_ip',
+        'remember_token',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      */
     protected array $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
@@ -124,7 +122,7 @@ class User
      */
     public function verifyPassword(string $password): bool
     {
-        return password_verify($password, $this->getAttribute('password') ?: '');
+        return password_verify($password, $this->getAttribute('password_hash') ?: '');
     }
 
     /**
@@ -288,7 +286,6 @@ class User
     public function recordLogin(): void
     {
         $this->setAttribute('last_login_at', new DateTime());
-        $this->setAttribute('last_login_ip', $_SERVER['REMOTE_ADDR'] ?? null);
         $this->save();
     }
 

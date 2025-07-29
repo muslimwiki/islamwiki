@@ -148,6 +148,10 @@ class Application
      */
     protected function registerServiceProviders(): void
     {
+        // Register the DatabaseServiceProvider
+        $databaseServiceProvider = new \IslamWiki\Providers\DatabaseServiceProvider();
+        $databaseServiceProvider->register($this->container);
+
         // Register the ViewServiceProvider
         $viewServiceProvider = new \IslamWiki\Providers\ViewServiceProvider();
         $viewServiceProvider->register($this->container);

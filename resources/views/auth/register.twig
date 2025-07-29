@@ -9,13 +9,13 @@
                 Create a new account
             </h2>
             <p class="mt-2 text-center text-sm text-gray-600">
-                Or <a href="{{ path('auth.login') }}" class="text-indigo-600 hover:text-indigo-500">sign in</a>
+                Or <a href="/login" class="text-indigo-600 hover:text-indigo-500">sign in</a>
             </p>
         </div>
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                {% if errors is defined and errors %}
+                {% if error %}
                     <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
                         <div class="flex">
                             <div class="flex-shrink-0">
@@ -24,22 +24,13 @@
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-red-700">
-                                    Please correct the following errors:
-                                </p>
-                                <ul class="list-disc pl-5 text-sm text-red-700 mt-2">
-                                    {% for error in errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
+                                <p class="text-sm text-red-700">{{ error }}</p>
                             </div>
                         </div>
                     </div>
                 {% endif %}
 
-                <form class="space-y-6" action="{{ path('auth.register') }}" method="POST">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
-                    
+                <form class="space-y-6" action="/register" method="POST">
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700">
                             Username
@@ -47,7 +38,18 @@
                         <div class="mt-1">
                             <input id="username" name="username" type="text" required
                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   value="{{ formData.username ?? '' }}">
+                                   placeholder="Choose a unique username">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="display_name" class="block text-sm font-medium text-gray-700">
+                            Display Name (Optional)
+                        </label>
+                        <div class="mt-1">
+                            <input id="display_name" name="display_name" type="text"
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="Your display name">
                         </div>
                     </div>
 
@@ -58,7 +60,7 @@
                         <div class="mt-1">
                             <input id="email" name="email" type="email" required
                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   value="{{ formData.email ?? '' }}">
+                                   placeholder="Enter your email address">
                         </div>
                     </div>
 
@@ -68,26 +70,20 @@
                         </label>
                         <div class="mt-1">
                             <input id="password" name="password" type="password" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="Enter your password">
                         </div>
                     </div>
 
                     <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
+                        <label for="password_confirm" class="block text-sm font-medium text-gray-700">
                             Confirm Password
                         </label>
                         <div class="mt-1">
-                            <input id="password_confirmation" name="password_confirmation" type="password" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <input id="password_confirm" name="password_confirm" type="password" required
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="Confirm your password">
                         </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <input id="terms" name="terms" type="checkbox" required
-                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                        <label for="terms" class="ml-2 block text-sm text-gray-900">
-                            I agree to the <a href="/terms" class="text-indigo-600 hover:text-indigo-500">Terms</a>
-                        </label>
                     </div>
 
                     <div>
