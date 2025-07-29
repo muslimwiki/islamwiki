@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>500 Internal Server Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #d32f2f;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>500 Internal Server Error</h1>
+        <p>Sorry, something went wrong on our end. The error has been logged and we're working to fix it.</p>
+        <p>Please try again later or contact support if the problem persists.</p>
+        
+        <?php if (getenv('APP_DEBUG') === 'true'): ?>
+            <h2>Error Details:</h2>
+            <p><strong>Message:</strong> <?php echo htmlspecialchars($exception->getMessage() ?? 'No error message available'); ?></p>
+            <p><strong>File:</strong> <?php echo htmlspecialchars($exception->getFile() ?? 'Unknown'); ?>:<?php echo $exception->getLine() ?? '?'; ?></p>
+            
+            <h3>Stack Trace:</h3>
+            <pre><?php echo htmlspecialchars($exception->getTraceAsString() ?? 'No stack trace available'); ?></pre>
+        <?php endif; ?>
+    </div>
+</body>
+</html>

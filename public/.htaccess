@@ -1,0 +1,28 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Allow direct access to existing files and directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Redirect all other requests to index.php for routing
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default character set
+AddDefaultCharset UTF-8
+
+# Set default MIME type
+DefaultType text/html
+
+# Set default index file
+DirectoryIndex index.php
+
+# Ensure PHP files are processed
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>

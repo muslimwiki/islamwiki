@@ -1,0 +1,324 @@
+<?php
+declare(strict_types=1);
+/**
+ * This file is part of IslamWiki.
+ *
+ * (c) 2025 IslamWiki Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
+
+namespace IslamWiki\Core;
+
+use Exception;
+use IslamWiki\Core\Http\Request;
+use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Routing\Router;
+
+class Application
+{
+    /**
+     * The base path of the application.
+     */
+    protected string $basePath;
+
+    /**
+     * The application's service container.
+     */
+    protected Container $container;
+
+    /**
+     * The application's router instance.
+     */
+    protected $router = null;
+
+    /**
+     * Create a new application instance.
+     */
+    public function __construct(string $basePath)
+    {
+        $this->basePath = rtrim($basePath, '\/');
+        $this->bootstrap();
+    }
+
+    /**
+     * Set the application's router instance.
+     */
+    public function setRouter($router): void
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * Bootstrap the application.
+     */
+    protected function bootstrap(): void
+    {
+        // Initialize the service container first
+        $this->container = new Container();
+
+        // Register core bindings
+        $this->registerCoreContainerAliases();
+
+        // Set up database connection first as it's needed for other services
+        $dbConfig = [
+            'driver' => getenv('DB_CONNECTION') ?: 'mysql',
+            'host' => getenv('DB_HOST') ?: '127.0.0.1',
+            'database' => getenv('DB_DATABASE') ?: 'islamwiki',
+            'username' => getenv('DB_USERNAME') ?: 'root',
+            'password' => getenv('DB_PASSWORD') ?: '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+        ];
+
+        // Create and bind the database connection
+        $db = new \IslamWiki\Core\Database\Connection($dbConfig);
+        $this->container->instance('db', $db);
+        $this->container->instance(\IslamWiki\Core\Database\Connection::class, $db);
+
+        // Bind LoggerInterface
+        try {
+            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+        } catch (\Exception $e) {
+            $logDir = $this->basePath('storage/logs');
+            if (!is_dir($logDir)) {
+                mkdir($logDir, 0755, true);
+            }
+            $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
+            $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
+        }
+
+        // Bind ControllerFactory for FastRouter
+        $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory(
+            $db,
+            $logger,
+            $this->container
+        );
+        $this->container->instance('controller.factory', $controllerFactory);
+
+        // Register service providers
+        $this->registerServiceProviders();
+
+        // Initialize the router
+        $this->router = new \IslamWiki\Core\Routing\Router($this);
+        
+        // Set up the controller factory if needed
+        if (method_exists($this->router, 'setControllerFactory')) {
+            // Get the logger from the container or create a new one
+            try {
+                $logger = $this->container->get(LoggerInterface::class);
+            } catch (\Exception $e) {
+                // Create a simple file logger if not available
+                $logDir = $this->basePath('storage/logs');
+                if (!is_dir($logDir)) {
+                    mkdir($logDir, 0755, true);
+                }
+                $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
+                $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
+            }
+            
+            // Create the controller factory with all required dependencies
+            $this->router->setControllerFactory(new \IslamWiki\Core\Routing\ControllerFactory(
+                $db,
+                $logger,
+                $this->container
+            ));
+            
+            // Initialize error handling after all services are set up
+            $this->initializeErrorHandling();
+        }
+    }
+
+    /**
+     * Register service providers.
+     */
+    protected function registerServiceProviders(): void
+    {
+        // Register the ViewServiceProvider
+        $viewServiceProvider = new \IslamWiki\Providers\ViewServiceProvider();
+        $viewServiceProvider->register($this->container);
+    }
+
+    /**
+     * Initialize error handling for the application.
+     */
+    protected function initializeErrorHandling(): void
+    {
+        // Initialize the error handler with debug mode based on environment
+        $debug = $this->environment('development') || $this->environment('local');
+        \IslamWiki\Core\Error\ErrorHandler::initialize($debug);
+        
+        // Set up the logger for the error handler
+        $this->container->afterResolving(\Psr\Log\LoggerInterface::class, function ($logger) {
+            if ($logger instanceof \Psr\Log\LoggerInterface) {
+                \IslamWiki\Core\Error\ErrorHandler::setLogger($logger);
+            }
+        });
+    }
+    
+    /**
+     * Handle an uncaught exception.
+     * This is kept for backward compatibility but will be handled by ErrorHandler.
+     */
+    protected function handleException(\Throwable $e): void
+    {
+        // The ErrorHandler will handle this exception
+        throw $e;
+    }
+
+    /**
+     * Register the core class aliases in the container.
+     */
+    protected function registerCoreContainerAliases(): void
+    {
+        $aliases = [
+            'app' => [self::class, \Psr\Container\ContainerInterface::class],
+            'config' => [\IslamWiki\Core\Config::class],
+            'db' => [\IslamWiki\Core\Database\Connection::class],
+            'request' => [Request::class, \Psr\Http\Message\ServerRequestInterface::class],
+            'response' => [Response::class, \Psr\Http\Message\ResponseInterface::class],
+            'router' => [Router::class],
+        ];
+
+        foreach ($aliases as $key => $aliases) {
+            foreach ($aliases as $alias) {
+                $this->container->alias($key, $alias);
+            }
+        }
+    }
+
+    /**
+     * Get the application's base path.
+     */
+    public function basePath(string $path = ''): string
+    {
+        return $this->basePath . ($path ? DIRECTORY_SEPARATOR . ltrim($path, '\/') : '');
+    }
+
+    /**
+     * Get the application's environment file path.
+     */
+    public function environmentFilePath(): string
+    {
+        return $this->basePath('.env');
+    }
+
+    /**
+     * Get the current application environment.
+     */
+    public function environment(string $environment = null): string|bool
+    {
+        if (func_num_args() > 0) {
+            return $_ENV['APP_ENV'] === $environment;
+        }
+
+        return $_ENV['APP_ENV'] ?? 'production';
+    }
+
+    /**
+     * Determine if the application is running in the console.
+     */
+    public function runningInConsole(): bool
+    {
+        return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
+    }
+
+    /**
+     * Run the application.
+     */
+    public function run(): void
+    {
+        try {
+            // Handle the request and send the response
+            $response = $this->handleRequest(Request::capture());
+            $this->sendResponse($response);
+        } catch (\Throwable $e) {
+            $this->handleException($e);
+        }
+    }
+
+    /**
+     * Handle the incoming request.
+     */
+    protected function handleRequest(Request $request): Response
+    {
+        try {
+            // Dispatch the request to the router
+            $response = $this->router->dispatch($request);
+        } catch (\Exception $e) {
+            $response = $this->handleRouterException($e, $request);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Handle exceptions thrown in the router.
+     */
+    protected function handleRouterException(\Exception $e, Request $request): Response
+    {
+        // Log the exception
+        error_log($e->getMessage());
+
+        // Return appropriate response
+        if ($e->getCode() === 404) {
+            return new Response('404 Not Found', 404);
+        }
+
+        return new Response('500 Internal Server Error', 500);
+    }
+
+    /**
+     * Send the response to the browser.
+     */
+    protected function sendResponse(Response $response): void
+    {
+        // Send status line
+        header(sprintf(
+            'HTTP/%s %d %s',
+            $response->getProtocolVersion(),
+            $response->getStatusCode(),
+            $response->getReasonPhrase()
+        ));
+
+        // Send headers
+        foreach ($response->getHeaders() as $name => $values) {
+            foreach ($values as $value) {
+                header(sprintf('%s: %s', $name, $value), false);
+            }
+        }
+
+        // Send body
+        echo $response->getBody();
+    }
+
+    /**
+     * Get the application's service container.
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * Get the application's router.
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
+    }
+}
