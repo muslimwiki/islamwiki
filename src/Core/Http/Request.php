@@ -562,4 +562,12 @@ class Request implements ServerRequestInterface
     {
         return $this->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
     }
+
+    /**
+     * Get a query parameter value.
+     */
+    public function getQueryParam(string $name, $default = null)
+    {
+        return $this->queryParams[$name] ?? $default;
+    }
 }

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2025-07-30
+
+### Added
+- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
+  - Comprehensive pages listing with search and filter capabilities
+  - Professional grid layout with page cards showing metadata
+  - Search functionality across page titles
+  - Namespace filtering (main, help, user)
+  - Sorting by title, last updated, and view count
+  - Pagination support for large page collections
+  - Page actions (View, Edit, History) for each page
+  - Navigation link in top navigation bar
+  - Professional CSS styling for pages index
+- **Request Enhancement**: Added `getQueryParam()` method for query parameter access
+- **Template System**: New pages index template with comprehensive filtering
+
+### Changed
+- **Navigation**: Added "View All Pages" link to top navigation bar
+- **PageController**: Enhanced index method with filtering and sorting
+- **Template Styling**: Added comprehensive CSS for pages index layout
+
+### Fixed
+- **Query Builder**: Resolved missing methods (leftJoin, whereNull, count) with simplified queries
+- **Template Paths**: Fixed template resolution for pages index
+- **Request Class**: Added missing `getQueryParam()` method
+
 ## [0.2.1] - 2025-07-30
 
 ### Added

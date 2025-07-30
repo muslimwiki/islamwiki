@@ -1,0 +1,126 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}All Pages - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>All Pages</h1>
+    <p>Browse all wiki pages in the system</p>
+</div>
+
+<!-- Search and Filter Controls -->
+<div class="filters-section">
+    <form method="GET" action="/pages" class="filters-form">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="search">Search:</label>
+                <input type="text" id="search" name="q" value="{{ filters.search }}" placeholder="Search pages...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="namespace">Namespace:</label>
+                <select id="namespace" name="namespace">
+                    <option value="">All Namespaces</option>
+                    <option value="main" {{ filters.namespace == 'main' ? 'selected' : '' }}>Main</option>
+                    <option value="help" {{ filters.namespace == 'help' ? 'selected' : '' }}>Help</option>
+                    <option value="user" {{ filters.namespace == 'user' ? 'selected' : '' }}>User</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sort">Sort by:</label>
+                <select id="sort" name="sort">
+                    <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>Title</option>
+                    <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
+                    <option value="views" {{ filters.sort == 'views' ? 'selected' : '' }}>Views</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="order">Order:</label>
+                <select id="order" name="order">
+                    <option value="asc" {{ filters.order == 'asc' ? 'selected' : '' }}>Ascending</option>
+                    <option value="desc" {{ filters.order == 'desc' ? 'selected' : '' }}>Descending</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="/pages" class="btn btn-secondary">Clear</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Pages List -->
+<div class="pages-list">
+    {% if pages is empty %}
+        <div class="empty-state">
+            <h3>No pages found</h3>
+            <p>No pages match your current filters.</p>
+            <a href="/pages" class="btn btn-primary">Clear Filters</a>
+        </div>
+    {% else %}
+        <div class="pages-grid">
+            {% for page in pages %}
+            <div class="page-card">
+                <div class="page-header">
+                    <h3><a href="/{{ page.slug }}">{{ page.title }}</a></h3>
+                    <span class="page-namespace">{{ page.namespace }}</span>
+                </div>
+                
+                <div class="page-meta">
+                    <div class="meta-item">
+                        <span class="label">Views:</span>
+                        <span class="value">{{ page.view_count }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Revisions:</span>
+                        <span class="value">{{ page.revision_count }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Last Updated:</span>
+                        <span class="value">{{ page.updated_at|date('M j, Y') }}</span>
+                    </div>
+                    {% if page.author_name %}
+                    <div class="meta-item">
+                        <span class="label">Author:</span>
+                        <span class="value">{{ page.author_name }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="page-actions">
+                    <a href="/{{ page.slug }}" class="btn btn-small">View</a>
+                    <a href="/{{ page.slug }}/edit" class="btn btn-small btn-secondary">Edit</a>
+                    <a href="/{{ page.slug }}/history" class="btn btn-small btn-secondary">History</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if pagination.last_page > 1 %}
+        <div class="pagination">
+            {% if pagination.current_page > 1 %}
+                <a href="?page={{ pagination.current_page - 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" class="btn btn-small">Previous</a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                Page {{ pagination.current_page }} of {{ pagination.last_page }}
+                ({{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} pages)
+            </span>
+            
+            {% if pagination.current_page < pagination.last_page %}
+                <a href="?page={{ pagination.current_page + 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" class="btn btn-small">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- Create New Page Button -->
+<div class="create-page-section">
+    <a href="/pages/create" class="btn btn-primary">Create New Page</a>
+</div>
+{% endblock %} 

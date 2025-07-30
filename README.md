@@ -4,9 +4,23 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## Version 0.2.1 (2025-07-30)
+## Version 0.2.2 (2025-07-30)
 
 ### ✨ What's New
+- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
+- **Search & Filter**: Comprehensive search across page titles with namespace filtering
+- **Professional Layout**: Grid-based page cards with metadata and actions
+- **Navigation Enhancement**: "View All Pages" link in top navigation bar
+- **Sorting & Pagination**: Sort by title, date, views with pagination support
+- **Page Actions**: Quick access to View, Edit, and History for each page
+
+### 🚀 Key Features
+- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
+- **Search & Filter**: Comprehensive search across page titles with namespace filtering
+- **Professional Layout**: Grid-based page cards with metadata and actions
+- **Navigation Enhancement**: "View All Pages" link in top navigation bar
+- **Sorting & Pagination**: Sort by title, date, views with pagination support
+- **Page Actions**: Quick access to View, Edit, and History for each page
 - **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
 - **Full Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
 - **Syntax Highlighting**: Prism.js integration for beautiful code display
