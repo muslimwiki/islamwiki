@@ -1,0 +1,130 @@
+# IslamWiki Version History
+
+## Version 0.0.10 (2025-07-30)
+- **Added**: MediaWiki-inspired root structure
+- **Added**: INSTALL, UPGRADE, SECURITY, HISTORY files
+- **Added**: Islamic content planning documentation
+- **Improved**: Project structure organization
+- **Enhanced**: Documentation structure
+
+## Version 0.0.9 (2025-07-29)
+- **Added**: Basic authentication system
+- **Added**: User registration and login
+- **Added**: Session management
+- **Added**: CSRF protection
+- **Added**: Basic user dashboard
+- **Improved**: Error handling and logging
+- **Enhanced**: Security middleware
+
+## Version 0.0.8 (2025-07-28)
+- **Added**: Database migration system
+- **Added**: User model and authentication
+- **Added**: Basic routing system
+- **Added**: Twig template engine integration
+- **Added**: Basic page management
+- **Improved**: Database connection handling
+- **Enhanced**: Application structure
+
+## Version 0.0.7 (2025-07-27)
+- **Added**: Core application framework
+- **Added**: Database connection system
+- **Added**: Basic routing
+- **Added**: Error handling
+- **Added**: Logging system
+- **Added**: Container dependency injection
+- **Enhanced**: Project structure
+
+## Version 0.0.6 (2025-07-26)
+- **Added**: Initial project structure
+- **Added**: Composer configuration
+- **Added**: Basic documentation
+- **Added**: License files
+- **Added**: Development scripts
+- **Enhanced**: Project organization
+
+## Version 0.0.5 (2025-07-25)
+- **Added**: Project planning documentation
+- **Added**: Architecture design
+- **Added**: Feature planning
+- **Added**: Development roadmap
+- **Enhanced**: Project vision
+
+## Version 0.0.4 (2025-07-24)
+- **Added**: Initial repository setup
+- **Added**: Basic README
+- **Added**: License selection (GNU AGPL)
+- **Added**: Project structure planning
+- **Enhanced**: Foundation setup
+
+## Version 0.0.3 (2025-07-23)
+- **Added**: Project concept development
+- **Added**: Islamic content planning
+- **Added**: Technical requirements
+- **Added**: Feature brainstorming
+- **Enhanced**: Project vision
+
+## Version 0.0.2 (2025-07-22)
+- **Added**: Initial project ideas
+- **Added**: Islamic content focus
+- **Added**: Wiki platform planning
+- **Added**: Community features
+- **Enhanced**: Project direction
+
+## Version 0.0.1 (2025-07-21)
+- **Added**: Project initialization
+- **Added**: Basic project structure
+- **Added**: Initial documentation
+- **Added**: Version control setup
+- **Enhanced**: Project foundation
+
+## Version 0.0.0 (2025-07-20)
+- **Added**: Project conception
+- **Added**: Initial planning
+- **Added**: Basic structure
+- **Added**: Foundation setup
+- **Enhanced**: Project start
+
+---
+
+## Future Versions
+
+### Version 0.1.0 (Planned)
+- **Planned**: MediaWiki-inspired structure implementation
+- **Planned**: Islamic core integration
+- **Planned**: Enhanced documentation
+- **Planned**: Configuration system
+- **Planned**: API system
+
+### Version 0.1.1 (Planned)
+- **Planned**: Islamic extensions
+- **Planned**: Database schema enhancements
+- **Planned**: Content management improvements
+- **Planned**: User interface enhancements
+
+### Version 0.1.2 (Planned)
+- **Planned**: Comprehensive documentation
+- **Planned**: Developer guides
+- **Planned**: User guides
+- **Planned**: Islamic content guidelines
+
+---
+
+## Versioning Policy
+
+- **Major.Minor.Patch** format
+- **0.0.x**: Development and planning phase
+- **0.1.x**: Core structure implementation
+- **0.2.x**: Islamic features implementation
+- **1.0.x**: Production-ready release
+
+## Release Schedule
+
+- **Weekly releases** during active development
+- **Monthly releases** for stable versions
+- **Security updates** as needed
+- **Feature releases** based on roadmap
+
+---
+
+**Version**: 0.0.10  
+**Last Updated**: 2025-07-30 

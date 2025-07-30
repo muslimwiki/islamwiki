@@ -1,12 +1,28 @@
 # IslamWiki
 
-**Version**: 0.0.9  
-**Status**: Core Development  
+**Version**: 0.0.11  
+**Status**: Research & Planning Phase  
 **License**: GNU AGPL v3.0
 
 A modern, secure wiki system built with PHP 8.1+, featuring comprehensive content management, user authentication, and enterprise-level security.
 
-## Version 0.0.8
+## Version 0.0.11
+
+**What's New:**
+- **Database Connection Strategy Research**: ✅ Comprehensive research completed for Islamic database architecture
+- **Islamic Database Requirements**: Detailed analysis of Quran, Hadith, Wiki, and Scholar database needs
+- **Performance Analysis**: Connection overhead comparison and Islamic content performance requirements
+- **Security Considerations**: Islamic data security levels and access control strategies
+- **Scalability Planning**: Growth projections and scaling strategies for Islamic content
+- **Migration Strategy**: Phased implementation plan for database architecture
+
+**Research Findings:**
+- **Recommended Strategy**: Separate connections per database for optimal Islamic content management
+- **Security Priority**: Quran and Hadith data require highest security isolation
+- **Performance Requirements**: Sub-100ms for Quran, sub-200ms for Hadith queries
+- **Scalability Plan**: Support for 500K+ hadiths and 50+ Quran translations
+
+## Version 0.0.10
 
 **What's New:**
 - **Pure IslamRouter**: Completely removed FastRoute dependency, implemented custom routing solution
@@ -35,16 +51,18 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **User Authentication** (v0.0.2): Registration, login, session management
 - **Database Foundation** (v0.0.2): Migration system and database setup
 - **Pure IslamRouter** (v0.0.8): ✅ **Custom routing solution fully tested and verified**
+- **Database Connection Strategy** (v0.0.11): ✅ **Research completed, separate connections recommended**
 - **IslamWiki Structure** (v0.1.0): 🚧 **Planning complete, implementation next**
 
-### Planning Status
+### Research Status
+- **Database Connection Strategy**: ✅ **COMPLETED** (0.0.11) - Separate connections recommended
 - **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
 - **Islamic Core Organization**: ✅ Nested within app/Core/Islamic/ (Option B)
 - **Language Files**: ✅ Laravel-style resources/lang instead of MediaWiki i18n
 - **Extensions Permissions**: ✅ Per-extension basis permissions
 - **API Versioning**: ✅ Separate versioning for all APIs
-- **Configuration System**: ✅ Hybrid LocalSettings.php + IslamSettings.php approach
-- **API System**: ✅ Hybrid api.php + specific API files approach
+- **Configuration System**: 🔄 **Next Research** (0.0.12) - Hybrid LocalSettings.php + IslamSettings.php approach
+- **API System**: 🔄 **Planned Research** (0.0.13) - Hybrid api.php + specific API files approach
 
 ## 🚀 Quick Start
 

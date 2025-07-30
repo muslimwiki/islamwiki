@@ -1,0 +1,138 @@
+# IslamWiki Release Notes - Version 0.0.10
+
+**Release Date**: 2025-07-30  
+**Version**: 0.0.10  
+**Status**: Development Release
+
+## Overview
+
+Version 0.0.10 introduces the MediaWiki-inspired root structure and comprehensive documentation planning for IslamWiki. This release focuses on establishing the foundation for the Islamic content management system.
+
+## New Features
+
+### MediaWiki-Inspired Root Structure
+- **Added**: `INSTALL` - Installation guide for quick setup
+- **Added**: `UPGRADE` - Upgrade instructions and procedures
+- **Added**: `SECURITY` - Security guidelines and best practices
+- **Added**: `HISTORY` - Complete version history
+- **Added**: `RELEASE-NOTES-0.0.10` - This release notes file
+
+### Documentation Planning
+- **Enhanced**: Islamic content documentation structure
+- **Added**: Developer documentation planning
+- **Added**: User guide documentation planning
+- **Improved**: Project organization and structure
+
+## Technical Improvements
+
+### Project Structure
+- **Enhanced**: Root directory organization
+- **Improved**: Documentation structure planning
+- **Added**: MediaWiki-inspired file organization
+- **Enhanced**: Version management
+
+### Documentation
+- **Added**: Comprehensive installation guide
+- **Added**: Security guidelines with Islamic content focus
+- **Added**: Upgrade procedures and rollback plans
+- **Added**: Complete version history tracking
+
+## Islamic Content Features
+
+### Planning Phase
+- **Added**: Islamic content guidelines planning
+- **Added**: Scholar verification process planning
+- **Added**: Content moderation policy planning
+- **Added**: Islamic calendar integration planning
+
+### Documentation Structure
+- **Planned**: `docs/islamic/` - Islamic-specific documentation
+- **Planned**: `docs/developer/` - Developer documentation
+- **Planned**: `docs/user-guides/` - User documentation
+
+## Security Enhancements
+
+### Security Guidelines
+- **Added**: Comprehensive security policy
+- **Added**: Islamic content security guidelines
+- **Added**: Scholar verification security
+- **Added**: Content moderation security
+
+### Best Practices
+- **Added**: Administrator security guidelines
+- **Added**: Developer security guidelines
+- **Added**: Islamic content security practices
+- **Added**: Emergency contact information
+
+## Installation & Deployment
+
+### Quick Start
+- **Added**: Prerequisites checklist
+- **Added**: Step-by-step installation guide
+- **Added**: Troubleshooting section
+- **Added**: Support resources
+
+### Upgrade Process
+- **Added**: Backup procedures
+- **Added**: Upgrade steps
+- **Added**: Rollback procedures
+- **Added**: Post-upgrade verification
+
+## Breaking Changes
+
+None in this release.
+
+## Known Issues
+
+- Documentation structure is planned but not yet implemented
+- Islamic content features are in planning phase
+- Some configuration files referenced in guides need to be created
+
+## Future Plans
+
+### Version 0.1.0 (Next Major Release)
+- **Planned**: Implementation of MediaWiki-inspired structure
+- **Planned**: Islamic core integration
+- **Planned**: Configuration system implementation
+- **Planned**: API system implementation
+
+### Version 0.1.1 (Following Release)
+- **Planned**: Islamic extensions development
+- **Planned**: Database schema enhancements
+- **Planned**: Content management improvements
+
+## System Requirements
+
+- **PHP**: 8.1 or higher
+- **Database**: MySQL 8.0+ or MariaDB 10.5+
+- **Web Server**: Apache or Nginx
+- **Composer**: Required for dependency management
+
+## Installation
+
+1. Clone the repository
+2. Run `composer install`
+3. Configure database settings
+4. Run migrations: `php scripts/migrate.php`
+5. Set proper file permissions
+6. Configure web server
+
+## Support
+
+- **Documentation**: See `docs/` directory
+- **Installation**: See `INSTALL` file
+- **Security**: See `SECURITY` file
+- **Upgrades**: See `UPGRADE` file
+
+## Contributors
+
+This release includes contributions from the IslamWiki development team and community members.
+
+## License
+
+This software is licensed under the GNU Affero General Public License v3.0. See `LICENSE.md` for details.
+
+---
+
+**Next Release**: Version 0.1.0 (Planned)  
+**Release Date**: TBD 
