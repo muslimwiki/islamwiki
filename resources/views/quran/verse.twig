@@ -1,0 +1,175 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="text-sm text-gray-500 mb-6">
+            <a href="/quran" class="hover:text-green-600">Quran</a>
+            <span class="mx-2">/</span>
+            <a href="/quran/chapter/{{ chapter }}" class="hover:text-green-600">Chapter {{ chapter }}</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-700">Verse {{ verse_number }}</span>
+        </nav>
+
+        <!-- Verse Display -->
+        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <!-- Verse Header -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Quran {{ chapter }}:{{ verse_number }}</h1>
+                {% if verse.chapter_name_arabic %}
+                <div class="text-xl font-arabic text-gray-700 mb-2">{{ verse.chapter_name_arabic }}</div>
+                {% endif %}
+                {% if verse.chapter_name_english %}
+                <div class="text-lg text-gray-600">{{ verse.chapter_name_english }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Arabic Text -->
+            <div class="text-center mb-8">
+                <div class="text-3xl font-arabic text-gray-800 leading-relaxed mb-4">{{ verse.arabic_text }}</div>
+                <div class="text-sm text-gray-500">الآية {{ verse_number }}</div>
+            </div>
+
+            <!-- Translation -->
+            {% if verse.translation_text %}
+            <div class="border-t border-gray-200 pt-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Translation</h3>
+                <div class="text-gray-700 leading-relaxed">{{ verse.translation_text }}</div>
+                {% if verse.translator_name %}
+                <div class="text-sm text-gray-500 mt-2">— {{ verse.translator_name }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Tafsir -->
+            {% if tafsir %}
+            <div class="border-t border-gray-200 pt-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Interpretation (Tafsir)</h3>
+                <div class="text-gray-700 leading-relaxed">{{ tafsir.tafsir_text }}</div>
+                {% if tafsir.scholar_name %}
+                <div class="text-sm text-gray-500 mt-2">— {{ tafsir.scholar_name }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Recitation -->
+            {% if recitation %}
+            <div class="border-t border-gray-200 pt-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Recitation</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-medium text-gray-800">{{ recitation.reciter_name }}</div>
+                            <div class="text-sm text-gray-600">{{ recitation.recitation_type }}</div>
+                        </div>
+                        {% if recitation.audio_url %}
+                        <audio controls class="w-full max-w-md">
+                            <source src="{{ recitation.audio_url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        {% if verse_number > 1 %}
+                        <a href="/quran/verse/{{ chapter }}/{{ verse_number - 1 }}" 
+                           class="text-green-600 hover:text-green-700 font-medium">
+                            ← Previous Verse
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="text-center">
+                        <a href="/quran/chapter/{{ chapter }}" 
+                           class="text-blue-600 hover:text-blue-700 font-medium">
+                            View Chapter
+                        </a>
+                    </div>
+                    <div>
+                        <a href="/quran/verse/{{ chapter }}/{{ verse_number + 1 }}" 
+                           class="text-green-600 hover:text-green-700 font-medium">
+                            Next Verse →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Features -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Share -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Share This Verse</h3>
+                <div class="space-y-3">
+                    <button onclick="copyVerse()" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition duration-200">
+                        Copy Verse Reference
+                    </button>
+                    <button onclick="shareVerse()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
+                        Share on Social Media
+                    </button>
+                </div>
+            </div>
+
+            <!-- Related Verses -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Related Content</h3>
+                <div class="space-y-3">
+                    <a href="/quran/chapter/{{ chapter }}" class="block text-green-600 hover:text-green-700">
+                        View Full Chapter
+                    </a>
+                    <a href="/quran/search?q={{ verse.arabic_text|slice(0, 20) }}" class="block text-green-600 hover:text-green-700">
+                        Search Similar Verses
+                    </a>
+                    <a href="/wiki/quran-references" class="block text-green-600 hover:text-green-700">
+                        Quran References Guide
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyVerse() {
+    const text = `Quran ${chapter}:${verse_number} - ${verse.arabic_text}`;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Verse reference copied to clipboard!');
+    });
+}
+
+function shareVerse() {
+    const text = `Quran ${chapter}:${verse_number} - ${verse.arabic_text}`;
+    const url = window.location.href;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Quran Verse',
+            text: text,
+            url: url
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        window.open(shareUrl, '_blank');
+    }
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .font-arabic {
+        font-family: 'Amiri', 'Scheherazade', serif;
+    }
+</style>
+{% endblock %} 

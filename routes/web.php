@@ -96,3 +96,21 @@ $router->delete('/{slug}', 'IslamWiki\Http\Controllers\PageController@destroy');
 // Watchlist
 $router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\PageController@watch');
 $router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\PageController@unwatch');
+
+// Quran Routes - Phase 4 Islamic Features Integration
+$router->get('/quran', 'IslamWiki\Http\Controllers\QuranController@indexPage');
+$router->get('/quran/search', 'IslamWiki\Http\Controllers\QuranController@searchPage');
+$router->get('/quran/chapter/{chapter}', 'IslamWiki\Http\Controllers\QuranController@chapterPage');
+$router->get('/quran/verse/{chapter}/{verse}', 'IslamWiki\Http\Controllers\QuranController@versePage');
+$router->get('/quran/widget/{chapter}/{verse}', 'IslamWiki\Http\Controllers\QuranController@widget');
+
+// Quran API Routes
+$router->get('/api/quran/verses', 'IslamWiki\Http\Controllers\QuranController@apiVerses');
+$router->get('/api/quran/verses/{id}', 'IslamWiki\Http\Controllers\QuranController@apiVerse');
+$router->get('/api/quran/search', 'IslamWiki\Http\Controllers\QuranController@apiSearch');
+$router->get('/api/quran/verses/{chapter}/{verse}', 'IslamWiki\Http\Controllers\QuranController@apiVerseByReference');
+$router->get('/api/quran/tafsir/{verseId}', 'IslamWiki\Http\Controllers\QuranController@apiTafsir');
+$router->get('/api/quran/recitation/{verseId}', 'IslamWiki\Http\Controllers\QuranController@apiRecitation');
+$router->get('/api/quran/statistics', 'IslamWiki\Http\Controllers\QuranController@apiStatistics');
+$router->get('/api/quran/random', 'IslamWiki\Http\Controllers\QuranController@apiRandomVerse');
+$router->get('/api/quran/references/{pageId}', 'IslamWiki\Http\Controllers\QuranController@apiReferences');
