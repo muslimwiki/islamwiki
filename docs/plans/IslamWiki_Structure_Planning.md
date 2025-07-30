@@ -1,4 +1,4 @@
-# MediaWiki-Style Structure Planning
+# IslamWiki Structure Planning
 
 ## Overview
 
@@ -173,7 +173,7 @@ $wgQuranAPICache = true;
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Core Structure (v0.1.0)
-1. **Root Directory Structure**: Implement MediaWiki-style root organization
+1. **Root Directory Structure**: Implement MediaWiki-inspired root organization
 2. **Core Folders**: Create all MediaWiki-inspired directories
 3. **Configuration System**: Implement hybrid LocalSettings.php + IslamSettings.php
 4. **API System**: Implement hybrid api.php + specific API files
@@ -193,7 +193,7 @@ $wgQuranAPICache = true;
 ## 🎯 Key Benefits
 
 ### Developer Familiarity
-- **MediaWiki Structure**: Familiar to MediaWiki developers
+- **MediaWiki-Inspired Structure**: Familiar to MediaWiki developers
 - **Modern Practices**: Incorporates modern PHP practices
 - **Clear Organization**: Logical file and folder structure
 
@@ -217,7 +217,7 @@ $wgQuranAPICache = true;
 3. **API Design**: Finalize API system design
 
 ### Short Term (Next 2 Weeks)
-1. **Core Structure**: Begin implementing MediaWiki-style structure
+1. **Core Structure**: Begin implementing MediaWiki-inspired structure
 2. **Configuration System**: Implement hybrid configuration
 3. **API System**: Implement hybrid API system
 

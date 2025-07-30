@@ -31,7 +31,7 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **User Authentication** (v0.0.2): Registration, login, session management
 - **Database Foundation** (v0.0.2): Migration system and database setup
 - **Pure IslamRouter** (v0.0.8): ✅ **Custom routing solution fully tested and verified**
-- **MediaWiki Structure** (v0.1.0): 🚧 **Planning complete, implementation next**
+- **IslamWiki Structure** (v0.1.0): 🚧 **Planning complete, implementation next**
 
 ### Planning Status
 - **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
