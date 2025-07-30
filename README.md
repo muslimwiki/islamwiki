@@ -4,17 +4,45 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## Version 0.2.2 (2025-07-30)
+## Version 0.2.3 (2025-07-30)
 
 ### ✨ What's New
-- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
-- **Search & Filter**: Comprehensive search across page titles with namespace filtering
-- **Professional Layout**: Grid-based page cards with metadata and actions
-- **Navigation Enhancement**: "View All Pages" link in top navigation bar
-- **Sorting & Pagination**: Sort by title, date, views with pagination support
-- **Page Actions**: Quick access to View, Edit, and History for each page
+- **Enterprise Security**: Comprehensive security middleware with attack prevention
+- **Professional Error Handling**: Enhanced error management with debug information
+- **Enhanced Logging**: PSR-3 compliant logging with structured data
+- **CSRF Protection**: Cross-site request forgery protection with token validation
+- **Rate Limiting**: Configurable request rate limiting to prevent abuse
+- **Security Headers**: Comprehensive security headers (CSP, XSS-Protection, etc.)
+- **Input Validation**: Sanitization and validation of all user input
+- **SQL Injection Protection**: Detection and blocking of SQL injection attempts
+- **XSS Protection**: Prevention of cross-site scripting attacks
+- **Directory Traversal Protection**: Blocking of path traversal attempts
 
 ### 🚀 Key Features
+- **Enterprise Security**: Multi-layered security protection
+  - Rate limiting (60 requests/minute, 10 burst/second)
+  - Input validation and sanitization
+  - SQL injection detection and prevention
+  - XSS protection with pattern detection
+  - Directory traversal protection
+  - Comprehensive security headers
+- **Professional Error Handling**: Robust error management
+  - Exception catching and logging
+  - Debug information in development
+  - User-friendly error pages
+  - Performance monitoring
+  - Graceful error responses
+- **Enhanced Logging**: PSR-3 compliant system
+  - Structured logging with context
+  - Specialized methods (security, performance, user actions)
+  - Log rotation with configurable limits
+  - Request context automatic inclusion
+  - Memory usage and performance tracking
+- **CSRF Protection**: Cross-site request forgery prevention
+  - Token validation for state-changing requests
+  - Flexible token sources (POST, headers, Laravel-style)
+  - User-friendly error pages
+  - Automatic token generation and verification
 - **Pages Index**: Complete "View All Pages" functionality for testing and browsing
 - **Search & Filter**: Comprehensive search across page titles with namespace filtering
 - **Professional Layout**: Grid-based page cards with metadata and actions
@@ -97,6 +125,49 @@ sudo chmod -R 755 storage/
 
 # Run tests to verify installation
 php tests/Unit/Database/IntegrationTest.php
+
+# Test security features
+php scripts/test_security_error_handling.php
+
+## Security Features
+
+IslamWiki includes enterprise-level security features to protect against common web vulnerabilities:
+
+### 🔒 Attack Prevention
+- **SQL Injection**: Detects and blocks patterns like `union+select`, `drop+table`, `delete+from`
+- **XSS Protection**: Prevents script tags, javascript: protocols, and event handlers
+- **Directory Traversal**: Blocks `..` and `//` patterns in URLs
+- **CSRF Protection**: Token-based protection for all state-changing requests
+- **Rate Limiting**: Prevents abuse with configurable request limits
+
+### 🛡️ Security Headers
+- **Content Security Policy**: Restricts resource loading to trusted sources
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-XSS-Protection**: Additional XSS protection layer
+- **Referrer-Policy**: Controls referrer information
+- **Permissions-Policy**: Restricts browser features
+- **Strict-Transport-Security**: Enforces HTTPS connections
+
+### 📊 Monitoring & Logging
+- **Structured Logging**: PSR-3 compliant with rich context
+- **Security Events**: Automatic logging of suspicious activities
+- **Performance Tracking**: Request timing and memory usage
+- **Error Handling**: Comprehensive exception management
+- **Log Rotation**: Automatic log file management
+
+### 🧪 Testing
+Run the security test suite to verify all protections:
+```bash
+php scripts/test_security_error_handling.php
+```
+
+This will test:
+- SQL injection detection
+- XSS pattern blocking
+- CSRF token validation
+- Rate limiting functionality
+- Error handling capabilities
+- Logging system operation
 
 # Access the application
 # Point your web server to the public/ directory

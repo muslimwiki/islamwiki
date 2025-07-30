@@ -14,14 +14,14 @@ class TestController
     public function test(Request $request): Response
     {
         return new Response(
+            200,
+            ['Content-Type' => 'text/html'],
             "<h1>Test Page</h1>
             <p>If you can see this, the basic routing is working!</p>
             <ul>
                 <li><a href='/test/error'>Test 500 Error</a></li>
                 <li><a href='/test/debug'>Test Debug Info</a></li>
-            </ul>",
-            200,
-            ['Content-Type' => 'text/html']
+            </ul>"
         );
     }
 
@@ -57,6 +57,6 @@ class TestController
                 htmlspecialchars(print_r($debugInfo, true)) . 
                 "</pre>";
 
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return new Response(200, ['Content-Type' => 'text/html'], $html);
     }
 }

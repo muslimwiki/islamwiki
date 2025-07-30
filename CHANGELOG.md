@@ -5,6 +5,97 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2025-07-30
+
+### Added
+- **Comprehensive Security Middleware**: Enterprise-level security protection
+  - Rate limiting with configurable limits (60 requests/minute, 10 burst requests/second)
+  - Input validation and sanitization (null bytes, control characters, line endings)
+  - SQL injection detection (union+select, drop+table, delete+from, etc.)
+  - XSS protection (script tags, javascript: protocols, event handlers)
+  - Directory traversal protection (.. and // patterns)
+  - Security headers (CSP, X-Frame-Options, XSS-Protection, etc.)
+- **Enhanced Error Handling Middleware**: Professional error management
+  - Comprehensive exception catching and logging
+  - Debug information in development mode
+  - User-friendly error pages with navigation
+  - Performance monitoring (request timing, memory usage)
+  - Graceful error responses for all HTTP status codes
+- **Middleware Stack System**: Organized middleware execution
+  - Ordered middleware chain execution
+  - Error handling for middleware failures
+  - Debug logging for middleware execution
+  - Automatic middleware initialization
+- **Enhanced Logging System**: PSR-3 compliant with rich features
+  - Structured logging with context information
+  - Specialized methods (security, userAction, performance, query, exception)
+  - Log rotation with configurable size limits
+  - Request context automatic inclusion
+  - Memory usage and performance tracking
+- **CSRF Protection**: Cross-site request forgery protection
+  - Token validation for state-changing requests
+  - Flexible token sources (POST data, headers, Laravel-style)
+  - User-friendly error pages for token mismatches
+  - Automatic token generation and verification
+
+### Changed
+- **FastRouter Integration**: Enhanced with middleware stack
+  - Automatic middleware execution for all routes
+  - Proper PSR-7 to internal Request conversion
+  - Debug logging for middleware execution
+  - Container integration for middleware services
+- **Request Class**: Added missing methods
+  - `getPostParam()` method for POST parameter access
+  - `fromPsr7()` method for PSR-7 request conversion
+  - Enhanced header handling and validation
+- **Response Class**: Fixed constructor parameter order
+  - Corrected status code and headers parameter order
+  - Improved error response generation
+- **TestController**: Fixed Response constructor calls
+  - Updated all Response instantiation to use correct parameter order
+  - Improved error handling in test endpoints
+
+### Fixed
+- **Logger Interface Compatibility**: Resolved PSR-3 compliance issues
+  - Fixed method signatures to match PSR-3 interface
+  - Removed strict type hints for message parameters
+  - Ensured full PSR-3 compatibility
+- **Middleware Execution**: Fixed middleware stack integration
+  - Proper request conversion between PSR-7 and internal classes
+  - Correct middleware chain execution order
+  - Fixed container service resolution for middleware
+- **Security Pattern Detection**: Enhanced SQL injection detection
+  - Added support for URL-encoded patterns (union%20select)
+  - Improved regex patterns for better detection
+  - Added query string validation alongside URI validation
+- **Permission Issues**: Resolved log file access problems
+  - Fixed storage and logs directory permissions
+  - Proper file ownership for web server access
+  - Enhanced error handling for file operations
+
+### Security
+- **Comprehensive Attack Prevention**: Validated protection against common attacks
+  - SQL injection patterns blocked ✅
+  - XSS attack vectors prevented ✅
+  - Directory traversal attempts blocked ✅
+  - Rate limiting prevents abuse ✅
+  - CSRF protection working ✅
+- **Security Headers**: Implemented comprehensive security headers
+  - Content Security Policy (CSP) with allowed sources
+  - X-Frame-Options: DENY
+  - X-XSS-Protection: 1; mode=block
+  - Referrer-Policy: strict-origin-when-cross-origin
+  - Permissions-Policy: geolocation=(), microphone=(), camera=()
+  - Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+### Technical
+- **Production Ready**: Enterprise-level security and error handling
+  - Environment detection (debug/production modes)
+  - Log rotation with configurable limits
+  - Memory management and performance tracking
+  - Comprehensive testing with validation scripts
+  - Multiple security layers with defense in depth
+
 ## [0.2.2] - 2025-07-30
 
 ### Added

@@ -570,4 +570,40 @@ class Request implements ServerRequestInterface
     {
         return $this->queryParams[$name] ?? $default;
     }
+    
+    /**
+     * Get a POST parameter.
+     */
+    public function getPostParam(string $name, $default = null)
+    {
+        $parsedBody = $this->getParsedBody();
+        if (is_array($parsedBody)) {
+            return $parsedBody[$name] ?? $default;
+        }
+        return $default;
+    }
+    
+    /**
+     * Create a Request instance from a PSR-7 ServerRequest.
+     */
+    public static function fromPsr7(ServerRequestInterface $psrRequest): self
+    {
+        $request = new self(
+            $psrRequest->getMethod(),
+            $psrRequest->getUri(),
+            $psrRequest->getHeaders(),
+            $psrRequest->getBody(),
+            $psrRequest->getProtocolVersion(),
+            $psrRequest->getServerParams()
+        );
+        
+        // Copy additional properties
+        $request->cookieParams = $psrRequest->getCookieParams();
+        $request->queryParams = $psrRequest->getQueryParams();
+        $request->parsedBody = $psrRequest->getParsedBody();
+        $request->uploadedFiles = $psrRequest->getUploadedFiles();
+        $request->attributes = $psrRequest->getAttributes();
+        
+        return $request;
+    }
 }

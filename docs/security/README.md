@@ -1,298 +1,314 @@
-<!--
-This file is part of IslamWiki.
-
-Copyright (C) 2025 IslamWiki Contributors
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
 # Security Documentation
 
-This document outlines the security measures, best practices, and guidelines for the IslamWiki application.
+This document outlines the comprehensive security features implemented in IslamWiki to protect against common web vulnerabilities and ensure enterprise-level security.
 
-## Table of Contents
-1. [Authentication](#authentication)
-2. [Authorization](#authorization)
-3. [Input Validation](#input-validation)
-4. [Output Encoding](#output-encoding)
-5. [CSRF Protection](#csrf-protection)
-6. [XSS Prevention](#xss-prevention)
-7. [SQL Injection Prevention](#sql-injection-prevention)
-8. [Session Security](#session-security)
-9. [File Upload Security](#file-upload-security)
-10. [API Security](#api-security)
-11. [Security Headers](#security-headers)
-12. [Logging and Monitoring](#logging-and-monitoring)
-13. [Dependency Security](#dependency-security)
-14. [Compliance](#compliance)
-15. [Incident Response](#incident-response)
+## Overview
 
-## Authentication
+IslamWiki implements a multi-layered security approach with comprehensive protection against:
+- SQL Injection attacks
+- Cross-Site Scripting (XSS)
+- Cross-Site Request Forgery (CSRF)
+- Directory Traversal attacks
+- Rate limiting and abuse prevention
+- Input validation and sanitization
 
-### Password Security
-- All passwords are hashed using Argon2id
-- Minimum password length: 12 characters
-- Password complexity requirements:
-  - At least one uppercase letter
-  - At least one lowercase letter
-  - At least one number
-  - At least one special character
-- Password history: Last 5 passwords are remembered
-- Account lockout after 5 failed login attempts
-- Password reset tokens expire after 1 hour
+## Security Middleware
 
-### Multi-Factor Authentication (MFA)
-- TOTP (Time-based One-Time Password) support
-- Recovery codes for MFA backup
-- MFA required for administrative actions
+### SecurityMiddleware
 
-### Session Management
-- Secure, HTTP-only cookies
-- Session timeout: 2 hours of inactivity
-- Session regeneration on login/logout
-- Concurrent session control
+The `SecurityMiddleware` provides comprehensive security features:
 
-## Authorization
+#### Rate Limiting
+- **Requests per minute**: 60 requests
+- **Burst limit**: 10 requests per second
+- **Storage**: In-memory (production should use Redis)
+- **Configuration**: Configurable limits in middleware
 
-### Role-Based Access Control (RBAC)
+#### Input Validation & Sanitization
+- **Null bytes**: Removed from all input
+- **Control characters**: Stripped except newlines and tabs
+- **Line endings**: Normalized to Unix format
+- **Character encoding**: UTF-8 validation
 
-#### Roles
-1. **Guest** (unauthenticated users)
-   - View public pages
-   - Search content
+#### Attack Pattern Detection
 
-2. **User** (authenticated users)
-   - All guest permissions
-   - Create and edit pages
-   - Upload files
-   - Comment on pages
+**SQL Injection Patterns:**
+```php
+'/union\s*select/i',
+'/union\+select/i',
+'/union%20select/i',
+'/drop\s+table/i',
+'/delete\s+from/i',
+'/insert\s+into/i',
+'/update\s+set/i',
+'/exec\s*\(/i',
+'/eval\s*\(/i',
+```
 
-3. **Editor**
-   - All user permissions
-   - Moderate comments
-   - Manage categories
-   - Lock/unlock pages
+**XSS Patterns:**
+```php
+'/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/i',
+'/javascript:/i',
+'/vbscript:/i',
+'/onload\s*=/i',
+'/onerror\s*=/i',
+```
 
-4. **Administrator**
-   - All editor permissions
-   - Manage users
-   - Configure system settings
-   - Access system logs
+**Directory Traversal:**
+- Blocks `..` and `//` patterns in URLs
 
-### Permission System
-- Fine-grained permissions for all actions
-- Permission inheritance through roles
-- Override capabilities for specific users
+#### Security Headers
+```php
+'X-Content-Type-Options' => 'nosniff',
+'X-Frame-Options' => 'DENY',
+'X-XSS-Protection' => '1; mode=block',
+'Referrer-Policy' => 'strict-origin-when-cross-origin',
+'Content-Security-Policy' => "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;",
+'Permissions-Policy' => 'geolocation=(), microphone=(), camera=()',
+'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
+```
 
-## Input Validation
+## Error Handling Middleware
 
-### Client-Side Validation
-- HTML5 form validation
-- Custom JavaScript validation
-- Real-time feedback
+### ErrorHandlingMiddleware
 
-### Server-Side Validation
-- All input validated on the server
-- Whitelist approach for all inputs
-- Type checking and sanitization
-- Custom validation rules for complex scenarios
+Provides comprehensive error handling and debugging:
 
-### Common Validation Rules
+#### Features
+- **Exception Catching**: All exceptions caught and logged
+- **Debug Information**: Detailed error info in development mode
+- **User-Friendly Pages**: Professional error pages with navigation
+- **Performance Monitoring**: Request timing and memory usage
+- **Graceful Responses**: Proper HTTP status codes and messages
 
-#### Usernames
-- 3-30 characters
-- Alphanumeric, underscores, and hyphens only
-- Case-insensitive uniqueness
-
-#### Emails
-- Standard email format validation
-- MX record verification
-- Disposable email detection
-- Confirmation required for new addresses
-
-#### File Uploads
-- Whitelisted file extensions
-- MIME type verification
-- Maximum file size: 10MB
-- Virus scanning for all uploads
-
-## Output Encoding
-
-### Context-Aware Escaping
-- HTML entity encoding
-- JavaScript string escaping
-- URL encoding
-- CSS escaping
-
-### Template Engine
-- Automatic context-aware escaping
-- Safe string handling
-- Raw output only when explicitly marked safe
+#### Error Pages
+- **404 Not Found**: Page not found with helpful navigation
+- **403 Forbidden**: Access denied with explanation
+- **500 Internal Server Error**: Server error with debug info in development
+- **429 Too Many Requests**: Rate limit exceeded
+- **Custom Error Pages**: Professional styling with action buttons
 
 ## CSRF Protection
-- Synchronizer token pattern
-- Required for all state-changing requests
-- SameSite cookie attribute
-- Double-submit cookie pattern for APIs
 
-## XSS Prevention
-- Content Security Policy (CSP) headers
-- `X-XSS-Protection` header
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- Input sanitization
-- Output encoding
+### CsrfMiddleware
 
-## SQL Injection Prevention
-- Prepared statements for all queries
-- Query builder with parameter binding
-- Stored procedures with input validation
-- Principle of least privilege for database users
+Protects against Cross-Site Request Forgery attacks:
 
-## Session Security
-- Secure, HTTP-only session cookies
-- Session ID regeneration on privilege changes
-- Session fixation protection
-- Secure flag for HTTPS-only cookies
-- Session timeout with user notification
+#### Features
+- **Token Validation**: Verifies CSRF tokens for state-changing requests
+- **Flexible Sources**: Checks POST data, headers, and Laravel-style tokens
+- **User-Friendly Errors**: Clear explanations for token mismatches
+- **Automatic Generation**: Tokens generated for forms
+- **Session Integration**: Works with session management
 
-## File Upload Security
-- Uploads stored outside web root
-- Random, unguessable filenames
-- MIME type verification
-- File content validation
-- Image manipulation to prevent steganography
-- Quarantine for suspicious files
+#### Token Sources
+1. POST parameter: `_token`
+2. Header: `X-CSRF-TOKEN`
+3. Header: `X-XSRF-TOKEN` (Laravel style)
 
-## API Security
+#### Excluded Routes
+- `/api/` - API endpoints
+- `/webhook/` - Webhook endpoints
 
-### Authentication
-- OAuth 2.0 with JWT
-- API key authentication
-- Rate limiting
-- Request signing
+## Enhanced Logging
 
-### Data Protection
-- Field-level encryption for sensitive data
-- Masking of sensitive information in responses
-- Pagination for large result sets
-- Input validation for all parameters
+### Logger Class
+
+PSR-3 compliant logging with enhanced features:
+
+#### Specialized Methods
+```php
+$logger->security('SQL injection attempt', ['ip' => '192.168.1.1']);
+$logger->userAction('page_edit', ['user_id' => 123, 'page_id' => 456]);
+$logger->performance('database_query', 0.123, ['query' => 'SELECT * FROM pages']);
+$logger->query('SELECT * FROM pages WHERE id = ?', 0.045, ['params' => [1]]);
+$logger->exception($e, ['context' => 'user_action']);
+```
+
+#### Log Rotation
+- **Max file size**: 10MB (configurable)
+- **Files to keep**: 5 (configurable)
+- **Automatic rotation**: Based on date and size
+- **Compression**: Old logs can be compressed
+
+#### Context Information
+- **Request details**: IP, method, URI, user agent
+- **Performance metrics**: Timing, memory usage
+- **User information**: User ID, session data
+- **Server information**: PHP version, memory limits
+
+## Middleware Stack
+
+### MiddlewareStack
+
+Manages the execution order of middleware components:
+
+#### Execution Order
+1. Error Handling Middleware
+2. Security Middleware
+3. CSRF Middleware
+4. Route Handler
+
+#### Features
+- **Ordered Execution**: Middleware executed in defined order
+- **Error Handling**: Graceful handling of middleware failures
+- **Debug Logging**: Comprehensive logging of middleware execution
+- **Request Conversion**: Proper PSR-7 to internal Request conversion
+
+## Testing Security Features
+
+### Test Script
+Run the comprehensive security test suite:
+
+```bash
+php scripts/test_security_error_handling.php
+```
+
+### Test Coverage
+- **Database Connection**: Verifies database connectivity
+- **Container Services**: Tests service registration and resolution
+- **Security Middleware**: Tests attack pattern detection
+- **Error Handling**: Tests exception catching and logging
+- **CSRF Protection**: Tests token validation
+- **Middleware Stack**: Tests middleware execution
+- **Enhanced Logging**: Tests specialized logging methods
+- **Log File Creation**: Verifies log file generation
+- **Security Headers**: Tests header addition
+
+### Manual Testing
+Test attack patterns manually:
+
+```bash
+# SQL Injection (should be blocked)
+curl "http://localhost:8000/test?q=union+select"
+
+# XSS (should be blocked)
+curl "http://localhost:8000/test?q=<script>alert('xss')</script>"
+
+# Directory Traversal (should be blocked)
+curl "http://localhost:8000/test?q=../../../etc/passwd"
+
+# Rate Limiting (should be blocked after 60 requests/minute)
+for i in {1..70}; do curl "http://localhost:8000/test"; done
+```
+
+## Production Considerations
+
+### Security Headers
+Ensure all security headers are properly configured for your environment:
+
+```php
+// Content Security Policy
+"default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;"
+
+// Strict Transport Security
+"max-age=31536000; includeSubDomains"
+```
 
 ### Rate Limiting
-- Tiered rate limiting based on authentication
-- IP-based rate limiting for public endpoints
-- `Retry-After` headers
-- Rate limit information in response headers
+For production, consider using Redis for rate limiting:
 
-## Security Headers
-
-### HTTP Headers
-```
-Content-Security-Policy: default-src 'self';
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1; mode=block
-Referrer-Policy: strict-origin-when-cross-origin
-Strict-Transport-Security: max-age=31536000; includeSubDomains
-Permissions-Policy: geolocation=(), microphone=(), camera=()
+```php
+// Replace in-memory storage with Redis
+private static array $rateLimitStore = []; // Change to Redis
 ```
 
-### CORS Headers
-```
-Access-Control-Allow-Origin: https://trusted-origin.com
-Access-Control-Allow-Methods: GET, POST, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Authorization
-Access-Control-Allow-Credentials: true
+### Logging
+Configure appropriate log levels for production:
+
+```php
+// Development
+$logger = new Logger($logDir, 'debug');
+
+// Production
+$logger = new Logger($logDir, 'warning');
 ```
 
-## Logging and Monitoring
+### Error Handling
+Disable debug mode in production:
 
-### Security Events
-- Failed login attempts
-- Password changes
-- Permission changes
-- Sensitive operations
-- File uploads
-- Security exceptions
+```php
+// .env
+APP_DEBUG=false
+APP_ENV=production
+```
+
+## Security Best Practices
+
+### Input Validation
+- Always validate and sanitize user input
+- Use prepared statements for database queries
+- Implement proper access controls
+- Log security events for monitoring
+
+### Session Security
+- Use secure session configuration
+- Implement proper session timeout
+- Regenerate session IDs after login
+- Use HTTP-only cookies
+
+### Error Handling
+- Never expose sensitive information in error messages
+- Log errors for debugging but show user-friendly messages
+- Implement proper error boundaries
+- Monitor error rates and patterns
 
 ### Monitoring
-- Real-time alerting for suspicious activities
-- Anomaly detection
-- Regular security scans
-- Log analysis for patterns
-
-## Dependency Security
-
-### Management
-- Regular dependency updates
-- Automated vulnerability scanning
-- Software Bill of Materials (SBOM)
-- Pinned dependency versions
-
-### Third-Party Services
-- Vetted third-party services
-- Limited API scopes
-- Regular access reviews
-- Secure credential management
+- Monitor security logs regularly
+- Set up alerts for suspicious activity
+- Track performance metrics
+- Review access logs periodically
 
 ## Compliance
 
+### Security Standards
+- **OWASP Top 10**: Protection against common vulnerabilities
+- **PSR-3**: Standardized logging interface
+- **PSR-7**: HTTP message interface compliance
+- **PSR-15**: HTTP middleware interface compliance
+
 ### Data Protection
-- GDPR compliance
-- Data retention policies
-- Right to be forgotten
-- Data portability
+- **Input Sanitization**: All user input is sanitized
+- **Output Encoding**: All output is properly encoded
+- **Access Control**: Proper permission checking
+- **Audit Logging**: Comprehensive activity logging
 
-### Auditing
-- Regular security audits
-- Penetration testing
-- Code reviews
-- Compliance certifications
+## Troubleshooting
 
-## Incident Response
+### Common Issues
 
-### Reporting
-- Security contact: security@islam.wiki
-- Responsible disclosure policy
-- Bug bounty program
+**Permission Denied Errors:**
+```bash
+sudo chown -R www-data:www-data storage/ logs/
+sudo chmod -R 755 storage/ logs/
+```
 
-### Response Plan
-1. **Identification**
-   - Detect and confirm incident
-   - Classify severity
+**Rate Limiting Too Strict:**
+Adjust limits in `SecurityMiddleware`:
+```php
+'requests_per_minute' => 60,  // Increase if needed
+'burst_limit' => 10,          // Increase if needed
+```
 
-2. **Containment**
-   - Isolate affected systems
-   - Preserve evidence
+**CSRF Token Issues:**
+Ensure forms include CSRF tokens:
+```html
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
+```
 
-3. **Eradication**
-   - Remove threat
-   - Patch vulnerabilities
+**Log File Issues:**
+Check log directory permissions and disk space:
+```bash
+ls -la storage/logs/
+df -h
+```
 
-4. **Recovery**
-   - Restore systems
-   - Verify security
+## Support
 
-5. **Post-Mortem**
-   - Root cause analysis
-   - Document lessons learned
-   - Update security controls
+For security issues or questions:
+1. Check the logs for detailed error information
+2. Run the security test suite to verify functionality
+3. Review the configuration files for proper settings
+4. Contact the development team for assistance
 
-### Communication
-- Internal notification procedures
-- External disclosure timeline
-- Customer notification process
-- Regulatory reporting requirements
-
----
-*Last Updated: 2025-07-25*
+Remember: Security is an ongoing process. Regularly update dependencies, monitor logs, and stay informed about new security threats.

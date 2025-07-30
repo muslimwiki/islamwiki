@@ -101,27 +101,191 @@ class Logger implements LoggerInterface
             return;
         }
 
-        // Interpolate context into message
-        $message = $this->interpolate((string) $message, $context);
+        // Add timestamp and process info to context
+        $context['timestamp'] = date('Y-m-d H:i:s');
+        $context['pid'] = getmypid();
+        $context['memory_usage'] = memory_get_usage();
+        $context['peak_memory'] = memory_get_peak_usage();
         
-        // Format the log entry
-        $timestamp = (new DateTimeImmutable())->format('Y-m-d H:i:s.u');
-        $level = strtoupper($level);
-        $logEntry = sprintf(
-            "[%s] %s: %s %s" . PHP_EOL,
-            $timestamp,
-            $level,
-            $message,
-            !empty($context) ? json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : ''
-        );
-
-        // Check if we need to rotate the log file
-        if (file_exists($this->logFile) && filesize($this->logFile) >= $this->maxFileSize) {
-            $this->rotateLogs();
+        // Add request information if available
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $context['request_uri'] = $_SERVER['REQUEST_URI'];
+            $context['request_method'] = $_SERVER['REQUEST_METHOD'] ?? 'CLI';
+            $context['remote_addr'] = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         }
 
-        // Write to the log file
-        error_log($logEntry, 3, $this->logFile);
+        // Interpolate the message
+        $interpolatedMessage = $this->interpolate($message, $context);
+        
+        // Format the log entry
+        $logEntry = sprintf(
+            "[%s] %s: %s %s\n",
+            $context['timestamp'],
+            strtoupper($level),
+            $interpolatedMessage,
+            !empty($context) ? json_encode($context, JSON_UNESCAPED_SLASHES) : ''
+        );
+
+        // Check if we need to rotate logs
+        $this->rotateLogs();
+
+        // Write to log file
+        if (file_put_contents($this->logFile, $logEntry, FILE_APPEND | LOCK_EX) === false) {
+            // If we can't write to the log file, write to error log
+            error_log("Failed to write to log file: {$this->logFile}");
+        }
+    }
+
+    /**
+     * Log a debug message with additional context.
+     */
+    public function debug($message, array $context = []): void
+    {
+        $this->log(LogLevel::DEBUG, $message, $context);
+    }
+
+    /**
+     * Log an info message with additional context.
+     */
+    public function info($message, array $context = []): void
+    {
+        $this->log(LogLevel::INFO, $message, $context);
+    }
+
+    /**
+     * Log a warning message with additional context.
+     */
+    public function warning($message, array $context = []): void
+    {
+        $this->log(LogLevel::WARNING, $message, $context);
+    }
+
+    /**
+     * Log an error message with additional context.
+     */
+    public function error($message, array $context = []): void
+    {
+        $this->log(LogLevel::ERROR, $message, $context);
+    }
+
+    /**
+     * Log a critical message with additional context.
+     */
+    public function critical($message, array $context = []): void
+    {
+        $this->log(LogLevel::CRITICAL, $message, $context);
+    }
+
+    /**
+     * Log an alert message with additional context.
+     */
+    public function alert($message, array $context = []): void
+    {
+        $this->log(LogLevel::ALERT, $message, $context);
+    }
+
+    /**
+     * Log an emergency message with additional context.
+     */
+    public function emergency($message, array $context = []): void
+    {
+        $this->log(LogLevel::EMERGENCY, $message, $context);
+    }
+
+    /**
+     * Log performance metrics.
+     */
+    public function performance(string $operation, float $duration, array $context = []): void
+    {
+        $context['duration_ms'] = round($duration * 1000, 2);
+        $context['operation'] = $operation;
+        $this->info("Performance: {$operation} completed in {$context['duration_ms']}ms", $context);
+    }
+
+    /**
+     * Log database query with timing.
+     */
+    public function query(string $sql, float $duration, array $context = []): void
+    {
+        $context['sql'] = $sql;
+        $context['duration_ms'] = round($duration * 1000, 2);
+        $this->debug("Database query executed in {$context['duration_ms']}ms", $context);
+    }
+
+    /**
+     * Log security event.
+     */
+    public function security(string $event, array $context = []): void
+    {
+        $context['security_event'] = $event;
+        $this->warning("Security event: {$event}", $context);
+    }
+
+    /**
+     * Log user action.
+     */
+    public function userAction(string $action, array $context = []): void
+    {
+        $context['user_action'] = $action;
+        $this->info("User action: {$action}", $context);
+    }
+
+    /**
+     * Log API request.
+     */
+    public function apiRequest(string $endpoint, array $context = []): void
+    {
+        $context['api_endpoint'] = $endpoint;
+        $this->info("API request to {$endpoint}", $context);
+    }
+
+    /**
+     * Log exception with full context.
+     */
+    public function exception(\Throwable $e, array $context = [], string $level = LogLevel::ERROR): void
+    {
+        $context['exception_class'] = get_class($e);
+        $context['exception_message'] = $e->getMessage();
+        $context['exception_file'] = $e->getFile();
+        $context['exception_line'] = $e->getLine();
+        $context['exception_trace'] = $e->getTraceAsString();
+        
+        $this->log($level, "Exception: {$e->getMessage()}", $context);
+    }
+
+    /**
+     * Create a request context array.
+     */
+    public function createRequestContext(\IslamWiki\Core\Http\Request $request): array
+    {
+        return [
+            'ip' => $this->getClientIp($request),
+            'method' => $request->getMethod(),
+            'uri' => $request->getUri()->getPath(),
+            'user_agent' => $request->getHeaderLine('User-Agent'),
+            'referer' => $request->getHeaderLine('Referer'),
+            'content_type' => $request->getHeaderLine('Content-Type'),
+            'content_length' => $request->getHeaderLine('Content-Length'),
+        ];
+    }
+
+    /**
+     * Get client IP address from request.
+     */
+    private function getClientIp(\IslamWiki\Core\Http\Request $request): string
+    {
+        $forwardedFor = $request->getHeaderLine('X-Forwarded-For');
+        if ($forwardedFor) {
+            $ips = explode(',', $forwardedFor);
+            return trim($ips[0]);
+        }
+        
+        $realIp = $request->getHeaderLine('X-Real-IP');
+        if ($realIp) {
+            return $realIp;
+        }
+        
+        return $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
     }
 
     /**
@@ -188,41 +352,5 @@ class Logger implements LoggerInterface
         
         // Rotate the current log file
         rename($logFile, $basePath . date('Y-m-d') . '-0.log');
-    }
-    
-    /**
-     * Create a context array with common fields for request logging.
-     */
-    public function createRequestContext(Request $request): array
-    {
-        $ip = $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
-        $method = $request->getMethod();
-        $uri = (string) $request->getUri();
-        $userAgent = $request->getHeaderLine('User-Agent');
-        $userId = $request->getAttribute('user')['id'] ?? 'guest';
-        
-        return [
-            'ip' => $ip,
-            'method' => $method,
-            'uri' => $uri,
-            'user_agent' => $userAgent,
-            'user_id' => $userId,
-        ];
-    }
-    
-    /**
-     * Log an exception with stack trace.
-     */
-    public function exception(\Throwable $e, array $context = [], string $level = LogLevel::ERROR): void
-    {
-        $this->log($level, sprintf(
-            '%s in %s:%d',
-            $e->getMessage(),
-            $e->getFile(),
-            $e->getLine()
-        ), array_merge([
-            'exception' => get_class($e),
-            'trace' => $e->getTraceAsString(),
-        ], $context));
     }
 }
