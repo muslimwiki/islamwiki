@@ -1,356 +1,250 @@
-# IslamWiki
+# Islam Wiki
 
-A modern, custom wiki system combining the power of MediaWiki's functionality with a WordPress-like dashboard experience, built with PHP, Twig templating, and Alpine.js for lightweight interactivity.
+A modern, secure wiki system built with PHP 8.1+, featuring comprehensive content management, user authentication, and enterprise-level security.
 
-[![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+## Version 0.1.3
 
-## Version 0.1.2 (2025-07-30)
+**What's New:**
+- **Pure IslamRouter**: Completely removed FastRoute dependency, implemented custom routing solution
+- **Project Organization**: Comprehensive reorganization for better maintainability and security
+- **Documentation Structure**: All documentation moved to `docs/` with clear categorization
+- **Script Organization**: Scripts categorized by purpose (database, debug, tests, utils)
+- **Clean Public Directory**: Removed test files from web root for enhanced security
+- **Test Organization**: Web tests in `tests/web/`, unit tests in `tests/Unit/`
 
-### ✨ What's New
-- **Environment Variable Fixes**: Resolved all "Undefined array key 'APP_ENV'" warnings
-- **Application Stability**: Eliminated 500 errors and application crashes
-- **Robust Environment Handling**: Enhanced environment variable access across all components
-- **Enterprise Security**: Comprehensive security middleware with attack prevention
-- **Professional Error Handling**: Enhanced error management with debug information
-- **Enhanced Logging**: PSR-3 compliant logging with structured data
-- **CSRF Protection**: Cross-site request forgery protection with token validation
-- **Rate Limiting**: Configurable request rate limiting to prevent abuse
-- **Security Headers**: Comprehensive security headers (CSP, XSS-Protection, etc.)
-- **Input Validation**: Sanitization and validation of all user input
-- **SQL Injection Protection**: Detection and blocking of SQL injection attempts
-- **XSS Protection**: Prevention of cross-site scripting attacks
-- **Directory Traversal Protection**: Blocking of path traversal attempts
-
-### 🚀 Key Features
-
-#### 🔒 **Enterprise Security (v0.0.6)**
-- **Multi-layered Security Protection**
-  - Rate limiting (60 requests/minute, 10 burst/second)
-  - Input validation and sanitization
-  - SQL injection detection and prevention
-  - XSS protection with pattern detection
-  - Directory traversal protection
-  - Comprehensive security headers (CSP, XSS-Protection, etc.)
-- **CSRF Protection**: Token-based protection for all state-changing requests
-- **Professional Error Handling**: Robust error management with debug information
-- **Enhanced Logging**: PSR-3 compliant system with structured data
-
-#### 📝 **Wiki Page System (v0.1.0+)**
-- **Complete Page Management**: Create, view, edit, and delete wiki pages
-- **Page Model**: Eloquent-like model with relationships and revision tracking
-- **Page Controller**: Full CRUD operations with proper templates
-- **View Count Tracking**: Page view analytics with database updates
-- **Page Permissions**: Edit, delete, and lock permissions based on user roles
-- **Page History**: Revision tracking and history viewing functionality
-- **Pages Index**: Complete "View All Pages" functionality with search and filtering
-- **Professional Layout**: Grid-based page cards with metadata and actions
-
-#### 🎨 **Content Rendering (v0.1.1+)**
-- **Enhanced Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
-- **Syntax Highlighting**: Prism.js integration for beautiful code display
-- **Professional Styling**: Enhanced CSS for all rendered content
-- **Auto-linking**: Smart URL detection and markdown-style link support
-- **Code Blocks**: Language-specific syntax highlighting with proper formatting
-
-#### 🔐 **Authentication & Security (v0.0.2+)**
-- **Session Management**: Secure session handling with HTTP-only, SameSite cookies
-- **User Authentication**: Registration, login, logout with password hashing
-- **Remember Me**: Secure persistent login functionality
-- **Authentication Middleware**: Route protection based on user roles
-- **Database Foundation**: Complete migration system with proper schema management
-
-#### 🛠️ **Development & Infrastructure**
-- **Dynamic Homepage**: Database-driven content with recent pages display
-- **Development Tools**: Setup scripts, tests, and comprehensive documentation
-- **PSR-7 Compatible**: Standard HTTP request/response handling
-- **Dependency Injection**: Clean, testable code architecture
-- **Comprehensive Testing**: Unit tests and integration tests
-
----
-
-## Versioning Strategy
-
-IslamWiki follows **Semantic Versioning** with a logical progression:
-
-### 🔧 **Core Infrastructure (0.0.x)**
-- **0.0.1**: Foundation, routing, templating, basic error handling
-- **0.0.2**: Authentication system, session management, CSRF protection
-- **0.0.6**: Security middleware, error handling, logging
-- **0.0.7**: Environment variable fixes, application stability
-
-### 📝 **Wiki Features (0.1.x)**
-- **0.1.0**: Wiki Page System (CRUD operations, permissions, history)
-- **0.1.1**: Content Rendering (markdown, syntax highlighting, styling)
-- **0.1.2**: Pages Index & Browsing (search, filter, pagination)
-
-### 🚀 **Future Progression**
-- **0.2.x**: Major features (Quran integration, Hijri calendar, etc.)
-- **0.3.x**: Additional major features
-- **1.0.0**: Production-ready, feature-complete site
-
-This approach ensures clear separation between core infrastructure, wiki features, and major additions.
-
----
-
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- PHP 8.1+
+- PHP 8.1 or higher
+- MySQL 5.7+ or MariaDB 10.2+
 - Composer
-- Web server (Apache/Nginx)
-- MySQL/MariaDB 5.7+ or PostgreSQL 10+
+- Web server (Apache/Nginx) or PHP built-in server
 
 ### Installation
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/islamwiki.git
-cd islamwiki
 
-# Install dependencies
-composer install
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/islam-wiki.git
+   cd islam-wiki
+   ```
 
-# Set up environment
-cp .env.example .env
-# Edit .env with your database configuration
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-# Set up database
-php scripts/setup_database.php
+3. **Setup environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials
+   ```
 
-# Set permissions
-sudo chown -R www-data:www-data storage/
-sudo chmod -R 755 storage/
+4. **Setup database**
+   ```bash
+   php scripts/database/setup_database.php
+   php scripts/database/migrate.php
+   php scripts/database/create_sample_data.php
+   ```
 
-# Run tests to verify installation
-php tests/Unit/Database/IntegrationTest.php
+5. **Start development server**
+   ```bash
+   php -S localhost:8000 -t public/
+   ```
 
-# Test security features
-php scripts/test_security_error_handling.php
+6. **Visit the application**
+   Open http://localhost:8000 in your browser
 
-## Security Features
-
-IslamWiki includes enterprise-level security features to protect against common web vulnerabilities:
-
-### 🔒 Attack Prevention
-- **SQL Injection**: Detects and blocks patterns like `union+select`, `drop+table`, `delete+from`
-- **XSS Protection**: Prevents script tags, javascript: protocols, and event handlers
-- **Directory Traversal**: Blocks `..` and `//` patterns in URLs
-- **CSRF Protection**: Token-based protection for all state-changing requests
-- **Rate Limiting**: Prevents abuse with configurable request limits
-
-### 🛡️ Security Headers
-- **Content Security Policy**: Restricts resource loading to trusted sources
-- **X-Frame-Options**: Prevents clickjacking attacks
-- **X-XSS-Protection**: Additional XSS protection layer
-- **Referrer-Policy**: Controls referrer information
-- **Permissions-Policy**: Restricts browser features
-- **Strict-Transport-Security**: Enforces HTTPS connections
-
-### 📊 Monitoring & Logging
-- **Structured Logging**: PSR-3 compliant with rich context
-- **Security Events**: Automatic logging of suspicious activities
-- **Performance Tracking**: Request timing and memory usage
-- **Error Handling**: Comprehensive exception management
-- **Log Rotation**: Automatic log file management
-
-### 🧪 Testing
-Run the security test suite to verify all protections:
-```bash
-php scripts/test_security_error_handling.php
-```
-
-This will test:
-- SQL injection detection
-- XSS pattern blocking
-- CSRF token validation
-- Rate limiting functionality
-- Error handling capabilities
-- Logging system operation
-
-# Access the application
-# Point your web server to the public/ directory
-```
-
-### Development
-```bash
-# Start development server
-php -S localhost:8000 -t public/
-
-# Access the application
-open http://localhost:8000
-```
-
----
-
-## Architecture
+## 🏗️ Architecture
 
 ### Core Components
-- **Application**: Main application bootstrap and service container
-- **FastRouter**: High-performance routing with dependency injection
-- **TwigRenderer**: Server-side template rendering with caching
-- **Container**: Dependency injection container for service management
-- **Controllers**: Request handling with proper dependency injection
+- **Application Bootstrap**: Main application entry point and configuration
+- **Service Providers**: Modular service registration and management
+- **Dependency Injection**: Container-based service management
+- **Routing System**: Custom IslamRouter with middleware support
+- **Template Engine**: Twig templating with layout inheritance
+- **Database Layer**: PDO-based database abstraction with migrations
+- **Security System**: Enterprise-level security with CSRF protection
 
-### Frontend
-- **Alpine.js**: Lightweight JavaScript framework for interactivity
-- **Twig Templates**: Server-side rendering with layouts and inheritance
-- **Responsive CSS**: Modern styling with component-based architecture
+### Key Features
+- **Wiki Page System** (v0.1.0): Complete CRUD operations for wiki pages
+- **Content Rendering** (v0.1.1): Comprehensive markdown support with syntax highlighting
+- **Pages Index** (v0.1.2): Advanced page browsing and management interface
+- **Enterprise Security** (v0.0.6): Comprehensive security middleware implementation
+- **User Authentication** (v0.0.2): Registration, login, session management
+- **Database Foundation** (v0.0.2): Migration system and database setup
 
-### Backend
-- **PSR-7 HTTP**: Standard HTTP request/response handling
-- **Session Management**: Secure session handling with regeneration
-- **CSRF Protection**: Token-based form protection
-- **Database ORM**: Custom model system with relationships and validation
-- **Migration System**: Database schema management with version control
-- **Authentication System**: Secure user authentication with password hashing
-- **Service Providers**: Modular service registration system
-- **File Logging**: Comprehensive error tracking and debugging
-- **Error Handling**: Detailed error pages and exception handling
+## 📁 Project Organization
 
----
-
-## Project Structure
-
+### Directory Structure
 ```
-islamwiki/
-├── public/                 # Web server document root
-│   └── index.php          # Application entry point
-├── src/                   # Application source code
-│   ├── Core/             # Core framework components
-│   ├── Http/             # HTTP layer (controllers, middleware)
-│   ├── Providers/        # Service providers
-│   └── Models/           # Data models
-├── database/             # Database migrations and seeders
-│   └── migrations/       # Database migration files
-├── resources/            # Application resources
-│   └── views/           # Twig templates
-├── routes/              # Route definitions
-├── storage/             # Application storage
-│   ├── logs/           # Log files
-│   └── framework/      # Framework cache
-├── docs/               # Documentation
-├── tests/              # Test files
-├── scripts/            # Utility scripts
-└── config/             # Configuration files
+📁 docs/                    # Comprehensive documentation
+├── 📁 plans/              # Development plans and roadmaps
+├── 📁 guides/             # User and developer guides
+├── 📁 architecture/       # System architecture docs
+├── 📁 components/         # Component documentation
+├── 📁 security/           # Security documentation
+├── 📁 features/           # Feature documentation
+├── 📁 deployment/         # Deployment guides
+├── 📁 testing/            # Testing documentation
+├── 📁 controllers/        # Controller documentation
+├── 📁 models/             # Model documentation
+├── 📁 views/              # View documentation
+├── DATABASE_SETUP.md      # Database setup guide
+└── Cursor_initial-prompt.md # Initial project prompt
+
+📁 scripts/                # Utility scripts (organized by purpose)
+├── 📁 database/           # Database migrations and setup
+├── 📁 debug/              # Debug and troubleshooting tools
+├── 📁 tests/              # Test utilities
+└── 📁 utils/              # Utility and maintenance scripts
+
+📁 tests/                  # Test files
+├── 📁 Unit/               # Unit tests
+│   └── 📁 Database/       # Database unit tests
+└── 📁 web/                # Web-based tests
+
+📁 public/                 # Web root (minimal, secure)
+├── index.php              # Main application entry point
+├── .htaccess              # Apache configuration
+└── (essential web files only)
+
+📁 src/                    # Application source code
+├── 📁 Core/               # Core framework components
+├── 📁 Http/               # HTTP layer (controllers, middleware)
+├── 📁 Models/             # Data models
+├── 📁 Providers/          # Service providers
+└── 📁 resources/          # Application resources
 ```
 
+### Key Organizational Benefits
+- **Security**: Reduced web-accessible files, test files moved to protected directories
+- **Performance**: Cleaner directory structure for faster scanning
+- **Maintainability**: Logical grouping of related files and functionality
+- **Developer Experience**: Clear organization for easier navigation and discovery
+
+## 🔧 Development
+
+### Code Organization
+- **Controllers**: HTTP request handling in `src/Http/Controllers/`
+- **Models**: Data layer in `src/Models/`
+- **Views**: Templates in `resources/views/`
+- **Middleware**: Request processing in `src/Http/Middleware/`
+
+### Testing Strategy
+- **Unit Tests**: `tests/Unit/` for isolated component testing
+- **Web Tests**: `tests/web/` for browser-based testing
+- **Integration Tests**: End-to-end testing in `tests/`
+
+### Scripts and Utilities
+- **Database**: Migration and setup scripts in `scripts/database/`
+- **Debug**: Troubleshooting tools in `scripts/debug/`
+- **Maintenance**: Utility scripts in `scripts/utils/`
+
+## 🛡️ Security Features
+
+### Enterprise Security (v0.0.6)
+- **CSRF Protection**: Cross-site request forgery protection on all forms
+- **Security Headers**: Enhanced HTTP security headers
+- **Input Validation**: Request sanitization and validation
+- **Session Security**: Secure session management and cookie handling
+- **Rate Limiting**: Protection against abuse and attacks
+- **XSS Protection**: Comprehensive cross-site scripting prevention
+
+### Authentication System (v0.0.2)
+- **User Registration**: Secure user account creation
+- **Login System**: Session-based authentication
+- **Password Security**: Secure password hashing and verification
+- **Remember Me**: Persistent login functionality
+- **Session Management**: Secure HTTP-only cookies
+
+## 📚 Documentation
+
+### Comprehensive Documentation Structure
+- **[Architecture Overview](docs/architecture/overview.md)** - System architecture and design patterns
+- **[Components](docs/components/README.md)** - Core application components
+- **[Controllers](docs/controllers/README.md)** - Controller documentation and patterns
+- **[Models](docs/models/README.md)** - Data models and database structure
+- **[Views](docs/views/README.md)** - Template system and view rendering
+
+### Development Guides
+- **[Style Guide](docs/guides/style-guide.md)** - Coding standards and conventions
+- **[Versioning Strategy](docs/guides/versioning.md)** - Semantic versioning and release process
+- **[Organization Guide](docs/guides/organization.md)** - Project structure and organization
+- **[Security Guidelines](docs/security/README.md)** - Security best practices
+- **[Testing Guidelines](docs/testing/README.md)** - Testing strategies and procedures
+
+### Feature Documentation
+- **[Wiki Pages](docs/features/wiki-pages.md)** - Wiki page system documentation
+- **[Authentication](docs/features/auth.md)** - User authentication and authorization
+- **[Content Rendering](docs/features/content-rendering.md)** - Content processing and display
+
+## 🔄 Versioning Strategy
+
+This project follows [Semantic Versioning](https://semver.org/) with a structured development approach:
+
+### Development Stages
+- **0.0.x (Core Infrastructure)**: Basic framework, routing, database, authentication
+- **0.1.x (Wiki Features)**: Wiki page system, content rendering, user management
+- **0.2.x (Advanced Features)**: Search, media, advanced content features
+- **0.3.x (Integration Features)**: API, external integrations, advanced functionality
+- **1.x.x (Production Ready)**: Fully functional, production-ready application
+
+### Current Status
+- **Current Version**: 0.1.3
+- **Stage**: Wiki Features (0.1.x)
+- **Focus**: Core wiki functionality, content management, user experience
+- **Next Milestone**: Advanced features (0.2.x) - Search, media, API
+
+## 🚀 Deployment
+
+### Production Setup
+1. **Environment Configuration**: Set production environment variables
+2. **Database Setup**: Run migrations and create production database
+3. **Web Server Configuration**: Configure Apache/Nginx for the application
+4. **Security Hardening**: Enable HTTPS, configure security headers
+5. **Performance Optimization**: Enable caching, optimize database queries
+
+### Development Setup
+1. **Local Environment**: Use PHP built-in server for development
+2. **Database**: Local MySQL/MariaDB instance
+3. **Debug Mode**: Enable debug mode for development
+4. **Logging**: File-based logging for debugging
+
+## 🤝 Contributing
+
+### Development Workflow
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes**: Follow the style guide and testing guidelines
+4. **Test your changes**: Run tests and ensure functionality
+5. **Submit a pull request**: Include detailed description of changes
+
+### Code Standards
+- Follow PSR-12 coding standards
+- Write comprehensive tests for new features
+- Update documentation for any changes
+- Follow semantic versioning for releases
+
+## 📄 License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE.md) file for details.
+
+## 🆘 Support
+
+### Getting Help
+- **Documentation**: Comprehensive guides in `docs/` directory
+- **Issues**: Create an issue on GitHub for bugs or feature requests
+- **Discussions**: Use GitHub Discussions for questions and ideas
+- **Security**: Report security issues privately to the maintainers
+
+### Development Resources
+- **[Changelog](CHANGELOG.md)** - Complete version history and changes
+- **[Database Setup](docs/DATABASE_SETUP.md)** - Database configuration guide
+- **[Testing Guidelines](docs/testing/README.md)** - Testing strategies and procedures
+- **[Security Guidelines](docs/security/README.md)** - Security best practices
+
 ---
 
-## Technology Stack
-
-### Backend
-- **PHP 8.1+**: Modern PHP with strict typing and PSR standards
-- **FastRoute**: High-performance routing with middleware support
-- **Twig**: Server-side templating engine with layouts and inheritance
-- **PSR-7**: HTTP message interfaces for request/response handling
-- **PSR-3**: Logging interface for structured logging
-- **Composer**: Dependency management and autoloading
-
-### Security & Error Handling
-- **SecurityMiddleware**: Enterprise-level attack prevention
-- **ErrorHandlingMiddleware**: Professional error management
-- **MiddlewareStack**: Organized middleware execution
-- **CSRF Protection**: Token-based form protection
-- **Rate Limiting**: Configurable request limiting
-
-### Frontend
-- **Alpine.js**: Lightweight JavaScript framework for interactivity
-- **Modern CSS**: Responsive design with flexbox/grid
-- **Progressive Enhancement**: Works without JavaScript
-- **Prism.js**: Syntax highlighting for code blocks
-
-### Development & Infrastructure
-- **Dependency Injection**: Clean, testable code architecture
-- **Service Providers**: Modular service registration
-- **Database Migrations**: Schema version control
-- **Comprehensive Testing**: Unit and integration tests
-- **Structured Logging**: PSR-3 compliant with context
-
----
-
-## Features
-
-### ✅ **Implemented (v0.2.3)**
-- **Enterprise Security**: Multi-layered attack prevention
-  - SQL injection, XSS, and directory traversal protection
-  - Rate limiting and input validation
-  - Comprehensive security headers
-  - CSRF protection with token validation
-- **Professional Error Handling**: Robust error management
-  - Exception catching and logging
-  - Debug information in development
-  - User-friendly error pages
-  - Performance monitoring
-- **Enhanced Logging**: PSR-3 compliant system
-  - Structured logging with context
-  - Specialized methods (security, performance, user actions)
-  - Log rotation with configurable limits
-- **Wiki Page System**: Complete page management
-  - Create, view, edit, and delete wiki pages
-  - Page revision tracking and history
-  - View count analytics
-  - Page permissions and locking
-  - Pages index with search and filtering
-- **Content Rendering**: Enhanced markdown support
-  - Full markdown syntax support
-  - Syntax highlighting with Prism.js
-  - Professional styling and auto-linking
-- **Authentication System**: Secure user management
-  - Registration, login, logout
-  - Password hashing and verification
-  - Session management with secure cookies
-  - Remember me functionality
-- **Database Foundation**: Complete migration system
-  - Database schema management
-  - Migration version control
-  - Seeding and testing support
-- **Development Infrastructure**
-  - PSR-7 compatible HTTP handling
-  - Dependency injection container
-  - Comprehensive testing suite
-  - Alpine.js integration for interactivity
-  - Twig templating with layouts
-  - Responsive design with modern styling
-
-### 🔄 **Planned (v0.3.0+)**
-- **Advanced Search**: Full-text search with filters
-- **Rich Text Editor**: WYSIWYG editor for page editing
-- **User Profiles**: Detailed user profiles and contribution tracking
-- **API Endpoints**: RESTful API for external integration
-- **Caching System**: Performance optimization with caching
-- **Extensions System**: Plugin and extension framework
-- **Themes and Skins**: Customizable appearance
-- **Real-time Collaboration**: Live editing and collaboration
-- **Media Support**: Image and file upload handling
-- **Advanced Permissions**: Role-based access control
-
----
-
-## Contributing
-
-This project is licensed under the AGPL-3.0 License. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-### Development Guidelines
-- Follow PSR-1 and PSR-12 coding standards
-- Write comprehensive tests for all features
-- Document all new features and changes
-- Use semantic versioning (MAJOR.MINOR.PATCH)
-- Maintain backward compatibility when possible
-- Follow security best practices
-- Use structured logging for debugging
-
----
-
-## License
-
-This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
-
----
-
-## Support
-
-For support and questions:
-- Create an issue on GitHub
-- Check the [documentation](docs/)
-- Review the [changelog](CHANGELOG.md)
+**Built with ❤️ for the Islamic community**
 
 

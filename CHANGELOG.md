@@ -5,288 +5,292 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.7] - 2025-07-30
+## [Unreleased]
 
-### Fixed
-- **Environment Variable Loading**: Resolved "Undefined array key 'APP_ENV'" warnings
-  - Enhanced Application class to use fallback chain: `$_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production'`
-  - Updated ViewServiceProvider to use same fallback pattern
-  - Fixed ErrorHandler environment detection
-  - Updated TestController environment variable access
-  - Application now properly handles environment variables before dotenv is fully loaded
-- **500 Error Resolution**: Fixed application bootstrap failures
-  - Eliminated environment variable warnings that caused application crashes
-  - Improved error handling during application initialization
-  - Enhanced robustness of environment variable access across all components
+## [0.1.3] - 2025-07-30
+
+### Added
+- **Pure IslamRouter Implementation**: Completely removed FastRoute dependency and implemented custom routing solution
+- **Project Organization**: Comprehensive reorganization of project structure for better maintainability
+- **Documentation Organization**: All documentation moved to `docs/` with clear categorization
+- **Script Organization**: Scripts categorized by purpose (database, debug, tests, utils)
+- **Test Organization**: Web tests moved to `tests/web/`, unit tests in `tests/Unit/`
+- **Clean Public Directory**: Removed test and debug files from web root for security
+- **Organization Guide**: New comprehensive guide explaining project structure and reasoning
 
 ### Changed
-- **Environment Variable Access**: Made environment variable access more robust
-  - All components now use consistent fallback pattern for environment variables
-  - Improved compatibility with different PHP configurations
-  - Enhanced error handling for missing environment variables
+- **Routing System**: Replaced FastRoute with pure PHP implementation in IslamRouter
+- **File Structure**: Moved development plans to `docs/plans/`
+- **Security**: Reduced web-accessible files for better security
+- **Performance**: Cleaner directory structure for faster scanning
+- **Dependencies**: Removed `nikic/fast-route` dependency
+
+### Removed
+- **FastRoute Dependency**: Completely removed external routing dependency
+- **Test Files from Public**: Moved all test files to appropriate test directories
+- **Debug Files from Public**: Moved debug utilities to `scripts/debug/`
+
+### Technical Details
+- **Custom Route Matching**: Implemented regex-based route pattern matching
+- **Parameter Extraction**: Added support for named route parameters `{param}`
+- **Method Validation**: Enhanced HTTP method validation
+- **Error Handling**: Improved 404 and 405 error responses
+- **Middleware Integration**: Maintained existing middleware stack functionality
 
 ## [0.1.2] - 2025-07-30
 
 ### Added
-- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
-  - Comprehensive pages listing with search and filter capabilities
-  - Professional grid layout with page cards showing metadata
-  - Navigation enhancement with "View All Pages" link
-  - Sorting and pagination support for large collections
-  - Page actions (View, Edit, History) for each page
-  - Search functionality across page titles and content
-  - Filter by namespace and sort by various criteria
+- **Pages Index**: Comprehensive page browsing and management interface
+- **Search and Filter**: Advanced search capabilities across page titles
+- **Professional Grid Layout**: Modern card-based page display with metadata
+- **Navigation Enhancement**: "View All Pages" link for easy access
+- **Sorting and Pagination**: Support for large page collections
+- **Page Actions**: View, Edit, History actions for each page
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+- **Prism.js Integration**: Code block syntax highlighting with language detection
+- **Full Markdown Parsing**: Headers, bold, italic, lists, links, blockquotes
+- **Professional CSS Styling**: Modern styling for all rendered content
+- **Auto-linking**: URL and markdown-style link processing
 
 ### Changed
-- **PageController**: Enhanced with comprehensive index functionality
-- **Template System**: Added pages index template with professional styling
-- **Navigation**: Improved navigation with pages browsing link
+- **Content Rendering**: Upgraded from basic text to full markdown processing
+- **Page Display**: Enhanced page cards with metadata and actions
+- **User Experience**: Improved navigation and content discovery
+- **Visual Design**: Modern, responsive grid layout for pages
 
-### Fixed
-- **Query Builder**: Resolved missing methods (leftJoin, whereNull, count) with simplified queries
-- **Template Paths**: Fixed template resolution for pages index
-- **Request Class**: Added missing `getQueryParam()` method
+### Technical Details
+- **Markdown Processing**: Complete markdown parser integration
+- **Syntax Highlighting**: Language-aware code block highlighting
+- **Responsive Design**: Mobile-friendly grid layout
+- **Performance**: Optimized rendering for large page collections
 
 ## [0.1.1] - 2025-07-30
 
 ### Added
 - **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-  - Full markdown parsing (headers, bold, italic, lists, links, blockquotes)
-  - Code block syntax highlighting with Prism.js integration
-  - Inline code formatting with proper styling
-  - Auto-linking of URLs and markdown-style links
-  - Blockquote support with proper styling
-  - Horizontal rules and mixed content support
-  - Professional CSS styling for all rendered content
-- **Syntax Highlighting**: Prism.js integration for code blocks
-- **Content Styling**: Comprehensive CSS for enhanced readability
+- **Prism.js Integration**: Code block syntax highlighting with language detection
+- **Full Markdown Parsing**: Headers, bold, italic, lists, links, blockquotes
+- **Professional CSS Styling**: Modern styling for all rendered content
+- **Auto-linking**: URL and markdown-style link processing
 
 ### Changed
-- **Content Parser**: Enhanced `parseWikiText()` method with modular parsing functions
-- **Template Styling**: Added professional CSS for rendered content
-- **Code Display**: Improved code block rendering with language detection
+- **Content Processing**: Upgraded from basic text to full markdown processing
+- **Visual Presentation**: Enhanced content display with syntax highlighting
+- **User Experience**: Improved readability and content formatting
 
-### Fixed
-- **Template Paths**: Fixed template resolution in PageController
-- **Content Rendering**: Resolved HTML escaping and markdown processing order
-- **Code Highlighting**: Fixed Prism.js integration and initialization
+### Technical Details
+- **Markdown Engine**: Complete markdown parser implementation
+- **Syntax Highlighting**: Language detection and code highlighting
+- **CSS Framework**: Professional styling for all content types
+- **Link Processing**: Automatic URL and markdown link handling
 
 ## [0.1.0] - 2025-07-30
 
 ### Added
-- **Wiki Page System**: Complete page creation, viewing, and management
-  - Page model with Eloquent-like relationships and revision tracking
-  - PageController with full CRUD operations for wiki pages
-  - Page templates for display, editing, and history viewing
-  - Content rendering with basic wiki text parsing and HTML conversion
-  - View count tracking with database analytics and user tracking
-  - Page permissions system (edit, delete, lock) based on user roles
-  - Page history and revision tracking functionality
-  - Page locking system for admin-only content protection
-  - Dynamic homepage with recent pages display and excerpts
-- **Request Enhancements**: Added `isXmlHttpRequest()` method for AJAX detection
-- **Template System**: New page templates with proper Twig inheritance
+- **Wiki Page System**: Complete CRUD operations for wiki pages
+- **Page Model**: Eloquent-like relationships and data management
+- **PageController**: Full template rendering and page handling
+- **View Count Tracking**: Page analytics and view statistics
+- **Page Permissions**: Edit, delete, and lock functionality
+- **Page History**: Revision tracking and change management
+- **Dynamic Homepage**: Recent pages display on main page
+- **Content Management**: Rich text editing and content processing
 
 ### Changed
-- **PageController**: Fixed template path resolution (`pages.show` → `pages/show`)
-- **Database Operations**: Improved query builder usage and error handling
-- **View Count System**: Enhanced page view tracking with proper database updates
-- **Template Rendering**: Enhanced Twig template structure and inheritance
+- **Application Structure**: Enhanced with wiki-specific functionality
+- **Database Schema**: Added pages and revisions tables
+- **User Interface**: Wiki-style page editing and viewing
+- **Content Processing**: Markdown support and content rendering
+
+### Technical Details
+- **Page CRUD**: Complete create, read, update, delete operations
+- **Revision System**: Track all page changes and history
+- **Permission System**: Role-based page access control
+- **Content Rendering**: Markdown processing and display
+- **Search Integration**: Page search and discovery features
+
+## [0.0.7] - 2025-07-30
 
 ### Fixed
-- **Page Viewing**: Resolved 500 errors when accessing individual wiki pages
-- **Template Paths**: Fixed template resolution issues in PageController
-- **Database Queries**: Fixed raw SQL method calls and view count updates
-- **Container Binding**: Resolved view renderer binding in test environment
-- **Session Management**: Fixed session warnings in CLI environment
-- **Request Class**: Added missing `isXmlHttpRequest()` method for AJAX detection
+- **Environment Variables**: Robust fallback mechanism for APP_ENV access
+- **Application Stability**: Resolved 500 Internal Server Errors
+- **Error Handling**: Improved error detection and logging
+- **Configuration Loading**: Enhanced environment variable handling
+
+### Changed
+- **Error Handling**: More robust environment variable access patterns
+- **Logging**: Enhanced error logging and debugging information
+- **Application Bootstrap**: Improved startup process reliability
+
+### Technical Details
+- **Environment Access**: Implemented `$_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production'` pattern
+- **Error Resolution**: Fixed undefined array key warnings
+- **Application Flow**: Streamlined bootstrap and configuration loading
 
 ## [0.0.6] - 2025-07-30
 
 ### Added
-- **Comprehensive Security Middleware**: Enterprise-level security protection
-  - Rate limiting with configurable limits (60 requests/minute, 10 burst requests/second)
-  - Input validation and sanitization (null bytes, control characters, line endings)
-  - SQL injection detection (union+select, drop+table, delete+from, etc.)
-  - XSS protection (script tags, javascript: protocols, event handlers)
-  - Directory traversal protection (.. and // patterns)
-  - Security headers (CSP, X-Frame-Options, XSS-Protection, etc.)
-- **Enhanced Error Handling Middleware**: Professional error management
-  - Comprehensive exception catching and logging
-  - Debug information in development mode
-  - User-friendly error pages with navigation
-  - Performance monitoring (request timing, memory usage)
-  - Graceful error responses for all HTTP status codes
-- **Middleware Stack System**: Organized middleware execution
-  - Ordered middleware chain execution
-  - Error handling for middleware failures
-  - Debug logging for middleware execution
-  - Automatic middleware initialization
-- **Enhanced Logging System**: PSR-3 compliant with rich features
-  - Structured logging with context information
-  - Specialized methods (security, userAction, performance, query, exception)
-  - Log rotation with configurable size limits
-  - Request context automatic inclusion
-  - Memory usage and performance tracking
-- **CSRF Protection**: Cross-site request forgery protection
-  - Token validation for state-changing requests
-  - Flexible token sources (POST data, headers, Laravel-style)
-  - User-friendly error pages for token mismatches
-  - Automatic token generation and verification
+- **Enterprise Security**: Comprehensive security middleware implementation
+- **CSRF Protection**: Cross-site request forgery protection on all forms
+- **Security Headers**: Enhanced HTTP security headers
+- **Input Validation**: Request sanitization and validation
+- **Session Security**: Secure session management and cookie handling
 
 ### Changed
-- **FastRouter Integration**: Enhanced with middleware stack
-  - Automatic middleware execution for all routes
-  - Proper PSR-7 to internal Request conversion
-  - Debug logging for middleware execution
-  - Container integration for middleware services
-- **Request Class**: Added missing methods
-  - `getPostParam()` method for POST parameter access
-  - `fromPsr7()` method for PSR-7 request conversion
-  - Enhanced header handling and validation
-- **Response Class**: Fixed constructor parameter order
-  - Corrected status code and headers parameter order
-  - Improved error response generation
-- **TestController**: Fixed Response constructor calls
-  - Updated all Response instantiation to use correct parameter order
-  - Improved error handling in test endpoints
+- **Security Model**: Upgraded from basic to enterprise-level security
+- **Middleware Stack**: Enhanced with security-focused middleware
+- **Request Processing**: Added security validation layers
 
-### Fixed
-- **Logger Interface Compatibility**: Resolved PSR-3 compliance issues
-  - Fixed method signatures to match PSR-3 interface
-  - Removed strict type hints for message parameters
-  - Ensured full PSR-3 compatibility
-- **Middleware Execution**: Fixed middleware stack integration
-  - Proper request conversion between PSR-7 and internal classes
-  - Correct middleware chain execution order
-  - Fixed container service resolution for middleware
-- **Security Pattern Detection**: Enhanced SQL injection detection
-  - Added support for URL-encoded patterns (union%20select)
-  - Improved regex patterns for better detection
-  - Added query string validation alongside URI validation
-- **Permission Issues**: Resolved log file access problems
-  - Fixed storage and logs directory permissions
-  - Proper file ownership for web server access
-  - Enhanced error handling for file operations
+### Technical Details
+- **CSRF Tokens**: Automatic token generation and validation
+- **Security Headers**: XSS protection, content security policy
+- **Input Sanitization**: Request data cleaning and validation
+- **Session Hardening**: Secure cookie configuration and session handling
 
-### Security
-- **Comprehensive Attack Prevention**: Validated protection against common attacks
-  - SQL injection patterns blocked ✅
-  - XSS attack vectors prevented ✅
-  - Directory traversal attempts blocked ✅
-  - Rate limiting prevents abuse ✅
-  - CSRF protection working ✅
-- **Security Headers**: Implemented comprehensive security headers
-  - Content Security Policy (CSP) with allowed sources
-  - X-Frame-Options: DENY
-  - X-XSS-Protection: 1; mode=block
-  - Referrer-Policy: strict-origin-when-cross-origin
-  - Permissions-Policy: geolocation=(), microphone=(), camera=()
-  - Strict-Transport-Security: max-age=31536000; includeSubDomains
+## [0.0.5] - 2025-07-30
 
-### Technical
-- **Production Ready**: Enterprise-level security and error handling
-  - Environment detection (debug/production modes)
-  - Log rotation with configurable limits
-  - Memory management and performance tracking
-  - Comprehensive testing with validation scripts
-  - Multiple security layers with defense in depth
+### Added
+- **Pages Index**: Comprehensive page browsing and management interface
+- **Search and Filter**: Advanced search capabilities across page titles
+- **Professional Grid Layout**: Modern card-based page display with metadata
+- **Navigation Enhancement**: "View All Pages" link for easy access
+- **Sorting and Pagination**: Support for large page collections
+- **Page Actions**: View, Edit, History actions for each page
 
+### Changed
+- **Page Management**: Enhanced page discovery and management
+- **User Interface**: Modern grid layout for page browsing
+- **Navigation**: Improved page access and organization
 
+### Technical Details
+- **Page Indexing**: Comprehensive page listing and search
+- **Grid Layout**: Responsive card-based page display
+- **Search Functionality**: Real-time page search and filtering
+- **Action System**: Page-specific actions and operations
+
+## [0.0.4] - 2025-07-30
+
+### Added
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+- **Prism.js Integration**: Code block syntax highlighting with language detection
+- **Full Markdown Parsing**: Headers, bold, italic, lists, links, blockquotes
+- **Professional CSS Styling**: Modern styling for all rendered content
+- **Auto-linking**: URL and markdown-style link processing
+
+### Changed
+- **Content Processing**: Upgraded from basic text to full markdown processing
+- **Visual Presentation**: Enhanced content display with syntax highlighting
+- **User Experience**: Improved readability and content formatting
+
+### Technical Details
+- **Markdown Engine**: Complete markdown parser implementation
+- **Syntax Highlighting**: Language detection and code highlighting
+- **CSS Framework**: Professional styling for all content types
+- **Link Processing**: Automatic URL and markdown link handling
+
+## [0.0.3] - 2025-07-30
+
+### Added
+- **Wiki Page System**: Complete CRUD operations for wiki pages
+- **Page Model**: Eloquent-like relationships and data management
+- **PageController**: Full template rendering and page handling
+- **View Count Tracking**: Page analytics and view statistics
+- **Page Permissions**: Edit, delete, and lock functionality
+- **Page History**: Revision tracking and change management
+- **Dynamic Homepage**: Recent pages display on main page
+- **Content Management**: Rich text editing and content processing
+
+### Changed
+- **Application Structure**: Enhanced with wiki-specific functionality
+- **Database Schema**: Added pages and revisions tables
+- **User Interface**: Wiki-style page editing and viewing
+- **Content Processing**: Markdown support and content rendering
+
+### Technical Details
+- **Page CRUD**: Complete create, read, update, delete operations
+- **Revision System**: Track all page changes and history
+- **Permission System**: Role-based page access control
+- **Content Rendering**: Markdown processing and display
+- **Search Integration**: Page search and discovery features
 
 ## [0.0.2] - 2025-07-30
 
 ### Added
-- **Session Management System**: Complete session handling with secure configuration
-  - SessionManager class with HTTP-only, SameSite cookies
-  - Session regeneration for security against session fixation
-  - User authentication state management
-  - Remember me functionality with secure tokens
-- **CSRF Protection**: Comprehensive cross-site request forgery protection
-  - CsrfMiddleware for form protection
-  - CSRF token generation and verification
-  - User-friendly error pages for token mismatches
-  - Automatic token inclusion in login/register forms
-- **Authentication Middleware**: Route protection for authenticated users
-  - AuthenticationMiddleware for protected routes
-  - Automatic redirect to login with return URL preservation
-  - Session-based authentication checks
-- **Database Foundation**: Complete database setup and migration system
-  - Custom migration framework with proper schema management
-  - User authentication tables with proper relationships
-  - Sample data creation for development
-  - Auto-increment fixes for primary keys
-- **User Authentication**: Complete user management system
-  - User registration with validation
-  - Secure login with password hashing
-  - User model with proper database interactions
-  - Password verification and user lookup
-- **Homepage Enhancement**: Dynamic homepage with recent pages
-  - Database-driven recent pages display
-  - Page excerpts and creation dates
-  - Professional styling for page listings
-  - Navigation improvements with page browsing
-
-### Fixed
-- **Database Schema Issues**: Resolved auto-increment problems in migrations
-- **User Model Integration**: Fixed password field mapping and verification
-- **Session Configuration**: Proper session startup and cookie settings
-- **Container Dependencies**: Resolved service provider registration issues
-- **Form Security**: Added CSRF tokens to all authentication forms
+- **Session Management**: Secure HTTP-only cookies and session handling
+- **CSRF Protection**: Cross-site request forgery protection on all forms
+- **User Authentication**: Registration, login, logout functionality
+- **Authentication Middleware**: Route protection and user validation
+- **Database Foundation**: Migration system and database setup
+- **Remember Me**: Persistent login functionality
+- **Alpine.js Integration**: Lightweight frontend interactivity
+- **Twig Templating**: Template engine with proper layouts
+- **Error Handling**: Comprehensive error handling and logging
+- **PSR-7 Compatibility**: HTTP request/response handling
+- **Dependency Injection**: Container-based service management
 
 ### Changed
-- **Version Bump**: Major version increment to 0.1.0 for session management milestone
-- **Authentication Flow**: Updated to use secure session management
-- **Form Security**: All forms now include CSRF protection
-- **Homepage**: Now displays dynamic content from database
-- **Session Handling**: Replaced basic session handling with robust SessionManager
+- **Security Model**: Enhanced with authentication and authorization
+- **User Management**: Complete user registration and login system
+- **Session Handling**: Secure session management and cookie configuration
+- **Application Architecture**: Service provider and dependency injection patterns
 
 ### Technical Details
-- **Session Security**: HTTP-only cookies, SameSite=Lax, secure session regeneration
-- **CSRF Protection**: Token-based protection with proper validation
-- **Database**: MySQL with proper migrations and sample data
-- **Authentication**: Session-based with remember me support
-- **Middleware**: Authentication and CSRF middleware for route protection
+- **Authentication System**: User registration, login, and session management
+- **CSRF Protection**: Automatic token generation and validation
+- **Database Migrations**: Version-controlled database schema changes
+- **Frontend Framework**: Alpine.js for lightweight interactivity
+- **Template Engine**: Twig templating with layout inheritance
+- **Error Handling**: Comprehensive error logging and user-friendly error pages
+- **HTTP Compatibility**: PSR-7 compliant request/response handling
+- **Service Container**: Dependency injection and service management
 
-## [0.0.1] - 2025-07-29
+## [0.0.1] - 2025-07-30
 
 ### Added
-- **Foundation Reset**: Project version reset to 0.0.1 as new baseline for all future microchanges
-- **Alpine.js Integration**: Lightweight frontend interactivity framework for progressive enhancement
-- **Twig Templating**: Server-side template rendering with proper layouts and inheritance
-- **Modern UI Components**: Responsive design with clean styling and interactive elements
-- **Service Provider System**: ViewServiceProvider for TwigRenderer registration
-- **Comprehensive Error Handling**: 404/500 pages, pretty error output, robust file logging
-- **PSR-7 Compatibility**: Proper HTTP request/response handling throughout the application
-- **Dependency Injection**: Container properly configured for all controller dependencies
-
-### Fixed
-- **Router Issues**: Fixed FastRouter dependency injection and controller instantiation
-- **Request Type Mismatch**: Resolved PSR-7 ServerRequest vs custom Request class conflicts
-- **Template Rendering**: Fixed Twig template path resolution and caching issues
-- **File Permissions**: Resolved logging and cache directory permission issues
-- **Service Registration**: Fixed ViewServiceProvider registration in Application bootstrap
-- **Controller Dependencies**: Ensured all controllers receive proper dependencies via container
-
-### Changed
-- **Homepage**: Now uses Twig templates with Alpine.js interactive demo
-- **Dashboard**: Interactive dashboard with dynamic stats, activity feed, and watchlist management
-- **Layout System**: New responsive layout with proper navigation and styling
-- **Error Pages**: Comprehensive error handling with detailed debug information
-- **Documentation**: Updated README and documentation structure for new architecture
+- **Core Framework**: PHP 8.1+ based application framework
+- **Application Bootstrap**: Main application entry point and configuration
+- **Service Providers**: Modular service registration and management
+- **Error Handling**: Basic error handling and logging system
+- **Configuration Management**: Environment-based configuration loading
+- **Basic Routing**: Simple routing system for HTTP requests
+- **View System**: Basic template rendering capabilities
+- **Database Connection**: PDO-based database connectivity
+- **Logging System**: Application logging and error tracking
+- **Development Tools**: Basic development and debugging utilities
 
 ### Technical Details
-- **Routing**: FastRouter with ControllerFactory for proper dependency injection
-- **Templating**: TwigRenderer with disabled caching in development mode
-- **Frontend**: Alpine.js 3.x for lightweight JavaScript interactivity
-- **Styling**: Modern CSS with responsive design and component-based architecture
-- **Logging**: File-based logging with proper error handling and debug information
+- **PHP 8.1+**: Modern PHP features and type safety
+- **Service Container**: Dependency injection and service management
+- **Environment Configuration**: Dotenv-based configuration loading
+- **Basic Routing**: Simple HTTP method and path-based routing
+- **Template Engine**: Basic view rendering system
+- **Database Layer**: PDO-based database abstraction
+- **Error Handling**: Basic error logging and display
+- **Development Setup**: Local development server and debugging tools
 
-### Features
-- **Interactive Counter**: Alpine.js counter with increment/decrement/reset functionality
-- **Dynamic Messaging**: Real-time message editing with Alpine.js data binding
-- **Alert System**: Success/error/info alerts with dismiss functionality
-- **Dashboard Stats**: Interactive statistics with refresh simulation
-- **Activity Feed**: Collapsible recent activity with user actions
-- **Watchlist Management**: Add/remove pages from watchlist with Alpine.js
-- **Responsive Navigation**: Clean navigation between homepage and dashboard
+---
+
+## Versioning Strategy
+
+This project follows [Semantic Versioning](https://semver.org/) with the following structure:
+
+### Development Stages
+
+- **0.0.x (Core Infrastructure)**: Basic framework, routing, database, authentication
+- **0.1.x (Wiki Features)**: Wiki page system, content rendering, user management
+- **0.2.x (Advanced Features)**: Search, media, advanced content features
+- **0.3.x (Integration Features)**: API, external integrations, advanced functionality
+- **1.x.x (Production Ready)**: Fully functional, production-ready application
+
+### Version Rules
+
+- **MAJOR**: Breaking changes, major architectural changes
+- **MINOR**: New features, backward-compatible additions
+- **PATCH**: Bug fixes, security updates, backward-compatible improvements
+
+### Current Status
+
+- **Current Version**: 0.1.3
+- **Stage**: Wiki Features (0.1.x)
+- **Focus**: Core wiki functionality, content management, user experience
+- **Next Milestone**: Advanced features (0.2.x) - Search, media, API
