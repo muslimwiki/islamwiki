@@ -2,7 +2,7 @@
 
 A modern, secure wiki system built with PHP 8.1+, featuring comprehensive content management, user authentication, and enterprise-level security.
 
-## Version 0.1.3
+## Version 0.0.8
 
 **What's New:**
 - **Pure IslamRouter**: Completely removed FastRoute dependency, implemented custom routing solution
@@ -66,9 +66,9 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **Security System**: Enterprise-level security with CSRF protection
 
 ### Key Features
-- **Wiki Page System** (v0.1.0): Complete CRUD operations for wiki pages
-- **Content Rendering** (v0.1.1): Comprehensive markdown support with syntax highlighting
-- **Pages Index** (v0.1.2): Advanced page browsing and management interface
+- **Wiki Page System** (v0.0.3): Complete CRUD operations for wiki pages
+- **Content Rendering** (v0.0.4): Comprehensive markdown support with syntax highlighting
+- **Pages Index** (v0.0.5): Advanced page browsing and management interface
 - **Enterprise Security** (v0.0.6): Comprehensive security middleware implementation
 - **User Authentication** (v0.0.2): Registration, login, session management
 - **Database Foundation** (v0.0.2): Migration system and database setup
@@ -190,10 +190,10 @@ This project follows [Semantic Versioning](https://semver.org/) with a structure
 - **1.x.x (Production Ready)**: Fully functional, production-ready application
 
 ### Current Status
-- **Current Version**: 0.1.3
-- **Stage**: Wiki Features (0.1.x)
-- **Focus**: Core wiki functionality, content management, user experience
-- **Next Milestone**: Advanced features (0.2.x) - Search, media, API
+- **Current Version**: 0.0.8
+- **Stage**: Core Infrastructure (0.0.x)
+- **Focus**: Framework stability, routing, database, authentication
+- **Next Milestone**: Wiki Features (0.1.x) - Wiki page system, content rendering
 
 ## 🚀 Deployment
 

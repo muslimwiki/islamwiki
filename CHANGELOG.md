@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.3] - 2025-07-30
+## [0.0.8] - 2025-07-30
 
 ### Added
 - **Pure IslamRouter Implementation**: Completely removed FastRoute dependency and implemented custom routing solution
@@ -36,78 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Method Validation**: Enhanced HTTP method validation
 - **Error Handling**: Improved 404 and 405 error responses
 - **Middleware Integration**: Maintained existing middleware stack functionality
-
-## [0.1.2] - 2025-07-30
-
-### Added
-- **Pages Index**: Comprehensive page browsing and management interface
-- **Search and Filter**: Advanced search capabilities across page titles
-- **Professional Grid Layout**: Modern card-based page display with metadata
-- **Navigation Enhancement**: "View All Pages" link for easy access
-- **Sorting and Pagination**: Support for large page collections
-- **Page Actions**: View, Edit, History actions for each page
-- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-- **Prism.js Integration**: Code block syntax highlighting with language detection
-- **Full Markdown Parsing**: Headers, bold, italic, lists, links, blockquotes
-- **Professional CSS Styling**: Modern styling for all rendered content
-- **Auto-linking**: URL and markdown-style link processing
-
-### Changed
-- **Content Rendering**: Upgraded from basic text to full markdown processing
-- **Page Display**: Enhanced page cards with metadata and actions
-- **User Experience**: Improved navigation and content discovery
-- **Visual Design**: Modern, responsive grid layout for pages
-
-### Technical Details
-- **Markdown Processing**: Complete markdown parser integration
-- **Syntax Highlighting**: Language-aware code block highlighting
-- **Responsive Design**: Mobile-friendly grid layout
-- **Performance**: Optimized rendering for large page collections
-
-## [0.1.1] - 2025-07-30
-
-### Added
-- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-- **Prism.js Integration**: Code block syntax highlighting with language detection
-- **Full Markdown Parsing**: Headers, bold, italic, lists, links, blockquotes
-- **Professional CSS Styling**: Modern styling for all rendered content
-- **Auto-linking**: URL and markdown-style link processing
-
-### Changed
-- **Content Processing**: Upgraded from basic text to full markdown processing
-- **Visual Presentation**: Enhanced content display with syntax highlighting
-- **User Experience**: Improved readability and content formatting
-
-### Technical Details
-- **Markdown Engine**: Complete markdown parser implementation
-- **Syntax Highlighting**: Language detection and code highlighting
-- **CSS Framework**: Professional styling for all content types
-- **Link Processing**: Automatic URL and markdown link handling
-
-## [0.1.0] - 2025-07-30
-
-### Added
-- **Wiki Page System**: Complete CRUD operations for wiki pages
-- **Page Model**: Eloquent-like relationships and data management
-- **PageController**: Full template rendering and page handling
-- **View Count Tracking**: Page analytics and view statistics
-- **Page Permissions**: Edit, delete, and lock functionality
-- **Page History**: Revision tracking and change management
-- **Dynamic Homepage**: Recent pages display on main page
-- **Content Management**: Rich text editing and content processing
-
-### Changed
-- **Application Structure**: Enhanced with wiki-specific functionality
-- **Database Schema**: Added pages and revisions tables
-- **User Interface**: Wiki-style page editing and viewing
-- **Content Processing**: Markdown support and content rendering
-
-### Technical Details
-- **Page CRUD**: Complete create, read, update, delete operations
-- **Revision System**: Track all page changes and history
-- **Permission System**: Role-based page access control
-- **Content Rendering**: Markdown processing and display
-- **Search Integration**: Page search and discovery features
 
 ## [0.0.7] - 2025-07-30
 
@@ -290,7 +218,7 @@ This project follows [Semantic Versioning](https://semver.org/) with the followi
 
 ### Current Status
 
-- **Current Version**: 0.1.3
-- **Stage**: Wiki Features (0.1.x)
-- **Focus**: Core wiki functionality, content management, user experience
-- **Next Milestone**: Advanced features (0.2.x) - Search, media, API
+- **Current Version**: 0.0.8
+- **Stage**: Core Infrastructure (0.0.x)
+- **Focus**: Framework stability, routing, database, authentication
+- **Next Milestone**: Wiki Features (0.1.x) - Wiki page system, content rendering
