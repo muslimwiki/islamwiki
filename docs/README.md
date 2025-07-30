@@ -49,6 +49,11 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **[Authentication](features/auth.md)** - User authentication and authorization
 - **[Content Rendering](features/content-rendering.md)** - Content processing and display
 
+### Release Documentation
+- **[Release Notes](releases/README.md)** - All version release notes and changelog
+- **[Version 0.0.11](releases/RELEASE-NOTES-0.0.11)** - Database Connection Strategy Research
+- **[Version 0.0.10](releases/RELEASE-NOTES-0.0.10)** - MediaWiki-Inspired Root Structure
+
 ### Deployment & Operations
 - **[Deployment Guide](deployment/README.md)** - Production deployment instructions
 - **[Database Setup](DATABASE_SETUP.md)** - Database configuration and setup

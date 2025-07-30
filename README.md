@@ -291,6 +291,7 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 
 ### Development Resources
 - **[Changelog](CHANGELOG.md)** - Complete version history and changes
+- **[Release Notes](docs/releases/README.md)** - All version release notes and changelog
 - **[Database Setup](docs/DATABASE_SETUP.md)** - Database configuration guide
 - **[Testing Guidelines](docs/testing/README.md)** - Testing strategies and procedures
 - **[Security Guidelines](docs/security/README.md)** - Security best practices
