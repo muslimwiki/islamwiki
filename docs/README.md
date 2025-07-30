@@ -61,6 +61,7 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 - [Development Guidelines](contributing/guidelines.md)
 - [Testing](contributing/testing.md)
 - [Code Standards](contributing/standards.md)
+- [Versioning Strategy](guides/versioning.md)
 
 ---
 

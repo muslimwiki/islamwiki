@@ -23,7 +23,7 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 ### 🚀 Key Features
 
-#### 🔒 **Enterprise Security (v0.2.3)**
+#### 🔒 **Enterprise Security (v0.0.6)**
 - **Multi-layered Security Protection**
   - Rate limiting (60 requests/minute, 10 burst/second)
   - Input validation and sanitization
@@ -35,7 +35,7 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 - **Professional Error Handling**: Robust error management with debug information
 - **Enhanced Logging**: PSR-3 compliant system with structured data
 
-#### 📝 **Wiki Page System (v0.2.0+)**
+#### 📝 **Wiki Page System (v0.1.0+)**
 - **Complete Page Management**: Create, view, edit, and delete wiki pages
 - **Page Model**: Eloquent-like model with relationships and revision tracking
 - **Page Controller**: Full CRUD operations with proper templates
@@ -45,14 +45,14 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 - **Pages Index**: Complete "View All Pages" functionality with search and filtering
 - **Professional Layout**: Grid-based page cards with metadata and actions
 
-#### 🎨 **Content Rendering (v0.2.1+)**
+#### 🎨 **Content Rendering (v0.1.1+)**
 - **Enhanced Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
 - **Syntax Highlighting**: Prism.js integration for beautiful code display
 - **Professional Styling**: Enhanced CSS for all rendered content
 - **Auto-linking**: Smart URL detection and markdown-style link support
 - **Code Blocks**: Language-specific syntax highlighting with proper formatting
 
-#### 🔐 **Authentication & Security (v0.1.0+)**
+#### 🔐 **Authentication & Security (v0.0.2+)**
 - **Session Management**: Secure session handling with HTTP-only, SameSite cookies
 - **User Authentication**: Registration, login, logout with password hashing
 - **Remember Me**: Secure persistent login functionality
@@ -65,6 +65,30 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 - **PSR-7 Compatible**: Standard HTTP request/response handling
 - **Dependency Injection**: Clean, testable code architecture
 - **Comprehensive Testing**: Unit tests and integration tests
+
+---
+
+## Versioning Strategy
+
+IslamWiki follows **Semantic Versioning** with a logical progression:
+
+### 🔧 **Core Infrastructure (0.0.x)**
+- **0.0.1**: Foundation, routing, templating, basic error handling
+- **0.0.2**: Authentication system, session management, CSRF protection
+- **0.0.6**: Security middleware, error handling, logging
+- **0.0.7**: Environment variable fixes, application stability
+
+### 📝 **Wiki Features (0.1.x)**
+- **0.1.0**: Wiki Page System (CRUD operations, permissions, history)
+- **0.1.1**: Content Rendering (markdown, syntax highlighting, styling)
+- **0.1.2**: Pages Index & Browsing (search, filter, pagination)
+
+### 🚀 **Future Progression**
+- **0.2.x**: Major features (Quran integration, Hijri calendar, etc.)
+- **0.3.x**: Additional major features
+- **1.0.0**: Production-ready, feature-complete site
+
+This approach ensures clear separation between core infrastructure, wiki features, and major additions.
 
 ---
 
