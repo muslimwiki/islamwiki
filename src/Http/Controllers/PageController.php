@@ -968,16 +968,193 @@ class PageController extends Controller
     }
     
     /**
-     * Parse wiki text into HTML.
+     * Parse wiki text into HTML with markdown support and code highlighting.
      *
      * @param string $text The wiki text to parse
      * @return string The parsed HTML
      */
     protected function parseWikiText(string $text): string
     {
-        // TODO: Implement proper wiki text parsing
-        // For now, just escape HTML and preserve line breaks
+        // First, escape any existing HTML to prevent XSS
         $text = htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        return nl2br($text);
+        
+        // Process code blocks first (before other markdown)
+        $text = $this->parseCodeBlocks($text);
+        
+        // Process headers
+        $text = $this->parseHeaders($text);
+        
+        // Process emphasis (bold and italic)
+        $text = $this->parseEmphasis($text);
+        
+        // Process links
+        $text = $this->parseLinks($text);
+        
+        // Process lists
+        $text = $this->parseLists($text);
+        
+        // Process blockquotes
+        $text = $this->parseBlockquotes($text);
+        
+        // Process horizontal rules
+        $text = $this->parseHorizontalRules($text);
+        
+        // Convert line breaks to <br> tags
+        $text = nl2br($text);
+        
+        return $text;
+    }
+    
+    /**
+     * Parse code blocks with syntax highlighting.
+     */
+    protected function parseCodeBlocks(string $text): string
+    {
+        // Match code blocks with language specification
+        $text = preg_replace_callback(
+            '/```(\w+)?\n(.*?)\n```/s',
+            function($matches) {
+                $language = $matches[1] ?? 'text';
+                $code = htmlspecialchars($matches[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                
+                return sprintf(
+                    '<pre class="code-block language-%s"><code class="language-%s">%s</code></pre>',
+                    $language,
+                    $language,
+                    $code
+                );
+            },
+            $text
+        );
+        
+        // Match inline code
+        $text = preg_replace('/`([^`]+)`/', '<code>$1</code>', $text);
+        
+        return $text;
+    }
+    
+    /**
+     * Parse markdown headers.
+     */
+    protected function parseHeaders(string $text): string
+    {
+        // Process headers (h1-h6)
+        $text = preg_replace('/^### (.*$)/m', '<h3>$1</h3>', $text);
+        $text = preg_replace('/^## (.*$)/m', '<h2>$1</h2>', $text);
+        $text = preg_replace('/^# (.*$)/m', '<h1>$1</h1>', $text);
+        
+        return $text;
+    }
+    
+    /**
+     * Parse emphasis (bold and italic).
+     */
+    protected function parseEmphasis(string $text): string
+    {
+        // Bold text
+        $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+        
+        // Italic text
+        $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+        
+        return $text;
+    }
+    
+    /**
+     * Parse links.
+     */
+    protected function parseLinks(string $text): string
+    {
+        // Markdown-style links: [text](url)
+        $text = preg_replace(
+            '/\[([^\]]+)\]\(([^)]+)\)/',
+            '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+            $text
+        );
+        
+        // Auto-link URLs
+        $text = preg_replace(
+            '/(https?:\/\/[^\s]+)/',
+            '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+            $text
+        );
+        
+        return $text;
+    }
+    
+    /**
+     * Parse lists (ordered and unordered).
+     */
+    protected function parseLists(string $text): string
+    {
+        // Unordered lists
+        $text = preg_replace_callback(
+            '/(^[ \t]*[-*+][ \t]+.*(?:\n[ \t]*[-*+][ \t]+.*)*)/m',
+            function($matches) {
+                $items = preg_split('/\n/', $matches[1]);
+                $html = '<ul>';
+                foreach ($items as $item) {
+                    if (preg_match('/^[ \t]*[-*+][ \t]+(.+)$/', $item, $itemMatch)) {
+                        $html .= '<li>' . trim($itemMatch[1]) . '</li>';
+                    }
+                }
+                $html .= '</ul>';
+                return $html;
+            },
+            $text
+        );
+        
+        // Ordered lists
+        $text = preg_replace_callback(
+            '/(^[ \t]*\d+\.[ \t]+.*(?:\n[ \t]*\d+\.[ \t]+.*)*)/m',
+            function($matches) {
+                $items = preg_split('/\n/', $matches[1]);
+                $html = '<ol>';
+                foreach ($items as $item) {
+                    if (preg_match('/^[ \t]*\d+\.[ \t]+(.+)$/', $item, $itemMatch)) {
+                        $html .= '<li>' . trim($itemMatch[1]) . '</li>';
+                    }
+                }
+                $html .= '</ol>';
+                return $html;
+            },
+            $text
+        );
+        
+        return $text;
+    }
+    
+    /**
+     * Parse blockquotes.
+     */
+    protected function parseBlockquotes(string $text): string
+    {
+        // Process blockquotes after other markdown but before line breaks
+        $text = preg_replace_callback(
+            '/(^[ \t]*>[ \t]+.*(?:\n[ \t]*>[ \t]+.*)*)/m',
+            function($matches) {
+                $lines = preg_split('/\n/', $matches[1]);
+                $html = '<blockquote>';
+                foreach ($lines as $line) {
+                    if (preg_match('/^[ \t]*>[ \t]+(.+)$/', $line, $lineMatch)) {
+                        $html .= '<p>' . trim($lineMatch[1]) . '</p>';
+                    }
+                }
+                $html .= '</blockquote>';
+                return $html;
+            },
+            $text
+        );
+        
+        return $text;
+    }
+    
+    /**
+     * Parse horizontal rules.
+     */
+    protected function parseHorizontalRules(string $text): string
+    {
+        $text = preg_replace('/^[ \t]*[-*_]{3,}[ \t]*$/m', '<hr>', $text);
+        return $text;
     }
 }

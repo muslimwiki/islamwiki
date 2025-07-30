@@ -4,17 +4,36 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## Version 0.2.0 (2025-07-30)
+## Version 0.2.1 (2025-07-30)
 
 ### ✨ What's New
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+- **Full Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
+- **Syntax Highlighting**: Prism.js integration for beautiful code display
+- **Professional Styling**: Enhanced CSS for all rendered content
+- **Auto-linking**: Smart URL detection and markdown-style link support
+- **Code Blocks**: Language-specific syntax highlighting with proper formatting
+
+### 🚀 Key Features
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+- **Full Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
+- **Syntax Highlighting**: Prism.js integration for beautiful code display
+- **Professional Styling**: Enhanced CSS for all rendered content
+- **Auto-linking**: Smart URL detection and markdown-style link support
+- **Code Blocks**: Language-specific syntax highlighting with proper formatting
 - **Wiki Page System**: Complete page creation, viewing, and management
 - **Page Model**: Eloquent-like model with relationships and revision tracking
 - **Page Controller**: Full CRUD operations for wiki pages with proper templates
-- **Content Rendering**: Basic wiki text parsing and HTML rendering
 - **View Count Tracking**: Page view analytics with database updates
 - **Page Permissions**: Edit, delete, and lock permissions based on user roles
 - **Page History**: Revision tracking and history viewing functionality
-- **Dynamic Homepage**: Recent pages display with excerpts and professional styling
+- **Session Management**: Secure session handling with HTTP-only, SameSite cookies
+- **CSRF Protection**: Token-based protection against cross-site request forgery
+- **Authentication System**: Secure user authentication with password hashing
+- **Database Foundation**: Complete migration system with proper schema management
+- **Dynamic Homepage**: Database-driven content with recent pages display
+- **Remember Me**: Secure persistent login functionality
+- **Development Tools**: Setup scripts, tests, and comprehensive documentation
 
 ### 🚀 Key Features
 - **Wiki Page System**: Complete page creation, viewing, and management

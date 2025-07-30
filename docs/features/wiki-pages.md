@@ -1,6 +1,6 @@
 # Wiki Page System
 
-**Version:** 0.2.0
+**Version:** 0.2.1
 
 The Wiki Page System is the core functionality of IslamWiki, providing complete page creation, viewing, editing, and management capabilities.
 
@@ -124,28 +124,52 @@ Updates an existing page with:
 
 ## Content Rendering
 
-The system includes basic wiki text parsing:
+The system includes comprehensive markdown parsing with syntax highlighting:
 
 ```php
 protected function parseWikiText(string $text): string
 {
-    // Convert markdown-style headers
-    $text = preg_replace('/^### (.*$)/m', '<h3>$1</h3>', $text);
-    $text = preg_replace('/^## (.*$)/m', '<h2>$1</h2>', $text);
-    $text = preg_replace('/^# (.*$)/m', '<h1>$1</h1>', $text);
+    // First, escape any existing HTML to prevent XSS
+    $text = htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     
-    // Convert bold text
-    $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+    // Process code blocks first (before other markdown)
+    $text = $this->parseCodeBlocks($text);
     
-    // Convert italic text
-    $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+    // Process headers
+    $text = $this->parseHeaders($text);
     
-    // Convert line breaks
+    // Process emphasis (bold and italic)
+    $text = $this->parseEmphasis($text);
+    
+    // Process links
+    $text = $this->parseLinks($text);
+    
+    // Process lists
+    $text = $this->parseLists($text);
+    
+    // Process blockquotes
+    $text = $this->parseBlockquotes($text);
+    
+    // Process horizontal rules
+    $text = $this->parseHorizontalRules($text);
+    
+    // Convert line breaks to <br> tags
     $text = nl2br($text);
     
     return $text;
 }
 ```
+
+### Supported Markdown Features
+
+- **Headers**: `# H1`, `## H2`, `### H3`
+- **Emphasis**: `**bold**`, `*italic*`
+- **Code**: `` `inline code` ``, ````language code blocks````
+- **Links**: `[text](url)`, auto-linked URLs
+- **Lists**: `- unordered`, `1. ordered`
+- **Blockquotes**: `> quoted text`
+- **Horizontal Rules**: `---`
+- **Syntax Highlighting**: Language-specific code highlighting with Prism.js
 
 ## View Count Tracking
 

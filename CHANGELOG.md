@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-07-30
+
+### Added
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+  - Full markdown parsing (headers, bold, italic, lists, links, blockquotes)
+  - Code block syntax highlighting with Prism.js integration
+  - Inline code formatting with proper styling
+  - Auto-linking of URLs and markdown-style links
+  - Blockquote support with proper styling
+  - Horizontal rules and mixed content support
+  - Professional CSS styling for all rendered content
+- **Syntax Highlighting**: Prism.js integration for code blocks
+- **Content Styling**: Comprehensive CSS for enhanced readability
+
+### Changed
+- **Content Parser**: Enhanced `parseWikiText()` method with modular parsing functions
+- **Template Styling**: Added professional CSS for rendered content
+- **Code Display**: Improved code block rendering with language detection
+
+### Fixed
+- **Template Paths**: Fixed template resolution in PageController
+- **Content Rendering**: Resolved HTML escaping and markdown processing order
+- **Code Highlighting**: Fixed Prism.js integration and initialization
+
 ## [0.2.0] - 2025-07-30
 
 ### Added

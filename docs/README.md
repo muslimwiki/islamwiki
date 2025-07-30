@@ -66,8 +66,8 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 
 ## Quick Reference
 
-### Current Version: 0.2.0
-- **Status**: Wiki page system complete, individual page viewing working
+### Current Version: 0.2.1
+- **Status**: Enhanced content rendering complete, comprehensive markdown support
 - **Architecture**: PHP 8.1+, Twig templates, Alpine.js frontend, secure sessions
 - **License**: AGPL-3.0
 
@@ -85,11 +85,16 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 
 ## Version History
 
-### 0.2.0 (Current)
+### 0.2.1 (Current)
+- ✅ Enhanced content rendering with comprehensive markdown support
+- ✅ Syntax highlighting with Prism.js integration
+- ✅ Full markdown parsing (headers, bold, italic, lists, links, blockquotes)
+- ✅ Code block syntax highlighting with language detection
+- ✅ Professional CSS styling for all rendered content
+- ✅ Auto-linking of URLs and markdown-style links
 - ✅ Wiki page system with complete CRUD operations
 - ✅ Page model with Eloquent-like relationships
 - ✅ PageController with full template rendering
-- ✅ Content rendering with basic wiki text parsing
 - ✅ View count tracking and analytics
 - ✅ Page permissions (edit, delete, lock)
 - ✅ Page history and revision tracking
@@ -106,8 +111,7 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 - ✅ PSR-7 compatible HTTP handling
 - ✅ Dependency injection container
 
-### Planned Features (0.2.1)
-- 🔄 Enhanced content rendering (markdown, syntax highlighting)
+### Planned Features (0.2.2)
 - 🔄 Search functionality with full-text search
 - 🔄 User profiles and contribution tracking
 - 🔄 Rich text editor for page editing
