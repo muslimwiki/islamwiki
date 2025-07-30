@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2025-07-30
+
+### Fixed
+- **Environment Variable Loading**: Resolved "Undefined array key 'APP_ENV'" warnings
+  - Enhanced Application class to use fallback chain: `$_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production'`
+  - Updated ViewServiceProvider to use same fallback pattern
+  - Fixed ErrorHandler environment detection
+  - Updated TestController environment variable access
+  - Application now properly handles environment variables before dotenv is fully loaded
+- **500 Error Resolution**: Fixed application bootstrap failures
+  - Eliminated environment variable warnings that caused application crashes
+  - Improved error handling during application initialization
+  - Enhanced robustness of environment variable access across all components
+
+### Changed
+- **Environment Variable Access**: Made environment variable access more robust
+  - All components now use consistent fallback pattern for environment variables
+  - Improved compatibility with different PHP configurations
+  - Enhanced error handling for missing environment variables
+
 ## [0.2.3] - 2025-07-30
 
 ### Added

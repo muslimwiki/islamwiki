@@ -84,11 +84,27 @@ class HomeController extends Controller
                 $recentPages = [];
             }
 
+            // Get current user from session
+            $user = null;
+            try {
+                $session = $this->container->get('session');
+                if ($session->isLoggedIn()) {
+                    $userId = $session->getUserId();
+                    $user = \IslamWiki\Models\User::find($userId, $this->db);
+                }
+            } catch (\Exception $e) {
+                error_log('HomeController: Error getting user: ' . $e->getMessage());
+            }
+
             // Use Twig template instead of hardcoded HTML
             $data = [
                 'title' => 'Welcome to IslamWiki',
                 'message' => 'Your Islamic knowledge base and resource center',
                 'recentPages' => $recentPages,
+                'user' => $user,
+                'app' => [
+                    'debug' => $_ENV['APP_DEBUG'] ?? false
+                ],
                 'features' => [
                     'Modern, responsive design',
                     'Alpine.js for lightweight interactivity',

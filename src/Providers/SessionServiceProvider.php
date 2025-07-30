@@ -63,7 +63,7 @@ class SessionServiceProvider
      */
     public function boot(Container $container): void
     {
-        // Only start session for web requests, not CLI
+        // Start session early for web requests to ensure consistency
         if (php_sapi_name() !== 'cli') {
             $session = $container->get('session');
             $session->start();

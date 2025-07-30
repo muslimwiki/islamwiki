@@ -98,10 +98,11 @@ class Migrator
         
         try {
             $migration->up();
-            $this->connection->commit();
             
-            // Log migration after successful commit
+            // Log migration within the same transaction
             $this->logMigration($migration, $batch);
+            
+            $this->connection->commit();
         } catch (Exception $e) {
             $this->connection->rollBack();
             throw $e;

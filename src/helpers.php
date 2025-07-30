@@ -143,11 +143,11 @@ if (!function_exists('abort')) {
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Exception\HttpException
+     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort(int $code, string $message = '', array $headers = []): void
     {
-        throw new \IslamWiki\Core\Exception\HttpException($code, $message, null, $headers);
+        throw new \IslamWiki\Core\Http\Exceptions\HttpException($code, $message, null, $headers);
     }
 }
 
@@ -160,7 +160,7 @@ if (!function_exists('abort_if')) {
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Exception\HttpException
+     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort_if(bool $boolean, int $code, string $message = '', array $headers = []): void
     {
@@ -179,7 +179,7 @@ if (!function_exists('abort_unless')) {
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Exception\HttpException
+     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort_unless(bool $boolean, int $code, string $message = '', array $headers = []): void
     {

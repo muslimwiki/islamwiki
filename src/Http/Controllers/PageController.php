@@ -20,6 +20,7 @@ namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Http\Exceptions\HttpException;
 use IslamWiki\Models\Page;
 use IslamWiki\Models\Revision;
 use IslamWiki\Models\User;

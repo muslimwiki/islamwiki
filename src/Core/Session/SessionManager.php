@@ -97,10 +97,11 @@ class SessionManager
             session_start();
         }
         
-        // Regenerate session ID periodically for security
-        if (!$this->has('last_regeneration')) {
+        // Only regenerate session ID if this is a completely new session
+        // Don't regenerate if we have any session data or if there's a session cookie
+        if (empty($_SESSION) && !$this->has('last_regeneration') && !isset($_COOKIE[$this->sessionName])) {
             $this->regenerate();
-        } elseif (time() - $this->get('last_regeneration', 0) > 300) { // 5 minutes
+        } elseif ($this->has('last_regeneration') && (time() - $this->get('last_regeneration', 0) > 1800)) { // 30 minutes instead of 5
             $this->regenerate();
         }
     }

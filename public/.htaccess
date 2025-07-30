@@ -1,6 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
+    # Allow direct access to test files
+    RewriteRule ^test-.*\.php$ - [L]
+    
     # Allow direct access to existing files and directories
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d

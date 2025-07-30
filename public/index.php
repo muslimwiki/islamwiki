@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Start output buffering to prevent headers already sent errors
+ob_start();
+
 // Enable all error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -325,19 +328,15 @@ error_log('Included files: ' . implode("\n", get_included_files()));
      $app = new IslamWiki\Core\Application(BASE_PATH);
      error_log('Application instance created');
     
-     // Create FastRouter instance
-     error_log('Initializing FastRouter...');
-     $fastRouter = new IslamWiki\Core\Routing\FastRouter($app->getContainer());
+     // Create IslamRouter instance
+     error_log('Initializing IslamRouter...');
+     $islamRouter = new IslamWiki\Core\Routing\IslamRouter($app->getContainer());
     
-     // Set the router instance in the application
-     $app->setRouter($fastRouter);
-    
-     // Set the application instance for static access (for backward compatibility)
-     error_log('Setting application instance for Router...');
-     IslamWiki\Core\Routing\Router::setApplication($app);
+     // Set the router in the application
+     $app->setRouter($islamRouter);
     
      // Log the current state
-     error_log('Router instance: ' . get_class($fastRouter));
+     error_log('Router instance: ' . get_class($islamRouter));
     
      // Load the web routes
      $webRoutesPath = BASE_PATH . '/routes/web.php';
@@ -347,7 +346,7 @@ error_log('Included files: ' . implode("\n", get_included_files()));
          error_log('Web routes file exists, including it...');
         
          // Store the router in a local variable for use in the routes file
-         $router = $fastRouter;
+         $router = $islamRouter;
         
          // Load routes
          $result = require $webRoutesPath;
@@ -355,9 +354,9 @@ error_log('Included files: ' . implode("\n", get_included_files()));
         
          // Log registered routes for debugging
          error_log('Registered routes:');
-         $reflection = new \ReflectionProperty($fastRouter, 'routes');
+         $reflection = new \ReflectionProperty($islamRouter, 'routes');
          $reflection->setAccessible(true);
-         $routes = $reflection->getValue($fastRouter);
+         $routes = $reflection->getValue($islamRouter);
          foreach ($routes as $route) {
              error_log(sprintf(
                  '  %s %s -> %s',
@@ -372,15 +371,23 @@ error_log('Included files: ' . implode("\n", get_included_files()));
      }
     
      // Handle the request and send the response
-     error_log('About to handle the request with FastRouter...');
+     error_log('About to handle the request with IslamRouter...');
     
      // Create PSR-7 request from globals
+     error_log('Creating PSR-7 request...');
      $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+     error_log('PSR-7 request created successfully');
     
      // Handle the request and get the response
-     error_log('Calling $fastRouter->handle()');
-     $response = $fastRouter->handle($request);
-     error_log('$fastRouter->handle() returned');
+     error_log('Calling $islamRouter->handle()');
+     try {
+         $response = $islamRouter->handle($request);
+         error_log('$islamRouter->handle() returned successfully');
+     } catch (\Throwable $e) {
+         error_log('Error in $islamRouter->handle(): ' . $e->getMessage());
+         error_log('Stack trace: ' . $e->getTraceAsString());
+         throw $e;
+     }
     
      // Send the response
      error_log('Sending response...');

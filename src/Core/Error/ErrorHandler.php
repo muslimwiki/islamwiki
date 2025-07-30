@@ -238,8 +238,9 @@ class ErrorHandler
         
         // Check if we should show debug information
         // First check if we're in a development environment
-        $isDev = (function_exists('getenv') && getenv('APP_ENV') === 'development') || 
-                (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') ||
+                $isDev = (function_exists('getenv') && getenv('APP_ENV') === 'development') ||
+                 (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') ||
+                 (getenv('APP_ENV') === 'development') ||
                 (php_sapi_name() === 'cli');
                 
         // Then check if debug is explicitly enabled

@@ -165,10 +165,10 @@ abstract class Controller
     /**
      * Abort the request with an error response.
      *
-     * @throws HttpException
+     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     protected function abort(int $status, string $message = ''): void
     {
-        throw new HttpException($status, $message);
+        throw new \IslamWiki\Core\Http\Exceptions\HttpException($status, $message);
     }
 }

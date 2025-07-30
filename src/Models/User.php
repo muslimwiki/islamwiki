@@ -25,6 +25,7 @@ class User
      * The attributes that are mass assignable.
      */
     protected array $fillable = [
+        'id',
         'username',
         'email',
         'password',
@@ -54,6 +55,7 @@ class User
      * The attributes that should be cast.
      */
     protected array $casts = [
+        'id' => 'integer',
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'is_active' => 'boolean',

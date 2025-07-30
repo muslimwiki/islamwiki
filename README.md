@@ -4,9 +4,12 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## Version 0.2.3 (2025-07-30)
+## Version 0.2.4 (2025-07-30)
 
 ### ✨ What's New
+- **Environment Variable Fixes**: Resolved all "Undefined array key 'APP_ENV'" warnings
+- **Application Stability**: Eliminated 500 errors and application crashes
+- **Robust Environment Handling**: Enhanced environment variable access across all components
 - **Enterprise Security**: Comprehensive security middleware with attack prevention
 - **Professional Error Handling**: Enhanced error management with debug information
 - **Enhanced Logging**: PSR-3 compliant logging with structured data

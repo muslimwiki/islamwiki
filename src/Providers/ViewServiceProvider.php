@@ -29,7 +29,7 @@ class ViewServiceProvider
         }
         
         // In development, disable cache to avoid permission issues
-        $isDebug = ($_ENV['APP_ENV'] ?? 'production') !== 'production';
+        $isDebug = ($_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production') !== 'production';
         
         $twigRenderer = new TwigRenderer(
             $templatePath,

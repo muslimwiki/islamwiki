@@ -26,7 +26,7 @@ namespace IslamWiki\Core;
 use Exception;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Routing\Router;
+use IslamWiki\Core\Routing\IslamRouter;
 
 class Application
 {
@@ -98,35 +98,21 @@ class Application
         $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
         $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
 
-        // Bind ControllerFactory for FastRouter
-        $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory(
-            $db,
-            $logger,
-            $this->container
-        );
-        $this->container->instance('controller.factory', $controllerFactory);
+        // Bind ControllerFactory for IslamRouter
+        $this->container->singleton('controller.factory', function () {
+            $db = $this->container->get(\IslamWiki\Core\Database\Connection::class);
+            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+            return new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $this->container);
+        });
 
         // Register service providers
         $this->registerServiceProviders();
 
         // Initialize the router
-        $this->router = new \IslamWiki\Core\Routing\Router($this);
-        
-        // Set up the controller factory if needed
-        if (method_exists($this->router, 'setControllerFactory')) {
-            // Get the logger from the container
-            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
-            
-            // Create the controller factory with all required dependencies
-            $this->router->setControllerFactory(new \IslamWiki\Core\Routing\ControllerFactory(
-                $db,
-                $logger,
-                $this->container
-            ));
-            
-            // Initialize error handling after all services are set up
-            $this->initializeErrorHandling();
-        }
+        $this->router = new \IslamWiki\Core\Routing\IslamRouter($this->container);
+
+        // Initialize error handling after all services are set up
+        $this->initializeErrorHandling();
     }
 
     /**
@@ -186,7 +172,7 @@ class Application
             'db' => [\IslamWiki\Core\Database\Connection::class],
             'request' => [Request::class, \Psr\Http\Message\ServerRequestInterface::class],
             'response' => [Response::class, \Psr\Http\Message\ResponseInterface::class],
-            'router' => [Router::class],
+            'router' => [IslamRouter::class],
         ];
 
         foreach ($aliases as $key => $aliases) {
@@ -218,10 +204,10 @@ class Application
     public function environment(string $environment = null): string|bool
     {
         if (func_num_args() > 0) {
-            return $_ENV['APP_ENV'] === $environment;
+            return ($_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production') === $environment;
         }
 
-        return $_ENV['APP_ENV'] ?? 'production';
+        return $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'production';
     }
 
     /**
@@ -252,8 +238,25 @@ class Application
     protected function handleRequest(Request $request): Response
     {
         try {
-            // Dispatch the request to the router
-            $response = $this->router->dispatch($request);
+            // Convert our Request to PSR-7 ServerRequest for the router
+            $psrRequest = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+            
+            // Handle the request with the router
+            $psrResponse = $this->router->handle($psrRequest);
+            
+            // Convert PSR-7 Response back to our Response class
+            try {
+                $body = $psrResponse->getBody();
+                $bodyContents = $body->getContents();
+                return new Response(
+                    $bodyContents,
+                    $psrResponse->getStatusCode(),
+                    $psrResponse->getHeaders()
+                );
+            } catch (\Throwable $e) {
+                error_log("Error converting PSR-7 response: " . $e->getMessage());
+                return new Response('Error converting response', 500);
+            }
         } catch (\Exception $e) {
             $response = $this->handleRouterException($e, $request);
         }
@@ -312,7 +315,7 @@ class Application
     /**
      * Get the application's router.
      */
-    public function getRouter(): Router
+    public function getRouter(): IslamRouter
     {
         return $this->router;
     }

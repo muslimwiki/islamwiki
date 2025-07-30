@@ -3,20 +3,68 @@
 {% block title %}Welcome - IslamWiki{% endblock %}
 
 {% block content %}
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-content">
+        <h1>Discover Islamic Knowledge</h1>
+        <p>Your comprehensive resource for Islamic studies, history, and sciences. Join our community of learners and contributors.</p>
+        <div class="hero-actions">
+            {% if user %}
+                <a href="/dashboard" class="btn">Go to Dashboard</a>
+                <a href="/pages" class="btn btn-outline">Browse Pages</a>
+            {% else %}
+                <a href="/register" class="btn">Get Started</a>
+                <a href="/login" class="btn btn-outline">Sign In</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ recentPages|length }}</div>
+        <div class="stat-label">Recent Pages</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Knowledge</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Available</div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
 <div class="card">
-    <h1>Welcome to IslamWiki</h1>
-    <p>Your Islamic knowledge base and resource center</p>
-    
-    <div style="margin: 30px 0;">
-        <a href="/dashboard" class="btn">Go to Dashboard</a>
-        <a href="/pages" class="btn btn-secondary">Browse All Pages</a>
+    <div class="card-header">
+        <h2 class="card-title">Quick Actions</h2>
+    </div>
+    <div class="flex gap-4 flex-wrap">
+        <a href="/welcome" class="btn">📖 Read Welcome Guide</a>
+        <a href="/about-islam" class="btn btn-secondary">🕌 About Islam</a>
+        <a href="/islamic-history" class="btn btn-secondary">📜 Islamic History</a>
+        <a href="/islamic-sciences" class="btn btn-secondary">🔬 Islamic Sciences</a>
+        {% if user %}
+            <a href="/pages/create" class="btn">✏️ Create Page</a>
+        {% else %}
+            <a href="/register" class="btn">✏️ Join to Contribute</a>
+        {% endif %}
     </div>
 </div>
 
 <!-- Recent Pages Section -->
 {% if recentPages is not empty %}
 <div class="card">
-    <h2>Recent Pages</h2>
+    <div class="card-header">
+        <h2 class="card-title">📚 Recent Pages</h2>
+        <a href="/pages" class="btn btn-small">View All</a>
+    </div>
     <div class="page-list">
         {% for page in recentPages %}
         <div class="page-item">
@@ -25,19 +73,79 @@
                 {{ page.content|striptags|slice(0, 150) }}{% if page.content|length > 150 %}...{% endif %}
             </p>
             <div class="page-meta">
-                <small>Created: {{ page.created_at|date('M j, Y') }}</small>
+                <small>📅 {{ page.created_at|date('M j, Y') }}</small>
                 <a href="/{{ page.slug }}" class="btn btn-small">Read More</a>
             </div>
         </div>
         {% endfor %}
     </div>
-    <div style="margin-top: 20px;">
-        <a href="/pages" class="btn">View All Pages</a>
-    </div>
 </div>
 {% endif %}
 
-<!-- Alpine.js Interactive Example -->
+<!-- Featured Content -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">🌟 Featured Content</h2>
+    </div>
+    <div class="page-list">
+        <div class="page-item">
+            <h3><a href="/welcome">Welcome to IslamWiki</a></h3>
+            <p class="page-excerpt">
+                Start your journey with our comprehensive welcome guide. Learn about the platform, how to contribute, and discover the wealth of Islamic knowledge available.
+            </p>
+            <div class="page-meta">
+                <small>🎯 Getting Started</small>
+                <a href="/welcome" class="btn btn-small">Read Guide</a>
+            </div>
+        </div>
+        
+        <div class="page-item">
+            <h3><a href="/islamic-sciences">Islamic Sciences</a></h3>
+            <p class="page-excerpt">
+                Explore the rich tradition of Islamic scholarship including Quranic sciences, Hadith studies, Islamic law, theology, and philosophy.
+            </p>
+            <div class="page-meta">
+                <small>🔬 Academic</small>
+                <a href="/islamic-sciences" class="btn btn-small">Explore Sciences</a>
+            </div>
+        </div>
+        
+        <div class="page-item">
+            <h3><a href="/islamic-history">Islamic History</a></h3>
+            <p class="page-excerpt">
+                Journey through the remarkable history of Islam from the time of Prophet Muhammad (ﷺ) to the modern era, including the Golden Age and beyond.
+            </p>
+            <div class="page-meta">
+                <small>📜 Historical</small>
+                <a href="/islamic-history" class="btn btn-small">Read History</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Community Section -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">🤝 Join Our Community</h2>
+    </div>
+    <div class="text-center">
+        <p class="mb-4">Help us build the most comprehensive Islamic knowledge base. Contribute articles, share knowledge, and learn from others.</p>
+        {% if user %}
+            <div class="flex gap-4 justify-center">
+                <a href="/pages/create" class="btn">Create Your First Page</a>
+                <a href="/contributing" class="btn btn-secondary">Learn How to Contribute</a>
+            </div>
+        {% else %}
+            <div class="flex gap-4 justify-center">
+                <a href="/register" class="btn">Join IslamWiki</a>
+                <a href="/login" class="btn btn-outline">Sign In</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Interactive Demo (for development) -->
+{% if app.debug %}
 <div class="card" x-data="{ 
     count: 0,
     message: 'Welcome to IslamWiki!',
@@ -45,29 +153,35 @@
     alertMessage: '',
     alertType: 'info'
 }">
-    <h2>Interactive Demo</h2>
+    <div class="card-header">
+        <h2 class="card-title">🧪 Interactive Demo</h2>
+    </div>
     <p>This demonstrates Alpine.js functionality:</p>
     
-    <div style="margin: 20px 0;">
+    <div class="mb-4">
         <p><strong>Counter:</strong> <span x-text="count"></span></p>
-        <button @click="count++" class="btn">Increment</button>
-        <button @click="count--" class="btn btn-secondary">Decrement</button>
-        <button @click="count = 0" class="btn btn-secondary">Reset</button>
+        <div class="flex gap-2">
+            <button @click="count++" class="btn btn-small">Increment</button>
+            <button @click="count--" class="btn btn-secondary btn-small">Decrement</button>
+            <button @click="count = 0" class="btn btn-secondary btn-small">Reset</button>
+        </div>
     </div>
     
-    <div style="margin: 20px 0;">
+    <div class="mb-4">
         <p><strong>Message:</strong> <span x-text="message"></span></p>
         <input type="text" x-model="message" placeholder="Type a message..." 
-               style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem; margin-right: 10px;">
+               style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.375rem; margin-right: 10px; width: 200px;">
     </div>
     
-    <div style="margin: 20px 0;">
-        <button @click="alertType = 'success'; alertMessage = 'Success message!'; showAlert = true" 
-                class="btn">Show Success Alert</button>
-        <button @click="alertType = 'error'; alertMessage = 'Error message!'; showAlert = true" 
-                class="btn btn-secondary">Show Error Alert</button>
-        <button @click="alertType = 'info'; alertMessage = 'Info message!'; showAlert = true" 
-                class="btn btn-secondary">Show Info Alert</button>
+    <div class="mb-4">
+        <div class="flex gap-2">
+            <button @click="alertType = 'success'; alertMessage = 'Success message!'; showAlert = true" 
+                    class="btn btn-small">Show Success</button>
+            <button @click="alertType = 'error'; alertMessage = 'Error message!'; showAlert = true" 
+                    class="btn btn-secondary btn-small">Show Error</button>
+            <button @click="alertType = 'info'; alertMessage = 'Info message!'; showAlert = true" 
+                    class="btn btn-secondary btn-small">Show Info</button>
+        </div>
     </div>
     
     <!-- Alert Component -->
@@ -81,16 +195,5 @@
         <button @click="showAlert = false" style="float: right; background: none; border: none; font-size: 1.2em; cursor: pointer;">×</button>
     </div>
 </div>
-
-<div class="card">
-    <h2>Features</h2>
-    <ul>
-        <li>Modern, responsive design</li>
-        <li>Alpine.js for lightweight interactivity</li>
-        <li>Twig templating for server-side rendering</li>
-        <li>PSR-7 compatible HTTP handling</li>
-        <li>Dependency injection container</li>
-        <li>Comprehensive error handling and logging</li>
-    </ul>
-</div>
+{% endif %}
 {% endblock %}

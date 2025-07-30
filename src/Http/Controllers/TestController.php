@@ -41,7 +41,7 @@ class TestController
     {
         $debugInfo = [
             'APP_DEBUG' => $_ENV['APP_DEBUG'] ?? 'not set',
-            'APP_ENV' => $_ENV['APP_ENV'] ?? 'not set',
+            'APP_ENV' => $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?? 'not set',
             'error_reporting' => error_reporting(),
             'display_errors' => ini_get('display_errors'),
             'error_log' => ini_get('error_log'),

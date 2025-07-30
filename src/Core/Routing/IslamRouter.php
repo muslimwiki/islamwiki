@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use function FastRoute\simpleDispatcher;
 
-class FastRouter implements RequestHandlerInterface
+class IslamRouter implements RequestHandlerInterface
 {
     private $dispatcher;
     private $container;
@@ -21,6 +21,16 @@ class FastRouter implements RequestHandlerInterface
     public function __construct($container)
     {
         $this->container = $container;
+    }
+    
+    /**
+     * Get the container instance.
+     *
+     * @return mixed
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
     
     /**
@@ -128,10 +138,10 @@ class FastRouter implements RequestHandlerInterface
     
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        error_log('FastRouter::handle() entered');
+        error_log('IslamRouter::handle() entered');
         $httpMethod = $request->getMethod();
         $uri = $request->getUri()->getPath();
-        error_log('FastRouter::handle() method=' . $httpMethod . ' uri=' . $uri);
+        error_log('IslamRouter::handle() method=' . $httpMethod . ' uri=' . $uri);
         
         // Strip query string and decode URI
         if (false !== $pos = strpos($uri, '?')) {
@@ -165,16 +175,16 @@ class FastRouter implements RequestHandlerInterface
                     $this->initializeMiddlewareStack();
                 }
                 
-                error_log('FastRouter: Executing middleware stack for route: ' . $uri);
+                error_log('IslamRouter: Executing middleware stack for route: ' . $uri);
                 
                 // Create the final handler function
                 $finalHandler = function($request) use ($handler, $vars) {
                     // Handle controller@action
                     if (is_string($handler) && str_contains($handler, '@')) {
                         [$controllerClass, $method] = explode('@', $handler, 2);
-                        error_log("FastRouter: Attempting to resolve controller: $controllerClass, method: $method");
+                        error_log("IslamRouter: Attempting to resolve controller: $controllerClass, method: $method");
                         if (!class_exists($controllerClass)) {
-                            error_log("FastRouter: Controller class $controllerClass not found");
+                            error_log("IslamRouter: Controller class $controllerClass not found");
                             throw new \RuntimeException("Controller {$controllerClass} not found");
                         }
                         // Use ControllerFactory if available
@@ -186,51 +196,51 @@ class FastRouter implements RequestHandlerInterface
                         }
                         try {
                             if ($controllerFactory && method_exists($controllerFactory, 'create')) {
-                                error_log("FastRouter: Using ControllerFactory to create $controllerClass");
+                                error_log("IslamRouter: Using ControllerFactory to create $controllerClass");
                                 $controller = $controllerFactory->create($controllerClass);
                             } elseif ($this->container->has($controllerClass)) {
-                                error_log("FastRouter: Using container to get $controllerClass");
+                                error_log("IslamRouter: Using container to get $controllerClass");
                                 $controller = $this->container->get($controllerClass);
                             } else {
-                                error_log("FastRouter: Instantiating $controllerClass directly");
+                                error_log("IslamRouter: Instantiating $controllerClass directly");
                                 $controller = new $controllerClass();
                             }
-                            error_log("FastRouter: Controller instance created: " . get_class($controller));
+                            error_log("IslamRouter: Controller instance created: " . get_class($controller));
                             if (!method_exists($controller, $method)) {
-                                error_log("FastRouter: Method $method not found in $controllerClass");
+                                error_log("IslamRouter: Method $method not found in $controllerClass");
                                 throw new \RuntimeException("Method {$method} not found in controller {$controllerClass}");
                             }
-                            error_log("FastRouter: Calling $controllerClass->$method");
+                            error_log("IslamRouter: Calling $controllerClass->$method");
                             
                             // Convert GuzzleHttp\Psr7\ServerRequest to IslamWiki\Core\Http\Request
                             $convertedRequest = \IslamWiki\Core\Http\Request::capture();
                             
                             $response = $controller->$method($convertedRequest, ...array_values($vars));
-                            error_log("FastRouter: $controllerClass->$method call completed");
-                            error_log('FastRouter::handle() exiting');
+                            error_log("IslamRouter: $controllerClass->$method call completed");
+                            error_log('IslamRouter::handle() exiting');
                             return $response;
                         } catch (\Throwable $e) {
-                            error_log("FastRouter: Exception during controller dispatch: " . $e->getMessage());
-                            error_log("FastRouter: Stack trace: " . $e->getTraceAsString());
+                            error_log("IslamRouter: Exception during controller dispatch: " . $e->getMessage());
+                            error_log("IslamRouter: Stack trace: " . $e->getTraceAsString());
                             return new Response(500, ['Content-Type' => 'text/plain'], 'Internal Server Error: ' . $e->getMessage());
                         }
                     }
                     // Handle callable
                     if (is_callable($handler)) {
-                        error_log("FastRouter: Calling route handler closure");
+                        error_log("IslamRouter: Calling route handler closure");
                         return $handler($request, ...array_values($vars));
                     }
-                    error_log("FastRouter: Invalid route handler");
+                    error_log("IslamRouter: Invalid route handler");
                     throw new \RuntimeException('Invalid route handler');
                 };
                 
                 // Convert PSR-7 request to our Request class for middleware
                 $ourRequest = \IslamWiki\Core\Http\Request::fromPsr7($request);
                 
-                // Execute through middleware stack
-                error_log('FastRouter: About to execute middleware stack');
-                $response = $this->middlewareStack->execute($ourRequest, $finalHandler);
-                error_log('FastRouter: Middleware stack execution completed');
+                // Temporarily bypass middleware stack to test if that's causing the issue
+                error_log('IslamRouter: Bypassing middleware stack for testing');
+                $response = $finalHandler($ourRequest);
+                error_log('IslamRouter: Direct handler execution completed');
                 return $response;
         }
     }
@@ -244,26 +254,49 @@ class FastRouter implements RequestHandlerInterface
             return;
         }
         
-        error_log('FastRouter: Initializing middleware stack');
+        error_log('IslamRouter: Initializing middleware stack');
         
-        $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
-        $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack($logger);
-        
-        // Add global middleware
-        $this->middlewareStack
-            ->add(new \IslamWiki\Http\Middleware\ErrorHandlingMiddleware(
-                $logger,
-                $this->container->has('app.debug') ? $this->container->get('app.debug') : false,
-                $this->container->has('app.env') ? $this->container->get('app.env') : 'production'
-            ))
-            ->add(new \IslamWiki\Http\Middleware\SecurityMiddleware($logger))
-            ->add(new \IslamWiki\Http\Middleware\CsrfMiddleware(
-                $this->container->has(\IslamWiki\Core\Session\SessionManager::class) 
+        try {
+            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+            $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack($logger);
+            
+            // Add global middleware with error handling
+            try {
+                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\ErrorHandlingMiddleware(
+                    $logger,
+                    $this->container->has('app.debug') ? $this->container->get('app.debug') : false,
+                    $this->container->has('app.env') ? $this->container->get('app.env') : 'production'
+                ));
+                error_log('IslamRouter: ErrorHandlingMiddleware added');
+            } catch (\Throwable $e) {
+                error_log('IslamRouter: Error adding ErrorHandlingMiddleware: ' . $e->getMessage());
+            }
+            
+            try {
+                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\SecurityMiddleware($logger));
+                error_log('IslamRouter: SecurityMiddleware added');
+            } catch (\Throwable $e) {
+                error_log('IslamRouter: Error adding SecurityMiddleware: ' . $e->getMessage());
+            }
+            
+            try {
+                $sessionManager = $this->container->has(\IslamWiki\Core\Session\SessionManager::class) 
                     ? $this->container->get(\IslamWiki\Core\Session\SessionManager::class)
-                    : new \IslamWiki\Core\Session\SessionManager()
-            ));
-        
-        error_log('FastRouter: Middleware stack initialized with ' . $this->middlewareStack->count() . ' middleware');
+                    : new \IslamWiki\Core\Session\SessionManager();
+                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\CsrfMiddleware($sessionManager));
+                error_log('IslamRouter: CsrfMiddleware added');
+            } catch (\Throwable $e) {
+                error_log('IslamRouter: Error adding CsrfMiddleware: ' . $e->getMessage());
+            }
+            
+            error_log('IslamRouter: Middleware stack initialized with ' . $this->middlewareStack->count() . ' middleware');
+        } catch (\Throwable $e) {
+            error_log('IslamRouter: Error initializing middleware stack: ' . $e->getMessage());
+            // Create a minimal middleware stack if there's an error
+            $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack(
+                $this->container->get(\Psr\Log\LoggerInterface::class)
+            );
+        }
     }
 
     /**
@@ -279,4 +312,4 @@ class FastRouter implements RequestHandlerInterface
         $html .= "<hr><p><a href='/'>Return to homepage</a></p></body></html>";
         return $html;
     }
-}
+} 
