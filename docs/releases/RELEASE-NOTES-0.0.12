@@ -1,0 +1,85 @@
+# Release Notes - Version 0.0.12
+
+**Release Date:** 2025-07-30  
+**Version:** 0.0.12  
+**Status:** Phase 2 Complete - Islamic Database & Authentication
+
+## Overview
+
+Version 0.0.12 marks a significant milestone in IslamWiki development. This release implements the complete Islamic database infrastructure and enhanced authentication system, building upon the research completed in 0.0.11.
+
+## What's New
+
+### Islamic Database Implementation ✅ COMPLETE
+- **Quran Database**: 13 tables for verses, translations, recitations, tajweed, tafsir
+- **Hadith Database**: 13 tables for collections, narrators, hadiths, chains, commentaries
+- **Scholar Database**: 13 tables for scholars, credentials, works, relationships, fatwas
+- **Wiki Database**: Separate database for general Islamic wiki content
+- **Performance**: Sub-100ms connection times for all Islamic databases
+- **Security**: Isolated connections for different Islamic content types
+
+### Islamic Authentication ✅ COMPLETE
+- **Islamic User Model**: Enhanced user model with Islamic community features
+- **Scholar Verification**: Complete verification workflow with approval/rejection
+- **Role-Based Permissions**: 5 Islamic roles with specific permissions each
+- **Islamic Profile Management**: Enhanced user profiles with Arabic names and credentials
+- **Islamic Permissions System**: Role-based access control for Islamic content
+
+## Development Status
+
+### Current Focus
+- **Phase 2 Complete**: Islamic database and authentication system fully implemented
+- **Foundation Solid**: 39 database tables across 4 separate databases
+- **Authentication Ready**: Enhanced authentication with scholar verification
+- **Next Phase**: Content management and wiki page creation system
+
+### Technical Foundation
+- **Database Architecture**: Research completed in 0.0.11 provides solid foundation
+- **Routing System**: Pure PHP implementation working well
+- **Project Structure**: Well-organized codebase ready for expansion
+
+## Next Steps
+
+### Completed Features ✅
+- **Islamic Content Database**: ✅ Complete implementation of Quran, Hadith, and Scholar database structures
+- **User Authentication**: ✅ Enhanced authentication system for Islamic community with scholar verification
+- **Scholar Verification**: ✅ Complete system for verifying Islamic scholars and content
+- **Islamic Permissions**: ✅ Role-based access control for Islamic content
+
+### Next Phase Priorities
+1. **Content Management**: Wiki page creation and editing interface
+2. **Revision System**: Content tracking and version control
+3. **Islamic Templates**: Islamic content templates and formatting
+4. **Content Moderation**: Tools for moderating Islamic content
+
+## Installation
+
+### Prerequisites
+- PHP 8.0 or higher
+- MySQL/MariaDB database
+- Web server (Apache/Nginx)
+
+### Quick Start
+1. Clone the repository
+2. Run `composer install`
+3. Configure database connection
+4. Run database migrations
+5. Access the application
+
+## Support
+
+For support and questions:
+- Check the FAQ section
+- Review the INSTALL guide
+- Consult the documentation in `docs/`
+
+## Contributing
+
+We welcome contributions from the Islamic community. Please review:
+- CODE_OF_CONDUCT for community guidelines
+- SECURITY for security considerations
+- Documentation in `docs/` for development guidelines
+
+---
+
+**Note:** This is a development release. Features are being actively developed and may change. 

@@ -21,6 +21,20 @@
 
 declare(strict_types=1);
 
+// Helper function to get environment variables with defaults
+if (!function_exists('env')) {
+    function env($key, $default = null) {
+        return $_ENV[$key] ?? $default;
+    }
+}
+
+// Helper function for database path
+if (!function_exists('database_path')) {
+    function database_path($path = '') {
+        return __DIR__ . '/../database/' . $path;
+    }
+}
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -76,6 +90,71 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Islamic Database Connections
+        |--------------------------------------------------------------------------
+        |
+        | Separate database connections for different Islamic content types
+        | to ensure proper security isolation and performance optimization.
+        |
+        */
+        'quran' => [
+            'driver' => 'mysql',
+            'host' => env('QURAN_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('QURAN_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('QURAN_DB_DATABASE', 'islamwiki_quran'),
+            'username' => env('QURAN_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('QURAN_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+        'hadith' => [
+            'driver' => 'mysql',
+            'host' => env('HADITH_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('HADITH_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('HADITH_DB_DATABASE', 'islamwiki_hadith'),
+            'username' => env('HADITH_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('HADITH_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+        'wiki' => [
+            'driver' => 'mysql',
+            'host' => env('WIKI_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('WIKI_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('WIKI_DB_DATABASE', 'islamwiki_wiki'),
+            'username' => env('WIKI_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('WIKI_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+        'scholar' => [
+            'driver' => 'mysql',
+            'host' => env('SCHOLAR_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('SCHOLAR_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('SCHOLAR_DB_DATABASE', 'islamwiki_scholar'),
+            'username' => env('SCHOLAR_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('SCHOLAR_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
     ],
 
     /*
@@ -113,6 +192,18 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_CACHE_DB', 1),
+        ],
+        'quran' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_QURAN_DB', 2),
+        ],
+        'hadith' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_HADITH_DB', 2),
         ],
     ],
 ]; 

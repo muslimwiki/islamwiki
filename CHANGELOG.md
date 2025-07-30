@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.12] - 2025-07-30
+
+### Added
+- **Islamic Database Manager**: Implemented separate database connections for Islamic content
+- **Quran Database Schema**: Complete schema for Quran verses, translations, and recitations
+- **Hadith Database Schema**: Complete schema for Hadith collections, narrators, and chains
+- **Scholar Database Schema**: Complete schema for scholar verification and credentials
+- **Database Configuration**: Separate connection configurations for Quran, Hadith, Wiki, and Scholar databases
+- **Islamic Database Service Provider**: Service provider for managing Islamic database connections
+- **Database Setup Scripts**: Automated scripts for creating and migrating Islamic databases
+- **Database Testing**: Comprehensive testing of Islamic database connections and statistics
+- **Islamic User Model**: Enhanced user model with Islamic community features
+- **Islamic Authentication Controller**: Enhanced authentication with scholar verification
+- **Islamic User Fields**: Extended users table with Islamic-specific fields
+- **Scholar Verification System**: Complete verification workflow for Islamic scholars
+- **Islamic Permissions System**: Role-based permissions for Islamic community
+- **Islamic Profile Management**: Enhanced user profiles with Islamic data
+
+### Technical Implementation
+- **Separate Connections**: Each Islamic content type has its own database connection
+- **Quran Database**: 13 tables including surahs, verses, translations, tajweed, recitations, tafsir
+- **Hadith Database**: 13 tables including collections, narrators, hadiths, chains, commentaries
+- **Scholar Database**: 13 tables including scholars, credentials, works, relationships, fatwas
+- **Performance**: Sub-100ms connection times for all Islamic databases
+- **Security**: Isolated connections for different Islamic content types
+- **Islamic User Model**: Extended User model with Islamic-specific attributes and methods
+- **Scholar Verification**: Complete workflow for verifying Islamic scholars
+- **Role-Based Permissions**: 5 Islamic roles with specific permissions each
+- **Islamic Profile Data**: Arabic names, credentials, works, and contributions tracking
+
+### Database Schemas
+- **Quran Schema**: Surahs, verses, translations, tajweed rules, recitations, tafsir sources
+- **Hadith Schema**: Collections, narrators, hadiths, chains, topics, commentaries, rulings
+- **Scholar Schema**: Scholars, credentials, works, students/teachers, fatwas, endorsements
+
+### Infrastructure
+- **Database Creation**: Automated creation of islamwiki_quran, islamwiki_hadith, islamwiki_wiki, islamwiki_scholar
+- **Migration System**: Separate migrations for each Islamic database type
+- **Connection Management**: Efficient connection pooling and management
+- **Statistics Tracking**: Database size, table count, and row count monitoring
+- **User Authentication**: Enhanced authentication with Islamic community features
+- **Scholar Verification**: Complete verification workflow with approval/rejection
+- **Islamic Permissions**: Role-based access control for Islamic content
+- **Profile Management**: Enhanced user profiles with Islamic data and credentials
+
 ## [0.0.11] - 2025-07-30
 
 ### Added

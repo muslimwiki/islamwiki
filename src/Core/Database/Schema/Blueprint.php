@@ -309,6 +309,11 @@ class Blueprint
         return $this->addColumn('text', $column);
     }
 
+    public function json(string $column): Fluent
+    {
+        return $this->addColumn('json', $column);
+    }
+
     public function integer(string $column, bool $autoIncrement = false, bool $unsigned = false): Fluent
     {
         return $this->addColumn('integer', $column, compact('autoIncrement', 'unsigned'));
