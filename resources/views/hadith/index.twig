@@ -1,0 +1,167 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Hadith Collection</h1>
+        <p class="text-lg text-gray-600">Explore authentic Hadiths from various collections</p>
+    </div>
+
+    <!-- Statistics -->
+    {% if stats %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-green-600">{{ stats.total_hadiths|default(0) }}</div>
+                <div class="text-sm text-gray-600">Total Hadiths</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600">{{ stats.total_collections|default(0) }}</div>
+                <div class="text-sm text-gray-600">Collections</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-purple-600">{{ stats.total_narrators|default(0) }}</div>
+                <div class="text-sm text-gray-600">Narrators</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-orange-600">{{ stats.max_hadith_number|default(0) }}</div>
+                <div class="text-sm text-gray-600">Max Number</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Search Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Hadiths</h2>
+        <form action="/hadith/search" method="GET" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="query" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
+                    <input type="text" id="query" name="q" placeholder="Enter search terms..." 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label for="collection" class="block text-sm font-medium text-gray-700 mb-2">Collection</label>
+                    <select id="collection" name="collection" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">All Collections</option>
+                        {% for collection in collections %}
+                        <option value="{{ collection.id }}">{{ collection.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                    <select id="language" name="lang" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="en">English</option>
+                        <option value="ar">Arabic</option>
+                        <option value="ur">Urdu</option>
+                        <option value="tr">Turkish</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" 
+                        class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Search Hadiths
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Collections -->
+    {% if collections %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith Collections</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for collection in collections %}
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                    <a href="/hadith/collection/{{ collection.id }}" class="text-green-600 hover:text-green-700">
+                        {{ collection.name }}
+                    </a>
+                </h3>
+                {% if collection.arabic_name %}
+                <p class="text-sm text-gray-600 mb-2" dir="rtl">{{ collection.arabic_name }}</p>
+                {% endif %}
+                <p class="text-sm text-gray-500">{{ collection.hadith_count|default(0) }} Hadiths</p>
+                {% if collection.description %}
+                <p class="text-sm text-gray-600 mt-2">{{ collection.description }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Random Hadith -->
+    {% if random_hadith %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith of the Day</h2>
+        <div class="border-l-4 border-green-500 pl-4">
+            <div class="mb-4">
+                <span class="text-sm text-gray-500">{{ random_hadith.collection_name }} {{ random_hadith.hadith_number }}</span>
+            </div>
+            {% if random_hadith.arabic_text %}
+            <div class="mb-4" dir="rtl">
+                <p class="text-lg text-gray-800 leading-relaxed">{{ random_hadith.arabic_text }}</p>
+            </div>
+            {% endif %}
+            {% if random_hadith.english_text %}
+            <div class="mb-4">
+                <p class="text-gray-700 leading-relaxed">{{ random_hadith.english_text }}</p>
+            </div>
+            {% endif %}
+            {% if random_hadith.translation %}
+            <div class="mb-4">
+                <p class="text-gray-600 italic">{{ random_hadith.translation }}</p>
+            </div>
+            {% endif %}
+            <div class="text-right">
+                <a href="/hadith/{{ random_hadith.collection_id }}/{{ random_hadith.hadith_number }}" 
+                   class="text-green-600 hover:text-green-700 text-sm">
+                    Read Full Hadith →
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Links -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Quick Links</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/hadith/search" 
+               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
+                <div class="text-green-600 text-2xl mb-2">🔍</div>
+                <div class="font-semibold text-gray-800">Search Hadiths</div>
+                <div class="text-sm text-gray-600">Find specific Hadiths</div>
+            </a>
+            <a href="/api/hadith/random" 
+               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
+                <div class="text-blue-600 text-2xl mb-2">🎲</div>
+                <div class="font-semibold text-gray-800">Random Hadith</div>
+                <div class="text-sm text-gray-600">Discover new Hadiths</div>
+            </a>
+            <a href="/api/hadith/collections" 
+               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
+                <div class="text-purple-600 text-2xl mb-2">📚</div>
+                <div class="font-semibold text-gray-800">Collections</div>
+                <div class="text-sm text-gray-600">Browse by collection</div>
+            </a>
+            <a href="/api/hadith/statistics" 
+               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
+                <div class="text-orange-600 text-2xl mb-2">📊</div>
+                <div class="font-semibold text-gray-800">Statistics</div>
+                <div class="text-sm text-gray-600">View detailed stats</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

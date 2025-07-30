@@ -114,3 +114,23 @@ $router->get('/api/quran/recitation/{verseId}', 'IslamWiki\Http\Controllers\Qura
 $router->get('/api/quran/statistics', 'IslamWiki\Http\Controllers\QuranController@apiStatistics');
 $router->get('/api/quran/random', 'IslamWiki\Http\Controllers\QuranController@apiRandomVerse');
 $router->get('/api/quran/references/{pageId}', 'IslamWiki\Http\Controllers\QuranController@apiReferences');
+
+// Hadith Routes - Phase 4 Islamic Features Integration
+$router->get('/hadith', 'IslamWiki\Http\Controllers\HadithController@indexPage');
+$router->get('/hadith/search', 'IslamWiki\Http\Controllers\HadithController@searchPage');
+$router->get('/hadith/collection/{collectionId}', 'IslamWiki\Http\Controllers\HadithController@collectionPage');
+$router->get('/hadith/{collectionId}/{hadithNumber}', 'IslamWiki\Http\Controllers\HadithController@hadithPage');
+$router->get('/hadith/widget/{collectionId}/{hadithNumber}', 'IslamWiki\Http\Controllers\HadithController@widget');
+
+// Hadith API Routes
+$router->get('/api/hadith/hadiths', 'IslamWiki\Http\Controllers\HadithController@apiHadiths');
+$router->get('/api/hadith/hadiths/{id}', 'IslamWiki\Http\Controllers\HadithController@apiHadith');
+$router->get('/api/hadith/search', 'IslamWiki\Http\Controllers\HadithController@apiSearch');
+$router->get('/api/hadith/hadiths/{collectionId}/{hadithNumber}', 'IslamWiki\Http\Controllers\HadithController@apiHadithByReference');
+$router->get('/api/hadith/chain/{hadithId}', 'IslamWiki\Http\Controllers\HadithController@apiChain');
+$router->get('/api/hadith/commentary/{hadithId}', 'IslamWiki\Http\Controllers\HadithController@apiCommentary');
+$router->get('/api/hadith/collections', 'IslamWiki\Http\Controllers\HadithController@apiCollections');
+$router->get('/api/hadith/statistics', 'IslamWiki\Http\Controllers\HadithController@apiStatistics');
+$router->get('/api/hadith/random', 'IslamWiki\Http\Controllers\HadithController@apiRandomHadith');
+$router->get('/api/hadith/authenticity/{authenticityLevel}', 'IslamWiki\Http\Controllers\HadithController@apiByAuthenticity');
+$router->get('/api/hadith/references/{pageId}', 'IslamWiki\Http\Controllers\HadithController@apiReferences');

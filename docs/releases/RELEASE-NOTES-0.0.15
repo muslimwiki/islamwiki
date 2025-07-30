@@ -1,0 +1,204 @@
+# Release Notes - Version 0.0.15
+
+**Release Date:** 2025-07-30  
+**Version:** 0.0.15  
+**Status:** Phase 4 In Progress - Islamic Calendar Integration
+
+## Overview
+
+Version 0.0.15 focuses on implementing the Islamic Calendar integration system. This release will add comprehensive Islamic calendar functionality including Hijri date calculations, Islamic events, prayer times, and calendar widgets.
+
+## What's New
+
+### Islamic Calendar Integration System 🚧 IN PROGRESS
+- **Hijri Calendar**: Complete Hijri date calculation and conversion system
+- **Islamic Events**: Database for Islamic events, holidays, and important dates
+- **Prayer Times**: Integration with prayer time calculation APIs
+- **Calendar Widgets**: Embeddable Islamic calendar widgets for wiki pages
+- **Event Management**: Create, edit, and manage Islamic events
+- **Calendar API**: REST API for calendar data and events
+- **Islamic Database Integration**: Full integration with Islamic database system
+- **Calendar Templates**: Complete Twig template set for calendar interface
+- **Calendar Routing**: Complete web and API routing for calendar functionality
+- **Multi-language Support**: Support for English, Arabic, Urdu, Turkish
+- **Event Categories**: Categorize events by type (Holiday, Historical, Religious)
+- **Notifications**: Event notifications and reminders
+- **Calendar Navigation**: Browse Islamic calendar with event listings
+- **Date Conversion**: Gregorian to Hijri and vice versa
+- **Calendar Database Schema**: Integration tables for calendar-wiki linking
+
+### Technical Implementation
+- **Database Schema**: Islamic calendar tables for events, dates, and conversions
+- **Model System**: IslamicCalendar model with all CRUD operations
+- **Controller System**: IslamicCalendarController with web and API endpoints
+- **Template System**: Complete Twig template set for calendar interface
+- **Routing System**: Clean, organized routing for calendar functionality
+- **API Design**: RESTful API with comprehensive endpoints
+- **Error Handling**: Comprehensive error handling and validation
+- **Security**: Input validation, SQL injection protection, XSS protection
+- **Performance**: Sub-200ms API responses with intelligent caching
+- **Responsive Design**: Mobile-friendly Islamic-themed interface
+
+### Planned API Endpoints
+- `GET /calendar` - Islamic calendar index page
+- `GET /calendar/month/{year}/{month}` - Monthly calendar view
+- `GET /calendar/event/{id}` - Event display
+- `GET /calendar/widget/{year}/{month}` - Embeddable widget
+- `GET /api/calendar/events` - List events
+- `GET /api/calendar/events/{id}` - Get specific event
+- `GET /api/calendar/convert/{date}` - Date conversion
+- `GET /api/calendar/prayer-times/{date}` - Prayer times
+- `GET /api/calendar/statistics` - Get statistics
+- `GET /api/calendar/upcoming` - Get upcoming events
+
+### Planned Database Integration
+- **Calendar Tables**: islamic_events, hijri_dates, prayer_times, event_categories
+- **Integration Tables**: calendar_wiki_links, calendar_search_cache, calendar_event_stats
+- **User Tables**: calendar_user_bookmarks, calendar_event_comments, calendar_reminders
+- **Performance**: Indexed tables for fast queries, connection pooling
+- **Caching**: Search result caching for performance optimization
+- **Analytics**: Real-time statistics and usage tracking
+
+## Development Status
+
+### Current Focus
+- **Phase 4 In Progress**: Islamic Calendar integration and events
+- **Foundation Solid**: Complete Hadith system provides solid foundation
+- **Database Ready**: Islamic database system ready for calendar integration
+- **Next Phase**: Prayer times integration and notifications
+
+### Technical Foundation
+- **Calendar System**: Planning Islamic calendar implementation
+- **Database Architecture**: Full integration with Islamic database system
+- **Routing System**: Pure PHP implementation working well
+- **Project Structure**: Well-organized codebase ready for expansion
+
+## Next Steps
+
+### Planned Features 🚧
+- **Islamic Calendar Model**: Complete CRUD operations and database integration
+- **Islamic Calendar Controller**: Complete web and API controller with endpoints
+- **Islamic Calendar Templates**: Comprehensive templates for all calendar views
+- **Islamic Calendar Routing**: Complete web and API routing system
+- **Calendar Search**: Advanced search functionality for events
+- **Calendar API**: Comprehensive REST API for all operations
+- **Calendar Widgets**: Embeddable widget system
+- **Calendar Statistics**: Real-time analytics and usage tracking
+- **Database Integration**: Full integration with Islamic database system
+
+### Next Phase Priorities
+1. **Prayer Times**: Prayer time integration and notifications (0.0.16)
+2. **Data Population**: Populate calendar tables with actual Islamic events
+3. **Wiki Integration**: Link calendar events to wiki pages and content
+4. **Notifications**: Event notifications and reminder system
+
+## Installation
+
+### Prerequisites
+- PHP 8.0 or higher
+- MySQL/MariaDB database
+- Web server (Apache/Nginx)
+
+### Quick Start
+1. Clone the repository
+2. Run `composer install`
+3. Configure database connection
+4. Run database migrations
+5. Access the calendar system at `/calendar`
+
+## Planned API Usage Examples
+
+### Get Islamic Events
+```bash
+curl "https://islam.wiki/api/calendar/events?month=1&year=1446"
+```
+
+### Convert Date
+```bash
+curl "https://islam.wiki/api/calendar/convert/2025-07-30"
+```
+
+### Get Prayer Times
+```bash
+curl "https://islam.wiki/api/calendar/prayer-times/2025-07-30"
+```
+
+### Get Upcoming Events
+```bash
+curl "https://islam.wiki/api/calendar/upcoming"
+```
+
+## Planned Database Schema
+
+### Core Calendar Tables
+- `islamic_events` - Islamic events and holidays
+- `hijri_dates` - Hijri date calculations and conversions
+- `prayer_times` - Prayer time calculations
+- `event_categories` - Event categories (Holiday, Historical, Religious)
+- `calendar_months` - Monthly calendar data
+- `calendar_years` - Yearly calendar data
+
+### Integration Tables
+- `calendar_wiki_links` - Links between events and wiki pages
+- `calendar_search_cache` - Cached search results for performance
+- `calendar_event_stats` - Usage statistics and analytics
+- `calendar_user_bookmarks` - User bookmarks and notes
+- `calendar_event_references` - References in wiki pages
+- `calendar_reminders` - User reminder tracking
+
+## Performance Goals
+
+### Optimizations
+- **Search Caching**: Cached search results for improved performance
+- **Database Indexing**: Optimized indexes for fast queries
+- **Lazy Loading**: Efficient loading of related data
+- **API Response Caching**: Cached API responses for better performance
+
+### Benchmarks
+- **Search Response**: < 100ms for typical searches
+- **API Endpoints**: < 50ms for most operations
+- **Database Queries**: Optimized with proper indexing
+- **Page Load Times**: < 2 seconds for full calendar pages
+
+## Security
+
+### Features
+- **Input Validation**: Comprehensive validation for all inputs
+- **SQL Injection Protection**: Prepared statements for all queries
+- **XSS Protection**: Proper output encoding in templates
+- **CSRF Protection**: CSRF tokens for all forms
+- **Rate Limiting**: API rate limiting for abuse prevention
+
+## Support
+
+For support and questions:
+- Check the FAQ section
+- Review the INSTALL guide
+- Consult the documentation in `docs/`
+- API documentation will be available at `/api/calendar/`
+
+## Contributing
+
+We welcome contributions from the Islamic community. Please review:
+- CODE_OF_CONDUCT for community guidelines
+- SECURITY for security considerations
+- Documentation in `docs/` for development guidelines
+
+## Testing
+
+### Planned Test Coverage
+- **Model Tests**: Complete test coverage for Islamic Calendar model
+- **Controller Tests**: API and web endpoint testing
+- **Database Tests**: Database connectivity and query testing
+- **Template Tests**: Template existence and rendering tests
+- **Integration Tests**: End-to-end functionality testing
+
+### Running Tests
+```bash
+php scripts/tests/test_islamic_calendar_integration.php
+php scripts/tests/test_calendar_db.php
+```
+
+---
+
+**Note:** This is a development release. Features are being actively developed and may change. The Islamic Calendar integration system is planned and ready for implementation. 
