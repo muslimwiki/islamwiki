@@ -9,6 +9,21 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **Comprehensive Testing**: All router features confirmed working correctly
 - **Project Organization**: Complete reorganization for better maintainability
 - **Documentation Structure**: All docs moved to `docs/` with clear categorization
+- **MediaWiki Structure Planning**: ✅ Complete planning for MediaWiki-inspired structure
+
+### 📋 **Planning Status**
+- **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
+- **Islamic Core Organization**: ✅ Nested within app/Core/Islamic/ (Option B)
+- **Language Files**: ✅ Laravel-style resources/lang instead of MediaWiki i18n
+- **Extensions Permissions**: ✅ Per-extension basis permissions
+- **API Versioning**: ✅ Separate versioning for all APIs
+- **Configuration System**: ✅ Hybrid LocalSettings.php + IslamSettings.php approach
+- **API System**: ✅ Hybrid api.php + specific API files approach
+
+### 🚧 **Next Phase**
+- **Implementation**: MediaWiki-style structure implementation (v0.1.0)
+- **Research Tasks**: Database connection and entry point research
+- **Islamic Integration**: Core Islamic classes and extensions
 
 ## 📚 Documentation Structure
 

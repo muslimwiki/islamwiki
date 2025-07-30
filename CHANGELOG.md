@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **MediaWiki Structure Planning**: Comprehensive planning for MediaWiki-inspired structure
+- **Documentation Organization**: Root vs. docs folder structure decisions
+- **Architecture Decisions**: Islamic core organization and configuration systems
+- **Research Tasks**: Database connection and entry point research planning
+- **Implementation Roadmap**: Three-phase implementation strategy
+
+### Planning
+- **Documentation Structure**: Root folder for essential docs, docs/ for specialized content
+- **Islamic Core Organization**: Nested within app/Core/Islamic/ (Option B)
+- **Language Files**: Laravel-style resources/lang instead of MediaWiki i18n
+- **Extensions Permissions**: Per-extension basis permissions
+- **API Versioning**: Separate versioning for all APIs
+- **Configuration System**: Hybrid LocalSettings.php + IslamSettings.php approach
+- **API System**: Hybrid api.php + specific API files approach
+
+### Research Tasks
+- **Database Connection Strategy**: Research separate vs. single connection approaches
+- **Islamic Entry Points**: Research routing strategies for Islamic features
+- **Performance Testing**: Compare different approaches
+- **Security Analysis**: Evaluate security implications of each approach
+
 ## [0.0.8] - 2025-07-30
 
 ### Added

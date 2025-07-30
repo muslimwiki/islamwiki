@@ -12,6 +12,7 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **Clean Public Directory**: Removed test files from web root for enhanced security
 - **Test Organization**: Web tests in `tests/web/`, unit tests in `tests/Unit/`
 - **Comprehensive Testing**: ✅ All router features verified and working correctly
+- **MediaWiki Structure Planning**: ✅ Complete planning for MediaWiki-inspired structure
 
 ### Core Components
 - **Application Bootstrap**: Main application entry point and configuration
@@ -30,6 +31,16 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **User Authentication** (v0.0.2): Registration, login, session management
 - **Database Foundation** (v0.0.2): Migration system and database setup
 - **Pure IslamRouter** (v0.0.8): ✅ **Custom routing solution fully tested and verified**
+- **MediaWiki Structure** (v0.1.0): 🚧 **Planning complete, implementation next**
+
+### Planning Status
+- **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
+- **Islamic Core Organization**: ✅ Nested within app/Core/Islamic/ (Option B)
+- **Language Files**: ✅ Laravel-style resources/lang instead of MediaWiki i18n
+- **Extensions Permissions**: ✅ Per-extension basis permissions
+- **API Versioning**: ✅ Separate versioning for all APIs
+- **Configuration System**: ✅ Hybrid LocalSettings.php + IslamSettings.php approach
+- **API System**: ✅ Hybrid api.php + specific API files approach
 
 ## 🚀 Quick Start
 
