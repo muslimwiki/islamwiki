@@ -1,6 +1,8 @@
-# Islam Wiki Documentation
+# IslamWiki Documentation
 
-## Current Version: v0.0.8
+**Version**: 0.0.9  
+**Status**: Core Development  
+**Last Updated**: 2025-07-30
 
 Welcome to the comprehensive documentation for the Islam Wiki project. This documentation covers all aspects of the application architecture, components, and development guidelines.
 

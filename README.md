@@ -1,4 +1,8 @@
-# Islam Wiki
+# IslamWiki
+
+**Version**: 0.0.9  
+**Status**: Core Development  
+**License**: GNU AGPL v3.0
 
 A modern, secure wiki system built with PHP 8.1+, featuring comprehensive content management, user authentication, and enterprise-level security.
 

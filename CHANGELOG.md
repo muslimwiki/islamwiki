@@ -5,29 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.9] - 2025-07-30
 
-### Added
-- **IslamWiki Structure Planning**: Comprehensive planning for MediaWiki-inspired structure
-- **Documentation Organization**: Root vs. docs folder structure decisions
-- **Architecture Decisions**: Islamic core organization and configuration systems
-- **Research Tasks**: Database connection and entry point research planning
-- **Implementation Roadmap**: Three-phase implementation strategy
+### Changed
+- **Terminology Correction**: Changed "MediaWiki Structure Planning" to "IslamWiki Structure Planning"
+- **Documentation Updates**: Updated all references to reflect correct terminology
+- **File Rename**: Renamed `MediaWiki_Structure_Planning.md` to `IslamWiki_Structure_Planning.md`
 
-### Planning
-- **Documentation Structure**: Root folder for essential docs, docs/ for specialized content
-- **Islamic Core Organization**: Nested within app/Core/Islamic/ (Option B)
-- **Language Files**: Laravel-style resources/lang instead of MediaWiki i18n
-- **Extensions Permissions**: Per-extension basis permissions
-- **API Versioning**: Separate versioning for all APIs
-- **Configuration System**: Hybrid LocalSettings.php + IslamSettings.php approach
-- **API System**: Hybrid api.php + specific API files approach
-
-### Research Tasks
-- **Database Connection Strategy**: Research separate vs. single connection approaches
-- **Islamic Entry Points**: Research routing strategies for Islamic features
-- **Performance Testing**: Compare different approaches
-- **Security Analysis**: Evaluate security implications of each approach
+### Clarification
+- **IslamWiki Structure Planning**: Our own custom structure inspired by MediaWiki
+- **Not MediaWiki Planning**: This is not MediaWiki structure planning (which would be for MediaWiki itself)
+- **Islamic-Focused**: Tailored specifically for Islamic content and community needs
 
 ## [0.0.8] - 2025-07-30
 
