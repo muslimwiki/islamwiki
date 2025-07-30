@@ -66,7 +66,7 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 
 ## Quick Reference
 
-### Current Version: 0.0.7
+### Current Version: 0.1.2
 - **Status**: Environment variable fixes, application stability improvements, enterprise security features
 - **Architecture**: PHP 8.1+, Twig templates, Alpine.js frontend, secure sessions, robust environment handling
 - **License**: AGPL-3.0

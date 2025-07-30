@@ -25,6 +25,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved compatibility with different PHP configurations
   - Enhanced error handling for missing environment variables
 
+## [0.1.2] - 2025-07-30
+
+### Added
+- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
+  - Comprehensive pages listing with search and filter capabilities
+  - Professional grid layout with page cards showing metadata
+  - Navigation enhancement with "View All Pages" link
+  - Sorting and pagination support for large collections
+  - Page actions (View, Edit, History) for each page
+  - Search functionality across page titles and content
+  - Filter by namespace and sort by various criteria
+
+### Changed
+- **PageController**: Enhanced with comprehensive index functionality
+- **Template System**: Added pages index template with professional styling
+- **Navigation**: Improved navigation with pages browsing link
+
+### Fixed
+- **Query Builder**: Resolved missing methods (leftJoin, whereNull, count) with simplified queries
+- **Template Paths**: Fixed template resolution for pages index
+- **Request Class**: Added missing `getQueryParam()` method
+
+## [0.1.1] - 2025-07-30
+
+### Added
+- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
+  - Full markdown parsing (headers, bold, italic, lists, links, blockquotes)
+  - Code block syntax highlighting with Prism.js integration
+  - Inline code formatting with proper styling
+  - Auto-linking of URLs and markdown-style links
+  - Blockquote support with proper styling
+  - Horizontal rules and mixed content support
+  - Professional CSS styling for all rendered content
+- **Syntax Highlighting**: Prism.js integration for code blocks
+- **Content Styling**: Comprehensive CSS for enhanced readability
+
+### Changed
+- **Content Parser**: Enhanced `parseWikiText()` method with modular parsing functions
+- **Template Styling**: Added professional CSS for rendered content
+- **Code Display**: Improved code block rendering with language detection
+
+### Fixed
+- **Template Paths**: Fixed template resolution in PageController
+- **Content Rendering**: Resolved HTML escaping and markdown processing order
+- **Code Highlighting**: Fixed Prism.js integration and initialization
+
+## [0.1.0] - 2025-07-30
+
+### Added
+- **Wiki Page System**: Complete page creation, viewing, and management
+  - Page model with Eloquent-like relationships and revision tracking
+  - PageController with full CRUD operations for wiki pages
+  - Page templates for display, editing, and history viewing
+  - Content rendering with basic wiki text parsing and HTML conversion
+  - View count tracking with database analytics and user tracking
+  - Page permissions system (edit, delete, lock) based on user roles
+  - Page history and revision tracking functionality
+  - Page locking system for admin-only content protection
+  - Dynamic homepage with recent pages display and excerpts
+- **Request Enhancements**: Added `isXmlHttpRequest()` method for AJAX detection
+- **Template System**: New page templates with proper Twig inheritance
+
+### Changed
+- **PageController**: Fixed template path resolution (`pages.show` → `pages/show`)
+- **Database Operations**: Improved query builder usage and error handling
+- **View Count System**: Enhanced page view tracking with proper database updates
+- **Template Rendering**: Enhanced Twig template structure and inheritance
+
+### Fixed
+- **Page Viewing**: Resolved 500 errors when accessing individual wiki pages
+- **Template Paths**: Fixed template resolution issues in PageController
+- **Database Queries**: Fixed raw SQL method calls and view count updates
+- **Container Binding**: Resolved view renderer binding in test environment
+- **Session Management**: Fixed session warnings in CLI environment
+- **Request Class**: Added missing `isXmlHttpRequest()` method for AJAX detection
+
 ## [0.0.6] - 2025-07-30
 
 ### Added
@@ -116,85 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive testing with validation scripts
   - Multiple security layers with defense in depth
 
-## [0.0.5] - 2025-07-30
 
-### Added
-- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
-  - Comprehensive pages listing with search and filter capabilities
-  - Professional grid layout with page cards showing metadata
-  - Search functionality across page titles
-  - Namespace filtering (main, help, user)
-  - Sorting by title, last updated, and view count
-  - Pagination support for large page collections
-  - Page actions (View, Edit, History) for each page
-  - Navigation link in top navigation bar
-  - Professional CSS styling for pages index
-- **Request Enhancement**: Added `getQueryParam()` method for query parameter access
-- **Template System**: New pages index template with comprehensive filtering
-
-### Changed
-- **Navigation**: Added "View All Pages" link to top navigation bar
-- **PageController**: Enhanced index method with filtering and sorting
-- **Template Styling**: Added comprehensive CSS for pages index layout
-
-### Fixed
-- **Query Builder**: Resolved missing methods (leftJoin, whereNull, count) with simplified queries
-- **Template Paths**: Fixed template resolution for pages index
-- **Request Class**: Added missing `getQueryParam()` method
-
-## [0.0.4] - 2025-07-30
-
-### Added
-- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-  - Full markdown parsing (headers, bold, italic, lists, links, blockquotes)
-  - Code block syntax highlighting with Prism.js integration
-  - Inline code formatting with proper styling
-  - Auto-linking of URLs and markdown-style links
-  - Blockquote support with proper styling
-  - Horizontal rules and mixed content support
-  - Professional CSS styling for all rendered content
-- **Syntax Highlighting**: Prism.js integration for code blocks
-- **Content Styling**: Comprehensive CSS for enhanced readability
-
-### Changed
-- **Content Parser**: Enhanced `parseWikiText()` method with modular parsing functions
-- **Template Styling**: Added professional CSS for rendered content
-- **Code Display**: Improved code block rendering with language detection
-
-### Fixed
-- **Template Paths**: Fixed template resolution in PageController
-- **Content Rendering**: Resolved HTML escaping and markdown processing order
-- **Code Highlighting**: Fixed Prism.js integration and initialization
-
-## [0.0.3] - 2025-07-30
-
-### Added
-- **Wiki Page System**: Complete page creation, viewing, and management
-  - Page model with Eloquent-like relationships and revision tracking
-  - PageController with full CRUD operations for wiki pages
-  - Page templates for display, editing, and history viewing
-  - Content rendering with basic wiki text parsing and HTML conversion
-  - View count tracking with database analytics and user tracking
-  - Page permissions system (edit, delete, lock) based on user roles
-  - Page history and revision tracking functionality
-  - Page locking system for admin-only content protection
-  - Dynamic homepage with recent pages display and excerpts
-- **Request Enhancements**: Added `isXmlHttpRequest()` method for AJAX detection
-- **Template System**: New page templates with proper Twig inheritance
-
-### Changed
-- **PageController**: Fixed template path resolution (`pages.show` → `pages/show`)
-- **Database Operations**: Improved query builder usage and error handling
-- **View Count System**: Enhanced page view tracking with proper database updates
-- **Template Rendering**: Enhanced Twig template structure and inheritance
-
-### Fixed
-- **Page Viewing**: Resolved 500 errors when accessing individual wiki pages
-- **Template Paths**: Fixed template resolution issues in PageController
-- **Database Queries**: Fixed raw SQL method calls and view count updates
-- **Container Binding**: Resolved view renderer binding in test environment
-- **Session Management**: Fixed session warnings in CLI environment
-- **Request Class**: Added missing `isXmlHttpRequest()` method for AJAX detection
 
 ## [0.0.2] - 2025-07-30
 
