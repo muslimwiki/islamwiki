@@ -554,4 +554,12 @@ class Request implements ServerRequestInterface
         unset($new->attributes[$name]);
         return $new;
     }
+
+    /**
+     * Check if the request is an XMLHttpRequest (AJAX).
+     */
+    public function isXmlHttpRequest(): bool
+    {
+        return $this->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
+    }
 }

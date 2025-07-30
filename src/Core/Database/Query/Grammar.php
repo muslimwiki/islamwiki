@@ -1,6 +1,5 @@
-<?
+<?php
 declare(strict_types=1);
-php\np
 
 
 
@@ -185,6 +184,11 @@ class Grammar
             return "insert into {$table} default values";
         }
 
+        // Handle single record vs array of records
+        if (!is_array(reset($values))) {
+            $values = [$values];
+        }
+
         $columns = $this->columnize(array_keys(reset($values)));
         $parameters = [];
         
@@ -247,11 +251,11 @@ class Grammar
             return $this->getValue($value);
         }
 
-        if (str_contains(strtolower($value), ' as ')) {
+        if (str_contains(strtolower($value ?? ''), ' as ')) {
             return $this->wrapAliasedValue($value, $prefixAlias);
         }
 
-        return $this->wrapSegments(explode('.', $value));
+        return $this->wrapSegments(explode('.', $value ?? ''));
     }
 
     /**
@@ -281,8 +285,8 @@ class Grammar
      */
     protected function wrapValue(string $value): string
     {
-        if ($value === '*') {
-            return $value;
+        if ($value === '*' || $value === null) {
+            return $value ?? '';
         }
         
         return '`' . str_replace('`', '``', $value) . '`';

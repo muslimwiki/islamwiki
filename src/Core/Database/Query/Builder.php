@@ -1,6 +1,5 @@
-<?
+<?php
 declare(strict_types=1);
-php\np
 
 
 
@@ -23,6 +22,9 @@ class Builder
     public $limit;
     public $offset;
     public $distinct = false;
+    public $unions = [];
+    public $havings = [];
+    public $aggregate = null;
 
     public function __construct(Connection $connection, Grammar $grammar = null)
     {
@@ -122,7 +124,21 @@ class Builder
         $sql = $this->grammar->compileInsert($this, $values);
         $bindings = $this->cleanBindings($values);
         
-        return $this->connection->insert($sql, $bindings);
+        $this->connection->insert($sql, $bindings);
+        return true;
+    }
+
+    public function insertGetId(array $values, $sequence = null): int
+    {
+        if (empty($values)) {
+            return 0;
+        }
+        
+        $sql = $this->grammar->compileInsert($this, $values);
+        $bindings = $this->cleanBindings($values);
+        
+        $id = $this->connection->insert($sql, $bindings);
+        return (int) $id;
     }
 
     public function update(array $values): int
@@ -187,5 +203,36 @@ class Builder
             }
         }
         return $this;
+    }
+
+    public function max($column)
+    {
+        $sql = "SELECT MAX(" . $this->grammar->wrap($column) . ") as aggregate FROM " . $this->grammar->wrapTable($this->from);
+        $result = $this->connection->select($sql, $this->getBindings());
+        
+        if (empty($result) || !isset($result[0]['aggregate'])) {
+            return null;
+        }
+        
+        return $result[0]['aggregate'];
+    }
+
+    public function pluck($column, $key = null): array
+    {
+        if ($key === null) {
+            $results = $this->get([$column]);
+        } else {
+            $results = $this->get([$column, $key]);
+        }
+        
+        if (empty($results)) {
+            return [];
+        }
+        
+        if ($key === null) {
+            return array_column($results, $column);
+        }
+        
+        return array_column($results, $column, $key);
     }
 }

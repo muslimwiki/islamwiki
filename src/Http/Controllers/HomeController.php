@@ -72,10 +72,23 @@ class HomeController extends Controller
                 error_log('HomeController: Logger not available');
             }
             
+            // Fetch recent pages from database
+            $recentPages = [];
+            try {
+                $recentPages = $this->db->select(
+                    'SELECT id, title, slug, content, created_at FROM pages ORDER BY created_at DESC LIMIT 5'
+                );
+                error_log('HomeController: Fetched ' . count($recentPages) . ' recent pages');
+            } catch (\Exception $e) {
+                error_log('HomeController: Error fetching pages: ' . $e->getMessage());
+                $recentPages = [];
+            }
+
             // Use Twig template instead of hardcoded HTML
             $data = [
                 'title' => 'Welcome to IslamWiki',
                 'message' => 'Your Islamic knowledge base and resource center',
+                'recentPages' => $recentPages,
                 'features' => [
                     'Modern, responsive design',
                     'Alpine.js for lightweight interactivity',

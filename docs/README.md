@@ -41,9 +41,15 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 - [Error Handling](development/error-handling.md)
 - [Logging](development/logging.md)
 
+### Security
+- [Session Management](security/session-management.md)
+- [Authentication](security/authentication.md)
+- [CSRF Protection](security/csrf-protection.md)
+
 ### Features
 - [Homepage](features/homepage.md)
 - [Dashboard](features/dashboard.md)
+- [Wiki Pages](features/wiki-pages.md)
 - [Interactive Components](features/interactive-components.md)
 
 ### Deployment
@@ -60,9 +66,9 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 
 ## Quick Reference
 
-### Current Version: 0.0.1
-- **Status**: Foundation complete, homepage and dashboard working
-- **Architecture**: PHP 8.1+, Twig templates, Alpine.js frontend
+### Current Version: 0.2.0
+- **Status**: Wiki page system complete, individual page viewing working
+- **Architecture**: PHP 8.1+, Twig templates, Alpine.js frontend, secure sessions
 - **License**: AGPL-3.0
 
 ### Key Technologies
@@ -79,18 +85,31 @@ Welcome to the IslamWiki documentation. This guide covers all aspects of the app
 
 ## Version History
 
-### 0.0.1 (Current)
-- ✅ Foundation complete with working homepage and dashboard
+### 0.2.0 (Current)
+- ✅ Wiki page system with complete CRUD operations
+- ✅ Page model with Eloquent-like relationships
+- ✅ PageController with full template rendering
+- ✅ Content rendering with basic wiki text parsing
+- ✅ View count tracking and analytics
+- ✅ Page permissions (edit, delete, lock)
+- ✅ Page history and revision tracking
+- ✅ Dynamic homepage with recent pages
+- ✅ Session management with secure HTTP-only cookies
+- ✅ CSRF protection on all forms
+- ✅ User authentication (registration, login, logout)
+- ✅ Authentication middleware for route protection
+- ✅ Database foundation with migration system
+- ✅ Remember me functionality
 - ✅ Alpine.js integration for lightweight interactivity
 - ✅ Twig templating with proper layouts
 - ✅ Comprehensive error handling and logging
 - ✅ PSR-7 compatible HTTP handling
 - ✅ Dependency injection container
 
-### Planned Features
-- 🔄 User authentication and authorization
-- 🔄 Wiki page creation and editing
-- 🔄 Search functionality
-- 🔄 Extensions and plugins system
-- 🔄 Database integration
-- 🔄 API endpoints
+### Planned Features (0.2.1)
+- 🔄 Enhanced content rendering (markdown, syntax highlighting)
+- 🔄 Search functionality with full-text search
+- 🔄 User profiles and contribution tracking
+- 🔄 Rich text editor for page editing
+- 🔄 API endpoints for external integration
+- 🔄 Media upload and management

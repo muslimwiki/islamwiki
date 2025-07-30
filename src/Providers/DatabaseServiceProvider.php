@@ -54,7 +54,8 @@ class DatabaseServiceProvider
         // Register migrator
         $container->bind('migrator', function () use ($container) {
             $connection = $container->get('db');
-            return new Migrator($connection);
+            $migrationPath = dirname(__DIR__, 2) . '/database/migrations';
+            return new Migrator($connection, $migrationPath);
         });
 
         // Register database connection as singleton

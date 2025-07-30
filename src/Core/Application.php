@@ -91,16 +91,12 @@ class Application
         $this->container->instance(\IslamWiki\Core\Database\Connection::class, $db);
 
         // Bind LoggerInterface
-        try {
-            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
-        } catch (\Exception $e) {
-            $logDir = $this->basePath('storage/logs');
-            if (!is_dir($logDir)) {
-                mkdir($logDir, 0755, true);
-            }
-            $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
-            $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
+        $logDir = $this->basePath('storage/logs');
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
         }
+        $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
+        $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
 
         // Bind ControllerFactory for FastRouter
         $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory(
@@ -118,18 +114,8 @@ class Application
         
         // Set up the controller factory if needed
         if (method_exists($this->router, 'setControllerFactory')) {
-            // Get the logger from the container or create a new one
-            try {
-                $logger = $this->container->get(LoggerInterface::class);
-            } catch (\Exception $e) {
-                // Create a simple file logger if not available
-                $logDir = $this->basePath('storage/logs');
-                if (!is_dir($logDir)) {
-                    mkdir($logDir, 0755, true);
-                }
-                $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
-                $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
-            }
+            // Get the logger from the container
+            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
             
             // Create the controller factory with all required dependencies
             $this->router->setControllerFactory(new \IslamWiki\Core\Routing\ControllerFactory(
@@ -155,6 +141,11 @@ class Application
         // Register the ViewServiceProvider
         $viewServiceProvider = new \IslamWiki\Providers\ViewServiceProvider();
         $viewServiceProvider->register($this->container);
+        
+        // Register the SessionServiceProvider
+        $sessionServiceProvider = new \IslamWiki\Providers\SessionServiceProvider();
+        $sessionServiceProvider->register($this->container);
+        $sessionServiceProvider->boot($this->container);
     }
 
     /**

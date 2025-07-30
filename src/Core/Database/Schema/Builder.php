@@ -1,6 +1,6 @@
-<?
+<?php
+
 declare(strict_types=1);
-php\np
 
 
 
@@ -97,18 +97,22 @@ class Builder
      */
     public function build(Blueprint $blueprint): void
     {
-        $blueprint->build($this->connection, $this->grammar);
+        error_log("[Schema] build() called");
+        $statements = $blueprint->toSql($this->connection, $this->grammar);
+        error_log("[Schema] Generated statements: " . json_encode($statements));
+        foreach ($statements as $sql) {
+            error_log("[Schema] Executing SQL: $sql");
+            $this->connection->statement($sql);
+        }
     }
 
     /**
      * Create a new table on the schema.
      */
-    public function create(string $table, Closure $callback): void
+    public function create(string $table, \Closure $callback): void
     {
-        $this->build(tap($this->createBlueprint($table), function (Blueprint $blueprint) use ($callback) {
-            $blueprint->create();
-            $callback($blueprint);
-        }));
+        error_log("[Schema] create() called for table: $table");
+        $this->build($this->createBlueprint($table, $callback));
     }
 
     /**
@@ -162,17 +166,18 @@ class Builder
     /**
      * Create a new command set with a Closure.
      */
-    protected function createBlueprint(string $table, ?Closure $callback = null): Blueprint
+    protected function createBlueprint(string $table, \Closure $callback = null): Blueprint
     {
-        $prefix = $this->connection->getConfig('prefix_indexes')
-                    ? $this->connection->getConfig('prefix')
-                    : '';
-
-        if (isset($this->resolver)) {
-            return call_user_func($this->resolver, $table, $callback, $prefix);
+        error_log("[Schema] createBlueprint() called for table: $table");
+        $blueprint = new Blueprint($table, $callback);
+        
+        if ($callback) {
+            error_log("[Schema] Executing callback for table: $table");
+            $blueprint->create(); // Add the create command
+            $callback($blueprint);
         }
-
-        return new Blueprint($table, $callback, $prefix);
+        
+        return $blueprint;
     }
 
     /**

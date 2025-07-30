@@ -1,6 +1,6 @@
-<?
+<?php
+
 declare(strict_types=1);
-php\np
 
 
 
@@ -8,13 +8,10 @@ namespace IslamWiki\Core\Database\Schema;
 
 use Closure;
 use BadMethodCallException;
-use Illuminate\Support\Traits\Macroable;
 use IslamWiki\Core\Database\Connection;
 
 class Blueprint
 {
-    use Macroable;
-
     protected string $table;
     protected string $prefix;
     protected array $columns = [];
@@ -40,19 +37,127 @@ class Blueprint
 
     public function toSql(Connection $connection, $grammar): array
     {
+        error_log("[Blueprint] toSql() called with " . count($this->commands) . " commands");
         $this->addImpliedCommands();
         $this->addFluentCommands();
+        error_log("[Blueprint] After adding commands: " . count($this->commands) . " commands");
         
         $statements = [];
-        foreach ($this->commands as $command) {
-            $method = 'compile' . ucfirst($command['name']);
-            if (method_exists($grammar, $method)) {
-                if ($sql = $grammar->$method($this, $command, $connection)) {
-                    $statements = array_merge($statements, (array) $sql);
+        
+        // Handle create table command
+        if ($this->creating()) {
+            error_log("[Blueprint] Creating table, compiling columns and commands");
+            $columns = [];
+            $commands = [];
+            
+            // Compile columns (remove duplicates)
+            $seenColumns = [];
+            foreach ($this->columns as $column) {
+                $columnKey = $column->name;
+                if (!isset($seenColumns[$columnKey])) {
+                    $columns[] = $this->compileColumn($column);
+                    $seenColumns[$columnKey] = true;
                 }
             }
+            
+            // Compile commands (indexes, etc.) - filter out empty commands and duplicates
+            $seenCommands = [];
+            foreach ($this->commands as $command) {
+                if ($command->name !== 'create' && !empty($this->compileCommand($command))) {
+                    $commandSql = $this->compileCommand($command);
+                    $commandKey = $command->name . '_' . md5($commandSql);
+                    if (!isset($seenCommands[$commandKey])) {
+                        $commands[] = $commandSql;
+                        $seenCommands[$commandKey] = true;
+                    }
+                }
+            }
+            
+            $sql = $grammar->compileCreateTable($this, $columns, $commands);
+            error_log("[Blueprint] Generated CREATE TABLE SQL: $sql");
+            $statements[] = $sql;
         }
+        
+        error_log("[Blueprint] Returning " . count($statements) . " statements");
         return $statements;
+    }
+    
+    protected function compileColumn($column): string
+    {
+        // Handle special column types
+        $type = $this->getSqlType($column->type);
+        
+        $sql = $column->name . ' ' . $type;
+        
+        if (isset($column->length)) {
+            $sql .= '(' . $column->length . ')';
+        }
+        
+        if (isset($column->unsigned) && $column->unsigned) {
+            $sql .= ' UNSIGNED';
+        }
+        
+        if (isset($column->autoIncrement) && $column->autoIncrement) {
+            $sql .= ' AUTO_INCREMENT';
+        }
+        
+        if (isset($column->nullable) && $column->nullable) {
+            $sql .= ' NULL';
+        } else {
+            $sql .= ' NOT NULL';
+        }
+        
+        if (isset($column->default) && $column->default !== null && $column->default !== '') {
+            $defaultValue = $column->default;
+            if (is_bool($defaultValue)) {
+                $defaultValue = $defaultValue ? 1 : 0;
+            }
+            $sql .= ' DEFAULT ' . $this->quote($defaultValue);
+        }
+        
+        if (isset($column->primary) && $column->primary) {
+            $sql .= ' PRIMARY KEY';
+        }
+        
+        return $sql;
+    }
+    
+    protected function getSqlType(string $type): string
+    {
+        $typeMap = [
+            'unsignedBigInteger' => 'BIGINT',
+            'unsignedInteger' => 'INT',
+            'bigInteger' => 'BIGINT',
+            'integer' => 'INT',
+            'string' => 'VARCHAR',
+            'text' => 'TEXT',
+            'timestamp' => 'TIMESTAMP',
+            'boolean' => 'BOOLEAN',
+        ];
+        
+        return $typeMap[$type] ?? strtoupper($type);
+    }
+    
+    protected function compileCommand($command): string
+    {
+        switch ($command->name) {
+            case 'unique':
+                return 'UNIQUE KEY ' . $command->index . ' (' . implode(', ', $command->columns) . ')';
+            case 'index':
+                return 'KEY ' . $command->index . ' (' . implode(', ', $command->columns) . ')';
+            case 'primary':
+                return 'PRIMARY KEY (' . implode(', ', $command->columns) . ')';
+            default:
+                return '';
+        }
+    }
+    
+    protected function quote($value): string
+    {
+        if (is_string($value)) {
+            return "'" . addslashes($value) . "'";
+        }
+        return (string) $value;
     }
 
     protected function addImpliedCommands(): void
@@ -65,20 +170,27 @@ class Blueprint
 
     protected function addFluentIndexes(): void
     {
+        $processedColumns = [];
         foreach ($this->columns as $column) {
+            $columnKey = $column->name;
+            if (isset($processedColumns[$columnKey])) {
+                continue; // Skip already processed columns
+            }
+            
             foreach (['primary', 'unique', 'index'] as $index) {
                 if ($column->$index ?? false) {
                     $this->$index($column->name);
                     $column->$index = false;
                 }
             }
+            $processedColumns[$columnKey] = true;
         }
     }
 
     public function addFluentCommands(): void
     {
         foreach (['engine', 'charset', 'collation', 'temporary'] as $property) {
-            if ($this->$property !== null) {
+            if (isset($this->$property) && $this->$property !== null && $this->$property !== '') {
                 $this->addCommand($property, [$property => $this->$property]);
             }
         }
@@ -168,7 +280,22 @@ class Blueprint
 
     public function id(string $column = 'id'): Fluent
     {
-        return $this->unsignedBigInteger($column, true);
+        $column = $this->unsignedBigInteger($column);
+        $column->autoIncrement = true;
+        $column->primary = true;
+        return $column;
+    }
+
+    public function increments(string $column): Fluent
+    {
+        $column = $this->unsignedInteger($column, true);
+        $column->primary = true;
+        return $column;
+    }
+
+    public function unsignedInteger(string $column, bool $autoIncrement = false): Fluent
+    {
+        return $this->addColumn('integer', $column, ['autoIncrement' => $autoIncrement, 'unsigned' => true]);
     }
 
     public function string(string $column, ?int $length = null): Fluent
@@ -192,9 +319,9 @@ class Blueprint
         return $this->addColumn('bigInteger', $column, compact('autoIncrement', 'unsigned'));
     }
 
-    public function unsignedBigInteger(string $column, bool $autoIncrement = false): Fluent
+    public function unsignedBigInteger(string $column): Fluent
     {
-        return $this->bigInteger($column, $autoIncrement, true);
+        return $this->addColumn('unsignedBigInteger', $column, ['unsigned' => true]);
     }
 
     public function timestamp(string $column, int $precision = 0): Fluent
@@ -220,8 +347,32 @@ class Blueprint
         return $this->addCommand('foreign', compact('columns', 'name'));
     }
 
+    public function boolean(string $column): Fluent
+    {
+        return $this->addColumn('boolean', $column);
+    }
+
+    public function rememberToken(): Fluent
+    {
+        return $this->string('remember_token', 100)->nullable();
+    }
+
+    public function foreignId(string $column): Fluent
+    {
+        return $this->unsignedBigInteger($column);
+    }
+
     public function creating(): bool
     {
-        return collect($this->commands)->contains('name', 'create');
+        error_log("[Blueprint] creating() called, checking " . count($this->commands) . " commands");
+        foreach ($this->commands as $command) {
+            error_log("[Blueprint] Command: " . $command->name);
+            if ($command->name === 'create') {
+                error_log("[Blueprint] Found create command, returning true");
+                return true;
+            }
+        }
+        error_log("[Blueprint] No create command found, returning false");
+        return false;
     }
 }

@@ -36,22 +36,14 @@ class PageController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param LoggerInterface $logger Logger instance
-     */
-    /**
-     * Create a new controller instance.
-     *
-     * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \Psr\Log\LoggerInterface $logger Logger instance
      * @param \IslamWiki\Core\Container $container The dependency injection container
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        LoggerInterface $logger,
         \IslamWiki\Core\Container $container
     ) {
         parent::__construct($db, $container);
-        $this->logger = $logger;
+        $this->logger = $container->get(LoggerInterface::class);
     }
     /**
      * Show a paginated list of all wiki pages.
@@ -276,8 +268,8 @@ class PageController extends Controller
             
             // Skip view count increment for certain conditions
             $skipViewCount = $request->isXmlHttpRequest() || 
-                            $request->headers->has('X-PJAX') ||
-                            $request->headers->get('X-Requested-With') === 'XMLHttpRequest';
+                            $request->hasHeader('X-PJAX') ||
+                            $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
             
             // Track page view if not skipped
             $viewCountUpdated = false;
@@ -285,10 +277,17 @@ class PageController extends Controller
                 try {
                     $this->db->beginTransaction();
                     
+                    // Get current view count and increment it
+                    $currentPage = $this->db->table('pages')
+                        ->where('id', '=', $page->getAttribute('id'))
+                        ->first(['view_count']);
+                    
+                    $newViewCount = ($currentPage['view_count'] ?? 0) + 1;
+                    
                     $result = $this->db->table('pages')
                         ->where('id', '=', $page->getAttribute('id'))
                         ->update([
-                            'view_count' => $this->db->raw('view_count + 1'),
+                            'view_count' => $newViewCount,
                             'last_viewed_at' => date('Y-m-d H:i:s'),
                             'last_viewed_by' => $userId,
                         ]);
@@ -327,7 +326,7 @@ class PageController extends Controller
                 'view_count' => $page->getAttribute('view_count') + 1, // +1 for this view
             ]);
 
-            return $this->view('pages.show', [
+            return $this->view('pages/show', [
                 'page' => $page,
                 'latestRevision' => $latestRevision,
                 'content' => $content,

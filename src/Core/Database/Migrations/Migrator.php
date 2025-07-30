@@ -1,6 +1,6 @@
-<?
+<?php
+
 declare(strict_types=1);
-php\np
 
 
 
@@ -34,6 +34,7 @@ class Migrator
      * The name of the migration table.
      */
     protected string $migrationTable = 'migrations';
+    protected string $currentMigrationFile = '';
 
     /**
      * Create a new migrator instance.
@@ -55,7 +56,6 @@ class Migrator
         if ($this->schema->hasTable($this->migrationTable)) {
             return;
         }
-
         $this->schema->create($this->migrationTable, function ($table) {
             $table->increments('id');
             $table->string('migration');
@@ -69,11 +69,16 @@ class Migrator
      */
     public function run(): array
     {
+        $this->ensureMigrationsTableExists();
         $ran = [];
         $batch = $this->getNextBatchNumber();
         $migrations = $this->getPendingMigrations();
+        
+        error_log("[Migrator] Batch: $batch");
+        error_log("[Migrator] Pending migrations: " . json_encode($migrations));
 
         foreach ($migrations as $migration) {
+            error_log("[Migrator] Running migration: $migration");
             $this->runMigration($migration, $batch);
             $ran[] = $migration;
         }
@@ -86,14 +91,17 @@ class Migrator
      */
     public function runMigration(string $migration, int $batch): void
     {
+        $this->currentMigrationFile = $migration;
         $migration = $this->resolve($migration);
         
         $this->connection->beginTransaction();
         
         try {
             $migration->up();
-            $this->logMigration($migration, $batch);
             $this->connection->commit();
+            
+            // Log migration after successful commit
+            $this->logMigration($migration, $batch);
         } catch (Exception $e) {
             $this->connection->rollBack();
             throw $e;
@@ -150,10 +158,10 @@ class Migrator
             new RecursiveDirectoryIterator($this->migrationPath, RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
-        $regex = new RegexIterator($iterator, '/^.+\\([^\\]+)\.php$/i', RegexIterator::GET_MATCH);
+        $regex = new RegexIterator($iterator, '/^(.+)\.php$/i', RegexIterator::GET_MATCH);
 
         foreach ($regex as $match) {
-            $files[] = $match[1];
+            $files[] = basename($match[1], '.php');
         }
 
         sort($files);
@@ -209,9 +217,9 @@ class Migrator
      */
     public function getLastBatchNumber(): int
     {
+        $this->ensureMigrationsTableExists();
         $batch = $this->connection->table($this->migrationTable)
             ->max('batch');
-            
         return $batch ?? 0;
     }
 
@@ -220,7 +228,8 @@ class Migrator
      */
     protected function logMigration(Migration $migration, int $batch): void
     {
-        $migrationName = $this->getMigrationName(get_class($migration));
+        // Get the migration name from the file name, not the class name
+        $migrationName = $this->getMigrationName($this->currentMigrationFile);
         
         $this->connection->table($this->migrationTable)->insert([
             'migration' => $migrationName,
@@ -252,13 +261,20 @@ class Migrator
             throw new Exception("Migration file not found: {$file}");
         }
         
-        $migrationClass = require $file;
+        // Get the migration class factory function
+        $migrationFactory = require $file;
+        
+        // Create the migration instance with the connection
+        $migrationClass = $migrationFactory($this->connection);
         
         if (!$migrationClass instanceof Migration) {
             throw new Exception("Migration {$migration} must be an instance of " . Migration::class);
         }
         
-        return $migrationClass->setConnection($this->connection->getName());
+        // Set the connection on the migration instance
+        $migrationClass->setConnection($this->connection->getName());
+        
+        return $migrationClass;
     }
 
     /**

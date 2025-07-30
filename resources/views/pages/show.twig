@@ -1,0 +1,50 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ page.title }} - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ page.title }}</h1>
+    <div class="page-meta">
+        <span class="page-namespace">{{ page.namespace }}</span>
+        <span class="page-views">{{ page.view_count }} views</span>
+        <span class="page-last-edited">Last edited: {{ page.updated_at|date('M j, Y') }}</span>
+    </div>
+</div>
+
+<div class="page-content">
+    {{ content|raw }}
+</div>
+
+<div class="page-actions">
+    {% if canEdit %}
+        <a href="/{{ page.slug }}/edit" class="btn btn-primary">Edit Page</a>
+    {% endif %}
+    
+    {% if canDelete %}
+        <a href="/{{ page.slug }}/delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this page?')">Delete Page</a>
+    {% endif %}
+    
+    {% if canLock %}
+        {% if page.is_locked %}
+            <a href="/{{ page.slug }}/unlock" class="btn btn-warning">Unlock Page</a>
+        {% else %}
+            <a href="/{{ page.slug }}/lock" class="btn btn-warning">Lock Page</a>
+        {% endif %}
+    {% endif %}
+    
+    <a href="/{{ page.slug }}/history" class="btn btn-secondary">View History</a>
+</div>
+
+{% if latestRevision %}
+<div class="page-revision-info">
+    <small>
+        Last edited by {{ latestRevision.author_name ?? 'Unknown' }} 
+        on {{ latestRevision.created_at|date('M j, Y \a\t g:i A') }}
+        {% if latestRevision.comment %}
+            - {{ latestRevision.comment }}
+        {% endif %}
+    </small>
+</div>
+{% endif %}
+{% endblock %} 

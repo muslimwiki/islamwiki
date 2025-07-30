@@ -4,13 +4,38 @@
 
 {% block content %}
 <div class="card">
-        <h1>Welcome to IslamWiki</h1>
+    <h1>Welcome to IslamWiki</h1>
     <p>Your Islamic knowledge base and resource center</p>
     
     <div style="margin: 30px 0;">
         <a href="/dashboard" class="btn">Go to Dashboard</a>
+        <a href="/pages" class="btn btn-secondary">Browse All Pages</a>
     </div>
 </div>
+
+<!-- Recent Pages Section -->
+{% if recentPages is not empty %}
+<div class="card">
+    <h2>Recent Pages</h2>
+    <div class="page-list">
+        {% for page in recentPages %}
+        <div class="page-item">
+            <h3><a href="/{{ page.slug }}">{{ page.title }}</a></h3>
+            <p class="page-excerpt">
+                {{ page.content|striptags|slice(0, 150) }}{% if page.content|length > 150 %}...{% endif %}
+            </p>
+            <div class="page-meta">
+                <small>Created: {{ page.created_at|date('M j, Y') }}</small>
+                <a href="/{{ page.slug }}" class="btn btn-small">Read More</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="margin-top: 20px;">
+        <a href="/pages" class="btn">View All Pages</a>
+    </div>
+</div>
+{% endif %}
 
 <!-- Alpine.js Interactive Example -->
 <div class="card" x-data="{ 

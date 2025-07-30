@@ -29,6 +29,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Http\Controllers\Controller;
 use IslamWiki\Models\User;
+use IslamWiki\Core\Session\SessionManager;
 
 /**
  * Authentication Controller
@@ -38,11 +39,17 @@ use IslamWiki\Models\User;
 class AuthController extends Controller
 {
     /**
+     * @var SessionManager Session manager instance
+     */
+    private SessionManager $session;
+    
+    /**
      * Create a new authentication controller instance.
      */
     public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
+        $this->session = $container->get('session');
     }
 
     /**
@@ -53,6 +60,7 @@ class AuthController extends Controller
         return $this->view('auth/login', [
             'title' => 'Login - IslamWiki',
             'error' => $request->getQueryParam('error'),
+            'csrf_token' => $this->session->getCsrfToken(),
         ]);
     }
 
@@ -84,11 +92,12 @@ class AuthController extends Controller
             return $this->redirect('/login?error=Account is deactivated');
         }
 
-        // Start session and store user data
-        $this->startSession();
-        $_SESSION['user_id'] = $user->getAttribute('id');
-        $_SESSION['username'] = $user->getAttribute('username');
-        $_SESSION['is_admin'] = $user->isAdmin();
+        // Log in the user using session manager
+        $this->session->login(
+            $user->getAttribute('id'),
+            $user->getAttribute('username'),
+            $user->isAdmin()
+        );
 
         // Record login
         $user->recordLogin();
@@ -98,7 +107,9 @@ class AuthController extends Controller
             $token = bin2hex(random_bytes(32));
             $user->setAttribute('remember_token', $token);
             $user->save();
+            $this->session->setRememberToken($token);
             
+            // Set remember token cookie
             setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/', '', true, true);
         }
 
@@ -113,6 +124,7 @@ class AuthController extends Controller
         return $this->view('auth/register', [
             'title' => 'Register - IslamWiki',
             'error' => $request->getQueryParam('error'),
+            'csrf_token' => $this->session->getCsrfToken(),
         ]);
     }
 
@@ -168,10 +180,11 @@ class AuthController extends Controller
         }
 
         // Auto-login after registration
-        $this->startSession();
-        $_SESSION['user_id'] = $user->getAttribute('id');
-        $_SESSION['username'] = $user->getAttribute('username');
-        $_SESSION['is_admin'] = $user->isAdmin();
+        $this->session->login(
+            $user->getAttribute('id'),
+            $user->getAttribute('username'),
+            $user->isAdmin()
+        );
 
         return $this->redirect('/dashboard');
     }
@@ -181,9 +194,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request): Response
     {
-        // Clear session
-        $this->startSession();
-        session_destroy();
+        // Log out the user using session manager
+        $this->session->logout();
 
         // Clear remember token cookie
         setcookie('remember_token', '', time() - 3600, '/');
@@ -191,25 +203,15 @@ class AuthController extends Controller
         return $this->redirect('/');
     }
 
-    /**
-     * Start a session if not already started.
-     */
-    protected function startSession(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    }
+
 
     /**
      * Get the currently authenticated user.
      */
     public function getCurrentUser(): ?User
     {
-        $this->startSession();
-        
-        if (isset($_SESSION['user_id'])) {
-            return User::find($_SESSION['user_id'], $this->db);
+        if ($this->session->isLoggedIn()) {
+            return User::find($this->session->getUserId(), $this->db);
         }
 
         // Check remember token
@@ -218,9 +220,11 @@ class AuthController extends Controller
             $user = $this->findUserByRememberToken($token);
             
             if ($user) {
-                $_SESSION['user_id'] = $user->getAttribute('id');
-                $_SESSION['username'] = $user->getAttribute('username');
-                $_SESSION['is_admin'] = $user->isAdmin();
+                $this->session->login(
+                    $user->getAttribute('id'),
+                    $user->getAttribute('username'),
+                    $user->isAdmin()
+                );
                 return $user;
             }
         }

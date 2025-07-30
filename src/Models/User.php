@@ -27,14 +27,18 @@ class User
     protected array $fillable = [
         'username',
         'email',
-        'password_hash',
+        'password',
         'display_name',
         'bio',
-        'avatar_url',
+        'website',
+        'location',
+        'timezone',
+        'language',
         'is_admin',
         'is_active',
         'email_verified_at',
         'last_login_at',
+        'last_login_ip',
         'remember_token',
     ];
 
@@ -42,7 +46,7 @@ class User
      * The attributes that should be hidden for serialization.
      */
     protected array $hidden = [
-        'password_hash',
+        'password',
         'remember_token',
     ];
 
@@ -89,7 +93,8 @@ class User
      */
     public function setAttribute(string $key, $value): self
     {
-        if ($key === 'password') {
+        // Only hash password if it's not already hashed (i.e., when setting a new password)
+        if ($key === 'password' && !str_starts_with($value, '$2y$')) {
             $value = $this->hashPassword($value);
         }
         
@@ -122,7 +127,7 @@ class User
      */
     public function verifyPassword(string $password): bool
     {
-        return password_verify($password, $this->getAttribute('password_hash') ?: '');
+        return password_verify($password, $this->getAttribute('password') ?: '');
     }
 
     /**

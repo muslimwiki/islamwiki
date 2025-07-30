@@ -86,6 +86,58 @@
             color: #1e40af;
             border: 1px solid #bfdbfe;
         }
+        
+        /* Page list styling */
+        .page-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .page-item {
+            border: 1px solid #e1e4e8;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            background: #fafbfc;
+        }
+        
+        .page-item h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .page-item h3 a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        
+        .page-item h3 a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-excerpt {
+            color: #6b7280;
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+        
+        .page-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .page-meta small {
+            color: #9ca3af;
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
     
     {% block head %}{% endblock %}

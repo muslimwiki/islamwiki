@@ -141,7 +141,7 @@ class Connection
     public function select(string $query, array $bindings = []): array
     {
         $statement = $this->query($query, $bindings);
-        return $statement->fetchAll();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -240,8 +240,6 @@ class Connection
      */
     protected function prepareBindings(array $bindings): array
     {
-        $grammar = new Grammar();
-        
         foreach ($bindings as $key => $value) {
             if ($value instanceof \DateTimeInterface) {
                 $bindings[$key] = $value->format('Y-m-d H:i:s');
@@ -300,6 +298,39 @@ class Connection
     public function disconnect(): void
     {
         $this->pdo = null;
+    }
+
+    /**
+     * Get a schema builder instance for the connection.
+     */
+    public function getSchemaBuilder(): Schema\Builder
+    {
+        return new Schema\Builder($this);
+    }
+
+    /**
+     * Get the schema grammar instance.
+     */
+    public function getSchemaGrammar()
+    {
+        return new Schema\Grammar();
+    }
+
+    /**
+     * Get the database name.
+     */
+    public function getDatabaseName(): string
+    {
+        return $this->config['database'] ?? '';
+    }
+
+    /**
+     * Begin a fluent query against a database table.
+     */
+    public function table(string $table): Query\Builder
+    {
+        $builder = new Query\Builder($this);
+        return $builder->from($table);
     }
 
     /**
