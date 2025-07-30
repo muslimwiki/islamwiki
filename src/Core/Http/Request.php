@@ -94,9 +94,9 @@ class Request implements ServerRequestInterface
         $this->serverParams = $serverParams;
 
         if ($body !== '' && $body !== null) {
-            $this->stream = $body instanceof StreamInterface ? $body : new Stream($body);
+            $this->body = $body instanceof StreamInterface ? $body : new Stream($body);
         } else {
-            $this->stream = new Stream('php://temp', 'r+');
+            $this->body = new Stream('php://temp', 'r+');
         }
     }
 

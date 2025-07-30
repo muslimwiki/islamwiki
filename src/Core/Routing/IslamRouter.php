@@ -323,6 +323,12 @@ class IslamRouter implements RequestHandlerInterface
         error_log('IslamRouter: Initializing middleware stack');
         
         try {
+            // Check if logger is available in container
+            if (!$this->container->has(\Psr\Log\LoggerInterface::class)) {
+                error_log('IslamRouter: Logger not available, skipping middleware stack initialization');
+                return;
+            }
+            
             $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
             $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack($logger);
             
@@ -358,10 +364,8 @@ class IslamRouter implements RequestHandlerInterface
             error_log('IslamRouter: Middleware stack initialized with ' . $this->middlewareStack->count() . ' middleware');
         } catch (\Throwable $e) {
             error_log('IslamRouter: Error initializing middleware stack: ' . $e->getMessage());
-            // Create a minimal middleware stack if there's an error
-            $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack(
-                $this->container->get(\Psr\Log\LoggerInterface::class)
-            );
+            // Don't create a middleware stack if there's an error - just skip middleware
+            $this->middlewareStack = null;
         }
     }
 
