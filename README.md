@@ -19,79 +19,49 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 - **Directory Traversal Protection**: Blocking of path traversal attempts
 
 ### 🚀 Key Features
-- **Enterprise Security**: Multi-layered security protection
+
+#### 🔒 **Enterprise Security (v0.2.3)**
+- **Multi-layered Security Protection**
   - Rate limiting (60 requests/minute, 10 burst/second)
   - Input validation and sanitization
   - SQL injection detection and prevention
   - XSS protection with pattern detection
   - Directory traversal protection
-  - Comprehensive security headers
-- **Professional Error Handling**: Robust error management
-  - Exception catching and logging
-  - Debug information in development
-  - User-friendly error pages
-  - Performance monitoring
-  - Graceful error responses
-- **Enhanced Logging**: PSR-3 compliant system
-  - Structured logging with context
-  - Specialized methods (security, performance, user actions)
-  - Log rotation with configurable limits
-  - Request context automatic inclusion
-  - Memory usage and performance tracking
-- **CSRF Protection**: Cross-site request forgery prevention
-  - Token validation for state-changing requests
-  - Flexible token sources (POST, headers, Laravel-style)
-  - User-friendly error pages
-  - Automatic token generation and verification
-- **Pages Index**: Complete "View All Pages" functionality for testing and browsing
-- **Search & Filter**: Comprehensive search across page titles with namespace filtering
+  - Comprehensive security headers (CSP, XSS-Protection, etc.)
+- **CSRF Protection**: Token-based protection for all state-changing requests
+- **Professional Error Handling**: Robust error management with debug information
+- **Enhanced Logging**: PSR-3 compliant system with structured data
+
+#### 📝 **Wiki Page System (v0.2.0+)**
+- **Complete Page Management**: Create, view, edit, and delete wiki pages
+- **Page Model**: Eloquent-like model with relationships and revision tracking
+- **Page Controller**: Full CRUD operations with proper templates
+- **View Count Tracking**: Page view analytics with database updates
+- **Page Permissions**: Edit, delete, and lock permissions based on user roles
+- **Page History**: Revision tracking and history viewing functionality
+- **Pages Index**: Complete "View All Pages" functionality with search and filtering
 - **Professional Layout**: Grid-based page cards with metadata and actions
-- **Navigation Enhancement**: "View All Pages" link in top navigation bar
-- **Sorting & Pagination**: Sort by title, date, views with pagination support
-- **Page Actions**: Quick access to View, Edit, and History for each page
-- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-- **Full Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
+
+#### 🎨 **Content Rendering (v0.2.1+)**
+- **Enhanced Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
 - **Syntax Highlighting**: Prism.js integration for beautiful code display
 - **Professional Styling**: Enhanced CSS for all rendered content
 - **Auto-linking**: Smart URL detection and markdown-style link support
 - **Code Blocks**: Language-specific syntax highlighting with proper formatting
 
-### 🚀 Key Features
-- **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
-- **Full Markdown Support**: Headers, bold, italic, lists, links, blockquotes, code blocks
-- **Syntax Highlighting**: Prism.js integration for beautiful code display
-- **Professional Styling**: Enhanced CSS for all rendered content
-- **Auto-linking**: Smart URL detection and markdown-style link support
-- **Code Blocks**: Language-specific syntax highlighting with proper formatting
-- **Wiki Page System**: Complete page creation, viewing, and management
-- **Page Model**: Eloquent-like model with relationships and revision tracking
-- **Page Controller**: Full CRUD operations for wiki pages with proper templates
-- **View Count Tracking**: Page view analytics with database updates
-- **Page Permissions**: Edit, delete, and lock permissions based on user roles
-- **Page History**: Revision tracking and history viewing functionality
+#### 🔐 **Authentication & Security (v0.1.0+)**
 - **Session Management**: Secure session handling with HTTP-only, SameSite cookies
-- **CSRF Protection**: Token-based protection against cross-site request forgery
-- **Authentication System**: Secure user authentication with password hashing
-- **Database Foundation**: Complete migration system with proper schema management
-- **Dynamic Homepage**: Database-driven content with recent pages display
+- **User Authentication**: Registration, login, logout with password hashing
 - **Remember Me**: Secure persistent login functionality
-- **Development Tools**: Setup scripts, tests, and comprehensive documentation
+- **Authentication Middleware**: Route protection based on user roles
+- **Database Foundation**: Complete migration system with proper schema management
 
-### 🚀 Key Features
-- **Wiki Page System**: Complete page creation, viewing, and management
-- **Page Model**: Eloquent-like model with relationships and revision tracking
-- **Page Controller**: Full CRUD operations for wiki pages with proper templates
-- **Content Rendering**: Basic wiki text parsing and HTML rendering
-- **View Count Tracking**: Page view analytics with database updates
-- **Page Permissions**: Edit, delete, and lock permissions based on user roles
-- **Page History**: Revision tracking and history viewing functionality
-- **Session Management**: Secure session handling with HTTP-only, SameSite cookies
-- **CSRF Protection**: Token-based protection against cross-site request forgery
-- **Authentication System**: Secure user authentication with password hashing
-- **Database Foundation**: Complete migration system with proper schema management
+#### 🛠️ **Development & Infrastructure**
 - **Dynamic Homepage**: Database-driven content with recent pages display
-- **Remember Me**: Secure persistent login functionality
 - **Development Tools**: Setup scripts, tests, and comprehensive documentation
+- **PSR-7 Compatible**: Standard HTTP request/response handling
+- **Dependency Injection**: Clean, testable code architecture
+- **Comprehensive Testing**: Unit tests and integration tests
 
 ---
 
@@ -241,55 +211,90 @@ islamwiki/
 ## Technology Stack
 
 ### Backend
-- **PHP 8.1+**: Modern PHP with strict typing
-- **FastRoute**: High-performance routing
-- **Twig**: Server-side templating engine
-- **PSR-7**: HTTP message interfaces
-- **Composer**: Dependency management
+- **PHP 8.1+**: Modern PHP with strict typing and PSR standards
+- **FastRoute**: High-performance routing with middleware support
+- **Twig**: Server-side templating engine with layouts and inheritance
+- **PSR-7**: HTTP message interfaces for request/response handling
+- **PSR-3**: Logging interface for structured logging
+- **Composer**: Dependency management and autoloading
+
+### Security & Error Handling
+- **SecurityMiddleware**: Enterprise-level attack prevention
+- **ErrorHandlingMiddleware**: Professional error management
+- **MiddlewareStack**: Organized middleware execution
+- **CSRF Protection**: Token-based form protection
+- **Rate Limiting**: Configurable request limiting
 
 ### Frontend
-- **Alpine.js**: Lightweight JavaScript framework
+- **Alpine.js**: Lightweight JavaScript framework for interactivity
 - **Modern CSS**: Responsive design with flexbox/grid
 - **Progressive Enhancement**: Works without JavaScript
+- **Prism.js**: Syntax highlighting for code blocks
 
-### Development
-- **Error Handling**: Comprehensive logging and debugging
-- **Service Providers**: Modular architecture
-- **Dependency Injection**: Clean, testable code
+### Development & Infrastructure
+- **Dependency Injection**: Clean, testable code architecture
+- **Service Providers**: Modular service registration
+- **Database Migrations**: Schema version control
+- **Comprehensive Testing**: Unit and integration tests
+- **Structured Logging**: PSR-3 compliant with context
 
 ---
 
 ## Features
 
-### Current (0.1.0)
-- ✅ Session management with secure HTTP-only cookies
-- ✅ CSRF protection on all forms
-- ✅ User authentication (registration, login, logout)
-- ✅ Authentication middleware for route protection
-- ✅ Database foundation with migration system
-- ✅ Dynamic homepage with recent pages display
-- ✅ Remember me functionality
-- ✅ Secure password hashing and verification
-- ✅ Comprehensive testing suite
-- ✅ Working homepage with interactive demo
-- ✅ Alpine.js integration for lightweight interactivity
-- ✅ Twig templating with proper layouts
-- ✅ Responsive design with modern styling
-- ✅ Comprehensive error handling and logging
-- ✅ PSR-7 compatible HTTP handling
-- ✅ Dependency injection container
+### ✅ **Implemented (v0.2.3)**
+- **Enterprise Security**: Multi-layered attack prevention
+  - SQL injection, XSS, and directory traversal protection
+  - Rate limiting and input validation
+  - Comprehensive security headers
+  - CSRF protection with token validation
+- **Professional Error Handling**: Robust error management
+  - Exception catching and logging
+  - Debug information in development
+  - User-friendly error pages
+  - Performance monitoring
+- **Enhanced Logging**: PSR-3 compliant system
+  - Structured logging with context
+  - Specialized methods (security, performance, user actions)
+  - Log rotation with configurable limits
+- **Wiki Page System**: Complete page management
+  - Create, view, edit, and delete wiki pages
+  - Page revision tracking and history
+  - View count analytics
+  - Page permissions and locking
+  - Pages index with search and filtering
+- **Content Rendering**: Enhanced markdown support
+  - Full markdown syntax support
+  - Syntax highlighting with Prism.js
+  - Professional styling and auto-linking
+- **Authentication System**: Secure user management
+  - Registration, login, logout
+  - Password hashing and verification
+  - Session management with secure cookies
+  - Remember me functionality
+- **Database Foundation**: Complete migration system
+  - Database schema management
+  - Migration version control
+  - Seeding and testing support
+- **Development Infrastructure**
+  - PSR-7 compatible HTTP handling
+  - Dependency injection container
+  - Comprehensive testing suite
+  - Alpine.js integration for interactivity
+  - Twig templating with layouts
+  - Responsive design with modern styling
 
-### Planned (0.1.1)
-- 🔄 Wiki page creation, editing, and management
-- 🔄 Page revision tracking and history
-- 🔄 Search functionality with full-text search
-- 🔄 Rich text editor for page editing
-- 🔄 User profiles and contribution tracking
-- 🔄 API endpoints for external integration
-- 🔄 Caching system for performance
-- 🔄 Extensions and plugins system
-- 🔄 Themes and skins
-- 🔄 Real-time collaboration features
+### 🔄 **Planned (v0.3.0+)**
+- **Advanced Search**: Full-text search with filters
+- **Rich Text Editor**: WYSIWYG editor for page editing
+- **User Profiles**: Detailed user profiles and contribution tracking
+- **API Endpoints**: RESTful API for external integration
+- **Caching System**: Performance optimization with caching
+- **Extensions System**: Plugin and extension framework
+- **Themes and Skins**: Customizable appearance
+- **Real-time Collaboration**: Live editing and collaboration
+- **Media Support**: Image and file upload handling
+- **Advanced Permissions**: Role-based access control
 
 ---
 
@@ -298,11 +303,13 @@ islamwiki/
 This project is licensed under the AGPL-3.0 License. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
 
 ### Development Guidelines
-- Follow PSR-12 coding standards
-- Write comprehensive tests
-- Document all new features
-- Use semantic versioning
-- Maintain backward compatibility
+- Follow PSR-1 and PSR-12 coding standards
+- Write comprehensive tests for all features
+- Document all new features and changes
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- Maintain backward compatibility when possible
+- Follow security best practices
+- Use structured logging for debugging
 
 ---
 
@@ -319,13 +326,4 @@ For support and questions:
 - Check the [documentation](docs/)
 - Review the [changelog](CHANGELOG.md)
 
----
 
-## Archived Recent Changes
-
-### Version 0.0.5 (Unreleased)
-- Enhanced routing system with middleware support
-- Improved error handling and logging
-- Added database migration system
-- Implemented user authentication framework
-- Added API endpoints for frontend integration
