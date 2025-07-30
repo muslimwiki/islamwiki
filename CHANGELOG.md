@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.4] - 2025-07-30
+## [0.0.7] - 2025-07-30
 
 ### Fixed
 - **Environment Variable Loading**: Resolved "Undefined array key 'APP_ENV'" warnings
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved compatibility with different PHP configurations
   - Enhanced error handling for missing environment variables
 
-## [0.2.3] - 2025-07-30
+## [0.0.6] - 2025-07-30
 
 ### Added
 - **Comprehensive Security Middleware**: Enterprise-level security protection
@@ -116,7 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive testing with validation scripts
   - Multiple security layers with defense in depth
 
-## [0.2.2] - 2025-07-30
+## [0.0.5] - 2025-07-30
 
 ### Added
 - **Pages Index**: Complete "View All Pages" functionality for testing and browsing
@@ -142,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Template Paths**: Fixed template resolution for pages index
 - **Request Class**: Added missing `getQueryParam()` method
 
-## [0.2.1] - 2025-07-30
+## [0.0.4] - 2025-07-30
 
 ### Added
 - **Enhanced Content Rendering**: Comprehensive markdown support with syntax highlighting
@@ -166,7 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Content Rendering**: Resolved HTML escaping and markdown processing order
 - **Code Highlighting**: Fixed Prism.js integration and initialization
 
-## [0.2.0] - 2025-07-30
+## [0.0.3] - 2025-07-30
 
 ### Added
 - **Wiki Page System**: Complete page creation, viewing, and management
@@ -196,7 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Session Management**: Fixed session warnings in CLI environment
 - **Request Class**: Added missing `isXmlHttpRequest()` method for AJAX detection
 
-## [0.1.0] - 2025-07-30
+## [0.0.2] - 2025-07-30
 
 ### Added
 - **Session Management System**: Complete session handling with secure configuration
@@ -249,8 +249,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Database**: MySQL with proper migrations and sample data
 - **Authentication**: Session-based with remember me support
 - **Middleware**: Authentication and CSRF middleware for route protection
-
-## [0.0.1] - 2025-07-29
 
 ## [0.0.1] - 2025-07-29
 

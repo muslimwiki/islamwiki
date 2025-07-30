@@ -4,7 +4,7 @@ A modern, custom wiki system combining the power of MediaWiki's functionality wi
 
 [![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-## Version 0.2.4 (2025-07-30)
+## Version 0.0.7 (2025-07-30)
 
 ### ✨ What's New
 - **Environment Variable Fixes**: Resolved all "Undefined array key 'APP_ENV'" warnings
