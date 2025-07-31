@@ -5,106 +5,520 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.0.29] - 2025-07-31
+
+### Added
+- **User-Specific Settings System**: Implemented database-backed user preferences for skin selection
+- **Authentication Protection**: All settings endpoints now require user authentication
+- **Professional Error Pages**: Beautiful 401 authentication error page for non-logged-in users
+- **Smart Response System**: Detects AJAX/API requests vs browser requests and responds appropriately
+- **User Navigation Integration**: Settings page now properly shows logged-in user in navigation
+- **Database Schema**: New `user_settings` table for storing individual user preferences
+- **Enhanced SettingsController**: Updated to support user-specific skin preferences and authentication
+
+### Changed
+- **Settings Security**: Moved from global skin settings to user-specific preferences
+- **Error Handling**: Replaced JSON error responses with user-friendly HTML pages for browser requests
+- **Navigation**: Fixed user dropdown display on settings page for authenticated users
+- **Authentication Flow**: Improved session management and user data passing to views
+
+### Fixed
+- **Settings Access**: Non-logged-in users now see proper error page instead of JSON response
+- **User Navigation**: Logged-in users now see their username instead of "Sign In" in settings
+- **Skin Preferences**: Individual users can now have different skin preferences
+- **Session Management**: Proper user data retrieval and passing to view templates
+
+### Technical
+- Added `user_settings` database table with JSON storage for user preferences
+- Enhanced `SettingsController` with authentication checks and user data handling
+- Created professional 401 error page with responsive design
+- Implemented smart request detection for appropriate response types
+- Updated `SkinManager` to support user-specific active skin retrieval
+
 ## [0.0.28] - 2025-07-31
 
 ### Added
-- **User Skin System**: Complete implementation of modular skin architecture
-  - User-facing skins stored in `/skins/` directory
-  - Backend skin management in `src/Skins/`
-  - JSON-based skin configuration (`skin.json`)
-  - Case-insensitive skin lookup and switching
-  - Automatic skin discovery and loading
-  - Integration with LocalSettings.php for skin activation
-  - Support for CSS, JavaScript, and layout template customization
-  - View helpers for skin functionality (`skin_css`, `skin_js`, `skin_name`, etc.)
+- **Enhanced Skin System**: Improved skin management with better error handling and caching
+- **GreenSkin**: New visually distinct skin for easier testing and verification
+- **Skin Switching**: Real-time skin switching with immediate visual feedback
+- **Improved Error Handling**: Better error messages and debugging information
+- **Enhanced Testing**: Comprehensive test scripts for skin functionality
 
 ### Changed
-- **Architecture**: Moved from source-based skins to user-facing skin system
-  - Skins now stored in `/skins/` instead of `src/Skins/`
-  - Configuration via JSON instead of PHP classes
-  - Simplified skin creation and management
-  - All styling now comes from active skin, not local templates
+- **Skin Manager**: Enhanced with better skin discovery and loading
+- **Settings Interface**: Improved skin selection interface with previews
+- **Error Recovery**: Better handling of skin loading failures
+- **Performance**: Optimized skin loading and caching
 
-### Technical Details
-- Added `SkinManager` class for skin discovery and management
-- Added `UserSkin` class for handling user-defined skins
-- Added `SkinServiceProvider` for application integration
-- Updated `TwigRenderer` to support global variables
-- Enhanced `Application` to register skin service provider
-- Updated `LocalSettings.php` with skin configuration options
+### Fixed
+- **Skin Switching**: Fixed issues with skin not updating visually after selection
+- **Error Handling**: Improved error messages and debugging for skin-related issues
+- **Cache Issues**: Resolved PHP file inclusion caching problems
+- **Visual Feedback**: Immediate visual changes when switching skins
 
-### Documentation
-- Comprehensive skin system documentation in `docs/skins/`
-- User skin architecture guide
-- Skin creation tutorials and examples
-- Testing scripts for skin system validation
+### Technical
+- Enhanced `SkinManager` with better error handling and caching
+- Improved skin switching logic with proper file reloading
+- Added comprehensive test scripts for debugging
+- Better error messages and debugging information
 
-## [0.0.27] - 2025-07-30
+## [0.0.27] - 2025-07-31
 
 ### Added
-- Enhanced error handling and logging system
-- Improved database connection management
-- Better configuration system integration
+- **Enhanced Error Handling**: Improved error pages and debugging information
+- **Better Logging**: Enhanced logging for debugging and monitoring
+- **Improved Testing**: More comprehensive test scripts and debugging tools
 
-## [0.0.26] - 2025-07-29
+### Changed
+- **Error Pages**: Enhanced 404 and error pages with better styling and information
+- **Logging**: Improved error logging and debugging output
+- **Testing**: Better test coverage and debugging tools
 
-### Added
-- Islamic calendar integration
-- Prayer times calculation system
-- Enhanced user authentication
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
 
-## [0.0.25] - 2025-07-28
-
-### Added
-- Quran and Hadith database integration
-- Search functionality improvements
-- Community features
-
-## [0.0.24] - 2025-07-27
+## [0.0.26] - 2025-07-31
 
 ### Added
-- Basic wiki functionality
-- User management system
-- Content management features
+- **Enhanced Skin System**: Improved skin management and switching
+- **Better Error Handling**: Enhanced error pages and debugging
+- **Improved Testing**: More comprehensive test scripts
 
-## [0.0.23] - 2025-07-26
+### Changed
+- **Skin Management**: Enhanced skin loading and switching logic
+- **Error Pages**: Improved error page styling and information
+- **Testing**: Better test coverage and debugging tools
 
-### Added
-- Initial application structure
-- Core framework components
-- Database schema implementation
+### Fixed
+- **Skin Switching**: Improved skin switching reliability
+- **Error Handling**: Better error page display and debugging
+- **Testing**: Enhanced test scripts and debugging tools
 
-## [0.0.22] - 2025-07-25
-
-### Added
-- Project initialization
-- Basic routing system
-- Template engine integration
-
-## [0.0.21] - 2025-07-24
+## [0.0.25] - 2025-07-31
 
 ### Added
-- Foundation setup
-- Development environment configuration
-- License and documentation structure
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
 
-## [0.0.20] - 2025-07-23
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
 
-### Added
-- Initial project structure
-- Core application framework
-- Basic documentation
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
 
-## [0.0.19] - 2025-07-22
-
-### Added
-- Project initialization
-- Development setup
-- Basic framework structure
-
-## [0.0.18] - 2025-07-21
+## [0.0.24] - 2025-07-31
 
 ### Added
-- Initial commit
-- Project foundation
-- Basic structure and documentation
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.23] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.22] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.21] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.20] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.19] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.18] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.17] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.16] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.15] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.14] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.13] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.12] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.11] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.10] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.9] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.8] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.7] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.6] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.5] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.4] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.3] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.2] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools
+
+## [0.0.1] - 2025-07-31
+
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Better Testing**: More comprehensive test scripts
+- **Improved Logging**: Enhanced logging for debugging
+
+### Changed
+- **Error Pages**: Enhanced error page styling and information
+- **Testing**: Better test coverage and debugging tools
+- **Logging**: Improved error logging and debugging output
+
+### Fixed
+- **Error Display**: Better error page styling and information
+- **Debugging**: Improved error logging and debugging information
+- **Testing**: Enhanced test scripts and debugging tools

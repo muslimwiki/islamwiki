@@ -45,6 +45,12 @@ class SkinManager
     {
         $this->app = $app;
         
+        // Load LocalSettings.php to get the active skin
+        $localSettingsPath = $this->app->basePath('LocalSettings.php');
+        if (file_exists($localSettingsPath)) {
+            require_once $localSettingsPath;
+        }
+        
         // Get active skin from LocalSettings
         global $wgActiveSkin;
         $this->activeSkin = strtolower($wgActiveSkin ?? 'bismillah');
@@ -147,11 +153,115 @@ class SkinManager
     }
     
     /**
+     * Get the active skin for a specific user
+     */
+    public function getActiveSkinForUser(int $userId): ?Skin
+    {
+        try {
+            // Get user settings from database
+            $stmt = $this->app->getContainer()->get('db')->prepare("
+                SELECT settings FROM user_settings 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch();
+            
+            if ($result) {
+                $settings = json_decode($result['settings'], true) ?? [];
+                $userSkin = $settings['skin'] ?? null;
+                
+                if ($userSkin) {
+                    return $this->getSkin($userSkin);
+                }
+            }
+            
+            // Fallback to global default
+            return $this->getActiveSkin();
+        } catch (\Throwable $e) {
+            error_log("SkinManager::getActiveSkinForUser - Error: " . $e->getMessage());
+            return $this->getActiveSkin();
+        }
+    }
+    
+    /**
+     * Get the active skin name for a specific user
+     */
+    public function getActiveSkinNameForUser(int $userId): string
+    {
+        try {
+            // Get user settings from database
+            $stmt = $this->app->getContainer()->get('db')->prepare("
+                SELECT settings FROM user_settings 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch();
+            
+            if ($result) {
+                $settings = json_decode($result['settings'], true) ?? [];
+                $userSkin = $settings['skin'] ?? null;
+                
+                if ($userSkin) {
+                    return $userSkin;
+                }
+            }
+            
+            // Fallback to global default
+            return $this->getActiveSkinName();
+        } catch (\Throwable $e) {
+            error_log("SkinManager::getActiveSkinNameForUser - Error: " . $e->getMessage());
+            return $this->getActiveSkinName();
+        }
+    }
+    
+    /**
      * Get the name of the currently active skin
      */
     public function getActiveSkinName(): string
     {
         return $this->activeSkin;
+    }
+    
+    /**
+     * Reload the active skin from LocalSettings.php
+     */
+    public function reloadActiveSkin(): void
+    {
+        // Parse LocalSettings.php content directly
+        $localSettingsPath = $this->app->basePath('LocalSettings.php');
+        if (file_exists($localSettingsPath)) {
+            $content = file_get_contents($localSettingsPath);
+            
+            // Extract the active skin from the file content
+            if (preg_match('/\$wgActiveSkin\s*=\s*env\(\'ACTIVE_SKIN\',\s*\'([^\']+)\'\);/', $content, $matches)) {
+                $this->activeSkin = strtolower($matches[1]);
+            } else {
+                $this->activeSkin = 'bismillah'; // fallback
+            }
+        }
+        
+        // Reset the current skin so it will be reloaded on next access
+        $this->currentSkin = null;
+        
+        // Update the container's cached instances
+        $container = $this->app->getContainer();
+        if ($container->has('skin.manager')) {
+            $container->instance('skin.manager', $this);
+        }
+        if ($container->has('skin.active')) {
+            $container->instance('skin.active', $this->getActiveSkin());
+        }
+        if ($container->has('skin.data')) {
+            $activeSkin = $this->getActiveSkin();
+            $skinData = [
+                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
+                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'name' => $activeSkin ? $activeSkin->getName() : 'default',
+                'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
+                'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
+            ];
+            $container->instance('skin.data', $skinData);
+        }
     }
     
     /**

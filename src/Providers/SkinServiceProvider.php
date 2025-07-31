@@ -44,17 +44,19 @@ class SkinServiceProvider
     {
         // Register the skin manager as a singleton
         $this->app->getContainer()->singleton('skin.manager', function () {
-            return $this->skinManager;
+            return new SkinManager($this->app);
         });
         
         // Register the active skin
         $this->app->getContainer()->singleton('skin.active', function () {
-            return $this->skinManager->getActiveSkin();
+            $skinManager = $this->app->getContainer()->get('skin.manager');
+            return $skinManager->getActiveSkin();
         });
         
         // Add skin data to the view context
         $this->app->getContainer()->singleton('skin.data', function () {
-            $activeSkin = $this->skinManager->getActiveSkin();
+            $skinManager = $this->app->getContainer()->get('skin.manager');
+            $activeSkin = $skinManager->getActiveSkin();
             
             if ($activeSkin === null) {
                 return [

@@ -43,16 +43,7 @@ abstract class Controller
      */
     protected function json($data, int $status = 200, array $headers = []): Response
     {
-        $response = new Response();
-        $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        
-        $response = $response->withHeader('Content-Type', 'application/json');
-        
-        foreach ($headers as $name => $value) {
-            $response = $response->withHeader($name, $value);
-        }
-        
-        return $response->withStatus($status);
+        return Response::json($data, $status, $headers);
     }
 
     /**

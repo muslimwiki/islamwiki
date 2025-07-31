@@ -69,11 +69,28 @@ $router->get('/profile', 'IslamWiki\Http\Controllers\ProfileController@show');
 $router->put('/profile', 'IslamWiki\Http\Controllers\ProfileController@update');
 $router->put('/profile/password', 'IslamWiki\Http\Controllers\ProfileController@updatePassword');
 
-// Settings
-$router->get('/settings', 'IslamWiki\Http\Controllers\SettingsController@index');
-$router->post('/settings/skin', 'IslamWiki\Http\Controllers\SettingsController@updateSkin');
-$router->get('/settings/skins', 'IslamWiki\Http\Controllers\SettingsController@getAvailableSkins');
-$router->get('/settings/skin/{name}', 'IslamWiki\Http\Controllers\SettingsController@getSkinInfo');
+// Settings (Protected - Requires Authentication)
+$router->get('/settings', 'IslamWiki\Http\Controllers\SettingsController@index', ['auth']);
+$router->post('/settings/skin', 'IslamWiki\Http\Controllers\SettingsController@updateSkin', ['auth']);
+$router->get('/settings/skins', 'IslamWiki\Http\Controllers\SettingsController@getAvailableSkins', ['auth']);
+$router->get('/settings/skin/{name}', 'IslamWiki\Http\Controllers\SettingsController@getSkinInfo', ['auth']);
+
+// Test endpoint for debugging
+$router->post('/test-skin-update', function($request) {
+    $body = $request->getBody()->getContents();
+    $contentType = $request->getHeaderLine('Content-Type');
+    $parsedBody = $request->getParsedBody();
+    
+    $response = [
+        'body' => $body,
+        'contentType' => $contentType,
+        'parsedBody' => $parsedBody,
+        'post' => $_POST,
+        'isJson' => strpos($contentType, 'application/json') !== false
+    ];
+    
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'application/json'], json_encode($response));
+});
 
 // Test routes for debugging
 $router->get('/test', 'IslamWiki\Http\Controllers\TestController@test');

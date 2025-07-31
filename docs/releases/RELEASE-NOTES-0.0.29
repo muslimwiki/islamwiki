@@ -1,0 +1,208 @@
+# Release Notes - Version 0.0.29
+
+**Release Date:** July 31, 2025  
+**Version:** 0.0.29  
+**License:** AGPL-3.0-only
+
+## 🎉 Major Features
+
+### 🔐 User-Specific Settings System
+IslamWiki now supports individual user preferences for skin selection and other settings. Each user can have their own personalized experience without affecting other users.
+
+**Key Features:**
+- Database-backed user preferences stored in `user_settings` table
+- Individual skin selection per user
+- Secure authentication required for all settings access
+- Professional error pages for non-authenticated users
+
+### 🛡️ Enhanced Security
+All settings endpoints now require proper user authentication, ensuring that only logged-in users can access and modify their preferences.
+
+**Security Improvements:**
+- Authentication middleware applied to all settings routes
+- Session-based user verification
+- Proper user data isolation
+- Secure database storage with JSON encoding
+
+### 🎨 Professional User Experience
+Non-logged-in users now see beautiful, helpful error pages instead of confusing JSON responses.
+
+**UX Improvements:**
+- Responsive 401 authentication error page
+- Clear call-to-action buttons (Login, Register, Go Home)
+- Professional styling with consistent branding
+- Smart response detection (HTML for browsers, JSON for APIs)
+
+## 🔧 Technical Improvements
+
+### Database Schema
+- **New Table:** `user_settings` for storing individual user preferences
+- **JSON Storage:** Flexible schema for future preference types
+- **Foreign Key:** Proper relationship to users table
+- **Indexing:** Optimized for user lookups
+
+### Enhanced Controllers
+- **SettingsController:** Updated with authentication checks and user data handling
+- **User Integration:** Proper user data passing to view templates
+- **Error Handling:** Graceful fallbacks and debugging information
+
+### Improved Navigation
+- **User Dropdown:** Settings page now shows logged-in user properly
+- **Session Management:** Enhanced user data retrieval and passing
+- **Visual Feedback:** Immediate visual confirmation of authentication status
+
+## 🚀 New Features
+
+### Smart Response System
+The application now intelligently detects the type of request and responds appropriately:
+
+- **Browser Requests:** Beautiful HTML error pages with helpful navigation
+- **API/AJAX Requests:** Proper JSON responses for programmatic access
+- **Authentication Detection:** Automatic user session verification
+
+### Professional Error Pages
+- **401 Authentication Error:** Beautiful, responsive error page
+- **Clear Messaging:** Helpful explanations and action buttons
+- **Consistent Styling:** Matches application theme and branding
+- **Debug Information:** Optional debug details for development
+
+### Enhanced Settings Interface
+- **User-Specific Skins:** Each user can have different skin preferences
+- **Secure Access:** All settings require authentication
+- **Visual Feedback:** Immediate confirmation of user status
+- **Proper Navigation:** User dropdown shows correctly for authenticated users
+
+## 🔧 Technical Details
+
+### Database Changes
+```sql
+CREATE TABLE user_settings (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    settings JSON NOT NULL COMMENT 'JSON object containing user settings',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_id (user_id),
+    INDEX idx_user_id (user_id)
+);
+```
+
+### Code Changes
+- **SettingsController:** Enhanced with authentication and user data handling
+- **SkinManager:** Updated to support user-specific active skin retrieval
+- **Error Pages:** New professional 401 error page
+- **Routes:** Authentication middleware applied to settings endpoints
+
+### File Structure
+```
+resources/views/errors/401.php          # New authentication error page
+database/migrations/0015_user_settings_schema.php  # New database schema
+src/Http/Controllers/SettingsController.php        # Enhanced with auth
+src/Skins/SkinManager.php                         # User-specific skin support
+```
+
+## 🐛 Bug Fixes
+
+### Settings Access
+- **Fixed:** Non-logged-in users now see proper error page instead of JSON
+- **Fixed:** Logged-in users see their username instead of "Sign In"
+- **Fixed:** User navigation properly displays for authenticated users
+- **Fixed:** Session management and user data passing to views
+
+### User Experience
+- **Fixed:** Settings page navigation shows correct user information
+- **Fixed:** Skin preferences now work per-user instead of globally
+- **Fixed:** Proper error handling for authentication failures
+- **Fixed:** Visual feedback for user authentication status
+
+## 📚 Documentation Updates
+
+### New Documentation
+- **Authentication Guide:** How the new authentication system works
+- **User Settings:** Documentation for the user-specific settings system
+- **Error Pages:** Guide to the new error page system
+- **Security:** Updated security documentation
+
+### Updated Documentation
+- **Settings Controller:** Updated with new authentication features
+- **Skin System:** Enhanced with user-specific skin support
+- **Database Schema:** Updated with new user_settings table
+- **API Documentation:** Updated with authentication requirements
+
+## 🧪 Testing
+
+### New Test Scripts
+- **test-settings-logged-in.php:** Comprehensive testing of authenticated settings
+- **test-auth.php:** Authentication system verification
+- **test-user-settings.php:** User-specific settings functionality
+
+### Test Coverage
+- **Authentication:** Verified proper authentication checks
+- **User Navigation:** Confirmed user dropdown displays correctly
+- **Error Pages:** Tested both HTML and JSON responses
+- **Database:** Verified user settings storage and retrieval
+
+## 🔄 Migration Guide
+
+### For Developers
+1. **Database Migration:** Run the new migration for user_settings table
+2. **Authentication:** Update any custom controllers to include authentication checks
+3. **Error Handling:** Use the new error page system for authentication failures
+4. **User Data:** Ensure user data is properly passed to view templates
+
+### For Users
+1. **Login Required:** Settings now require user authentication
+2. **Individual Preferences:** Each user can have their own skin preferences
+3. **Better Error Messages:** Clear guidance when authentication is required
+4. **Improved Navigation:** User information displays correctly in settings
+
+## 🎯 Future Enhancements
+
+### Planned Features
+- **Additional User Preferences:** More customization options beyond skins
+- **Profile Settings:** Enhanced user profile management
+- **Theme Customization:** More granular theme and appearance options
+- **Notification Preferences:** User-specific notification settings
+
+### Technical Roadmap
+- **API Enhancements:** More comprehensive API for user settings
+- **Performance Optimization:** Caching for user preferences
+- **Security Enhancements:** Additional authentication methods
+- **Mobile Optimization:** Enhanced mobile experience for settings
+
+## 📊 Performance Impact
+
+### Database
+- **Minimal Impact:** New table is lightweight and properly indexed
+- **Efficient Queries:** Optimized for user-specific lookups
+- **JSON Storage:** Flexible schema without performance overhead
+
+### Application
+- **Improved Security:** Authentication checks add minimal overhead
+- **Better Caching:** Enhanced session management
+- **Responsive Design:** Error pages load quickly and efficiently
+
+## 🔒 Security Considerations
+
+### Authentication
+- **Session-Based:** Secure session management for user authentication
+- **Route Protection:** All settings endpoints require authentication
+- **Data Isolation:** User preferences are properly isolated
+- **Error Handling:** Secure error messages without information disclosure
+
+### Data Protection
+- **JSON Encoding:** Secure storage of user preferences
+- **Foreign Keys:** Proper database relationships and constraints
+- **Input Validation:** All user input is properly validated
+- **SQL Injection Protection:** Prepared statements for all database queries
+
+## 🙏 Acknowledgments
+
+Thank you to all contributors and users who provided feedback on the authentication system and user experience improvements. Your input helped shape this release into a more secure and user-friendly experience.
+
+---
+
+**Next Release:** Version 0.0.30 will focus on enhanced user profile management and additional customization options.
+
+**Support:** For questions or issues with this release, please refer to the documentation or create an issue in the project repository. 

@@ -1,0 +1,401 @@
+/* GreenSkin - Green Theme for IslamWiki */
+
+:root {
+    --primary-color: #2E7D32;
+    --secondary-color: #4CAF50;
+    --accent-color: #81C784;
+    --background-color: #F1F8E9;
+    --text-color: #1B5E20;
+    --header-color: #1B5E20;
+    --footer-color: #2E7D32;
+    --border-color: #4CAF50;
+    --link-color: #2E7D32;
+    --link-hover-color: #1B5E20;
+    --button-bg: #4CAF50;
+    --button-text: #FFFFFF;
+    --button-hover: #2E7D32;
+    --card-bg: #FFFFFF;
+    --card-border: #4CAF50;
+    --shadow: rgba(46, 125, 50, 0.1);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px var(--shadow);
+}
+
+.header h1 {
+    color: white;
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: center;
+    font-weight: 700;
+}
+
+.header .subtitle {
+    color: var(--accent-color);
+    text-align: center;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* Navigation */
+.navbar {
+    background-color: var(--header-color);
+    border-bottom: 3px solid var(--accent-color);
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--accent-color) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    color: var(--accent-color) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Main Content */
+.main-content {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px var(--shadow);
+    margin: 2rem 0;
+    padding: 2rem;
+    border-left: 5px solid var(--primary-color);
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-bottom: 2px solid var(--accent-color);
+    border-radius: 8px 8px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.card-title {
+    color: white;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--button-bg);
+    border-color: var(--button-bg);
+    color: var(--button-text);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--button-hover);
+    border-color: var(--button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.btn-secondary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+/* Links */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+/* Forms */
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, var(--footer-color), var(--primary-color));
+    color: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    border-top: 3px solid var(--accent-color);
+}
+
+.footer h5 {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.footer a {
+    color: var(--accent-color);
+}
+
+.footer a:hover {
+    color: white;
+}
+
+/* Dashboard Specific */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 20px 20px;
+}
+
+.welcome-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.stats-section {
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--card-bg), #E8F5E8);
+    border: 2px solid var(--card-border);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+/* Action Cards */
+.action-card {
+    background: linear-gradient(135deg, var(--card-bg), #E8F5E8);
+    border: 2px solid var(--card-border);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow);
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.action-card.primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.action-card.primary:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    color: white;
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-color);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+/* Resource Cards */
+.resource-card {
+    background: linear-gradient(135deg, var(--card-bg), #E8F5E8);
+    border: 2px solid var(--card-border);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.resource-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.resource-meta {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.resource-tag {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.resource-link {
+    color: var(--link-color);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.resource-link:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .welcome-title {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .main-content {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+}
+
+/* Islamic Calligraphy */
+.islamic-pattern {
+    background-image: 
+        radial-gradient(circle at 20% 80%, var(--accent-color) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--secondary-color) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, var(--primary-color) 0%, transparent 50%);
+    opacity: 0.1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Green Theme Specific */
+.green-accent {
+    color: var(--primary-color);
+}
+
+.green-bg {
+    background-color: var(--background-color);
+}
+
+.green-border {
+    border-color: var(--border-color);
+}
+
+/* Loading Animation */
+.loading {
+    border: 3px solid var(--accent-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

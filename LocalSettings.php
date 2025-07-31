@@ -113,7 +113,7 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
  * Set this to the name of the skin folder in /skins/
  * Available skins: Bismillah, BlueSkin, etc.
  */
-$wgActiveSkin = env('ACTIVE_SKIN', 'Bismillah');
+$wgActiveSkin = env('ACTIVE_SKIN', 'GreenSkin');
 
 /**
  * Skin configuration options

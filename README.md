@@ -1,151 +1,292 @@
 # IslamWiki
 
-A comprehensive Islamic knowledge platform built with modern web technologies, featuring a modular skin system for easy customization.
+[![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL--3.0--only-blue.svg)](https://opensource.org/licenses/AGPL-3.0-only)
+[![Version](https://img.shields.io/badge/Version-0.0.29-green.svg)](VERSION)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
+
+A comprehensive Islamic knowledge platform built with modern PHP, featuring user-specific settings, authentication, and a modular skin system.
 
 ## 🚀 Features
 
-### Core Features
-- **Wiki System**: Complete wiki functionality with page creation, editing, and history
-- **User Management**: Registration, authentication, and profile management
-- **Search System**: Advanced search across all content types
-- **Islamic Content**: Quran, Hadith, Prayer Times, Islamic Calendar integration
-- **Community Features**: User discussions, activity tracking, and collaboration
+### 🔐 **User Authentication & Security**
+- **Secure Authentication System**: Session-based user authentication with proper security
+- **User-Specific Settings**: Individual preferences for each user (skins, themes, etc.)
+- **Professional Error Pages**: Beautiful 401 authentication error pages for non-logged-in users
+- **Smart Response System**: Detects AJAX/API requests vs browser requests and responds appropriately
 
-### 🎨 Skin System
-- **Modular Skins**: User-friendly skin system with `/skins/` directory
-- **Easy Customization**: JSON-based skin configuration
-- **Multiple Skins**: Built-in Bismillah and BlueSkin themes
-- **Frontend Switching**: Web interface for skin management
-- **Responsive Design**: All skins are mobile-friendly and responsive
+### 🎨 **Modular Skin System**
+- **Multiple Skins**: Bismillah, BlueSkin, GreenSkin, and more
+- **User-Specific Skins**: Each user can have their own skin preference
+- **Real-time Switching**: Instant skin changes with visual feedback
+- **Customizable Themes**: CSS, JavaScript, and layout customization
 
-### Islamic Features
-- **Quran Integration**: Complete Quran verse management with translations
-- **Hadith System**: Comprehensive Hadith collections and search
-- **Prayer Times**: Accurate prayer time calculations with multiple methods
-- **Islamic Calendar**: Hijri calendar with events and date conversion
-- **Scholar Verification**: Islamic scholar verification and credential system
+### 📚 **Islamic Content Management**
+- **Quran Integration**: Complete Quran database with search and navigation
+- **Hadith Collections**: Comprehensive hadith database with authentication
+- **Islamic Calendar**: Hijri calendar integration with prayer times
+- **Community Features**: User contributions and content management
 
-## 📦 Installation
+### 🛠️ **Modern Development**
+- **PHP 8.3+**: Latest PHP features and performance
+- **MVC Architecture**: Clean, maintainable code structure
+- **Database Abstraction**: Flexible database layer with migrations
+- **Comprehensive Testing**: Extensive test coverage and debugging tools
 
-### Prerequisites
-- PHP 8.1 or higher
-- MySQL 5.7 or higher
-- Composer
-- Web server (Apache/Nginx)
+## 📋 Requirements
 
-### Quick Start
+- **PHP**: 8.3 or higher
+- **Database**: MySQL 8.0+ or MariaDB 10.5+
+- **Web Server**: Apache/Nginx with PHP support
+- **Extensions**: PDO, JSON, Session, FileInfo
+
+## 🚀 Quick Start
+
+### 1. Clone the Repository
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/islamwiki.git
+git clone https://github.com/your-username/islamwiki.git
 cd islamwiki
+```
 
-# Install dependencies
+### 2. Install Dependencies
+```bash
 composer install
+```
 
-# Copy configuration
-cp LocalSettings.example.php LocalSettings.php
+### 3. Configure Database
+```bash
+# Copy configuration file
+cp LocalSettings.php.example LocalSettings.php
 
-# Configure database and other settings
+# Edit database settings
 nano LocalSettings.php
+```
 
-# Run database migrations
+### 4. Run Migrations
+```bash
 php scripts/migrate.php
+```
 
-# Start development server
+### 5. Start Development Server
+```bash
 php -S localhost:8000 -t public/
 ```
 
-## 🎨 Skin System
-
-### Available Skins
-- **Bismillah**: Default Islamic-themed skin with modern design
-- **BlueSkin**: Beautiful blue-themed skin with clean interface
-
-### Switching Skins
-1. **Via LocalSettings**: Edit `LocalSettings.php` and change `$wgActiveSkin`
-2. **Via Web Interface**: Use the Settings page to switch skins
-3. **Via Environment**: Set `ACTIVE_SKIN` environment variable
-
-### Creating Custom Skins
-1. Create a new folder in `/skins/` (e.g., `/skins/MySkin/`)
-2. Add `skin.json` configuration file
-3. Create CSS and JS files in the skin folder
-4. Optionally add custom layout templates
-
-Example skin structure:
-```
-skins/
-├── Bismillah/
-│   ├── skin.json
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── script.js
-│   └── templates/
-│       └── layout.twig
-└── BlueSkin/
-    ├── skin.json
-    ├── css/
-    ├── js/
-    └── templates/
-```
+### 6. Access the Application
+Open your browser and navigate to `http://localhost:8000`
 
 ## 🔧 Configuration
 
-### LocalSettings.php
-Main configuration file with settings for:
-- Database connections
-- Skin system
-- Islamic features
-- Security settings
-- Performance options
+### Database Setup
+```php
+// LocalSettings.php
+$wgDatabaseHost = 'localhost';
+$wgDatabaseName = 'islamwiki';
+$wgDatabaseUser = 'your_username';
+$wgDatabasePassword = 'your_password';
+```
 
-### Environment Variables
-- `ACTIVE_SKIN`: Active skin name
-- `DB_CONNECTION`: Database connection type
-- `APP_ENV`: Application environment
+### Authentication
+```php
+// Session configuration
+$wgSessionSecret = 'your-secret-key-here';
+$wgSessionLifetime = 86400; // 24 hours
+```
+
+### Skin Configuration
+```php
+// Default skin for new users
+$wgActiveSkin = 'Bismillah';
+```
+
+## 🎨 Available Skins
+
+### Bismillah (Default)
+- **Description**: Traditional Islamic theme with elegant typography
+- **Features**: Responsive design, prayer time integration
+- **Colors**: Gold, green, and white color scheme
+
+### BlueSkin
+- **Description**: Modern blue theme with clean interface
+- **Features**: Professional appearance, excellent readability
+- **Colors**: Blue and white color palette
+
+### GreenSkin
+- **Description**: Fresh green theme for easy testing
+- **Features**: Distinct visual appearance, comprehensive styling
+- **Colors**: Green and white color scheme
+
+## 🔐 Authentication System
+
+### User Registration & Login
+- **Secure Registration**: Email verification and password hashing
+- **Session Management**: Secure session handling with proper timeouts
+- **User Profiles**: Individual user settings and preferences
+- **Access Control**: Role-based permissions and security
+
+### Settings Security
+- **Authentication Required**: All settings endpoints require user login
+- **User Isolation**: Each user's preferences are properly isolated
+- **Professional Error Pages**: Beautiful error pages for non-authenticated users
+- **Smart Response System**: Appropriate responses for different request types
+
+## 📊 Database Schema
+
+### Core Tables
+- **users**: User accounts and authentication
+- **user_settings**: Individual user preferences (JSON storage)
+- **pages**: Wiki content and articles
+- **revisions**: Content version history
+- **quran_verses**: Complete Quran database
+- **hadith_collections**: Hadith database with authentication
+
+### User Settings
+```sql
+CREATE TABLE user_settings (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    settings JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_id (user_id)
+);
+```
+
+## 🧪 Testing
+
+### Test Scripts
+```bash
+# Test authentication system
+php public/test-auth.php
+
+# Test user-specific settings
+php public/test-user-settings.php
+
+# Test settings with logged-in user
+php public/test-settings-logged-in.php
+```
+
+### Test Coverage
+- **Authentication**: User login/logout and session management
+- **Settings**: User-specific preferences and skin switching
+- **Error Handling**: Professional error pages and responses
+- **Database**: User settings storage and retrieval
 
 ## 📚 Documentation
 
-- [Installation Guide](docs/INSTALL.md)
-- [Skin System Documentation](docs/skins/README.md)
-- [API Documentation](docs/API.md)
-- [Developer Guide](docs/developer/README.md)
+### Core Documentation
+- **[Architecture Overview](docs/architecture/overview.md)**: System architecture and design
+- **[Database Schema](docs/DATABASE_SETUP.md)**: Complete database documentation
+- **[Routing System](docs/ROUTING.md)**: URL routing and controller system
+- **[Security Guide](docs/security/README.md)**: Authentication and security features
+
+### Feature Documentation
+- **[Skin System](docs/skins/README.md)**: Complete skin system guide
+- **[User Settings](docs/features/user-settings.md)**: User-specific settings system
+- **[Error Pages](docs/features/error-pages.md)**: Professional error handling
+- **[Testing Guide](docs/testing/README.md)**: Comprehensive testing documentation
+
+### API Documentation
+- **[Settings API](docs/api/settings.md)**: User settings endpoints
+- **[Authentication API](docs/api/authentication.md)**: Login and session management
+- **[Skin API](docs/api/skins.md)**: Skin management endpoints
+
+## 🔒 Security Features
+
+### Authentication & Authorization
+- **Session Security**: Secure session management with proper timeouts
+- **Password Hashing**: Bcrypt password hashing for user accounts
+- **Route Protection**: Authentication middleware for protected endpoints
+- **CSRF Protection**: Cross-site request forgery protection
+
+### Data Protection
+- **SQL Injection Prevention**: Prepared statements for all database queries
+- **XSS Protection**: Input validation and output escaping
+- **User Data Isolation**: Proper separation of user preferences
+- **Secure Error Handling**: No sensitive information in error messages
+
+## 🚀 Development
+
+### Project Structure
+```
+islamwiki/
+├── src/                    # Core application code
+│   ├── Core/              # Framework core components
+│   ├── Http/              # HTTP layer (controllers, middleware)
+│   ├── Models/            # Database models
+│   └── Skins/             # Skin management system
+├── resources/             # Views and templates
+├── skins/                 # User-facing skins
+├── database/              # Database migrations
+├── docs/                  # Documentation
+└── tests/                 # Test files
+```
+
+### Key Components
+- **Application**: Main application bootstrap and configuration
+- **Container**: Dependency injection container
+- **Router**: HTTP routing and middleware system
+- **SkinManager**: Skin discovery and management
+- **SettingsController**: User settings and authentication
+
+## 📈 Performance
+
+### Optimizations
+- **Database Indexing**: Optimized queries with proper indexing
+- **Session Caching**: Efficient session management
+- **Skin Caching**: Cached skin loading for better performance
+- **JSON Storage**: Efficient user preferences storage
+
+### Monitoring
+- **Error Logging**: Comprehensive error logging and debugging
+- **Performance Metrics**: Database query optimization
+- **User Analytics**: Anonymous usage statistics
+- **Security Monitoring**: Authentication and access logging
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Development Setup
+1. **Fork** the repository
+2. **Create** a feature branch
+3. **Make** your changes
+4. **Test** thoroughly
+5. **Submit** a pull request
 
-### Skin Development
-- Follow the skin system documentation
-- Test your skin across different devices
-- Ensure accessibility compliance
-- Document any new features
+### Code Standards
+- **PSR-12**: PHP coding standards
+- **Documentation**: Comprehensive inline documentation
+- **Testing**: Unit and integration tests
+- **Security**: Security-first development approach
 
 ## 📄 License
 
-This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## 🙏 Acknowledgments
 
-- Built with modern PHP and web technologies
-- Inspired by Islamic knowledge sharing traditions
-- Designed for the global Islamic community
+- **Islamic Scholars**: For guidance on Islamic content and authenticity
+- **Open Source Community**: For inspiration and best practices
+- **Contributors**: For code contributions and feedback
+- **Users**: For testing and feature requests
 
 ## 📞 Support
 
-- **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/islamwiki/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/islamwiki/discussions)
+### Getting Help
+- **Documentation**: Comprehensive guides and tutorials
+- **Issues**: GitHub issues for bug reports and feature requests
+- **Discussions**: Community discussions for questions and ideas
+- **Security**: Private security reports for vulnerabilities
+
+### Community
+- **Contributors**: Join our development team
+- **Testing**: Help test new features and improvements
+- **Documentation**: Improve guides and tutorials
+- **Feedback**: Share ideas and suggestions
 
 ---
 
-**Version**: 0.0.28  
-**License**: AGPL-3.0-only  
-**Status**: Active Development
+**Version:** 0.0.29  
+**Last Updated:** July 31, 2025  
+**License:** AGPL-3.0-only
 
 
