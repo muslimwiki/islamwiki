@@ -117,6 +117,22 @@ class User
     }
 
     /**
+     * Magic method to allow accessing attributes via object properties.
+     */
+    public function __get(string $key)
+    {
+        return $this->getAttribute($key);
+    }
+
+    /**
+     * Magic method to check if attributes exist.
+     */
+    public function __isset(string $key): bool
+    {
+        return array_key_exists($key, $this->attributes);
+    }
+
+    /**
      * Hash the given password.
      */
     protected function hashPassword(string $password): string
