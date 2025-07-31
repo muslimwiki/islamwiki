@@ -134,3 +134,22 @@ $router->get('/api/hadith/statistics', 'IslamWiki\Http\Controllers\HadithControl
 $router->get('/api/hadith/random', 'IslamWiki\Http\Controllers\HadithController@apiRandomHadith');
 $router->get('/api/hadith/authenticity/{authenticityLevel}', 'IslamWiki\Http\Controllers\HadithController@apiByAuthenticity');
 $router->get('/api/hadith/references/{pageId}', 'IslamWiki\Http\Controllers\HadithController@apiReferences');
+
+// Calendar Routes - Phase 4 Islamic Features Integration
+$router->get('/calendar', 'IslamWiki\Http\Controllers\IslamicCalendarController@index');
+$router->get('/calendar/month/{year}/{month}', 'IslamWiki\Http\Controllers\IslamicCalendarController@month');
+$router->get('/calendar/event/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@event');
+$router->get('/calendar/widget/{year}/{month}', 'IslamWiki\Http\Controllers\IslamicCalendarController@widget');
+$router->get('/calendar/search', 'IslamWiki\Http\Controllers\IslamicCalendarController@search');
+
+// Calendar API Routes
+$router->get('/api/calendar/events', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetEvents');
+$router->get('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetEvent');
+$router->get('/api/calendar/convert/{date}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiConvertDate');
+$router->get('/api/calendar/prayer-times/{date}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetPrayerTimes');
+$router->get('/api/calendar/statistics', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetStatistics');
+$router->get('/api/calendar/upcoming', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetUpcoming');
+$router->get('/api/calendar/search', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiSearchEvents');
+$router->post('/api/calendar/events', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiCreateEvent');
+$router->put('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiUpdateEvent');
+$router->delete('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiDeleteEvent');

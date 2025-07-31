@@ -1,0 +1,220 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ month_name }} {{ year }} - Islamic Calendar{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">{{ month_name }} {{ year }}</h1>
+            <p class="text-gray-600">Islamic Calendar - {{ month_name }} {{ year }}</p>
+        </div>
+        <div class="flex space-x-2">
+            <a href="/calendar/month/{{ prev_month.year }}/{{ prev_month.month }}" 
+               class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                ← Previous
+            </a>
+            <a href="/calendar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Today
+            </a>
+            <a href="/calendar/month/{{ next_month.year }}/{{ next_month.month }}" 
+               class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                Next →
+            </a>
+        </div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <!-- Calendar Header -->
+        <div class="grid grid-cols-7 bg-gray-100 border-b">
+            <div class="p-3 text-center font-semibold text-gray-700">Sunday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Monday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Tuesday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Wednesday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Thursday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Friday</div>
+            <div class="p-3 text-center font-semibold text-gray-700">Saturday</div>
+        </div>
+
+        <!-- Calendar Days -->
+        <div class="grid grid-cols-7">
+            {% set current_date = year ~ '-' ~ month ~ '-01' %}
+            {% set first_day = current_date|date('w') %}
+            {% set days_in_month = month|date('t') %}
+            
+            <!-- Empty cells for days before the first day of the month -->
+            {% for i in 0..(first_day - 1) %}
+            <div class="p-3 border-r border-b border-gray-200 bg-gray-50 min-h-[120px]"></div>
+            {% endfor %}
+            
+            <!-- Days of the month -->
+            {% for day in 1..days_in_month %}
+            <div class="p-3 border-r border-b border-gray-200 min-h-[120px] relative">
+                <div class="text-sm font-semibold text-gray-800 mb-2">{{ day }}</div>
+                
+                <!-- Events for this day -->
+                {% set day_events = [] %}
+                {% for event in events %}
+                    {% if event.hijri_date|date('j') == day %}
+                        {% set day_events = day_events|merge([event]) %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if day_events %}
+                <div class="space-y-1">
+                    {% for event in day_events %}
+                    <div class="text-xs p-1 rounded cursor-pointer hover:bg-gray-100"
+                         style="background-color: {{ event.category_color|default('#e5e7eb') }}20; border-left: 3px solid {{ event.category_color|default('#6b7280') }}"
+                         onclick="showEventDetails({{ event.id }})">
+                        <div class="font-medium text-gray-800 truncate">{{ event.title }}</div>
+                        {% if event.is_holiday %}
+                        <div class="text-red-600 text-xs">Holiday</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Events List -->
+    {% if events %}
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Events in {{ month_name }} {{ year }}</h2>
+        <div class="space-y-4">
+            {% for event in events %}
+            <div class="border-l-4 pl-4 py-3" style="border-color: {{ event.category_color|default('#6b7280') }}">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800">{{ event.title }}</h3>
+                        {% if event.title_arabic %}
+                        <p class="text-sm text-gray-600 font-arabic">{{ event.title_arabic }}</p>
+                        {% endif %}
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ event.hijri_date|date('F j, Y') }} (Hijri) • 
+                            {{ event.gregorian_date|date('F j, Y') }} (Gregorian)
+                        </p>
+                        {% if event.description %}
+                        <p class="text-sm text-gray-600 mt-2">{{ event.description|slice(0, 150) }}{% if event.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+                        <div class="flex items-center mt-2 space-x-2">
+                            {% if event.category_name %}
+                            <span class="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded">
+                                {{ event.category_name }}
+                            </span>
+                            {% endif %}
+                            {% if event.is_holiday %}
+                            <span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded">
+                                Holiday
+                            </span>
+                            {% endif %}
+                            {% if event.is_public_holiday %}
+                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                                Public Holiday
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="/calendar/event/{{ event.id }}" class="text-blue-600 hover:text-blue-800 text-sm ml-4">
+                        View Details →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6 text-center">
+        <div class="text-gray-500">
+            <div class="text-4xl mb-4">📅</div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">No Events This Month</h3>
+            <p class="text-gray-600">There are no Islamic events scheduled for {{ month_name }} {{ year }}.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Categories Filter -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Filter by Category</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% for category in categories %}
+            <a href="/api/calendar/events?category={{ category.id }}&month={{ month }}&year={{ year }}" 
+               class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center mb-2">
+                    {% if category.color %}
+                    <div class="w-4 h-4 rounded-full mr-3" style="background-color: {{ category.color }}"></div>
+                    {% endif %}
+                    <h3 class="font-semibold text-gray-800">{{ category.name }}</h3>
+                </div>
+                {% if category.description %}
+                <p class="text-sm text-gray-600">{{ category.description }}</p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Event Details Modal -->
+<div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h3 id="modalTitle" class="text-lg font-semibold text-gray-800"></h3>
+                <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="modalContent" class="text-gray-600"></div>
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeEventModal()" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showEventDetails(eventId) {
+    fetch(`/api/calendar/events/${eventId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const event = data.data;
+                document.getElementById('modalTitle').textContent = event.title;
+                
+                let content = `
+                    <div class="space-y-3">
+                        ${event.title_arabic ? `<p class="font-arabic text-sm">${event.title_arabic}</p>` : ''}
+                        <p><strong>Hijri Date:</strong> ${event.hijri_date}</p>
+                        <p><strong>Gregorian Date:</strong> ${event.gregorian_date}</p>
+                        ${event.category_name ? `<p><strong>Category:</strong> ${event.category_name}</p>` : ''}
+                        ${event.description ? `<p><strong>Description:</strong> ${event.description}</p>` : ''}
+                        <div class="flex space-x-2">
+                            ${event.is_holiday ? '<span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Holiday</span>' : ''}
+                            ${event.is_public_holiday ? '<span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">Public Holiday</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('eventModal').classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching event details:', error);
+        });
+}
+
+function closeEventModal() {
+    document.getElementById('eventModal').classList.add('hidden');
+}
+</script>
+{% endblock %} 

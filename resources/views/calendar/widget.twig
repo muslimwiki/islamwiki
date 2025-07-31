@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Calendar Widget - {{ month_name }} {{ year }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .font-arabic { font-family: 'Arial', sans-serif; }
+        .widget-container { max-width: 100%; overflow: hidden; }
+        .widget-calendar { font-size: 0.875rem; }
+        .widget-event { font-size: 0.75rem; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="widget-container p-4">
+        <!-- Widget Header -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">{{ month_name }} {{ year }}</h2>
+                    <p class="text-sm text-gray-600">Islamic Calendar Widget</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl">📅</div>
+                    <div class="text-xs text-gray-500">IslamWiki</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Calendar -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden widget-calendar">
+            <!-- Calendar Header -->
+            <div class="grid grid-cols-7 bg-gray-100 border-b">
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Sun</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Mon</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Tue</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Wed</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Thu</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Fri</div>
+                <div class="p-2 text-center font-semibold text-gray-700 text-xs">Sat</div>
+            </div>
+
+            <!-- Calendar Days -->
+            <div class="grid grid-cols-7">
+                {% set current_date = year ~ '-' ~ month ~ '-01' %}
+                {% set first_day = current_date|date('w') %}
+                {% set days_in_month = month|date('t') %}
+                
+                <!-- Empty cells for days before the first day of the month -->
+                {% for i in 0..(first_day - 1) %}
+                <div class="p-1 border-r border-b border-gray-200 bg-gray-50 min-h-[60px]"></div>
+                {% endfor %}
+                
+                <!-- Days of the month -->
+                {% for day in 1..days_in_month %}
+                <div class="p-1 border-r border-b border-gray-200 min-h-[60px] relative">
+                    <div class="text-xs font-semibold text-gray-800 mb-1">{{ day }}</div>
+                    
+                    <!-- Events for this day -->
+                    {% set day_events = [] %}
+                    {% for event in events %}
+                        {% if event.hijri_date|date('j') == day %}
+                            {% set day_events = day_events|merge([event]) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if day_events %}
+                    <div class="space-y-0.5">
+                        {% for event in day_events %}
+                        <div class="widget-event p-0.5 rounded cursor-pointer hover:bg-gray-100"
+                             style="background-color: {{ event.category_color|default('#e5e7eb') }}20; border-left: 2px solid {{ event.category_color|default('#6b7280') }}"
+                             title="{{ event.title }}">
+                            <div class="font-medium text-gray-800 truncate text-xs">{{ event.title }}</div>
+                            {% if event.is_holiday %}
+                            <div class="text-red-600 text-xs">Holiday</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Events List -->
+        {% if events %}
+        <div class="bg-white rounded-lg shadow-sm p-4 mt-4">
+            <h3 class="text-sm font-semibold text-gray-800 mb-3">Events This Month</h3>
+            <div class="space-y-2">
+                {% for event in events %}
+                <div class="border-l-2 pl-3 py-1" style="border-color: {{ event.category_color|default('#6b7280') }}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800 text-sm">{{ event.title }}</div>
+                            {% if event.title_arabic %}
+                            <div class="text-xs text-gray-600 font-arabic">{{ event.title_arabic }}</div>
+                            {% endif %}
+                            <div class="text-xs text-gray-500">
+                                {{ event.hijri_date|date('M j') }} (Hijri) • 
+                                {{ event.gregorian_date|date('M j') }} (Gregorian)
+                            </div>
+                            <div class="flex items-center mt-1 space-x-1">
+                                {% if event.category_name %}
+                                <span class="inline-block bg-gray-200 text-gray-700 text-xs px-1 py-0.5 rounded">
+                                    {{ event.category_name }}
+                                </span>
+                                {% endif %}
+                                {% if event.is_holiday %}
+                                <span class="inline-block bg-red-100 text-red-700 text-xs px-1 py-0.5 rounded">
+                                    Holiday
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-sm p-4 mt-4 text-center">
+            <div class="text-gray-500">
+                <div class="text-2xl mb-2">📅</div>
+                <p class="text-sm text-gray-600">No events this month</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Widget Footer -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mt-4">
+            <div class="flex justify-between items-center text-xs text-gray-500">
+                <div>
+                    <span>Powered by </span>
+                    <a href="https://islam.wiki" class="text-blue-600 hover:text-blue-800">IslamWiki</a>
+                </div>
+                <div>
+                    <a href="https://islam.wiki/calendar" class="text-blue-600 hover:text-blue-800">
+                        View Full Calendar →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Widget interaction functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click handlers for events
+        const eventElements = document.querySelectorAll('[title]');
+        eventElements.forEach(element => {
+            element.addEventListener('click', function() {
+                const eventTitle = this.getAttribute('title');
+                // You can implement custom behavior here
+                console.log('Event clicked:', eventTitle);
+            });
+        });
+
+        // Auto-refresh widget every hour
+        setInterval(function() {
+            // Refresh logic can be implemented here
+            console.log('Widget auto-refresh check');
+        }, 3600000); // 1 hour
+    });
+    </script>
+</body>
+</html> 

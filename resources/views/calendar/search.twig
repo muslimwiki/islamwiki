@@ -1,0 +1,218 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Search Islamic Events - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Search Islamic Events</h1>
+        <p class="text-lg text-gray-600">Find specific Islamic events, holidays, and important dates</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <form method="GET" action="/calendar/search" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="q" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
+                    <input type="text" id="q" name="q" value="{{ query }}" 
+                           placeholder="Enter event name or description..."
+                           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="category" name="category" 
+                            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if filters.category == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="year" class="block text-sm font-medium text-gray-700 mb-2">Year</label>
+                    <select id="year" name="year" 
+                            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Years</option>
+                        {% for year in range(1440, 1450) %}
+                        <option value="{{ year }}" {% if filters.year == year %}selected{% endif %}>
+                            {{ year }} (Hijri)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                    Search Events
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Tips -->
+    <div class="bg-blue-50 rounded-lg p-6 mb-8">
+        <h3 class="text-lg font-semibold text-blue-800 mb-2">Search Tips</h3>
+        <ul class="text-blue-700 space-y-1 text-sm">
+            <li>• Search for specific events like "Eid al-Fitr", "Ramadan", or "Hajj"</li>
+            <li>• Use Arabic terms like "عيد الفطر" or "رمضان"</li>
+            <li>• Filter by category to find specific types of events</li>
+            <li>• Search by year to find events in specific Hijri years</li>
+            <li>• Combine search terms for more specific results</li>
+        </ul>
+    </div>
+
+    <!-- Search Results -->
+    {% if query %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">
+                Search Results for "{{ query }}"
+            </h2>
+            <div class="text-sm text-gray-600">
+                {{ events|length }} event{{ events|length != 1 ? 's' : '' }} found
+            </div>
+        </div>
+
+        {% if events %}
+        <div class="space-y-4">
+            {% for event in events %}
+            <div class="border-l-4 pl-4 py-3" style="border-color: {{ event.category_color|default('#6b7280') }}">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800">{{ event.title }}</h3>
+                        {% if event.title_arabic %}
+                        <p class="text-sm text-gray-600 font-arabic">{{ event.title_arabic }}</p>
+                        {% endif %}
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ event.hijri_date|date('F j, Y') }} (Hijri) • 
+                            {{ event.gregorian_date|date('F j, Y') }} (Gregorian)
+                        </p>
+                        {% if event.description %}
+                        <p class="text-sm text-gray-600 mt-2">{{ event.description|slice(0, 200) }}{% if event.description|length > 200 %}...{% endif %}</p>
+                        {% endif %}
+                        <div class="flex items-center mt-2 space-x-2">
+                            {% if event.category_name %}
+                            <span class="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded">
+                                {{ event.category_name }}
+                            </span>
+                            {% endif %}
+                            {% if event.is_holiday %}
+                            <span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded">
+                                Holiday
+                            </span>
+                            {% endif %}
+                            {% if event.is_public_holiday %}
+                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                                Public Holiday
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="/calendar/event/{{ event.id }}" class="text-blue-600 hover:text-blue-800 text-sm ml-4">
+                        View Details →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <div class="text-gray-500">
+                <div class="text-4xl mb-4">🔍</div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">No Events Found</h3>
+                <p class="text-gray-600">No events match your search criteria for "{{ query }}".</p>
+                <div class="mt-4">
+                    <p class="text-sm text-gray-500">Try:</p>
+                    <ul class="text-sm text-gray-500 mt-2">
+                        <li>• Using different keywords</li>
+                        <li>• Removing some filters</li>
+                        <li>• Searching in a different year</li>
+                        <li>• Using Arabic terms</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Popular Searches -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Popular Searches</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <a href="/calendar/search?q=Eid al-Fitr" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">🌙</div>
+                    <h3 class="font-semibold text-gray-800">Eid al-Fitr</h3>
+                    <p class="text-sm text-gray-600">End of Ramadan celebration</p>
+                </div>
+            </a>
+            <a href="/calendar/search?q=Eid al-Adha" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">🐑</div>
+                    <h3 class="font-semibold text-gray-800">Eid al-Adha</h3>
+                    <p class="text-sm text-gray-600">Festival of Sacrifice</p>
+                </div>
+            </a>
+            <a href="/calendar/search?q=Ramadan" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">☪️</div>
+                    <h3 class="font-semibold text-gray-800">Ramadan</h3>
+                    <p class="text-sm text-gray-600">Holy month of fasting</p>
+                </div>
+            </a>
+            <a href="/calendar/search?q=Hajj" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">🕋</div>
+                    <h3 class="font-semibold text-gray-800">Hajj</h3>
+                    <p class="text-sm text-gray-600">Pilgrimage to Mecca</p>
+                </div>
+            </a>
+            <a href="/calendar/search?q=Ashura" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">📿</div>
+                    <h3 class="font-semibold text-gray-800">Ashura</h3>
+                    <p class="text-sm text-gray-600">Day of mourning</p>
+                </div>
+            </a>
+            <a href="/calendar/search?q=Mawlid" class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div class="text-center">
+                    <div class="text-2xl mb-2">🎉</div>
+                    <h3 class="font-semibold text-gray-800">Mawlid</h3>
+                    <p class="text-sm text-gray-600">Prophet's birthday</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- API Information -->
+    <div class="bg-gray-50 rounded-lg p-6 mt-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Search API</h2>
+        <p class="text-gray-600 mb-4">Search events programmatically using the API:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+                <h3 class="font-semibold text-gray-800 mb-2">Search Endpoints:</h3>
+                <ul class="space-y-1 text-gray-600">
+                    <li><code>GET /api/calendar/search?q=query</code></li>
+                    <li><code>GET /api/calendar/search?category=id</code></li>
+                    <li><code>GET /api/calendar/search?year=1446</code></li>
+                    <li><code>GET /api/calendar/search?limit=20</code></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 mb-2">Examples:</h3>
+                <ul class="space-y-1 text-gray-600">
+                    <li><code>/api/calendar/search?q=Eid al-Fitr</code></li>
+                    <li><code>/api/calendar/search?category=1&year=1446</code></li>
+                    <li><code>/api/calendar/search?q=رمضان&limit=10</code></li>
+                    <li><code>/api/calendar/search?q=Hajj&year=1445</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
