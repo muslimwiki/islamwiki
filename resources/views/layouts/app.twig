@@ -65,6 +65,7 @@
             z-index: 100;
             backdrop-filter: blur(10px);
             background-color: rgba(255, 255, 255, 0.95);
+            width: 100%;
         }
         
         .header-content {
@@ -72,6 +73,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 0;
+            width: 100%;
+            min-height: 60px;
         }
         
         .logo {
@@ -82,6 +85,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex-shrink: 0;
         }
         
         .logo:hover {
@@ -92,6 +96,9 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex: 1;
+            justify-content: center;
+            margin: 0 2rem;
         }
         
         .nav-link {
@@ -101,6 +108,8 @@
             border-radius: 0.5rem;
             transition: all 0.2s;
             font-weight: 500;
+            white-space: nowrap;
+            font-size: 0.9rem;
         }
         
         .nav-link:hover {
@@ -117,6 +126,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-shrink: 0;
         }
         
         /* User Dropdown Styles */
@@ -578,8 +588,24 @@
                 align-items: center;
             }
             
+            .header-content {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
             .nav-menu {
-                display: none;
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 0.5rem;
+            }
+            
+            .user-menu {
+                order: 2;
+            }
+            
+            .logo {
+                order: 1;
             }
             
             .stats-grid {
