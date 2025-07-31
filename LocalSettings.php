@@ -105,6 +105,26 @@ $wgWikiDBpassword = env('WIKI_DB_PASSWORD', $wgDBpassword);
 $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
 
 // ============================================================================
+// SKIN CONFIGURATION
+// ============================================================================
+
+/**
+ * Active skin configuration
+ * Set this to the name of the skin folder in /skins/
+ * Available skins: Bismillah, BlueSkin, etc.
+ */
+$wgActiveSkin = env('ACTIVE_SKIN', 'Bismillah');
+
+/**
+ * Skin configuration options
+ */
+$wgSkinConfig = [
+    'enable_animations' => env('SKIN_ANIMATIONS', true),
+    'enable_gradients' => env('SKIN_GRADIENTS', true),
+    'enable_dark_theme' => env('SKIN_DARK_THEME', false),
+];
+
+// ============================================================================
 // APPLICATION CONFIGURATION
 // ============================================================================
 

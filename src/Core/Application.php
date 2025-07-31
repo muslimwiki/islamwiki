@@ -148,6 +148,11 @@ class Application
         $configurationServiceProvider = new \IslamWiki\Providers\ConfigurationServiceProvider($this->container);
         $configurationServiceProvider->register();
         $configurationServiceProvider->boot();
+
+        // Register the SkinServiceProvider
+        $skinServiceProvider = new \IslamWiki\Providers\SkinServiceProvider($this);
+        $skinServiceProvider->register();
+        $skinServiceProvider->boot();
     }
 
     /**

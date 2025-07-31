@@ -78,6 +78,18 @@ class TwigRenderer
     }
 
     /**
+     * Add global variables to the Twig environment.
+     * 
+     * @param array $globals The global variables to add
+     */
+    public function addGlobals(array $globals): void
+    {
+        foreach ($globals as $key => $value) {
+            $this->twig->addGlobal($key, $value);
+        }
+    }
+
+    /**
      * Get the underlying Twig environment.
      * 
      * @return Environment

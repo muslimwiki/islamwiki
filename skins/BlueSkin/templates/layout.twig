@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IslamWiki{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    
+    <!-- Skin CSS -->
+    <style>
+        {{ skin_css|raw }}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span>🌙</span>
+                    <span>IslamWiki</span>
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/pages" class="nav-link">Pages</a>
+                    <a href="/quran" class="nav-link">Quran</a>
+                    <a href="/hadith" class="nav-link">Hadith</a>
+                    <a href="/prayer" class="nav-link">Prayer Times</a>
+                    <a href="/calendar" class="nav-link">Calendar</a>
+                    <a href="/community" class="nav-link">Community</a>
+                </nav>
+                
+                <div class="user-menu">
+                    {% if user %}
+                        <div class="user-dropdown">
+                            <button class="user-avatar-btn" aria-label="User menu">
+                                <div class="user-avatar">
+                                    <svg class="avatar-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="user-name">{{ user.username }}</span>
+                                <svg class="dropdown-arrow" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                            
+                            <div class="user-dropdown-menu">
+                                <a href="/dashboard" class="dropdown-item">
+                                    <svg class="dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                    </svg>
+                                    Dashboard
+                                </a>
+                                <a href="/profile" class="dropdown-item">
+                                    <svg class="dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Profile
+                                </a>
+                                <a href="/settings" class="dropdown-item">
+                                    <svg class="dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form method="POST" action="/logout" class="dropdown-form">
+                                    <button type="submit" class="dropdown-item logout-item">
+                                        <svg class="dropdown-icon" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="/login" class="btn btn-outline">Login</a>
+                        <a href="/register" class="btn">Register</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu toggle -->
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>IslamWiki</h3>
+                    <p>Your comprehensive resource for Islamic knowledge and community.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/contributing">Contributing</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/quran">Quran</a></li>
+                        <li><a href="/hadith">Hadith</a></li>
+                        <li><a href="/prayer">Prayer Times</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 IslamWiki. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- Skin JavaScript -->
+    <script>
+        {{ skin_js|raw }}
+    </script>
+</body>
+</html> 

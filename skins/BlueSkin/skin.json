@@ -1,0 +1,37 @@
+{
+    "name": "BlueSkin",
+    "version": "1.0.0",
+    "author": "IslamWiki User",
+    "description": "A beautiful blue-themed skin for IslamWiki with modern design.",
+    "type": "user-skin",
+    "directory": "BlueSkin",
+    "assets": {
+        "css": "css/style.css",
+        "js": "js/script.js",
+        "layout": "templates/layout.twig"
+    },
+    "config": {
+        "primary_color": "#3b82f6",
+        "secondary_color": "#1d4ed8",
+        "accent_color": "#60a5fa",
+        "text_color": "#1e293b",
+        "background_color": "#f1f5f9",
+        "card_background": "#ffffff",
+        "border_color": "#cbd5e1",
+        "enable_animations": true,
+        "enable_gradients": true,
+        "font_family": "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
+    },
+    "features": [
+        "responsive",
+        "blue-theme",
+        "animations",
+        "gradients",
+        "accessibility"
+    ],
+    "dependencies": {
+        "tailwind": "cdn",
+        "alpinejs": "cdn",
+        "prism": "cdn"
+    }
+} 
