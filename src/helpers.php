@@ -37,6 +37,20 @@ if (!function_exists('env')) {
     }
 }
 
+if (!function_exists('storage_path')) {
+    /**
+     * Get the path to the storage directory.
+     *
+     * @param string $path
+     * @return string
+     */
+    function storage_path(string $path = ''): string
+    {
+        $storagePath = ROOT_PATH . '/storage';
+        return $storagePath . ($path ? '/' . ltrim($path, '/') : '');
+    }
+}
+
 if (!function_exists('config')) {
     /**
      * Get a configuration value.

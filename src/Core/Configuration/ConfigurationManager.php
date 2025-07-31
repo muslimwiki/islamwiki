@@ -334,8 +334,7 @@ class ConfigurationManager
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->offset($offset)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
@@ -345,8 +344,7 @@ class ConfigurationManager
     {
         return $this->db->table('configuration_backups')
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
@@ -463,11 +461,19 @@ class ConfigurationManager
         
         if (str_starts_with($rule, 'min:')) {
             $min = (int) substr($rule, 4);
+            // For numeric values, check the actual value, not string length
+            if (is_numeric($value)) {
+                return (int) $value >= $min;
+            }
             return strlen((string) $value) >= $min;
         }
         
         if (str_starts_with($rule, 'max:')) {
             $max = (int) substr($rule, 4);
+            // For numeric values, check the actual value, not string length
+            if (is_numeric($value)) {
+                return (int) $value <= $max;
+            }
             return strlen((string) $value) <= $max;
         }
         
