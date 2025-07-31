@@ -1,0 +1,570 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Configuration Builder - {{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Configuration Builder</h1>
+        <p class="text-gray-600">Create and manage configuration templates with visual form builder.</p>
+    </div>
+
+    <!-- Builder Tabs -->
+    <div class="mb-8">
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8">
+                <button id="template-tab" class="tab-button active border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600">
+                    Templates
+                </button>
+                <button id="form-builder-tab" class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Form Builder
+                </button>
+                <button id="validation-tab" class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Validation Rules
+                </button>
+                <button id="preview-tab" class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Preview
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Templates Tab -->
+    <div id="template-content" class="tab-content">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Template List -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Configuration Templates</h3>
+                    <button onclick="createNewTemplate()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        New Template
+                    </button>
+                </div>
+                
+                <div class="space-y-3">
+                    {% for template in templates %}
+                    <div class="template-item border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer" data-template-id="{{ template.id }}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-medium text-gray-900">{{ template.name }}</h4>
+                                <p class="text-sm text-gray-600">{{ template.description }}</p>
+                                <div class="flex items-center mt-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ template.category }}
+                                    </span>
+                                    <span class="ml-2 text-xs text-gray-500">{{ template.fields|length }} fields</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editTemplate({{ template.id }})" class="text-blue-600 hover:text-blue-800">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button onclick="duplicateTemplate({{ template.id }})" class="text-green-600 hover:text-green-800">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button onclick="deleteTemplate({{ template.id }})" class="text-red-600 hover:text-red-800">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Template Editor -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Template Editor</h3>
+                
+                <form id="template-form" class="space-y-4">
+                    <div>
+                        <label for="template-name" class="block text-sm font-medium text-gray-700">Template Name</label>
+                        <input type="text" id="template-name" name="name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="template-description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="template-description" name="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="template-category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="template-category" name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="Core">Core</option>
+                            <option value="Database">Database</option>
+                            <option value="Security">Security</option>
+                            <option value="Islamic">Islamic</option>
+                            <option value="Extensions">Extensions</option>
+                            <option value="Performance">Performance</option>
+                            <option value="Logging">Logging</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            Save Template
+                        </button>
+                        <button type="button" onclick="clearTemplateForm()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Builder Tab -->
+    <div id="form-builder-content" class="tab-content hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Field Palette -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Field Types</h3>
+                
+                <div class="space-y-3">
+                    <div class="field-type" draggable="true" data-type="text">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
+                                <span class="text-sm font-medium">Text Input</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-type" draggable="true" data-type="textarea">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span class="text-sm font-medium">Text Area</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-type" draggable="true" data-type="number">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h16" />
+                                </svg>
+                                <span class="text-sm font-medium">Number Input</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-type" draggable="true" data-type="select">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <span class="text-sm font-medium">Select Dropdown</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-type" draggable="true" data-type="checkbox">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-sm font-medium">Checkbox</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-type" draggable="true" data-type="radio">
+                        <div class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:bg-gray-100 cursor-move">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                </svg>
+                                <span class="text-sm font-medium">Radio Buttons</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Canvas -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Form Canvas</h3>
+                        <button onclick="saveForm()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                            Save Form
+                        </button>
+                    </div>
+                    
+                    <div id="form-canvas" class="min-h-96 border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+                        <div class="text-center text-gray-500 py-8">
+                            <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p>Drag field types here to build your form</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Rules Tab -->
+    <div id="validation-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Validation Rules</h3>
+            
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Field</label>
+                        <select id="validation-field" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select a field</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rule Type</label>
+                        <select id="validation-rule-type" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="required">Required</option>
+                            <option value="min">Minimum Length</option>
+                            <option value="max">Maximum Length</option>
+                            <option value="pattern">Pattern (Regex)</option>
+                            <option value="email">Email</option>
+                            <option value="url">URL</option>
+                            <option value="numeric">Numeric</option>
+                            <option value="integer">Integer</option>
+                            <option value="float">Float</option>
+                            <option value="boolean">Boolean</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rule Value</label>
+                    <input type="text" id="validation-rule-value" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Enter rule value (optional)">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Error Message</label>
+                    <input type="text" id="validation-error-message" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Custom error message">
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button onclick="addValidationRule()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        Add Rule
+                    </button>
+                    <button onclick="clearValidationForm()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                        Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <h4 class="text-md font-medium text-gray-900 mb-3">Current Validation Rules</h4>
+                <div id="validation-rules-list" class="space-y-2">
+                    <!-- Validation rules will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Tab -->
+    <div id="preview-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Form Preview</h3>
+            
+            <div id="form-preview" class="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                <div class="text-center text-gray-500 py-8">
+                    <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <p>Build a form to see the preview</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Tab switching functionality
+document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active', 'border-blue-500', 'text-blue-600');
+            btn.classList.add('border-transparent', 'text-gray-500');
+        });
+        
+        // Add active class to clicked tab
+        this.classList.add('active', 'border-blue-500', 'text-blue-600');
+        this.classList.remove('border-transparent', 'text-gray-500');
+        
+        // Hide all content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Show corresponding content
+        const contentId = this.id.replace('-tab', '-content');
+        document.getElementById(contentId).classList.remove('hidden');
+    });
+});
+
+// Drag and drop functionality for form builder
+document.querySelectorAll('.field-type').forEach(field => {
+    field.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', this.dataset.type);
+    });
+});
+
+const formCanvas = document.getElementById('form-canvas');
+formCanvas.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('border-blue-500', 'bg-blue-50');
+});
+
+formCanvas.addEventListener('dragleave', function(e) {
+    this.classList.remove('border-blue-500', 'bg-blue-50');
+});
+
+formCanvas.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('border-blue-500', 'bg-blue-50');
+    
+    const fieldType = e.dataTransfer.getData('text/plain');
+    addFieldToCanvas(fieldType);
+});
+
+function addFieldToCanvas(fieldType) {
+    const fieldHtml = generateFieldHtml(fieldType);
+    formCanvas.innerHTML += fieldHtml;
+}
+
+function generateFieldHtml(fieldType) {
+    const fieldId = 'field_' + Date.now();
+    const fieldTypes = {
+        text: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Text Input</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Default value (optional)" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+        `,
+        textarea: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Text Area</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <textarea placeholder="Default value (optional)" rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+        `,
+        number: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Number Input</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="number" placeholder="Default value (optional)" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+        `,
+        select: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Select Dropdown</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <textarea placeholder="Options (one per line)" rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+        `,
+        checkbox: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Checkbox</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="default_${fieldId}" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="default_${fieldId}" class="ml-2 block text-sm text-gray-900">Default checked</label>
+                    </div>
+                </div>
+            </div>
+        `,
+        radio: `
+            <div class="field-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-field-id="${fieldId}">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-900">Radio Buttons</h4>
+                    <button onclick="removeField('${fieldId}')" class="text-red-600 hover:text-red-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Field label" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" placeholder="Field name" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <textarea placeholder="Options (one per line)" rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+        `
+    };
+    
+    return fieldTypes[fieldType] || fieldTypes.text;
+}
+
+function removeField(fieldId) {
+    const field = document.querySelector(`[data-field-id="${fieldId}"]`);
+    if (field) {
+        field.remove();
+    }
+}
+
+// Template management functions
+function createNewTemplate() {
+    clearTemplateForm();
+    document.getElementById('template-form').style.display = 'block';
+}
+
+function editTemplate(templateId) {
+    // Load template data and populate form
+    console.log('Edit template:', templateId);
+}
+
+function duplicateTemplate(templateId) {
+    // Duplicate template
+    console.log('Duplicate template:', templateId);
+}
+
+function deleteTemplate(templateId) {
+    if (confirm('Are you sure you want to delete this template?')) {
+        console.log('Delete template:', templateId);
+    }
+}
+
+function clearTemplateForm() {
+    document.getElementById('template-name').value = '';
+    document.getElementById('template-description').value = '';
+    document.getElementById('template-category').value = 'Core';
+}
+
+// Form management functions
+function saveForm() {
+    const fields = document.querySelectorAll('.field-item');
+    const formData = [];
+    
+    fields.forEach(field => {
+        const inputs = field.querySelectorAll('input, textarea');
+        const fieldData = {
+            type: field.querySelector('h4').textContent,
+            label: inputs[0]?.value || '',
+            name: inputs[1]?.value || '',
+            defaultValue: inputs[2]?.value || ''
+        };
+        formData.push(fieldData);
+    });
+    
+    console.log('Form data:', formData);
+    alert('Form saved successfully!');
+}
+
+// Validation management functions
+function addValidationRule() {
+    const field = document.getElementById('validation-field').value;
+    const ruleType = document.getElementById('validation-rule-type').value;
+    const ruleValue = document.getElementById('validation-rule-value').value;
+    const errorMessage = document.getElementById('validation-error-message').value;
+    
+    if (!field) {
+        alert('Please select a field');
+        return;
+    }
+    
+    const ruleHtml = `
+        <div class="validation-rule bg-gray-100 border border-gray-200 rounded-lg p-3">
+            <div class="flex justify-between items-center">
+                <div>
+                    <strong>${field}</strong> - ${ruleType}
+                    ${ruleValue ? ` (${ruleValue})` : ''}
+                    ${errorMessage ? ` - ${errorMessage}` : ''}
+                </div>
+                <button onclick="removeValidationRule(this)" class="text-red-600 hover:text-red-800">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('validation-rules-list').innerHTML += ruleHtml;
+    clearValidationForm();
+}
+
+function removeValidationRule(button) {
+    button.closest('.validation-rule').remove();
+}
+
+function clearValidationForm() {
+    document.getElementById('validation-field').value = '';
+    document.getElementById('validation-rule-type').value = 'required';
+    document.getElementById('validation-rule-value').value = '';
+    document.getElementById('validation-error-message').value = '';
+}
+</script>
+{% endblock %} 

@@ -109,10 +109,24 @@ $router->post('/configuration/restore', 'IslamWiki\Http\Controllers\Configuratio
 $router->get('/configuration/audit', 'IslamWiki\Http\Controllers\ConfigurationController@auditLog');
 $router->get('/configuration/backups', 'IslamWiki\Http\Controllers\ConfigurationController@backups');
 
+// Configuration Builder Routes - Version 0.0.23
+$router->get('/configuration/builder', 'IslamWiki\Http\Controllers\ConfigurationController@builder');
+
 // Configuration API Routes
 $router->get('/api/configuration', 'IslamWiki\Http\Controllers\ConfigurationController@apiIndex');
 $router->get('/api/configuration/{category}', 'IslamWiki\Http\Controllers\ConfigurationController@apiShow');
 $router->put('/api/configuration/{key}', 'IslamWiki\Http\Controllers\ConfigurationController@apiUpdate');
+
+// Enhanced Configuration API Routes - Version 0.0.23
+$router->get('/api/configuration/templates', 'IslamWiki\Http\Controllers\ConfigurationController@apiTemplates');
+$router->post('/api/configuration/templates', 'IslamWiki\Http\Controllers\ConfigurationController@apiCreateTemplate');
+$router->post('/api/configuration/templates/apply', 'IslamWiki\Http\Controllers\ConfigurationController@apiApplyTemplate');
+$router->post('/api/configuration/bulk', 'IslamWiki\Http\Controllers\ConfigurationController@apiBulkUpdate');
+$router->get('/api/configuration/analytics', 'IslamWiki\Http\Controllers\ConfigurationController@apiAnalytics');
+$router->post('/api/configuration/validate/advanced', 'IslamWiki\Http\Controllers\ConfigurationController@apiAdvancedValidate');
+$router->get('/api/configuration/dependencies/{key}', 'IslamWiki\Http\Controllers\ConfigurationController@apiDependencies');
+$router->post('/api/configuration/suggestions', 'IslamWiki\Http\Controllers\ConfigurationController@apiSuggestions');
+$router->get('/api/configuration/performance', 'IslamWiki\Http\Controllers\ConfigurationController@apiPerformance');
 
 // Security Routes - Version 0.0.21
 $router->get('/security', 'IslamWiki\Http\Controllers\SecurityController@index');

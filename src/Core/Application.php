@@ -100,6 +100,7 @@ class Application
         }
         $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
         $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
+        $this->container->instance(\IslamWiki\Core\Logging\Logger::class, $logger);
 
         // Bind ControllerFactory for IslamRouter
         $this->container->singleton('controller.factory', function () {
@@ -142,6 +143,11 @@ class Application
         $extensionServiceProvider = new \IslamWiki\Providers\ExtensionServiceProvider();
         $extensionServiceProvider->register($this->container);
         $extensionServiceProvider->boot($this->container);
+
+        // Register the ConfigurationServiceProvider
+        $configurationServiceProvider = new \IslamWiki\Providers\ConfigurationServiceProvider($this->container);
+        $configurationServiceProvider->register();
+        $configurationServiceProvider->boot();
     }
 
     /**

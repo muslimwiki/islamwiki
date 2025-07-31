@@ -59,19 +59,13 @@ class ConfigurationServiceProvider
      */
     public function register(): void
     {
-        // Initialize configuration manager
-        ConfigurationManager::initialize();
-
         // Register configuration manager as a singleton
-        $this->container->singleton('config', function () {
-            return ConfigurationManager::class;
+        $this->container->singleton(ConfigurationManager::class, function ($container) {
+            return new ConfigurationManager($container);
         });
 
         // Register configuration helper functions
         $this->registerConfigurationHelpers();
-
-        // Register configuration validation
-        $this->registerConfigurationValidation();
     }
 
     /**
@@ -84,63 +78,108 @@ class ConfigurationServiceProvider
         // Global configuration helper function
         if (!function_exists('config')) {
             function config(string $key, $default = null) {
-                return ConfigurationManager::get($key, $default);
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getValue($key, $default);
+                }
+                return $default;
             }
         }
 
         // Database configuration helper
         if (!function_exists('db_config')) {
             function db_config(): array {
-                return ConfigurationManager::getDatabaseConfig();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Database');
+                }
+                return [];
             }
         }
 
         // Islamic database configuration helper
         if (!function_exists('islamic_db_config')) {
             function islamic_db_config(): array {
-                return ConfigurationManager::getIslamicDatabaseConfigs();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Islamic');
+                }
+                return [];
             }
         }
 
         // Islamic feature configuration helper
         if (!function_exists('islamic_feature_config')) {
             function islamic_feature_config(): array {
-                return ConfigurationManager::getIslamicFeatureConfigs();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Islamic');
+                }
+                return [];
             }
         }
 
         // Search configuration helper
         if (!function_exists('search_config')) {
             function search_config(): array {
-                return ConfigurationManager::getSearchConfig();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Core');
+                }
+                return [];
             }
         }
 
         // Cache configuration helper
         if (!function_exists('cache_config')) {
             function cache_config(): array {
-                return ConfigurationManager::getCacheConfig();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Performance');
+                }
+                return [];
             }
         }
 
         // Logging configuration helper
         if (!function_exists('logging_config')) {
             function logging_config(): array {
-                return ConfigurationManager::getLoggingConfig();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Logging');
+                }
+                return [];
             }
         }
 
         // Extension configuration helper
         if (!function_exists('extension_config')) {
             function extension_config(): array {
-                return ConfigurationManager::getExtensionConfigs();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Extensions');
+                }
+                return [];
             }
         }
 
         // Islamic configuration helper
         if (!function_exists('islamic_config')) {
             function islamic_config(): array {
-                return ConfigurationManager::getIslamicConfigs();
+                global $app;
+                if ($app) {
+                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
+                    return $configManager->getCategory('Islamic');
+                }
+                return [];
             }
         }
     }
@@ -152,15 +191,14 @@ class ConfigurationServiceProvider
      */
     private function registerConfigurationValidation(): void
     {
+        // Get configuration manager instance
+        $configManager = $this->container->get(ConfigurationManager::class);
+        
         // Validate configuration on startup
-        $validation = ConfigurationManager::validateConfiguration();
+        $validation = $configManager->validateConfiguration();
         
-        if (!$validation['valid']) {
-            $this->handleConfigurationErrors($validation['errors']);
-        }
-        
-        if (!empty($validation['warnings'])) {
-            $this->handleConfigurationWarnings($validation['warnings']);
+        if (!empty($validation)) {
+            $this->handleConfigurationErrors($validation);
         }
     }
 
@@ -204,6 +242,14 @@ class ConfigurationServiceProvider
      */
     public function boot(): void
     {
+        // Register configuration validation (only after database is ready)
+        try {
+            $this->registerConfigurationValidation();
+        } catch (\Exception $e) {
+            // Ignore configuration validation errors during boot
+            // This allows the application to start even if configuration tables don't exist yet
+        }
+        
         // Set up environment-specific configuration
         $this->setupEnvironmentConfiguration();
         

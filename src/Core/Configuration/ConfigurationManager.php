@@ -76,7 +76,8 @@ class ConfigurationManager
             $this->logger->info('Configuration loaded successfully');
         } catch (\Exception $e) {
             $this->logger->error('Failed to load configuration: ' . $e->getMessage());
-            throw $e;
+            // Don't throw the exception, just log it
+            // This allows the application to start even if configuration tables don't exist yet
         }
     }
 
