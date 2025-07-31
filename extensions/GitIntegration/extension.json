@@ -1,0 +1,57 @@
+{
+    "name": "GitIntegration",
+    "version": "0.0.1",
+    "description": "Git repository integration for automatic version control and backup",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/GitIntegration",
+    "main": "GitIntegration.php",
+    "class": "IslamWiki\\Extensions\\GitIntegration\\GitIntegration",
+    "type": "system",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "enabled": false,
+        "repositoryPath": "storage/git/content",
+        "remoteUrl": "",
+        "branch": "main",
+        "autoCommit": true,
+        "autoPush": true,
+        "commitMessageTemplate": "Wiki update: {title} by {user}",
+        "backupSchedule": "daily",
+        "conflictResolution": "manual",
+        "reviewWorkflow": true,
+        "backupRetention": 30
+    },
+    "hooks": {
+        "ArticleSave": "onArticleSave",
+        "ArticleDelete": "onArticleDelete",
+        "UserLogin": "onUserLogin",
+        "ContentBackup": "onContentBackup",
+        "ReviewRequest": "onReviewRequest"
+    },
+    "workflows": {
+        "scholarly_review": {
+            "enabled": true,
+            "steps": [
+                "author_edit",
+                "create_branch",
+                "scholar_review",
+                "approve_or_reject",
+                "merge_to_main"
+            ]
+        },
+        "automatic_backup": {
+            "enabled": true,
+            "frequency": "daily",
+            "retention": 30
+        }
+    },
+    "permissions": {
+        "git_commit": ["admin", "moderator"],
+        "git_push": ["admin"],
+        "git_branch": ["admin", "moderator", "scholar"],
+        "git_merge": ["admin", "scholar"],
+        "git_backup": ["admin"]
+    }
+} 

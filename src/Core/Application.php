@@ -70,6 +70,9 @@ class Application
         // Initialize the service container first
         $this->container = new Container();
 
+        // Bind the application instance to the container
+        $this->container->instance(self::class, $this);
+
         // Register core bindings
         $this->registerCoreContainerAliases();
 
@@ -115,6 +118,8 @@ class Application
         $this->initializeErrorHandling();
     }
 
+
+
     /**
      * Register service providers.
      */
@@ -132,6 +137,11 @@ class Application
         $sessionServiceProvider = new \IslamWiki\Providers\SessionServiceProvider();
         $sessionServiceProvider->register($this->container);
         $sessionServiceProvider->boot($this->container);
+
+        // Register the ExtensionServiceProvider
+        $extensionServiceProvider = new \IslamWiki\Providers\ExtensionServiceProvider();
+        $extensionServiceProvider->register($this->container);
+        $extensionServiceProvider->boot($this->container);
     }
 
     /**

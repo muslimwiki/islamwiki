@@ -49,6 +49,11 @@ class Container implements ContainerInterface
     protected array $resolvingCallbacks = [];
 
     /**
+     * The container's parameter overrides.
+     */
+    protected array $with = [];
+
+    /**
      * Register a binding with the container.
      */
     public function bind(string $abstract, $concrete = null, bool $shared = false): void

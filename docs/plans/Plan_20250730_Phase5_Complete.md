@@ -1,248 +1,273 @@
-# Development Plan - Phase 5 Complete
+# IslamWiki v0.0.19: Markdown & Git Extensions
 
-**Date:** 2025-07-30  
-**Version:** 0.0.16  
-**Status:** Phase 5 Complete ✅
+**Date**: 2025-07-30  
+**Version**: 0.0.19  
+**Focus**: Enhanced Markdown Support & Git Integration  
+**Status**: Planning Phase
 
-## Overview
+---
 
-Phase 5 has been successfully completed with the implementation of the comprehensive Prayer Times Integration System. This phase focused on building a complete prayer time management system with advanced astronomical algorithms, multiple calculation methods, user location management, and embeddable widgets.
+## 🎯 Overview
 
-## ✅ Phase 5 Achievements
+Version 0.0.19 will implement two major extensions that significantly enhance IslamWiki's capabilities:
 
-### Prayer Times Integration System ✅ COMPLETE
-- **Complete Prayer Time Calculations**: Advanced astronomical algorithms for accurate prayer times
-- **Multiple Calculation Methods**: Support for 7 different Islamic calculation methods
-- **User Location Management**: Save and manage multiple locations with preferences
-- **Prayer Time Widgets**: Embeddable widgets for external websites with customization
-- **Qibla Direction**: Calculate Qibla direction for any location worldwide
-- **Next Prayer Detection**: Automatic detection of the next prayer time
-- **Multi-language Support**: English, Arabic, Urdu, Turkish prayer names
-- **Time Format Options**: 12-hour and 24-hour time formats
-- **High Latitude Adjustment**: Special handling for polar regions
-- **Time Offset Support**: Custom time adjustments for local preferences
-- **Real-time Statistics**: Track API usage and performance metrics
-- **Intelligent Caching**: Cache prayer time calculations for 24 hours
-- **Error Logging**: Comprehensive error tracking and debugging
-- **API Rate Limiting**: Protection against abuse
-- **Responsive Design**: Mobile-friendly Islamic-themed interface
-- **Accessibility**: Full accessibility support for all users
+1. **Enhanced Markdown Extension**: Advanced markdown support with Islamic content syntax
+2. **Git Integration Extension**: Automatic version control and backup system
 
-### Technical Achievements
-- **Database Schema**: 10 comprehensive tables for prayer time management
-- **Model System**: PrayerTime model with all CRUD operations and astronomical calculations
-- **Controller System**: PrayerTimeController with web and API endpoints
-- **Template System**: Complete Twig template set for prayer interface
-- **Routing System**: Clean, organized routing for prayer functionality
-- **API Design**: RESTful API with comprehensive endpoints
-- **Error Handling**: Comprehensive error handling and validation
-- **Security**: Input validation, SQL injection protection, XSS protection
-- **Performance**: Sub-100ms API responses with intelligent caching
-- **Responsive Design**: Mobile-friendly Islamic-themed interface
+These extensions will be implemented as optional modules, maintaining the clean core architecture while providing powerful additional functionality.
 
-### API Endpoints Implemented
-- `GET /api/prayer-times/times` - Get prayer times for location and date
-- `GET /api/prayer-times/next` - Get next prayer time
-- `GET /api/prayer-times/qibla` - Calculate Qibla direction
-- `GET /api/prayer-times/statistics` - Get usage statistics
-- `GET /api/prayer-times/locations` - Get user's saved locations
-- `POST /api/prayer-times/locations` - Add new user location
-- `GET /api/prayer-times/preferences` - Get user preferences
-- `PUT /api/prayer-times/preferences` - Update user preferences
-- `GET /api/prayer-times/methods` - Get calculation methods
-- `GET /api/prayer-times/names` - Get prayer names in different languages
+---
 
-### Web Interface Implemented
-- **Prayer Times Index** (`/prayer`) - Beautiful homepage with statistics and navigation
-- **Prayer Times Search** (`/prayer/search`) - Advanced search with filters and popular locations
-- **Prayer Times Widget** (`/prayer/widget`) - Widget customization and embed code
-- **Location Management** (`/prayer/locations`) - Manage user locations
-- **Preferences** (`/prayer/preferences`) - User preferences and settings
+## 📋 Feature Specifications
 
-### Database Schema Implemented
-- **Core Tables**: prayer_times, user_locations, prayer_notifications, prayer_preferences, prayer_history
-- **Integration Tables**: qibla_directions, prayer_widgets, prayer_api_cache, prayer_statistics, prayer_errors
-- **Performance**: Indexed tables for fast queries, connection pooling
-- **Caching**: Prayer time caching for performance optimization
-- **Analytics**: Real-time statistics and usage tracking
+### 1. Enhanced Markdown Extension
 
-## 🎯 Current Status
+#### Core Features
+- **Dual Parser System**: Support both traditional wiki markup AND enhanced Markdown
+- **Islamic Markdown Extensions**: Custom syntax for Islamic content
+- **Arabic-Enhanced Editor**: Markdown editor with Arabic text support and RTL handling
+- **Smart Templates**: Pre-built Markdown templates for different Islamic content types
 
-### ✅ Phase 5: Prayer Times Integration (COMPLETE)
-- ✅ Complete prayer time management system
-- ✅ Advanced astronomical algorithms
-- ✅ Multiple calculation methods (7 methods)
-- ✅ User location management
-- ✅ Prayer time widgets for external websites
-- ✅ Qibla direction calculation
-- ✅ Next prayer detection
-- ✅ Multi-language support (4 languages)
-- ✅ Time format options (12h/24h)
-- ✅ High latitude adjustment
-- ✅ Time offset support
-- ✅ Real-time statistics
-- ✅ Intelligent caching system
-- ✅ Comprehensive error handling
-- ✅ API rate limiting
-- ✅ Responsive design
-- ✅ Full accessibility support
+#### Islamic Syntax Extensions
+```markdown
+# Quran Verse Reference
+{{quran:2:255}} - Ayat al-Kursi
 
-### 🔄 Phase 6: Advanced Features (NEXT)
-- 🚧 Prayer time notifications
-- 🚧 Audio adhan integration
-- 🚧 Advanced widget customization
-- 🚧 Mobile app development
-- 🚧 Community features
-- 🚧 Social sharing
-- 🚧 Advanced analytics
-- 🚧 International expansion
+# Hadith Citation
+{{hadith:bukhari:1:1}} - First hadith of Bukhari
 
-## 📊 Development Metrics
+# Islamic Date
+{{hijri:1445-03-15}} - 15 Rabi' al-Awwal 1445
 
-### Technical Metrics ✅ ACHIEVED
-- ✅ All prayer time API endpoints working correctly
-- ✅ Response times within specified limits (sub-100ms)
-- ✅ Security requirements met (comprehensive validation)
-- ✅ Performance targets achieved (90%+ cache hit rate)
-- ✅ Accessibility standards met (WCAG 2.1 AA)
-- ✅ Multi-language support implemented
-- ✅ Widget system functional
-- ✅ Database schema optimized
+# Prayer Times
+{{prayer-times:location:mecca}}
 
-### Feature Metrics ✅ READY
-- ✅ Prayer time calculations functional (7 methods)
-- ✅ User location management working
-- ✅ Qibla direction calculation accurate
-- ✅ Next prayer detection working
-- ✅ Widget system ready for external use
-- ✅ Statistics and analytics tracking
-- ✅ Error handling comprehensive
-- ✅ Caching system optimized
+# Scholar Reference
+{{scholar:ibn-taymiyyah}} - Ibn Taymiyyah's works
+```
 
-## 🚀 Performance Achievements
+#### Technical Implementation
+- **Parser Enhancement**: Extend existing `parseWikiText()` method
+- **Editor Integration**: Enhanced markdown editor with Islamic shortcuts
+- **Template System**: Pre-built templates for common Islamic content types
+- **Arabic Support**: Proper RTL handling and Arabic typography
 
-### Version 0.0.16 Enhancements
-- **50% Faster**: Prayer time calculations optimized for speed
-- **90% Cache Hit Rate**: Intelligent caching system
-- **Sub-100ms Response**: Optimized database queries
-- **Memory Efficient**: Reduced memory usage by 30%
-- **Scalable Architecture**: Support for high concurrent usage
+### 2. Git Integration Extension
 
-### Technical Excellence
-- **Clean Architecture**: Separate concerns for different Islamic features
-- **Performance Optimized**: Fast calculation times and efficient queries
-- **Security Focused**: Proper validation and protection
-- **User Experience**: Intuitive and responsive interface
+#### Core Features
+- **Continuous Backup**: Every edit automatically commits to Git repository
+- **Branch-Based Review**: Scholarly reviews happen on separate branches before merging
+- **Conflict Resolution**: Built-in tools for handling editing conflicts
+- **Remote Sync**: Backup to multiple Git providers (GitHub, GitLab, self-hosted)
 
-## 📈 Success Metrics
+#### Workflow Implementation
+```php
+// Automatic Git workflow
+Article Save → Git Commit → Push to Remote → Backup Complete
 
-### Phase 5 Success Criteria ✅ ACHIEVED
-- **Prayer Time Calculations**: Accurate calculations for any location worldwide
-- **Multiple Methods**: Support for 7 different Islamic calculation methods
-- **User Management**: Complete user location and preference management
-- **Widget System**: Embeddable widgets for external websites
-- **Performance**: Sub-100ms for prayer time calculations
-- **Security**: Comprehensive validation and protection
-- **User Experience**: Intuitive and responsive interface
+// Scholarly Review workflow
+Author Edit → Create Branch → Scholar Review → Merge to Main → Delete Branch
+```
 
-### Long-term Goals
-- **Global Prayer Time Network**: Real-time prayer time updates
-- **Advanced Analytics**: Detailed usage analytics and insights
-- **API Ecosystem**: Third-party integrations and plugins
-- **International Expansion**: Support for more regions and languages
+#### Technical Implementation
+- **Git Repository Management**: Automatic repository initialization and management
+- **Hook Integration**: Git hooks for automatic commits and pushes
+- **Conflict Resolution**: Web-based conflict resolution interface
+- **Backup Scheduling**: Configurable backup schedules and retention policies
 
-## 🛠️ Development Guidelines
+---
 
-### Code Quality Standards
-- **PSR-12**: Follow PSR-12 coding standards
-- **Documentation**: Comprehensive documentation for all features
-- **Testing**: Unit tests and integration tests for all functionality
-- **Security**: Security-first approach with comprehensive validation
-- **Performance**: Optimized queries and caching strategies
+## 🏗️ Architecture Design
 
-### Database Standards
-- **Normalization**: Proper database normalization
-- **Indexing**: Optimized indexes for fast queries
-- **Foreign Keys**: Proper foreign key relationships
-- **Data Integrity**: Data validation and constraints
-- **Backup Strategy**: Regular database backups
+### Extension Structure
+```
+extensions/
+├── EnhancedMarkdown/           # Enhanced Markdown support
+│   ├── extension.json          # Extension metadata
+│   ├── EnhancedMarkdown.php    # Main extension file
+│   ├── includes/
+│   │   ├── MarkdownParser.php  # Enhanced markdown parser
+│   │   ├── IslamicSyntax.php   # Islamic syntax extensions
+│   │   ├── ArabicEditor.php    # Arabic-enhanced editor
+│   │   └── TemplateManager.php # Template system
+│   ├── modules/
+│   │   ├── css/                # Editor stylesheets
+│   │   ├── js/                 # Editor JavaScript
+│   │   └── templates/          # Markdown templates
+│   └── i18n/                   # Language files
+│
+└── GitIntegration/             # Git version control
+    ├── extension.json          # Extension metadata
+    ├── GitIntegration.php      # Main extension file
+    ├── includes/
+    │   ├── GitRepository.php   # Git repository management
+    │   ├── ContentSynchronizer.php # Content sync
+    │   ├── ConflictResolver.php # Conflict resolution
+    │   └── BackupManager.php   # Backup management
+    ├── hooks/                  # Git hooks
+    └── config/                 # Git configuration
+```
 
-### API Standards
-- **RESTful Design**: Follow REST API design principles
-- **Versioning**: API versioning strategy
-- **Documentation**: Comprehensive API documentation
-- **Rate Limiting**: API rate limiting for abuse prevention
-- **Error Handling**: Proper error responses and status codes
+### Hook System Integration
+```php
+// Enhanced Markdown hooks
+$this->getHookManager()->register('ContentParse', function($content, $format) {
+    if ($format === 'markdown') {
+        return $this->parseEnhancedMarkdown($content);
+    }
+});
 
-## 📚 Documentation
+// Git Integration hooks
+$this->getHookManager()->register('ArticleSave', function($article, $user) {
+    $this->commitToGit($article, $user);
+});
+```
 
-### Completed Documentation
-- ✅ **Release Notes**: Complete release notes for 0.0.16
-- ✅ **API Documentation**: Comprehensive API documentation
-- ✅ **Database Schema**: Complete database schema documentation
-- ✅ **User Guide**: User interface documentation
-- ✅ **Developer Guide**: Development guidelines and standards
+---
 
-### Planned Documentation
-- 🚧 **Prayer Time Notifications Guide**: Notification system guide
-- 🚧 **Audio Integration Guide**: Audio adhan integration guide
-- 🚧 **Mobile App Guide**: Mobile application development guide
-- 🚧 **Community Features Guide**: Community and social features guide
-- 🚧 **Advanced Analytics Guide**: Analytics and insights guide
+## 🔧 Implementation Steps
 
-## 🎉 Conclusion
+### Step 1: Extension Framework Enhancement
+1. **Create Extension Base Classes**
+   - `Extension.php` base class
+   - `ExtensionManager.php` for loading extensions
+   - Hook system for extension communication
 
-Phase 5 has been successfully completed with the implementation of a comprehensive Prayer Times Integration System. The system provides a solid foundation for Islamic prayer time management and community engagement. The next phase will focus on Advanced Features and Community Integration to further enhance the Islamic features of IslamWiki.
+2. **Extension Configuration System**
+   - `extension.json` schema
+   - Extension loading and initialization
+   - Configuration management
 
-### Key Achievements
-- ✅ Complete prayer time management system
-- ✅ Advanced astronomical algorithms
-- ✅ Multiple calculation methods (7 methods)
-- ✅ User location management
-- ✅ Prayer time widgets for external websites
-- ✅ Qibla direction calculation
-- ✅ Next prayer detection
-- ✅ Multi-language support (4 languages)
-- ✅ Performance optimization and security features
-- ✅ Comprehensive API with 10 endpoints
+### Step 2: Enhanced Markdown Extension
+1. **Enhanced Parser Development**
+   - Extend existing markdown parser
+   - Add Islamic syntax support
+   - Implement Arabic text handling
 
-### Next Steps
-- 🚧 Begin Phase 6: Advanced Features
-- 🚧 Implement prayer time notifications
-- 🚧 Develop audio adhan integration
-- 🚧 Create advanced widget features
-- 🚧 Prepare for mobile app development
-- 🚧 Plan community features
+2. **Editor Enhancement**
+   - Enhanced markdown editor interface
+   - Islamic content shortcuts
+   - Arabic keyboard support
 
-The Prayer Times system is now production-ready and can be immediately used for accurate Islamic prayer time calculations, user management, and external integration. The foundation is solid for the next phase of development.
+3. **Template System**
+   - Pre-built templates for Islamic content
+   - Template selection interface
+   - Custom template creation
 
-## 📋 Phase 6 Planning
+### Step 3: Git Integration Extension
+1. **Git Repository Management**
+   - Automatic repository initialization
+   - Git configuration management
+   - Repository health monitoring
 
-### Advanced Features (0.0.17)
-- **Prayer Time Notifications**: Push notifications for prayer times
-- **Audio Adhan**: Audio prayer call integration
-- **Advanced Widgets**: More widget customization options
-- **Mobile App**: Native mobile application
-- **Community Features**: User communities and sharing
+2. **Content Synchronization**
+   - Automatic commit on content changes
+   - Branch management for reviews
+   - Conflict detection and resolution
 
-### Technical Implementation Plan
-- **Notification System**: Real-time notification management
-- **Audio Integration**: Audio file management and playback
-- **Mobile API**: Mobile-specific API endpoints
-- **Community System**: User communities and social features
-- **Advanced Analytics**: Detailed usage analytics and insights
+3. **Backup System**
+   - Remote repository synchronization
+   - Backup scheduling and retention
+   - Recovery procedures
 
-### Planned API Endpoints
-- `GET /api/notifications/settings` - Get notification settings
-- `POST /api/notifications/settings` - Update notification settings
-- `GET /api/audio/adhan` - Get adhan audio files
-- `GET /api/community/groups` - Get community groups
-- `POST /api/community/groups` - Create community group
+### Step 4: Integration Testing
+1. **Extension Loading Tests**
+   - Test extension loading and initialization
+   - Test hook system functionality
+   - Test configuration management
 
-### Database Schema Planning
-- **Notification Tables**: notification_settings, notification_history, notification_templates
-- **Audio Tables**: adhan_files, audio_preferences, audio_history
-- **Community Tables**: community_groups, group_members, group_posts
-- **Mobile Tables**: mobile_sessions, mobile_preferences, mobile_analytics
+2. **Markdown Enhancement Tests**
+   - Test Islamic syntax parsing
+   - Test Arabic text handling
+   - Test template system
 
-The Islamic prayer time system is now complete and ready for advanced feature development in Phase 6. 
+3. **Git Integration Tests**
+   - Test automatic commits
+   - Test branch management
+   - Test conflict resolution
+
+---
+
+## 📊 Success Metrics
+
+### Enhanced Markdown Extension
+- **User Adoption**: 80% of new content created in Markdown format
+- **Islamic Content**: 90% of Islamic content uses enhanced syntax
+- **Editor Performance**: Sub-100ms response time for syntax highlighting
+- **Template Usage**: 60% of content uses pre-built templates
+
+### Git Integration Extension
+- **Backup Reliability**: 99.9% successful automatic backups
+- **Conflict Resolution**: 95% of conflicts resolved automatically
+- **Review Workflow**: 80% of scholarly reviews completed via Git branches
+- **Recovery Success**: 100% successful content recovery from Git
+
+---
+
+## 🚀 Deployment Strategy
+
+### Phase 1: Development (Week 1-2)
+1. **Extension Framework**: Build extension loading and management system
+2. **Enhanced Markdown**: Develop enhanced markdown parser and editor
+3. **Basic Git Integration**: Implement basic Git repository management
+
+### Phase 2: Testing (Week 3)
+1. **Unit Testing**: Comprehensive test suite for both extensions
+2. **Integration Testing**: Test extension interaction with core system
+3. **Performance Testing**: Ensure extensions don't impact core performance
+
+### Phase 3: Documentation (Week 4)
+1. **User Documentation**: Complete user guides for both extensions
+2. **Developer Documentation**: Extension development guides
+3. **Administration Guides**: Installation and configuration guides
+
+### Phase 4: Release (Week 4)
+1. **Final Testing**: End-to-end testing with real content
+2. **Documentation Review**: Complete documentation review
+3. **Release Preparation**: Prepare release notes and upgrade guides
+
+---
+
+## 🎯 Benefits
+
+### For Users
+- **Better Editing Experience**: Enhanced markdown editor with Islamic shortcuts
+- **Content Security**: Automatic Git backups ensure content safety
+- **Scholarly Collaboration**: Git-based review workflows for academic content
+- **Mobile Support**: Improved mobile editing with markdown
+
+### For Administrators
+- **Modular Deployment**: Choose which features to enable
+- **Easy Maintenance**: Extensions can be updated independently
+- **Backup Security**: Professional-grade version control
+- **Scalability**: Extensions can be enhanced without core changes
+
+### For Developers
+- **Clean Architecture**: Extensions don't pollute core code
+- **Easy Testing**: Each extension can be tested independently
+- **Flexible Development**: Extensions can be developed by different teams
+- **Future-Proof**: Easy to enhance or replace extension implementations
+
+---
+
+## 📝 Next Actions
+
+### Immediate (This Week)
+1. **Extension Framework**: Begin implementing extension loading system
+2. **Enhanced Markdown Parser**: Start development of Islamic syntax extensions
+3. **Git Repository Setup**: Begin Git integration planning
+
+### Short Term (Next 2 Weeks)
+1. **Extension Development**: Complete both extension implementations
+2. **Testing Framework**: Build comprehensive test suites
+3. **Documentation**: Create user and developer documentation
+
+### Medium Term (Next Month)
+1. **Production Deployment**: Deploy extensions to production environment
+2. **User Training**: Provide training on new features
+3. **Community Feedback**: Gather feedback and iterate on features
+
+---
+
+**Status**: Planning Complete ✅  
+**Next Phase**: Extension Framework Implementation 
