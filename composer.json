@@ -3,7 +3,7 @@
     "description": "A custom wiki system based on features of MediaWiki and Wordpress",
     "type": "project",
     "license": "AGPL-3.0-only",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "authors": [
         {
             "name": "IslamWiki Team",
