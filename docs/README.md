@@ -1,20 +1,22 @@
 # IslamWiki Documentation
 
-**Version**: 0.0.14  
-**Status**: Development Phase - Hadith Integration Complete  
+**Version**: 0.0.16  
+**Status**: Development Phase - Prayer Times Integration Complete  
 **Last Updated**: 2025-07-30
 
 Welcome to the comprehensive documentation for the Islam Wiki project. This documentation covers all aspects of the application architecture, components, and development guidelines.
 
 ### ✅ **Latest Updates**
-- **Hadith Integration System**: ✅ Complete Hadith management system implemented
-- **Hadith Model**: Full model for Hadith operations with search and retrieval
-- **HadithController**: Complete web and API controller for Hadith functionality
-- **Hadith Search**: Advanced search functionality across Arabic and English text
-- **Hadith Display**: Beautiful Hadith display with Arabic text, translations, and chain
-- **Hadith Widgets**: Embeddable Hadith widgets for wiki pages
-- **Hadith API**: Comprehensive REST API for Hadith data access
-- **Islamic Database Integration**: Full integration with Islamic database system
+- **Prayer Times Integration System**: ✅ Complete prayer time system with astronomical algorithms
+- **PrayerTime Model**: Full model for prayer time calculations with 7 calculation methods
+- **PrayerTimeController**: Complete web and API controller for prayer time functionality
+- **Advanced Prayer Calculations**: Astronomical algorithms for accurate prayer times worldwide
+- **Multiple Calculation Methods**: Support for MWL, ISNA, EGYPT, MAKKAH, KARACHI, TEHRAN, JAFARI
+- **User Location Management**: Save and manage multiple locations with preferences
+- **Prayer Time Widgets**: Embeddable widgets for external websites with customization
+- **Qibla Direction**: Calculate Qibla direction for any location worldwide
+- **Next Prayer Detection**: Automatic detection of the next prayer time
+- **Multi-language Support**: English, Arabic, Urdu, Turkish prayer names
 
 ### 📋 **Development Status**
 - **Database Connection Strategy**: ✅ **COMPLETED** (0.0.11) - Separate connections recommended
@@ -23,18 +25,21 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **Islamic Content Management**: ✅ **COMPLETED** (0.0.12) - Complete content creation and moderation
 - **Quran Integration**: ✅ **COMPLETED** (0.0.13) - Complete Quran verse management system
 - **Hadith Integration**: ✅ **COMPLETED** (0.0.14) - Complete Hadith management system
+- **Islamic Calendar Integration**: ✅ **COMPLETED** (0.0.15) - Islamic calendar with event management
+- **Prayer Times Integration**: ✅ **COMPLETED** (0.0.16) - Complete prayer time system with astronomical algorithms
 - **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
 - **Islamic Core Organization**: ✅ Nested within app/Core/Islamic/ (Option B)
 - **Language Files**: ✅ Laravel-style resources/lang instead of MediaWiki i18n
 - **Extensions Permissions**: ✅ Per-extension basis permissions
 - **API Versioning**: ✅ Separate versioning for all APIs
-- **Islamic Calendar**: 🔄 **Next Implementation** (0.0.15) - Islamic calendar integration and events
-- **Prayer Times**: 🔄 **Planned** (0.0.16) - Prayer time integration and notifications
+- **Advanced Features**: 🔄 **Next Implementation** (0.0.17) - Advanced Islamic features and community integration
 
 ### 🚧 **Next Phase**
-- **Islamic Calendar Integration**: Islamic calendar and events (0.0.15)
-- **Prayer Times System**: Prayer time integration and notifications (0.0.16)
-- **Data Population**: Populate Hadith tables with actual Hadith data
+- **Advanced Islamic Features**: Advanced features and community integration (0.0.17)
+- **Prayer Time Notifications**: Push notifications for prayer times
+- **Audio Adhan**: Audio prayer call integration
+- **Mobile App**: Native mobile application development
+- **Community Features**: User communities and social features
 
 ## 📚 Documentation Structure
 

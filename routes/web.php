@@ -153,3 +153,23 @@ $router->get('/api/calendar/search', 'IslamWiki\Http\Controllers\IslamicCalendar
 $router->post('/api/calendar/events', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiCreateEvent');
 $router->put('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiUpdateEvent');
 $router->delete('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiDeleteEvent');
+
+// Prayer Times Routes - Phase 5 Prayer Times Integration
+$router->get('/prayer', 'IslamWiki\Http\Controllers\PrayerTimeController@index');
+$router->get('/prayer/search', 'IslamWiki\Http\Controllers\PrayerTimeController@search');
+$router->get('/prayer/show/{date}/{locationId}', 'IslamWiki\Http\Controllers\PrayerTimeController@show');
+$router->get('/prayer/widget/{widgetKey}', 'IslamWiki\Http\Controllers\PrayerTimeController@widget');
+$router->get('/prayer/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@locations');
+$router->get('/prayer/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@preferences');
+
+// Prayer Times API Routes
+$router->get('/api/prayer-times/times', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerTimes');
+$router->get('/api/prayer-times/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetLocations');
+$router->post('/api/prayer-times/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@apiAddLocation');
+$router->get('/api/prayer-times/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPreferences');
+$router->put('/api/prayer-times/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@apiUpdatePreferences');
+$router->get('/api/prayer-times/qibla', 'IslamWiki\Http\Controllers\PrayerTimeController@apiCalculateQibla');
+$router->get('/api/prayer-times/next', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetNextPrayer');
+$router->get('/api/prayer-times/statistics', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetStatistics');
+$router->get('/api/prayer-times/methods', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetCalculationMethods');
+$router->get('/api/prayer-times/names', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerNames');

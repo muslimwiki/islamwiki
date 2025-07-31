@@ -201,6 +201,11 @@ A modern, secure wiki system built with PHP 8.1+, featuring comprehensive conten
 - **Security System**: Enterprise-level security with CSRF protection
 
 ### Key Features
+- **Prayer Times Integration** (v0.0.16): Complete prayer time system with astronomical algorithms
+- **Islamic Calendar System** (v0.0.15): Islamic calendar with event management and date conversion
+- **Hadith Integration** (v0.0.14): Complete Hadith management with search and display
+- **Quran Integration** (v0.0.13): Quran verse management with search and tafsir
+- **Islamic Database System** (v0.0.12): Separate databases for Quran, Hadith, Scholar, and Wiki
 - **Wiki Page System** (v0.0.3): Complete CRUD operations for wiki pages
 - **Content Rendering** (v0.0.4): Comprehensive markdown support with syntax highlighting
 - **Pages Index** (v0.0.5): Advanced page browsing and management interface

@@ -1,0 +1,775 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ widget.name }} - Prayer Times Widget{% endblock %}
+
+{% block content %}
+<div class="prayer-widget-container">
+    <!-- Widget Header -->
+    <div class="widget-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="widget-title">
+                        <i class="fas fa-code"></i>
+                        Prayer Times Widget
+                    </h1>
+                    <p class="widget-subtitle">Embed prayer times on your website</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="/prayer" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left"></i> Back to Prayer Times
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Preview -->
+    <div class="widget-preview-section">
+        <div class="container">
+            <div class="widget-preview-card">
+                <div class="preview-header">
+                    <h2>
+                        <i class="fas fa-eye"></i>
+                        Widget Preview
+                    </h2>
+                    <div class="widget-info">
+                        <span>{{ widget.name }}</span> • 
+                        <span>{{ widget.location_name }}</span> • 
+                        <span>{{ widget.theme }} theme</span>
+                    </div>
+                </div>
+                
+                <div class="widget-preview">
+                    <div class="prayer-widget-preview" data-theme="{{ widget.theme }}">
+                        <div class="widget-header">
+                            <h3>
+                                <i class="fas fa-mosque"></i>
+                                Prayer Times
+                            </h3>
+                            <div class="widget-location">{{ widget.location_name }}</div>
+                            <div class="widget-date">{{ "now"|date("l, F j, Y") }}</div>
+                        </div>
+                        
+                        <div class="widget-prayer-times">
+                            {% for prayer, time in prayerTimes.prayer_times %}
+                                <div class="widget-prayer-item">
+                                    <div class="prayer-name">{{ prayerNames[prayer] }}</div>
+                                    <div class="prayer-time">{{ time }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="widget-footer">
+                            <div class="widget-powered-by">
+                                Powered by <a href="/" target="_blank">IslamWiki</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Code -->
+    <div class="widget-code-section">
+        <div class="container">
+            <div class="widget-code-card">
+                <div class="code-header">
+                    <h3>
+                        <i class="fas fa-code"></i>
+                        Embed Code
+                    </h3>
+                    <div class="code-actions">
+                        <button class="btn btn-outline-primary btn-sm" onclick="copyCode()">
+                            <i class="fas fa-copy"></i> Copy Code
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="downloadCode()">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="code-content">
+                    <pre><code id="widgetCode">&lt;div id="prayer-widget-{{ widget.widget_key }}"&gt;&lt;/div&gt;
+&lt;script&gt;
+(function() {
+    var script = document.createElement('script');
+    script.src = '{{ request.base_url }}/prayer/widget.js?key={{ widget.widget_key }}';
+    script.async = true;
+    document.head.appendChild(script);
+})();
+&lt;/script&gt;</code></pre>
+                </div>
+                
+                <div class="code-instructions">
+                    <h4>How to use:</h4>
+                    <ol>
+                        <li>Copy the embed code above</li>
+                        <li>Paste it into your website's HTML</li>
+                        <li>The prayer times widget will automatically load</li>
+                        <li>Widget updates automatically with current date</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Customization -->
+    <div class="widget-customization-section">
+        <div class="container">
+            <div class="widget-customization-card">
+                <h3>
+                    <i class="fas fa-palette"></i>
+                    Customization Options
+                </h3>
+                
+                <div class="customization-grid">
+                    <div class="customization-item">
+                        <h4>Theme Options</h4>
+                        <div class="theme-options">
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="default" {% if widget.theme == 'default' %}checked{% endif %} onchange="updatePreview()">
+                                <span class="theme-preview default-theme">Default</span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="dark" {% if widget.theme == 'dark' %}checked{% endif %} onchange="updatePreview()">
+                                <span class="theme-preview dark-theme">Dark</span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="minimal" {% if widget.theme == 'minimal' %}checked{% endif %} onchange="updatePreview()">
+                                <span class="theme-preview minimal-theme">Minimal</span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="islamic" {% if widget.theme == 'islamic' %}checked{% endif %} onchange="updatePreview()">
+                                <span class="theme-preview islamic-theme">Islamic</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="customization-item">
+                        <h4>Display Options</h4>
+                        <div class="display-options">
+                            <label class="display-option">
+                                <input type="checkbox" id="showSunrise" {% if widget.show_sunrise %}checked{% endif %} onchange="updatePreview()">
+                                <span>Show Sunrise</span>
+                            </label>
+                            <label class="display-option">
+                                <input type="checkbox" id="showDua" {% if widget.show_dua %}checked{% endif %} onchange="updatePreview()">
+                                <span>Show Dua</span>
+                            </label>
+                            <label class="display-option">
+                                <input type="checkbox" id="showQibla" {% if widget.show_qibla %}checked{% endif %} onchange="updatePreview()">
+                                <span>Show Qibla</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="customization-item">
+                        <h4>Language</h4>
+                        <select id="widgetLanguage" class="form-control" onchange="updatePreview()">
+                            <option value="en" {% if widget.language == 'en' %}selected{% endif %}>English</option>
+                            <option value="ar" {% if widget.language == 'ar' %}selected{% endif %}>العربية</option>
+                            <option value="ur" {% if widget.language == 'ur' %}selected{% endif %}>اردو</option>
+                            <option value="tr" {% if widget.language == 'tr' %}selected{% endif %}>Türkçe</option>
+                        </select>
+                    </div>
+                    
+                    <div class="customization-item">
+                        <h4>Time Format</h4>
+                        <select id="timeFormat" class="form-control" onchange="updatePreview()">
+                            <option value="24h" {% if widget.time_format == '24h' %}selected{% endif %}>24-hour</option>
+                            <option value="12h" {% if widget.time_format == '12h' %}selected{% endif %}>12-hour</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="customization-actions">
+                    <button class="btn btn-primary" onclick="saveCustomization()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="resetCustomization()">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Analytics -->
+    <div class="widget-analytics-section">
+        <div class="container">
+            <div class="widget-analytics-card">
+                <h3>
+                    <i class="fas fa-chart-bar"></i>
+                    Widget Analytics
+                </h3>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-item">
+                        <div class="analytics-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>{{ widget.view_count }}</h4>
+                            <p>Total Views</p>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-item">
+                        <div class="analytics-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>{{ widget.created_at|date("M j, Y") }}</h4>
+                            <p>Created Date</p>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-item">
+                        <div class="analytics-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>{{ widget.updated_at|date("M j, Y") }}</h4>
+                            <p>Last Updated</p>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-item">
+                        <div class="analytics-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="analytics-content">
+                            <h4>{{ widget.is_active ? 'Active' : 'Inactive' }}</h4>
+                            <p>Status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.prayer-widget-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+.widget-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.widget-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.widget-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.widget-preview-section {
+    margin-bottom: 2rem;
+}
+
+.widget-preview-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.preview-header h2 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.preview-header h2 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.widget-info {
+    color: #666;
+    font-weight: 500;
+}
+
+.widget-preview {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.prayer-widget-preview {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.widget-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.widget-header h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.widget-header h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.widget-location {
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.widget-date {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.widget-prayer-times {
+    margin-bottom: 1.5rem;
+}
+
+.widget-prayer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.widget-prayer-item:last-child {
+    border-bottom: none;
+}
+
+.prayer-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.prayer-time {
+    font-weight: 700;
+    color: #667eea;
+}
+
+.widget-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.widget-powered-by {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.widget-powered-by a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.widget-code-section {
+    margin-bottom: 2rem;
+}
+
+.widget-code-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.code-header h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.code-header h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.code-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.code-content {
+    margin-bottom: 1.5rem;
+}
+
+.code-content pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.code-content code {
+    font-family: 'Courier New', monospace;
+}
+
+.code-instructions {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.code-instructions h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.code-instructions ol {
+    color: #666;
+    padding-left: 1.5rem;
+}
+
+.code-instructions li {
+    margin-bottom: 0.5rem;
+}
+
+.widget-customization-section {
+    margin-bottom: 2rem;
+}
+
+.widget-customization-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.widget-customization-card h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.widget-customization-card h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.customization-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.customization-item h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.theme-option input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.theme-preview {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.default-theme {
+    background: #667eea;
+    color: white;
+}
+
+.dark-theme {
+    background: #2d3748;
+    color: white;
+}
+
+.minimal-theme {
+    background: #f7fafc;
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+}
+
+.islamic-theme {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.display-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.display-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.display-option input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.customization-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.widget-analytics-section {
+    margin-bottom: 2rem;
+}
+
+.widget-analytics-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.widget-analytics-card h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.widget-analytics-card h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.analytics-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.analytics-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-right: 1rem;
+}
+
+.analytics-content h4 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.analytics-content p {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .widget-title {
+        font-size: 2rem;
+    }
+    
+    .customization-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .customization-actions {
+        flex-direction: column;
+    }
+    
+    .code-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+
+<script>
+function copyCode() {
+    const codeElement = document.getElementById('widgetCode');
+    const textArea = document.createElement('textarea');
+    textArea.value = codeElement.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    // Show success message
+    alert('Code copied to clipboard!');
+}
+
+function downloadCode() {
+    const codeElement = document.getElementById('widgetCode');
+    const blob = new Blob([codeElement.textContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'prayer-widget-code.html';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function updatePreview() {
+    const theme = document.querySelector('input[name="theme"]:checked').value;
+    const showSunrise = document.getElementById('showSunrise').checked;
+    const showDua = document.getElementById('showDua').checked;
+    const showQibla = document.getElementById('showQibla').checked;
+    const language = document.getElementById('widgetLanguage').value;
+    const timeFormat = document.getElementById('timeFormat').value;
+    
+    // Update preview widget theme
+    const previewWidget = document.querySelector('.prayer-widget-preview');
+    previewWidget.setAttribute('data-theme', theme);
+    
+    // Update code with new parameters
+    updateWidgetCode();
+}
+
+function updateWidgetCode() {
+    const theme = document.querySelector('input[name="theme"]:checked').value;
+    const showSunrise = document.getElementById('showSunrise').checked;
+    const showDua = document.getElementById('showDua').checked;
+    const showQibla = document.getElementById('showQibla').checked;
+    const language = document.getElementById('widgetLanguage').value;
+    const timeFormat = document.getElementById('timeFormat').value;
+    
+    const codeElement = document.getElementById('widgetCode');
+    codeElement.textContent = `<div id="prayer-widget-{{ widget.widget_key }}" data-theme="${theme}" data-show-sunrise="${showSunrise}" data-show-dua="${showDua}" data-show-qibla="${showQibla}" data-language="${language}" data-time-format="${timeFormat}"></div>
+<script>
+(function() {
+    var script = document.createElement('script');
+    script.src = '{{ request.base_url }}/prayer/widget.js?key={{ widget.widget_key }}';
+    script.async = true;
+    document.head.appendChild(script);
+})();
+</script>`;
+}
+
+function saveCustomization() {
+    const theme = document.querySelector('input[name="theme"]:checked').value;
+    const showSunrise = document.getElementById('showSunrise').checked;
+    const showDua = document.getElementById('showDua').checked;
+    const showQibla = document.getElementById('showQibla').checked;
+    const language = document.getElementById('widgetLanguage').value;
+    const timeFormat = document.getElementById('timeFormat').value;
+    
+    // Make API call to save customization
+    fetch('/api/prayer-times/widgets/{{ widget.widget_key }}', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            theme: theme,
+            show_sunrise: showSunrise,
+            show_dua: showDua,
+            show_qibla: showQibla,
+            language: language,
+            time_format: timeFormat
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Customization saved successfully!');
+        } else {
+            alert('Error saving customization: ' + result.error);
+        }
+    })
+    .catch(error => {
+        alert('Error saving customization. Please try again.');
+    });
+}
+
+function resetCustomization() {
+    // Reset all form elements to default values
+    document.querySelector('input[name="theme"][value="default"]').checked = true;
+    document.getElementById('showSunrise').checked = true;
+    document.getElementById('showDua').checked = true;
+    document.getElementById('showQibla').checked = true;
+    document.getElementById('widgetLanguage').value = 'en';
+    document.getElementById('timeFormat').value = '24h';
+    
+    // Update preview and code
+    updatePreview();
+}
+</script>
+{% endblock %} 
