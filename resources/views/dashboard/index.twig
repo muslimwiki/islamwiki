@@ -7,12 +7,7 @@
 <div class="dashboard-header">
     <div class="container">
         <div class="welcome-section">
-            <div class="user-avatar">
-                <div class="avatar-circle">
-                    <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </div>
+            <div class="welcome-content">
                 <div class="welcome-text">
                     <h1 class="welcome-title">Welcome back, {{ user.username ?? 'User' }}! 👋</h1>
                     <p class="welcome-subtitle">Manage your contributions and explore Islamic knowledge</p>
@@ -243,31 +238,12 @@
         min-height: 200px;
     }
     
-    .user-avatar {
+    .welcome-content {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
-        width: 100%;
         justify-content: center;
         text-align: center;
-    }
-    
-    .avatar-circle {
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .avatar-icon {
-        width: 40px;
-        height: 40px;
-        color: white;
+        width: 100%;
     }
     
     .welcome-text {
@@ -596,10 +572,8 @@
             font-size: 2rem;
         }
         
-        .user-avatar {
-            flex-direction: column;
+        .welcome-content {
             text-align: center;
-            gap: 1rem;
             justify-content: center;
         }
         
