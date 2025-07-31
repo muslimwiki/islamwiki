@@ -1,0 +1,313 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="container">
+        <!-- Settings Header -->
+        <div class="settings-header">
+            <h1 class="settings-title">⚙️ Settings</h1>
+            <p class="settings-subtitle">Manage your account and application preferences</p>
+        </div>
+
+        <!-- Settings Navigation -->
+        <div class="settings-nav">
+            <button class="nav-tab active" data-tab="appearance">
+                🎨 Appearance
+            </button>
+            <button class="nav-tab" data-tab="account">
+                👤 Account
+            </button>
+            <button class="nav-tab" data-tab="privacy">
+                🔒 Privacy
+            </button>
+            <button class="nav-tab" data-tab="notifications">
+                🔔 Notifications
+            </button>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- Appearance Tab -->
+            <div class="settings-tab active" id="appearance">
+                <div class="settings-section">
+                    <h2 class="section-title">🎨 Skin Selection</h2>
+                    <p class="section-description">Choose the visual theme for your IslamWiki experience.</p>
+                    
+                    <div class="skin-grid">
+                        {% for skinName, skin in skinOptions %}
+                        <div class="skin-card {{ skin.active ? 'active' : '' }}" data-skin="{{ skinName }}">
+                            <div class="skin-preview">
+                                <div class="skin-preview-header">
+                                    <div class="skin-preview-logo">📚</div>
+                                    <div class="skin-preview-title">IslamWiki</div>
+                                </div>
+                                <div class="skin-preview-content">
+                                    <div class="skin-preview-nav">
+                                        <span class="nav-item">Home</span>
+                                        <span class="nav-item">Pages</span>
+                                        <span class="nav-item">About</span>
+                                    </div>
+                                    <div class="skin-preview-body">
+                                        <div class="preview-card">
+                                            <div class="preview-card-header">Sample Content</div>
+                                            <div class="preview-card-body">
+                                                <p>This is how content will look with the {{ skin.name }} skin.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="skin-info">
+                                <h3 class="skin-name">{{ skin.name }}</h3>
+                                <p class="skin-description">{{ skin.description }}</p>
+                                <div class="skin-meta">
+                                    <span class="skin-version">v{{ skin.version }}</span>
+                                    <span class="skin-author">by {{ skin.author }}</span>
+                                </div>
+                                
+                                <div class="skin-actions">
+                                    {% if skin.active %}
+                                        <button class="btn btn-success" disabled>
+                                            ✓ Active
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-primary skin-select-btn" data-skin="{{ skinName }}">
+                                            Select Skin
+                                        </button>
+                                    {% endif %}
+                                    
+                                    <button class="btn btn-outline skin-info-btn" data-skin="{{ skinName }}">
+                                        Info
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">🎯 Theme Options</h2>
+                    <p class="section-description">Customize your experience with additional theme settings.</p>
+                    
+                    <div class="theme-options">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="enable_animations">
+                                <span class="option-text">Enable Animations</span>
+                            </label>
+                            <p class="option-description">Smooth transitions and hover effects</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="enable_gradients">
+                                <span class="option-text">Enable Gradients</span>
+                            </label>
+                            <p class="option-description">Beautiful gradient backgrounds</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="enable_dark_theme">
+                                <span class="option-text">Dark Theme</span>
+                            </label>
+                            <p class="option-description">Switch to dark mode (if supported)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Tab -->
+            <div class="settings-tab" id="account">
+                <div class="settings-section">
+                    <h2 class="section-title">👤 Account Information</h2>
+                    <p class="section-description">Manage your account details and preferences.</p>
+                    
+                    <div class="account-info">
+                        <p>Account settings will be available here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Tab -->
+            <div class="settings-tab" id="privacy">
+                <div class="settings-section">
+                    <h2 class="section-title">🔒 Privacy Settings</h2>
+                    <p class="section-description">Control your privacy and data preferences.</p>
+                    
+                    <div class="privacy-info">
+                        <p>Privacy settings will be available here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div class="settings-tab" id="notifications">
+                <div class="settings-section">
+                    <h2 class="section-title">🔔 Notification Preferences</h2>
+                    <p class="section-description">Manage your notification settings.</p>
+                    
+                    <div class="notification-info">
+                        <p>Notification settings will be available here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Skin Info Modal -->
+<div class="modal" id="skinInfoModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Skin Information</h3>
+            <button class="modal-close" id="closeSkinModal">&times;</button>
+        </div>
+        <div class="modal-body" id="skinInfoContent">
+            <!-- Skin info will be loaded here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab navigation
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const settingsTabs = document.querySelectorAll('.settings-tab');
+    
+    navTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const targetTab = this.dataset.tab;
+            
+            // Remove active class from all tabs
+            navTabs.forEach(t => t.classList.remove('active'));
+            settingsTabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+    
+    // Skin selection
+    const skinSelectBtns = document.querySelectorAll('.skin-select-btn');
+    
+    skinSelectBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const skinName = this.dataset.skin;
+            
+            if (confirm(`Are you sure you want to switch to the ${skinName} skin?`)) {
+                updateSkin(skinName);
+            }
+        });
+    });
+    
+    // Skin info modal
+    const skinInfoBtns = document.querySelectorAll('.skin-info-btn');
+    const skinModal = document.getElementById('skinInfoModal');
+    const skinInfoContent = document.getElementById('skinInfoContent');
+    const closeSkinModal = document.getElementById('closeSkinModal');
+    
+    skinInfoBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const skinName = this.dataset.skin;
+            loadSkinInfo(skinName);
+            skinModal.style.display = 'block';
+        });
+    });
+    
+    closeSkinModal.addEventListener('click', function() {
+        skinModal.style.display = 'none';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === skinModal) {
+            skinModal.style.display = 'none';
+        }
+    });
+    
+    // Functions
+    async function updateSkin(skinName) {
+        try {
+            const response = await fetch('/settings/skin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({ skin: skinName })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('Skin updated successfully! Please refresh the page to see changes.', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                showNotification(result.error || 'Failed to update skin', 'error');
+            }
+        } catch (error) {
+            showNotification('An error occurred while updating the skin', 'error');
+        }
+    }
+    
+    async function loadSkinInfo(skinName) {
+        try {
+            const response = await fetch(`/settings/skin/${skinName}`);
+            const skinInfo = await response.json();
+            
+            skinInfoContent.innerHTML = `
+                <div class="skin-info-details">
+                    <h4>${skinInfo.name}</h4>
+                    <p><strong>Version:</strong> ${skinInfo.version}</p>
+                    <p><strong>Author:</strong> ${skinInfo.author}</p>
+                    <p><strong>Description:</strong> ${skinInfo.description}</p>
+                    
+                    <h5>Features:</h5>
+                    <ul>
+                        ${skinInfo.features.map(feature => `<li>${feature}</li>`).join('')}
+                    </ul>
+                    
+                    <h5>Dependencies:</h5>
+                    <ul>
+                        ${Object.entries(skinInfo.dependencies).map(([name, source]) => 
+                            `<li><strong>${name}:</strong> ${source}</li>`
+                        ).join('')}
+                    </ul>
+                    
+                    <h5>Custom Assets:</h5>
+                    <ul>
+                        <li>CSS: ${skinInfo.hasCustomCss ? '✓' : '✗'}</li>
+                        <li>JavaScript: ${skinInfo.hasCustomJs ? '✓' : '✗'}</li>
+                        <li>Layout: ${skinInfo.hasCustomLayout ? '✓' : '✗'}</li>
+                    </ul>
+                </div>
+            `;
+        } catch (error) {
+            skinInfoContent.innerHTML = '<p>Error loading skin information</p>';
+        }
+    }
+    
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
+});
+</script>
+{% endblock %} 
