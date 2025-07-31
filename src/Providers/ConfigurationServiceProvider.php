@@ -211,13 +211,17 @@ class ConfigurationServiceProvider
     private function handleConfigurationErrors(array $errors): void
     {
         foreach ($errors as $error) {
-            error_log("Configuration Error: {$error}");
+            $errorMessage = is_array($error) ? json_encode($error) : (string) $error;
+            error_log("Configuration Error: {$errorMessage}");
         }
         
         // In development mode, throw an exception
         if (config('wgDebug', false)) {
+            $errorMessages = array_map(function($error) {
+                return is_array($error) ? json_encode($error) : (string) $error;
+            }, $errors);
             throw new \RuntimeException(
-                'Configuration validation failed: ' . implode(', ', $errors)
+                'Configuration validation failed: ' . implode(', ', $errorMessages)
             );
         }
     }

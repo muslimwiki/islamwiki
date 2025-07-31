@@ -4,7 +4,7 @@
  * Check Migration Status
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Database\Migrations\Migrator;

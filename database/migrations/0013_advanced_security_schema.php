@@ -23,7 +23,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
     public function up(): void
     {
         // User roles table
-        $this->createTable('user_roles', function ($table) {
+        $this->schema()->create('user_roles', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('User ID');
             $table->string('role', 50)->comment('Role name (admin, config_manager, security_admin, viewer)');
@@ -36,7 +36,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         });
 
         // Configuration approvals table
-        $this->createTable('configuration_approvals', function ($table) {
+        $this->schema()->create('configuration_approvals', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('User who requested the change');
             $table->string('category', 50)->comment('Configuration category');
@@ -57,7 +57,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         });
 
         // Configuration security log table
-        $this->createTable('configuration_security_log', function ($table) {
+        $this->schema()->create('configuration_security_log', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable()->comment('User who performed the action');
             $table->string('category', 50)->comment('Configuration category');
@@ -75,7 +75,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         });
 
         // Encryption keys table
-        $this->createTable('encryption_keys', function ($table) {
+        $this->schema()->create('encryption_keys', function ($table) {
             $table->id();
             $table->string('key_id', 64)->unique()->comment('Unique key identifier');
             $table->text('key_data')->comment('Encrypted key data');
@@ -91,7 +91,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         });
 
         // Security audit log table
-        $this->createTable('security_audit_log', function ($table) {
+        $this->schema()->create('security_audit_log', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable()->comment('User who performed the action');
             $table->string('action', 100)->comment('Security action performed');
@@ -133,14 +133,14 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
      */
     public function down(): void
     {
-        $this->dropTable('security_audit_log');
-        $this->dropTable('encryption_keys');
-        $this->dropTable('configuration_security_log');
-        $this->dropTable('configuration_approvals');
-        $this->dropTable('user_roles');
+        $this->schema()->drop('security_audit_log');
+        $this->schema()->drop('encryption_keys');
+        $this->schema()->drop('configuration_security_log');
+        $this->schema()->drop('configuration_approvals');
+        $this->schema()->drop('user_roles');
         
-        $this->dropColumn('configuration', 'requires_approval');
-        $this->dropColumn('configuration', 'encryption_enabled');
+        // Note: Column dropping would need to be handled separately
+        // as the schema builder doesn't have dropColumn method
     }
 
     /**
@@ -157,7 +157,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         ];
 
         foreach ($roles as $role) {
-            $this->insert('user_roles', $role);
+            $this->connection->table('user_roles')->insert($role);
         }
     }
 
@@ -207,4 +207,8 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
                 ]);
         }
     }
-} 
+};
+
+return function($connection) {
+    return new Migration_0013_AdvancedSecuritySchema($connection);
+};

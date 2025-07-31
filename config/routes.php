@@ -7,20 +7,49 @@ use IslamWiki\Core\Http\Exceptions\HttpException;
 use IslamWiki\Http\Controllers\PageController;
 use IslamWiki\Http\Controllers\UserController;
 use IslamWiki\Http\Controllers\ApiController;
+use IslamWiki\Http\Controllers\ConfigurationController;
+use IslamWiki\Http\Controllers\SearchController;
+use IslamWiki\Http\Controllers\PrayerTimeController;
+use IslamWiki\Http\Controllers\HadithController;
+use IslamWiki\Http\Controllers\QuranController;
+use IslamWiki\Http\Controllers\IslamicCalendarController;
+use IslamWiki\Http\Controllers\IslamicContentController;
+use IslamWiki\Http\Controllers\CommunityController;
+use IslamWiki\Http\Controllers\SecurityController;
+use IslamWiki\Http\Controllers\HomeController;
+use IslamWiki\Http\Controllers\DashboardController;
+use IslamWiki\Http\Controllers\ProfileController;
+use IslamWiki\Http\Middleware\AuthenticationMiddleware;
 
 return function (\IslamWiki\Core\Application $app) {
     $container = $app->getContainer();
     $db = $container->get(Connection::class);
     
     // Create controller instances
-    $pageController = new PageController($db);
-    $userController = new UserController($db);
-    $apiController = new ApiController($db);
+    $pageController = new PageController($db, $container);
+    $userController = new UserController($db, $container);
+    $apiController = new ApiController($db, $container);
+    $configController = new ConfigurationController($container);
+    $searchController = new SearchController($db, $container);
+    $prayerController = new PrayerTimeController($db, $container);
+    $hadithController = new HadithController($db, $container);
+    $quranController = new QuranController($db, $container);
+    $calendarController = new IslamicCalendarController($db, $container);
+    $contentController = new IslamicContentController($db, $container);
+    $communityController = new CommunityController($container);
+    $securityController = new SecurityController($db, $container);
+    $homeController = new HomeController($db, $container);
+    $dashboardController = new DashboardController($db, $container);
+    $profileController = new ProfileController($db, $container);
+    
+    // Create middleware instances
+    $authMiddleware = new AuthenticationMiddleware($container->get('session'));
     
     // Homepage
-    $app->get('/', function (Request $request) use ($pageController) {
-        return $pageController->show($request, 'Main_Page');
-    });
+    $app->get('/', [$homeController, 'index']);
+    
+    // Dashboard
+    $app->get('/dashboard', [$dashboardController, 'index']);
     
     // Page routes
     $app->get('/wiki', [$pageController, 'index']);
@@ -41,11 +70,83 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/logout', [$userController, 'logout']);
     $app->get('/register', [$userController, 'showRegistrationForm']);
     $app->post('/register', [$userController, 'register']);
-    $app->get('/profile', [$userController, 'showProfile']);
-    $app->post('/profile', [$userController, 'updateProfile']);
+    // Protected routes (require authentication)
+    $app->get('/profile', [$profileController, 'index'])->middleware($authMiddleware);
+    $app->post('/profile', [$profileController, 'update'])->middleware($authMiddleware);
+    $app->get('/profile/edit', [$profileController, 'edit'])->middleware($authMiddleware);
+    $app->post('/profile/password', [$profileController, 'updatePassword'])->middleware($authMiddleware);
+    
+    // Configuration routes
+    $app->get('/configuration', [$configController, 'index']);
+    $app->get('/configuration/builder', [$configController, 'builder']);
+    $app->get('/configuration/{category}', [$configController, 'show']);
+    $app->post('/configuration/update', [$configController, 'update']);
+    $app->get('/configuration/export', [$configController, 'export']);
+    $app->post('/configuration/import', [$configController, 'import']);
+    $app->post('/configuration/validate', [$configController, 'validate']);
+    $app->post('/configuration/backup', [$configController, 'createBackup']);
+    $app->post('/configuration/restore', [$configController, 'restoreBackup']);
+    $app->get('/configuration/audit', [$configController, 'auditLog']);
+    $app->get('/configuration/backups', [$configController, 'backups']);
+    
+    // Search routes
+    $app->get('/search', [$searchController, 'index']);
+    $app->post('/search', [$searchController, 'search']);
+    $app->get('/search/suggestions', [$searchController, 'suggestions']);
+    $app->get('/search/analytics', [$searchController, 'analytics']);
+    
+    // Prayer routes
+    $app->get('/prayer', [$prayerController, 'index']);
+    $app->get('/prayer/times', [$prayerController, 'getTimes']);
+    $app->get('/prayer/search', [$prayerController, 'search']);
+    $app->get('/prayer/widget', [$prayerController, 'widget']);
+    $app->post('/prayer/calculate', [$prayerController, 'calculate']);
+    
+    // Hadith routes
+    $app->get('/hadith', [$hadithController, 'index']);
+    $app->get('/hadith/collection/{collection}', [$hadithController, 'collection']);
+    $app->get('/hadith/{id}', [$hadithController, 'show']);
+    $app->get('/hadith/search', [$hadithController, 'search']);
+    $app->get('/hadith/widget', [$hadithController, 'widget']);
+    
+    // Quran routes
+    $app->get('/quran', [$quranController, 'index']);
+    $app->get('/quran/verse/{surah}:{ayah}', [$quranController, 'verse']);
+    $app->get('/quran/search', [$quranController, 'search']);
+    $app->get('/quran/widget', [$quranController, 'widget']);
+    
+    // Islamic Calendar routes
+    $app->get('/calendar', [$calendarController, 'index']);
+    $app->get('/calendar/month/{year}/{month}', [$calendarController, 'month']);
+    $app->get('/calendar/event/{id}', [$calendarController, 'event']);
+    $app->get('/calendar/search', [$calendarController, 'search']);
+    $app->get('/calendar/widget', [$calendarController, 'widget']);
+    
+    // Islamic Content routes
+    $app->get('/content', [$contentController, 'index']);
+    $app->get('/content/category/{category}', [$contentController, 'category']);
+    $app->get('/content/{id}', [$contentController, 'show']);
+    $app->get('/content/search', [$contentController, 'search']);
+    $app->get('/content/recommendations', [$contentController, 'recommendations']);
+    
+    // Community routes (some require authentication)
+    $app->get('/community', [$communityController, 'index']);
+    $app->get('/community/users', [$communityController, 'users']);
+    $app->get('/community/activity', [$communityController, 'activity']);
+    $app->get('/community/discussions', [$communityController, 'discussions']);
+    $app->post('/community/discussions', [$communityController, 'createDiscussion'])->middleware($authMiddleware);
+    $app->get('/community/discussions/{id}', [$communityController, 'showDiscussion']);
+    $app->post('/community/discussions/{id}/replies', [$communityController, 'addReply'])->middleware($authMiddleware);
+    
+    // Security routes
+    $app->get('/security', [$securityController, 'index']);
+    $app->get('/security/audit', [$securityController, 'audit']);
+    $app->get('/security/logs', [$securityController, 'logs']);
+    $app->post('/security/scan', [$securityController, 'scan']);
+    $app->get('/security/reports', [$securityController, 'reports']);
     
     // API routes
-    $app->group('/api', function () use ($apiController) {
+    $app->group('/api', function () use ($apiController, $configController, $searchController, $prayerController, $hadithController, $quranController, $calendarController, $contentController, $communityController, $securityController, $profileController) {
         // Pages
         $this->get('/pages', [$apiController, 'listPages']);
         $this->post('/pages', [$apiController, 'createPage']);
@@ -59,6 +160,76 @@ return function (\IslamWiki\Core\Application $app) {
         
         // Users
         $this->get('/users/current', [$apiController, 'getCurrentUser']);
+        
+        // Configuration API
+        $this->get('/configuration', [$configController, 'apiIndex']);
+        $this->get('/configuration/{category}', [$configController, 'apiShow']);
+        $this->put('/configuration/{key}', [$configController, 'apiUpdate']);
+        $this->get('/configuration/templates', [$configController, 'apiTemplates']);
+        $this->post('/configuration/templates', [$configController, 'apiCreateTemplate']);
+        $this->post('/configuration/templates/apply', [$configController, 'apiApplyTemplate']);
+        $this->post('/configuration/bulk', [$configController, 'apiBulkUpdate']);
+        $this->get('/configuration/analytics', [$configController, 'apiAnalytics']);
+        $this->post('/configuration/validate/advanced', [$configController, 'apiAdvancedValidate']);
+        $this->get('/configuration/dependencies/{key}', [$configController, 'apiDependencies']);
+        $this->post('/configuration/suggestions', [$configController, 'apiSuggestions']);
+        $this->get('/configuration/performance', [$configController, 'apiPerformance']);
+        
+        // Search API
+        $this->get('/search', [$searchController, 'apiSearch']);
+        $this->post('/search', [$searchController, 'apiSearch']);
+        $this->get('/search/suggestions', [$searchController, 'apiSuggestions']);
+        $this->get('/search/analytics', [$searchController, 'apiAnalytics']);
+        
+        // Prayer API
+        $this->get('/prayer/times', [$prayerController, 'apiGetTimes']);
+        $this->post('/prayer/calculate', [$prayerController, 'apiCalculate']);
+        $this->get('/prayer/search', [$prayerController, 'apiSearch']);
+        
+        // Hadith API
+        $this->get('/hadith', [$hadithController, 'apiIndex']);
+        $this->get('/hadith/{id}', [$hadithController, 'apiShow']);
+        $this->get('/hadith/collection/{collection}', [$hadithController, 'apiCollection']);
+        $this->get('/hadith/search', [$hadithController, 'apiSearch']);
+        
+        // Quran API
+        $this->get('/quran', [$quranController, 'apiIndex']);
+        $this->get('/quran/verse/{surah}:{ayah}', [$quranController, 'apiVerse']);
+        $this->get('/quran/search', [$quranController, 'apiSearch']);
+        
+        // Calendar API
+        $this->get('/calendar', [$calendarController, 'apiIndex']);
+        $this->get('/calendar/month/{year}/{month}', [$calendarController, 'apiMonth']);
+        $this->get('/calendar/event/{id}', [$calendarController, 'apiEvent']);
+        $this->get('/calendar/search', [$calendarController, 'apiSearch']);
+        
+        // Content API
+        $this->get('/content', [$contentController, 'apiIndex']);
+        $this->get('/content/{id}', [$contentController, 'apiShow']);
+        $this->get('/content/category/{category}', [$contentController, 'apiCategory']);
+        $this->get('/content/search', [$contentController, 'apiSearch']);
+        $this->get('/content/recommendations', [$contentController, 'apiRecommendations']);
+        
+        // Community API
+        $this->get('/community', [$communityController, 'apiIndex']);
+        $this->get('/community/users', [$communityController, 'apiUsers']);
+        $this->get('/community/activity', [$communityController, 'apiActivity']);
+        $this->get('/community/discussions', [$communityController, 'apiDiscussions']);
+        $this->post('/community/discussions', [$communityController, 'apiCreateDiscussion']);
+        $this->get('/community/discussions/{id}', [$communityController, 'apiShowDiscussion']);
+        $this->post('/community/discussions/{id}/replies', [$communityController, 'apiAddReply']);
+        
+        // Security API
+        $this->get('/security', [$securityController, 'apiIndex']);
+        $this->get('/security/audit', [$securityController, 'apiAudit']);
+        $this->get('/security/logs', [$securityController, 'apiLogs']);
+        $this->post('/security/scan', [$securityController, 'apiScan']);
+        $this->get('/security/reports', [$securityController, 'apiReports']);
+        
+        // Profile API
+        $this->get('/profile', [$profileController, 'apiIndex']);
+        $this->put('/profile', [$profileController, 'apiUpdate']);
+        $this->put('/profile/password', [$profileController, 'apiUpdatePassword']);
     });
     
     // Error handling

@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 use IslamWiki\Core\Database\Connection;
@@ -50,20 +50,18 @@ try {
     
     // Drop all existing tables
     echo "🗑️  Dropping existing tables...\n";
-    $tables = [
-        'page_categories',
-        'user_watchlist', 
-        'page_revisions',
-        'pages',
-        'categories',
-        'media_files',
-        'users',
-        'migrations'
-    ];
     
-    foreach ($tables as $table) {
-        $pdo->exec("DROP TABLE IF EXISTS `{$table}`");
-        echo "  Dropped table: {$table}\n";
+    // Get all tables in the database
+    $stmt = $pdo->query("SHOW TABLES");
+    $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    if (empty($tables)) {
+        echo "  No tables found to drop\n";
+    } else {
+        foreach ($tables as $table) {
+            $pdo->exec("DROP TABLE IF EXISTS `{$table}`");
+            echo "  Dropped table: {$table}\n";
+        }
     }
     
     echo "✅ All tables dropped\n";

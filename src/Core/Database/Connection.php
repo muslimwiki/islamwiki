@@ -193,7 +193,18 @@ class Connection
      */
     public function commit(): bool
     {
-        return $this->getPdo()->commit();
+        if ($this->inTransaction()) {
+            return $this->getPdo()->commit();
+        }
+        return false;
+    }
+
+    /**
+     * Check if a transaction is active.
+     */
+    public function inTransaction(): bool
+    {
+        return $this->getPdo()->inTransaction();
     }
 
     /**
@@ -201,7 +212,10 @@ class Connection
      */
     public function rollBack(): bool
     {
-        return $this->getPdo()->rollBack();
+        if ($this->inTransaction()) {
+            return $this->getPdo()->rollBack();
+        }
+        return false;
     }
 
     /**

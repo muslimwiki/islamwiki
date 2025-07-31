@@ -15,10 +15,10 @@ use IslamWiki\Core\Database\Migrations\Migration;
 
 class IslamicCalendarMigration extends Migration
 {
-    public function up()
+    public function up(): void
     {
         // Event categories table
-        $this->createTable('event_categories', function($table) {
+        $this->schema()->create('event_categories', function($table) {
             $table->id();
             $table->string('name', 100)->notNull();
             $table->string('name_arabic', 100)->nullable();
@@ -33,7 +33,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Islamic events table
-        $this->createTable('islamic_events', function($table) {
+        $this->schema()->create('islamic_events', function($table) {
             $table->id();
             $table->string('title', 255)->notNull();
             $table->string('title_arabic', 255)->nullable();
@@ -57,7 +57,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Prayer times table
-        $this->createTable('prayer_times', function($table) {
+        $this->schema()->create('prayer_times', function($table) {
             $table->id();
             $table->date('date')->notNull();
             $table->time('fajr')->nullable();
@@ -78,7 +78,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Hijri date conversions table (for caching)
-        $this->createTable('hijri_dates', function($table) {
+        $this->schema()->create('hijri_dates', function($table) {
             $table->id();
             $table->date('gregorian_date')->notNull();
             $table->integer('hijri_year')->notNull();
@@ -96,7 +96,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar integration tables
-        $this->createTable('calendar_wiki_links', function($table) {
+        $this->schema()->create('calendar_wiki_links', function($table) {
             $table->id();
             $table->unsignedBigInteger('event_id')->notNull();
             $table->unsignedBigInteger('page_id')->notNull();
@@ -111,7 +111,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar search cache
-        $this->createTable('calendar_search_cache', function($table) {
+        $this->schema()->create('calendar_search_cache', function($table) {
             $table->id();
             $table->string('query_hash', 64)->notNull();
             $table->text('query_params')->notNull(); // JSON
@@ -125,7 +125,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar event statistics
-        $this->createTable('calendar_event_stats', function($table) {
+        $this->schema()->create('calendar_event_stats', function($table) {
             $table->id();
             $table->unsignedBigInteger('event_id')->notNull();
             $table->integer('views')->default(0);
@@ -141,7 +141,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // User calendar interactions
-        $this->createTable('calendar_user_bookmarks', function($table) {
+        $this->schema()->create('calendar_user_bookmarks', function($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -157,7 +157,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar event comments
-        $this->createTable('calendar_event_comments', function($table) {
+        $this->schema()->create('calendar_event_comments', function($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -175,7 +175,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar reminders
-        $this->createTable('calendar_reminders', function($table) {
+        $this->schema()->create('calendar_reminders', function($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -196,18 +196,18 @@ class IslamicCalendarMigration extends Migration
         $this->insertDefaultCategories();
     }
 
-    public function down()
+    public function down(): void
     {
-        $this->dropTable('calendar_reminders');
-        $this->dropTable('calendar_event_comments');
-        $this->dropTable('calendar_user_bookmarks');
-        $this->dropTable('calendar_event_stats');
-        $this->dropTable('calendar_search_cache');
-        $this->dropTable('calendar_wiki_links');
-        $this->dropTable('hijri_dates');
-        $this->dropTable('prayer_times');
-        $this->dropTable('islamic_events');
-        $this->dropTable('event_categories');
+        $this->schema()->drop('calendar_reminders');
+        $this->schema()->drop('calendar_event_comments');
+        $this->schema()->drop('calendar_user_bookmarks');
+        $this->schema()->drop('calendar_event_stats');
+        $this->schema()->drop('calendar_search_cache');
+        $this->schema()->drop('calendar_wiki_links');
+        $this->schema()->drop('hijri_dates');
+        $this->schema()->drop('prayer_times');
+        $this->schema()->drop('islamic_events');
+        $this->schema()->drop('event_categories');
     }
 
     private function insertDefaultCategories()
@@ -272,7 +272,11 @@ class IslamicCalendarMigration extends Migration
         ];
 
         foreach ($categories as $category) {
-            $this->insert('event_categories', $category);
+            $this->connection->table('event_categories')->insert($category);
         }
     }
-} 
+};
+
+return function($connection) {
+    return new IslamicCalendarMigration($connection);
+}; 

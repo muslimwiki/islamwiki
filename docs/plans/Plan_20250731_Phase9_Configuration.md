@@ -333,3 +333,5 @@ CREATE TABLE configuration_backups (
 ---
 
 **Note:** This plan builds upon the solid foundation established in 0.0.18 and 0.0.19, focusing on enhancing the configuration system with advanced features, better integration with the extension system, and improved user experience. 
+
+after each version completeion update release notes, readme, changelog, docs, and commit and publish git

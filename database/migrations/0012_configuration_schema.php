@@ -22,7 +22,7 @@ class Migration_0012_ConfigurationSchema extends Migration
     public function up(): void
     {
         // Configuration storage table
-        $this->createTable('configuration', function ($table) {
+        $this->schema()->create('configuration', function ($table) {
             $table->id();
             $table->string('category', 50)->comment('Configuration category (core, database, security, etc.)');
             $table->string('key_name', 100)->comment('Configuration key name');
@@ -40,7 +40,7 @@ class Migration_0012_ConfigurationSchema extends Migration
         });
 
         // Configuration categories table
-        $this->createTable('configuration_categories', function ($table) {
+        $this->schema()->create('configuration_categories', function ($table) {
             $table->id();
             $table->string('name', 50)->unique()->comment('Category name (core, database, security, etc.)');
             $table->string('display_name', 100)->comment('Human-readable display name');
@@ -55,7 +55,7 @@ class Migration_0012_ConfigurationSchema extends Migration
         });
 
         // Configuration audit log table
-        $this->createTable('configuration_audit', function ($table) {
+        $this->schema()->create('configuration_audit', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable()->comment('User who made the change');
             $table->string('category', 50)->comment('Configuration category');
@@ -74,7 +74,7 @@ class Migration_0012_ConfigurationSchema extends Migration
         });
 
         // Configuration backups table
-        $this->createTable('configuration_backups', function ($table) {
+        $this->schema()->create('configuration_backups', function ($table) {
             $table->id();
             $table->string('backup_name', 100)->comment('Name of the backup');
             $table->json('configuration_data')->comment('JSON data of the configuration backup');
@@ -98,10 +98,10 @@ class Migration_0012_ConfigurationSchema extends Migration
      */
     public function down(): void
     {
-        $this->dropTable('configuration_backups');
-        $this->dropTable('configuration_audit');
-        $this->dropTable('configuration_categories');
-        $this->dropTable('configuration');
+        $this->schema()->drop('configuration_backups');
+        $this->schema()->drop('configuration_audit');
+        $this->schema()->drop('configuration_categories');
+        $this->schema()->drop('configuration');
     }
 
     /**
@@ -169,7 +169,7 @@ class Migration_0012_ConfigurationSchema extends Migration
         ];
 
         foreach ($categories as $category) {
-            $this->insert('configuration_categories', $category);
+            $this->connection->table('configuration_categories')->insert($category);
         }
     }
 
@@ -385,7 +385,11 @@ class Migration_0012_ConfigurationSchema extends Migration
         ];
 
         foreach ($configurations as $config) {
-            $this->insert('configuration', $config);
+            $this->connection->table('configuration')->insert($config);
         }
     }
-} 
+};
+
+return function($connection) {
+    return new Migration_0012_ConfigurationSchema($connection);
+};

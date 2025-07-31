@@ -89,8 +89,14 @@ class Blueprint
         
         $sql = $column->name . ' ' . $type;
         
-        if (isset($column->length)) {
+        // Handle enum parameters
+        if ($type === 'ENUM' && isset($column->allowed)) {
+            $enumValues = array_map([$this, 'quote'], $column->allowed);
+            $sql .= '(' . implode(', ', $enumValues) . ')';
+        } else        if (isset($column->length)) {
             $sql .= '(' . $column->length . ')';
+        } elseif (isset($column->precision) && isset($column->scale)) {
+            $sql .= '(' . $column->precision . ',' . $column->scale . ')';
         }
         
         if (isset($column->unsigned) && $column->unsigned) {
@@ -133,6 +139,10 @@ class Blueprint
             'text' => 'TEXT',
             'timestamp' => 'TIMESTAMP',
             'boolean' => 'BOOLEAN',
+            'enum' => 'ENUM',
+            'date' => 'DATE',
+            'time' => 'TIME',
+            'decimal' => 'DECIMAL',
         ];
         
         return $typeMap[$type] ?? strtoupper($type);
@@ -241,7 +251,15 @@ class Blueprint
 
     protected function createIndexName(string $type, array $columns): string
     {
-        return strtolower($this->prefix . $this->table . '_' . implode('_', $columns) . '_' . $type);
+        $index = strtolower($this->prefix . $this->table . '_' . implode('_', $columns) . '_' . $type);
+        
+        // If the index name is too long, use a hash instead
+        if (strlen($index) > 64) {
+            $hash = substr(md5(implode('_', $columns)), 0, 8);
+            $index = strtolower($this->prefix . $this->table . '_' . $hash . '_' . $type);
+        }
+        
+        return $index;
     }
 
     protected function addCommand(string $name, array $parameters = []): Fluent
@@ -349,12 +367,33 @@ class Blueprint
     {
         $columns = (array) $columns;
         $name = $name ?: $this->createIndexName('foreign', $columns);
-        return $this->addCommand('foreign', compact('columns', 'name'));
+        $command = $this->addCommand('foreign', compact('columns', 'name'));
+        return new ForeignKeyDefinition($this, $command->getAttributes());
     }
 
     public function boolean(string $column): Fluent
     {
         return $this->addColumn('boolean', $column);
+    }
+
+    public function enum(string $column, array $allowed): Fluent
+    {
+        return $this->addColumn('enum', $column, ['allowed' => $allowed]);
+    }
+
+    public function date(string $column): Fluent
+    {
+        return $this->addColumn('date', $column);
+    }
+
+    public function time(string $column): Fluent
+    {
+        return $this->addColumn('time', $column);
+    }
+
+    public function decimal(string $column, int $precision = 8, int $scale = 2): Fluent
+    {
+        return $this->addColumn('decimal', $column, compact('precision', 'scale'));
     }
 
     public function rememberToken(): Fluent

@@ -1,8 +1,5 @@
-<?
+<?php
 declare(strict_types=1);
-php\np
-
-
 
 namespace IslamWiki\Http\Controllers;
 
@@ -17,12 +14,26 @@ class ProfileController extends Controller
     /**
      * Show the user's profile.
      */
-    public function show(Request $request): Response
+    public function index(Request $request): Response
     {
         $user = $this->getUserOrFail($request);
         
         return $this->view('profile.show', [
             'title' => 'My Profile - IslamWiki',
+            'user' => $user,
+            'activeTab' => 'profile',
+        ]);
+    }
+
+    /**
+     * Show the edit profile form.
+     */
+    public function edit(Request $request): Response
+    {
+        $user = $this->getUserOrFail($request);
+        
+        return $this->view('profile/edit', [
+            'title' => 'Edit Profile - IslamWiki',
             'user' => $user,
             'activeTab' => 'profile',
         ]);

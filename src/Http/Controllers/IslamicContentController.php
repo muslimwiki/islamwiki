@@ -34,6 +34,92 @@ class IslamicContentController extends PageController
     }
 
     /**
+     * Display the Islamic content index page.
+     */
+    public function index(): Response
+    {
+        try {
+            // Get search and filter parameters
+            $search = $_GET['q'] ?? '';
+            $category = $_GET['category'] ?? '';
+            $page = max(1, (int)($_GET['page'] ?? 1));
+            $perPage = 12;
+            
+            // Build query
+            $query = $this->db->table('islamic_pages')
+                ->select([
+                    'id', 'title', 'arabic_title', 'content', 'arabic_content',
+                    'islamic_category', 'islamic_template', 'islamic_tags',
+                    'moderation_status', 'verification_status', 'created_at',
+                    'updated_at', 'author_id', 'view_count', 'quality_score'
+                ])
+                ->where('moderation_status', 'approved')
+                ->where('verification_status', 'verified');
+            
+            // Apply search filter
+            if (!empty($search)) {
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'LIKE', "%{$search}%")
+                      ->orWhere('arabic_title', 'LIKE', "%{$search}%")
+                      ->orWhere('content', 'LIKE', "%{$search}%")
+                      ->orWhere('arabic_content', 'LIKE', "%{$search}%");
+                });
+            }
+            
+            // Apply category filter
+            if (!empty($category)) {
+                $query->where('islamic_category', $category);
+            }
+            
+            // Get total count for pagination
+            $totalContent = $query->count();
+            $totalPages = ceil($totalContent / $perPage);
+            
+            // Get paginated results
+            $content = $query->orderBy('created_at', 'desc')
+                            ->offset(($page - 1) * $perPage)
+                            ->limit($perPage)
+                            ->get();
+            
+            // Enhance content data
+            foreach ($content as &$item) {
+                $item['excerpt'] = $this->generateExcerpt($item['content']);
+                $item['read_time'] = $this->calculateReadTime($item['content']);
+                $item['author'] = $this->getAuthorInfo($item['author_id']);
+                $item['tags'] = json_decode($item['islamic_tags'] ?? '[]', true);
+            }
+            
+            // Get category statistics
+            $categories = $this->getCategoryStats();
+            
+            // Get featured content
+            $featuredContent = $this->getFeaturedContent();
+            
+            // Get recent articles
+            $recentArticles = $this->getRecentArticles(5);
+            
+            return $this->view('content/index', [
+                'content' => $content,
+                'categories' => $categories,
+                'featured_content' => $featuredContent,
+                'recent_articles' => $recentArticles,
+                'search_query' => $search,
+                'current_category' => $category,
+                'pagination' => [
+                    'current_page' => $page,
+                    'total_pages' => $totalPages,
+                    'total_content' => $totalContent,
+                    'per_page' => $perPage
+                ],
+                'title' => 'Islamic Content - IslamWiki'
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Content index error: ' . $e->getMessage());
+            return $this->errorResponse('Failed to load Islamic content', 500);
+        }
+    }
+
+    /**
      * Show Islamic content creation form.
      */
     public function showIslamicCreate(Request $request): Response
@@ -431,7 +517,7 @@ class IslamicContentController extends PageController
     /**
      * Get Islamic permissions for user.
      */
-    protected function getIslamicPermissionsForUser(IslamicUser $user): array
+        protected function getIslamicPermissionsForUser(IslamicUser $user): array
     {
         $permissions = [];
         
@@ -442,7 +528,124 @@ class IslamicContentController extends PageController
         } else {
             $permissions = ['read', 'edit'];
         }
-
+        
         return $permissions;
+    }
+
+    /**
+     * Generate excerpt from content.
+     */
+    private function generateExcerpt(string $content, int $length = 150): string
+    {
+        // Remove HTML tags and get plain text
+        $plainText = strip_tags($content);
+        
+        // Truncate to specified length
+        if (strlen($plainText) > $length) {
+            $plainText = substr($plainText, 0, $length) . '...';
+        }
+        
+        return $plainText;
+    }
+
+    /**
+     * Calculate read time for content.
+     */
+    private function calculateReadTime(string $content): int
+    {
+        // Average reading speed: 200 words per minute
+        $wordCount = str_word_count(strip_tags($content));
+        $readTime = ceil($wordCount / 200);
+        
+        return max(1, $readTime);
+    }
+
+    /**
+     * Get author information.
+     */
+    private function getAuthorInfo(int $authorId): ?array
+    {
+        try {
+            $author = $this->db->table('users')
+                ->select(['id', 'username', 'display_name'])
+                ->where('id', $authorId)
+                ->first();
+            
+            return $author;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get category statistics.
+     */
+    private function getCategoryStats(): array
+    {
+        try {
+            $stats = $this->db->table('islamic_pages')
+                ->select([
+                    'islamic_category',
+                    $this->db->raw('COUNT(*) as count')
+                ])
+                ->where('moderation_status', 'approved')
+                ->where('verification_status', 'verified')
+                ->groupBy('islamic_category')
+                ->get();
+            
+            $categories = [];
+            foreach ($stats as $stat) {
+                $categories[$stat['islamic_category']] = [
+                    'count' => $stat['count']
+                ];
+            }
+            
+            return $categories;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get featured content.
+     */
+    private function getFeaturedContent(): array
+    {
+        try {
+            return $this->db->table('islamic_pages')
+                ->select([
+                    'id', 'title', 'arabic_title', 'islamic_category',
+                    'created_at', 'view_count', 'quality_score'
+                ])
+                ->where('moderation_status', 'approved')
+                ->where('verification_status', 'verified')
+                ->where('is_featured', true)
+                ->orderBy('quality_score', 'desc')
+                ->limit(6)
+                ->get();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get recent articles.
+     */
+    private function getRecentArticles(int $limit = 5): array
+    {
+        try {
+            return $this->db->table('islamic_pages')
+                ->select([
+                    'id', 'title', 'islamic_category', 'created_at',
+                    'view_count', 'author_id'
+                ])
+                ->where('moderation_status', 'approved')
+                ->where('verification_status', 'verified')
+                ->orderBy('created_at', 'desc')
+                ->limit($limit)
+                ->get();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 } 

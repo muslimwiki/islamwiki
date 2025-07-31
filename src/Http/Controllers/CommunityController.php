@@ -72,6 +72,170 @@ class CommunityController extends Controller
     }
 
     /**
+     * Display the users directory.
+     */
+    public function users(): Response
+    {
+        try {
+            // Get search and filter parameters
+            $search = $_GET['search'] ?? '';
+            $sort = $_GET['sort'] ?? 'recent';
+            $page = max(1, (int)($_GET['page'] ?? 1));
+            $perPage = 20;
+            
+            // Build query
+            $query = $this->db->table('users')
+                ->select([
+                    'id', 'username', 'display_name', 'bio', 'created_at', 
+                    'last_login_at', 'is_active', 'is_admin'
+                ])
+                ->where('is_active', true);
+            
+            // Apply search filter
+            if (!empty($search)) {
+                $query->where(function($q) use ($search) {
+                    $q->where('username', 'LIKE', "%{$search}%")
+                      ->orWhere('display_name', 'LIKE', "%{$search}%")
+                      ->orWhere('bio', 'LIKE', "%{$search}%");
+                });
+            }
+            
+            // Apply sorting
+            switch ($sort) {
+                case 'contributions':
+                    $query->orderBy('contributions_count', 'desc');
+                    break;
+                case 'name':
+                    $query->orderBy('display_name', 'asc');
+                    break;
+                case 'joined':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                default: // recent
+                    $query->orderBy('last_login_at', 'desc');
+                    break;
+            }
+            
+            // Get total count for pagination
+            $totalUsers = $query->count();
+            $totalPages = ceil($totalUsers / $perPage);
+            
+            // Get paginated results
+            $users = $query->offset(($page - 1) * $perPage)
+                          ->limit($perPage)
+                          ->get();
+            
+            // Enhance user data with additional information
+            foreach ($users as &$user) {
+                $user['contributions'] = $this->getUserContributionsCount($user['id']);
+                $user['is_online'] = $this->isUserOnline($user['id']);
+                $user['last_active'] = $this->getUserLastActivity($user['id']);
+            }
+            
+            // Build pagination data
+            $pagination = [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_users' => $totalUsers,
+                'per_page' => $perPage,
+                'pages' => range(max(1, $page - 2), min($totalPages, $page + 2))
+            ];
+            
+            return $this->render('community/users.twig', [
+                'users' => $users,
+                'pagination' => $pagination,
+                'search_query' => $search,
+                'sort' => $sort,
+                'title' => 'Community Members'
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Community users error: ' . $e->getMessage());
+            return $this->errorResponse('Failed to load community users', 500);
+        }
+    }
+
+    /**
+     * Display the activity feed.
+     */
+    public function activity(): Response
+    {
+        try {
+            $activities = $this->communityManager->getCommunityActivity();
+            
+            return $this->render('community/activity.twig', [
+                'activities' => $activities,
+                'title' => 'Community Activity'
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Community activity error: ' . $e->getMessage());
+            return $this->errorResponse('Failed to load community activity', 500);
+        }
+    }
+
+
+
+
+
+    /**
+     * Show a specific discussion.
+     */
+    public function showDiscussion(int $id): Response
+    {
+        try {
+            $discussion = $this->communityManager->getDiscussion($id);
+            $replies = $this->communityManager->getDiscussionReplies($id);
+            
+            return $this->render('community/show-discussion.twig', [
+                'discussion' => $discussion,
+                'replies' => $replies,
+                'title' => $discussion['title'] ?? 'Discussion'
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Show discussion error: ' . $e->getMessage());
+            return $this->errorResponse('Failed to load discussion', 500);
+        }
+    }
+
+    /**
+     * Add a reply to a discussion.
+     */
+    public function addReply(Request $request, int $id): Response
+    {
+        try {
+            $data = $request->getParsedBody();
+            $userId = $this->getCurrentUserId();
+            
+            if (!$userId) {
+                return $this->jsonResponse([
+                    'success' => false,
+                    'message' => 'You must be logged in to reply'
+                ], 401);
+            }
+            
+            if (empty($data['content'])) {
+                return $this->jsonResponse([
+                    'success' => false,
+                    'message' => 'Reply content is required'
+                ], 400);
+            }
+            
+            $replyId = $this->communityManager->addDiscussionReply($id, $userId, $data['content']);
+            
+            return $this->jsonResponse([
+                'success' => true,
+                'message' => 'Reply added successfully',
+                'reply_id' => $replyId
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error('Add reply error: ' . $e->getMessage());
+            return $this->jsonResponse([
+                'success' => false,
+                'message' => 'Failed to add reply'
+            ], 500);
+        }
+    }
+
+    /**
      * Display the contribution form.
      */
     public function contribute(): Response
@@ -559,6 +723,61 @@ class CommunityController extends Controller
     /**
      * Create error response.
      */
+    /**
+     * Get user contributions count.
+     */
+    private function getUserContributionsCount(int $userId): int
+    {
+        try {
+            return $this->db->table('user_contributions')
+                ->where('user_id', $userId)
+                ->where('status', 'approved')
+                ->count();
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Check if user is online.
+     */
+    private function isUserOnline(int $userId): bool
+    {
+        try {
+            $lastActivity = $this->db->table('user_activity')
+                ->select('last_activity')
+                ->where('user_id', $userId)
+                ->first();
+            
+            if (!$lastActivity) {
+                return false;
+            }
+            
+            // Consider user online if last activity was within 15 minutes
+            $lastActivityTime = strtotime($lastActivity['last_activity']);
+            return (time() - $lastActivityTime) < 900; // 15 minutes
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get user last activity.
+     */
+    private function getUserLastActivity(int $userId): ?string
+    {
+        try {
+            $lastActivity = $this->db->table('user_activity')
+                ->select('last_activity')
+                ->where('user_id', $userId)
+                ->first();
+            
+            return $lastActivity ? $lastActivity['last_activity'] : null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
     private function errorResponse(string $message, int $status = 500): Response
     {
         return new Response(

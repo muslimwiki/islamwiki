@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 use IslamWiki\Core\Database\Connection;
@@ -48,7 +48,7 @@ try {
     echo "✅ Database connection successful\n";
     
     // Create migrator
-    $migrationPath = __DIR__ . '/../database/migrations';
+    $migrationPath = __DIR__ . '/../../database/migrations';
     $migrator = new Migrator($connection, $migrationPath);
     
     echo "✅ Migrator created\n";
