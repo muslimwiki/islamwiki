@@ -1,0 +1,315 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Security Dashboard</h1>
+        <p class="text-gray-600">Monitor security events, manage encryption, and review audit logs.</p>
+    </div>
+
+    <!-- Security Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-900">Total Audit Entries</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ security_stats.total_audit_entries }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-900">Recent Events (24h)</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ security_stats.recent_audit_entries }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-900">High Severity (7d)</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ security_stats.high_severity_events }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-900">Active Keys</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ security_stats.active_encryption_keys }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-8">
+        <div class="flex flex-wrap gap-4">
+            <a href="/security/audit-log" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                View Audit Log
+            </a>
+            <a href="/security/approvals" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Review Approvals
+            </a>
+            <button onclick="rotateEncryptionKey()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Rotate Encryption Key
+            </button>
+            <button onclick="getSecurityStats()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Refresh Stats
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Audit Logs -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Security Events</h3>
+                <p class="text-sm text-gray-500">Latest security audit log entries</p>
+            </div>
+            <div class="p-6">
+                {% if recent_audit_logs|length > 0 %}
+                <div class="space-y-4">
+                    {% for log in recent_audit_logs %}
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center
+                                {% if log.severity == 'critical' %}bg-red-100 text-red-600
+                                {% elseif log.severity == 'high' %}bg-orange-100 text-orange-600
+                                {% elseif log.severity == 'medium' %}bg-yellow-100 text-yellow-600
+                                {% else %}bg-blue-100 text-blue-600{% endif %}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">{{ log.action }}</p>
+                            <p class="text-sm text-gray-500">{{ log.resource ?? 'N/A' }}</p>
+                            <p class="text-xs text-gray-400">{{ log.created_at }}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if log.severity == 'critical' %}bg-red-100 text-red-800
+                                {% elseif log.severity == 'high' %}bg-orange-100 text-orange-800
+                                {% elseif log.severity == 'medium' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                {{ log.severity|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-4">No recent security events</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Pending Approvals</h3>
+                <p class="text-sm text-gray-500">Configuration changes awaiting approval</p>
+            </div>
+            <div class="p-6">
+                {% if pending_approvals|length > 0 %}
+                <div class="space-y-4">
+                    {% for approval in pending_approvals %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-medium text-gray-900">{{ approval.category }}.{{ approval.key_name }}</h4>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Pending
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">New value: {{ approval.new_value }}</p>
+                        <p class="text-xs text-gray-400 mb-3">Requested: {{ approval.created_at }}</p>
+                        <div class="flex space-x-2">
+                            <button onclick="approveConfiguration({{ approval.id }})" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                                Approve
+                            </button>
+                            <button onclick="rejectConfiguration({{ approval.id }})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-4">No pending approvals</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Encryption Information -->
+    <div class="mt-8 bg-white rounded-lg shadow">
+        <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Encryption Information</h3>
+            <p class="text-sm text-gray-500">Current encryption key details</p>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-900">Key ID</p>
+                    <p class="text-sm text-gray-600 font-mono">{{ encryption_info.key_id }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-900">Algorithm</p>
+                    <p class="text-sm text-gray-600">{{ encryption_info.algorithm }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-900">Key Length</p>
+                    <p class="text-sm text-gray-600">{{ encryption_info.key_length }} bytes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function rotateEncryptionKey() {
+    if (confirm('Are you sure you want to rotate the encryption key? This action will require re-encryption of all sensitive configuration values.')) {
+        fetch('/security/rotate-key', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Encryption key rotated successfully!');
+                location.reload();
+            } else {
+                alert('Failed to rotate encryption key: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to rotate encryption key');
+        });
+    }
+}
+
+function approveConfiguration(approvalId) {
+    if (confirm('Are you sure you want to approve this configuration change?')) {
+        fetch('/security/approve', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                approval_id: approvalId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Configuration change approved successfully!');
+                location.reload();
+            } else {
+                alert('Failed to approve configuration change: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to approve configuration change');
+        });
+    }
+}
+
+function rejectConfiguration(approvalId) {
+    const reason = prompt('Please provide a reason for rejection (optional):');
+    if (reason !== null) {
+        fetch('/security/reject', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                approval_id: approvalId,
+                reason: reason
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Configuration change rejected successfully!');
+                location.reload();
+            } else {
+                alert('Failed to reject configuration change: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to reject configuration change');
+        });
+    }
+}
+
+function getSecurityStats() {
+    fetch('/security/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Security statistics refreshed!');
+            location.reload();
+        } else {
+            alert('Failed to refresh security statistics: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to refresh security statistics');
+    });
+}
+</script>
+{% endblock %} 

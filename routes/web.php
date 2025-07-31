@@ -97,6 +97,38 @@ $router->delete('/{slug}', 'IslamWiki\Http\Controllers\PageController@destroy');
 $router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\PageController@watch');
 $router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\PageController@unwatch');
 
+// Configuration Routes - Version 0.0.20
+$router->get('/configuration', 'IslamWiki\Http\Controllers\ConfigurationController@index');
+$router->get('/configuration/{category}', 'IslamWiki\Http\Controllers\ConfigurationController@show');
+$router->post('/configuration/update', 'IslamWiki\Http\Controllers\ConfigurationController@update');
+$router->get('/configuration/export', 'IslamWiki\Http\Controllers\ConfigurationController@export');
+$router->post('/configuration/import', 'IslamWiki\Http\Controllers\ConfigurationController@import');
+$router->post('/configuration/validate', 'IslamWiki\Http\Controllers\ConfigurationController@validate');
+$router->post('/configuration/backup', 'IslamWiki\Http\Controllers\ConfigurationController@createBackup');
+$router->post('/configuration/restore', 'IslamWiki\Http\Controllers\ConfigurationController@restoreBackup');
+$router->get('/configuration/audit', 'IslamWiki\Http\Controllers\ConfigurationController@auditLog');
+$router->get('/configuration/backups', 'IslamWiki\Http\Controllers\ConfigurationController@backups');
+
+// Configuration API Routes
+$router->get('/api/configuration', 'IslamWiki\Http\Controllers\ConfigurationController@apiIndex');
+$router->get('/api/configuration/{category}', 'IslamWiki\Http\Controllers\ConfigurationController@apiShow');
+$router->put('/api/configuration/{key}', 'IslamWiki\Http\Controllers\ConfigurationController@apiUpdate');
+
+// Security Routes - Version 0.0.21
+$router->get('/security', 'IslamWiki\Http\Controllers\SecurityController@index');
+$router->get('/security/audit-log', 'IslamWiki\Http\Controllers\SecurityController@auditLog');
+$router->get('/security/approvals', 'IslamWiki\Http\Controllers\SecurityController@approvals');
+$router->post('/security/approve', 'IslamWiki\Http\Controllers\SecurityController@approve');
+$router->post('/security/reject', 'IslamWiki\Http\Controllers\SecurityController@reject');
+$router->post('/security/rotate-key', 'IslamWiki\Http\Controllers\SecurityController@rotateKey');
+$router->get('/security/encryption-info', 'IslamWiki\Http\Controllers\SecurityController@encryptionInfo');
+$router->get('/security/stats', 'IslamWiki\Http\Controllers\SecurityController@securityStats');
+
+// Security API Routes
+$router->get('/api/security/stats', 'IslamWiki\Http\Controllers\SecurityController@securityStats');
+$router->get('/api/security/encryption-info', 'IslamWiki\Http\Controllers\SecurityController@encryptionInfo');
+$router->post('/api/security/rotate-key', 'IslamWiki\Http\Controllers\SecurityController@rotateKey');
+
 // Quran Routes - Phase 4 Islamic Features Integration
 $router->get('/quran', 'IslamWiki\Http\Controllers\QuranController@indexPage');
 $router->get('/quran/search', 'IslamWiki\Http\Controllers\QuranController@searchPage');

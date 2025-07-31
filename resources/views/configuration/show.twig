@@ -1,0 +1,281 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ category.display_name }}</h1>
+                <p class="text-gray-600">{{ category.description }}</p>
+            </div>
+            <a href="/configuration" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                ← Back to Configuration
+            </a>
+        </div>
+    </div>
+
+    <!-- Configuration Form -->
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="p-6">
+            <form id="configurationForm" class="space-y-6">
+                {% for key, config in configurations %}
+                <div class="border-b border-gray-200 pb-6 last:border-b-0">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <label for="{{ key }}" class="block text-sm font-medium text-gray-900 mb-2">
+                                {{ key|replace('_', ' ')|title }}
+                                {% if config.is_required %}
+                                <span class="text-red-500">*</span>
+                                {% endif %}
+                                {% if config.is_sensitive %}
+                                <span class="text-yellow-500 ml-1">
+                                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </span>
+                                {% endif %}
+                            </label>
+                            
+                            {% if config.description %}
+                            <p class="text-sm text-gray-500 mb-3">{{ config.description }}</p>
+                            {% endif %}
+
+                            <!-- Input Field -->
+                            {% if config.type == 'boolean' %}
+                            <div class="flex items-center">
+                                <input type="checkbox" 
+                                       id="{{ key }}" 
+                                       name="{{ key }}" 
+                                       value="true"
+                                       {% if config.value == true or config.value == 'true' %}checked{% endif %}
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="{{ key }}" class="ml-2 text-sm text-gray-700">Enable</label>
+                            </div>
+                            {% elseif config.type == 'integer' %}
+                            <input type="number" 
+                                   id="{{ key }}" 
+                                   name="{{ key }}" 
+                                   value="{{ config.value }}"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   {% if config.is_required %}required{% endif %}>
+                            {% elseif config.type == 'array' or config.type == 'json' %}
+                            <textarea id="{{ key }}" 
+                                      name="{{ key }}" 
+                                      rows="4"
+                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                      {% if config.is_required %}required{% endif %}>{{ config.value is iterable ? config.value|json_encode : config.value }}</textarea>
+                            {% else %}
+                            <input type="text" 
+                                   id="{{ key }}" 
+                                   name="{{ key }}" 
+                                   value="{{ config.value }}"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   {% if config.is_required %}required{% endif %}>
+                            {% endif %}
+
+                            <!-- Validation Rules Display -->
+                            {% if config.validation_rules %}
+                            <div class="mt-2">
+                                <p class="text-xs text-gray-500">
+                                    <strong>Validation:</strong> 
+                                    {% set rules = config.validation_rules|json_decode %}
+                                    {% for rule in rules %}
+                                    <span class="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs mr-1">{{ rule }}</span>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Type Display -->
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ config.type }}
+                                </span>
+                                {% if config.is_required %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 ml-1">
+                                    Required
+                                </span>
+                                {% endif %}
+                                {% if config.is_sensitive %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 ml-1">
+                                    Sensitive
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="ml-4">
+                            <button type="button" 
+                                    onclick="updateConfiguration('{{ category.name }}.{{ key }}', document.getElementById('{{ key }}').value)"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Actions -->
+    <div class="mt-8">
+        <div class="flex flex-wrap gap-4">
+            <button onclick="validateCategory()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Validate Category
+            </button>
+            <button onclick="resetCategory()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Reset to Defaults
+            </button>
+        </div>
+    </div>
+
+    <!-- Category Information -->
+    <div class="mt-8 bg-gray-50 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Category Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-600"><strong>Name:</strong> {{ category.name }}</p>
+                <p class="text-sm text-gray-600"><strong>Display Name:</strong> {{ category.display_name }}</p>
+                <p class="text-sm text-gray-600"><strong>Sort Order:</strong> {{ category.sort_order }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600"><strong>Active:</strong> 
+                    {% if category.is_active %}
+                    <span class="text-green-600">✓ Yes</span>
+                    {% else %}
+                    <span class="text-red-600">✗ No</span>
+                    {% endif %}
+                </p>
+                <p class="text-sm text-gray-600"><strong>Settings Count:</strong> {{ configurations|length }}</p>
+                <p class="text-sm text-gray-600"><strong>Last Updated:</strong> {{ category.updated_at ?? 'Never' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateConfiguration(key, value) {
+    // Handle checkbox values
+    if (typeof value === 'boolean' || value === 'true' || value === 'false') {
+        value = value === true || value === 'true';
+    }
+    
+    fetch('/configuration/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            key: key,
+            value: value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Configuration updated successfully!', 'success');
+        } else {
+            showNotification('Failed to update configuration: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to update configuration', 'error');
+    });
+}
+
+function validateCategory() {
+    fetch('/configuration/validate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const validation = data.validation;
+            let message = 'Category validation completed.\n\n';
+            
+            if (validation.errors.length > 0) {
+                message += 'Errors:\n' + validation.errors.join('\n') + '\n\n';
+            }
+            
+            if (validation.warnings.length > 0) {
+                message += 'Warnings:\n' + validation.warnings.join('\n') + '\n\n';
+            }
+            
+            if (validation.errors.length === 0 && validation.warnings.length === 0) {
+                message += 'No issues found. Category configuration is valid.';
+            }
+            
+            alert(message);
+        } else {
+            showNotification('Validation failed: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to validate category', 'error');
+    });
+}
+
+function resetCategory() {
+    if (confirm('Are you sure you want to reset all settings in this category to their default values? This action cannot be undone.')) {
+        // This would typically call an API endpoint to reset the category
+        showNotification('Reset functionality not yet implemented', 'warning');
+    }
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+        type === 'success' ? 'bg-green-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        'bg-yellow-500 text-white'
+    }`;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Handle form submission
+document.getElementById('configurationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Form submission is handled by individual update buttons
+});
+
+// Add real-time validation
+document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('blur', function() {
+        const key = this.name;
+        const value = this.type === 'checkbox' ? this.checked : this.value;
+        
+        // Basic validation
+        if (this.hasAttribute('required') && !value) {
+            this.classList.add('border-red-500');
+            this.classList.remove('border-gray-300');
+        } else {
+            this.classList.remove('border-red-500');
+            this.classList.add('border-gray-300');
+        }
+    });
+});
+</script>
+{% endblock %} 
