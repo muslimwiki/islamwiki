@@ -1,0 +1,102 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}About - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">About IslamWiki</h1>
+    </div>
+    
+    <div class="space-y-6">
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+            <p class="text-lg leading-relaxed">
+                IslamWiki is a comprehensive platform dedicated to preserving and sharing Islamic knowledge. 
+                Our mission is to create the most extensive and accurate repository of Islamic studies, 
+                history, sciences, and cultural heritage, making this knowledge accessible to everyone.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mb-4">What We Offer</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">📚 Islamic Studies</h3>
+                    <p>Comprehensive articles on Quranic sciences, Hadith studies, Islamic law, theology, and philosophy.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">📜 Islamic History</h3>
+                    <p>Detailed historical accounts from the time of Prophet Muhammad (ﷺ) to the modern era.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">🔬 Islamic Sciences</h3>
+                    <p>Exploration of Islamic contributions to mathematics, astronomy, medicine, and other sciences.</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-3">🤝 Community</h3>
+                    <p>A collaborative platform where scholars, students, and enthusiasts can contribute and learn together.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Our Values</h2>
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="text-2xl">🎯</div>
+                    <div>
+                        <h3 class="font-semibold">Accuracy</h3>
+                        <p>We prioritize scholarly accuracy and reliable sources in all our content.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-2xl">🌍</div>
+                    <div>
+                        <h3 class="font-semibold">Accessibility</h3>
+                        <p>Making Islamic knowledge accessible to people of all backgrounds and levels of understanding.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-2xl">🤝</div>
+                    <div>
+                        <h3 class="font-semibold">Collaboration</h3>
+                        <p>Fostering a community of contributors who share knowledge and learn from each other.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="text-2xl">📖</div>
+                    <div>
+                        <h3 class="font-semibold">Education</h3>
+                        <p>Promoting lifelong learning and the pursuit of knowledge in Islamic tradition.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Get Involved</h2>
+            <p class="mb-4">
+                Join our community of contributors and help us build the most comprehensive Islamic knowledge base.
+            </p>
+            <div class="flex gap-4">
+                {% if user %}
+                    <a href="/pages/create" class="btn">Create Your First Page</a>
+                    <a href="/dashboard" class="btn btn-outline">Go to Dashboard</a>
+                {% else %}
+                    <a href="/register" class="btn">Join IslamWiki</a>
+                    <a href="/login" class="btn btn-outline">Sign In</a>
+                {% endif %}
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Contact Us</h2>
+            <p>
+                Have questions, suggestions, or want to contribute? We'd love to hear from you!
+                You can reach us through our community forums or by contributing directly to the platform.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %} 

@@ -18,6 +18,9 @@ use Psr\Http\Message\ServerRequestInterface;
 // Homepage
 $router->get('/', 'IslamWiki\Http\Controllers\HomeController@index');
 
+// About page
+$router->get('/about', 'IslamWiki\Http\Controllers\PageController@about');
+
 // Authentication Routes
 $router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
 $router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');

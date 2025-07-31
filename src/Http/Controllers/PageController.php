@@ -47,6 +47,20 @@ class PageController extends Controller
         $this->logger = $container->get(LoggerInterface::class);
     }
     /**
+     * Show the about page.
+     *
+     * @param Request $request The HTTP request
+     * @return Response
+     */
+    public function about(Request $request): Response
+    {
+        return $this->render('pages/about.twig', [
+            'title' => 'About - IslamWiki',
+            'user' => $this->getUser($request)
+        ]);
+    }
+
+    /**
      * Show a paginated list of all wiki pages.
      *
      * This method handles the following query parameters:
