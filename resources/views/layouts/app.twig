@@ -663,10 +663,10 @@
                 </a>
                 
                 <nav class="nav-menu">
-                    <a href="/" class="nav-link {{ app.request.uri == '/' ? 'active' : '' }}">Home</a>
-                    <a href="/pages" class="nav-link {{ app.request.uri starts with '/pages' ? 'active' : '' }}">Browse</a>
-                    <a href="/about" class="nav-link {{ app.request.uri starts with '/about' ? 'active' : '' }}">About</a>
-                    <a href="/islamic-sciences" class="nav-link {{ app.request.uri starts with '/islamic-sciences' ? 'active' : '' }}">Sciences</a>
+                    <a href="/" class="nav-link {{ is_current_page('/') ? 'active' : '' }}">Home</a>
+                    <a href="/pages" class="nav-link {{ is_current_page('/pages') ? 'active' : '' }}">Browse</a>
+                    <a href="/about" class="nav-link {{ is_current_page('/about') ? 'active' : '' }}">About</a>
+                    <a href="/islamic-sciences" class="nav-link {{ is_current_page('/islamic-sciences') ? 'active' : '' }}">Sciences</a>
                 </nav>
                 
                 <div class="user-menu">
@@ -693,14 +693,14 @@
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  class="user-dropdown-menu">
-                                <a href="/dashboard" class="dropdown-item {{ app.request.uri starts with '/dashboard' ? 'active' : '' }}">
+                                <a href="/dashboard" class="dropdown-item {{ is_current_page('/dashboard') ? 'active' : '' }}">
                                     <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"/>
                                     </svg>
                                     Dashboard
                                 </a>
-                                <a href="/profile" class="dropdown-item {{ app.request.uri starts with '/profile' ? 'active' : '' }}">
+                                <a href="/profile" class="dropdown-item {{ is_current_page('/profile') ? 'active' : '' }}">
                                     <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>

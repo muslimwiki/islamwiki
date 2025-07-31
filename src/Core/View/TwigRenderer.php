@@ -64,6 +64,17 @@ class TwigRenderer
             // This will be replaced with your actual asset URL logic
             return '/assets/' . ltrim($path, '/');
         }));
+        
+        // Add function to check if current page matches a path
+        $this->twig->addFunction(new TwigFunction('is_current_page', function (string $path) {
+            $currentUri = $_SERVER['REQUEST_URI'] ?? '/';
+            return strpos($currentUri, $path) === 0;
+        }));
+        
+        // Add function to get current URI
+        $this->twig->addFunction(new TwigFunction('current_uri', function () {
+            return $_SERVER['REQUEST_URI'] ?? '/';
+        }));
     }
 
     /**
