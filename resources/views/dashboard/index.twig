@@ -4,123 +4,597 @@
 
 {% block content %}
 <!-- Dashboard Header -->
-<div class="hero" style="background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);">
-    <div class="hero-content">
-        <h1>Welcome back, {{ user.username }}! 👋</h1>
-        <p>Manage your contributions and explore Islamic knowledge</p>
+<div class="dashboard-header">
+    <div class="container">
+        <div class="welcome-section">
+            <div class="user-avatar">
+                <div class="avatar-circle">
+                    <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <div class="welcome-text">
+                    <h1 class="welcome-title">Welcome back, {{ user.username }}! 👋</h1>
+                    <p class="welcome-subtitle">Manage your contributions and explore Islamic knowledge</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- User Stats -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Pages Created</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Edits Made</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Pages Watched</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">Today</div>
-        <div class="stat-label">Last Active</div>
+<div class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-content">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Pages Created</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✏️</div>
+                <div class="stat-content">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Edits Made</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👀</div>
+                <div class="stat-content">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Pages Watched</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-content">
+                    <div class="stat-number">Today</div>
+                    <div class="stat-label">Last Active</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Quick Actions -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">🚀 Quick Actions</h2>
-    </div>
-    <div class="flex gap-4 flex-wrap">
-        <a href="/pages/create" class="btn">✏️ Create New Page</a>
-        <a href="/pages" class="btn btn-secondary">📚 Browse All Pages</a>
-        <a href="/profile" class="btn btn-secondary">👤 Edit Profile</a>
-        <a href="/contributing" class="btn btn-secondary">📖 Contributing Guide</a>
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">🚀 Quick Actions</h2>
+                <p class="card-subtitle">Get started with common tasks</p>
+            </div>
+            <div class="quick-actions-grid">
+                <a href="/pages/create" class="action-card primary">
+                    <div class="action-icon">✏️</div>
+                    <div class="action-content">
+                        <h3>Create New Page</h3>
+                        <p>Start writing and sharing knowledge</p>
+                    </div>
+                </a>
+                <a href="/pages" class="action-card">
+                    <div class="action-icon">📚</div>
+                    <div class="action-content">
+                        <h3>Browse All Pages</h3>
+                        <p>Explore existing content</p>
+                    </div>
+                </a>
+                <a href="/profile" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <div class="action-content">
+                        <h3>Edit Profile</h3>
+                        <p>Update your information</p>
+                    </div>
+                </a>
+                <a href="/contributing" class="action-card">
+                    <div class="action-icon">📖</div>
+                    <div class="action-content">
+                        <h3>Contributing Guide</h3>
+                        <p>Learn best practices</p>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Recent Activity -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">📈 Recent Activity</h2>
-    </div>
-    <div class="text-center" style="padding: 2rem;">
-        <p style="color: var(--text-secondary);">No recent activity yet.</p>
-        <p>Start contributing to see your activity here!</p>
-        <a href="/pages/create" class="btn mt-4">Create Your First Page</a>
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">📈 Recent Activity</h2>
+                <p class="card-subtitle">Your latest contributions and edits</p>
+            </div>
+            <div class="empty-state">
+                <div class="empty-icon">📊</div>
+                <h3>No recent activity yet</h3>
+                <p>Start contributing to see your activity here!</p>
+                <a href="/pages/create" class="dashboard-btn primary">Create Your First Page</a>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Watched Pages -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">👀 Watched Pages</h2>
-    </div>
-    <div class="text-center" style="padding: 2rem;">
-        <p style="color: var(--text-secondary);">You're not watching any pages yet.</p>
-        <p>Watch pages to get notified of changes!</p>
-        <a href="/pages" class="btn mt-4">Browse Pages</a>
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">👀 Watched Pages</h2>
+                <p class="card-subtitle">Pages you're following for updates</p>
+            </div>
+            <div class="empty-state">
+                <div class="empty-icon">👀</div>
+                <h3>You're not watching any pages yet</h3>
+                <p>Watch pages to get notified of changes!</p>
+                <a href="/pages" class="dashboard-btn">Browse Pages</a>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Your Contributions -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">🎯 Your Contributions</h2>
-    </div>
-    <div class="text-center" style="padding: 2rem;">
-        <p style="color: var(--text-secondary);">No contributions yet.</p>
-        <p>Start contributing to build your profile!</p>
-        <div class="flex gap-4 justify-center mt-4">
-            <a href="/pages/create" class="btn">Create Page</a>
-            <a href="/pages" class="btn btn-secondary">Edit Existing</a>
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">🎯 Your Contributions</h2>
+                <p class="card-subtitle">Pages you've created and edited</p>
+            </div>
+            <div class="empty-state">
+                <div class="empty-icon">🎯</div>
+                <h3>No contributions yet</h3>
+                <p>Start contributing to build your profile!</p>
+                <div class="empty-actions">
+                    <a href="/pages/create" class="dashboard-btn primary">Create Page</a>
+                    <a href="/pages" class="dashboard-btn">Edit Existing</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Learning Resources -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">📚 Learning Resources</h2>
-    </div>
-    <div class="page-list">
-        <div class="page-item">
-            <h3><a href="/welcome">Welcome Guide</a></h3>
-            <p class="page-excerpt">
-                Learn how to use IslamWiki effectively and start contributing to the community.
-            </p>
-            <div class="page-meta">
-                <small>🎯 Getting Started</small>
-                <a href="/welcome" class="btn btn-small">Read Guide</a>
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">📚 Learning Resources</h2>
+                <p class="card-subtitle">Essential guides and resources</p>
             </div>
-        </div>
-        
-        <div class="page-item">
-            <h3><a href="/contributing">Contributing Guidelines</a></h3>
-            <p class="page-excerpt">
-                Learn the best practices for contributing to IslamWiki and maintaining quality content.
-            </p>
-            <div class="page-meta">
-                <small>📖 Guidelines</small>
-                <a href="/contributing" class="btn btn-small">Read Guidelines</a>
-            </div>
-        </div>
-        
-        <div class="page-item">
-            <h3><a href="/islamic-sciences">Islamic Sciences</a></h3>
-            <p class="page-excerpt">
-                Explore the rich tradition of Islamic scholarship and academic disciplines.
-            </p>
-            <div class="page-meta">
-                <small>🔬 Academic</small>
-                <a href="/islamic-sciences" class="btn btn-small">Explore Sciences</a>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🎯</div>
+                    <div class="resource-content">
+                        <h3><a href="/welcome">Welcome Guide</a></h3>
+                        <p>Learn how to use IslamWiki effectively and start contributing to the community.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Getting Started</span>
+                            <a href="/welcome" class="resource-link">Read Guide →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <div class="resource-content">
+                        <h3><a href="/contributing">Contributing Guidelines</a></h3>
+                        <p>Learn the best practices for contributing to IslamWiki and maintaining quality content.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Guidelines</span>
+                            <a href="/contributing" class="resource-link">Read Guidelines →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🔬</div>
+                    <div class="resource-content">
+                        <h3><a href="/islamic-sciences">Islamic Sciences</a></h3>
+                        <p>Explore the rich tradition of Islamic scholarship and academic disciplines.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Academic</span>
+                            <a href="/islamic-sciences" class="resource-link">Explore Sciences →</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        opacity: 0.1;
+    }
+    
+    .welcome-section {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .user-avatar {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .avatar-icon {
+        width: 40px;
+        height: 40px;
+        color: white;
+    }
+    
+    .welcome-text {
+        color: white;
+    }
+    
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+    
+    /* Stats Section */
+    .stats-section {
+        margin-bottom: 2rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-icon {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+    
+    .stat-content {
+        flex: 1;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    /* Dashboard Sections */
+    .dashboard-section {
+        margin-bottom: 2rem;
+    }
+    
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .card-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .card-subtitle {
+        color: #6b7280;
+        margin: 0;
+        font-size: 0.95rem;
+    }
+    
+    /* Quick Actions */
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    .action-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .action-card:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-card.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+    
+    .action-card.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+    
+    .action-icon {
+        font-size: 1.5rem;
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .action-content h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+    }
+    
+    .action-content p {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin: 0;
+    }
+    
+    /* Empty States */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .empty-state p {
+        color: #6b7280;
+        margin: 0 0 1.5rem 0;
+    }
+    
+    .empty-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    /* Dashboard Buttons */
+    .dashboard-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .dashboard-btn.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .dashboard-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .dashboard-btn:not(.primary) {
+        background: rgba(255, 255, 255, 0.9);
+        color: #667eea;
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .dashboard-btn:not(.primary):hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: #667eea;
+        transform: translateY(-1px);
+    }
+    
+    /* Resources Grid */
+    .resources-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .resource-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .resource-card:hover {
+        background: rgba(255, 255, 255, 1);
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resource-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-content h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .resource-content h3 a {
+        color: #1f2937;
+        text-decoration: none;
+    }
+    
+    .resource-content h3 a:hover {
+        color: #667eea;
+    }
+    
+    .resource-content p {
+        color: #6b7280;
+        margin: 0 0 1rem 0;
+        line-height: 1.5;
+    }
+    
+    .resource-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .resource-tag {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .resource-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .resource-link:hover {
+        text-decoration: underline;
+    }
+    
+    /* Animations */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .welcome-title {
+            font-size: 2rem;
+        }
+        
+        .user-avatar {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .quick-actions-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .resources-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
