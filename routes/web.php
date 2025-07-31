@@ -173,3 +173,8 @@ $router->get('/api/prayer-times/next', 'IslamWiki\Http\Controllers\PrayerTimeCon
 $router->get('/api/prayer-times/statistics', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetStatistics');
 $router->get('/api/prayer-times/methods', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetCalculationMethods');
 $router->get('/api/prayer-times/names', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerNames');
+
+// Search Routes - Phase 6 Search and Discovery Features
+$router->get('/search', 'IslamWiki\Http\Controllers\SearchController@index');
+$router->get('/api/search', 'IslamWiki\Http\Controllers\SearchController@apiSearch');
+$router->get('/api/search/suggestions', 'IslamWiki\Http\Controllers\SearchController@apiSuggestions');
