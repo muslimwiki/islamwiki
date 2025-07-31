@@ -1,18 +1,25 @@
 # IslamWiki Version History
 
+## Version 0.0.18 (2025-07-30)
+- **Added**: Hybrid Configuration System with MediaWiki-inspired structure
+- **Added**: LocalSettings.php with 108 comprehensive configuration settings
+- **Added**: IslamSettings.php as optional Islamic override file
+- **Added**: ConfigurationManager for unified configuration management
+- **Added**: ConfigurationServiceProvider for service container integration
+- **Added**: 8 global helper functions for easy configuration access
+- **Added**: Configuration validation with error/warning reporting
+- **Added**: Comprehensive test suite with 15 test categories
+- **Added**: Islamic-focused configuration sections
+- **Added**: Performance-optimized configuration loading and caching
+- **Added**: Environment integration with .env file support
+- **Added**: MediaWiki-inspired structure for developer familiarity
+- **Added**: Type-safe access to different configuration categories
+- **Added**: Memory-cached configuration for fast access
+- **Added**: Comprehensive documentation for all settings
+- **Improved**: Configuration management and accessibility
+- **Enhanced**: Islamic content configuration capabilities
+
 ## Version 0.0.17 (2025-07-30)
-- **Added**: Comprehensive search system across all Islamic content types
-- **Added**: SearchController with web and API endpoints
-- **Added**: Search model with analytics and caching
-- **Added**: Full-text search indexes for Quran, Hadith, Calendar, Prayer, and Pages
-- **Added**: Search analytics and performance monitoring
-- **Added**: Search suggestions with relevance scoring
-- **Added**: Search caching for improved performance
-- **Added**: Beautiful search interface with Islamic themes
-- **Added**: Search API with comprehensive endpoints
-- **Added**: Search statistics and usage tracking
-- **Improved**: Search performance with sub-100ms responses
-- **Enhanced**: User experience with advanced filtering and pagination
 
 ## Version 0.0.16 (2025-07-30)
 - **Added**: Prayer Times Integration System with astronomical algorithms
