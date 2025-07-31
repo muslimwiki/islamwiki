@@ -237,6 +237,10 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
     }
     
     .user-avatar {
@@ -244,6 +248,8 @@
         align-items: center;
         gap: 1.5rem;
         width: 100%;
+        justify-content: center;
+        text-align: center;
     }
     
     .avatar-circle {
@@ -268,6 +274,7 @@
         color: white;
         flex: 1;
         min-width: 0;
+        text-align: center;
     }
     
     .welcome-title {
@@ -593,10 +600,16 @@
             flex-direction: column;
             text-align: center;
             gap: 1rem;
+            justify-content: center;
         }
         
         .welcome-section {
             padding: 0 15px;
+            min-height: 150px;
+        }
+        
+        .welcome-text {
+            text-align: center;
         }
         
         .stats-grid {
