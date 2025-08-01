@@ -119,7 +119,7 @@ if (!function_exists('asset')) {
      */
     function asset(string $path): string
     {
-        $baseUrl = rtrim(env('APP_URL', 'http://localhost:8000'), '/');
+        $baseUrl = rtrim(env('APP_URL', 'https://local.islam.wiki'), '/');
         $assetPath = ltrim($path, '/');
         
         return "{$baseUrl}/public/{$assetPath}";
@@ -136,7 +136,7 @@ if (!function_exists('url')) {
      */
     function url(string $path = '', array $parameters = []): string
     {
-        $baseUrl = rtrim(env('APP_URL', 'http://localhost:8000'), '/');
+        $baseUrl = rtrim(env('APP_URL', 'https://local.islam.wiki'), '/');
         $path = ltrim($path, '/');
         
         $url = "{$baseUrl}/{$path}";

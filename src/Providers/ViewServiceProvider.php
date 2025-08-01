@@ -37,6 +37,14 @@ class ViewServiceProvider
             $isDebug
         );
         
+        // Add CSRF token as a global variable
+        if ($container->has('session')) {
+            $session = $container->get('session');
+            $twigRenderer->addGlobals([
+                'csrf_token' => $session->getCsrfToken()
+            ]);
+        }
+        
         // Register the Twig renderer instance with the container
         $container->instance('view', $twigRenderer);
         $container->instance(TwigRenderer::class, $twigRenderer);

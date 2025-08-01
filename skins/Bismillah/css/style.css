@@ -1,4 +1,8 @@
+/* Bismillah Skin - Purple/Indigo Theme for IslamWiki */
+/* This skin works with the Safa CSS framework */
+
 :root {
+    /* Override Safa CSS variables for this skin */
     --primary-color: #4f46e5;
     --primary-hover: #4338ca;
     --secondary-color: #6b7280;
@@ -14,6 +18,12 @@
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --link-color: #4f46e5;
+    --link-hover-color: #4338ca;
+    --accent-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --info-color: #17a2b8;
 }
 
 * {

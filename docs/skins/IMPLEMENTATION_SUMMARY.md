@@ -58,7 +58,7 @@ Successfully implemented a comprehensive skin system for IslamWiki that allows f
   - Integrates with skin CSS and JavaScript
   - Maintains existing functionality
   - Supports mobile responsiveness
-  - Includes Alpine.js integration
+  - Includes ZamZam.js integration
 
 ### 3. Application Integration
 

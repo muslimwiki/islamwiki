@@ -91,7 +91,7 @@ The **Bismillah** skin is the default skin for IslamWiki, featuring:
     ],
     "dependencies": {
         "tailwind": "cdn",
-        "alpinejs": "cdn",
+        "zamzamjs": "local",
         "prism": "cdn"
     }
 }
@@ -132,7 +132,7 @@ Create `skins/MyCustomSkin/skin.json`:
     ],
     "dependencies": {
         "tailwind": "cdn",
-        "alpinejs": "cdn"
+        "zamzamjs": "local"
     }
 }
 ```

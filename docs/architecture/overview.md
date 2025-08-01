@@ -12,7 +12,7 @@ IslamWiki is built with a modern, modular architecture that emphasizes clean cod
 
 ### 2. **Progressive Enhancement**
 - Server-side rendering with Twig templates
-- Alpine.js for lightweight interactivity
+- ZamZam.js for lightweight interactivity
 - Works without JavaScript
 - Responsive design for all devices
 
@@ -27,7 +27,7 @@ IslamWiki is built with a modern, modular architecture that emphasizes clean cod
 ```
 ┌─────────────────────────────────────┐
 │           Presentation              │
-│  (Alpine.js + Twig Templates)     │
+│  (ZamZam.js + Twig Templates)     │
 ├─────────────────────────────────────┤
 │           Controllers              │
 │     (Request/Response Handling)    │
@@ -124,7 +124,7 @@ Comprehensive error handling at multiple levels:
 - **Composer**: Dependency management
 
 ### Frontend
-- **Alpine.js**: Lightweight JavaScript framework
+- **ZamZam.js**: Lightweight JavaScript framework
 - **Modern CSS**: Responsive design
 - **Progressive Enhancement**: Works without JavaScript
 
@@ -198,7 +198,7 @@ The architecture is designed for easy extension:
 - **Service Providers**: Add new services easily
 - **Controllers**: Simple controller pattern
 - **Templates**: Twig extension system
-- **Frontend**: Alpine.js component system
+- **Frontend**: ZamZam.js component system
 - **Routing**: Easy route registration
 
 ## Testing Strategy
@@ -206,6 +206,6 @@ The architecture is designed for easy extension:
 - **Unit Tests**: Individual component testing
 - **Integration Tests**: Service interaction testing
 - **Feature Tests**: End-to-end functionality testing
-- **Frontend Tests**: Alpine.js component testing
+- **Frontend Tests**: ZamZam.js component testing
 
 This architecture provides a solid foundation for building a modern, scalable wiki system while maintaining simplicity and developer productivity.

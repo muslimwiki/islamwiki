@@ -77,7 +77,7 @@ class DatabaseSetup
             $this->createSampleData($connection);
             
             echo "\n✅ Database setup completed successfully!\n";
-            echo "You can now access IslamWiki at: http://localhost\n";
+            echo "You can now access IslamWiki at: https://local.islam.wiki\n";
             
         } catch (Exception $e) {
             echo "\n❌ Error: " . $e->getMessage() . "\n";
@@ -248,7 +248,7 @@ class DatabaseSetup
     {
         $password = password_hash('admin123', PASSWORD_DEFAULT);
         
-        $sql = "INSERT IGNORE INTO users (username, email, password_hash, display_name, is_admin, created_at, updated_at) 
+        $sql = "INSERT IGNORE INTO users (username, email, password, display_name, is_admin, created_at, updated_at) 
                 VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
         
         $connection->getPdo()->prepare($sql)->execute([

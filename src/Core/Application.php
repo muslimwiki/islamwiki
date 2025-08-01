@@ -72,6 +72,7 @@ class Application
 
         // Bind the application instance to the container
         $this->container->instance(self::class, $this);
+        $this->container->instance('app', $this);
 
         // Register core bindings
         $this->registerCoreContainerAliases();

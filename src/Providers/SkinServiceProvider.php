@@ -4,10 +4,10 @@ declare(strict_types=1);
 /**
  * Skin Service Provider
  * 
- * Registers and manages the skin system for IslamWiki.
+ * Registers and manages skin-related services and view helpers.
  * 
  * @package IslamWiki\Providers
- * @version 0.0.28
+ * @version 0.0.29
  * @license AGPL-3.0-only
  */
 
@@ -38,32 +38,59 @@ class SkinServiceProvider
     }
     
     /**
-     * Register the skin service provider
+     * Register skin services
      */
     public function register(): void
     {
-        // Register the skin manager as a singleton
-        $this->app->getContainer()->singleton('skin.manager', function () {
-            return new SkinManager($this->app);
-        });
+        // Register the skin manager as an instance
+        $this->app->getContainer()->instance('skin.manager', $this->skinManager);
         
-        // Register the active skin
+        // Register the active skin (will be resolved dynamically)
         $this->app->getContainer()->singleton('skin.active', function () {
-            $skinManager = $this->app->getContainer()->get('skin.manager');
-            return $skinManager->getActiveSkin();
+            return $this->getActiveSkinForCurrentUser();
         });
         
-        // Add skin data to the view context
+        // Add skin data to the view context (will be resolved dynamically)
         $this->app->getContainer()->singleton('skin.data', function () {
-            $skinManager = $this->app->getContainer()->get('skin.manager');
-            $activeSkin = $skinManager->getActiveSkin();
+            return $this->getSkinDataForCurrentUser();
+        });
+    }
+    
+    /**
+     * Get the active skin for the current user
+     */
+    private function getActiveSkinForCurrentUser()
+    {
+        try {
+            $session = $this->app->getContainer()->get('session');
+            
+            if ($session->isLoggedIn()) {
+                $userId = $session->getUserId();
+                return $this->skinManager->getActiveSkinForUser($userId);
+            }
+            
+            // Fallback to global skin for non-logged-in users
+            return $this->skinManager->getActiveSkin();
+        } catch (\Throwable $e) {
+            error_log("SkinServiceProvider::getActiveSkinForCurrentUser - Error: " . $e->getMessage());
+            return $this->skinManager->getActiveSkin();
+        }
+    }
+    
+    /**
+     * Get skin data for the current user
+     */
+    private function getSkinDataForCurrentUser(): array
+    {
+        try {
+            $activeSkin = $this->getActiveSkinForCurrentUser();
             
             if ($activeSkin === null) {
                 return [
                     'css' => '',
                     'js' => '',
                     'name' => 'default',
-                    'version' => '0.0.28',
+                    'version' => '0.0.29',
                 ];
             }
             
@@ -74,7 +101,15 @@ class SkinServiceProvider
                 'version' => $activeSkin->getVersion(),
                 'config' => $activeSkin->getConfig() ?? [],
             ];
-        });
+        } catch (\Throwable $e) {
+            error_log("SkinServiceProvider::getSkinDataForCurrentUser - Error: " . $e->getMessage());
+            return [
+                'css' => '',
+                'js' => '',
+                'name' => 'default',
+                'version' => '0.0.29',
+            ];
+        }
     }
     
     /**
@@ -82,18 +117,17 @@ class SkinServiceProvider
      */
     public function boot(): void
     {
-        // Get the view renderer and add skin globals
+        // Get the view renderer
         $viewRenderer = $this->app->getContainer()->get('view');
-        $skinData = $this->app->getContainer()->get('skin.data');
         
-        // Add skin variables to all views
+        // Add empty skin variables - will be populated by SkinMiddleware
         $viewRenderer->addGlobals([
-            'skin_css' => $skinData['css'],
-            'skin_js' => $skinData['js'],
-            'skin_name' => $skinData['name'],
-            'skin_version' => $skinData['version'],
-            'skin_config' => $skinData['config'],
-            'active_skin' => $this->skinManager->getActiveSkinName(),
+            'skin_css' => '',
+            'skin_js' => '',
+            'skin_name' => 'default',
+            'skin_version' => '0.0.29',
+            'skin_config' => [],
+            'active_skin' => 'bismillah',
         ]);
         
         // Register view helpers for skin functionality
@@ -105,6 +139,9 @@ class SkinServiceProvider
      */
     private function registerViewHelpers(): void
     {
+        // TODO: Fix helper functions to use proper application instance
+        // For now, we'll skip the helper functions to get SkinMiddleware working
+        /*
         // Helper function to get skin asset URL
         if (!function_exists('skin_asset')) {
             function skin_asset(string $path): string
@@ -160,10 +197,11 @@ class SkinServiceProvider
                 return $skinManager->getAllSkinMetadata();
             }
         }
+        */
     }
     
     /**
-     * Get the skin manager
+     * Get the skin manager instance
      */
     public function getSkinManager(): SkinManager
     {
@@ -183,14 +221,25 @@ class SkinServiceProvider
      */
     public function getActiveSkinName(): string
     {
-        return $this->skinManager->getActiveSkinName();
+        try {
+            $session = $this->app->getContainer()->get('session');
+            
+            if ($session->isLoggedIn()) {
+                $userId = $session->getUserId();
+                return $this->skinManager->getActiveSkinNameForUser($userId);
+            }
+            
+            return $this->skinManager->getActiveSkinName();
+        } catch (\Throwable $e) {
+            return $this->skinManager->getActiveSkinName();
+        }
     }
     
     /**
-     * Get all available skins
+     * Get available skins
      */
     public function getAvailableSkins(): array
     {
-        return $this->skinManager->getSkins();
+        return $this->skinManager->getAvailableSkinNames();
     }
 } 

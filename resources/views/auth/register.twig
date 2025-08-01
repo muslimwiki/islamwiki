@@ -1,95 +1,81 @@
-{% extends 'layouts/app.twig' %}
+{% extends 'layouts/auth.twig' %}
 
 {% block title %}Create an Account - IslamWiki{% endblock %}
 
 {% block content %}
-    <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Create a new account
-            </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Or <a href="/login" class="text-indigo-600 hover:text-indigo-500">sign in</a>
-            </p>
-        </div>
+    <div class="register-page">
+        <div class="register-container">
+            <div class="register-header">
+                <h2 class="register-title">
+                    Create a new account
+                </h2>
+                <p class="register-subtitle">
+                    Or <a href="/login" class="link">sign in</a>
+                </p>
+            </div>
 
-        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <div class="register-form-container">
                 {% if error %}
-                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-red-700">{{ error }}</p>
-                            </div>
+                    <div class="alert alert-danger">
+                        <div class="alert-content">
+                            <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="alert-text">{{ error }}</p>
                         </div>
                     </div>
                 {% endif %}
 
-                <form class="space-y-6" action="/register" method="POST">
+                <form class="register-form" action="/register" method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
-                    <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">
+                    
+                    <div class="form-group">
+                        <label for="username" class="form-label">
                             Username
                         </label>
-                        <div class="mt-1">
-                            <input id="username" name="username" type="text" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   placeholder="Choose a unique username">
-                        </div>
+                        <input id="username" name="username" type="text" required
+                               class="form-control"
+                               placeholder="Choose a unique username">
                     </div>
 
-                    <div>
-                        <label for="display_name" class="block text-sm font-medium text-gray-700">
+                    <div class="form-group">
+                        <label for="display_name" class="form-label">
                             Display Name (Optional)
                         </label>
-                        <div class="mt-1">
-                            <input id="display_name" name="display_name" type="text"
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   placeholder="Your display name">
-                        </div>
+                        <input id="display_name" name="display_name" type="text"
+                               class="form-control"
+                               placeholder="Your display name">
                     </div>
 
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">
+                    <div class="form-group">
+                        <label for="email" class="form-label">
                             Email address
                         </label>
-                        <div class="mt-1">
-                            <input id="email" name="email" type="email" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   placeholder="Enter your email address">
-                        </div>
+                        <input id="email" name="email" type="email" required
+                               class="form-control"
+                               placeholder="Enter your email address">
                     </div>
 
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">
+                    <div class="form-group">
+                        <label for="password" class="form-label">
                             Password
                         </label>
-                        <div class="mt-1">
-                            <input id="password" name="password" type="password" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   placeholder="Enter your password">
-                        </div>
+                        <input id="password" name="password" type="password" required
+                               class="form-control"
+                               placeholder="Enter your password">
                     </div>
 
-                    <div>
-                        <label for="password_confirm" class="block text-sm font-medium text-gray-700">
+                    <div class="form-group">
+                        <label for="password_confirm" class="form-label">
                             Confirm Password
                         </label>
-                        <div class="mt-1">
-                            <input id="password_confirm" name="password_confirm" type="password" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                   placeholder="Confirm your password">
-                        </div>
+                        <input id="password_confirm" name="password_confirm" type="password" required
+                               class="form-control"
+                               placeholder="Confirm your password">
                     </div>
 
-                    <div>
-                        <button type="submit"
-                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <div class="form-submit">
+                        <button type="submit" class="btn btn-primary btn-full">
                             Create Account
                         </button>
                     </div>
@@ -100,7 +86,133 @@
 {% endblock %}
 
 {% block styles %}
-    <style>
-        body { background-color: #f9fafb; }
-    </style>
+<style>
+    .register-page {
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--primary-color, #667eea) 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        opacity: 0.1;
+    }
+    
+    .register-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .register-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .register-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
+    
+    .register-form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .register-form {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary, #1f2937);
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .form-control {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color, #667eea);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 1);
+    }
+    
+    .link {
+        color: var(--primary-color, #667eea);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+    
+    .link:hover {
+        color: var(--primary-hover, #4338ca);
+    }
+    
+    .btn-full {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn-full:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    @media (max-width: 480px) {
+        .register-form-container {
+            padding: 1.5rem;
+        }
+        
+        .register-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
 {% endblock %}

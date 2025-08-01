@@ -29,7 +29,7 @@ declare(strict_types=1);
 
 class LoginTester
 {
-    private string $baseUrl = 'http://localhost:8000';
+    private string $baseUrl = 'https://local.islam.wiki';
     private array $cookies = [];
     private string $csrfToken = '';
 

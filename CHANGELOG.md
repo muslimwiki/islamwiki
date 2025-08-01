@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.30] - 2024-12-19
+
+### Fixed
+- **Skin Switching System**: Fixed case sensitivity issues in skin management
+  - Updated `SkinManager` to store and retrieve skin keys in lowercase for consistent, case-insensitive lookup
+  - Fixed skin validation and retrieval in `SettingsController`
+  - Resolved active skin display issues in settings page
+  - Added cache-busting headers to prevent browser caching issues
+  - Fixed CSRF token header name mismatch in JavaScript (`X-CSRF-Token` → `X-CSRF-TOKEN`)
+
+- **Login System**: Fixed authentication issues caused by Alpine.js interference
+  - Created separate `auth.twig` layout without Alpine.js for authentication pages
+  - Updated login and register templates to use the new minimal layout
+  - Fixed database field name mismatch (`password_hash` → `password`) in user creation
+  - Added CSRF token meta tag and global variable for proper form submission
+  - Excluded authentication routes from CSRF middleware to prevent conflicts
+
+- **Dependency Injection**: Fixed container binding issues
+  - Added application instance binding to resolve "Target class [app] does not exist" errors
+  - Updated service provider registrations for consistent dependency resolution
+
+- **Middleware Stack**: Fixed middleware execution issues
+  - Corrected method call from `process()` to `execute()` in `IslamRouter`
+  - Ensured middleware runs for all requests including 404s
+  - Removed temporary debugging bypasses
+
+### Technical Improvements
+- Enhanced skin system with proper case-insensitive handling
+- Improved CSRF protection with proper token handling
+- Better separation of concerns with dedicated authentication layout
+- Cleaner middleware execution flow
+- More robust dependency injection setup
+
+### User Experience
+- Skin switching now works reliably with immediate visual feedback
+- Login and registration forms work without JavaScript interference
+- Settings page shows correct active skin status
+- Improved error handling and user feedback
+
 ## [0.0.29] - 2025-07-31
 
 ### Added

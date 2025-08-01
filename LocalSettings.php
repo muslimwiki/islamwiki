@@ -139,7 +139,7 @@ $wgDefaultSkin = env('DEFAULT_SKIN', 'islamic');
 /**
  * URL configuration
  */
-$wgServer = env('APP_URL', 'http://localhost');
+$wgServer = env('APP_URL', 'https://local.islam.wiki');
 $wgScriptPath = env('SCRIPT_PATH', '');
 $wgArticlePath = env('ARTICLE_PATH', '/wiki/$1');
 

@@ -1,6 +1,10 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
+    # Force HTTPS redirect
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
     # Allow direct access to test files
     RewriteRule ^test-.*\.php$ - [L]
     
@@ -24,6 +28,15 @@ DefaultType text/html
 
 # Set default index file
 DirectoryIndex index.php
+
+# Security headers for HTTPS
+<IfModule mod_headers.c>
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
 
 # Ensure PHP files are processed
 <FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8)$">

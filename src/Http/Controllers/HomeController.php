@@ -107,7 +107,7 @@ class HomeController extends Controller
                 ],
                 'features' => [
                     'Modern, responsive design',
-                    'Alpine.js for lightweight interactivity',
+                    'ZamZam.js for lightweight interactivity',
                     'Twig templating for server-side rendering',
                     'PSR-7 compatible HTTP handling',
                     'Dependency injection container',

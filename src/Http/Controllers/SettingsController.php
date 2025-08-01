@@ -55,7 +55,7 @@ class SettingsController extends Controller
         
         $skinManager = $this->container->get('skin.manager');
         $availableSkins = $skinManager->getSkins();
-        $userActiveSkin = $userSettings['skin'] ?? 'Bismillah'; // Default to Bismillah
+        $userActiveSkin = $userSettings['skin'] ?? 'bismillah'; // Default to bismillah
         
         $skinOptions = [];
         foreach ($availableSkins as $name => $skin) {
@@ -75,6 +75,10 @@ class SettingsController extends Controller
             'activeSkin' => $userActiveSkin,
             'availableSkins' => $availableSkins,
             'userSettings' => $userSettings
+        ], 200, [
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
         ]);
     }
 
@@ -94,7 +98,7 @@ class SettingsController extends Controller
             // Try to get request from container first, fallback to capture
             $request = null;
             if ($this->container->has('request')) {
-                $request = $this->container->get('request');
+            $request = $this->container->get('request');
             } else {
                 $request = \IslamWiki\Core\Http\Request::capture();
             }
@@ -133,7 +137,7 @@ class SettingsController extends Controller
 
             $availableSkins = $this->skinManager->getSkins();
             
-            if (!isset($availableSkins[$skinName])) {
+            if (!$this->skinManager->hasSkin($skinName)) {
                 return $this->json(['error' => 'Invalid skin selected'], 400);
             }
             
@@ -163,10 +167,10 @@ class SettingsController extends Controller
         if (!$this->session->isLoggedIn()) {
             return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
         }
-
+        
         $userId = $this->session->getUserId();
         $userSettings = $this->getUserSettings($userId);
-        $userActiveSkin = $userSettings['skin'] ?? 'Bismillah';
+        $userActiveSkin = $userSettings['skin'] ?? 'bismillah';
         
         $skinManager = $this->container->get('skin.manager');
         $availableSkins = $skinManager->getSkins();
@@ -196,13 +200,12 @@ class SettingsController extends Controller
         }
 
         $skinManager = $this->container->get('skin.manager');
-        $availableSkins = $skinManager->getSkins();
         
-        if (!isset($availableSkins[$skinName])) {
+        if (!$skinManager->hasSkin($skinName)) {
             return $this->json(['error' => 'Skin not found'], 404);
         }
 
-        $skin = $availableSkins[$skinName];
+        $skin = $skinManager->getSkin($skinName);
         
         return $this->json([
             'name' => $skin->getName(),
@@ -263,7 +266,7 @@ class SettingsController extends Controller
                 settings = VALUES(settings), 
                 updated_at = VALUES(updated_at)
             ");
-            
+        
             $settingsJson = json_encode($currentSettings);
             $result = $stmt->execute([$userId, $settingsJson]);
             

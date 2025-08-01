@@ -73,8 +73,12 @@ class AuthController extends Controller
         $password = $request->getPostParam('password');
         $remember = $request->getPostParam('remember') === 'on';
 
+        // Debug: Log the login attempt
+        error_log("Login attempt - Username: " . ($username ?? 'null') . ", Password: " . ($password ? '***' : 'null'));
+
         // Validate input
         if (empty($username) || empty($password)) {
+            error_log("Login failed - Missing username or password");
             return $this->redirect('/login?error=Please provide both username and password');
         }
 
@@ -169,7 +173,7 @@ class AuthController extends Controller
         $user = new User($this->db, [
             'username' => $username,
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'password' => password_hash($password, PASSWORD_BCRYPT),
             'display_name' => $displayName ?: $username,
             'is_active' => true,
             'is_admin' => false,

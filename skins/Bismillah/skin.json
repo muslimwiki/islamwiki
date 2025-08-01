@@ -32,7 +32,7 @@
     ],
     "dependencies": {
         "tailwind": "cdn",
-        "alpinejs": "cdn",
+        "zamzamjs": "local",
         "prism": "cdn"
     }
 } 

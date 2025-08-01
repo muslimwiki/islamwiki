@@ -44,7 +44,7 @@ class SessionServiceProvider
                 'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
                 'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
                 'path' => getenv('SESSION_PATH') ?: '/',
-                'secure' => getenv('SESSION_SECURE') === 'true',
+                'secure' => getenv('SESSION_SECURE') !== 'false',
                 'http_only' => getenv('SESSION_HTTP_ONLY') !== 'false',
                 'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
             ];

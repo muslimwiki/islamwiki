@@ -134,10 +134,13 @@ class IslamRouter implements RequestHandlerInterface
     
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        error_log('IslamRouter::handle() entered');
         $httpMethod = $request->getMethod();
         $uri = $request->getUri()->getPath();
-        error_log('IslamRouter::handle() method=' . $httpMethod . ' uri=' . $uri);
+        
+        // Initialize middleware stack if not already done
+        if (!$this->middlewareStack) {
+            $this->initializeMiddlewareStack();
+        }
         
         // Strip query string and decode URI
         if (false !== $pos = strpos($uri, '?')) {
@@ -148,28 +151,19 @@ class IslamRouter implements RequestHandlerInterface
         // Find matching route
         $routeMatch = $this->findRoute($httpMethod, $uri);
         
-        if (!$routeMatch) {
-            return new Response(404, ['Content-Type' => 'text/html'], $this->renderErrorPage(404, '404 Not Found'));
-        }
-        
-        $handler = $routeMatch['handler'];
-        $vars = $routeMatch['vars'];
-        
-        // Initialize middleware stack if not already done
-        if (!$this->middlewareStack) {
-            $this->initializeMiddlewareStack();
-        }
-        
-        error_log('IslamRouter: Executing handler for route: ' . $uri);
-        
         // Create the final handler function
-        $finalHandler = function($request) use ($handler, $vars) {
+        $finalHandler = function($request) use ($routeMatch, $uri) {
+            if (!$routeMatch) {
+                return new Response(404, ['Content-Type' => 'text/html'], $this->renderErrorPage(404, '404 Not Found'));
+            }
+            
+            $handler = $routeMatch['handler'];
+            $vars = $routeMatch['vars'];
+            
             // Handle controller@action
             if (is_string($handler) && str_contains($handler, '@')) {
                 [$controllerClass, $method] = explode('@', $handler, 2);
-                error_log("IslamRouter: Attempting to resolve controller: $controllerClass, method: $method");
                 if (!class_exists($controllerClass)) {
-                    error_log("IslamRouter: Controller class $controllerClass not found");
                     throw new \RuntimeException("Controller {$controllerClass} not found");
                 }
                 
@@ -181,54 +175,45 @@ class IslamRouter implements RequestHandlerInterface
                     }
                     
                     if ($controllerFactory && method_exists($controllerFactory, 'create')) {
-                        error_log("IslamRouter: Using ControllerFactory to create $controllerClass");
                         $controller = $controllerFactory->create($controllerClass);
                     } elseif ($this->container->has($controllerClass)) {
-                        error_log("IslamRouter: Using container to get $controllerClass");
                         $controller = $this->container->get($controllerClass);
                     } else {
-                        error_log("IslamRouter: Instantiating $controllerClass directly");
                         $controller = new $controllerClass();
                     }
                     
-                    error_log("IslamRouter: Controller instance created: " . get_class($controller));
                     if (!method_exists($controller, $method)) {
-                        error_log("IslamRouter: Method $method not found in $controllerClass");
                         throw new \RuntimeException("Method {$method} not found in controller {$controllerClass}");
                     }
-                    error_log("IslamRouter: Calling $controllerClass->$method");
                     
                     // Convert GuzzleHttp\Psr7\ServerRequest to IslamWiki\Core\Http\Request
                     $convertedRequest = \IslamWiki\Core\Http\Request::capture();
                     
                     $response = $controller->$method($convertedRequest, ...array_values($vars));
-                    error_log("IslamRouter: $controllerClass->$method call completed");
-                    error_log('IslamRouter::handle() exiting');
                     return $response;
                 } catch (\Throwable $e) {
-                    error_log("IslamRouter: Exception during controller dispatch: " . $e->getMessage());
-                    error_log("IslamRouter: Stack trace: " . $e->getTraceAsString());
                     return new Response(500, ['Content-Type' => 'text/plain'], 'Internal Server Error: ' . $e->getMessage());
                 }
             }
             
             // Handle callable
             if (is_callable($handler)) {
-                error_log("IslamRouter: Calling route handler closure");
                 return $handler($request, ...array_values($vars));
             }
             
-            error_log("IslamRouter: Invalid route handler");
             throw new \RuntimeException('Invalid route handler');
         };
         
         // Convert PSR-7 request to our Request class for middleware
         $ourRequest = \IslamWiki\Core\Http\Request::fromPsr7($request);
         
-        // Temporarily bypass middleware stack to test if that's causing the issue
-        error_log('IslamRouter: Bypassing middleware stack for testing');
-        $response = $finalHandler($ourRequest);
-        error_log('IslamRouter: Direct handler execution completed');
+        // Execute middleware stack if available
+        if ($this->middlewareStack) {
+            $response = $this->middlewareStack->execute($ourRequest, $finalHandler);
+        } else {
+            $response = $finalHandler($ourRequest);
+        }
+        
         return $response;
     }
     
@@ -320,12 +305,9 @@ class IslamRouter implements RequestHandlerInterface
             return;
         }
         
-        error_log('IslamRouter: Initializing middleware stack');
-        
         try {
             // Check if logger is available in container
             if (!$this->container->has(\Psr\Log\LoggerInterface::class)) {
-                error_log('IslamRouter: Logger not available, skipping middleware stack initialization');
                 return;
             }
             
@@ -339,16 +321,14 @@ class IslamRouter implements RequestHandlerInterface
                     $this->container->has('app.debug') ? $this->container->get('app.debug') : false,
                     $this->container->has('app.env') ? $this->container->get('app.env') : 'production'
                 ));
-                error_log('IslamRouter: ErrorHandlingMiddleware added');
             } catch (\Throwable $e) {
-                error_log('IslamRouter: Error adding ErrorHandlingMiddleware: ' . $e->getMessage());
+                //
             }
             
             try {
                 $this->middlewareStack->add(new \IslamWiki\Http\Middleware\SecurityMiddleware($logger));
-                error_log('IslamRouter: SecurityMiddleware added');
             } catch (\Throwable $e) {
-                error_log('IslamRouter: Error adding SecurityMiddleware: ' . $e->getMessage());
+                //
             }
             
             try {
@@ -356,14 +336,23 @@ class IslamRouter implements RequestHandlerInterface
                     ? $this->container->get(\IslamWiki\Core\Session\SessionManager::class)
                     : new \IslamWiki\Core\Session\SessionManager();
                 $this->middlewareStack->add(new \IslamWiki\Http\Middleware\CsrfMiddleware($sessionManager));
-                error_log('IslamRouter: CsrfMiddleware added');
             } catch (\Throwable $e) {
-                error_log('IslamRouter: Error adding CsrfMiddleware: ' . $e->getMessage());
+                //
             }
             
-            error_log('IslamRouter: Middleware stack initialized with ' . $this->middlewareStack->count() . ' middleware');
+            try {
+                $app = $this->container->has(\IslamWiki\Core\Application::class) 
+                    ? $this->container->get(\IslamWiki\Core\Application::class)
+                    : null;
+                if ($app) {
+                    // Create SkinMiddleware directly without dependency injection
+                    $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($app);
+                    $this->middlewareStack->add($skinMiddleware);
+                }
+            } catch (\Throwable $e) {
+                //
+            }
         } catch (\Throwable $e) {
-            error_log('IslamRouter: Error initializing middleware stack: ' . $e->getMessage());
             // Don't create a middleware stack if there's an error - just skip middleware
             $this->middlewareStack = null;
         }

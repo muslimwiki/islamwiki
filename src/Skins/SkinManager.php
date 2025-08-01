@@ -84,7 +84,8 @@ class SkinManager
                         $skin = new UserSkin($config, $skinDir);
                         
                         if ($skin->validate()) {
-                            $this->skins[$skinName] = $skin;
+                            // Store skin with lowercase key for case-insensitive access
+                            $this->skins[strtolower($skinName)] = $skin;
                         }
                     }
                 } catch (\Exception $e) {
@@ -108,20 +109,9 @@ class SkinManager
      */
     public function getSkin(string $name): ?Skin
     {
-        // First try exact match
-        if (isset($this->skins[$name])) {
-            return $this->skins[$name];
-        }
-        
-        // Try case-insensitive match
+        // Convert to lowercase for consistent access
         $lowerName = strtolower($name);
-        foreach ($this->skins as $skinName => $skin) {
-            if (strtolower($skinName) === $lowerName) {
-                return $skin;
-            }
-        }
-        
-        return null;
+        return $this->skins[$lowerName] ?? null;
     }
     
     /**
@@ -131,8 +121,8 @@ class SkinManager
     {
         $skin = $this->getSkin($name);
         if ($skin !== null) {
-            // Use the actual skin name (preserve case)
-            $this->activeSkin = array_search($skin, $this->skins);
+            // Use lowercase for consistency
+            $this->activeSkin = strtolower($name);
             $this->currentSkin = $skin;
             return true;
         }
@@ -164,7 +154,7 @@ class SkinManager
                 WHERE user_id = ?
             ");
             $stmt->execute([$userId]);
-            $result = $stmt->fetch();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
             if ($result) {
                 $settings = json_decode($result['settings'], true) ?? [];
@@ -190,19 +180,23 @@ class SkinManager
     {
         try {
             // Get user settings from database
-            $stmt = $this->app->getContainer()->get('db')->prepare("
+            $db = $this->app->getContainer()->get('db');
+            
+            $stmt = $db->prepare("
                 SELECT settings FROM user_settings 
                 WHERE user_id = ?
             ");
             $stmt->execute([$userId]);
-            $result = $stmt->fetch();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
             if ($result) {
                 $settings = json_decode($result['settings'], true) ?? [];
                 $userSkin = $settings['skin'] ?? null;
                 
                 if ($userSkin) {
-                    return $userSkin;
+                    // Return the proper display name, not the lowercase key
+                    $skin = $this->getSkin($userSkin);
+                    return $skin ? $skin->getName() : strtolower($userSkin);
                 }
             }
             
@@ -269,7 +263,7 @@ class SkinManager
      */
     public function hasSkin(string $name): bool
     {
-        return isset($this->skins[$name]);
+        return isset($this->skins[strtolower($name)]);
     }
     
     /**
@@ -355,7 +349,7 @@ class SkinManager
      */
     public function registerSkin(string $name, Skin $skin): void
     {
-        $this->skins[$name] = $skin;
+        $this->skins[strtolower($name)] = $skin;
     }
     
     /**
@@ -363,11 +357,12 @@ class SkinManager
      */
     public function unregisterSkin(string $name): bool
     {
-        if (isset($this->skins[$name])) {
-            unset($this->skins[$name]);
+        $lowerName = strtolower($name);
+        if (isset($this->skins[$lowerName])) {
+            unset($this->skins[$lowerName]);
             
             // If we're unregistering the active skin, switch to default
-            if ($this->activeSkin === $name) {
+            if ($this->activeSkin === $lowerName) {
                 $this->setActiveSkin('bismillah');
             }
             

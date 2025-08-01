@@ -1,0 +1,130 @@
+# Release Notes - Version 0.0.30
+
+**Release Date:** December 19, 2024  
+**Version:** 0.0.30  
+**Codename:** "Stable Skins & Secure Login"
+
+## Overview
+
+This release focuses on fixing critical issues with the skin switching system and login functionality. The main problems were case sensitivity in skin management and Alpine.js interference with form submissions.
+
+## Key Fixes
+
+### 🎨 Skin Switching System
+
+**Problem:** Skin switching was unreliable due to case sensitivity issues and caching problems.
+
+**Solution:**
+- Updated `SkinManager` to use lowercase keys for consistent, case-insensitive lookup
+- Fixed skin validation and retrieval in `SettingsController`
+- Added cache-busting headers to prevent browser caching issues
+- Fixed CSRF token header name mismatch in JavaScript
+
+**Files Modified:**
+- `src/Skins/SkinManager.php` - Case-insensitive skin handling
+- `src/Http/Controllers/SettingsController.php` - Improved skin validation
+- `resources/views/settings/index.twig` - Fixed CSRF headers and cache busting
+
+### 🔐 Login System
+
+**Problem:** Login forms were not working due to Alpine.js interference.
+
+**Solution:**
+- Created separate `auth.twig` layout without Alpine.js
+- Updated login and register templates to use minimal layout
+- Fixed database field name mismatch in user creation
+- Added proper CSRF token handling
+
+**Files Modified:**
+- `resources/views/layouts/auth.twig` - New minimal layout
+- `resources/views/auth/login.twig` - Updated to use auth layout
+- `resources/views/auth/register.twig` - Updated to use auth layout
+- `src/Http/Controllers/Auth/AuthController.php` - Fixed database field names
+- `scripts/database/setup_database.php` - Fixed user creation
+
+### 🔧 Technical Infrastructure
+
+**Problem:** Various dependency injection and middleware issues.
+
+**Solution:**
+- Fixed container binding for application instance
+- Corrected middleware execution method calls
+- Improved CSRF middleware configuration
+
+**Files Modified:**
+- `src/Core/Application.php` - Added application binding
+- `src/Core/Routing/IslamRouter.php` - Fixed middleware execution
+- `src/Http/Middleware/CsrfMiddleware.php` - Improved route exclusions
+
+## User Experience Improvements
+
+### For End Users
+- ✅ Skin switching now works reliably with immediate visual feedback
+- ✅ Login and registration forms work without issues
+- ✅ Settings page shows correct active skin status
+- ✅ Improved error handling and user feedback
+
+### For Developers
+- ✅ Enhanced skin system with proper case-insensitive handling
+- ✅ Improved CSRF protection with proper token handling
+- ✅ Better separation of concerns with dedicated authentication layout
+- ✅ Cleaner middleware execution flow
+- ✅ More robust dependency injection setup
+
+## Technical Details
+
+### Skin System Changes
+```php
+// Before: Case-sensitive skin lookup
+$skin = $this->skins[$skinName] ?? null;
+
+// After: Case-insensitive skin lookup
+$skin = $this->skins[strtolower($skinName)] ?? null;
+```
+
+### Authentication Layout
+```twig
+{# New minimal layout without Alpine.js #}
+{% extends 'layouts/auth.twig' %}
+```
+
+### CSRF Token Handling
+```javascript
+// Before: Incorrect header name
+headers: { 'X-CSRF-Token': token }
+
+// After: Correct header name
+headers: { 'X-CSRF-TOKEN': token }
+```
+
+## Testing
+
+All fixes have been thoroughly tested:
+- ✅ Skin switching with all available skins (Bismillah, BlueSkin, GreenSkin)
+- ✅ Login functionality with proper credentials
+- ✅ Registration process
+- ✅ Settings page functionality
+- ✅ CSRF protection
+- ✅ Middleware execution
+
+## Migration Notes
+
+No database migrations required. This is a bug fix release that maintains backward compatibility.
+
+## Known Issues
+
+None identified in this release.
+
+## Future Improvements
+
+- Consider implementing skin preview functionality
+- Add more comprehensive skin validation
+- Implement skin-specific configuration options
+
+## Credits
+
+This release was focused on stability and reliability improvements, addressing critical user-facing issues that were preventing proper functionality of core features.
+
+---
+
+**Next Release:** Version 0.0.31 will focus on additional features and improvements based on user feedback. 

@@ -204,5 +204,5 @@ MARKDOWN;
 }
 
 echo "\n✅ Enhanced content rendering test completed successfully!\n";
-echo "\nYou can now visit: http://local.islam.wiki/content-rendering-test-v2\n";
+echo "\nYou can now visit: https://local.islam.wiki/content-rendering-test-v2\n";
 echo "\nDone!\n"; 

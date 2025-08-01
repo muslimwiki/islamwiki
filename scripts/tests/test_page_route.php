@@ -17,7 +17,7 @@ try {
     echo "✅ Application created\n";
     
     // Create a mock request for /welcome
-    $uri = new Uri('http://local.islam.wiki/welcome');
+            $uri = new Uri('https://local.islam.wiki/welcome');
     $request = new Request('GET', $uri);
     echo "✅ Request created\n";
     

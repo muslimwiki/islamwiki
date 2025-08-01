@@ -52,7 +52,7 @@ try {
     echo "✅ PageController created successfully\n";
 
     // Create a mock request
-    $uri = new Uri('http://local.islam.wiki/pages');
+            $uri = new Uri('https://local.islam.wiki/pages');
     $request = new Request('GET', $uri);
     echo "✅ Mock request created\n";
 

@@ -1,4 +1,8 @@
+/* BlueSkin - Blue Theme for IslamWiki */
+/* This skin works with the Safa CSS framework */
+
 :root {
+    /* Override Safa CSS variables for this skin */
     --primary-color: #3b82f6;
     --primary-hover: #2563eb;
     --secondary-color: #6b7280;
@@ -10,10 +14,16 @@
     --card-background: #ffffff;
     --text-primary: #1e293b;
     --text-secondary: #64748b;
-    --border-color: #cbd5e1;
+    --border-color: #e2e8f0;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --link-color: #3b82f6;
+    --link-hover-color: #2563eb;
+    --accent-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --info-color: #17a2b8;
 }
 
 * {
@@ -733,7 +743,17 @@ body {
     text-decoration: underline;
 }
 
-/* Animations */
+/* Settings page specific styles for this skin */
+.settings-container {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+/* Hero section gradient for this skin */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+}
+
+/* Animation for this skin */
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
