@@ -72,12 +72,25 @@ class SettingsController extends Controller
         global $wgValidSkins;
         $availableSkins = $wgValidSkins ?? [];
         
-        // Fallback: If $wgValidSkins is not set, use hardcoded skins
-        if (empty($availableSkins)) {
-            $availableSkins = [
-                'Bismillah' => 'Bismillah',
-                'GreenSkin' => 'GreenSkin',
-            ];
+        // Fallback: Only use dynamic discovery if $wgValidSkins is completely not set
+        if (!isset($wgValidSkins)) {
+            $skinsDir = __DIR__ . '/../../skins';
+            $availableSkins = [];
+            
+            if (is_dir($skinsDir)) {
+                $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
+                foreach ($skinDirs as $skinDir) {
+                    $skinName = basename($skinDir);
+                    $availableSkins[$skinName] = $skinName;
+                }
+            }
+            
+            // If still empty, provide minimal fallback
+            if (empty($availableSkins)) {
+                $availableSkins = [
+                    'Bismillah' => 'Bismillah',
+                ];
+            }
         }
         
 
