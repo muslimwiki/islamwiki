@@ -99,14 +99,20 @@ class SettingsController extends Controller
         $skinManager = $this->container->get('skin.manager');
         $loadedSkins = $skinManager->getSkins();
         
+        error_log("SettingsController: SkinManager loaded " . count($loadedSkins) . " skins");
+        error_log("SettingsController: Loaded skin keys: " . implode(', ', array_keys($loadedSkins)));
+        
         $skinOptions = [];
         
         // Only show skins that are defined in $wgValidSkins
         foreach ($availableSkins as $skinKey => $skinName) {
             // Check if the skin is loaded by the skin manager (case-insensitive)
             $lowerSkinName = strtolower($skinName);
+            error_log("SettingsController: Checking skin '$skinName' (lowercase: '$lowerSkinName')");
+            
             if (isset($loadedSkins[$lowerSkinName])) {
                 $skin = $loadedSkins[$lowerSkinName];
+                error_log("SettingsController: Found skin '$skinName' in SkinManager");
                 
                 // Simple case-insensitive comparison for active skin
                 $isActive = $lowerSkinName === strtolower($userActiveSkin);
@@ -120,6 +126,8 @@ class SettingsController extends Controller
                     'css_key' => $lowerSkinName
                 ];
                 
+            } else {
+                error_log("SettingsController: Skin '$skinName' NOT found in SkinManager");
             }
         }
         

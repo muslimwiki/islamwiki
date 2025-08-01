@@ -91,23 +91,36 @@ class SkinManager
             $skinName = basename($skinDir);
             $skinConfigFile = $skinDir . '/skin.json';
             
+            error_log("SkinManager: Processing skin directory: $skinDir");
+            error_log("SkinManager: Skin name: $skinName");
+            error_log("SkinManager: Config file: $skinConfigFile");
+            
             if (file_exists($skinConfigFile)) {
+                error_log("SkinManager: Config file exists for $skinName");
                 try {
                     $config = json_decode(file_get_contents($skinConfigFile), true);
                     
                     if ($config && isset($config['name'])) {
+                        error_log("SkinManager: Valid config for $skinName, creating UserSkin");
                         // Create a generic skin instance for user skins
                         $skin = new UserSkin($config, $skinDir);
                         
                         if ($skin->validate()) {
                             // Store skin with lowercase key for case-insensitive access
                             $this->skins[strtolower($skinName)] = $skin;
+                            error_log("SkinManager: Successfully loaded skin $skinName as " . strtolower($skinName));
+                        } else {
+                            error_log("SkinManager: Skin $skinName failed validation");
                         }
+                    } else {
+                        error_log("SkinManager: Invalid config for $skinName - missing name");
                     }
                 } catch (\Exception $e) {
                     // Log error but continue loading other skins
                     error_log("Failed to load skin {$skinName}: " . $e->getMessage());
                 }
+            } else {
+                error_log("SkinManager: Config file not found for $skinName");
             }
         }
     }
