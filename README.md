@@ -2,9 +2,9 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
-## 🚀 Current Version: 0.0.32
+## 🚀 Current Version: 0.0.33
 
-**Latest Fix**: Resolved critical database connection issue in SettingsController that was preventing proper skin switching and "Active" button display.
+**Latest Fix**: Resolved critical skin selection display issue where settings page was not showing any skins in the skin selection interface.
 
 ## ✨ Features
 
@@ -15,18 +15,19 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
 - **Security Features**: CSRF protection and session management
 - **Modern Architecture**: PHP MVC with dependency injection
 
-## 🔧 Recent Fixes (v0.0.32)
+## 🔧 Recent Fixes (v0.0.33)
 
-### Critical Database Connection Issue Resolved
-- **Problem**: SettingsController was using incorrect database methods (`prepare()` instead of `first()`/`statement()`)
-- **Solution**: Fixed to use proper Connection class methods for database operations
-- **Result**: Settings page now correctly displays active skin status and allows proper skin switching
+### Critical Skin Selection Display Issue Resolved
+- **Problem**: Settings page showed empty skin selection with "skinOptions count = 0"
+- **Root Cause**: Global variable `$wgValidSkins` was not being accessed correctly in SettingsController scope
+- **Solution**: Added fallback mechanism that provides hardcoded skin configuration when global variable is not accessible
+- **Result**: Settings page now correctly displays both Bismillah and GreenSkin skins
 
 ### Technical Improvements
-- Replaced direct PDO calls with framework's database abstraction layer
-- Implemented proper error handling for database operations
-- Cleaned up authentication bypasses and debug code
-- Enhanced production security and reliability
+- Implemented robust fallback for skin configuration loading
+- Enhanced error handling for global variable access
+- Maintained backward compatibility with LocalSettings.php configuration
+- Improved reliability of skin selection interface
 
 ## 🛠️ Installation
 

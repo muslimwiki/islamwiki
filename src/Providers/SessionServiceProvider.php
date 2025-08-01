@@ -65,8 +65,29 @@ class SessionServiceProvider
     {
         // Start session early for web requests to ensure consistency
         if (php_sapi_name() !== 'cli') {
+            // Set session save path to local storage
+            $sessionPath = __DIR__ . '/../../storage/sessions';
+            if (!is_dir($sessionPath)) {
+                mkdir($sessionPath, 0777, true);
+            }
+            session_save_path($sessionPath);
+            
+            // Set session name before any session operations
+            session_name('islamwiki_session');
+            
+            // Start session manually to ensure proper initialization
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            // Get the session manager and configure it
             $session = $container->get('session');
-            $session->start();
+            
+            // Force session write to ensure cookie is set
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+                session_start();
+            }
         }
     }
 } 

@@ -42,8 +42,10 @@ class SkinServiceProvider
      */
     public function register(): void
     {
-        // Register the skin manager as an instance
-        $this->app->getContainer()->instance('skin.manager', $this->skinManager);
+        // Register the skin manager as a factory to avoid caching issues
+        $this->app->getContainer()->bind('skin.manager', function () {
+            return new \IslamWiki\Skins\SkinManager($this->app);
+        });
         
         // Register the active skin (will be resolved dynamically)
         $this->app->getContainer()->singleton('skin.active', function () {

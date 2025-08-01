@@ -32,9 +32,13 @@ declare(strict_types=1);
  */
 
 // Load environment variables
-if (file_exists(__DIR__ . '/.env')) {
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-    $dotenv->load();
+if (file_exists(__DIR__ . '/.env') && class_exists('Dotenv\Dotenv')) {
+    try {
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv->load();
+    } catch (Exception $e) {
+        // Ignore dotenv errors, continue with defaults
+    }
 }
 
 // Helper function to get environment variables with defaults
@@ -109,11 +113,26 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
 // ============================================================================
 
 /**
+ * Available skins - similar to MediaWiki's $wgValidSkinNames
+ * Add skins here to make them available for selection
+ */
+$wgValidSkins = [
+    'Bismillah' => 'Bismillah',
+
+    'GreenSkin' => 'GreenSkin',
+];
+
+/**
  * Active skin configuration
  * Set this to the name of the skin folder in /skins/
- * Available skins: Bismillah, BlueSkin, etc.
+ * Available skins: Bismillah, GreenSkin, etc.
  */
 $wgActiveSkin = env('ACTIVE_SKIN', 'GreenSkin');
+
+/**
+ * Default skin for new users
+ */
+$wgDefaultSkin = env('DEFAULT_SKIN', 'Bismillah');
 
 /**
  * Skin configuration options
@@ -122,6 +141,23 @@ $wgSkinConfig = [
     'enable_animations' => env('SKIN_ANIMATIONS', true),
     'enable_gradients' => env('SKIN_GRADIENTS', true),
     'enable_dark_theme' => env('SKIN_DARK_THEME', false),
+];
+
+/**
+ * Skin-specific settings
+ */
+$wgBismillahSkinSettings = [
+    'gradient_enabled' => true,
+    'islamic_patterns' => true,
+    'arabic_font' => true,
+];
+
+
+
+$wgGreenSkinSettings = [
+    'gradient_enabled' => true,
+    'nature_theme' => true,
+    'green_accent' => true,
 ];
 
 // ============================================================================
@@ -167,7 +203,7 @@ $wgUploadPath = env('UPLOAD_PATH', '/uploads');
 $wgEnableQuranFeatures = env('ENABLE_QURAN_FEATURES', true);
 $wgQuranAPIVersion = env('QURAN_API_VERSION', 'v1');
 $wgQuranAPIRateLimit = env('QURAN_API_RATE_LIMIT', 1000);
-$wgQuranAPICache = env('QURAN_API_CACHE', true);
+$wgQuranAPICache = env('QURAN_API_CACHE', false);
 $wgQuranDefaultTranslation = env('QURAN_DEFAULT_TRANSLATION', 'en-sahih');
 
 /**
@@ -176,7 +212,7 @@ $wgQuranDefaultTranslation = env('QURAN_DEFAULT_TRANSLATION', 'en-sahih');
 $wgEnableHadithFeatures = env('ENABLE_HADITH_FEATURES', true);
 $wgHadithAPIVersion = env('HADITH_API_VERSION', 'v1');
 $wgHadithAPIRateLimit = env('HADITH_API_RATE_LIMIT', 1000);
-$wgHadithAPICache = env('HADITH_API_CACHE', true);
+$wgHadithAPICache = env('HADITH_API_CACHE', false);
 $wgHadithDefaultCollection = env('HADITH_DEFAULT_COLLECTION', 'bukhari');
 
 /**
@@ -210,7 +246,7 @@ $wgScholarVerificationAutoApprove = env('SCHOLAR_VERIFICATION_AUTO_APPROVE', fal
  */
 $wgSearchType = env('SEARCH_TYPE', 'database');
 $wgSearchIndexType = env('SEARCH_INDEX_TYPE', 'fulltext');
-$wgSearchCacheEnabled = env('SEARCH_CACHE_ENABLED', true);
+$wgSearchCacheEnabled = env('SEARCH_CACHE_ENABLED', false);
 $wgSearchCacheTTL = env('SEARCH_CACHE_TTL', 3600);
 
 /**
@@ -235,7 +271,7 @@ $wgRedisDatabase = env('REDIS_DB', 0);
 /**
  * Cache configuration
  */
-$wgCacheEnabled = env('CACHE_ENABLED', true);
+$wgCacheEnabled = env('CACHE_ENABLED', false);
 $wgCacheType = env('CACHE_TYPE', 'redis');
 $wgCacheTTL = env('CACHE_TTL', 3600);
 
@@ -312,6 +348,8 @@ $wgSearchExtensionSettings = [
     'suggestions_enabled' => true,
     'analytics_enabled' => true,
 ];
+
+
 
 // ============================================================================
 // LOAD ISLAMIC SETTINGS OVERRIDE

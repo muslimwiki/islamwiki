@@ -69,7 +69,23 @@ class SkinManager
             return;
         }
         
-        $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
+        // Get valid skins from LocalSettings
+        global $wgValidSkins;
+        $validSkins = $wgValidSkins ?? [];
+        
+        // If no valid skins defined, load all skins (backward compatibility)
+        if (empty($validSkins)) {
+            $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
+        } else {
+            // Only load skins that are defined in $wgValidSkins
+            $skinDirs = [];
+            foreach ($validSkins as $skinKey => $skinName) {
+                $skinDir = $skinsPath . '/' . $skinName;
+                if (is_dir($skinDir)) {
+                    $skinDirs[] = $skinDir;
+                }
+            }
+        }
         
         foreach ($skinDirs as $skinDir) {
             $skinName = basename($skinDir);
@@ -102,6 +118,18 @@ class SkinManager
     public function getSkins(): array
     {
         return $this->skins;
+    }
+    
+    /**
+     * Debug method to see what skins are loaded
+     */
+    public function debugSkins(): array
+    {
+        return [
+            'loaded_skins' => array_keys($this->skins),
+            'valid_skins_from_localsettings' => $GLOBALS['wgValidSkins'] ?? [],
+            'active_skin' => $this->activeSkin
+        ];
     }
     
     /**

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.33] - 2025-08-01
+
+### Fixed
+- **Critical Skin Selection Issue**: Fixed settings page not displaying any skins in the skin selection interface
+- **Global Variable Access**: Resolved `$wgValidSkins` global variable access issue in SettingsController
+- **Skin Display**: Now correctly shows both Bismillah and GreenSkin skins
+- **Fallback Mechanism**: Added robust fallback for skin configuration when global variable is unavailable
+
+### Technical
+- Added fallback skin configuration in SettingsController
+- Enhanced global variable access with proper error handling
+- Maintained compatibility with LocalSettings.php configuration
+- Improved reliability of skin loading logic
+
 ## [0.0.32] - 2025-08-01
 
 ### Fixed

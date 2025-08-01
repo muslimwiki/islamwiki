@@ -37,10 +37,16 @@ class SettingsController extends Controller
      */
     public function index(): Response
     {
+        // Debug: Log that the controller is being called
+        error_log("SettingsController::index() called");
+        
         // Check if user is logged in
         if (!$this->session->isLoggedIn()) {
+            error_log("SettingsController: User not logged in");
             return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
         }
+        
+        error_log("SettingsController: User is logged in");
 
         $userId = $this->session->getUserId();
         
@@ -56,25 +62,55 @@ class SettingsController extends Controller
             // User not found, continue with null user
         }
         
-        $skinManager = $this->container->get('skin.manager');
-        $availableSkins = $skinManager->getSkins();
+        // Load LocalSettings.php to get available skins
+        $localSettingsPath = __DIR__ . '/../../LocalSettings.php';
+        if (file_exists($localSettingsPath)) {
+            require_once $localSettingsPath;
+        }
         
-        $skinOptions = [];
-        foreach ($availableSkins as $name => $skin) {
-            // Use the skin's display name for the key, not the lowercase key
-            $displayName = $skin->getName();
-            
-            // Simple case-insensitive comparison
-            $isActive = strtolower($displayName) === strtolower($userActiveSkin);
-            
-            $skinOptions[$displayName] = [
-                'name' => $skin->getName(),
-                'version' => $skin->getVersion(),
-                'author' => $skin->getAuthor(),
-                'description' => $skin->getDescription(),
-                'active' => $isActive
+        // Get available skins from LocalSettings.php
+        global $wgValidSkins;
+        $availableSkins = $wgValidSkins ?? [];
+        
+        // Fallback: If $wgValidSkins is not set, use hardcoded skins
+        if (empty($availableSkins)) {
+            $availableSkins = [
+                'Bismillah' => 'Bismillah',
+                'GreenSkin' => 'GreenSkin',
             ];
         }
+        
+
+        
+        // Get skin manager to load skin details
+        $skinManager = $this->container->get('skin.manager');
+        $loadedSkins = $skinManager->getSkins();
+        
+        $skinOptions = [];
+        
+        // Only show skins that are defined in $wgValidSkins
+        foreach ($availableSkins as $skinKey => $skinName) {
+            // Check if the skin is loaded by the skin manager (case-insensitive)
+            $lowerSkinName = strtolower($skinName);
+            if (isset($loadedSkins[$lowerSkinName])) {
+                $skin = $loadedSkins[$lowerSkinName];
+                
+                // Simple case-insensitive comparison for active skin
+                $isActive = $lowerSkinName === strtolower($userActiveSkin);
+                
+                $skinOptions[$skinName] = [
+                    'name' => $skin->getName(),
+                    'version' => $skin->getVersion(),
+                    'author' => $skin->getAuthor(),
+                    'description' => $skin->getDescription(),
+                    'active' => $isActive,
+                    'css_key' => $lowerSkinName
+                ];
+                
+            }
+        }
+        
+        error_log("SettingsController: About to render template with " . count($skinOptions) . " skins");
         
         return $this->view('settings/index', [
             'title' => 'Settings - IslamWiki',
@@ -274,6 +310,8 @@ class SettingsController extends Controller
             return false;
         }
     }
+
+
 
     /**
      * Render an error page for authentication failures

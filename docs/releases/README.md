@@ -4,11 +4,11 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.13 (Latest)
-- **[RELEASE-NOTES-0.0.13](RELEASE-NOTES-0.0.13)** - Quran Integration Complete, Phase 4 In Progress
-- **Date**: 2025-07-30
+### Version 0.0.33 (Latest)
+- **[RELEASE-NOTES-0.0.33](RELEASE-NOTES-0.0.33)** - Skin Selection Fix
+- **Date**: 2025-08-01
 - **Status**: Development Release
-- **Focus**: Quran integration system implementation
+- **Focus**: Fixed critical skin selection display issue in settings page
 
 ### Version 0.0.12
 - **[RELEASE-NOTES-0.0.12](RELEASE-NOTES-0.0.12)** - Islamic Database, Authentication & Content Management
@@ -74,5 +74,5 @@ For detailed versioning information, see [Versioning Strategy](../guides/version
 
 ---
 
-**Last Updated**: 2025-07-30  
-**Current Version**: 0.0.13 
+**Last Updated**: 2025-08-01  
+**Current Version**: 0.0.33 
