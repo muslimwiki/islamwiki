@@ -1,0 +1,87 @@
+# Release Notes - Version 0.0.32
+
+**Release Date:** August 1, 2025  
+**Codename:** "Database Connection Fix"
+
+## 🎯 Overview
+
+This release resolves a critical database connection issue that was preventing the settings page from properly displaying active skin status and allowing skin switching functionality.
+
+## 🔧 Critical Fixes
+
+### Database Connection Issue Resolved
+- **Problem**: SettingsController was using incorrect database methods (`prepare()` instead of `first()`/`statement()`)
+- **Root Cause**: The Connection class doesn't have a `prepare()` method, but we were trying to use PDO methods on it
+- **Solution**: Fixed to use proper Connection class methods for all database operations
+- **Impact**: Settings page now correctly displays active skin status and allows proper skin switching
+
+### Technical Improvements
+- Replaced direct PDO calls with framework's database abstraction layer
+- Implemented proper error handling for database operations
+- Cleaned up authentication bypasses and debug code
+- Enhanced production security and reliability
+
+## 📊 Changes Summary
+
+### Fixed
+- **Settings Page "Active" Button**: Now correctly displays active skin status
+- **Skin Switching**: Database updates now work properly using framework's database abstraction layer
+- **Production Security**: Removed direct PDO bypass and implemented proper framework database access
+- **Database Operations**: All database queries now use proper Connection class methods
+
+### Technical
+- Replaced `$this->db->prepare()` calls with `$this->db->first()` and `$this->db->statement()`
+- Fixed database connection inconsistency that was causing settings page to fail
+- Implemented proper error handling for database operations
+- Cleaned up authentication bypasses and debug code
+
+## 🚀 Migration Guide
+
+### For Developers
+No breaking changes. The fix is internal to the SettingsController and doesn't affect the public API.
+
+### For Users
+- Settings page now works correctly
+- Skin switching functionality is fully operational
+- "Active" button displays on the correct skin
+
+## 🔍 Testing
+
+### Manual Testing
+1. **Settings Page**: Visit `/settings` and verify active skin is displayed correctly
+2. **Skin Switching**: Try switching between skins and verify the "Active" button updates
+3. **Database**: Verify skin preferences are stored and retrieved correctly
+
+### Automated Testing
+- All existing tests should continue to pass
+- No new tests required for this fix
+
+## 📈 Performance Impact
+
+- **Positive**: More efficient database operations using framework's optimized methods
+- **Security**: Enhanced security by using framework's database abstraction layer
+- **Reliability**: Improved error handling and connection management
+
+## 🔒 Security Considerations
+
+- **Enhanced**: Removed direct PDO bypass that could have security implications
+- **Improved**: Using framework's database abstraction layer with built-in security features
+- **Maintained**: All existing security features (CSRF, authentication, etc.) remain intact
+
+## 🐛 Known Issues
+
+None. This release specifically addresses the database connection issue.
+
+## 📝 Documentation Updates
+
+- Updated README.md with latest version information
+- Updated CHANGELOG.md with detailed fix information
+- No API documentation changes required
+
+## 🙏 Acknowledgments
+
+Special thanks to the user who correctly identified this as a database issue from the beginning, even though it took significant debugging to reach the same conclusion.
+
+---
+
+**IslamWiki 0.0.32** - Now with properly functioning settings and skin management! 

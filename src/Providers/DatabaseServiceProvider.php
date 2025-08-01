@@ -48,7 +48,17 @@ class DatabaseServiceProvider
             $password = $_ENV['DB_PASSWORD'] ?? '';
             $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
             
-            return new Connection($host, $port, $database, $username, $password, $charset);
+            $config = [
+                'host' => $host,
+                'port' => $port,
+                'database' => $database,
+                'username' => $username,
+                'password' => $password,
+                'charset' => $charset,
+                'driver' => 'mysql'
+            ];
+            
+            return new Connection($config);
         });
 
         // Register migrator

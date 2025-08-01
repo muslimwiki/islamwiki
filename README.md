@@ -1,133 +1,149 @@
-# IslamWiki - Local Development
+# IslamWiki
 
 A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
-## 🚀 Current Version: 0.0.30
+## 🚀 Current Version: 0.0.32
 
-**Latest Release:** December 19, 2024  
-**Codename:** "Stable Skins & Secure Login"
+**Latest Fix**: Resolved critical database connection issue in SettingsController that was preventing proper skin switching and "Active" button display.
 
-### Recent Fixes (v0.0.30)
-- ✅ **Fixed skin switching system** - Case sensitivity issues resolved
-- ✅ **Fixed login functionality** - Alpine.js interference eliminated
-- ✅ **Improved CSRF protection** - Proper token handling implemented
-- ✅ **Enhanced middleware stack** - Better error handling and execution
+## ✨ Features
 
-## 🎯 Features
+- **Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah themes
+- **User Authentication**: Secure login and registration system
+- **Settings Management**: User preferences and skin selection
+- **Database Integration**: Robust user settings and preferences storage
+- **Security Features**: CSRF protection and session management
+- **Modern Architecture**: PHP MVC with dependency injection
 
-### Core Functionality
-- **Islamic Content Management** - Quran, Hadith, and Islamic resources
-- **User Authentication** - Secure login and registration system
-- **Skin System** - Multiple visual themes with real-time switching
-- **Search & Navigation** - Advanced content discovery
-- **Community Features** - User profiles and interactions
+## 🔧 Recent Fixes (v0.0.32)
 
-### Technical Stack
-- **Framework:** Custom PHP MVC with dependency injection
-- **CSS Framework:** Safa CSS (lightweight, pure CSS)
-- **Templating:** Twig templates
-- **Database:** MySQL with Islamic content schemas
-- **Security:** CSRF protection, session management
-- **Frontend:** Alpine.js for interactivity
+### Critical Database Connection Issue Resolved
+- **Problem**: SettingsController was using incorrect database methods (`prepare()` instead of `first()`/`statement()`)
+- **Solution**: Fixed to use proper Connection class methods for database operations
+- **Result**: Settings page now correctly displays active skin status and allows proper skin switching
 
-## 🛠️ Quick Start
+### Technical Improvements
+- Replaced direct PDO calls with framework's database abstraction layer
+- Implemented proper error handling for database operations
+- Cleaned up authentication bypasses and debug code
+- Enhanced production security and reliability
 
-### Prerequisites
-- PHP 8.0+
-- MySQL 5.7+
-- Apache/Nginx
-- Composer
+## 🛠️ Installation
 
-### Installation
-```bash
-# Clone the repository
-git clone <repository-url>
-cd local.islam.wiki
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/islamwiki.git
+   cd islamwiki
+   ```
 
-# Install dependencies
-composer install
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-# Setup database
-php scripts/database/setup_database.php
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials
+   ```
 
-# Configure web server
-# Point document root to public/ directory
-```
+4. **Set up database**
+   ```bash
+   php scripts/database/setup_database.php
+   ```
 
-### Default Credentials
-- **Username:** `admin`
-- **Password:** `password`
+5. **Configure web server**
+   - Point document root to `/public`
+   - Ensure Apache/Nginx is configured for PHP
 
-## 🎨 Available Skins
+## 🎨 Skin System
 
-- **Bismillah** - Default Islamic theme
-- **BlueSkin** - Modern blue theme
-- **GreenSkin** - Fresh green theme
+IslamWiki supports multiple visual themes:
+
+- **Bismillah**: Default Islamic-themed skin with modern design
+- **BlueSkin**: Clean blue-themed interface
+- **GreenSkin**: Green-themed skin with Islamic aesthetics
+
+Users can switch skins through the Settings page, with preferences stored in the database.
+
+## 🔒 Security Features
+
+- **CSRF Protection**: All forms protected against cross-site request forgery
+- **Session Management**: Secure session handling with proper authentication
+- **Input Validation**: Comprehensive input sanitization and validation
+- **Database Security**: Prepared statements and proper connection handling
 
 ## 📁 Project Structure
 
 ```
-local.islam.wiki/
-├── src/                    # Core application code
-│   ├── Core/              # Framework core
-│   ├── Http/              # Controllers & Middleware
+islamwiki/
+├── src/                    # Application source code
+│   ├── Core/              # Core framework components
+│   ├── Http/              # HTTP layer (controllers, middleware)
 │   ├── Models/            # Data models
 │   └── Skins/             # Skin system
-├── resources/             # Views and assets
-├── public/               # Web root
-├── database/             # Migrations
-├── scripts/              # Setup and utilities
-└── docs/                 # Documentation
+├── resources/             # Views and templates
+├── public/               # Web-accessible files
+├── database/             # Database migrations
+└── scripts/              # Utility scripts
 ```
 
-## 🔧 Development
+## 🚀 Development
 
-### Running Tests
+### Running Locally
 ```bash
-# Test skin switching
-php public/test-skin-switching-safa.php
+# Start PHP development server
+php -S localhost:8000 -t public/
 
-# Test authentication
-php scripts/tests/test_auth.php
-
-# Test database connection
-php scripts/tests/test_db.php
+# Or use Apache/Nginx with proper configuration
 ```
 
-### Adding New Skins
-1. Create skin directory in `skins/`
-2. Add `skin.json` configuration
-3. Include CSS and JS files
-4. Register in `SkinManager`
+### Database Operations
+```bash
+# Run migrations
+php scripts/migrate.php
 
-## 📚 Documentation
+# Create sample data
+php scripts/database/create_sample_data.php
+```
 
-- [Architecture Overview](docs/architecture/overview.md)
-- [Database Schema](docs/DATABASE_SETUP.md)
-- [Skin Development](docs/skins/README.md)
-- [API Documentation](docs/ROUTING.md)
+## 📝 Recent Changes
+
+### v0.0.32 (2025-08-01)
+- **Fixed**: Critical database connection issue in SettingsController
+- **Improved**: Database abstraction layer usage
+- **Enhanced**: Production security and reliability
+
+### v0.0.31 (2025-08-01)
+- **Fixed**: ZamZam.js framework reactive data binding
+- **Resolved**: CSRF token issues and login authentication
+- **Improved**: Skin system functionality
+
+### v0.0.30 (2025-08-01)
+- **Fixed**: Authentication system and session management
+- **Enhanced**: CSRF protection and database integration
+- **Added**: Comprehensive debugging tools
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-For issues and questions:
-- Check the [documentation](docs/)
-- Review [release notes](docs/releases/)
-- Create an issue on GitHub
+- Built with modern PHP practices and security in mind
+- Designed for the Islamic community's knowledge sharing needs
+- Open source and community-driven development
 
 ---
 
-**Built with ❤️ for the Islamic community**
+**IslamWiki** - Empowering Islamic knowledge sharing through modern technology.
 
 

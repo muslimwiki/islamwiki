@@ -39,35 +39,43 @@ class SettingsController extends Controller
     {
         // Check if user is logged in
         if (!$this->session->isLoggedIn()) {
-            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to access settings.');
+            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
         }
 
         $userId = $this->session->getUserId();
+        
+        // Get user settings using the application's database connection
         $userSettings = $this->getUserSettings($userId);
+        $userActiveSkin = $userSettings['skin'] ?? 'bismillah'; // Default to bismillah
         
         // Get current user from session
         $user = null;
         try {
             $user = \IslamWiki\Models\User::find($userId, $this->db);
         } catch (\Exception $e) {
-            error_log('SettingsController: Error getting user: ' . $e->getMessage());
+            // User not found, continue with null user
         }
         
         $skinManager = $this->container->get('skin.manager');
         $availableSkins = $skinManager->getSkins();
-        $userActiveSkin = $userSettings['skin'] ?? 'bismillah'; // Default to bismillah
         
         $skinOptions = [];
         foreach ($availableSkins as $name => $skin) {
-            $skinOptions[$name] = [
+            // Use the skin's display name for the key, not the lowercase key
+            $displayName = $skin->getName();
+            
+            // Simple case-insensitive comparison
+            $isActive = strtolower($displayName) === strtolower($userActiveSkin);
+            
+            $skinOptions[$displayName] = [
                 'name' => $skin->getName(),
                 'version' => $skin->getVersion(),
                 'author' => $skin->getAuthor(),
                 'description' => $skin->getDescription(),
-                'active' => strtolower($name) === strtolower($userActiveSkin)
+                'active' => $isActive
             ];
         }
-
+        
         return $this->view('settings/index', [
             'title' => 'Settings - IslamWiki',
             'user' => $user,
@@ -98,14 +106,13 @@ class SettingsController extends Controller
             // Try to get request from container first, fallback to capture
             $request = null;
             if ($this->container->has('request')) {
-            $request = $this->container->get('request');
+                $request = $this->container->get('request');
             } else {
                 $request = \IslamWiki\Core\Http\Request::capture();
             }
             
             // Get the raw body content
             $body = $request->getBody()->getContents();
-            error_log("SettingsController::updateSkin - Raw body: " . $body);
             
             // Check if this is a JSON request
             $contentType = $request->getHeaderLine('Content-Type');
@@ -117,18 +124,15 @@ class SettingsController extends Controller
                 // Parse JSON body
                 $parsedBody = json_decode($body, true);
                 $skinName = $parsedBody['skin'] ?? null;
-                error_log("SettingsController::updateSkin - JSON parsed, skin: " . ($skinName ?? 'null'));
             } else {
                 // Try regular POST data
                 $parsedBody = $request->getParsedBody();
                 $skinName = $parsedBody['skin'] ?? null;
-                error_log("SettingsController::updateSkin - POST data, skin: " . ($skinName ?? 'null'));
             }
             
             // Fallback to $_POST
             if (!$skinName && isset($_POST['skin'])) {
                 $skinName = $_POST['skin'];
-                error_log("SettingsController::updateSkin - Got skin from $_POST: " . $skinName);
             }
 
             if (!$skinName) {
@@ -142,18 +146,16 @@ class SettingsController extends Controller
             }
             
             // Update user's skin preference in database
-            $this->updateUserSkin($userId, $skinName);
+            $updateResult = $this->updateUserSkin($userId, $skinName);
             
             return $this->json([
-                'success' => true,
+                'success' => $updateResult,
                 'message' => "Skin updated to $skinName successfully",
                 'activeSkin' => $skinName,
                 'userId' => $userId
             ]);
             
         } catch (\Throwable $e) {
-            error_log("SettingsController::updateSkin - Exception: " . $e->getMessage());
-            error_log("SettingsController::updateSkin - Stack trace: " . $e->getTraceAsString());
             return $this->json(['error' => 'Internal server error: ' . $e->getMessage()], 500);
         }
     }
@@ -227,20 +229,18 @@ class SettingsController extends Controller
     private function getUserSettings(int $userId): array
     {
         try {
-            $stmt = $this->db->prepare("
+            $result = $this->db->first("
                 SELECT settings FROM user_settings 
                 WHERE user_id = ?
-            ");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetch();
+            ", [$userId]);
             
             if ($result) {
-                return json_decode($result['settings'], true) ?? [];
+                $settings = json_decode($result->settings, true) ?? [];
+                return $settings;
             }
             
             return [];
         } catch (\Throwable $e) {
-            error_log("SettingsController::getUserSettings - Error: " . $e->getMessage());
             return [];
         }
     }
@@ -251,30 +251,26 @@ class SettingsController extends Controller
     private function updateUserSkin(int $userId, string $skinName): bool
     {
         try {
-            // Get current settings
+            // Get current settings using the application's database connection
             $currentSettings = $this->getUserSettings($userId);
             
-            // Update skin setting
-            $currentSettings['skin'] = $skinName;
+            // Update skin setting - store in lowercase for consistency
+            $currentSettings['skin'] = strtolower($skinName);
             $currentSettings['updated_at'] = date('Y-m-d H:i:s');
             
-            // Insert or update user settings
-            $stmt = $this->db->prepare("
+            // Insert or update user settings using the application's database connection
+            $settingsJson = json_encode($currentSettings);
+            
+            $result = $this->db->statement("
                 INSERT INTO user_settings (user_id, settings, created_at, updated_at) 
                 VALUES (?, ?, NOW(), NOW())
                 ON DUPLICATE KEY UPDATE 
                 settings = VALUES(settings), 
                 updated_at = VALUES(updated_at)
-            ");
-        
-            $settingsJson = json_encode($currentSettings);
-            $result = $stmt->execute([$userId, $settingsJson]);
-            
-            error_log("SettingsController::updateUserSkin - Updated skin for user $userId to $skinName");
+            ", [$userId, $settingsJson]);
             
             return $result;
         } catch (\Throwable $e) {
-            error_log("SettingsController::updateUserSkin - Error: " . $e->getMessage());
             return false;
         }
     }

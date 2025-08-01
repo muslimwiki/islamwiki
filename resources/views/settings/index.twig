@@ -250,8 +250,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 showNotification('Skin updated successfully! Reloading page...', 'success');
                 setTimeout(() => {
-                    window.location.reload(true); // Force reload from server
-                }, 1000);
+                    // Force a complete page reload
+                    window.location.reload(true);
+                }, 2000); // Reduced to 2 seconds
             } else {
                 showNotification(result.error || 'Failed to update skin', 'error');
             }

@@ -23,8 +23,8 @@ Options -Indexes
 # Set default character set
 AddDefaultCharset UTF-8
 
-# Set default MIME type
-DefaultType text/html
+# Set default MIME type (deprecated, using AddType instead)
+AddType text/html .html .htm
 
 # Set default index file
 DirectoryIndex index.php

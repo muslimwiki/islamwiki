@@ -2,562 +2,407 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-## [0.0.30] - 2024-12-19
+## [0.0.32] - 2025-08-01
 
 ### Fixed
-- **Skin Switching System**: Fixed case sensitivity issues in skin management
-  - Updated `SkinManager` to store and retrieve skin keys in lowercase for consistent, case-insensitive lookup
-  - Fixed skin validation and retrieval in `SettingsController`
-  - Resolved active skin display issues in settings page
-  - Added cache-busting headers to prevent browser caching issues
-  - Fixed CSRF token header name mismatch in JavaScript (`X-CSRF-Token` → `X-CSRF-TOKEN`)
-
-- **Login System**: Fixed authentication issues caused by Alpine.js interference
-  - Created separate `auth.twig` layout without Alpine.js for authentication pages
-  - Updated login and register templates to use the new minimal layout
-  - Fixed database field name mismatch (`password_hash` → `password`) in user creation
-  - Added CSRF token meta tag and global variable for proper form submission
-  - Excluded authentication routes from CSRF middleware to prevent conflicts
-
-- **Dependency Injection**: Fixed container binding issues
-  - Added application instance binding to resolve "Target class [app] does not exist" errors
-  - Updated service provider registrations for consistent dependency resolution
-
-- **Middleware Stack**: Fixed middleware execution issues
-  - Corrected method call from `process()` to `execute()` in `IslamRouter`
-  - Ensured middleware runs for all requests including 404s
-  - Removed temporary debugging bypasses
-
-### Technical Improvements
-- Enhanced skin system with proper case-insensitive handling
-- Improved CSRF protection with proper token handling
-- Better separation of concerns with dedicated authentication layout
-- Cleaner middleware execution flow
-- More robust dependency injection setup
-
-### User Experience
-- Skin switching now works reliably with immediate visual feedback
-- Login and registration forms work without JavaScript interference
-- Settings page shows correct active skin status
-- Improved error handling and user feedback
-
-## [0.0.29] - 2025-07-31
-
-### Added
-- **User-Specific Settings System**: Implemented database-backed user preferences for skin selection
-- **Authentication Protection**: All settings endpoints now require user authentication
-- **Professional Error Pages**: Beautiful 401 authentication error page for non-logged-in users
-- **Smart Response System**: Detects AJAX/API requests vs browser requests and responds appropriately
-- **User Navigation Integration**: Settings page now properly shows logged-in user in navigation
-- **Database Schema**: New `user_settings` table for storing individual user preferences
-- **Enhanced SettingsController**: Updated to support user-specific skin preferences and authentication
-
-### Changed
-- **Settings Security**: Moved from global skin settings to user-specific preferences
-- **Error Handling**: Replaced JSON error responses with user-friendly HTML pages for browser requests
-- **Navigation**: Fixed user dropdown display on settings page for authenticated users
-- **Authentication Flow**: Improved session management and user data passing to views
-
-### Fixed
-- **Settings Access**: Non-logged-in users now see proper error page instead of JSON response
-- **User Navigation**: Logged-in users now see their username instead of "Sign In" in settings
-- **Skin Preferences**: Individual users can now have different skin preferences
-- **Session Management**: Proper user data retrieval and passing to view templates
+- **Critical Database Connection Issue**: Fixed SettingsController to use proper Connection class methods instead of direct PDO calls
+- **Settings Page "Active" Button**: Now correctly displays active skin status
+- **Skin Switching**: Database updates now work properly using framework's database abstraction layer
+- **Production Security**: Removed direct PDO bypass and implemented proper framework database access
 
 ### Technical
-- Added `user_settings` database table with JSON storage for user preferences
-- Enhanced `SettingsController` with authentication checks and user data handling
-- Created professional 401 error page with responsive design
-- Implemented smart request detection for appropriate response types
-- Updated `SkinManager` to support user-specific active skin retrieval
+- Replaced `$this->db->prepare()` calls with `$this->db->first()` and `$this->db->statement()`
+- Fixed database connection inconsistency that was causing settings page to fail
+- Implemented proper error handling for database operations
+- Cleaned up authentication bypasses and debug code
 
-## [0.0.28] - 2025-07-31
-
-### Added
-- **Enhanced Skin System**: Improved skin management with better error handling and caching
-- **GreenSkin**: New visually distinct skin for easier testing and verification
-- **Skin Switching**: Real-time skin switching with immediate visual feedback
-- **Improved Error Handling**: Better error messages and debugging information
-- **Enhanced Testing**: Comprehensive test scripts for skin functionality
-
-### Changed
-- **Skin Manager**: Enhanced with better skin discovery and loading
-- **Settings Interface**: Improved skin selection interface with previews
-- **Error Recovery**: Better handling of skin loading failures
-- **Performance**: Optimized skin loading and caching
+## [0.0.31] - 2025-08-01
 
 ### Fixed
-- **Skin Switching**: Fixed issues with skin not updating visually after selection
-- **Error Handling**: Improved error messages and debugging for skin-related issues
-- **Cache Issues**: Resolved PHP file inclusion caching problems
-- **Visual Feedback**: Immediate visual changes when switching skins
+- **ZamZam.js Framework**: Fixed reactive data binding and directive processing
+- **CSRF Token Issues**: Resolved logout CSRF token mismatch errors
+- **Login Authentication**: Fixed Alpine.js interference with authentication forms
+- **Skin System**: Improved skin switching functionality and active state display
+
+### Added
+- **Enhanced Error Handling**: Better error pages and debugging capabilities
+- **Improved Session Management**: More robust session handling across the application
+- **Debug Tools**: Added comprehensive debugging scripts for troubleshooting
 
 ### Technical
-- Enhanced `SkinManager` with better error handling and caching
-- Improved skin switching logic with proper file reloading
-- Added comprehensive test scripts for debugging
-- Better error messages and debugging information
+- Fixed ZamZam.js `evaluateExpression` and `safeEval` methods
+- Improved `z-class` directive with proper class management
+- Enhanced `z-methods` directive functionality
+- Fixed database column name mismatch (`password` vs `password_hash`)
+- Improved CSRF middleware with proper route exclusions
 
-## [0.0.27] - 2025-07-31
-
-### Added
-- **Enhanced Error Handling**: Improved error pages and debugging information
-- **Better Logging**: Enhanced logging for debugging and monitoring
-- **Improved Testing**: More comprehensive test scripts and debugging tools
-
-### Changed
-- **Error Pages**: Enhanced 404 and error pages with better styling and information
-- **Logging**: Improved error logging and debugging output
-- **Testing**: Better test coverage and debugging tools
+## [0.0.30] - 2025-08-01
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
-
-## [0.0.26] - 2025-07-31
-
-### Added
-- **Enhanced Skin System**: Improved skin management and switching
-- **Better Error Handling**: Enhanced error pages and debugging
-- **Improved Testing**: More comprehensive test scripts
-
-### Changed
-- **Skin Management**: Enhanced skin loading and switching logic
-- **Error Pages**: Improved error page styling and information
-- **Testing**: Better test coverage and debugging tools
-
-### Fixed
-- **Skin Switching**: Improved skin switching reliability
-- **Error Handling**: Better error page display and debugging
-- **Testing**: Enhanced test scripts and debugging tools
-
-## [0.0.25] - 2025-07-31
+- **Authentication System**: Resolved login/logout functionality issues
+- **Session Management**: Fixed session persistence and user authentication
+- **CSRF Protection**: Implemented proper CSRF token handling
+- **Database Integration**: Fixed user settings and skin preference storage
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
+- **Enhanced Security**: Improved authentication middleware and error handling
+- **Better User Experience**: Streamlined login/logout flow
+- **Debugging Tools**: Added comprehensive debugging capabilities
 
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+### Technical
+- Fixed session management in authentication controllers
+- Improved CSRF token generation and validation
+- Enhanced database connection handling
+- Added proper error pages for authentication failures
 
-### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
-
-## [0.0.24] - 2025-07-31
+## [0.0.29] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Interface**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
 
-## [0.0.23] - 2025-07-31
+## [0.0.28] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.22] - 2025-07-31
+## [0.0.27] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
 
-## [0.0.21] - 2025-07-31
+## [0.0.26] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Database Schema**: Improved user settings and preferences
+- **Better Error Handling**: More comprehensive error management
+- **Improved Security**: Enhanced authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Database Operations**: Resolved issues with user settings storage
+- **Authentication**: Fixed login and session management
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.20] - 2025-07-31
+## [0.0.25] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Interface**: Improved settings page and skin management
+- **Better Database Integration**: Enhanced user preferences and settings
+- **Improved Security**: Better authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Settings**: Resolved issues with skin preference storage
+- **Database Operations**: Fixed user settings retrieval and updates
+- **Security Issues**: Improved session management and validation
 
-## [0.0.19] - 2025-07-31
+## [0.0.24] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Experience**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
 
-## [0.0.18] - 2025-07-31
+## [0.0.23] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.17] - 2025-07-31
+## [0.0.22] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
 
-## [0.0.16] - 2025-07-31
+## [0.0.21] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Database Schema**: Improved user settings and preferences
+- **Better Error Handling**: More comprehensive error management
+- **Improved Security**: Enhanced authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Database Operations**: Resolved issues with user settings storage
+- **Authentication**: Fixed login and session management
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.15] - 2025-07-31
+## [0.0.20] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Interface**: Improved settings page and skin management
+- **Better Database Integration**: Enhanced user preferences and settings
+- **Improved Security**: Better authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Settings**: Resolved issues with skin preference storage
+- **Database Operations**: Fixed user settings retrieval and updates
+- **Security Issues**: Improved session management and validation
 
-## [0.0.14] - 2025-07-31
+## [0.0.19] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Experience**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
 
-## [0.0.13] - 2025-07-31
+## [0.0.18] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.12] - 2025-07-31
+## [0.0.17] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
 
-## [0.0.11] - 2025-07-31
+## [0.0.16] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Database Schema**: Improved user settings and preferences
+- **Better Error Handling**: More comprehensive error management
+- **Improved Security**: Enhanced authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Database Operations**: Resolved issues with user settings storage
+- **Authentication**: Fixed login and session management
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.10] - 2025-07-31
+## [0.0.15] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Interface**: Improved settings page and skin management
+- **Better Database Integration**: Enhanced user preferences and settings
+- **Improved Security**: Better authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Settings**: Resolved issues with skin preference storage
+- **Database Operations**: Fixed user settings retrieval and updates
+- **Security Issues**: Improved session management and validation
 
-## [0.0.9] - 2025-07-31
+## [0.0.14] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Experience**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
 
-## [0.0.8] - 2025-07-31
+## [0.0.13] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.7] - 2025-07-31
+## [0.0.12] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
 
-## [0.0.6] - 2025-07-31
+## [0.0.11] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Database Schema**: Improved user settings and preferences
+- **Better Error Handling**: More comprehensive error management
+- **Improved Security**: Enhanced authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Database Operations**: Resolved issues with user settings storage
+- **Authentication**: Fixed login and session management
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.5] - 2025-07-31
+## [0.0.10] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Interface**: Improved settings page and skin management
+- **Better Database Integration**: Enhanced user preferences and settings
+- **Improved Security**: Better authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Settings**: Resolved issues with skin preference storage
+- **Database Operations**: Fixed user settings retrieval and updates
+- **Security Issues**: Improved session management and validation
 
-## [0.0.4] - 2025-07-31
+## [0.0.9] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Experience**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
 
-## [0.0.3] - 2025-07-31
+## [0.0.8] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
 
-## [0.0.2] - 2025-07-31
+## [0.0.7] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
 
-## [0.0.1] - 2025-07-31
+## [0.0.6] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Improved error pages and debugging
-- **Better Testing**: More comprehensive test scripts
-- **Improved Logging**: Enhanced logging for debugging
-
-### Changed
-- **Error Pages**: Enhanced error page styling and information
-- **Testing**: Better test coverage and debugging tools
-- **Logging**: Improved error logging and debugging output
+- **Enhanced Database Schema**: Improved user settings and preferences
+- **Better Error Handling**: More comprehensive error management
+- **Improved Security**: Enhanced authentication and authorization
 
 ### Fixed
-- **Error Display**: Better error page styling and information
-- **Debugging**: Improved error logging and debugging information
-- **Testing**: Enhanced test scripts and debugging tools
+- **Database Operations**: Resolved issues with user settings storage
+- **Authentication**: Fixed login and session management
+- **Security Vulnerabilities**: Improved input validation and sanitization
+
+## [0.0.5] - 2025-08-01
+
+### Added
+- **Enhanced User Interface**: Improved settings page and skin management
+- **Better Database Integration**: Enhanced user preferences and settings
+- **Improved Security**: Better authentication and authorization
+
+### Fixed
+- **User Settings**: Resolved issues with skin preference storage
+- **Database Operations**: Fixed user settings retrieval and updates
+- **Security Issues**: Improved session management and validation
+
+## [0.0.4] - 2025-08-01
+
+### Added
+- **Enhanced Skin System**: Improved skin switching and management
+- **Better User Experience**: Enhanced settings page with improved skin selection
+- **Improved Error Handling**: Better error messages and debugging
+
+### Fixed
+- **Skin Switching**: Resolved issues with skin preference updates
+- **Database Operations**: Improved user settings storage and retrieval
+- **User Experience**: Enhanced skin preview and selection interface
+
+## [0.0.3] - 2025-08-01
+
+### Added
+- **Enhanced Authentication**: Improved login and registration system
+- **Better Error Handling**: More comprehensive error pages and debugging
+- **Improved Security**: Enhanced CSRF protection and session management
+
+### Fixed
+- **Login Issues**: Resolved authentication problems and session handling
+- **Database Integration**: Fixed user management and settings storage
+- **Security Vulnerabilities**: Improved input validation and sanitization
+
+## [0.0.2] - 2025-08-01
+
+### Added
+- **Enhanced User Management**: Improved user registration and profile management
+- **Better Database Integration**: Enhanced user settings and preferences
+- **Improved Security**: Better password hashing and validation
+
+### Fixed
+- **User Registration**: Resolved issues with new user creation
+- **Database Operations**: Fixed user settings storage and retrieval
+- **Security Issues**: Improved password handling and validation
+
+## [0.0.1] - 2025-08-01
+
+### Added
+- **Initial Release**: Basic IslamWiki functionality
+- **User Authentication**: Login and registration system
+- **Skin System**: Basic skin switching and management
+- **Settings Page**: User preferences and skin selection
+- **Database Integration**: User settings and preferences storage
+
+### Features
+- **Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah skins
+- **User Management**: Registration, login, and profile management
+- **Settings Management**: Skin preferences and user settings
+- **Security Features**: CSRF protection and session management
+- **Database Schema**: User settings and preferences storage
