@@ -3,73 +3,65 @@
 {% block title %}Iqra Search - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-    <!-- Iqra Search Header -->
-    <div class="bg-white shadow-lg border-b border-green-200">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center">
-                <div class="flex justify-center items-center mb-4">
-                    <div class="text-6xl mr-4">📖</div>
-                    <div>
-                        <h1 class="text-5xl font-bold text-gray-900 mb-2">Iqra</h1>
-                        <p class="text-xl text-gray-600">Advanced Islamic Search Engine</p>
-                    </div>
+<div class="iqra-search-container">
+    <!-- Iqra Search Header with Bismillah Styling -->
+    <div class="iqra-header">
+        <div class="iqra-header-content">
+            <div class="iqra-logo">
+                <div class="iqra-icon">📖</div>
+                <div class="iqra-text">
+                    <h1 class="iqra-title">Iqra</h1>
+                    <p class="iqra-subtitle">Advanced Islamic Search Engine</p>
                 </div>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    "Read in the name of your Lord who created" - Discover Islamic knowledge across Quran, Hadith, 
-                    Calendar events, Prayer times, and scholarly works with our advanced search engine.
-                </p>
             </div>
+            <p class="iqra-description">
+                "Read in the name of your Lord who created" - Discover Islamic knowledge across Quran, Hadith, 
+                Calendar events, Prayer times, and scholarly works with our advanced search engine.
+            </p>
         </div>
     </div>
 
-    <!-- Search Interface -->
+    <!-- Enhanced Search Interface -->
     <div class="container mx-auto px-4 py-8">
-        <!-- Advanced Search Form -->
+        <!-- Advanced Search Form with Bismillah Styling -->
         <div class="max-w-6xl mx-auto mb-8">
-            <form method="GET" action="/iqra-search" class="bg-white rounded-xl shadow-xl p-8 border border-green-200">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <!-- Search Input -->
-                    <div class="lg:col-span-2">
-                        <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
+            <form method="GET" action="/iqra-search" class="iqra-search-form">
+                <div class="search-form-grid">
+                    <!-- Enhanced Search Input -->
+                    <div class="search-input-section">
+                        <label for="search-input" class="form-label">
                             Search Query
                         </label>
-                        <div class="relative">
+                        <div class="search-input-wrapper">
                             <input type="text" 
                                    name="q" 
                                    value="{{ query }}" 
                                    placeholder="Search for anything in Islamic content..."
-                                   class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                   class="iqra-search-input"
                                    autocomplete="off"
                                    id="search-input">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <button type="submit" class="text-green-600 hover:text-green-800">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </button>
-                            </div>
+                            <div class="search-input-icon">🔍</div>
                         </div>
                     </div>
 
-                    <!-- Content Type Filter -->
-                    <div>
-                        <label for="content-type" class="block text-sm font-medium text-gray-700 mb-2">
+                    <!-- Enhanced Content Type Filter -->
+                    <div class="filter-section">
+                        <label for="content-type" class="form-label">
                             Content Type
                         </label>
-                        <select name="type" id="content-type" class="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <select name="type" id="content-type" class="iqra-select">
                             {% for key, label in searchTypes %}
                                 <option value="{{ key }}" {% if type == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- Sort Options -->
-                    <div>
-                        <label for="sort-option" class="block text-sm font-medium text-gray-700 mb-2">
+                    <!-- Enhanced Sort Options -->
+                    <div class="filter-section">
+                        <label for="sort-option" class="form-label">
                             Sort By
                         </label>
-                        <select name="sort" id="sort-option" class="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <select name="sort" id="sort-option" class="iqra-select">
                             {% for key, label in sortOptions %}
                                 <option value="{{ key }}" {% if sort == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -77,127 +69,109 @@
                     </div>
                 </div>
 
-                <!-- Advanced Options -->
-                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="order-option" class="block text-sm font-medium text-gray-700 mb-2">
-                            Order
-                        </label>
-                        <select name="order" id="order-option" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                            {% for key, label in orderOptions %}
-                                <option value="{{ key }}" {% if order == key %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            Search with Iqra
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-end">
-                        <button type="button" id="advanced-search-btn" class="w-full bg-gray-100 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-                            Advanced Options
-                        </button>
+                <!-- Enhanced Advanced Options -->
+                <div class="advanced-options">
+                    <div class="advanced-options-grid">
+                        <div class="filter-section">
+                            <label for="order-option" class="form-label">
+                                Order
+                            </label>
+                            <select name="order" id="order-option" class="iqra-select">
+                                {% for key, label in orderOptions %}
+                                    <option value="{{ key }}" {% if order == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="search-button-section">
+                            <button type="submit" class="iqra-search-button">
+                                <span class="search-button-icon">🔍</span>
+                                <span class="search-button-text">Search with Iqra</span>
+                                <span class="search-button-arrow">→</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
 
-        <!-- Search Results -->
+        <!-- Enhanced Search Results -->
         {% if query %}
-            <div class="max-w-7xl mx-auto">
-                <!-- Results Header -->
-                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
-                        <div>
-                            <h2 class="text-2xl font-semibold text-gray-900 mb-2">
-                                {% if totalResults == 1 %}
-                                    1 result found
-                                {% else %}
-                                    {{ totalResults }} results found
-                                {% endif %}
-                            </h2>
-                            <p class="text-gray-600">for "{{ query }}"</p>
-                            {% if searchTime %}
-                                <p class="text-sm text-gray-500 mt-1">Search completed in {{ searchTime }} seconds</p>
+            <div class="iqra-results-container">
+                <!-- Enhanced Results Header -->
+                <div class="iqra-results-header">
+                    <div class="results-info">
+                        <h2 class="results-title">
+                            {% if totalResults == 1 %}
+                                1 result found
+                            {% else %}
+                                {{ totalResults }} results found
                             {% endif %}
-                        </div>
-                        
-                        <!-- Search Statistics -->
-                        {% if searchStats %}
-                            <div class="mt-4 md:mt-0">
-                                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-blue-600">📄</div>
-                                        <div class="text-gray-600">{{ searchStats.total_pages }}</div>
-                                        <div class="text-xs text-gray-500">Pages</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-green-600">📖</div>
-                                        <div class="text-gray-600">{{ searchStats.total_quran }}</div>
-                                        <div class="text-xs text-gray-500">Quran</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-purple-600">📚</div>
-                                        <div class="text-gray-600">{{ searchStats.total_hadith }}</div>
-                                        <div class="text-xs text-gray-500">Hadith</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-orange-600">📅</div>
-                                        <div class="text-gray-600">{{ searchStats.total_calendar }}</div>
-                                        <div class="text-xs text-gray-500">Events</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-red-600">🕌</div>
-                                        <div class="text-gray-600">{{ searchStats.total_prayer }}</div>
-                                        <div class="text-xs text-gray-500">Prayer</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-2xl font-bold text-indigo-600">👨‍🎓</div>
-                                        <div class="text-gray-600">{{ searchStats.total_scholars }}</div>
-                                        <div class="text-xs text-gray-500">Scholars</div>
-                                    </div>
-                                </div>
-                            </div>
+                        </h2>
+                        <p class="results-query">for "{{ query }}"</p>
+                        {% if searchTime %}
+                            <p class="search-time">Search completed in {{ searchTime }} seconds</p>
                         {% endif %}
                     </div>
+                    
+                    <!-- Enhanced Search Statistics -->
+                    {% if searchStats %}
+                        <div class="iqra-search-statistics">
+                            <div class="stat-item">
+                                <span class="stat-icon">📄</span>
+                                <span class="stat-number">{{ searchStats.total_pages }}</span>
+                                <span class="stat-label">pages</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">📖</span>
+                                <span class="stat-number">{{ searchStats.total_quran }}</span>
+                                <span class="stat-label">verses</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">📚</span>
+                                <span class="stat-number">{{ searchStats.total_hadith }}</span>
+                                <span class="stat-label">hadith</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">📅</span>
+                                <span class="stat-number">{{ searchStats.total_calendar }}</span>
+                                <span class="stat-label">events</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">🕌</span>
+                                <span class="stat-number">{{ searchStats.total_prayer }}</span>
+                                <span class="stat-label">locations</span>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
 
-                <!-- Results -->
+                <!-- Enhanced Results -->
                 {% if results %}
-                    <div class="space-y-6">
+                    <div class="iqra-results-grid">
                         {% for result in results %}
-                            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-green-500">
-                                <!-- Result Header -->
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center space-x-3">
+                            <div class="iqra-result-card">
+                                <!-- Enhanced Result Type Badge -->
+                                <div class="result-header">
+                                    <div class="result-badges">
                                         {% if result.type == 'page' %}
-                                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">📄 Page</span>
+                                            <span class="result-badge result-badge-page">📄 Page</span>
                                         {% elseif result.type == 'quran' %}
-                                            <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">📖 Quran</span>
+                                            <span class="result-badge result-badge-quran">📖 Quran</span>
                                         {% elseif result.type == 'hadith' %}
-                                            <span class="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">📚 Hadith</span>
+                                            <span class="result-badge result-badge-hadith">📚 Hadith</span>
                                         {% elseif result.type == 'calendar' %}
-                                            <span class="px-3 py-1 bg-orange-100 text-orange-800 text-sm font-medium rounded-full">📅 Event</span>
+                                            <span class="result-badge result-badge-calendar">📅 Event</span>
                                         {% elseif result.type == 'prayer' %}
-                                            <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">🕌 Prayer</span>
-                                        {% elseif result.type == 'scholar' %}
-                                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">👨‍🎓 Scholar</span>
+                                            <span class="result-badge result-badge-prayer">🕌 Prayer</span>
                                         {% endif %}
                                         
                                         {% if result.relevance %}
-                                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                                                Relevance: {{ (result.relevance / 10) | round(1) }}%
-                                            </span>
+                                            <span class="relevance-badge">Relevance: {{ (result.relevance * 100) | round(1) }}%</span>
                                         {% endif %}
                                     </div>
                                     
-                                    <div class="text-sm text-gray-500">
+                                    <div class="result-date">
                                         {% if result.updated_at %}
                                             {{ result.updated_at | date('M j, Y') }}
                                         {% elseif result.event_date %}
@@ -208,370 +182,734 @@
                                     </div>
                                 </div>
 
-                                <!-- Result Title -->
-                                <h3 class="text-xl font-semibold text-gray-900 mb-3">
-                                    <a href="{{ result.url }}" class="hover:text-green-600 transition-colors duration-200">
+                                <!-- Enhanced Result Title -->
+                                <h3 class="result-title">
+                                    <a href="{{ result.url }}" class="result-link">
                                         {{ result.title }}
                                     </a>
                                 </h3>
 
-                                <!-- Result Details -->
+                                <!-- Enhanced Result Details -->
                                 {% if result.type == 'quran' %}
-                                    <div class="mb-4">
-                                        <p class="text-sm text-gray-600 mb-2">
+                                    <div class="result-details">
+                                        <p class="result-meta">
                                             <strong>Surah:</strong> {{ result.surah_name }} ({{ result.surah_id }}:{{ result.verse_number }})
-                                            {% if result.english_name %}
-                                                • {{ result.english_name }}
-                                            {% endif %}
                                         </p>
                                         {% if result.arabic_text %}
-                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
+                                            <div class="arabic-text" dir="rtl">
                                                 {{ result.arabic_text }}
                                             </div>
                                         {% endif %}
                                     </div>
                                 {% elseif result.type == 'hadith' %}
-                                    <div class="mb-4">
-                                        <p class="text-sm text-gray-600 mb-2">
+                                    <div class="result-details">
+                                        <p class="result-meta">
                                             <strong>Collection:</strong> {{ result.collection_name }} #{{ result.hadith_number }}
                                             {% if result.authenticity %}
-                                                <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                                                    {{ result.authenticity }}
-                                                </span>
+                                                <span class="authenticity-badge">{{ result.authenticity }}</span>
                                             {% endif %}
                                         </p>
                                         {% if result.narrator %}
-                                            <p class="text-sm text-gray-600">
+                                            <p class="result-meta">
                                                 <strong>Narrator:</strong> {{ result.narrator }}
                                             </p>
                                         {% endif %}
                                     </div>
                                 {% elseif result.type == 'calendar' %}
-                                    <div class="mb-4">
-                                        <p class="text-sm text-gray-600">
+                                    <div class="result-details">
+                                        <p class="result-meta">
                                             <strong>Date:</strong> {{ result.event_date | date('F j, Y') }}
                                             {% if result.hijri_date %}
                                                 ({{ result.hijri_date }})
                                             {% endif %}
                                             {% if result.category_name %}
-                                                <span class="ml-2">• {{ result.category_name }}</span>
+                                                <span class="category-badge">{{ result.category_name }}</span>
                                             {% endif %}
                                         </p>
-                                        {% if result.arabic_title %}
-                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
-                                                {{ result.arabic_title }}
-                                            </div>
-                                        {% endif %}
                                     </div>
                                 {% elseif result.type == 'prayer' %}
-                                    <div class="mb-4">
-                                        <p class="text-sm text-gray-600">
-                                            <strong>Location:</strong> {{ result.city }}, {{ result.country }}
-                                            {% if result.location_name %}
-                                                ({{ result.location_name }})
+                                    <div class="result-details">
+                                        <p class="result-meta">
+                                            <strong>Location:</strong> {{ result.location_name }}
+                                            {% if result.prayer_date %}
+                                                <span class="date-badge">{{ result.prayer_date | date('M j, Y') }}</span>
                                             {% endif %}
                                         </p>
-                                        <div class="grid grid-cols-5 gap-2 text-xs mt-2">
-                                            <div><strong>Fajr:</strong> {{ result.fajr }}</div>
-                                            <div><strong>Dhuhr:</strong> {{ result.dhuhr }}</div>
-                                            <div><strong>Asr:</strong> {{ result.asr }}</div>
-                                            <div><strong>Maghrib:</strong> {{ result.maghrib }}</div>
-                                            <div><strong>Isha:</strong> {{ result.isha }}</div>
-                                        </div>
-                                    </div>
-                                {% elseif result.type == 'scholar' %}
-                                    <div class="mb-4">
-                                        <p class="text-sm text-gray-600">
-                                            {% if result.era %}
-                                                <strong>Era:</strong> {{ result.era }}
-                                            {% endif %}
-                                            {% if result.school %}
-                                                <span class="ml-2">• <strong>School:</strong> {{ result.school }}</span>
-                                            {% endif %}
-                                            {% if result.specialization %}
-                                                <span class="ml-2">• <strong>Specialization:</strong> {{ result.specialization }}</span>
-                                            {% endif %}
-                                        </p>
-                                        {% if result.arabic_name %}
-                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
-                                                {{ result.arabic_name }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% elseif result.type == 'page' %}
-                                    <div class="mb-4">
-                                        {% if result.author %}
-                                            <p class="text-sm text-gray-600">
-                                                <strong>Author:</strong> {{ result.author }}
-                                            </p>
-                                        {% endif %}
                                     </div>
                                 {% endif %}
-
-                                <!-- Excerpt -->
+                                
+                                <!-- Enhanced Excerpt -->
                                 {% if result.excerpt %}
-                                    <div class="text-gray-700 leading-relaxed mb-4">
+                                    <div class="result-excerpt">
                                         {{ result.excerpt | raw }}
                                     </div>
                                 {% endif %}
-
-                                <!-- Action Buttons -->
-                                <div class="flex flex-wrap gap-2">
-                                    <a href="{{ result.url }}" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200">
-                                        View Details
+                                
+                                <!-- Enhanced Action Buttons -->
+                                <div class="result-actions">
+                                    <a href="{{ result.url }}" class="action-button action-button-primary">
+                                        <span class="action-icon">👁️</span>
+                                        <span class="action-text">View Details</span>
                                     </a>
                                     
-                                    {% if result.type == 'quran' %}
-                                        <a href="/quran/widget/{{ result.surah_id }}/{{ result.verse_number }}" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                                            Widget
-                                        </a>
-                                    {% elseif result.type == 'hadith' %}
-                                        <a href="/hadith/widget/{{ result.collection_id }}/{{ result.hadith_number }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors duration-200">
-                                            Widget
+                                    {% if result.type == 'page' %}
+                                        <a href="{{ result.url }}/edit" class="action-button action-button-secondary">
+                                            <span class="action-icon">✏️</span>
+                                            <span class="action-text">Edit</span>
                                         </a>
                                     {% endif %}
-                                    
-                                    <button class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="shareResult('{{ result.title }}', '{{ result.url }}')">
-                                        Share
-                                    </button>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
-
-                    <!-- Pagination -->
-                    {% if totalPages > 1 %}
-                        <div class="mt-8 flex justify-center">
-                            <nav class="flex space-x-2">
-                                {% if currentPage > 1 %}
-                                    <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ currentPage - 1 }}" 
-                                       class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                        Previous
-                                    </a>
-                                {% endif %}
-                                
-                                {% for page in range(1, totalPages) %}
-                                    {% if page == currentPage %}
-                                        <span class="px-4 py-2 bg-green-600 text-white rounded-lg">{{ page }}</span>
-                                    {% else %}
-                                        <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ page }}" 
-                                           class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                            {{ page }}
-                                        </a>
-                                    {% endif %}
-                                {% endfor %}
-                                
-                                {% if currentPage < totalPages %}
-                                    <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ currentPage + 1 }}" 
-                                       class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                                        Next
-                                    </a>
-                                {% endif %}
-                            </nav>
-                        </div>
-                    {% endif %}
                 {% else %}
-                    <!-- No Results -->
-                    <div class="text-center py-12">
-                        <div class="text-8xl mb-4">🔍</div>
-                        <h3 class="text-2xl font-semibold text-gray-900 mb-2">No results found</h3>
-                        <p class="text-gray-600 mb-6">Try different keywords or search in a specific category</p>
-                        <div class="flex flex-wrap justify-center gap-4">
-                            {% for key, label in searchTypes %}
-                                <a href="?q={{ query }}&type={{ key }}" 
-                                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-                                    {{ label }}
-                                </a>
-                            {% endfor %}
+                    <!-- Enhanced Empty State -->
+                    <div class="empty-results">
+                        <div class="empty-icon">🔍</div>
+                        <h3 class="empty-title">No results found</h3>
+                        <p class="empty-description">Try adjusting your search terms or browse our content categories.</p>
+                        <div class="empty-actions">
+                            <a href="/" class="action-button action-button-primary">Browse Home</a>
+                            <a href="/pages" class="action-button action-button-secondary">View All Pages</a>
                         </div>
                     </div>
                 {% endif %}
-            </div>
-        {% else %}
-            <!-- Search Tips -->
-            <div class="max-w-6xl mx-auto">
-                <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-6">Search Tips for Iqra</h3>
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">📖</span>
-                                Quran Search
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search by verse content or translation</li>
-                                <li>• Use surah names or numbers</li>
-                                <li>• Search for specific themes or topics</li>
-                                <li>• Arabic text is fully supported</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">📚</span>
-                                Hadith Search
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search by hadith content or narrator</li>
-                                <li>• Filter by collection (Bukhari, Muslim, etc.)</li>
-                                <li>• Search by authenticity level</li>
-                                <li>• Arabic and English text supported</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">📅</span>
-                                Calendar Search
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search Islamic events and holidays</li>
-                                <li>• Find events by date or description</li>
-                                <li>• Browse upcoming events</li>
-                                <li>• Both Gregorian and Hijri dates</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">🕌</span>
-                                Prayer Search
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search prayer times by location</li>
-                                <li>• Find cities or countries</li>
-                                <li>• Get prayer time schedules</li>
-                                <li>• Worldwide coverage</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">👨‍🎓</span>
-                                Scholar Search
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search Islamic scholars and scholars</li>
-                                <li>• Find by name or specialization</li>
-                                <li>• Browse by era or school</li>
-                                <li>• Biographical information</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
-                                <span class="text-2xl mr-2">📄</span>
-                                Wiki Pages
-                            </h4>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                <li>• Search wiki articles and content</li>
-                                <li>• Find by title or content</li>
-                                <li>• Browse by namespace</li>
-                                <li>• Community-contributed content</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         {% endif %}
     </div>
 </div>
 
-<!-- Search Suggestions JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    let suggestionsTimeout;
+<style>
+/* Iqra Search Bismillah Styling */
 
-    searchInput.addEventListener('input', function() {
-        clearTimeout(suggestionsTimeout);
-        const query = this.value.trim();
-        
-        if (query.length < 2) {
-            hideSuggestions();
-            return;
-        }
+/* Container */
+.iqra-search-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--background-color) 0%, rgba(79, 70, 229, 0.05) 100%);
+}
 
-        suggestionsTimeout = setTimeout(() => {
-            fetchSuggestions(query);
-        }, 300);
-    });
+/* Iqra Header */
+.iqra-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
 
-    function fetchSuggestions(query) {
-        fetch(`/iqra-search/api/suggestions?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.suggestions && data.suggestions.length > 0) {
-                    showSuggestions(data.suggestions);
-                } else {
-                    hideSuggestions();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching suggestions:', error);
-                hideSuggestions();
-            });
+.iqra-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.iqra-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.iqra-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+}
+
+.iqra-icon {
+    font-size: 4rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.iqra-text {
+    text-align: left;
+}
+
+.iqra-title {
+    font-size: 4rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.iqra-subtitle {
+    font-size: 1.5rem;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.iqra-description {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+/* Iqra Search Form */
+.iqra-search-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+    margin-top: -3rem;
+    position: relative;
+    z-index: 2;
+}
+
+.iqra-search-form:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.search-form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.search-input-section {
+    grid-column: 1;
+}
+
+.filter-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+}
+
+.iqra-search-input {
+    width: 100%;
+    padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1.25rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    background: var(--card-background);
+    color: var(--text-primary);
+}
+
+.iqra-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+.iqra-select {
+    width: 100%;
+    padding: 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1.25rem;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: var(--card-background);
+    color: var(--text-primary);
+}
+
+.iqra-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.advanced-options {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+.advanced-options-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: end;
+}
+
+.search-button-section {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.iqra-search-button {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    padding: 1.25rem 2.5rem;
+    border-radius: 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    min-width: 250px;
+    justify-content: center;
+}
+
+.iqra-search-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(79, 70, 229, 0.4);
+}
+
+.search-button-icon {
+    font-size: 1.3rem;
+}
+
+.search-button-arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.iqra-search-button:hover .search-button-arrow {
+    transform: translateX(5px);
+}
+
+/* Iqra Results Container */
+.iqra-results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Iqra Results Header */
+.iqra-results-header {
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.results-info {
+    flex: 1;
+}
+
+.results-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.results-query {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.search-time {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Iqra Search Statistics */
+.iqra-search-statistics {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--background-color);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 1.4rem;
+}
+
+.stat-number {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Iqra Results Grid */
+.iqra-results-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+/* Iqra Result Card */
+.iqra-result-card {
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.iqra-result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), #7c3aed);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.iqra-result-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.iqra-result-card:hover::before {
+    opacity: 1;
+}
+
+/* Result Header */
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.result-badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Result Badges */
+.result-badge {
+    padding: 0.75rem 1.25rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.result-badge-page {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.result-badge-quran {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.result-badge-hadith {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.result-badge-calendar {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.result-badge-prayer {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.relevance-badge {
+    background: var(--background-color);
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.result-date {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Result Title */
+.result-title {
+    margin: 0 0 1.5rem 0;
+}
+
+.result-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.result-link:hover {
+    color: var(--primary-hover);
+    text-decoration: none;
+}
+
+/* Result Details */
+.result-details {
+    margin-bottom: 1.5rem;
+}
+
+.result-meta {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+}
+
+.arabic-text {
+    font-size: 1.5rem;
+    line-height: 2.2;
+    margin: 1.5rem 0;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.authenticity-badge,
+.category-badge,
+.date-badge {
+    background: var(--background-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 0.75rem;
+}
+
+/* Result Excerpt */
+.result-excerpt {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.result-excerpt mark {
+    background: rgba(79, 70, 229, 0.2);
+    color: var(--primary-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    font-weight: 600;
+}
+
+/* Result Actions */
+.result-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-size: 1rem;
+}
+
+.action-button-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+}
+
+.action-button-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.action-button-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.action-button-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 1.1rem;
+}
+
+/* Empty Results */
+.empty-results {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1.5rem 0;
+}
+
+.empty-description {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    margin: 0 0 3rem 0;
+    line-height: 1.6;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .search-form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
-
-    function showSuggestions(suggestions) {
-        let suggestionsDiv = document.getElementById('search-suggestions');
-        if (!suggestionsDiv) {
-            suggestionsDiv = document.createElement('div');
-            suggestionsDiv.id = 'search-suggestions';
-            suggestionsDiv.className = 'absolute z-50 w-full bg-white border-2 border-green-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto';
-            searchInput.parentNode.style.position = 'relative';
-            searchInput.parentNode.appendChild(suggestionsDiv);
-        }
-
-        suggestionsDiv.innerHTML = suggestions.map(suggestion => `
-            <a href="${suggestion.url}" class="block px-4 py-3 hover:bg-green-50 text-gray-700 border-b border-gray-100 last:border-b-0 transition-colors duration-150">
-                <div class="flex items-center">
-                    <span class="mr-3 text-lg">
-                        ${getTypeIcon(suggestion.type)}
-                    </span>
-                    <span class="flex-1">${suggestion.text}</span>
-                    <span class="text-xs text-gray-500">${suggestion.type}</span>
-                </div>
-            </a>
-        `).join('');
+    
+    .advanced-options-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
-
-    function hideSuggestions() {
-        const suggestionsDiv = document.getElementById('search-suggestions');
-        if (suggestionsDiv) {
-            suggestionsDiv.remove();
-        }
+    
+    .iqra-search-button {
+        width: 100%;
     }
+}
 
-    function getTypeIcon(type) {
-        const icons = {
-            'page': '📄',
-            'quran': '📖',
-            'hadith': '📚',
-            'calendar': '📅',
-            'prayer': '🕌',
-            'scholar': '👨‍🎓'
-        };
-        return icons[type] || '📄';
+@media (max-width: 768px) {
+    .iqra-title {
+        font-size: 3rem;
     }
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !document.getElementById('search-suggestions')?.contains(e.target)) {
-            hideSuggestions();
-        }
-    });
-
-    // Share functionality
-    window.shareResult = function(title, url) {
-        if (navigator.share) {
-            navigator.share({
-                title: title,
-                url: window.location.origin + url
-            });
-        } else {
-            // Fallback to copying to clipboard
-            const fullUrl = window.location.origin + url;
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                alert('Link copied to clipboard!');
-            });
-        }
-    };
-});
-</script>
+    
+    .iqra-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .iqra-description {
+        font-size: 1rem;
+    }
+    
+    .iqra-logo {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .iqra-results-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .iqra-search-statistics {
+        justify-content: center;
+    }
+    
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .result-actions {
+        flex-direction: column;
+    }
+    
+    .action-button {
+        justify-content: center;
+    }
+    
+    .empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
 {% endblock %} 

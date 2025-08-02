@@ -37,6 +37,14 @@ require_once BASE_PATH . '/src/Http/Controllers/SettingsController.php';
 require_once BASE_PATH . '/src/Http/Controllers/HomeController.php';
 require_once BASE_PATH . '/src/Http/Controllers/PageController.php';
 require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
+require_once BASE_PATH . '/src/Http/Controllers/SearchController.php';
+require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
+require_once BASE_PATH . '/src/Core/Search/IqraSearchEngine.php';
+require_once BASE_PATH . '/src/Models/Page.php';
+require_once BASE_PATH . '/src/Models/QuranVerse.php';
+require_once BASE_PATH . '/src/Models/Hadith.php';
+require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
+require_once BASE_PATH . '/src/Models/PrayerTime.php';
 
 use IslamWiki\Core\Container;
 use IslamWiki\Core\Database\Connection;

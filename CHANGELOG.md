@@ -5,6 +5,58 @@ All notable changes to IslamWiki will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.36] - 2025-08-02
+
+### Added
+- **Bismillah Skin Styling** - Beautiful Islamic design for search interfaces
+  - Enhanced search headers with gradient backgrounds and Islamic patterns
+  - Glass-morphism effects with backdrop blur for modern look
+  - Hover animations and smooth transitions throughout
+  - Floating animations for Iqra search icon
+  - Enhanced typography and spacing for better readability
+- **Search Functionality Fixes** - Complete resolution of search issues
+  - Fixed routing conflicts that prevented search pages from loading
+  - Added missing controller includes for SearchController and IqraSearchController
+  - Corrected database column names to match actual schema
+  - Added FULLTEXT indexes for efficient search performance
+  - Fixed PDO result handling from array to object notation
+- **Enhanced Search Interfaces** - Improved user experience
+  - Modern search forms with integrated icons and focus states
+  - Beautiful result cards with type badges and relevance scores
+  - Enhanced statistics display with interactive elements
+  - Responsive design optimized for all devices
+  - Action buttons for viewing and editing content
+
+### Changed
+- Updated version to 0.0.36
+- Enhanced search templates with complete Bismillah styling overhaul
+- Improved database query performance with proper indexes
+- Updated route order to prioritize search routes over generic routes
+- Enhanced visual design with sophisticated color palette
+
+### Fixed
+- **Critical Search Fixes**
+  - Search routes not loading after moving from app.php to index.php
+  - Missing controller includes causing fatal errors
+  - Database column name mismatches in search queries
+  - PDO result handling incompatibilities
+  - Route conflicts with generic slug routes
+- **Database Schema Fixes**
+  - Added FULLTEXT indexes to search-related tables
+  - Corrected column names in pages, verses, hadiths, islamic_events tables
+  - Fixed user_locations table column references
+- **Visual Design Fixes**
+  - Inconsistent styling between search interfaces
+  - Poor mobile responsiveness
+  - Missing hover effects and animations
+  - Inadequate visual hierarchy
+
+### Security
+- Maintained existing security measures
+- Enhanced input validation for search queries
+- Improved error handling without exposing sensitive information
+- Secure database query execution with proper parameterization
+
 ## [0.0.35] - 2025-08-02
 
 ### Added

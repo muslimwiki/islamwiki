@@ -31,16 +31,13 @@ use IslamWiki\Models\IslamicCalendar;
 use IslamWiki\Models\PrayerTime;
 use IslamWiki\Core\Database\Connection;
 use Exception;
+use IslamWiki\Core\Container;
 
 class SearchController extends Controller
 {
-    protected TwigRenderer $renderer;
-    protected Connection $db;
-
-    public function __construct()
+    public function __construct(Connection $db, Container $container)
     {
-        $this->renderer = new TwigRenderer();
-        $this->db = app()->getContainer()->get('db');
+        parent::__construct($db, $container);
     }
 
     /**
@@ -63,7 +60,7 @@ class SearchController extends Controller
             $searchStats = $this->getSearchStatistics($query);
         }
 
-        $content = $this->renderer->render('search/index.twig', [
+        return $this->view('search/index', [
             'query' => $query,
             'type' => $type,
             'results' => $results,
@@ -80,8 +77,6 @@ class SearchController extends Controller
                 'prayer' => 'Prayer Times'
             ]
         ]);
-
-        return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
     /**
@@ -167,7 +162,7 @@ class SearchController extends Controller
         $sql = "SELECT p.*, u.username as author_name, 
                        MATCH(p.title, p.content) AGAINST(? IN BOOLEAN MODE) as relevance
                 FROM pages p 
-                LEFT JOIN users u ON p.user_id = u.id
+                LEFT JOIN users u ON p.created_by = u.id
                 WHERE MATCH(p.title, p.content) AGAINST(? IN BOOLEAN MODE)
                 ORDER BY relevance DESC, p.updated_at DESC
                 LIMIT ? OFFSET ?";
@@ -179,14 +174,14 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $results[] = [
                 'type' => 'page',
-                'id' => $row['id'],
-                'title' => $row['title'],
-                'slug' => $row['slug'],
-                'excerpt' => $this->createExcerpt($row['content'], $query),
-                'author' => $row['author_name'],
-                'updated_at' => $row['updated_at'],
-                'relevance' => $row['relevance'],
-                'url' => '/' . $row['slug']
+                'id' => $row->id,
+                'title' => $row->title,
+                'slug' => $row->slug,
+                'excerpt' => $this->createExcerpt($row->content, $query),
+                'author' => $row->author_name,
+                'updated_at' => $row->updated_at,
+                'relevance' => $row->relevance,
+                'url' => '/' . $row->slug
             ];
         }
 
@@ -198,12 +193,12 @@ class SearchController extends Controller
      */
     protected function searchQuran(string $query, int $offset, int $limit): array
     {
-        $sql = "SELECT v.*, s.name as surah_name, s.english_name,
-                       MATCH(v.arabic_text, v.translation) AGAINST(? IN BOOLEAN MODE) as relevance
+        $sql = "SELECT v.*, s.name_english as surah_name, s.name_translation as english_name,
+                       MATCH(v.text_arabic, v.text_uthmani) AGAINST(? IN BOOLEAN MODE) as relevance
                 FROM verses v
-                JOIN surahs s ON v.surah_id = s.id
-                WHERE MATCH(v.arabic_text, v.translation) AGAINST(? IN BOOLEAN MODE)
-                ORDER BY relevance DESC, v.surah_id ASC, v.verse_number ASC
+                JOIN surahs s ON v.surah_number = s.number
+                WHERE MATCH(v.text_arabic, v.text_uthmani) AGAINST(? IN BOOLEAN MODE)
+                ORDER BY relevance DESC, v.surah_number ASC, v.verse_number ASC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
@@ -213,17 +208,17 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $results[] = [
                 'type' => 'quran',
-                'id' => $row['id'],
-                'title' => "{$row['surah_name']} ({$row['surah_id']}:{$row['verse_number']})",
-                'surah_name' => $row['surah_name'],
-                'english_name' => $row['english_name'],
-                'verse_number' => $row['verse_number'],
-                'surah_id' => $row['surah_id'],
-                'arabic_text' => $row['arabic_text'],
-                'translation' => $row['translation'],
-                'excerpt' => $this->createExcerpt($row['translation'], $query),
-                'relevance' => $row['relevance'],
-                'url' => "/quran/verse/{$row['surah_id']}/{$row['verse_number']}"
+                'id' => $row->id,
+                'title' => "{$row->surah_name} ({$row->surah_number}:{$row->verse_number})",
+                'surah_name' => $row->surah_name,
+                'english_name' => $row->english_name,
+                'verse_number' => $row->verse_number,
+                'surah_number' => $row->surah_number,
+                'arabic_text' => $row->text_arabic,
+                'translation' => $row->text_uthmani,
+                'excerpt' => $this->createExcerpt($row->text_uthmani, $query),
+                'relevance' => $row->relevance,
+                'url' => "/quran/verse/{$row->surah_number}/{$row->verse_number}"
             ];
         }
 
@@ -236,10 +231,10 @@ class SearchController extends Controller
     protected function searchHadith(string $query, int $offset, int $limit): array
     {
         $sql = "SELECT h.*, c.name as collection_name,
-                       MATCH(h.arabic_text, h.translation, h.narrator) AGAINST(? IN BOOLEAN MODE) as relevance
+                       MATCH(h.arabic_text, h.english_text) AGAINST(? IN BOOLEAN MODE) as relevance
                 FROM hadiths h
                 JOIN hadith_collections c ON h.collection_id = c.id
-                WHERE MATCH(h.arabic_text, h.translation, h.narrator) AGAINST(? IN BOOLEAN MODE)
+                WHERE MATCH(h.arabic_text, h.english_text) AGAINST(? IN BOOLEAN MODE)
                 ORDER BY relevance DESC, h.collection_id ASC, h.hadith_number ASC
                 LIMIT ? OFFSET ?";
 
@@ -250,17 +245,17 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $results[] = [
                 'type' => 'hadith',
-                'id' => $row['id'],
-                'title' => "{$row['collection_name']} #{$row['hadith_number']}",
-                'collection_name' => $row['collection_name'],
-                'hadith_number' => $row['hadith_number'],
-                'arabic_text' => $row['arabic_text'],
-                'translation' => $row['translation'],
-                'narrator' => $row['narrator'],
-                'authenticity' => $row['authenticity'],
-                'excerpt' => $this->createExcerpt($row['translation'], $query),
-                'relevance' => $row['relevance'],
-                'url' => "/hadith/{$row['collection_id']}/{$row['hadith_number']}"
+                'id' => $row->id,
+                'title' => "{$row->collection_name} #{$row->hadith_number}",
+                'collection_name' => $row->collection_name,
+                'hadith_number' => $row->hadith_number,
+                'arabic_text' => $row->arabic_text,
+                'translation' => $row->english_text,
+                'narrator' => $row->narrator ?? null,
+                'authenticity' => $row->grade,
+                'excerpt' => $this->createExcerpt($row->english_text, $query),
+                'relevance' => $row->relevance,
+                'url' => "/hadith/{$row->collection_id}/{$row->hadith_number}"
             ];
         }
 
@@ -273,11 +268,11 @@ class SearchController extends Controller
     protected function searchCalendar(string $query, int $offset, int $limit): array
     {
         $sql = "SELECT e.*, c.name as category_name,
-                       MATCH(e.title, e.description, e.arabic_title) AGAINST(? IN BOOLEAN MODE) as relevance
+                       MATCH(e.title, e.title_arabic, e.description, e.description_arabic) AGAINST(? IN BOOLEAN MODE) as relevance
                 FROM islamic_events e
                 LEFT JOIN event_categories c ON e.category_id = c.id
-                WHERE MATCH(e.title, e.description, e.arabic_title) AGAINST(? IN BOOLEAN MODE)
-                ORDER BY relevance DESC, e.event_date ASC
+                WHERE MATCH(e.title, e.title_arabic, e.description, e.description_arabic) AGAINST(? IN BOOLEAN MODE)
+                ORDER BY relevance DESC, e.gregorian_date ASC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
@@ -287,16 +282,16 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $results[] = [
                 'type' => 'calendar',
-                'id' => $row['id'],
-                'title' => $row['title'],
-                'arabic_title' => $row['arabic_title'],
-                'description' => $row['description'],
-                'category_name' => $row['category_name'],
-                'event_date' => $row['event_date'],
-                'hijri_date' => $row['hijri_date'],
-                'excerpt' => $this->createExcerpt($row['description'], $query),
-                'relevance' => $row['relevance'],
-                'url' => "/calendar/event/{$row['id']}"
+                'id' => $row->id,
+                'title' => $row->title,
+                'arabic_title' => $row->title_arabic,
+                'description' => $row->description,
+                'category_name' => $row->category_name,
+                'event_date' => $row->gregorian_date,
+                'hijri_date' => $row->hijri_date,
+                'excerpt' => $this->createExcerpt($row->description, $query),
+                'relevance' => $row->relevance,
+                'url' => "/calendar/event/{$row->id}"
             ];
         }
 
@@ -308,12 +303,11 @@ class SearchController extends Controller
      */
     protected function searchPrayer(string $query, int $offset, int $limit): array
     {
-        $sql = "SELECT pt.*, ul.city, ul.country,
-                       MATCH(ul.city, ul.country, ul.location_name) AGAINST(? IN BOOLEAN MODE) as relevance
-                FROM prayer_times pt
-                JOIN user_locations ul ON pt.location_id = ul.id
-                WHERE MATCH(ul.city, ul.country, ul.location_name) AGAINST(? IN BOOLEAN MODE)
-                ORDER BY relevance DESC, pt.prayer_date DESC
+        $sql = "SELECT ul.*,
+                       MATCH(ul.name, ul.city, ul.country) AGAINST(? IN BOOLEAN MODE) as relevance
+                FROM user_locations ul
+                WHERE MATCH(ul.name, ul.city, ul.country) AGAINST(? IN BOOLEAN MODE)
+                ORDER BY relevance DESC, ul.created_at DESC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
@@ -323,19 +317,19 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $results[] = [
                 'type' => 'prayer',
-                'id' => $row['id'],
-                'title' => "Prayer Times - {$row['city']}, {$row['country']}",
-                'city' => $row['city'],
-                'country' => $row['country'],
-                'location_name' => $row['location_name'],
-                'prayer_date' => $row['prayer_date'],
-                'fajr' => $row['fajr'],
-                'dhuhr' => $row['dhuhr'],
-                'asr' => $row['asr'],
-                'maghrib' => $row['maghrib'],
-                'isha' => $row['isha'],
-                'relevance' => $row['relevance'],
-                'url' => "/prayer/show/{$row['prayer_date']}/{$row['location_id']}"
+                'id' => $row->id,
+                'title' => "Prayer Location - {$row->city}, {$row->country}",
+                'city' => $row->city,
+                'country' => $row->country,
+                'location_name' => $row->name,
+                'prayer_date' => date('Y-m-d'),
+                'fajr' => 'N/A',
+                'dhuhr' => 'N/A',
+                'asr' => 'N/A',
+                'maghrib' => 'N/A',
+                'isha' => 'N/A',
+                'relevance' => $row->relevance,
+                'url' => "/prayer/show/" . date('Y-m-d') . "/{$row->id}"
             ];
         }
 
@@ -381,26 +375,25 @@ class SearchController extends Controller
                 $count = $stmt->fetchColumn();
                 break;
             case 'quran':
-                $sql = "SELECT COUNT(*) FROM verses WHERE MATCH(arabic_text, translation) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM verses WHERE MATCH(text_arabic, text_uthmani) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
                 break;
             case 'hadith':
-                $sql = "SELECT COUNT(*) FROM hadiths WHERE MATCH(arabic_text, translation, narrator) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM hadiths WHERE MATCH(arabic_text, english_text) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
                 break;
             case 'calendar':
-                $sql = "SELECT COUNT(*) FROM islamic_events WHERE MATCH(title, description, arabic_title) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM islamic_events WHERE MATCH(title, title_arabic, description, description_arabic) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
                 break;
             case 'prayer':
-                $sql = "SELECT COUNT(*) FROM prayer_times pt JOIN user_locations ul ON pt.location_id = ul.id 
-                       WHERE MATCH(ul.city, ul.country, ul.location_name) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM user_locations WHERE MATCH(name, city, country) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
@@ -519,33 +512,33 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'page',
-                'text' => $row['title'],
-                'url' => '/' . $row['slug']
+                'text' => $row->title,
+                'url' => '/' . $row->slug
             ];
         }
 
         // Get Quran suggestions
-        $sql = "SELECT s.name as surah_name, v.verse_number, v.translation 
+        $sql = "SELECT s.name_english as surah_name, v.verse_number, v.text_uthmani 
                 FROM verses v 
-                JOIN surahs s ON v.surah_id = s.id 
-                WHERE v.translation LIKE ? 
-                ORDER BY v.surah_id ASC, v.verse_number ASC LIMIT 3";
+                JOIN surahs s ON v.surah_number = s.number 
+                WHERE v.text_uthmani LIKE ? 
+                ORDER BY v.surah_number ASC, v.verse_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%"]);
         
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'quran',
-                'text' => "{$row['surah_name']} {$row['verse_number']}",
-                'url' => "/quran/verse/{$row['surah_id']}/{$row['verse_number']}"
+                'text' => "{$row->surah_name} {$row->verse_number}",
+                'url' => "/quran/verse/{$row->surah_number}/{$row->verse_number}"
             ];
         }
 
         // Get Hadith suggestions
-        $sql = "SELECT h.hadith_number, c.name as collection_name, h.translation 
+        $sql = "SELECT h.hadith_number, c.name as collection_name, h.english_text 
                 FROM hadiths h 
                 JOIN hadith_collections c ON h.collection_id = c.id 
-                WHERE h.translation LIKE ? 
+                WHERE h.english_text LIKE ? 
                 ORDER BY h.collection_id ASC, h.hadith_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%"]);
@@ -553,8 +546,8 @@ class SearchController extends Controller
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'hadith',
-                'text' => "{$row['collection_name']} #{$row['hadith_number']}",
-                'url' => "/hadith/{$row['collection_id']}/{$row['hadith_number']}"
+                'text' => "{$row->collection_name} #{$row->hadith_number}",
+                'url' => "/hadith/{$row->collection_id}/{$row->hadith_number}"
             ];
         }
 

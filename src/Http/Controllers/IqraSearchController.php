@@ -87,7 +87,7 @@ class IqraSearchController extends Controller
             $searchStats = $this->getSearchStatistics($query);
         }
 
-        $content = $this->getView()->render('iqra-search/index.twig', [
+        return $this->view('iqra-search/index', [
             'query' => $query,
             'type' => $type,
             'results' => $results,
@@ -116,8 +116,6 @@ class IqraSearchController extends Controller
                 'asc' => 'Ascending'
             ]
         ]);
-
-        return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
     /**

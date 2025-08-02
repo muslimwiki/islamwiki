@@ -125,7 +125,18 @@ $router->get('/pages/{id}/edit', 'IslamWiki\Http\Controllers\PageController@edit
 $router->put('/pages/{id}', 'IslamWiki\Http\Controllers\PageController@update');
 $router->delete('/pages/{id}', 'IslamWiki\Http\Controllers\PageController@destroy');
 
-// Additional page routes
+// Search Routes - Phase 6 Search and Discovery Features (Moved before variable routes)
+$router->get('/search', 'IslamWiki\Http\Controllers\SearchController@index');
+$router->get('/api/search', 'IslamWiki\Http\Controllers\SearchController@apiSearch');
+$router->get('/api/search/suggestions', 'IslamWiki\Http\Controllers\SearchController@apiSuggestions');
+
+// Iqra Search Engine Routes - Advanced Islamic Search (Moved before variable routes)
+$router->get('/iqra-search', 'IslamWiki\Http\Controllers\IqraSearchController@index');
+$router->get('/iqra-search/api/search', 'IslamWiki\Http\Controllers\IqraSearchController@apiSearch');
+$router->get('/iqra-search/api/suggestions', 'IslamWiki\Http\Controllers\IqraSearchController@apiSuggestions');
+$router->get('/iqra-search/api/analytics', 'IslamWiki\Http\Controllers\IqraSearchController@apiAnalytics');
+
+// Additional page routes (variable routes - must come after specific routes)
 $router->get('/{slug}', 'IslamWiki\Http\Controllers\PageController@show');
 $router->get('/{slug}/history', 'IslamWiki\Http\Controllers\PageController@history');
 $router->get('/{slug}/edit', 'IslamWiki\Http\Controllers\PageController@edit');
@@ -259,15 +270,6 @@ $router->get('/api/prayer-times/statistics', 'IslamWiki\Http\Controllers\PrayerT
 $router->get('/api/prayer-times/methods', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetCalculationMethods');
 $router->get('/api/prayer-times/names', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerNames');
 
-// Search Routes - Phase 6 Search and Discovery Features
-$router->get('/search', 'IslamWiki\Http\Controllers\SearchController@index');
-$router->get('/api/search', 'IslamWiki\Http\Controllers\SearchController@apiSearch');
-$router->get('/api/search/suggestions', 'IslamWiki\Http\Controllers\SearchController@apiSuggestions');
-
-$router->get('/test-router-alive', function($request) {
-    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
-});
-
 // Bayan Knowledge Graph Routes - Version 0.0.34
 $router->get('/bayan', 'IslamWiki\Http\Controllers\BayanController@index');
 $router->get('/bayan/search', 'IslamWiki\Http\Controllers\BayanController@search');
@@ -278,8 +280,6 @@ $router->post('/bayan/relationship', 'IslamWiki\Http\Controllers\BayanController
 $router->get('/bayan/statistics', 'IslamWiki\Http\Controllers\BayanController@statistics');
 $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPaths');
 
-// Iqra Search Engine Routes - Advanced Islamic Search
-$router->get('/iqra-search', 'IslamWiki\Http\Controllers\IqraSearchController@index');
-$router->get('/iqra-search/api/search', 'IslamWiki\Http\Controllers\IqraSearchController@apiSearch');
-$router->get('/iqra-search/api/suggestions', 'IslamWiki\Http\Controllers\IqraSearchController@apiSuggestions');
-$router->get('/iqra-search/api/analytics', 'IslamWiki\Http\Controllers\IqraSearchController@apiAnalytics');
+$router->get('/test-router-alive', function($request) {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
+});

@@ -1,0 +1,160 @@
+# Release Notes - Version 0.0.36
+
+## 🎯 Overview
+This release focuses on fixing search functionality issues and enhancing the visual design with beautiful Bismillah skin styling for both regular and advanced search interfaces.
+
+## 🐛 Bug Fixes
+
+### Search Functionality
+- **Fixed Search Routes**: Resolved routing issues that prevented search pages from loading after moving from `app.php` to `index.php`
+- **Fixed Controller Loading**: Added missing `require_once` statements for `SearchController`, `IqraSearchController`, and related model classes
+- **Fixed Database Queries**: Corrected SQL column names to match actual database schema:
+  - `pages` table: `created_by` instead of `user_id`
+  - `verses` table: `text_arabic`, `text_uthmani`, `surah_number` instead of incorrect column names
+  - `hadiths` table: `english_text`, `grade` instead of incorrect column names
+  - `islamic_events` table: `title_arabic`, `description_arabic`, `gregorian_date` instead of incorrect column names
+  - `user_locations` table: `name` instead of `location_name`
+- **Fixed Result Handling**: Updated all database result access from array notation to object property notation for PDO compatibility
+- **Fixed Route Order**: Moved specific search routes before generic `/{slug}` route to prevent conflicts
+- **Added Full-Text Indexes**: Created `FULLTEXT` indexes on database tables for efficient search functionality
+
+### Database Schema
+- Added `FULLTEXT` indexes to `pages`, `verses`, `hadiths`, `islamic_events`, and `user_locations` tables
+- Ensured proper column names and data types for search functionality
+
+## 🎨 Design Enhancements
+
+### Bismillah Skin Integration
+- **Enhanced Search Header**: Beautiful gradient headers with Islamic pattern overlays
+- **Modern Search Forms**: Glass-morphism effects with backdrop blur and enhanced styling
+- **Improved Input Design**: Rounded corners, focus states, and integrated search icons
+- **Enhanced Result Cards**: Hover effects, gradient borders, and sophisticated typography
+- **Better Statistics Display**: Card-based layout with icons and interactive hover effects
+
+### Visual Improvements
+- **Gradient Backgrounds**: Purple/indigo gradients throughout the interface
+- **Glass-morphism Effects**: Backdrop blur and transparency for modern look
+- **Hover Animations**: Smooth transitions and transform effects
+- **Islamic Patterns**: Subtle geometric overlays for cultural authenticity
+- **Enhanced Typography**: Better font weights, spacing, and readability
+
+### Interactive Elements
+- **Floating Animations**: Iqra icon with gentle floating effect
+- **Button Hover Effects**: Transform and shadow animations
+- **Card Hover States**: Elevation and border color changes
+- **Focus States**: Enhanced input focus with colored borders
+
+## 🔍 Search Features
+
+### Regular Search (`/search`)
+- ✅ Fully functional search across all content types
+- ✅ Beautiful result cards with type badges and relevance scores
+- ✅ Enhanced statistics display with icons
+- ✅ Responsive design for all devices
+- ✅ Action buttons for viewing and editing content
+
+### Iqra Advanced Search (`/iqra-search`)
+- ✅ Premium header with floating animation
+- ✅ Advanced form layout with multiple filters
+- ✅ Enhanced button design with gradient styling
+- ✅ Sophisticated results with premium card design
+- ✅ Search time display and analytics
+
+### Search APIs
+- ✅ `/api/search` - JSON API for search results
+- ✅ `/api/search/suggestions` - Search suggestions API
+- ✅ `/iqra-search/api/search` - Iqra search API
+- ✅ `/iqra-search/api/suggestions` - Iqra suggestions API
+
+## 📱 Responsive Design
+
+### Desktop
+- Full-featured layouts with side-by-side elements
+- Enhanced hover effects and animations
+- Optimal spacing and typography
+
+### Tablet
+- Adaptive grids and flexible spacing
+- Touch-optimized interface elements
+- Maintained visual hierarchy
+
+### Mobile
+- Stacked layouts with touch-optimized buttons
+- Simplified navigation and interactions
+- Fast loading and smooth performance
+
+## 🎨 Color Scheme
+
+The Bismillah skin uses a sophisticated color palette:
+- **Primary**: `#4f46e5` (Indigo)
+- **Secondary**: `#7c3aed` (Purple)
+- **Background**: `#f8fafc` (Light gray)
+- **Cards**: `#ffffff` (White)
+- **Text**: `#1f2937` (Dark gray)
+
+## 🔧 Technical Improvements
+
+### Code Quality
+- Fixed all PHP errors and warnings
+- Improved code organization and structure
+- Enhanced error handling and debugging
+- Better separation of concerns
+
+### Performance
+- Optimized database queries with proper indexes
+- Improved page loading times
+- Enhanced caching and resource management
+- Better memory usage and efficiency
+
+### Security
+- Maintained existing security measures
+- Enhanced input validation
+- Improved error handling without exposing sensitive information
+
+## 📋 Files Modified
+
+### Core Files
+- `public/index.php` - Added missing controller includes
+- `routes/web.php` - Fixed route order for search functionality
+- `src/Http/Controllers/SearchController.php` - Fixed database queries and result handling
+- `src/Http/Controllers/IqraSearchController.php` - Updated view rendering
+
+### Templates
+- `resources/views/search/index.twig` - Complete Bismillah styling overhaul
+- `resources/views/iqra-search/index.twig` - Complete Bismillah styling overhaul
+
+### Database
+- Added `FULLTEXT` indexes to search-related tables
+- Verified column names and data types
+
+## 🚀 Installation & Upgrade
+
+### New Installation
+1. Clone the repository
+2. Run database migrations
+3. Configure your web server
+4. Access the application
+
+### Upgrade from Previous Version
+1. Backup your current installation
+2. Update the codebase
+3. Run any new migrations
+4. Clear cache if necessary
+
+## 🐛 Known Issues
+- None reported
+
+## 🔮 Future Enhancements
+- Additional search filters and options
+- Enhanced search analytics and reporting
+- More advanced search algorithms
+- Additional skin themes and customization options
+
+## 📞 Support
+For issues or questions, please refer to the documentation or create an issue in the repository.
+
+---
+
+**Release Date**: August 2, 2025  
+**Version**: 0.0.36  
+**Compatibility**: PHP 8.0+, MySQL 5.7+ 

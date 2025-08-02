@@ -4,95 +4,119 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <!-- Search Header -->
+    <!-- Search Header with Bismillah Styling -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">🔍 Search IslamWiki</h1>
-        <p class="text-lg text-gray-600">Search across Quran, Hadith, Calendar events, Prayer times, and Wiki pages</p>
+        <div class="search-header">
+            <h1 class="search-title">🔍 Search IslamWiki</h1>
+            <p class="search-subtitle">Search across Quran, Hadith, Calendar events, Prayer times, and Wiki pages</p>
+        </div>
     </div>
 
-    <!-- Search Form -->
+    <!-- Enhanced Search Form with Bismillah Styling -->
     <div class="max-w-4xl mx-auto mb-8">
-        <form method="GET" action="/search" class="bg-white rounded-lg shadow-lg p-6">
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1">
+        <form method="GET" action="/search" class="search-form">
+            <div class="search-form-content">
+                <div class="search-input-group">
                     <input type="text" 
                            name="q" 
                            value="{{ query }}" 
                            placeholder="Search for anything..."
-                           class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                           class="search-input"
                            autocomplete="off"
                            id="search-input">
+                    <div class="search-input-icon">🔍</div>
                 </div>
-                <div class="md:w-48">
-                    <select name="type" class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <div class="search-type-selector">
+                    <select name="type" class="search-select">
                         {% for key, label in searchTypes %}
                             <option value="{{ key }}" {% if type == key %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div>
-                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
-                        Search
+                <div class="search-button-container">
+                    <button type="submit" class="search-button">
+                        <span class="search-button-text">Search</span>
+                        <span class="search-button-icon">→</span>
                     </button>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- Search Results -->
+    <!-- Search Results with Bismillah Styling -->
     {% if query %}
-        <div class="max-w-6xl mx-auto">
-            <!-- Results Header -->
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-semibold text-gray-900">
+        <div class="search-results-container">
+            <!-- Enhanced Results Header -->
+            <div class="results-header">
+                <div class="results-info">
+                    <h2 class="results-title">
                         {% if totalResults == 1 %}
                             1 result found
                         {% else %}
                             {{ totalResults }} results found
                         {% endif %}
                     </h2>
-                    <p class="text-gray-600">for "{{ query }}"</p>
+                    <p class="results-query">for "{{ query }}"</p>
                 </div>
                 
-                <!-- Search Statistics -->
+                <!-- Enhanced Search Statistics -->
                 {% if searchStats %}
-                    <div class="text-sm text-gray-500">
-                        <span class="mr-4">📄 {{ searchStats.total_pages }} pages</span>
-                        <span class="mr-4">📖 {{ searchStats.total_quran }} verses</span>
-                        <span class="mr-4">📚 {{ searchStats.total_hadith }} hadith</span>
-                        <span class="mr-4">📅 {{ searchStats.total_calendar }} events</span>
-                        <span>🕌 {{ searchStats.total_prayer }} locations</span>
+                    <div class="search-statistics">
+                        <div class="stat-item">
+                            <span class="stat-icon">📄</span>
+                            <span class="stat-number">{{ searchStats.total_pages }}</span>
+                            <span class="stat-label">pages</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">📖</span>
+                            <span class="stat-number">{{ searchStats.total_quran }}</span>
+                            <span class="stat-label">verses</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">📚</span>
+                            <span class="stat-number">{{ searchStats.total_hadith }}</span>
+                            <span class="stat-label">hadith</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">📅</span>
+                            <span class="stat-number">{{ searchStats.total_calendar }}</span>
+                            <span class="stat-label">events</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🕌</span>
+                            <span class="stat-number">{{ searchStats.total_prayer }}</span>
+                            <span class="stat-label">locations</span>
+                        </div>
                     </div>
                 {% endif %}
             </div>
 
-            <!-- Results -->
+            <!-- Enhanced Results -->
             {% if results %}
-                <div class="space-y-6">
+                <div class="results-grid">
                     {% for result in results %}
-                        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                            <!-- Result Type Badge -->
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center space-x-2">
+                        <div class="result-card">
+                            <!-- Enhanced Result Type Badge -->
+                            <div class="result-header">
+                                <div class="result-badges">
                                     {% if result.type == 'page' %}
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">📄 Page</span>
+                                        <span class="result-badge result-badge-page">📄 Page</span>
                                     {% elseif result.type == 'quran' %}
-                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">📖 Quran</span>
+                                        <span class="result-badge result-badge-quran">📖 Quran</span>
                                     {% elseif result.type == 'hadith' %}
-                                        <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">📚 Hadith</span>
+                                        <span class="result-badge result-badge-hadith">📚 Hadith</span>
                                     {% elseif result.type == 'calendar' %}
-                                        <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded">📅 Event</span>
+                                        <span class="result-badge result-badge-calendar">📅 Event</span>
                                     {% elseif result.type == 'prayer' %}
-                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">🕌 Prayer</span>
+                                        <span class="result-badge result-badge-prayer">🕌 Prayer</span>
                                     {% endif %}
                                     
                                     {% if result.relevance %}
-                                        <span class="text-xs text-gray-500">Relevance: {{ (result.relevance * 100) | round(1) }}%</span>
+                                        <span class="relevance-badge">Relevance: {{ (result.relevance * 100) | round(1) }}%</span>
                                     {% endif %}
                                 </div>
                                 
-                                <div class="text-sm text-gray-500">
+                                <div class="result-date">
                                     {% if result.updated_at %}
                                         {{ result.updated_at | date('M j, Y') }}
                                     {% elseif result.event_date %}
@@ -103,285 +127,637 @@
                                 </div>
                             </div>
 
-                            <!-- Result Title -->
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                                <a href="{{ result.url }}" class="hover:text-green-600 transition-colors">
+                            <!-- Enhanced Result Title -->
+                            <h3 class="result-title">
+                                <a href="{{ result.url }}" class="result-link">
                                     {{ result.title }}
                                 </a>
                             </h3>
 
-                            <!-- Result Details -->
+                            <!-- Enhanced Result Details -->
                             {% if result.type == 'quran' %}
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">
+                                <div class="result-details">
+                                    <p class="result-meta">
                                         <strong>Surah:</strong> {{ result.surah_name }} ({{ result.surah_id }}:{{ result.verse_number }})
                                     </p>
                                     {% if result.arabic_text %}
-                                        <div class="text-right text-lg mb-2" dir="rtl">
+                                        <div class="arabic-text" dir="rtl">
                                             {{ result.arabic_text }}
                                         </div>
                                     {% endif %}
                                 </div>
                             {% elseif result.type == 'hadith' %}
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">
+                                <div class="result-details">
+                                    <p class="result-meta">
                                         <strong>Collection:</strong> {{ result.collection_name }} #{{ result.hadith_number }}
                                         {% if result.authenticity %}
-                                            <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                                                {{ result.authenticity }}
-                                            </span>
+                                            <span class="authenticity-badge">{{ result.authenticity }}</span>
                                         {% endif %}
                                     </p>
                                     {% if result.narrator %}
-                                        <p class="text-sm text-gray-600">
+                                        <p class="result-meta">
                                             <strong>Narrator:</strong> {{ result.narrator }}
                                         </p>
                                     {% endif %}
                                 </div>
                             {% elseif result.type == 'calendar' %}
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600">
+                                <div class="result-details">
+                                    <p class="result-meta">
                                         <strong>Date:</strong> {{ result.event_date | date('F j, Y') }}
                                         {% if result.hijri_date %}
                                             ({{ result.hijri_date }})
                                         {% endif %}
                                         {% if result.category_name %}
-                                            <span class="ml-2">• {{ result.category_name }}</span>
+                                            <span class="category-badge">{{ result.category_name }}</span>
                                         {% endif %}
                                     </p>
-                                    {% if result.arabic_title %}
-                                        <p class="text-right text-lg mb-2" dir="rtl">
-                                            {{ result.arabic_title }}
-                                        </p>
-                                    {% endif %}
                                 </div>
                             {% elseif result.type == 'prayer' %}
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600">
-                                        <strong>Location:</strong> {{ result.city }}, {{ result.country }}
-                                        {% if result.location_name %}
-                                            ({{ result.location_name }})
+                                <div class="result-details">
+                                    <p class="result-meta">
+                                        <strong>Location:</strong> {{ result.location_name }}
+                                        {% if result.prayer_date %}
+                                            <span class="date-badge">{{ result.prayer_date | date('M j, Y') }}</span>
                                         {% endif %}
                                     </p>
-                                    <div class="grid grid-cols-5 gap-2 text-xs mt-2">
-                                        <div><strong>Fajr:</strong> {{ result.fajr }}</div>
-                                        <div><strong>Dhuhr:</strong> {{ result.dhuhr }}</div>
-                                        <div><strong>Asr:</strong> {{ result.asr }}</div>
-                                        <div><strong>Maghrib:</strong> {{ result.maghrib }}</div>
-                                        <div><strong>Isha:</strong> {{ result.isha }}</div>
-                                    </div>
-                                </div>
-                            {% elseif result.type == 'page' %}
-                                <div class="mb-3">
-                                    {% if result.author %}
-                                        <p class="text-sm text-gray-600">
-                                            <strong>Author:</strong> {{ result.author }}
-                                        </p>
-                                    {% endif %}
                                 </div>
                             {% endif %}
-
-                            <!-- Excerpt -->
+                            
+                            <!-- Enhanced Excerpt -->
                             {% if result.excerpt %}
-                                <div class="text-gray-700 leading-relaxed">
+                                <div class="result-excerpt">
                                     {{ result.excerpt | raw }}
                                 </div>
                             {% endif %}
-
-                            <!-- Action Buttons -->
-                            <div class="mt-4 flex space-x-2">
-                                <a href="{{ result.url }}" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-700 transition-colors">
-                                    View Details
+                            
+                            <!-- Enhanced Action Buttons -->
+                            <div class="result-actions">
+                                <a href="{{ result.url }}" class="action-button action-button-primary">
+                                    <span class="action-icon">👁️</span>
+                                    <span class="action-text">View Details</span>
                                 </a>
                                 
-                                {% if result.type == 'quran' %}
-                                    <a href="/quran/widget/{{ result.surah_id }}/{{ result.verse_number }}" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors">
-                                        Widget
-                                    </a>
-                                {% elseif result.type == 'hadith' %}
-                                    <a href="/hadith/widget/{{ result.collection_id }}/{{ result.hadith_number }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded hover:bg-purple-700 transition-colors">
-                                        Widget
+                                {% if result.type == 'page' %}
+                                    <a href="{{ result.url }}/edit" class="action-button action-button-secondary">
+                                        <span class="action-icon">✏️</span>
+                                        <span class="action-text">Edit</span>
                                     </a>
                                 {% endif %}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
-
-                <!-- Pagination -->
-                {% if totalPages > 1 %}
-                    <div class="mt-8 flex justify-center">
-                        <nav class="flex space-x-2">
-                            {% if currentPage > 1 %}
-                                <a href="?q={{ query }}&type={{ type }}&page={{ currentPage - 1 }}" 
-                                   class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50">
-                                    Previous
-                                </a>
-                            {% endif %}
-                            
-                            {% for page in range(1, totalPages) %}
-                                {% if page == currentPage %}
-                                    <span class="px-3 py-2 bg-green-600 text-white rounded">{{ page }}</span>
-                                {% else %}
-                                    <a href="?q={{ query }}&type={{ type }}&page={{ page }}" 
-                                       class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50">
-                                        {{ page }}
-                                    </a>
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if currentPage < totalPages %}
-                                <a href="?q={{ query }}&type={{ type }}&page={{ currentPage + 1 }}" 
-                                   class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50">
-                                    Next
-                                </a>
-                            {% endif %}
-                        </nav>
-                    </div>
-                {% endif %}
             {% else %}
-                <!-- No Results -->
-                <div class="text-center py-12">
-                    <div class="text-6xl mb-4">🔍</div>
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">No results found</h3>
-                    <p class="text-gray-600 mb-6">Try different keywords or search in a specific category</p>
-                    <div class="flex justify-center space-x-4">
-                        {% for key, label in searchTypes %}
-                            <a href="?q={{ query }}&type={{ key }}" 
-                               class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">
-                                {{ label }}
-                            </a>
-                        {% endfor %}
+                <!-- Enhanced Empty State -->
+                <div class="empty-results">
+                    <div class="empty-icon">🔍</div>
+                    <h3 class="empty-title">No results found</h3>
+                    <p class="empty-description">Try adjusting your search terms or browse our content categories.</p>
+                    <div class="empty-actions">
+                        <a href="/" class="action-button action-button-primary">Browse Home</a>
+                        <a href="/pages" class="action-button action-button-secondary">View All Pages</a>
                     </div>
                 </div>
             {% endif %}
         </div>
-    {% else %}
-        <!-- Search Tips -->
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-gray-50 rounded-lg p-8">
-                <h3 class="text-2xl font-semibold text-gray-900 mb-6">Search Tips</h3>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold text-gray-900 mb-3">📖 Quran Search</h4>
-                        <ul class="text-sm text-gray-600 space-y-1">
-                            <li>• Search by verse content or translation</li>
-                            <li>• Use surah names or numbers</li>
-                            <li>• Search for specific themes or topics</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-900 mb-3">📚 Hadith Search</h4>
-                        <ul class="text-sm text-gray-600 space-y-1">
-                            <li>• Search by hadith content or narrator</li>
-                            <li>• Filter by collection (Bukhari, Muslim, etc.)</li>
-                            <li>• Search by authenticity level</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-900 mb-3">📅 Calendar Search</h4>
-                        <ul class="text-sm text-gray-600 space-y-1">
-                            <li>• Search Islamic events and holidays</li>
-                            <li>• Find events by date or description</li>
-                            <li>• Browse upcoming events</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-900 mb-3">🕌 Prayer Search</h4>
-                        <ul class="text-sm text-gray-600 space-y-1">
-                            <li>• Search prayer times by location</li>
-                            <li>• Find cities or countries</li>
-                            <li>• Get prayer time schedules</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
     {% endif %}
 </div>
 
-<!-- Search Suggestions JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    let suggestionsTimeout;
+<style>
+/* Bismillah Search Styling */
 
-    searchInput.addEventListener('input', function() {
-        clearTimeout(suggestionsTimeout);
-        const query = this.value.trim();
-        
-        if (query.length < 2) {
-            hideSuggestions();
-            return;
-        }
+/* Search Header */
+.search-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
 
-        suggestionsTimeout = setTimeout(() => {
-            fetchSuggestions(query);
-        }, 300);
-    });
+.search-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
 
-    function fetchSuggestions(query) {
-        fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.suggestions && data.suggestions.length > 0) {
-                    showSuggestions(data.suggestions);
-                } else {
-                    hideSuggestions();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching suggestions:', error);
-                hideSuggestions();
-            });
+.search-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    position: relative;
+    z-index: 1;
+}
+
+.search-subtitle {
+    font-size: 1.2rem;
+    margin: 0;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Search Form */
+.search-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.search-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.search-form-content {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-input-group {
+    flex: 1;
+    position: relative;
+    min-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: var(--card-background);
+    color: var(--text-primary);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.search-type-selector {
+    min-width: 200px;
+}
+
+.search-select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--card-background);
+    color: var(--text-primary);
+}
+
+.search-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-button-container {
+    flex-shrink: 0;
+}
+
+.search-button {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+}
+
+.search-button-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.search-button:hover .search-button-icon {
+    transform: translateX(3px);
+}
+
+/* Search Results Container */
+.search-results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Results Header */
+.results-header {
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.results-info {
+    flex: 1;
+}
+
+.results-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.results-query {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Search Statistics */
+.search-statistics {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--background-color);
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    font-size: 1.2rem;
+}
+
+.stat-number {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Results Grid */
+.results-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Result Card */
+.result-card {
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), #7c3aed);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.result-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.result-card:hover::before {
+    opacity: 1;
+}
+
+/* Result Header */
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.result-badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Result Badges */
+.result-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.result-badge-page {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.result-badge-quran {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.result-badge-hadith {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.result-badge-calendar {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.result-badge-prayer {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.relevance-badge {
+    background: var(--background-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.result-date {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Result Title */
+.result-title {
+    margin: 0 0 1rem 0;
+}
+
+.result-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.result-link:hover {
+    color: var(--primary-hover);
+    text-decoration: none;
+}
+
+/* Result Details */
+.result-details {
+    margin-bottom: 1.5rem;
+}
+
+.result-meta {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.5;
+}
+
+.arabic-text {
+    font-size: 1.3rem;
+    line-height: 2;
+    margin: 1rem 0;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.authenticity-badge,
+.category-badge,
+.date-badge {
+    background: var(--background-color);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+/* Result Excerpt */
+.result-excerpt {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.result-excerpt mark {
+    background: rgba(79, 70, 229, 0.2);
+    color: var(--primary-color);
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+
+/* Result Actions */
+.result-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-size: 0.95rem;
+}
+
+.action-button-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+    color: white;
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+.action-button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.action-button-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.action-button-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 1rem;
+}
+
+/* Empty Results */
+.empty-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--card-background);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+}
+
+.empty-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-title {
+        font-size: 2rem;
     }
-
-    function showSuggestions(suggestions) {
-        let suggestionsDiv = document.getElementById('search-suggestions');
-        if (!suggestionsDiv) {
-            suggestionsDiv = document.createElement('div');
-            suggestionsDiv.id = 'search-suggestions';
-            suggestionsDiv.className = 'absolute z-50 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1';
-            searchInput.parentNode.style.position = 'relative';
-            searchInput.parentNode.appendChild(suggestionsDiv);
-        }
-
-        suggestionsDiv.innerHTML = suggestions.map(suggestion => `
-            <a href="${suggestion.url}" class="block px-4 py-2 hover:bg-gray-100 text-gray-700">
-                <div class="flex items-center">
-                    <span class="mr-2">
-                        ${getTypeIcon(suggestion.type)}
-                    </span>
-                    <span>${suggestion.text}</span>
-                </div>
-            </a>
-        `).join('');
+    
+    .search-form-content {
+        flex-direction: column;
     }
-
-    function hideSuggestions() {
-        const suggestionsDiv = document.getElementById('search-suggestions');
-        if (suggestionsDiv) {
-            suggestionsDiv.remove();
-        }
+    
+    .search-input-group {
+        min-width: auto;
+        width: 100%;
     }
-
-    function getTypeIcon(type) {
-        const icons = {
-            'page': '📄',
-            'quran': '📖',
-            'hadith': '📚',
-            'calendar': '📅',
-            'prayer': '🕌'
-        };
-        return icons[type] || '📄';
+    
+    .search-type-selector {
+        min-width: auto;
+        width: 100%;
     }
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !document.getElementById('search-suggestions')?.contains(e.target)) {
-            hideSuggestions();
-        }
-    });
-});
-</script>
+    
+    .search-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .results-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .search-statistics {
+        justify-content: center;
+    }
+    
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .result-actions {
+        flex-direction: column;
+    }
+    
+    .action-button {
+        justify-content: center;
+    }
+}
+</style>
 {% endblock %} 
