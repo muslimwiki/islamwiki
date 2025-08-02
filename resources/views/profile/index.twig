@@ -1,99 +1,416 @@
-{% extends 'layouts/app.twig' %}
+{% extends "layouts/app.twig" %}
 
-{% block title %}My Profile - IslamWiki{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Profile Information
-            </h3>
-            <p class="mt-1 text-sm text-gray-500">
-                Update your account's profile information and email address.
-            </p>
+<div class="profile-container">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar-section">
+                <div class="profile-avatar">
+                    <img src="{{ user.avatar ?? '/images/default-avatar.png' }}" alt="Profile Picture" class="avatar-image">
+                    <div class="avatar-overlay">
+                        <button class="avatar-edit-btn" onclick="editAvatar()">
+                            <span>📷</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ user.display_name ?? user.username ?? 'User' }}</h1>
+                    <p class="profile-username">@{{ user.username ?? 'user123' }}</p>
+                    <p class="profile-bio">{{ user.bio ?? 'No bio available' }}</p>
+                    <div class="profile-meta">
+                        <span class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            Member since {{ userStats.member_since }}
+                        </span>
+                        <span class="meta-item">
+                            <span class="meta-icon">🕒</span>
+                            Last active {{ userStats.last_active }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <a href="/settings" class="btn btn-primary">
+                    <span>⚙️</span>
+                    Settings
+                </a>
+                <button class="btn btn-outline" onclick="editProfile()">
+                    <span>✏️</span>
+                    Edit Profile
+                </button>
+            </div>
         </div>
 
-        <div class="px-4 py-5 sm:p-6">
-            <form action="{{ path('profile.update') }}" method="POST">
-                <input type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('profile') }}">
-                
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                        <input type="text" name="name" id="name" value="{{ user.name }}" 
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
+        <!-- Profile Statistics -->
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ userStats.total_pages }}</div>
+                    <div class="stat-label">Pages Created</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">✏️</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ userStats.recent_edits }}</div>
+                    <div class="stat-label">Recent Edits</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ userStats.watchlist_items }}</div>
+                    <div class="stat-label">Watchlist Items</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ activeSkin }}</div>
+                    <div class="stat-label">Active Skin</div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="col-span-6 sm:col-span-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                        <input type="email" name="email" id="email" value="{{ user.email }}" 
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
+        <!-- Profile Content Tabs -->
+        <div class="profile-tabs">
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="overview">
+                    📊 Overview
+                </button>
+                <button class="tab-btn" data-tab="activity">
+                    📝 Recent Activity
+                </button>
+                <button class="tab-btn" data-tab="contributions">
+                    🎯 Contributions
+                </button>
+                <button class="tab-btn" data-tab="settings">
+                    ⚙️ Settings Summary
+                </button>
+            </div>
 
-                    <div class="col-span-6">
-                        <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
-                        <div class="mt-1
-                        <textarea id="bio" name="bio" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md">{{ user.bio }}</textarea>
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="profile-section">
+                    <h2 class="section-title">👤 Personal Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label class="info-label">Display Name</label>
+                            <div class="info-value">{{ user.display_name ?? 'Not set' }}</div>
                         </div>
-                        <p class="mt-2 text-sm text-gray-500">Tell us a little about yourself.</p>
+                        
+                        <div class="info-item">
+                            <label class="info-label">Email Address</label>
+                            <div class="info-value">{{ user.email ?? 'Not set' }}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <label class="info-label">Bio</label>
+                            <div class="info-value">{{ user.bio ?? 'No bio available' }}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <label class="info-label">Active Skin</label>
+                            <div class="info-value">{{ userSettings.skin ?? 'Bismillah' }}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <label class="info-label">Theme</label>
+                            <div class="info-value">{{ userSettings.theme ?? 'light' }}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <label class="info-label">Language</label>
+                            <div class="info-value">{{ userSettings.language ?? 'en' }}</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Cancel
-                    </button>
-                    <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Save
-                    </button>
+                <div class="profile-section">
+                    <h2 class="section-title">📈 Activity Summary</h2>
+                    <div class="activity-summary">
+                        <div class="summary-item">
+                            <div class="summary-icon">📄</div>
+                            <div class="summary-content">
+                                <h3>Pages Created</h3>
+                                <p>{{ userStats.total_pages }} pages created</p>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <div class="summary-icon">✏️</div>
+                            <div class="summary-content">
+                                <h3>Recent Activity</h3>
+                                <p>{{ userStats.recent_edits }} edits in the last 30 days</p>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <div class="summary-icon">👁️</div>
+                            <div class="summary-content">
+                                <h3>Watchlist</h3>
+                                <p>{{ userStats.watchlist_items }} pages being watched</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+
+            <!-- Activity Tab -->
+            <div class="tab-content" id="activity">
+                <div class="profile-section">
+                    <h2 class="section-title">📝 Recent Activity</h2>
+                    {% if recentActivity|length > 0 %}
+                        <div class="activity-list">
+                            {% for activity in recentActivity %}
+                            <div class="activity-item">
+                                <div class="activity-icon">✏️</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">
+                                        <a href="/pages/{{ activity.slug }}">{{ activity.title }}</a>
+                                    </div>
+                                    <div class="activity-meta">
+                                        <span class="activity-type">Edited</span>
+                                        <span class="activity-time">{{ activity.created_at }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3>No Recent Activity</h3>
+                            <p>Start contributing to see your activity here!</p>
+                            <a href="/pages/create" class="btn btn-primary">Create Your First Page</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contributions Tab -->
+            <div class="tab-content" id="contributions">
+                <div class="profile-section">
+                    <h2 class="section-title">🎯 Your Contributions</h2>
+                    <div class="contributions-grid">
+                        <div class="contribution-card">
+                            <div class="contribution-icon">📄</div>
+                            <div class="contribution-content">
+                                <h3>Pages Created</h3>
+                                <div class="contribution-number">{{ userStats.total_pages }}</div>
+                                <p>Pages you've created and published</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contribution-card">
+                            <div class="contribution-icon">✏️</div>
+                            <div class="contribution-content">
+                                <h3>Edits Made</h3>
+                                <div class="contribution-number">{{ userStats.recent_edits }}</div>
+                                <p>Recent edits in the last 30 days</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contribution-card">
+                            <div class="contribution-icon">👁️</div>
+                            <div class="contribution-content">
+                                <h3>Pages Watched</h3>
+                                <div class="contribution-number">{{ userStats.watchlist_items }}</div>
+                                <p>Pages you're following for updates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Summary Tab -->
+            <div class="tab-content" id="settings">
+                <div class="profile-section">
+                    <h2 class="section-title">⚙️ Settings Summary</h2>
+                    <div class="settings-summary">
+                        <div class="settings-group">
+                            <h3>🎨 Appearance</h3>
+                            <div class="settings-list">
+                                <div class="setting-item">
+                                    <span class="setting-label">Active Skin:</span>
+                                    <span class="setting-value">{{ userSettings.skin ?? 'Bismillah' }}</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">Theme:</span>
+                                    <span class="setting-value">{{ userSettings.theme ?? 'light' }}</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">Language:</span>
+                                    <span class="setting-value">{{ userSettings.language ?? 'en' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>🔔 Notifications</h3>
+                            <div class="settings-list">
+                                <div class="setting-item">
+                                    <span class="setting-label">Frequency:</span>
+                                    <span class="setting-value">{{ userSettings.notifications ?? 'daily' }}</span>
+                                </div>
+                                <div class="setting-item">
+                                    <span class="setting-label">Timezone:</span>
+                                    <span class="setting-value">{{ userSettings.timezone ?? 'UTC' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>🔒 Privacy</h3>
+                            <div class="settings-list">
+                                <div class="setting-item">
+                                    <span class="setting-label">Profile Visibility:</span>
+                                    <span class="setting-value">{{ userSettings.privacy_level ?? 'public' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-actions">
+                            <a href="/settings" class="btn btn-primary">
+                                <span>⚙️</span>
+                                Manage Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Update Password
-            </h3>
-            <p class="mt-1 text-sm text-gray-500">
-                Ensure your account is using a long, random password to stay secure.
-            </p>
+<!-- Edit Profile Modal -->
+<div class="modal" id="editProfileModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Profile</h3>
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
         </div>
-
-        <div class="px-4 py-5 sm:p-6">
-            <form action="{{ path('password.update') }}" method="POST">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('password') }}">
-                
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-4">
-                        <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
-                        <input type="password" name="current_password" id="current_password" 
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
-                        <input type="password" name="password" id="password" 
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
-
-                    <div class="col-span-6 sm:col-span-4">
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" 
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div>
+        <div class="modal-body">
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-control" name="display_name" value="{{ user.display_name ?? '' }}">
                 </div>
-
-                <div class="mt-6 flex justify-end">
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Update Password
-                    </button>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" name="email" value="{{ user.email ?? '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-control" name="bio" rows="3">{{ user.bio ?? '' }}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab navigation
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetTab = this.dataset.tab;
+            
+            // Remove active class from all tabs
+            tabBtns.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+// Edit profile functions
+function editProfile() {
+    document.getElementById('editProfileModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editProfileModal').style.display = 'none';
+}
+
+function editAvatar() {
+    // TODO: Implement avatar upload functionality
+    alert('Avatar upload functionality will be implemented soon!');
+}
+
+// Handle form submission
+document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/profile/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Profile updated successfully!', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showNotification(result.message || 'Failed to update profile', 'error');
+        }
+    } catch (error) {
+        showNotification('An error occurred while updating profile', 'error');
+    }
+});
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('editProfileModal');
+    if (event.target === modal) {
+        closeEditModal();
+    }
+});
+</script>
 {% endblock %}

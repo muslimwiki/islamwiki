@@ -1,200 +1,315 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Profile Controller
+ * 
+ * Handles user profile display and management.
+ * 
+ * @package IslamWiki\Http\Controllers
+ * @version 0.0.28
+ * @license AGPL-3.0-only
+ */
+
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Models\User;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpForbiddenException;
-use Slim\Exception\HttpNotFoundException;
+use IslamWiki\Core\Application;
+use IslamWiki\Core\Container;
+use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Session\SessionManager;
+use IslamWiki\Skins\SkinManager;
 
 class ProfileController extends Controller
 {
-    /**
-     * Show the user's profile.
-     */
-    public function index(Request $request): Response
+    private SkinManager $skinManager;
+    private SessionManager $session;
+
+    public function __construct(Connection $db, Container $container)
     {
-        $user = $this->getUserOrFail($request);
+        parent::__construct($db, $container);
+        $this->skinManager = $container->get('skin.manager');
+        $this->session = $container->get('session');
+    }
+
+    /**
+     * Display the user's profile page
+     */
+    public function show(): Response
+    {
+        // Check if user is logged in
+        if (!$this->session->isLoggedIn()) {
+            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view your profile.');
+        }
+
+        $userId = $this->session->getUserId();
         
-        return $this->view('profile.show', [
-            'title' => 'My Profile - IslamWiki',
+        // Get user data
+        $user = null;
+        try {
+            $user = \IslamWiki\Models\User::find($userId, $this->db);
+        } catch (\Exception $e) {
+            // User not found, continue with null user
+        }
+        
+        // Get user settings
+        $userSettings = $this->getUserSettings($userId);
+        
+        // Get user statistics
+        $userStats = $this->getUserStatistics($userId);
+        
+        // Get recent activity
+        $recentActivity = $this->getRecentActivity($userId);
+        
+        // Load LocalSettings.php to get active skin
+        $localSettingsPath = __DIR__ . '/../../../LocalSettings.php';
+        if (file_exists($localSettingsPath)) {
+            require_once $localSettingsPath;
+        }
+        
+        global $wgActiveSkin;
+        $activeSkinName = $wgActiveSkin ?? 'Bismillah';
+        
+        return $this->view('profile/index', [
+            'title' => 'Profile - IslamWiki',
             'user' => $user,
-            'activeTab' => 'profile',
+            'userSettings' => $userSettings,
+            'userStats' => $userStats,
+            'recentActivity' => $recentActivity,
+            'activeSkin' => $activeSkinName
+        ], 200, [
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
         ]);
     }
 
     /**
-     * Show the edit profile form.
+     * Update user profile
      */
-    public function edit(Request $request): Response
+    public function update(): Response
     {
-        $user = $this->getUserOrFail($request);
-        
-        return $this->view('profile/edit', [
-            'title' => 'Edit Profile - IslamWiki',
-            'user' => $user,
-            'activeTab' => 'profile',
-        ]);
-    }
+        // Check if user is logged in
+        if (!$this->session->isLoggedIn()) {
+            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to update your profile.');
+        }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(Request $request): Response
-    {
-        $user = $this->getUserOrFail($request);
-        $data = $request->getParsedBody();
+        $userId = $this->session->getUserId();
         
-        // Validate input
-        $errors = $this->validateProfileUpdate($user, $data);
+        // Get request data
+        $requestData = $this->getRequestData();
         
-        if (!empty($errors)) {
-            $request->getAttribute('session')->setFlash('errors', $errors);
-            return $this->redirect(route('profile.show'));
-        }
-        
-        // Update profile
-        $user->update([
-            'display_name' => $data['display_name'] ?? $user->display_name,
-            'email' => $data['email'] ?? $user->email,
-            'bio' => $data['bio'] ?? $user->bio,
-        ]);
-        
-        $request->getAttribute('session')->setFlash('success', 'Profile updated successfully!');
-        return $this->redirect(route('profile.show'));
-    }
-    
-    /**
-     * Update the user's password.
-     */
-    public function updatePassword(Request $request): Response
-    {
-        $user = $this->getUserOrFail($request);
-        $data = $request->getParsedBody();
-        
-        // Validate input
-        $errors = $this->validatePasswordUpdate($user, $data);
-        
-        if (!empty($errors)) {
-            $request->getAttribute('session')->setFlash('password_errors', $errors);
-            return $this->redirect(route('profile.show') . '#password');
-        }
-        
-        // Update password
-        $user->update([
-            'password' => password_hash($data['new_password'], PASSWORD_DEFAULT),
-        ]);
-        
-        // Invalidate all other sessions
-        $this->invalidateOtherSessions($request, $user);
-        
-        $request->getAttribute('session')->setFlash('success', 'Password updated successfully!');
-        return $this->redirect(route('profile.show') . '#password');
-    }
-    
-    /**
-     * Validate the profile update data.
-     */
-    protected function validateProfileUpdate(User $user, array $data): array
-    {
-        $errors = [];
-        
-        // Display name validation
-        if (empty($data['display_name'])) {
-            $errors['display_name'] = 'Display name is required.';
-        } elseif (strlen($data['display_name']) < 3) {
-            $errors['display_name'] = 'Display name must be at least 3 characters.';
-        }
-        
-        // Email validation
-        if (empty($data['email'])) {
-            $errors['email'] = 'Email is required.';
-        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address.';
-        } elseif ($data['email'] !== $user->email) {
-            // Check if email is already taken by another user
-            $existingUser = User::where('email', $data['email'])->first();
-            if ($existingUser && $existingUser->id !== $user->id) {
-                $errors['email'] = 'This email is already in use by another account.';
+        try {
+            // Update user profile
+            $success = $this->updateUserProfile($userId, $requestData);
+            
+            if ($success) {
+                return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => true,
+                    'message' => 'Profile updated successfully'
+                ]));
+            } else {
+                return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => false,
+                    'message' => 'Failed to update profile'
+                ]));
             }
+        } catch (\Exception $e) {
+            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'An error occurred while updating profile'
+            ]));
         }
-        
-        // Bio validation (optional)
-        if (isset($data['bio']) && strlen($data['bio']) > 500) {
-            $errors['bio'] = 'Bio must not exceed 500 characters.';
-        }
-        
-        return $errors;
     }
-    
+
     /**
-     * Validate the password update data.
+     * Get user settings from database
      */
-    protected function validatePasswordUpdate(User $user, array $data): array
+    private function getUserSettings(int $userId): array
     {
-        $errors = [];
-        
-        // Current password validation
-        if (empty($data['current_password'])) {
-            $errors['current_password'] = 'Current password is required.';
-        } elseif (!password_verify($data['current_password'], $user->password)) {
-            $errors['current_password'] = 'Current password is incorrect.';
+        try {
+            $settings = $this->db->select(
+                'SELECT * FROM user_settings WHERE user_id = ?',
+                [$userId]
+            );
+            
+            if (!empty($settings)) {
+                return $settings[0];
+            }
+        } catch (\Exception $e) {
+            // Settings table might not exist yet
         }
         
-        // New password validation
-        if (empty($data['new_password'])) {
-            $errors['new_password'] = 'New password is required.';
-        } elseif (strlen($data['new_password']) < 8) {
-            $errors['new_password'] = 'New password must be at least 8 characters.';
-        } elseif ($data['new_password'] === $data['current_password']) {
-            $errors['new_password'] = 'New password must be different from current password.';
-        }
-        
-        // Password confirmation
-        if ($data['new_password'] !== $data['new_password_confirmation']) {
-            $errors['new_password_confirmation'] = 'Passwords do not match.';
-        }
-        
-        return $errors;
+        // Return default settings
+        return [
+            'skin' => 'Bismillah',
+            'theme' => 'light',
+            'language' => 'en',
+            'timezone' => 'UTC',
+            'notifications' => 'daily',
+            'privacy_level' => 'public'
+        ];
     }
-    
+
     /**
-     * Invalidate all other sessions for the user.
+     * Get user statistics
      */
-    protected function invalidateOtherSessions(Request $request, User $user): void
+    private function getUserStatistics(int $userId): array
     {
-        // Get the current session ID
-        $currentSessionId = $request->getAttribute('session')->getId();
-        
-        // TODO: Implement session invalidation logic
-        // This would typically involve:
-        // 1. Getting all active sessions for the user from your session store
-        // 2. Deleting all sessions except the current one
-        // 3. Updating the user's remember token to invalidate "remember me" cookies
-        
-        // For now, we'll just update the user's remember token
-        $user->update([
-            'remember_token' => null,
-        ]);
+        try {
+            // Get page contributions
+            $pageContributions = $this->db->select(
+                'SELECT COUNT(*) as count FROM pages WHERE created_by = ?',
+                [$userId]
+            );
+            
+            // Get recent edits
+            $recentEdits = $this->db->select(
+                'SELECT COUNT(*) as count FROM page_history WHERE user_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)',
+                [$userId]
+            );
+            
+            // Get watchlist count
+            $watchlistCount = $this->db->select(
+                'SELECT COUNT(*) as count FROM user_watchlist WHERE user_id = ?',
+                [$userId]
+            );
+            
+            return [
+                'total_pages' => $pageContributions[0]['count'] ?? 0,
+                'recent_edits' => $recentEdits[0]['count'] ?? 0,
+                'watchlist_items' => $watchlistCount[0]['count'] ?? 0,
+                'member_since' => date('Y-m-d', strtotime('-6 months')), // Mock data
+                'last_active' => date('Y-m-d H:i:s', strtotime('-2 hours')) // Mock data
+            ];
+        } catch (\Exception $e) {
+            return [
+                'total_pages' => 0,
+                'recent_edits' => 0,
+                'watchlist_items' => 0,
+                'member_since' => date('Y-m-d'),
+                'last_active' => date('Y-m-d H:i:s')
+            ];
+        }
     }
-    
+
     /**
-     * Get the authenticated user or fail.
+     * Get recent activity
      */
-    protected function getUserOrFail(Request $request): User
+    private function getRecentActivity(int $userId): array
     {
-        $user = $this->user($request);
-        if (!$user) {
-            throw new HttpForbiddenException($request, 'You must be logged in to view this page.');
+        try {
+            // Get recent page edits
+            $recentEdits = $this->db->select(
+                'SELECT ph.*, p.title, p.slug 
+                 FROM page_history ph 
+                 JOIN pages p ON ph.page_id = p.id 
+                 WHERE ph.user_id = ? 
+                 ORDER BY ph.created_at DESC 
+                 LIMIT 10',
+                [$userId]
+            );
+            
+            return $recentEdits;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Update user profile
+     */
+    private function updateUserProfile(int $userId, array $data): bool
+    {
+        try {
+            // Update user table
+            $this->db->update(
+                'users',
+                [
+                    'display_name' => $data['display_name'] ?? '',
+                    'email' => $data['email'] ?? '',
+                    'bio' => $data['bio'] ?? '',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ],
+                ['id' => $userId]
+            );
+            
+            // Update user settings
+            $this->updateUserSettings($userId, $data);
+            
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Update user settings
+     */
+    private function updateUserSettings(int $userId, array $data): void
+    {
+        try {
+            // Check if settings exist
+            $existingSettings = $this->db->select(
+                'SELECT * FROM user_settings WHERE user_id = ?',
+                [$userId]
+            );
+            
+            $settingsData = [
+                'user_id' => $userId,
+                'skin' => $data['skin'] ?? 'Bismillah',
+                'theme' => $data['theme'] ?? 'light',
+                'language' => $data['language'] ?? 'en',
+                'timezone' => $data['timezone'] ?? 'UTC',
+                'notifications' => $data['notifications'] ?? 'daily',
+                'privacy_level' => $data['privacy_level'] ?? 'public',
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            if (!empty($existingSettings)) {
+                // Update existing settings
+                $this->db->update(
+                    'user_settings',
+                    $settingsData,
+                    ['user_id' => $userId]
+                );
+            } else {
+                // Insert new settings
+                $settingsData['created_at'] = date('Y-m-d H:i:s');
+                $this->db->insert('user_settings', $settingsData);
+            }
+        } catch (\Exception $e) {
+            // Settings table might not exist yet, ignore
+        }
+    }
+
+    /**
+     * Get request data
+     */
+    private function getRequestData(): array
+    {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            $data = $_POST;
         }
         
-        $userModel = User::find($user['id']);
-        if (!$userModel) {
-            throw new HttpNotFoundException($request, 'User not found.');
-        }
-        
-        return $userModel;
+        return $data;
+    }
+
+    /**
+     * Render error page
+     */
+    private function renderErrorPage(int $statusCode, string $title, string $message): Response
+    {
+        return new Response(
+            $statusCode,
+            ['Content-Type' => 'text/html'],
+            $this->view('errors/401', [
+                'title' => $title,
+                'message' => $message
+            ])->getBody()
+        );
     }
 }

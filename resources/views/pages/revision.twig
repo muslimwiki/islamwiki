@@ -1,0 +1,132 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ page.title }} - Revision {{ revision.id }} - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="page-revision">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>{{ page.title }}</h1>
+                <div class="page-meta">
+                    <span class="meta-item">
+                        <span>📄</span>
+                        Revision {{ revision.id }}
+                    </span>
+                    <span class="meta-item">
+                        <span>📅</span>
+                        {{ revision.created_at|date('M j, Y g:i A') }}
+                    </span>
+                    {% if revision.user_id %}
+                    <span class="meta-item">
+                        <span>👤</span>
+                        User #{{ revision.user_id }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="page-actions">
+                <a href="{{ page.getUrl() }}" class="btn btn-outline">
+                    <span>👁️</span>
+                    View Current
+                </a>
+                <a href="{{ page.getEditUrl() }}" class="btn btn-primary">
+                    <span>✏️</span>
+                    Edit Page
+                </a>
+                <a href="{{ page.getHistoryUrl() }}" class="btn btn-secondary">
+                    <span>📚</span>
+                    History
+                </a>
+            </div>
+        </div>
+
+        <!-- Revision Info -->
+        <div class="revision-info">
+            <div class="revision-header">
+                <h2>Revision {{ revision.id }}</h2>
+                <div class="revision-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">Created:</span>
+                        <span class="meta-value">{{ revision.created_at|date('F j, Y g:i A') }}</span>
+                    </div>
+                    {% if revision.comment %}
+                    <div class="meta-row">
+                        <span class="meta-label">Comment:</span>
+                        <span class="meta-value">{{ revision.comment }}</span>
+                    </div>
+                    {% endif %}
+                    {% if revision.user_id %}
+                    <div class="meta-row">
+                        <span class="meta-label">Author:</span>
+                        <span class="meta-value">User #{{ revision.user_id }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            <div class="content-area">
+                <div class="content-header">
+                    <h3>Content</h3>
+                    <div class="content-actions">
+                        <button class="btn btn-sm btn-outline" onclick="copyContent()">
+                            <span>📋</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <div class="markdown-content" id="pageContent">
+                        {{ revision.content|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revision Actions -->
+        <div class="revision-actions">
+            <div class="action-buttons">
+                <a href="{{ page.getUrl() }}" class="btn btn-outline">
+                    <span>⬅️</span>
+                    Back to Current
+                </a>
+                <a href="{{ page.getHistoryUrl() }}" class="btn btn-secondary">
+                    <span>📚</span>
+                    View History
+                </a>
+                {% if canEdit %}
+                <button class="btn btn-primary" onclick="revertToRevision()">
+                    <span>🔄</span>
+                    Revert to This Version
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyContent() {
+    const content = document.getElementById('pageContent').innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('Content copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy content:', err);
+        alert('Failed to copy content');
+    });
+}
+
+function revertToRevision() {
+    if (confirm('Are you sure you want to revert to this revision? This will overwrite the current content.')) {
+        // This would typically make an AJAX call to revert the page
+        alert('Revert functionality would be implemented here');
+    }
+}
+</script>
+{% endblock %} 

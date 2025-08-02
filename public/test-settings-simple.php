@@ -1,1 +1,0 @@
-<?php echo "<!DOCTYPE html><html><head><title>Test</title><link rel=\"stylesheet\" href=\"/css/safa.css\"></head><body><div class=\"container\"><h1>Settings Test</h1><div class=\"settings-container\"><div class=\"settings-header\"><h1 class=\"settings-title\">⚙️ Settings</h1></div></div></div></body></html>"; ?>

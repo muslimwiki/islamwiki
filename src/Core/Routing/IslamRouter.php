@@ -139,7 +139,9 @@ class IslamRouter implements RequestHandlerInterface
         
         // Initialize middleware stack if not already done
         if (!$this->middlewareStack) {
+            error_log("IslamRouter::handle - Initializing middleware stack");
             $this->initializeMiddlewareStack();
+            error_log("IslamRouter::handle - Middleware stack initialized: " . ($this->middlewareStack ? 'yes' : 'no'));
         }
         
         // Strip query string and decode URI
@@ -149,7 +151,14 @@ class IslamRouter implements RequestHandlerInterface
         $uri = rawurldecode($uri);
         
         // Find matching route
+        error_log("IslamRouter::handle - Looking for route: {$httpMethod} {$uri}");
+        error_log("IslamRouter::handle - Registered routes: " . count($this->routes));
         $routeMatch = $this->findRoute($httpMethod, $uri);
+        if ($routeMatch) {
+            error_log("IslamRouter::handle - Route matched: " . json_encode($routeMatch));
+        } else {
+            error_log("IslamRouter::handle - No route found for {$httpMethod} {$uri}");
+        }
         
         // Create the final handler function
         $finalHandler = function($request) use ($routeMatch, $uri) {
@@ -207,12 +216,21 @@ class IslamRouter implements RequestHandlerInterface
         // Convert PSR-7 request to our Request class for middleware
         $ourRequest = \IslamWiki\Core\Http\Request::fromPsr7($request);
         
+        // TEMPORARILY DISABLE MIDDLEWARE FOR TESTING
+        // TODO: Re-enable middleware when routing issues are fixed
+        error_log("IslamRouter::handle - Bypassing middleware for testing");
+        $response = $finalHandler($ourRequest);
+        
+        /*
         // Execute middleware stack if available
         if ($this->middlewareStack) {
+            error_log("IslamRouter::handle - Middleware stack available, executing");
             $response = $this->middlewareStack->execute($ourRequest, $finalHandler);
         } else {
+            error_log("IslamRouter::handle - No middleware stack, executing final handler directly");
             $response = $finalHandler($ourRequest);
         }
+        */
         
         return $response;
     }
@@ -306,10 +324,15 @@ class IslamRouter implements RequestHandlerInterface
         }
         
         try {
+            error_log("IslamRouter::initializeMiddlewareStack - Starting initialization");
+            
             // Check if logger is available in container
             if (!$this->container->has(\Psr\Log\LoggerInterface::class)) {
+                error_log("IslamRouter::initializeMiddlewareStack - LoggerInterface not found in container");
                 return;
             }
+            
+            error_log("IslamRouter::initializeMiddlewareStack - LoggerInterface found, creating middleware stack");
             
             $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
             $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack($logger);
@@ -350,9 +373,10 @@ class IslamRouter implements RequestHandlerInterface
                     $this->middlewareStack->add($skinMiddleware);
                 }
             } catch (\Throwable $e) {
-                //
+                error_log("IslamRouter::initializeMiddlewareStack - Error adding SkinMiddleware: " . $e->getMessage());
             }
         } catch (\Throwable $e) {
+            error_log("IslamRouter::initializeMiddlewareStack - Error initializing middleware stack: " . $e->getMessage());
             // Don't create a middleware stack if there's an error - just skip middleware
             $this->middlewareStack = null;
         }

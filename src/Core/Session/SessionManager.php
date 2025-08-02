@@ -209,7 +209,7 @@ class SessionManager
      */
     public function isAdmin(): bool
     {
-        return $this->get('is_admin', false);
+        return (bool) $this->get('is_admin', false);
     }
     
     /**

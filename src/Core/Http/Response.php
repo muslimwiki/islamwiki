@@ -198,4 +198,18 @@ class Response implements ResponseInterface
         $new->reasonPhrase = $reasonPhrase ?: self::PHRASES[$code] ?? '';
         return $new;
     }
+    
+    /**
+     * Add a flash message to the response.
+     * This is a simple implementation that stores the message in the session.
+     */
+    public function with(string $key, string $message): self
+    {
+        // Store flash message in session
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['flash'][$key] = $message;
+        }
+        
+        return $this;
+    }
 }

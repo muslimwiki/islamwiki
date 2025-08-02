@@ -82,11 +82,17 @@ class MiddlewareStack
             'uri' => $request->getUri()->getPath(),
         ]);
         
+        error_log("MiddlewareStack::execute - Starting with " . count($this->middleware) . " middleware");
+        
         // Create the middleware chain
         $chain = $this->buildChain($handler);
         
         // Execute the chain
-        return $chain($request);
+        $response = $chain($request);
+        
+        error_log("MiddlewareStack::execute - Completed, response status: " . $response->getStatusCode());
+        
+        return $response;
     }
     
     /**
@@ -118,6 +124,8 @@ class MiddlewareStack
                     'uri' => $request->getUri()->getPath(),
                 ]);
                 
+                error_log("MiddlewareStack::wrapMiddleware - Executing " . get_class($middleware));
+                
                 if (is_callable($middleware)) {
                     return $middleware($request, $next);
                 }
@@ -134,6 +142,8 @@ class MiddlewareStack
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
+                
+                error_log("MiddlewareStack::wrapMiddleware - Error in " . get_class($middleware) . ": " . $e->getMessage());
                 
                 throw $e;
             }

@@ -150,6 +150,11 @@ class Application
         $configurationServiceProvider->register();
         $configurationServiceProvider->boot();
 
+        // Register the LoggingServiceProvider
+        $loggingServiceProvider = new \IslamWiki\Providers\LoggingServiceProvider();
+        $loggingServiceProvider->register($this->container);
+        $loggingServiceProvider->boot($this->container);
+
         // Register the SkinServiceProvider
         $skinServiceProvider = new \IslamWiki\Providers\SkinServiceProvider($this);
         $skinServiceProvider->register();

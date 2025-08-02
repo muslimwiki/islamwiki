@@ -35,31 +35,19 @@
                     <h2 class="section-title">🎨 Skin Selection</h2>
                     <p class="section-description">Choose the visual theme for your IslamWiki experience.</p>
                     
-                    <div class="skin-grid">
-                        {% for skinName, skin in skinOptions %}
+                        <!-- 🚨🚨🚨 TEMPLATE DEBUG - " . date('Y-m-d H:i:s') . " 🚨🚨🚨 -->
+    <!-- DEBUG: SettingsController called at {{ "now"|date('Y-m-d H:i:s') }} -->
+    <!-- DEBUG: availableSkins = {{ availableSkins|keys|join(', ') }} -->
+    <!-- DEBUG: wgValidSkins = {{ debugInfo.wgValidSkins|keys|join(', ') }} -->
+    <!-- DEBUG: isset_wgValidSkins = {{ debugInfo.isset_wgValidSkins ? 'true' : 'false' }} -->
+    <!-- DEBUG: is_array_wgValidSkins = {{ debugInfo.is_array_wgValidSkins ? 'true' : 'false' }} -->
+    <!-- DEBUG: count_wgValidSkins = {{ debugInfo.count_wgValidSkins }} -->
+    <div class="skin-grid">
+        <!-- DEBUG: skinOptions count = {{ skinOptions|length }} -->
+        <!-- DEBUG: skinOptions keys = {{ skinOptions|keys|join(', ') }} -->
+        {% for skinName, skin in skinOptions %}
+        <!-- DEBUG: Rendering skin {{ skinName }} -->
                         <div class="skin-card {{ skin.active ? 'active' : '' }}" data-skin="{{ skinName }}">
-                            <div class="skin-preview">
-                                <div class="skin-preview-header">
-                                    <div class="skin-preview-logo">📚</div>
-                                    <div class="skin-preview-title">IslamWiki</div>
-                                </div>
-                                <div class="skin-preview-content">
-                                    <div class="skin-preview-nav">
-                                        <span class="nav-item">Home</span>
-                                        <span class="nav-item">Pages</span>
-                                        <span class="nav-item">About</span>
-                                    </div>
-                                    <div class="skin-preview-body">
-                                        <div class="preview-card">
-                                            <div class="preview-card-header">Sample Content</div>
-                                            <div class="preview-card-body">
-                                                <p>This is how content will look with the {{ skin.name }} skin.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
                             <div class="skin-info">
                                 <h3 class="skin-name">{{ skin.name }}</h3>
                                 <p class="skin-description">{{ skin.description }}</p>
@@ -70,16 +58,16 @@
                                 
                                 <div class="skin-actions">
                                     {% if skin.active %}
-                                        <button class="btn btn-success" disabled>
+                                        <button class="skin-select-btn" disabled>
                                             ✓ Active
                                         </button>
                                     {% else %}
-                                        <button class="btn btn-primary skin-select-btn" data-skin="{{ skinName }}">
+                                        <button class="skin-select-btn" data-skin="{{ skinName }}">
                                             Select Skin
                                         </button>
                                     {% endif %}
                                     
-                                    <button class="btn btn-outline skin-info-btn" data-skin="{{ skinName }}">
+                                    <button class="skin-info-btn" data-skin="{{ skinName }}">
                                         Info
                                     </button>
                                 </div>
@@ -127,8 +115,91 @@
                     <h2 class="section-title">👤 Account Information</h2>
                     <p class="section-description">Manage your account details and preferences.</p>
                     
-                    <div class="account-info">
-                        <p>Account settings will be available here.</p>
+                    <div class="account-settings">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" value="{{ user.username ?? 'user123' }}" readonly>
+                            <small class="form-text">Username cannot be changed</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" value="{{ user.email ?? 'user@example.com' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Display Name</label>
+                            <input type="text" class="form-control" value="{{ user.display_name ?? 'User' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            <textarea class="form-control" rows="3" placeholder="Tell us about yourself...">{{ user.bio ?? '' }}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Profile Picture</label>
+                            <div class="profile-picture-upload">
+                                <div class="current-avatar">
+                                    <img src="{{ user.avatar ?? '/images/default-avatar.png' }}" alt="Profile Picture" class="avatar-preview">
+                                </div>
+                                <button class="btn btn-outline">Upload New Picture</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-primary">Save Changes</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                            <a href="/profile" class="btn btn-outline">
+                                <span>👤</span>
+                                View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">🔐 Security Settings</h2>
+                    <p class="section-description">Manage your account security and authentication.</p>
+                    
+                    <div class="security-settings">
+                        <div class="form-group">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-control" placeholder="Enter current password">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control" placeholder="Enter new password">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" placeholder="Confirm new password">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-primary">Change Password</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">🗑️ Account Actions</h2>
+                    <p class="section-description">Dangerous actions that affect your account.</p>
+                    
+                    <div class="account-actions">
+                        <div class="action-item">
+                            <h4>Delete Account</h4>
+                            <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+                            <button class="btn btn-danger">Delete Account</button>
+                        </div>
+                        
+                        <div class="action-item">
+                            <h4>Export Data</h4>
+                            <p>Download a copy of your personal data and contributions.</p>
+                            <button class="btn btn-outline">Export My Data</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,8 +210,104 @@
                     <h2 class="section-title">🔒 Privacy Settings</h2>
                     <p class="section-description">Control your privacy and data preferences.</p>
                     
-                    <div class="privacy-info">
-                        <p>Privacy settings will be available here.</p>
+                    <div class="privacy-settings">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="profile_public" checked>
+                                <span class="option-text">Public Profile</span>
+                            </label>
+                            <p class="option-description">Allow other users to view your profile and contributions</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="show_email" checked>
+                                <span class="option-text">Show Email Address</span>
+                            </label>
+                            <p class="option-description">Display your email address on your public profile</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="show_activity">
+                                <span class="option-text">Show Activity History</span>
+                            </label>
+                            <p class="option-description">Display your recent activity and contributions</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="allow_messages">
+                                <span class="option-text">Allow Private Messages</span>
+                            </label>
+                            <p class="option-description">Allow other users to send you private messages</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="track_analytics">
+                                <span class="option-text">Analytics Tracking</span>
+                            </label>
+                            <p class="option-description">Help improve IslamWiki by allowing anonymous usage analytics</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">📊 Data & Cookies</h2>
+                    <p class="section-description">Manage your data and cookie preferences.</p>
+                    
+                    <div class="data-settings">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="essential_cookies" checked disabled>
+                                <span class="option-text">Essential Cookies</span>
+                            </label>
+                            <p class="option-description">Required for basic site functionality (always enabled)</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="preference_cookies" checked>
+                                <span class="option-text">Preference Cookies</span>
+                            </label>
+                            <p class="option-description">Remember your settings and preferences</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="analytics_cookies">
+                                <span class="option-text">Analytics Cookies</span>
+                            </label>
+                            <p class="option-description">Help us understand how you use the site</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="marketing_cookies">
+                                <span class="option-text">Marketing Cookies</span>
+                            </label>
+                            <p class="option-description">Used for personalized content and advertisements</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">🗑️ Data Management</h2>
+                    <p class="section-description">Control your personal data and privacy.</p>
+                    
+                    <div class="data-management">
+                        <div class="action-item">
+                            <h4>Download My Data</h4>
+                            <p>Get a copy of all your personal data stored on IslamWiki.</p>
+                            <button class="btn btn-outline">Request Data Download</button>
+                        </div>
+                        
+                        <div class="action-item">
+                            <h4>Delete My Data</h4>
+                            <p>Permanently delete all your personal data from IslamWiki.</p>
+                            <button class="btn btn-danger">Delete All Data</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,8 +318,124 @@
                     <h2 class="section-title">🔔 Notification Preferences</h2>
                     <p class="section-description">Manage your notification settings.</p>
                     
-                    <div class="notification-info">
-                        <p>Notification settings will be available here.</p>
+                    <div class="notification-settings">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="email_notifications" checked>
+                                <span class="option-text">Email Notifications</span>
+                            </label>
+                            <p class="option-description">Receive notifications via email</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="browser_notifications" checked>
+                                <span class="option-text">Browser Notifications</span>
+                            </label>
+                            <p class="option-description">Show notifications in your browser</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="mobile_notifications">
+                                <span class="option-text">Mobile Push Notifications</span>
+                            </label>
+                            <p class="option-description">Receive push notifications on mobile devices</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">📧 Email Notifications</h2>
+                    <p class="section-description">Choose which email notifications you want to receive.</p>
+                    
+                    <div class="email-notifications">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="welcome_emails" checked>
+                                <span class="option-text">Welcome & Onboarding</span>
+                            </label>
+                            <p class="option-description">Get started with helpful tips and guides</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="page_updates" checked>
+                                <span class="option-text">Page Updates</span>
+                            </label>
+                            <p class="option-description">When pages you follow are updated</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="comment_replies" checked>
+                                <span class="option-text">Comment Replies</span>
+                            </label>
+                            <p class="option-description">When someone replies to your comments</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="mention_notifications" checked>
+                                <span class="option-text">Mentions</span>
+                            </label>
+                            <p class="option-description">When someone mentions you in a comment or page</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="security_alerts" checked>
+                                <span class="option-text">Security Alerts</span>
+                            </label>
+                            <p class="option-description">Important security-related notifications</p>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" class="option-checkbox" id="newsletter">
+                                <span class="option-text">Newsletter</span>
+                            </label>
+                            <p class="option-description">Monthly updates about new features and content</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">⏰ Notification Schedule</h2>
+                    <p class="section-description">Control when and how often you receive notifications.</p>
+                    
+                    <div class="notification-schedule">
+                        <div class="form-group">
+                            <label class="form-label">Notification Frequency</label>
+                            <select class="form-control">
+                                <option value="immediate">Immediate</option>
+                                <option value="hourly">Hourly Digest</option>
+                                <option value="daily" selected>Daily Digest</option>
+                                <option value="weekly">Weekly Digest</option>
+                                <option value="never">Never</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Quiet Hours</label>
+                            <div class="quiet-hours">
+                                <input type="time" class="form-control" value="22:00">
+                                <span>to</span>
+                                <input type="time" class="form-control" value="08:00">
+                            </div>
+                            <small class="form-text">Notifications will be delayed during these hours</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Time Zone</label>
+                            <select class="form-control">
+                                <option value="UTC">UTC</option>
+                                <option value="EST">Eastern Time</option>
+                                <option value="PST">Pacific Time</option>
+                                <option value="GMT">GMT</option>
+                                <option value="CET">Central European Time</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,6 +455,8 @@
         </div>
     </div>
 </div>
+
+ 
 {% endblock %}
 
 {% block scripts %}
@@ -252,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     // Force a complete page reload
                     window.location.reload(true);
-                }, 2000); // Reduced to 2 seconds
+                }, 2000);
             } else {
                 showNotification(result.error || 'Failed to update skin', 'error');
             }

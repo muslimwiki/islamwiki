@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.34] - 2025-08-02
+
+### Added
+- **Complete Skin System Fix**: Resolved all skin loading issues and improved system reliability
+- **File Organization Overhaul**: Moved 60+ test and debug files to organized subdirectories
+- **Enhanced Debugging Tools**: Created comprehensive skin debugging and status reporting tools
+- **Improved Documentation**: Added detailed README and enhanced release notes
+- **Security Enhancements**: Implemented proper random key generation and improved error handling
+
+### Fixed
+- **LocalSettings Variable Loading**: Fixed `wgValidSkins` and `wgActiveSkin` not being properly loaded
+- **Security Configuration**: Resolved secret key warnings with proper random key generation
+- **SkinManager Enhancement**: Improved initialization and error handling with fallback mechanisms
+- **Global Variable Scope**: Fixed scope issues with LocalSettings variables
+- **File Organization**: Cleaned up public directory by organizing test and debug files
+
+### Technical
+- Enhanced SkinManager with better error handling and validation
+- Improved container service registration and validation
+- Added comprehensive skin validation and debugging tools
+- Created organized file structure with `/tests/` and `/debug/` subdirectories
+- Enhanced logging and debugging capabilities throughout the application
+
 ## [0.0.33] - 2025-08-01
 
 ### Fixed

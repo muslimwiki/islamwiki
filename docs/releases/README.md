@@ -4,7 +4,13 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.33 (Latest)
+### Version 0.0.34 (Latest)
+- **[RELEASE-NOTES-0.0.34](RELEASE-NOTES-0.0.34)** - Complete Skin System Fix & File Organization
+- **Date**: 2025-08-02
+- **Status**: Stable Release
+- **Focus**: Complete skin system resolution and major file organization overhaul
+
+### Version 0.0.33
 - **[RELEASE-NOTES-0.0.33](RELEASE-NOTES-0.0.33)** - Skin Selection Fix
 - **Date**: 2025-08-01
 - **Status**: Development Release
@@ -74,5 +80,5 @@ For detailed versioning information, see [Versioning Strategy](../guides/version
 
 ---
 
-**Last Updated**: 2025-08-01  
-**Current Version**: 0.0.33 
+**Last Updated**: 2025-08-02  
+**Current Version**: 0.0.34 

@@ -1,6 +1,6 @@
 {% extends "layouts/app.twig" %}
 
-{% block title %}Dashboard - IslamWiki{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <!-- Dashboard Header -->
@@ -9,8 +9,45 @@
         <div class="welcome-section">
             <div class="welcome-content">
                 <div class="welcome-text">
-                    <h1 class="welcome-title">Welcome back, {{ user.username ?? 'User' }}! 👋</h1>
-                    <p class="welcome-subtitle">Manage your contributions and explore Islamic knowledge</p>
+                    <h1 class="welcome-title">
+                        {% if isLoggedIn %}
+                            Welcome back, {{ user.username ?? 'User' }}! 👋
+                        {% else %}
+                            Welcome to IslamWiki! 🕌
+                        {% endif %}
+                    </h1>
+                    <p class="welcome-subtitle">
+                        {% if isLoggedIn %}
+                            Manage your contributions and explore Islamic knowledge
+                        {% else %}
+                            Discover and contribute to Islamic knowledge
+                        {% endif %}
+                    </p>
+                    <div class="welcome-meta">
+                        <span class="meta-item">
+                            <span class="meta-icon">🕒</span>
+                            {{ currentTime }}
+                        </span>
+                        {% if isLoggedIn and userStats.member_since %}
+                        <span class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            Member since {{ userStats.member_since|date('M j, Y') }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="welcome-actions">
+                    {% if isLoggedIn %}
+                        <a href="/profile" class="btn btn-outline">
+                            <span>👤</span>
+                            View Profile
+                        </a>
+                    {% else %}
+                        <a href="/auth/login" class="btn btn-primary">
+                            <span>🔐</span>
+                            Sign In
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -24,37 +61,87 @@
             <div class="stat-card">
                 <div class="stat-icon">📄</div>
                 <div class="stat-content">
-                    <div class="stat-number">0</div>
+                    <div class="stat-number">{{ userStats.total_pages ?? 0 }}</div>
                     <div class="stat-label">Pages Created</div>
+                    {% if userStats.total_pages > 0 %}
+                        <div class="stat-trend positive">+{{ userStats.total_pages }} this month</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">✏️</div>
                 <div class="stat-content">
-                    <div class="stat-number">0</div>
-                    <div class="stat-label">Edits Made</div>
+                    <div class="stat-number">{{ userStats.total_edits ?? 0 }}</div>
+                    <div class="stat-label">Total Edits</div>
+                    {% if userStats.recent_edits > 0 %}
+                        <div class="stat-trend positive">+{{ userStats.recent_edits }} recent</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👀</div>
                 <div class="stat-content">
-                    <div class="stat-number">0</div>
+                    <div class="stat-number">{{ userStats.watchlist_items ?? 0 }}</div>
                     <div class="stat-label">Pages Watched</div>
+                    {% if userStats.watchlist_items > 0 %}
+                        <div class="stat-trend">Following {{ userStats.watchlist_items }} pages</div>
+                    {% endif %}
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">📅</div>
+                <div class="stat-icon">⭐</div>
                 <div class="stat-content">
-                    <div class="stat-number">Today</div>
-                    <div class="stat-label">Last Active</div>
+                    <div class="stat-number">{{ userStats.contribution_score ?? 0 }}</div>
+                    <div class="stat-label">Contribution Score</div>
+                    {% if userStats.contribution_score > 0 %}
+                        <div class="stat-trend positive">Active contributor</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Quick Stats Row -->
+{% if isLoggedIn and quickStats %}
+<div class="quick-stats-section">
+    <div class="container">
+        <div class="quick-stats-grid">
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">📊</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-number">{{ quickStats.today_activity }}</div>
+                    <div class="quick-stat-label">Today's Activity</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">📈</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-number">{{ quickStats.week_activity }}</div>
+                    <div class="quick-stat-label">This Week</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">📅</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-number">{{ quickStats.month_activity }}</div>
+                    <div class="quick-stat-label">This Month</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">🌐</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-number">{{ quickStats.total_pages_site }}</div>
+                    <div class="quick-stat-label">Total Pages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Quick Actions -->
-<div class="dashboard-section">
+<div class="dashboard-section quick-actions-section">
     <div class="container">
         <div class="dashboard-card">
             <div class="card-header">
@@ -67,6 +154,9 @@
                     <div class="action-content">
                         <h3>Create New Page</h3>
                         <p>Start writing and sharing knowledge</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Primary</span>
+                        </div>
                     </div>
                 </a>
                 <a href="/pages" class="action-card">
@@ -74,6 +164,19 @@
                     <div class="action-content">
                         <h3>Browse All Pages</h3>
                         <p>Explore existing content</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Explore</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="/search" class="action-card">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-content">
+                        <h3>Search Content</h3>
+                        <p>Find specific information</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Search</span>
+                        </div>
                     </div>
                 </a>
                 <a href="/profile" class="action-card">
@@ -81,6 +184,19 @@
                     <div class="action-content">
                         <h3>Edit Profile</h3>
                         <p>Update your information</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Profile</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="/settings" class="action-card">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-content">
+                        <h3>Settings</h3>
+                        <p>Customize your experience</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Settings</span>
+                        </div>
                     </div>
                 </a>
                 <a href="/contributing" class="action-card">
@@ -88,6 +204,9 @@
                     <div class="action-content">
                         <h3>Contributing Guide</h3>
                         <p>Learn best practices</p>
+                        <div class="action-meta">
+                            <span class="action-tag">Guide</span>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -103,12 +222,43 @@
                 <h2 class="card-title">📈 Recent Activity</h2>
                 <p class="card-subtitle">Your latest contributions and edits</p>
             </div>
-            <div class="empty-state">
-                <div class="empty-icon">📊</div>
-                <h3>No recent activity yet</h3>
-                <p>Start contributing to see your activity here!</p>
-                <a href="/pages/create" class="dashboard-btn primary">Create Your First Page</a>
-            </div>
+            {% if recentActivity|length > 0 %}
+                <div class="activity-list">
+                    {% for activity in recentActivity %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {% if activity.type == 'edit' %}✏️{% else %}📄{% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">
+                                <a href="/pages/{{ activity.page_slug }}">{{ activity.page_title }}</a>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-type">{{ activity.action }}</span>
+                                <span class="activity-time">{{ activity.timestamp|date('M j, Y g:i A') }}</span>
+                            </div>
+                        </div>
+                        <div class="activity-badge">
+                            {% if activity.type == 'edit' %}
+                                <span class="badge badge-edit">Edit</span>
+                            {% else %}
+                                <span class="badge badge-create">Create</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="activity-footer">
+                    <a href="/profile" class="dashboard-btn">View All Activity</a>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h3>No recent activity yet</h3>
+                    <p>Start contributing to see your activity here!</p>
+                    <a href="/pages/create" class="dashboard-btn primary">Create Your First Page</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -121,12 +271,40 @@
                 <h2 class="card-title">👀 Watched Pages</h2>
                 <p class="card-subtitle">Pages you're following for updates</p>
             </div>
-            <div class="empty-state">
-                <div class="empty-icon">👀</div>
-                <h3>You're not watching any pages yet</h3>
-                <p>Watch pages to get notified of changes!</p>
-                <a href="/pages" class="dashboard-btn">Browse Pages</a>
-            </div>
+            {% if watchlist|length > 0 %}
+                <div class="watchlist-grid">
+                    {% for page in watchlist %}
+                    <div class="watchlist-item">
+                        <div class="watchlist-icon">📖</div>
+                        <div class="watchlist-content">
+                            <div class="watchlist-title">
+                                <a href="/pages/{{ page.slug }}">{{ page.title }}</a>
+                            </div>
+                            <div class="watchlist-meta">
+                                <span class="watchlist-date">Watched {{ page.watch_date|date('M j, Y') }}</span>
+                                <span class="watchlist-status">Active</span>
+                            </div>
+                        </div>
+                        <div class="watchlist-actions">
+                            <button class="btn btn-sm btn-outline" onclick="unwatchPage({{ page.id }})">
+                                <span>👁️</span>
+                                Unwatch
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="watchlist-footer">
+                    <a href="/pages" class="dashboard-btn">Browse More Pages</a>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">👀</div>
+                    <h3>You're not watching any pages yet</h3>
+                    <p>Watch pages to get notified of changes!</p>
+                    <a href="/pages" class="dashboard-btn">Browse Pages</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -139,15 +317,36 @@
                 <h2 class="card-title">🎯 Your Contributions</h2>
                 <p class="card-subtitle">Pages you've created and edited</p>
             </div>
-            <div class="empty-state">
-                <div class="empty-icon">🎯</div>
-                <h3>No contributions yet</h3>
-                <p>Start contributing to build your profile!</p>
-                <div class="empty-actions">
-                    <a href="/pages/create" class="dashboard-btn primary">Create Page</a>
+            {% if userStats.total_pages > 0 or userStats.total_edits > 0 %}
+                <div class="contributions-summary">
+                    <div class="contribution-stat">
+                        <div class="contribution-number">{{ userStats.total_pages }}</div>
+                        <div class="contribution-label">Pages Created</div>
+                    </div>
+                    <div class="contribution-stat">
+                        <div class="contribution-number">{{ userStats.total_edits }}</div>
+                        <div class="contribution-label">Total Edits</div>
+                    </div>
+                    <div class="contribution-stat">
+                        <div class="contribution-number">{{ userStats.contribution_score }}</div>
+                        <div class="contribution-label">Contribution Score</div>
+                    </div>
+                </div>
+                <div class="contributions-actions">
+                    <a href="/pages/create" class="dashboard-btn primary">Create New Page</a>
                     <a href="/pages" class="dashboard-btn">Edit Existing</a>
                 </div>
-            </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🎯</div>
+                    <h3>No contributions yet</h3>
+                    <p>Start contributing to build your profile!</p>
+                    <div class="empty-actions">
+                        <a href="/pages/create" class="dashboard-btn primary">Create Page</a>
+                        <a href="/pages" class="dashboard-btn">Edit Existing</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -196,10 +395,116 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🕌</div>
+                    <div class="resource-content">
+                        <h3><a href="/quran">Quran Studies</a></h3>
+                        <p>Access comprehensive resources on Quranic studies and interpretation.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Quran</span>
+                            <a href="/quran" class="resource-link">Study Quran →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📜</div>
+                    <div class="resource-content">
+                        <h3><a href="/hadith">Hadith Collection</a></h3>
+                        <p>Explore authentic hadith collections and their scholarly analysis.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Hadith</span>
+                            <a href="/hadith" class="resource-link">Browse Hadith →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🕐</div>
+                    <div class="resource-content">
+                        <h3><a href="/prayer">Prayer Times</a></h3>
+                        <p>Access prayer times and Islamic calendar information.</p>
+                        <div class="resource-meta">
+                            <span class="resource-tag">Prayer</span>
+                            <a href="/prayer" class="resource-link">Check Times →</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Site Statistics -->
+{% if isLoggedIn %}
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2 class="card-title">📊 Site Statistics</h2>
+                <p class="card-subtitle">Overview of IslamWiki activity</p>
+            </div>
+            <div class="site-stats-grid">
+                <div class="site-stat-item">
+                    <div class="site-stat-icon">📄</div>
+                    <div class="site-stat-content">
+                        <div class="site-stat-number">{{ quickStats.total_pages_site }}</div>
+                        <div class="site-stat-label">Total Pages</div>
+                    </div>
+                </div>
+                <div class="site-stat-item">
+                    <div class="site-stat-icon">👥</div>
+                    <div class="site-stat-content">
+                        <div class="site-stat-number">1,234</div>
+                        <div class="site-stat-label">Active Users</div>
+                    </div>
+                </div>
+                <div class="site-stat-item">
+                    <div class="site-stat-icon">✏️</div>
+                    <div class="site-stat-content">
+                        <div class="site-stat-number">5,678</div>
+                        <div class="site-stat-label">Total Edits</div>
+                    </div>
+                </div>
+                <div class="site-stat-item">
+                    <div class="site-stat-icon">📚</div>
+                    <div class="site-stat-content">
+                        <div class="site-stat-number">890</div>
+                        <div class="site-stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
-{% block styles %}{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dashboard functionality
+    initializeDashboard();
+});
+
+function initializeDashboard() {
+    // Add any dashboard-specific JavaScript here
+    console.log('Dashboard initialized');
+}
+
+function unwatchPage(pageId) {
+    if (confirm('Are you sure you want to unwatch this page?')) {
+        // TODO: Implement unwatch functionality
+        console.log('Unwatching page:', pageId);
+        alert('Unwatch functionality will be implemented soon!');
+    }
+}
+
+// Auto-refresh dashboard data every 5 minutes
+setInterval(function() {
+    // TODO: Implement auto-refresh functionality
+    console.log('Dashboard auto-refresh triggered');
+}, 300000);
+</script>
+{% endblock %}

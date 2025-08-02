@@ -27,7 +27,7 @@
         </div>
         
         <div class="px-4 py-5 sm:p-6">
-            <form method="POST" action="{{ isNew ? path('pages.store') : path('pages.update', {slug: page.slug}) }}">
+            <form method="POST" action="{{ isNew ? '/pages' : '/pages/' ~ page.slug }}">
                 {% if not isNew %}
                     <input type="hidden" name="_method" value="PUT">
                 {% endif %}
@@ -81,7 +81,7 @@
                     </div>
                     
                     <div class="flex justify-end space-x-3">
-                        <a href="{{ isNew ? '/' : path('pages.show', {slug: page.slug}) }}" 
+                        <a href="{{ isNew ? '/' : '/pages/' ~ page.slug }}" 
                            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Cancel
                         </a>
@@ -104,22 +104,22 @@
         <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
             <div class="space-y-4">
                 <div>
-                    <a href="{{ path('pages.history', {slug: page.slug}) }}" class="text-indigo-600 hover:text-indigo-900">
+                    <a href="/pages/{{ page.slug }}/history" class="text-indigo-600 hover:text-indigo-900">
                         View page history
                     </a>
                 </div>
-                {% if not page.isLocked and is_granted('ROLE_ADMIN') %}
+                {% if not page.isLocked and auth.isAdmin() %}
                 <div>
-                    <form action="{{ path('pages.lock', {slug: page.slug}) }}" method="POST" class="inline">
+                    <form action="/pages/{{ page.slug }}/lock" method="POST" class="inline">
                         <button type="submit" class="text-yellow-600 hover:text-yellow-900">
                             Lock this page
                         </button>
                     </form>
                 </div>
                 {% endif %}
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if auth.isAdmin() %}
                 <div>
-                    <form action="{{ path('pages.destroy', {slug: page.slug}) }}" method="POST" class="inline"
+                    <form action="/pages/{{ page.slug }}" method="POST" class="inline"
                           onsubmit="return confirm('Are you sure you want to delete this page? This cannot be undone.');">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="text-red-600 hover:text-red-900">

@@ -30,6 +30,17 @@ $router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@regis
     
 $router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
 
+// Password Reset Routes
+$router->get('/forgot-password', 'IslamWiki\Http\Controllers\Auth\AuthController@showForgotPassword');
+$router->post('/forgot-password', 'IslamWiki\Http\Controllers\Auth\AuthController@forgotPassword');
+$router->get('/reset-password', 'IslamWiki\Http\Controllers\Auth\AuthController@showResetPassword');
+$router->post('/reset-password', 'IslamWiki\Http\Controllers\Auth\AuthController@resetPassword');
+
+// Profile Routes
+$router->get('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@profile');
+$router->post('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@updateProfile');
+$router->post('/profile/change-password', 'IslamWiki\Http\Controllers\Auth\AuthController@changePassword');
+
 // Debug session route (must be before variable routes)
 $router->get('/debug-session', function($request) use ($router) {
     try {
@@ -66,14 +77,13 @@ $router->get('/dashboard', 'IslamWiki\Http\Controllers\DashboardController@index
 
 // Profile
 $router->get('/profile', 'IslamWiki\Http\Controllers\ProfileController@show');
-$router->put('/profile', 'IslamWiki\Http\Controllers\ProfileController@update');
-$router->put('/profile/password', 'IslamWiki\Http\Controllers\ProfileController@updatePassword');
+$router->post('/profile/update', 'IslamWiki\Http\Controllers\ProfileController@update');
 
-// Settings (Protected - Requires Authentication)
-$router->get('/settings', 'IslamWiki\Http\Controllers\SettingsController@index', ['auth']);
-$router->post('/settings/skin', 'IslamWiki\Http\Controllers\SettingsController@updateSkin', ['auth']);
-$router->get('/settings/skins', 'IslamWiki\Http\Controllers\SettingsController@getAvailableSkins', ['auth']);
-$router->get('/settings/skin/{name}', 'IslamWiki\Http\Controllers\SettingsController@getSkinInfo', ['auth']);
+// Settings (Temporarily unprotected for debugging)
+$router->get('/settings', 'IslamWiki\Http\Controllers\SettingsController@index');
+$router->post('/settings/skin', 'IslamWiki\Http\Controllers\SettingsController@updateSkin');
+$router->get('/settings/skins', 'IslamWiki\Http\Controllers\SettingsController@getAvailableSkins');
+$router->get('/settings/skin/{name}', 'IslamWiki\Http\Controllers\SettingsController@getSkinInfo');
 
 // Test endpoint for debugging
 $router->post('/test-skin-update', function($request) {
@@ -250,3 +260,7 @@ $router->get('/api/prayer-times/names', 'IslamWiki\Http\Controllers\PrayerTimeCo
 $router->get('/search', 'IslamWiki\Http\Controllers\SearchController@index');
 $router->get('/api/search', 'IslamWiki\Http\Controllers\SearchController@apiSearch');
 $router->get('/api/search/suggestions', 'IslamWiki\Http\Controllers\SearchController@apiSuggestions');
+
+$router->get('/test-router-alive', function($request) {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
+});

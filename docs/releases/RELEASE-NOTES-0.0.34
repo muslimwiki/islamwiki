@@ -1,0 +1,165 @@
+# Release Notes - Version 0.0.34
+
+**Release Date**: 2025-08-02  
+**Version**: 0.0.34  
+**Status**: Stable Release
+
+## 🎉 Major Improvements
+
+### ✅ Skin System Completely Fixed
+- **LocalSettings Variable Loading**: Fixed `wgValidSkins` and `wgActiveSkin` not being properly loaded
+- **Security Configuration**: Resolved secret key warnings with proper random key generation
+- **SkinManager Enhancement**: Improved initialization and error handling
+- **Global Variable Scope**: Fixed scope issues with LocalSettings variables
+- **Enhanced Error Handling**: Better logging and debugging capabilities
+
+### 📁 File Organization Overhaul
+- **Clean Public Directory**: Moved 60+ test and debug files to organized subdirectories
+- **Structured Organization**: Created `/tests/` and `/debug/` subdirectories
+- **Improved Security**: Separated debug files from main application
+- **Better Maintenance**: Clear separation of concerns for development files
+
+## 🔧 Technical Fixes
+
+### Skin System
+- Fixed LocalSettings variable loading in SkinManager constructor
+- Enhanced global variable access with proper error handling
+- Improved SkinManager initialization with fallback mechanisms
+- Fixed security configuration warnings in LocalSettings.php
+- Added comprehensive skin validation and debugging tools
+
+### File Organization
+- **41 test files** moved to `/public/tests/`
+- **19 debug files** moved to `/public/debug/`
+- Created comprehensive documentation for new structure
+- Maintained all existing functionality while improving organization
+
+### Security Improvements
+- Implemented proper random key generation for secret keys
+- Fixed session secret configuration warnings
+- Enhanced error handling and logging throughout the application
+- Improved container service registration and validation
+
+## 📊 System Status
+
+### Skin System Status
+- ✅ **System Status**: Fully operational
+- ✅ **Loaded Skins**: 2 (Bismillah + lowercase variant)
+- ✅ **Active Skin**: Bismillah (v0.0.28)
+- ✅ **Website**: Accessible at https://local.islam.wiki
+- ✅ **Skin Rendering**: Bismillah skin with purple/indigo theme active
+
+### File Organization Results
+- **Before**: 60+ files in public root directory
+- **After**: 4 essential files in public root directory
+- **Tests**: 41 files organized in `/tests/`
+- **Debug**: 19 files organized in `/debug/`
+
+## 🛠️ New Features
+
+### Enhanced Debugging Tools
+- **Comprehensive Skin Debug**: `debug-skin-comprehensive.php` for complete system testing
+- **Skin System Status**: `skin-system-status.php` for detailed system reporting
+- **Organized Test Suite**: All test files now in dedicated `/tests/` directory
+- **Structured Debug Tools**: All debug files now in dedicated `/debug/` directory
+
+### Improved Documentation
+- **Public Folder README**: Complete documentation of new file organization
+- **Enhanced Release Notes**: Detailed technical specifications
+- **Better Code Comments**: Improved inline documentation throughout
+
+## 🔍 Testing & Validation
+
+### Comprehensive Testing
+- ✅ Skin loading system fully validated
+- ✅ All container services confirmed working
+- ✅ File system checks completed
+- ✅ Security configuration verified
+- ✅ Website accessibility confirmed
+
+### Debug Tools Created
+- `debug-skin-comprehensive.php` - Complete skin system testing
+- `skin-system-status.php` - Detailed status reporting
+- Enhanced error logging and debugging capabilities
+
+## 📈 Performance Improvements
+
+### Reduced Complexity
+- Cleaner public directory structure
+- Better organized development files
+- Improved maintainability and debugging
+- Enhanced security through file separation
+
+### Enhanced Reliability
+- Robust skin loading with fallback mechanisms
+- Improved error handling throughout the application
+- Better logging and debugging capabilities
+- More reliable container service management
+
+## 🚀 Migration Notes
+
+### For Developers
+- Test files now located in `/public/tests/`
+- Debug files now located in `/public/debug/`
+- Main application files remain in public root
+- All URLs for main functionality unchanged
+
+### For Users
+- No changes to main website functionality
+- Improved reliability and performance
+- Enhanced security through better file organization
+- Better debugging and maintenance capabilities
+
+## 🔮 Future Roadmap
+
+### Planned Improvements
+- Additional skin themes and customization options
+- Enhanced skin switching functionality
+- Improved user preference management
+- Better integration with Islamic content features
+
+### Technical Enhancements
+- Further optimization of skin loading system
+- Enhanced caching mechanisms
+- Improved error handling and user feedback
+- Better integration with Islamic calendar and prayer times
+
+## 📋 Technical Specifications
+
+### System Requirements
+- PHP 8.0 or higher
+- MySQL 5.7 or higher
+- Apache/Nginx web server
+- Composer for dependency management
+
+### Dependencies
+- Twig templating engine
+- PDO for database operations
+- Session management
+- CSRF protection
+
+### File Structure
+```
+public/
+├── index.php                    # Main application entry point
+├── skin-system-status.php       # Skin system status report
+├── update-user-skin.php         # User skin update utility
+├── .htaccess                    # Apache configuration
+├── css/                         # Stylesheets
+├── js/                          # JavaScript files
+├── tests/                       # Test files (41 files)
+└── debug/                       # Debug files (19 files)
+```
+
+## 🎯 Summary
+
+Version 0.0.34 represents a significant milestone in IslamWiki's development, with the complete resolution of skin loading issues and a major improvement in file organization. The application is now more stable, secure, and maintainable, with enhanced debugging capabilities and better development workflow.
+
+**Key Achievements:**
+- ✅ Complete skin system fix
+- ✅ Major file organization improvement
+- ✅ Enhanced security configuration
+- ✅ Better debugging and testing tools
+- ✅ Improved documentation and maintainability
+
+This release establishes a solid foundation for future development and provides a much cleaner, more professional codebase structure. 

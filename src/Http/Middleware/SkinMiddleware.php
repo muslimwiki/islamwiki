@@ -39,6 +39,7 @@ class SkinMiddleware
     public function handle(Request $request, callable $next): Response
     {
         error_log("SkinMiddleware::handle - Starting skin middleware execution");
+        error_log("SkinMiddleware::handle - Request URI: " . $request->getUri()->getPath());
         
         // Update skin data for the current user
         $this->updateSkinDataForCurrentUser();
@@ -46,7 +47,11 @@ class SkinMiddleware
         error_log("SkinMiddleware::handle - Skin middleware execution completed");
         
         // Continue with the request
-        return $next($request);
+        $response = $next($request);
+        
+        error_log("SkinMiddleware::handle - Response status: " . $response->getStatusCode());
+        
+        return $response;
     }
     
     /**

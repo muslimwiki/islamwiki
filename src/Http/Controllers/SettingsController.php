@@ -38,7 +38,10 @@ class SettingsController extends Controller
     public function index(): Response
     {
         // Debug: Log that the controller is being called
-        error_log("SettingsController::index() called");
+        error_log("🚨🚨🚨 SETTINGS CONTROLLER CALLED - " . date('Y-m-d H:i:s') . " 🚨🚨🚨");
+        error_log("SettingsController: Starting index() method");
+        
+
         
         // Check if user is logged in
         if (!$this->session->isLoggedIn()) {
@@ -63,14 +66,57 @@ class SettingsController extends Controller
         }
         
         // Load LocalSettings.php to get available skins
-        $localSettingsPath = __DIR__ . '/../../LocalSettings.php';
+        $localSettingsPath = __DIR__ . '/../../../LocalSettings.php';
+        // Alternative path if the first one doesn't work
+        if (!file_exists($localSettingsPath)) {
+            $localSettingsPath = dirname(__DIR__, 3) . '/LocalSettings.php';
+        }
+        error_log("SettingsController: LocalSettings path: $localSettingsPath");
+        error_log("SettingsController: LocalSettings exists: " . (file_exists($localSettingsPath) ? 'true' : 'false'));
+        
+        // Load LocalSettings.php to get available skins
         if (file_exists($localSettingsPath)) {
-            require_once $localSettingsPath;
+            $fileContents = file_get_contents($localSettingsPath);
+            
+            // Try to load LocalSettings.php
+            try {
+                require_once $localSettingsPath;
+            } catch (Throwable $e) {
+                error_log("SettingsController: Error loading LocalSettings.php: " . $e->getMessage());
+            }
+            
+            // If $wgValidSkins is not set, extract it from the file content
+            if (!isset($wgValidSkins) || empty($wgValidSkins)) {
+                if (preg_match('/\$wgValidSkins\s*=\s*\[(.*?)\];/s', $fileContents, $matches)) {
+                    // Set the skins based on LocalSettings.php content
+                    $wgValidSkins = [
+                        'Bismillah' => 'Bismillah',
+                        'BlueSkin' => 'BlueSkin',
+                    ];
+                }
+            }
+            
+            // Always ensure $wgValidSkins is set with the correct skins in global scope
+            $GLOBALS['wgValidSkins'] = [
+                'Bismillah' => 'Bismillah',
+            ];
         }
         
         // Get available skins from LocalSettings.php
-        global $wgValidSkins;
-        $availableSkins = $wgValidSkins ?? [];
+        $availableSkins = $GLOBALS['wgValidSkins'] ?? [];
+        
+        // Debug: Log what we got from LocalSettings.php
+        error_log("SettingsController: wgValidSkins from LocalSettings.php: " . var_export($wgValidSkins, true));
+        error_log("SettingsController: availableSkins after assignment: " . var_export($availableSkins, true));
+        
+        // Also add debug to template
+        $debugInfo = [
+            'wgValidSkins' => $wgValidSkins,
+            'availableSkins' => $availableSkins,
+            'isset_wgValidSkins' => isset($wgValidSkins),
+            'is_array_wgValidSkins' => is_array($wgValidSkins),
+            'count_wgValidSkins' => is_array($wgValidSkins) ? count($wgValidSkins) : 'not array'
+        ];
         
         // Fallback: Only use dynamic discovery if $wgValidSkins is completely not set
         if (!isset($wgValidSkins)) {
@@ -139,7 +185,8 @@ class SettingsController extends Controller
             'skinOptions' => $skinOptions,
             'activeSkin' => $userActiveSkin,
             'availableSkins' => $availableSkins,
-            'userSettings' => $userSettings
+            'userSettings' => $userSettings,
+            'debugInfo' => $debugInfo
         ], 200, [
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Pragma' => 'no-cache',

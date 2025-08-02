@@ -52,8 +52,15 @@ class SkinManager
         }
         
         // Get active skin from LocalSettings
-        global $wgActiveSkin;
-        $this->activeSkin = strtolower($wgActiveSkin ?? 'bismillah');
+        global $wgActiveSkin, $wgValidSkins;
+        $this->activeSkin = $wgActiveSkin ?? 'Bismillah';
+        
+        // Ensure $wgValidSkins is set
+        if (!isset($wgValidSkins)) {
+            $wgValidSkins = [
+                'Bismillah' => 'Bismillah',
+            ];
+        }
         
         $this->loadSkins();
     }
@@ -106,9 +113,11 @@ class SkinManager
                         $skin = new UserSkin($config, $skinDir);
                         
                         if ($skin->validate()) {
-                            // Store skin with lowercase key for case-insensitive access
+                            // Store skin with original case for proper matching
+                            $this->skins[$skinName] = $skin;
+                            // Also store with lowercase key for case-insensitive access
                             $this->skins[strtolower($skinName)] = $skin;
-                            error_log("SkinManager: Successfully loaded skin $skinName as " . strtolower($skinName));
+                            error_log("SkinManager: Successfully loaded skin $skinName");
                         } else {
                             error_log("SkinManager: Skin $skinName failed validation");
                         }
@@ -150,7 +159,12 @@ class SkinManager
      */
     public function getSkin(string $name): ?Skin
     {
-        // Convert to lowercase for consistent access
+        // First try exact match
+        if (isset($this->skins[$name])) {
+            return $this->skins[$name];
+        }
+        
+        // Then try case-insensitive match
         $lowerName = strtolower($name);
         return $this->skins[$lowerName] ?? null;
     }
@@ -162,8 +176,8 @@ class SkinManager
     {
         $skin = $this->getSkin($name);
         if ($skin !== null) {
-            // Use lowercase for consistency
-            $this->activeSkin = strtolower($name);
+            // Preserve original case for consistency with LocalSettings
+            $this->activeSkin = $name;
             $this->currentSkin = $skin;
             return true;
         }
@@ -177,7 +191,9 @@ class SkinManager
     public function getActiveSkin(): ?Skin
     {
         if ($this->currentSkin === null) {
+            error_log("SkinManager::getActiveSkin - Looking for skin: " . $this->activeSkin);
             $this->currentSkin = $this->getSkin($this->activeSkin);
+            error_log("SkinManager::getActiveSkin - Found skin: " . ($this->currentSkin ? $this->currentSkin->getName() : 'null'));
         }
         
         return $this->currentSkin;
@@ -254,6 +270,11 @@ class SkinManager
      */
     public function getActiveSkinName(): string
     {
+        // Return the proper display name from the skin object if available
+        $skin = $this->getActiveSkin();
+        if ($skin !== null) {
+            return $skin->getName();
+        }
         return $this->activeSkin;
     }
     
@@ -269,9 +290,9 @@ class SkinManager
             
             // Extract the active skin from the file content
             if (preg_match('/\$wgActiveSkin\s*=\s*env\(\'ACTIVE_SKIN\',\s*\'([^\']+)\'\);/', $content, $matches)) {
-                $this->activeSkin = strtolower($matches[1]);
+                $this->activeSkin = $matches[1];
             } else {
-                $this->activeSkin = 'bismillah'; // fallback
+                $this->activeSkin = 'Bismillah'; // fallback
             }
         }
         
@@ -304,6 +325,12 @@ class SkinManager
      */
     public function hasSkin(string $name): bool
     {
+        // First try exact match
+        if (isset($this->skins[$name])) {
+            return true;
+        }
+        
+        // Then try case-insensitive match
         return isset($this->skins[strtolower($name)]);
     }
     
@@ -399,17 +426,24 @@ class SkinManager
     public function unregisterSkin(string $name): bool
     {
         $lowerName = strtolower($name);
-        if (isset($this->skins[$lowerName])) {
-            unset($this->skins[$lowerName]);
-            
-            // If we're unregistering the active skin, switch to default
-            if ($this->activeSkin === $lowerName) {
-                $this->setActiveSkin('bismillah');
-            }
-            
-            return true;
+        $removed = false;
+        
+        // Remove both exact and lowercase versions
+        if (isset($this->skins[$name])) {
+            unset($this->skins[$name]);
+            $removed = true;
         }
         
-        return false;
+        if (isset($this->skins[$lowerName])) {
+            unset($this->skins[$lowerName]);
+            $removed = true;
+        }
+        
+        // If we're unregistering the active skin, switch to default
+        if ($this->activeSkin === $name || $this->activeSkin === $lowerName) {
+            $this->setActiveSkin('Bismillah');
+        }
+        
+        return $removed;
     }
 } 

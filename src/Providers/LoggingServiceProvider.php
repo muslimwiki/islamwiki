@@ -23,7 +23,7 @@ class LoggingServiceProvider
      */
     public function register(ContainerInterface $container): void
     {
-        $container->set(LoggerInterface::class, function (ContainerInterface $c) {
+        $container->bind(LoggerInterface::class, function (ContainerInterface $c) {
             $config = $c->get('settings')['logging'] ?? [];
             
             // Ensure logs directory exists
@@ -44,7 +44,7 @@ class LoggingServiceProvider
         });
         
         // Alias for convenience
-        $container->set('logger', function (ContainerInterface $c) {
+        $container->bind('logger', function (ContainerInterface $c) {
             return $c->get(LoggerInterface::class);
         });
     }

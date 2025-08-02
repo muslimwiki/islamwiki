@@ -2,32 +2,44 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
-## 🚀 Current Version: 0.0.33
+## 🚀 Current Version: 0.0.34
 
-**Latest Fix**: Resolved critical skin selection display issue where settings page was not showing any skins in the skin selection interface.
+**Latest Feature**: Complete skin system fix and major file organization overhaul with enhanced debugging tools.
 
 ## ✨ Features
 
-- **Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah themes
-- **User Authentication**: Secure login and registration system
-- **Settings Management**: User preferences and skin selection
-- **Database Integration**: Robust user settings and preferences storage
-- **Security Features**: CSRF protection and session management
-- **Modern Architecture**: PHP MVC with dependency injection
+- **📝 Page Creation System**: Complete wiki page creation with Markdown support
+- **🏷️ Namespace Support**: Organize pages with namespaces (Help, User, Template, Category)
+- **📚 Revision Tracking**: Automatic revision history with user attribution
+- **🎨 Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah themes
+- **🔐 User Authentication**: Secure login and registration system
+- **⚙️ Settings Management**: User preferences and skin selection
+- **💾 Database Integration**: Robust user settings and preferences storage
+- **🛡️ Security Features**: CSRF protection and session management
+- **🏗️ Modern Architecture**: PHP MVC with dependency injection
 
-## 🔧 Recent Fixes (v0.0.33)
+## 🔧 Recent Features (v0.0.34)
 
-### Critical Skin Selection Display Issue Resolved
-- **Problem**: Settings page showed empty skin selection with "skinOptions count = 0"
-- **Root Cause**: Global variable `$wgValidSkins` was not being accessed correctly in SettingsController scope
-- **Solution**: Added fallback mechanism that provides hardcoded skin configuration when global variable is not accessible
-- **Result**: Settings page now correctly displays both Bismillah and GreenSkin skins
+### Complete Skin System Fix
+- **Enhanced SkinManager**: Improved initialization and error handling with fallback mechanisms
+- **LocalSettings Integration**: Fixed variable loading and global scope issues
+- **Security Configuration**: Resolved secret key warnings with proper random key generation
+- **Comprehensive Debugging**: Created advanced debugging tools for skin system validation
+- **System Status Reporting**: Added detailed skin system status reporting
+
+### File Organization Overhaul
+- **Clean Public Directory**: Moved 60+ test and debug files to organized subdirectories
+- **Structured Organization**: Created `/tests/` (41 files) and `/debug/` (19 files) subdirectories
+- **Improved Security**: Separated debug files from main application
+- **Better Maintenance**: Clear separation of concerns for development files
+- **Enhanced Documentation**: Added comprehensive README for new file structure
 
 ### Technical Improvements
-- Implemented robust fallback for skin configuration loading
-- Enhanced error handling for global variable access
-- Maintained backward compatibility with LocalSettings.php configuration
-- Improved reliability of skin selection interface
+- Enhanced SkinManager with better error handling and validation
+- Improved container service registration and validation
+- Added comprehensive skin validation and debugging tools
+- Enhanced logging and debugging capabilities throughout the application
+- Better organized development workflow with structured file organization
 
 ## 🛠️ Installation
 
@@ -59,13 +71,28 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
 ## 🎨 Skin System
 
-IslamWiki supports multiple visual themes:
+IslamWiki features a robust and flexible skin system:
 
-- **Bismillah**: Default Islamic-themed skin with modern design
-- **BlueSkin**: Clean blue-themed interface
+- **Multiple Themes**: Bismillah (default), BlueSkin, and GreenSkin available
+- **User Preferences**: Individual skin selection with database storage
+- **Real-time Switching**: Change skins through the Settings page
+- **Responsive Design**: All skins optimized for mobile and desktop
+- **Islamic Aesthetics**: Beautiful Islamic-themed designs and typography
+
+### Skin Features
+- **Bismillah**: Default Islamic-themed skin with purple/indigo gradient
+- **BlueSkin**: Clean blue-themed interface with modern design
 - **GreenSkin**: Green-themed skin with Islamic aesthetics
+- **Custom CSS/JS**: Each skin supports custom styles and scripts
+- **Template System**: Flexible Twig-based template system
 
-Users can switch skins through the Settings page, with preferences stored in the database.
+### Debugging Tools
+- **Skin Status**: Access `/skin-system-status.php` for detailed system reporting
+- **Comprehensive Testing**: Advanced debugging tools in `/debug/` directory
+- **Validation**: Complete skin validation and error reporting
+- **Performance Monitoring**: Real-time skin loading and performance metrics
+
+
 
 ## 🔒 Security Features
 

@@ -96,8 +96,35 @@ class HomeController extends Controller
                 error_log('HomeController: Error getting user: ' . $e->getMessage());
             }
 
+            // Get skin data from proper skin manager
+            $skinData = [];
+            try {
+                // Load LocalSettings to get active skin
+                require_once dirname(__DIR__, 3) . '/LocalSettings.php';
+                global $wgActiveSkin;
+                
+                $activeSkinName = $wgActiveSkin ?? 'Bismillah';
+                $skinPath = dirname(__DIR__, 3) . '/skins/' . $activeSkinName;
+                $cssPath = $skinPath . '/css/style.css';
+                $jsPath = $skinPath . '/js/script.js';
+                
+                $skinData = [
+                    'skin_css' => file_exists($cssPath) ? file_get_contents($cssPath) : '/* ' . $activeSkinName . ' CSS not found */',
+                    'skin_js' => file_exists($jsPath) ? file_get_contents($jsPath) : '/* ' . $activeSkinName . ' JS not found */',
+                    'skin_name' => $activeSkinName,
+                    'skin_version' => '1.0.0',
+                    'skin_config' => [],
+                    'active_skin' => $activeSkinName,
+                ];
+                error_log('HomeController: Active skin: ' . $activeSkinName);
+                error_log('HomeController: CSS path: ' . $cssPath . ' (exists: ' . (file_exists($cssPath) ? 'yes' : 'no') . ')');
+                error_log('HomeController: Skin data loaded successfully');
+            } catch (\Exception $e) {
+                error_log('HomeController: Error loading skin data: ' . $e->getMessage());
+            }
+
             // Use Twig template instead of hardcoded HTML
-            $data = [
+            $data = array_merge([
                 'title' => 'Welcome to IslamWiki',
                 'message' => 'Your Islamic knowledge base and resource center',
                 'recentPages' => $recentPages,
@@ -113,7 +140,7 @@ class HomeController extends Controller
                     'Dependency injection container',
                     'Comprehensive error handling and logging'
                 ]
-            ];
+            ], $skinData);
             
             error_log('HomeController@index: Rendering Twig template');
             $response = $this->view('pages/home', $data);

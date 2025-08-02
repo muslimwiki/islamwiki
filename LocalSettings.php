@@ -27,24 +27,30 @@ declare(strict_types=1);
  * This file contains the main configuration settings for IslamWiki.
  * It follows MediaWiki-inspired structure while incorporating modern PHP practices.
  * 
- * Version: 0.0.18
- * Date: 2025-07-30
+ * Version: 0.0.34
+ * Date: 2025-08-02
  */
 
 // Load environment variables
-if (file_exists(__DIR__ . '/.env') && class_exists('Dotenv\Dotenv')) {
+if (file_exists(__DIR__ . '/.env')) {
     try {
-        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-        $dotenv->load();
+        if (class_exists('Dotenv\Dotenv')) {
+            $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+            $dotenv->load();
+        }
     } catch (Exception $e) {
-        // Ignore dotenv errors, continue with defaults
+        // Dotenv not available, continue without it
     }
 }
 
 // Helper function to get environment variables with defaults
 if (!function_exists('env')) {
     function env($key, $default = null) {
-        return $_ENV[$key] ?? $default;
+        try {
+            return $_ENV[$key] ?? $default;
+        } catch (Exception $e) {
+            return $default;
+        }
     }
 }
 
@@ -118,16 +124,19 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
  */
 $wgValidSkins = [
     'Bismillah' => 'Bismillah',
-
-    'GreenSkin' => 'GreenSkin',
 ];
 
 /**
  * Active skin configuration
  * Set this to the name of the skin folder in /skins/
- * Available skins: Bismillah, GreenSkin, etc.
+ * Available skins: Bismillah, etc.
  */
-$wgActiveSkin = env('ACTIVE_SKIN', 'GreenSkin');
+$wgActiveSkin = env('ACTIVE_SKIN', 'Bismillah');
+
+// Ensure the active skin is always set
+if (empty($wgActiveSkin)) {
+    $wgActiveSkin = 'Bismillah';
+}
 
 /**
  * Default skin for new users
@@ -146,19 +155,15 @@ $wgSkinConfig = [
 /**
  * Skin-specific settings
  */
-$wgBismillahSkinSettings = [
-    'gradient_enabled' => true,
-    'islamic_patterns' => true,
-    'arabic_font' => true,
-];
+//$wgBismillahSkinSettings = [
+//    'gradient_enabled' => true,
+//    'islamic_patterns' => true,
+//    'arabic_font' => true,
+//];
 
 
 
-$wgGreenSkinSettings = [
-    'gradient_enabled' => true,
-    'nature_theme' => true,
-    'green_accent' => true,
-];
+
 
 // ============================================================================
 // APPLICATION CONFIGURATION
@@ -182,9 +187,9 @@ $wgArticlePath = env('ARTICLE_PATH', '/wiki/$1');
 /**
  * Security configuration
  */
-$wgSecretKey = env('APP_KEY', 'your-secret-key-here');
-$wgSessionSecret = env('SESSION_SECRET', 'your-session-secret-here');
-$wgUpgradeKey = env('UPGRADE_KEY', 'your-upgrade-key-here');
+$wgSecretKey = env('APP_KEY', 'islamwiki-secret-key-' . bin2hex(random_bytes(32)));
+$wgSessionSecret = env('SESSION_SECRET', 'islamwiki-session-secret-' . bin2hex(random_bytes(32)));
+$wgUpgradeKey = env('UPGRADE_KEY', 'islamwiki-upgrade-key-' . bin2hex(random_bytes(32)));
 
 /**
  * File upload configuration
