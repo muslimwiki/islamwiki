@@ -1,74 +1,251 @@
-# Dependencies
-/vendor/
-/node_modules/
+# IslamWiki .gitignore
+# Version: 0.0.34
+# Date: 2025-01-02
 
-# Environment files
-.env
-.env.local
-.env.production
-.env.staging
-
-# Logs
-/logs/
-/storage/logs/
-*.log
-
-# Cache
-/storage/framework/cache/
-/storage/framework/views/
-/storage/framework/sessions/
-/var/cache/
-
-# Temporary files
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
-
-# IDE files
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Backup files
-*.bak
-*.backup
-*.old
-
-# Test files
-/tests/coverage/
-.phpunit.result.cache
-
-# Build files
-/build/
-/dist/
-
-# Database
-*.sqlite
-*.db
-
-# Uploads
-/public/uploads/
-/storage/uploads/
+# =============================================================================
+# PHP & Composer
+# =============================================================================
 
 # Composer
+/vendor/
 composer.phar
 composer.lock
 
 # PHP
 *.php~
 *.php.bak
+*.php.swp
+*.php.swo
 
-# Configuration overrides
-config/*.local.php
+# =============================================================================
+# Environment & Configuration
+# =============================================================================
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+.env.test
+
+# Configuration files with sensitive data
+config/database.php
+config/app.php
+LocalSettings.php
+
+# =============================================================================
+# Sessions & Temporary Files
+# =============================================================================
+
+# Session files
+storage/sessions/
+storage/sessions/*
+*.sess
+sess_*
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.log
+
+# =============================================================================
+# Cache & Compiled Files
+# =============================================================================
+
+# Cache directories
+storage/cache/
+storage/framework/cache/
+var/cache/
+cache/
+
+# Compiled templates
+storage/framework/views/
+storage/framework/compiledViews/
+var/views/
+
+# =============================================================================
+# Logs
+# =============================================================================
+
+# Log files
+storage/logs/
+logs/
+*.log
+php_errors.log
+error_log
+
+# =============================================================================
+# Database
+# =============================================================================
+
+# Database files
+*.sql
+*.sqlite
+*.db
+database.sql
+backup/
+
+# =============================================================================
+# IDE & Editor Files
+# =============================================================================
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =============================================================================
+# OS Generated Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+# Uploads & User Content
+# =============================================================================
+
+# Upload directories
+public/uploads/
+uploads/
+storage/app/public/
+public/storage/
+
+# User uploaded files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+
+# =============================================================================
+# Testing & Development
+# =============================================================================
+
+# Test files (keep test scripts but ignore test data)
+tests/data/
+tests/tmp/
+test-results/
+coverage/
+
+# Development files
+*.dev.php
+*.test.php
+debug_*.php
+test_*.php
+
+# =============================================================================
+# Security & Sensitive Files
+# =============================================================================
+
+# Private keys and certificates
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# =============================================================================
+# Node.js (if using frontend build tools)
+# =============================================================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# =============================================================================
+# Build & Distribution
+# =============================================================================
+
+# Build directories
+build/
+dist/
+out/
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+
+# =============================================================================
+# IslamWiki Specific
+# =============================================================================
+
+# Session files (already covered above, but explicit)
+storage/sessions/sess_*
+
+# Debug files (keep organized debug scripts but ignore runtime debug files)
+debug_*.php
+debug_*.log
+
+# Temporary test files
+test_*.tmp
+debug_*.tmp
+
+# User settings cache
+storage/framework/cache/data/
+storage/framework/cache/views/
+
+# =============================================================================
+# Exceptions (Files to keep)
+# =============================================================================
+
+# Keep these files even if they match patterns above
+!public/tests/
+!public/debug/
+!scripts/tests/
+!docs/tests/
+
+# Keep test scripts but ignore their output
+!*.test.php
+!*Test.php
+!*_test.php
+
+# Keep documentation
+!docs/
+!README.md
+!CHANGELOG.md
+!LICENSE.md
+
+# Keep configuration templates
+!config/*.example.php
+!LocalSettings.example.php
