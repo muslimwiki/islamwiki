@@ -5,6 +5,61 @@ All notable changes to IslamWiki will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.37] - 2025-08-02
+
+### Added
+- **Enhanced Header Navigation** - Improved navigation structure and styling
+  - Separated top navigation into two distinct bars with different backgrounds
+  - Enhanced search bar (3x larger, 600px width) with centered positioning
+  - Improved avatar styling with larger circle and icon (40px vs 24px)
+  - Removed username from navigation for cleaner appearance
+  - Larger navigation elements including logo, nav links, and primary navigation text
+- **Three-Column Layout System** - Full-width responsive layout for home page
+  - Left column (2/10): Second navigation area
+  - Middle column (6/10): Hero, welcome back, main content, join community
+  - Right column (2/10): Sticky sidebar with quick actions and recent pages
+  - Full-width design spanning entire page instead of centered content
+- **Purple Section Headers** - Consistent styling across all themes
+  - All section titles now have purple background extending full width
+  - Cleaner card design with removed grey backgrounds
+  - Improved spacing with eliminated unwanted margins and padding
+  - Applied consistently across Safa and Bismillah themes
+
+### Changed
+- Updated version to 0.0.37
+- **Layout Improvements**
+  - Implemented three-column layout for better content organization
+  - Made entire right sidebar sticky with proper scroll behavior
+  - Enhanced responsive design for mobile and desktop
+  - Improved button contrast and hover effects
+- **Navigation Enhancements**
+  - Streamlined navigation by removing redundant "Get Started" button
+  - Better button alignment with "Recent Pages" title and "View All" on same row
+  - Fixed button contrast issues for better readability
+  - Enhanced mobile optimization with improved header layout
+- **CSS Framework Updates**
+  - Enhanced Safa.css with new layout system and improved styling
+  - Synchronized all styling changes across Safa and Bismillah themes
+  - Added cache busting parameters to CSS links
+  - Improved HTML structure with proper container divs
+
+### Fixed
+- **CSS Override Issues**
+  - Fixed multiple `.card-header` definitions causing styling conflicts
+  - Resolved search bar sizing issues with proper width application
+  - Eliminated unwanted 16px margins below section headers
+  - Fixed inconsistent avatar sizes across different themes
+- **Layout and Spacing Issues**
+  - Resolved sticky positioning conflicts with navigation bar overlap
+  - Fixed mobile responsiveness issues with header layout
+  - Corrected padding and margin inconsistencies across screen sizes
+  - Improved button hover state text color readability
+
+### Security
+- Maintained existing security measures
+- No database changes - purely frontend improvements
+- Backward compatible with all existing functionality
+
 ## [0.0.36] - 2025-08-02
 
 ### Added

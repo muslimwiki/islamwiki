@@ -3,187 +3,208 @@
 {% block title %}Welcome - IslamWiki{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="hero">
-    <div class="hero-content">
-        <h1>Discover Islamic Knowledge</h1>
-        <p>Your comprehensive resource for Islamic studies, history, and sciences. Join our community of learners and contributors.</p>
-        <div class="hero-actions">
-            {% if user %}
-                <a href="/dashboard" class="btn">Go to Dashboard</a>
-                <a href="/pages" class="btn btn-outline">Browse Pages</a>
-            {% else %}
-                <a href="/register" class="btn">Get Started</a>
-                <a href="/login" class="btn btn-outline">Sign In</a>
-            {% endif %}
+<div class="home-three-column-layout full-width">
+    <!-- Left Column: Second Nav (2/10) -->
+    <div class="second-nav-column">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Navigation</h2>
+            </div>
+            <nav class="second-nav">
+                <a href="/pages" class="nav-item">📚 Browse Pages</a>
+                <a href="/quran" class="nav-item">📖 Quran</a>
+                <a href="/hadith" class="nav-item">📜 Hadith</a>
+                <a href="/islamic-sciences" class="nav-item">🔬 Sciences</a>
+                <a href="/prayer" class="nav-item">🕌 Prayer Times</a>
+                <a href="/calendar" class="nav-item">📅 Islamic Calendar</a>
+                <a href="/community" class="nav-item">👥 Community</a>
+                <a href="/about" class="nav-item">ℹ️ About</a>
+            </nav>
         </div>
     </div>
-</div>
 
-<!-- User Navigation Section -->
-{% if user %}
-<div class="user-nav-section">
-    <div class="container">
-        <div class="user-nav-card">
-            <div class="user-nav-header">
-                <h2>Welcome back, {{ user.username }}! 👋</h2>
-                <p>Quick access to your most used features</p>
-            </div>
-            <div class="user-nav-grid">
-                <a href="/dashboard" class="user-nav-item">
-                    <div class="user-nav-icon">📊</div>
-                    <div class="user-nav-content">
-                        <h3>Dashboard</h3>
-                        <p>View your activity and stats</p>
-                    </div>
-                </a>
-                <a href="/pages/create" class="user-nav-item">
-                    <div class="user-nav-icon">✏️</div>
-                    <div class="user-nav-content">
-                        <h3>Create Page</h3>
-                        <p>Start writing new content</p>
-                    </div>
-                </a>
-                <a href="/profile" class="user-nav-item">
-                    <div class="user-nav-icon">👤</div>
-                    <div class="user-nav-content">
-                        <h3>Profile</h3>
-                        <p>Manage your account</p>
-                    </div>
-                </a>
-                <a href="/settings" class="user-nav-item">
-                    <div class="user-nav-icon">⚙️</div>
-                    <div class="user-nav-content">
-                        <h3>Settings</h3>
-                        <p>Customize your experience</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Stats Section -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-number">{{ recentPages|length }}</div>
-        <div class="stat-label">Recent Pages</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">5</div>
-        <div class="stat-label">Categories</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">∞</div>
-        <div class="stat-label">Knowledge</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">Available</div>
-    </div>
-</div>
-
-<!-- Quick Actions -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">Quick Actions</h2>
-    </div>
-    <div class="flex gap-4 flex-wrap">
-        <a href="/welcome" class="btn">📖 Read Welcome Guide</a>
-        <a href="/about-islam" class="btn btn-secondary">🕌 About Islam</a>
-        <a href="/islamic-history" class="btn btn-secondary">📜 Islamic History</a>
-        <a href="/islamic-sciences" class="btn btn-secondary">🔬 Islamic Sciences</a>
+    <!-- Middle Column: Main Content (6/10) -->
+    <div class="main-content-column">
+        <!-- User Navigation Section (Dashboard) -->
         {% if user %}
-            <a href="/pages/create" class="btn">✏️ Create Page</a>
+        <div class="user-nav-section">
+            <div class="user-nav-card">
+                <div class="user-nav-header">
+                    <h2>Welcome back, {{ user.username }}! 👋</h2>
+                    <p>Quick access to your most used features</p>
+                </div>
+                <div class="user-nav-grid">
+                    <a href="/dashboard" class="user-nav-item">
+                        <div class="user-nav-icon">📊</div>
+                        <div class="user-nav-content">
+                            <h3>Dashboard</h3>
+                            <p>View your activity and stats</p>
+                        </div>
+                    </a>
+                    <a href="/pages/create" class="user-nav-item">
+                        <div class="user-nav-icon">✏️</div>
+                        <div class="user-nav-content">
+                            <h3>Create Page</h3>
+                            <p>Start writing new content</p>
+                        </div>
+                    </a>
+                    <a href="/profile" class="user-nav-item">
+                        <div class="user-nav-icon">👤</div>
+                        <div class="user-nav-content">
+                            <h3>Profile</h3>
+                            <p>Manage your account</p>
+                        </div>
+                    </a>
+                    <a href="/settings" class="user-nav-item">
+                        <div class="user-nav-icon">⚙️</div>
+                        <div class="user-nav-content">
+                            <h3>Settings</h3>
+                            <p>Customize your experience</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Stats Section -->
+                <div class="dashboard-stats-grid">
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-number">{{ recentPages|length }}</div>
+                        <div class="dashboard-stat-label">Recent Pages</div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-number">5</div>
+                        <div class="dashboard-stat-label">Categories</div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-number">∞</div>
+                        <div class="dashboard-stat-label">Knowledge</div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-number">24/7</div>
+                        <div class="dashboard-stat-label">Available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% else %}
-            <a href="/register" class="btn">✏️ Join to Contribute</a>
+        <!-- Hero Section (Only for non-logged-in users) -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Discover Islamic Knowledge</h1>
+                <p>Your comprehensive resource for Islamic studies, history, and sciences. Join our community of learners and contributors.</p>
+                <div class="hero-actions">
+                    <a href="/register" class="btn">Get Started</a>
+                </div>
+            </div>
+        </div>
         {% endif %}
-    </div>
-</div>
 
-<!-- Recent Pages Section -->
-{% if recentPages is not empty %}
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">📚 Recent Pages</h2>
-        <a href="/pages" class="btn btn-small">View All</a>
-    </div>
-    <div class="page-list">
-        {% for page in recentPages %}
-        <div class="page-item">
-            <h3><a href="/{{ page.slug }}">{{ page.title }}</a></h3>
-            <p class="page-excerpt">
-                {{ page.content|striptags|slice(0, 150) }}{% if page.content|length > 150 %}...{% endif %}
-            </p>
-            <div class="page-meta">
-                <small>📅 {{ page.created_at|date('M j, Y') }}</small>
-                <a href="/{{ page.slug }}" class="btn btn-small">Read More</a>
+        <!-- Featured Content -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🌟 Featured Content</h2>
+            </div>
+            <div class="page-list">
+                <div class="page-item">
+                    <h3><a href="/welcome">Welcome to IslamWiki</a></h3>
+                    <p class="page-excerpt">
+                        Start your journey with our comprehensive welcome guide. Learn about the platform, how to contribute, and discover the wealth of Islamic knowledge available.
+                    </p>
+                    <div class="page-meta">
+                        <small>🎯 Getting Started</small>
+                        <a href="/welcome" class="btn btn-small">Read Guide</a>
+                    </div>
+                </div>
+                
+                <div class="page-item">
+                    <h3><a href="/islamic-sciences">Islamic Sciences</a></h3>
+                    <p class="page-excerpt">
+                        Explore the rich tradition of Islamic scholarship including Quranic sciences, Hadith studies, Islamic law, theology, and philosophy.
+                    </p>
+                    <div class="page-meta">
+                        <small>🔬 Academic</small>
+                        <a href="/islamic-sciences" class="btn btn-small">Explore Sciences</a>
+                    </div>
+                </div>
+                
+                <div class="page-item">
+                    <h3><a href="/islamic-history">Islamic History</a></h3>
+                    <p class="page-excerpt">
+                        Journey through the remarkable history of Islam from the time of Prophet Muhammad (ﷺ) to the modern era, including the Golden Age and beyond.
+                    </p>
+                    <div class="page-meta">
+                        <small>📜 Historical</small>
+                        <a href="/islamic-history" class="btn btn-small">Read History</a>
+                    </div>
+                </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
 
-<!-- Featured Content -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">🌟 Featured Content</h2>
-    </div>
-    <div class="page-list">
-        <div class="page-item">
-            <h3><a href="/welcome">Welcome to IslamWiki</a></h3>
-            <p class="page-excerpt">
-                Start your journey with our comprehensive welcome guide. Learn about the platform, how to contribute, and discover the wealth of Islamic knowledge available.
-            </p>
-            <div class="page-meta">
-                <small>🎯 Getting Started</small>
-                <a href="/welcome" class="btn btn-small">Read Guide</a>
+        <!-- Community Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🤝 Join Our Community</h2>
             </div>
-        </div>
-        
-        <div class="page-item">
-            <h3><a href="/islamic-sciences">Islamic Sciences</a></h3>
-            <p class="page-excerpt">
-                Explore the rich tradition of Islamic scholarship including Quranic sciences, Hadith studies, Islamic law, theology, and philosophy.
-            </p>
-            <div class="page-meta">
-                <small>🔬 Academic</small>
-                <a href="/islamic-sciences" class="btn btn-small">Explore Sciences</a>
-            </div>
-        </div>
-        
-        <div class="page-item">
-            <h3><a href="/islamic-history">Islamic History</a></h3>
-            <p class="page-excerpt">
-                Journey through the remarkable history of Islam from the time of Prophet Muhammad (ﷺ) to the modern era, including the Golden Age and beyond.
-            </p>
-            <div class="page-meta">
-                <small>📜 Historical</small>
-                <a href="/islamic-history" class="btn btn-small">Read History</a>
+            <div class="text-center">
+                <p class="mb-4">Help us build the most comprehensive Islamic knowledge base. Contribute articles, share knowledge, and learn from others.</p>
+                {% if user %}
+                    <div class="flex gap-4 justify-center">
+                        <a href="/pages/create" class="btn">Create Your First Page</a>
+                        <a href="/contributing" class="btn btn-secondary">Learn How to Contribute</a>
+                    </div>
+                {% else %}
+                    <div class="flex gap-4 justify-center">
+                        <a href="/register" class="btn">Join IslamWiki</a>
+                        <a href="/login" class="btn btn-outline">Sign In</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
 
-<!-- Community Section -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">🤝 Join Our Community</h2>
-    </div>
-    <div class="text-center">
-        <p class="mb-4">Help us build the most comprehensive Islamic knowledge base. Contribute articles, share knowledge, and learn from others.</p>
-        {% if user %}
-            <div class="flex gap-4 justify-center">
-                <a href="/pages/create" class="btn">Create Your First Page</a>
-                <a href="/contributing" class="btn btn-secondary">Learn How to Contribute</a>
+    <!-- Right Column: Sidebar (2/10) -->
+    <div class="sidebar-column">
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Quick Actions</h2>
             </div>
-        {% else %}
-            <div class="flex gap-4 justify-center">
-                <a href="/register" class="btn">Join IslamWiki</a>
-                <a href="/login" class="btn btn-outline">Sign In</a>
+            <div class="flex gap-4 flex-wrap">
+                <a href="/welcome" class="btn">📖 Read Welcome Guide</a>
+                <a href="/about-islam" class="btn btn-secondary">🕌 About Islam</a>
+                <a href="/islamic-history" class="btn btn-secondary">📜 Islamic History</a>
+                <a href="/islamic-sciences" class="btn btn-secondary">🔬 Islamic Sciences</a>
+                {% if user %}
+                    <a href="/pages/create" class="btn">✏️ Create Page</a>
+                {% else %}
+                    <a href="/register" class="btn">✏️ Join to Contribute</a>
+                {% endif %}
             </div>
+        </div>
+
+        <!-- Recent Pages Section -->
+        {% if recentPages is not empty %}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-header-content">
+                    <h2 class="card-title">📚 Recent Pages</h2>
+                    <a href="/pages" class="btn btn-small">View All</a>
+                </div>
+            </div>
+            <div class="page-list">
+                {% for page in recentPages %}
+                <div class="page-item">
+                    <h3><a href="/{{ page.slug }}">{{ page.title }}</a></h3>
+                    <p class="page-excerpt">
+                        {{ page.content|striptags|slice(0, 150) }}{% if page.content|length > 150 %}...{% endif %}
+                    </p>
+                    <div class="page-meta">
+                        <small>📅 {{ page.created_at|date('M j, Y') }}</small>
+                        <a href="/{{ page.slug }}" class="btn btn-small">Read More</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         {% endif %}
     </div>
 </div>

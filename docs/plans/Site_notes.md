@@ -12,14 +12,20 @@
   
   - [x] there should be a background behind the text if the user is on the current page; for example if the user is on the dashboard, a background should apply; if the user is on the profile page, the background should be on the profile link.
 
-- [ ] build profile page
+- [x] build profile page
 
 ---
 
 ## Github
 
-- [ ] Not getting commit contributions?
+- [x] Not getting commit contributions?
 
 ---
 
-What did you do? When you created Iqra, you deleted all of the pages that we created including the dashboard, profile, settings. Bring them back
+- [x] What did you do? When you created Iqra, you deleted all of the pages that we created including the dashboard, profile, settings. Bring them back
+
+---
+
+- [ ] I just noticed that you are applying the index page css as app.twig.. change this from app.twig to index.twig to match the page name...
+
+---

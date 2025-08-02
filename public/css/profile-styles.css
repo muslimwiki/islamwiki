@@ -210,10 +210,36 @@
 .section-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e5e7eb;
+    color: white;
+    background: var(--primary-color);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    margin: -1rem -1rem 0 -1rem;
+    margin-bottom: 0;
+    display: block;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    padding-left: 0;
+    background: var(--primary-color);
+}
+
+/* Remove grey background behind section headers */
+.card {
+    background: transparent;
+}
+
+.card-body {
+    background: transparent;
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1rem;
+}
+
+/* Only apply background to card content, not the header area */
+.card-body > *:not(.card-title) {
+    background: var(--card-background);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
 }
 
 .info-grid {
@@ -589,6 +615,7 @@
 
 .btn-primary:hover {
     background-color: #5a67d8;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -610,6 +637,7 @@
 
 .btn-secondary:hover {
     background-color: #4b5563;
+    color: white;
 }
 
 /* Notification Styles */

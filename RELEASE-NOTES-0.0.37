@@ -1,0 +1,86 @@
+# Release Notes - Version 0.0.37
+
+## 🎨 UI/UX Improvements
+
+### Header Navigation Enhancements
+- **Separated top navigation** into two distinct bars:
+  - Top bar: Logo, search bar, and user menu (purple background)
+  - Primary navigation: Home, Browse, About, Sciences (white background)
+- **Enhanced search bar**: Made 3x larger (600px width) while keeping it centered
+- **Improved avatar styling**: Increased avatar circle and icon size from 24px to 40px for better visibility
+- **Removed username from navigation**: Cleaner look with just the avatar icon
+- **Larger navigation elements**: Increased logo size, nav links, and primary navigation text size
+
+### Layout Improvements
+- **Three-column layout**: Implemented full-width three-column layout for home page
+  - Left column (2/10): Second navigation
+  - Middle column (6/10): Hero, welcome back, main content, join community
+  - Right column (2/10): Quick actions and recent pages sidebar
+- **Sticky sidebar**: Made entire right sidebar sticky with proper scroll behavior
+- **Full-width design**: Navigation and content now span full page width instead of being centered
+
+### Section Header Styling
+- **Purple section headers**: All section titles now have purple background extending full width
+- **Cleaner card design**: Removed grey backgrounds behind section headers
+- **Improved spacing**: Eliminated unwanted margins and padding for cleaner appearance
+- **Consistent styling**: Applied purple headers across all themes (Safa and Bismillah)
+
+### Button and Interactive Elements
+- **Fixed button contrast**: Improved readability of "Sign In" and "Browse pages" buttons
+- **Enhanced hover effects**: Fixed text color issues on button hover states
+- **Streamlined navigation**: Removed redundant "Get Started" button, kept only "Sign In"
+- **Better button alignment**: "Recent Pages" title and "View All" button now on same row
+
+### Responsive Design
+- **Mobile optimization**: Improved header layout for smaller screens
+- **Consistent spacing**: Better padding and margins across all screen sizes
+- **Sticky positioning**: Adjusted sticky elements to avoid navigation bar overlap
+
+## 🔧 Technical Improvements
+
+### CSS Framework Updates
+- **Enhanced Safa.css**: Updated with new layout system and improved styling
+- **Bismillah skin updates**: Synchronized all styling changes across themes
+- **CSS specificity fixes**: Resolved conflicts between multiple style definitions
+- **Cache busting**: Added version parameters to CSS links for better caching
+
+### Code Organization
+- **HTML restructuring**: Improved semantic structure with proper container divs
+- **Conditional rendering**: Better logic for showing/hiding elements based on user login status
+- **Flexbox implementation**: Enhanced layout using modern CSS flexbox properties
+
+## 🐛 Bug Fixes
+- **CSS override issues**: Fixed multiple `.card-header` definitions causing styling conflicts
+- **Search bar sizing**: Resolved issues with search bar not applying correct width
+- **Section header margins**: Eliminated unwanted 16px margins below section headers
+- **Avatar sizing**: Fixed inconsistent avatar sizes across different themes
+
+## 📱 User Experience
+- **Cleaner interface**: More professional and modern appearance
+- **Better navigation**: Improved user flow and accessibility
+- **Enhanced readability**: Better contrast and typography throughout
+- **Consistent theming**: Unified styling across all components and pages
+
+## 🔄 Migration Notes
+- **No database changes**: This release is purely frontend improvements
+- **Backward compatible**: All existing functionality remains intact
+- **Theme consistency**: Both Safa and Bismillah themes updated simultaneously
+
+## 📋 Files Modified
+- `resources/views/layouts/app.twig` - Header structure and navigation
+- `resources/views/pages/home.twig` - Three-column layout implementation
+- `public/css/safa.css` - Main styling framework updates
+- `skins/Bismillah/css/style.css` - Theme-specific styling updates
+- `public/css/profile-styles.css` - Profile page styling consistency
+
+## 🎯 Next Steps
+- Continue refining the three-column layout for other pages
+- Implement additional responsive breakpoints for better mobile experience
+- Consider adding more interactive elements and animations
+- Plan for additional theme options and customization features
+
+---
+
+**Release Date**: [Current Date]
+**Compatibility**: All modern browsers
+**Dependencies**: No new dependencies added 
