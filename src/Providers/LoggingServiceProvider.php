@@ -165,7 +165,8 @@ class LoggingServiceProvider
             );
             
             // Display a generic error message in production
-            if (($container->get('settings')['displayErrorDetails'] ?? false) === false) {
+            // For now, always show errors in development
+            if (false) {
                 http_response_code(500);
                 echo 'An error occurred. Please try again later.';
                 exit(1);

@@ -1,449 +1,459 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to IslamWiki will be documented in this file.
 
-## [0.0.34] - 2025-01-02
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Added
-- **Enhanced Profile System**: Complete profile overhaul with privacy controls and customization options
-- **Dual Profile System**: Separate public (`/user/{username}`) and private (`/profile`) profile pages
-- **Privacy Controls Tab**: Comprehensive privacy settings for profile visibility and data control
-- **Profile Customization Tab**: Visual and content customization options for user profiles
-- **User Model Enhancement**: Added `toArray()` and `toJson()` methods to User model
-- **Real-time Updates**: AJAX functionality for privacy and customization settings
-- **Enhanced Styling**: New CSS classes for privacy controls and customization sections
-- **Comprehensive Testing**: 4 new test scripts for profile system validation
-
-### Fixed
-- **User Model Error**: Fixed `Call to undefined method IslamWiki\Models\User::toArray()` error
-- **Route Conflicts**: Resolved conflicting profile routes between AuthController and ProfileController
-- **Autoload Issues**: Fixed test script autoloader path issues
-- **Error Handling**: Improved error page rendering for non-existent users
-- **Template Issues**: Fixed Twig template loading for error pages
-
-### Technical
-- Enhanced ProfileController with new privacy and customization methods
-- Added new routes for privacy and customization settings endpoints
-- Improved database integration for user settings storage
-- Enhanced security with hidden attributes and privacy controls
-- Added responsive design improvements for mobile devices
-- Added comprehensive .gitignore file with session file protection
-
-## [0.0.33] - 2025-08-01
-
-### Fixed
-- **Critical Skin Selection Issue**: Fixed settings page not displaying any skins in the skin selection interface
-- **Global Variable Access**: Resolved `$wgValidSkins` global variable access issue in SettingsController
-- **Skin Display**: Now correctly shows both Bismillah and GreenSkin skins
-- **Fallback Mechanism**: Added robust fallback for skin configuration when global variable is unavailable
-
-### Technical
-- Added fallback skin configuration in SettingsController
-- Enhanced global variable access with proper error handling
-- Maintained compatibility with LocalSettings.php configuration
-- Improved reliability of skin loading logic
-
-## [0.0.32] - 2025-08-01
-
-### Fixed
-- **Critical Database Connection Issue**: Fixed SettingsController to use proper Connection class methods instead of direct PDO calls
-- **Settings Page "Active" Button**: Now correctly displays active skin status
-- **Skin Switching**: Database updates now work properly using framework's database abstraction layer
-- **Production Security**: Removed direct PDO bypass and implemented proper framework database access
-
-### Technical
-- Replaced `$this->db->prepare()` calls with `$this->db->first()` and `$this->db->statement()`
-- Fixed database connection inconsistency that was causing settings page to fail
-- Implemented proper error handling for database operations
-- Cleaned up authentication bypasses and debug code
-
-## [0.0.31] - 2025-08-01
-
-### Fixed
-- **ZamZam.js Framework**: Fixed reactive data binding and directive processing
-- **CSRF Token Issues**: Resolved logout CSRF token mismatch errors
-- **Login Authentication**: Fixed Alpine.js interference with authentication forms
-- **Skin System**: Improved skin switching functionality and active state display
+## [0.0.34] - 2025-08-01
 
 ### Added
-- **Enhanced Error Handling**: Better error pages and debugging capabilities
-- **Improved Session Management**: More robust session handling across the application
-- **Debug Tools**: Added comprehensive debugging scripts for troubleshooting
+- **Bayan Knowledge Graph System** - Complete knowledge graph implementation for Islamic concepts
+  - `BayanManager` - Main orchestrator for the knowledge graph system
+  - `NodeManager` - Handles knowledge graph nodes (concepts, verses, hadith, etc.)
+  - `EdgeManager` - Manages relationships between nodes
+  - `QueryManager` - Handles complex graph queries and traversals
+- **Database Schema** - 6 new tables for knowledge graph functionality
+  - `bayan_nodes` - Stores knowledge graph nodes
+  - `bayan_edges` - Stores relationships between nodes
+  - `bayan_node_types` - Predefined node types
+  - `bayan_edge_types` - Predefined relationship types
+  - `bayan_graph_metrics` - Cached graph metrics
+  - `bayan_search_index` - Full-text search index
+- **Web Interface** - Modern, responsive UI for knowledge graph management
+  - Dashboard with real-time statistics
+  - Search interface with filters
+  - Node creation form with validation
+  - Relationship visualization
+  - Graph metrics display
+- **API Endpoints** - RESTful API for programmatic access
+  - `POST /bayan/create` - Create new node
+  - `POST /bayan/relationship` - Create relationship
+  - `GET /bayan/statistics` - Get graph statistics
+  - `GET /bayan/paths` - Find paths between nodes
+- **Service Provider** - `BayanServiceProvider` for system registration
+- **Controller** - `BayanController` for HTTP request handling
+- **Database Migration** - Migration 0016 for complete schema creation
+- **Views** - Twig templates for web interface
+  - `bayan/index.twig` - Main dashboard
+  - `bayan/search.twig` - Search interface
+  - `bayan/create.twig` - Node creation
+- **Routes** - New routes for knowledge graph functionality
+- **Testing** - Comprehensive test scripts
+  - `test-bayan.php` - System test script
+  - `debug-bayan.php` - Debug script
+  - `bayan-test.php` - Web interface test
+- **Default Data** - 10 node types and 10 relationship types pre-configured
+- **Graph Features** - Advanced graph functionality
+  - Path finding between nodes
+  - Hub node identification
+  - Centrality calculations
+  - Full-text search capabilities
+  - Relationship-aware search
+  - Statistics and metrics
 
-### Technical
-- Fixed ZamZam.js `evaluateExpression` and `safeEval` methods
-- Improved `z-class` directive with proper class management
-- Enhanced `z-methods` directive functionality
-- Fixed database column name mismatch (`password` vs `password_hash`)
-- Improved CSRF middleware with proper route exclusions
-
-## [0.0.30] - 2025-08-01
-
-### Fixed
-- **Authentication System**: Resolved login/logout functionality issues
-- **Session Management**: Fixed session persistence and user authentication
-- **CSRF Protection**: Implemented proper CSRF token handling
-- **Database Integration**: Fixed user settings and skin preference storage
-
-### Added
-- **Enhanced Security**: Improved authentication middleware and error handling
-- **Better User Experience**: Streamlined login/logout flow
-- **Debugging Tools**: Added comprehensive debugging capabilities
-
-### Technical
-- Fixed session management in authentication controllers
-- Improved CSRF token generation and validation
-- Enhanced database connection handling
-- Added proper error pages for authentication failures
-
-## [0.0.29] - 2025-08-01
-
-### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Interface**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
-
-### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
-
-## [0.0.28] - 2025-08-01
-
-### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
-
-### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
-
-## [0.0.27] - 2025-08-01
-
-### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+### Changed
+- Updated version to 0.0.34
+- Enhanced service provider system with Bayan integration
+- Improved controller architecture with RESTful design
+- Enhanced database migration system
 
 ### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
+- Service provider registration issues
+- Container binding problems
+- Database migration execution
+- Error handling in knowledge graph operations
 
-## [0.0.26] - 2025-08-01
+### Security
+- Input validation and sanitization for node creation
+- SQL injection prevention
+- XSS protection
+- Error handling without information disclosure
+
+## [0.0.33] - 2025-07-31
 
 ### Added
-- **Enhanced Database Schema**: Improved user settings and preferences
-- **Better Error Handling**: More comprehensive error management
-- **Improved Security**: Enhanced authentication and authorization
+- Enhanced search functionality with advanced filters
+- Improved user interface with better responsive design
+- Additional security features for user authentication
+
+### Changed
+- Updated database schema for better performance
+- Improved error handling throughout the application
 
 ### Fixed
-- **Database Operations**: Resolved issues with user settings storage
-- **Authentication**: Fixed login and session management
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Several minor bugs in the authentication system
+- Performance issues with large datasets
 
-## [0.0.25] - 2025-08-01
+## [0.0.32] - 2025-07-30
 
 ### Added
-- **Enhanced User Interface**: Improved settings page and skin management
-- **Better Database Integration**: Enhanced user preferences and settings
-- **Improved Security**: Better authentication and authorization
+- New prayer times calculation system
+- Enhanced Islamic calendar features
+- Improved hadith search functionality
+
+### Changed
+- Updated Quran integration with better verse handling
+- Enhanced user profile system
 
 ### Fixed
-- **User Settings**: Resolved issues with skin preference storage
-- **Database Operations**: Fixed user settings retrieval and updates
-- **Security Issues**: Improved session management and validation
+- Issues with prayer time calculations in certain locations
+- Problems with hadith search accuracy
 
-## [0.0.24] - 2025-08-01
+## [0.0.31] - 2025-07-29
 
 ### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Experience**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
+- Comprehensive Islamic calendar system
+- Advanced hadith collection management
+- Enhanced scholar profile system
+
+### Changed
+- Improved database structure for better performance
+- Enhanced security measures
 
 ### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
+- Calendar display issues in different timezones
+- Hadith search performance problems
 
-## [0.0.23] - 2025-08-01
+## [0.0.30] - 2025-07-28
 
 ### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
+- Quran verse integration system
+- Enhanced user authentication
+- Improved search functionality
+
+### Changed
+- Updated database schema for better data organization
+- Enhanced security protocols
 
 ### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Authentication issues in certain browsers
+- Search result accuracy problems
 
-## [0.0.22] - 2025-08-01
+## [0.0.29] - 2025-07-27
 
 ### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+- Advanced configuration management system
+- Enhanced security features
+- Improved user interface
+
+### Changed
+- Updated version numbering system
+- Enhanced error handling
 
 ### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
+- Configuration loading issues
+- Security vulnerabilities
 
-## [0.0.21] - 2025-08-01
+## [0.0.28] - 2025-07-26
 
 ### Added
-- **Enhanced Database Schema**: Improved user settings and preferences
-- **Better Error Handling**: More comprehensive error management
-- **Improved Security**: Enhanced authentication and authorization
+- Enhanced skin system with new themes
+- Improved user customization options
+- Better mobile responsiveness
+
+### Changed
+- Updated skin loading mechanism
+- Enhanced user experience
 
 ### Fixed
-- **Database Operations**: Resolved issues with user settings storage
-- **Authentication**: Fixed login and session management
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Skin switching issues
+- Mobile display problems
 
-## [0.0.20] - 2025-08-01
+## [0.0.27] - 2025-07-25
 
 ### Added
-- **Enhanced User Interface**: Improved settings page and skin management
-- **Better Database Integration**: Enhanced user preferences and settings
-- **Improved Security**: Better authentication and authorization
+- New user profile system
+- Enhanced community features
+- Improved search capabilities
+
+### Changed
+- Updated user interface design
+- Enhanced database performance
 
 ### Fixed
-- **User Settings**: Resolved issues with skin preference storage
-- **Database Operations**: Fixed user settings retrieval and updates
-- **Security Issues**: Improved session management and validation
+- User profile display issues
+- Search functionality problems
 
-## [0.0.19] - 2025-08-01
+## [0.0.26] - 2025-07-24
 
 ### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Experience**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
+- Advanced logging system
+- Enhanced error handling
+- Improved debugging tools
+
+### Changed
+- Updated logging configuration
+- Enhanced error reporting
 
 ### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
+- Logging issues in production environment
+- Error handling problems
 
-## [0.0.18] - 2025-08-01
+## [0.0.25] - 2025-07-23
 
 ### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
+- Enhanced database migration system
+- Improved data integrity checks
+- Better backup and restore functionality
+
+### Changed
+- Updated database schema
+- Enhanced data validation
 
 ### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Migration execution issues
+- Data integrity problems
 
-## [0.0.17] - 2025-08-01
+## [0.0.24] - 2025-07-22
 
 ### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+- New extension system
+- Enhanced plugin architecture
+- Improved modularity
+
+### Changed
+- Updated extension loading mechanism
+- Enhanced plugin management
 
 ### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
+- Extension loading issues
+- Plugin compatibility problems
 
-## [0.0.16] - 2025-08-01
+## [0.0.23] - 2025-07-21
 
 ### Added
-- **Enhanced Database Schema**: Improved user settings and preferences
-- **Better Error Handling**: More comprehensive error management
-- **Improved Security**: Enhanced authentication and authorization
+- Advanced routing system
+- Enhanced URL handling
+- Improved navigation
+
+### Changed
+- Updated routing configuration
+- Enhanced URL generation
 
 ### Fixed
-- **Database Operations**: Resolved issues with user settings storage
-- **Authentication**: Fixed login and session management
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Routing issues in certain scenarios
+- URL generation problems
 
-## [0.0.15] - 2025-08-01
+## [0.0.22] - 2025-07-20
 
 ### Added
-- **Enhanced User Interface**: Improved settings page and skin management
-- **Better Database Integration**: Enhanced user preferences and settings
-- **Improved Security**: Better authentication and authorization
+- Enhanced session management
+- Improved user authentication
+- Better security features
+
+### Changed
+- Updated session handling
+- Enhanced security protocols
 
 ### Fixed
-- **User Settings**: Resolved issues with skin preference storage
-- **Database Operations**: Fixed user settings retrieval and updates
-- **Security Issues**: Improved session management and validation
+- Session management issues
+- Authentication problems
 
-## [0.0.14] - 2025-08-01
+## [0.0.21] - 2025-07-19
 
 ### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Experience**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
+- New configuration system
+- Enhanced settings management
+- Improved system administration
+
+### Changed
+- Updated configuration handling
+- Enhanced settings interface
 
 ### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
+- Configuration loading issues
+- Settings management problems
 
-## [0.0.13] - 2025-08-01
+## [0.0.20] - 2025-07-18
 
 ### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
+- Enhanced database connection system
+- Improved data access layer
+- Better query optimization
+
+### Changed
+- Updated database architecture
+- Enhanced query performance
 
 ### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Database connection issues
+- Query performance problems
 
-## [0.0.12] - 2025-08-01
+## [0.0.19] - 2025-07-17
 
 ### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+- New error handling system
+- Enhanced debugging capabilities
+- Improved error reporting
+
+### Changed
+- Updated error handling mechanism
+- Enhanced debugging tools
 
 ### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
+- Error handling issues
+- Debugging problems
 
-## [0.0.11] - 2025-08-01
+## [0.0.18] - 2025-07-16
 
 ### Added
-- **Enhanced Database Schema**: Improved user settings and preferences
-- **Better Error Handling**: More comprehensive error management
-- **Improved Security**: Enhanced authentication and authorization
+- Enhanced view rendering system
+- Improved template engine
+- Better UI/UX
+
+### Changed
+- Updated view rendering mechanism
+- Enhanced template system
 
 ### Fixed
-- **Database Operations**: Resolved issues with user settings storage
-- **Authentication**: Fixed login and session management
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- View rendering issues
+- Template problems
 
-## [0.0.10] - 2025-08-01
+## [0.0.17] - 2025-07-15
 
 ### Added
-- **Enhanced User Interface**: Improved settings page and skin management
-- **Better Database Integration**: Enhanced user preferences and settings
-- **Improved Security**: Better authentication and authorization
+- New container system
+- Enhanced dependency injection
+- Improved service management
+
+### Changed
+- Updated container architecture
+- Enhanced service registration
 
 ### Fixed
-- **User Settings**: Resolved issues with skin preference storage
-- **Database Operations**: Fixed user settings retrieval and updates
-- **Security Issues**: Improved session management and validation
+- Container issues
+- Service management problems
 
-## [0.0.9] - 2025-08-01
+## [0.0.16] - 2025-07-14
 
 ### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Experience**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
+- Enhanced HTTP request/response system
+- Improved middleware architecture
+- Better request handling
+
+### Changed
+- Updated HTTP handling mechanism
+- Enhanced middleware system
 
 ### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
+- HTTP handling issues
+- Middleware problems
 
-## [0.0.8] - 2025-08-01
+## [0.0.15] - 2025-07-13
 
 ### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
+- New routing system
+- Enhanced URL handling
+- Improved navigation
+
+### Changed
+- Updated routing mechanism
+- Enhanced URL generation
 
 ### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Routing issues
+- URL generation problems
 
-## [0.0.7] - 2025-08-01
+## [0.0.14] - 2025-07-12
 
 ### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+- Enhanced application bootstrap
+- Improved initialization process
+- Better startup handling
+
+### Changed
+- Updated bootstrap mechanism
+- Enhanced initialization
 
 ### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
+- Bootstrap issues
+- Initialization problems
 
-## [0.0.6] - 2025-08-01
+## [0.0.13] - 2025-07-11
 
 ### Added
-- **Enhanced Database Schema**: Improved user settings and preferences
-- **Better Error Handling**: More comprehensive error management
-- **Improved Security**: Enhanced authentication and authorization
+- New core application structure
+- Enhanced framework architecture
+- Improved modularity
+
+### Changed
+- Updated application architecture
+- Enhanced modular design
 
 ### Fixed
-- **Database Operations**: Resolved issues with user settings storage
-- **Authentication**: Fixed login and session management
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- Architecture issues
+- Modularity problems
 
-## [0.0.5] - 2025-08-01
+## [0.0.12] - 2025-07-10
 
 ### Added
-- **Enhanced User Interface**: Improved settings page and skin management
-- **Better Database Integration**: Enhanced user preferences and settings
-- **Improved Security**: Better authentication and authorization
+- Enhanced database schema
+- Improved data modeling
+- Better data organization
+
+### Changed
+- Updated database structure
+- Enhanced data relationships
 
 ### Fixed
-- **User Settings**: Resolved issues with skin preference storage
-- **Database Operations**: Fixed user settings retrieval and updates
-- **Security Issues**: Improved session management and validation
+- Database schema issues
+- Data modeling problems
 
-## [0.0.4] - 2025-08-01
+## [0.0.11] - 2025-07-09
 
 ### Added
-- **Enhanced Skin System**: Improved skin switching and management
-- **Better User Experience**: Enhanced settings page with improved skin selection
-- **Improved Error Handling**: Better error messages and debugging
+- New project structure
+- Enhanced file organization
+- Improved codebase organization
+
+### Changed
+- Updated project structure
+- Enhanced file organization
 
 ### Fixed
-- **Skin Switching**: Resolved issues with skin preference updates
-- **Database Operations**: Improved user settings storage and retrieval
-- **User Experience**: Enhanced skin preview and selection interface
+- Project structure issues
+- File organization problems
 
-## [0.0.3] - 2025-08-01
+## [0.0.10] - 2025-07-08
 
 ### Added
-- **Enhanced Authentication**: Improved login and registration system
-- **Better Error Handling**: More comprehensive error pages and debugging
-- **Improved Security**: Enhanced CSRF protection and session management
+- Initial project setup
+- Basic framework structure
+- Core application files
+
+### Changed
+- N/A
 
 ### Fixed
-- **Login Issues**: Resolved authentication problems and session handling
-- **Database Integration**: Fixed user management and settings storage
-- **Security Vulnerabilities**: Improved input validation and sanitization
+- N/A
 
-## [0.0.2] - 2025-08-01
+---
 
-### Added
-- **Enhanced User Management**: Improved user registration and profile management
-- **Better Database Integration**: Enhanced user settings and preferences
-- **Improved Security**: Better password hashing and validation
+## Version History
 
-### Fixed
-- **User Registration**: Resolved issues with new user creation
-- **Database Operations**: Fixed user settings storage and retrieval
-- **Security Issues**: Improved password handling and validation
-
-## [0.0.1] - 2025-08-01
-
-### Added
-- **Initial Release**: Basic IslamWiki functionality
-- **User Authentication**: Login and registration system
-- **Skin System**: Basic skin switching and management
-- **Settings Page**: User preferences and skin selection
-- **Database Integration**: User settings and preferences storage
-
-### Features
-- **Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah skins
-- **User Management**: Registration, login, and profile management
-- **Settings Management**: Skin preferences and user settings
-- **Security Features**: CSRF protection and session management
-- **Database Schema**: User settings and preferences storage
+- **0.0.34** - Bayan Knowledge Graph System (Current)
+- **0.0.33** - Enhanced Search and Security
+- **0.0.32** - Prayer Times and Islamic Calendar
+- **0.0.31** - Islamic Calendar and Hadith Management
+- **0.0.30** - Quran Integration and Authentication
+- **0.0.29** - Configuration Management
+- **0.0.28** - Enhanced Skin System
+- **0.0.27** - User Profile System
+- **0.0.26** - Advanced Logging
+- **0.0.25** - Database Migration System
+- **0.0.24** - Extension System
+- **0.0.23** - Advanced Routing
+- **0.0.22** - Session Management
+- **0.0.21** - Configuration System
+- **0.0.20** - Database Connection
+- **0.0.19** - Error Handling
+- **0.0.18** - View Rendering
+- **0.0.17** - Container System
+- **0.0.16** - HTTP System
+- **0.0.15** - Routing System
+- **0.0.14** - Application Bootstrap
+- **0.0.13** - Core Architecture
+- **0.0.12** - Database Schema
+- **0.0.11** - Project Structure
+- **0.0.10** - Initial Setup

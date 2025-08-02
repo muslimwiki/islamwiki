@@ -1,52 +1,53 @@
 # IslamWiki
 
-A comprehensive Islamic knowledge platform built with modern PHP architecture.
+A comprehensive Islamic knowledge management platform built with modern web technologies.
 
-## 🚀 Current Version: 0.0.34
+## 🌟 Features
 
-**Latest Feature**: Enhanced profile system with privacy controls and customization options.
+### 🏗️ Core Platform
+- **Modern PHP Framework** - Built with custom MVC architecture
+- **Responsive Design** - Mobile-friendly interface with multiple skins
+- **User Management** - Registration, authentication, and profile management
+- **Content Management** - Wiki-style page creation and editing
+- **Search System** - Advanced search with filters and suggestions
 
-## ✨ Features
+### 📚 Islamic Features
+- **Quran Integration** - Verse search, tafsir, and recitation
+- **Hadith Collections** - Comprehensive hadith database with authenticity ratings
+- **Islamic Calendar** - Hijri calendar with important dates and events
+- **Prayer Times** - Accurate prayer time calculations with location support
+- **Scholar Profiles** - Database of Islamic scholars and their works
 
-- **📝 Page Creation System**: Complete wiki page creation with Markdown support
-- **🏷️ Namespace Support**: Organize pages with namespaces (Help, User, Template, Category)
-- **📚 Revision Tracking**: Automatic revision history with user attribution
-- **🎨 Multi-Skin Support**: BlueSkin, GreenSkin, and Bismillah themes
-- **🔐 User Authentication**: Secure login and registration system
-- **⚙️ Settings Management**: User preferences and skin selection
-- **💾 Database Integration**: Robust user settings and preferences storage
-- **🛡️ Security Features**: CSRF protection and session management
-- **🏗️ Modern Architecture**: PHP MVC with dependency injection
+### 🧠 Knowledge Graph System
+- **Bayan Knowledge Graph** - Advanced graph-based knowledge management
+- **Node Management** - Create and manage Islamic concepts, verses, hadith, scholars
+- **Relationship Mapping** - Connect concepts through various relationship types
+- **Graph Traversal** - Find paths and connections between Islamic knowledge
+- **Advanced Search** - Full-text search with relationship-aware filtering
+- **Statistics Dashboard** - Real-time metrics and analytics
 
-## 🔧 Recent Features (v0.0.34)
+### 🎨 User Interface
+- **Multi-Skin Support** - Multiple themes including Bismillah, BlueSkin, GreenSkin
+- **Responsive Design** - Works on desktop, tablet, and mobile devices
+- **Modern UI** - Clean, intuitive interface with Tailwind CSS
+- **Accessibility** - WCAG compliant design
 
-### Enhanced Profile System
-- **Dual Profile System**: Separate public (`/user/{username}`) and private (`/profile`) profile pages
-- **Privacy Controls**: Users can control exactly what information is visible on their public profile
-- **Profile Customization**: Users can customize how their profile appears to others
-- **Real-time Updates**: AJAX functionality for privacy and customization settings
-- **Responsive Design**: All profile sections work perfectly on mobile and desktop
+### 🔧 Technical Features
+- **Database Migration System** - Automated schema management
+- **Service Provider Architecture** - Modular, extensible design
+- **RESTful API** - Programmatic access to all features
+- **Security Features** - CSRF protection, input validation, XSS prevention
+- **Error Handling** - Comprehensive logging and debugging
 
-### Privacy Controls Tab
-- **Profile Visibility**: Public, registered users only, or private profiles
-- **Activity Visibility**: Control visibility of recent activity, statistics, and watchlist
-- **Data Visibility**: Control visibility of email, join date, and last active status
-- **Granular Control**: Fine-grained privacy settings for complete user control
+## 🚀 Quick Start
 
-### Profile Customization Tab
-- **Profile Information**: Customize display name, bio, location, and website
-- **Visual Customization**: Choose from multiple profile themes and layouts
-- **Content Preferences**: Featured content and personal profile messages
-- **Personal Branding**: Complete control over profile appearance and content
+### Prerequisites
+- PHP 8.0+
+- MySQL 5.7+
+- Composer
+- Web server (Apache/Nginx)
 
-### Technical Improvements
-- **User Model Enhancement**: Added `toArray()` and `toJson()` methods for better data handling
-- **Route Conflict Resolution**: Fixed conflicting profile routes between controllers
-- **Database Integration**: Enhanced user settings storage and retrieval
-- **Error Handling**: Improved error handling and validation throughout the profile system
-- **Git Management**: Comprehensive .gitignore file with proper file exclusions and security
-
-## 🛠️ Installation
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -65,107 +66,270 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
    # Edit .env with your database credentials
    ```
 
-4. **Set up database**
+4. **Run database migrations**
    ```bash
-   php scripts/database/setup_database.php
+   php scripts/migrate.php
    ```
 
-5. **Configure web server**
+5. **Set up web server**
    - Point document root to `/public`
-   - Ensure Apache/Nginx is configured for PHP
+   - Ensure mod_rewrite is enabled (Apache)
+   - Configure SSL certificate
 
-## 🎨 Skin System
+6. **Access the application**
+   - Main site: `https://your-domain.com`
+   - Knowledge Graph: `https://your-domain.com/bayan`
 
-IslamWiki features a robust and flexible skin system:
+## 📊 Knowledge Graph System
 
-- **Multiple Themes**: Bismillah (default), BlueSkin, and GreenSkin available
-- **User Preferences**: Individual skin selection with database storage
-- **Real-time Switching**: Change skins through the Settings page
-- **Responsive Design**: All skins optimized for mobile and desktop
-- **Islamic Aesthetics**: Beautiful Islamic-themed designs and typography
+### Overview
+The Bayan Knowledge Graph System provides a powerful platform for connecting Islamic knowledge through a graph-based approach. Users can create nodes representing concepts, verses, hadith, scholars, and other entities, then establish relationships between them.
 
-### Skin Features
-- **Bismillah**: Default Islamic-themed skin with purple/indigo gradient
-- **BlueSkin**: Clean blue-themed interface with modern design
-- **GreenSkin**: Green-themed skin with Islamic aesthetics
-- **Custom CSS/JS**: Each skin supports custom styles and scripts
-- **Template System**: Flexible Twig-based template system
+### Key Features
 
-### Debugging Tools
-- **Skin Status**: Access `/skin-system-status.php` for detailed system reporting
-- **Comprehensive Testing**: Advanced debugging tools in `/debug/` directory
-- **Validation**: Complete skin validation and error reporting
-- **Performance Monitoring**: Real-time skin loading and performance metrics
+#### Node Types
+- **Concept** - Islamic concepts and terms
+- **Verse** - Quran verses with tafsir
+- **Hadith** - Prophet's sayings and actions
+- **Scholar** - Islamic scholars and authorities
+- **School** - Schools of thought and madhabs
+- **Event** - Historical events
+- **Place** - Important places in Islamic history
+- **Person** - Important figures
+- **Book** - Islamic books and texts
+- **Topic** - General topics and subjects
 
+#### Relationship Types
+- **References** - One concept references another
+- **Explains** - One concept explains another
+- **Authored By** - Content authored by a scholar
+- **Belongs To** - Concept belongs to a category
+- **Related To** - General relationship
+- **Mentions** - One concept mentions another
+- **Derived From** - Concept derived from another
+- **Similar To** - Similar concepts
+- **Opposes** - Opposing concepts
+- **Supports** - Supporting evidence
 
+### Usage Examples
 
-## 🔒 Security Features
+#### Creating a Node
+```php
+$nodeData = [
+    'type' => 'concept',
+    'title' => 'Tawhid (Monotheism)',
+    'content' => 'Tawhid is the Islamic concept of monotheism...',
+    'metadata' => ['category' => 'Aqeedah', 'importance' => 'fundamental']
+];
+$nodeId = $bayanManager->createNode($nodeData);
+```
 
-- **CSRF Protection**: All forms protected against cross-site request forgery
-- **Session Management**: Secure session handling with proper authentication
-- **File Security**: Comprehensive .gitignore file protecting sensitive data
-- **Session File Protection**: Session files properly excluded from version control
-- **Input Validation**: Comprehensive input sanitization and validation
-- **Database Security**: Prepared statements and proper connection handling
+#### Creating a Relationship
+```php
+$relationshipId = $bayanManager->createRelationship(
+    $sourceNodeId, 
+    $targetNodeId, 
+    'opposes', 
+    ['strength' => 'strong']
+);
+```
+
+#### Searching the Graph
+```php
+$results = $bayanManager->search('Tawhid', ['type' => 'concept']);
+```
+
+#### Finding Related Nodes
+```php
+$relatedNodes = $bayanManager->getRelatedNodes($nodeId, 'opposes');
+```
+
+### Web Interface
+
+#### Routes
+- `/bayan` - Main dashboard with statistics
+- `/bayan/search` - Search interface with filters
+- `/bayan/create` - Node creation form
+- `/bayan/node/{id}` - Node details and relationships
+- `/bayan/statistics` - Graph statistics and metrics
+- `/bayan/paths` - Path finding between nodes
+
+#### API Endpoints
+- `POST /bayan/create` - Create new node
+- `POST /bayan/relationship` - Create relationship
+- `GET /bayan/statistics` - Get graph statistics
+- `GET /bayan/paths` - Find paths between nodes
+
+## 🏗️ Architecture
+
+### Core Components
+- **Application** - Main application bootstrap and configuration
+- **Container** - Dependency injection container
+- **Router** - HTTP routing and request handling
+- **Database** - Database connection and query builder
+- **View** - Template rendering with Twig
+- **Session** - Session management and authentication
+
+### Service Providers
+- **DatabaseServiceProvider** - Database connection and migrations
+- **ViewServiceProvider** - Template engine and view rendering
+- **SessionServiceProvider** - Session management
+- **ExtensionServiceProvider** - Plugin and extension system
+- **ConfigurationServiceProvider** - Application configuration
+- **LoggingServiceProvider** - Logging and error handling
+- **SkinServiceProvider** - Theme and skin management
+- **BayanServiceProvider** - Knowledge graph system
+
+### Controllers
+- **HomeController** - Main page and navigation
+- **AuthController** - User authentication
+- **ProfileController** - User profiles and settings
+- **PageController** - Wiki page management
+- **QuranController** - Quran verse management
+- **HadithController** - Hadith collection management
+- **BayanController** - Knowledge graph management
 
 ## 📁 Project Structure
 
 ```
 islamwiki/
-├── src/                    # Application source code
-│   ├── Core/              # Core framework components
-│   ├── Http/              # HTTP layer (controllers, middleware)
+├── src/                    # Source code
+│   ├── Core/              # Core framework
+│   │   ├── Bayan/         # Knowledge graph system
+│   │   ├── Database/      # Database layer
+│   │   ├── Http/          # HTTP handling
+│   │   ├── Routing/       # Routing system
+│   │   └── View/          # Template engine
+│   ├── Http/              # HTTP layer
+│   │   ├── Controllers/   # Application controllers
+│   │   └── Middleware/    # Request middleware
 │   ├── Models/            # Data models
-│   └── Skins/             # Skin system
-├── resources/             # Views and templates
-├── public/               # Web-accessible files
+│   ├── Providers/         # Service providers
+│   └── Skins/             # Theme system
+├── resources/             # Application resources
+│   └── views/            # Template files
+├── public/               # Web root
 ├── database/             # Database migrations
-└── scripts/              # Utility scripts
+├── scripts/              # Utility scripts
+├── docs/                 # Documentation
+└── tests/                # Test files
 ```
 
-## 🚀 Development
+## 🔧 Configuration
 
-### Running Locally
+### Environment Variables
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=islamwiki
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_CHARSET=utf8mb4
+
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+```
+
+### Database Schema
+The application uses MySQL with the following key tables:
+- `users` - User accounts and profiles
+- `pages` - Wiki pages and content
+- `bayan_nodes` - Knowledge graph nodes
+- `bayan_edges` - Knowledge graph relationships
+- `quran_verses` - Quran verses and translations
+- `hadiths` - Hadith collections and chains
+- `scholars` - Islamic scholars and authorities
+
+## 🧪 Testing
+
+### Running Tests
 ```bash
-# Start PHP development server
-php -S localhost:8000 -t public/
+# Run all tests
+php scripts/test.php
 
-# Or use Apache/Nginx with proper configuration
+# Run specific test
+php public/tests/test-bayan.php
 ```
 
-### Database Operations
-```bash
-# Run migrations
-php scripts/migrate.php
+### Test Scripts
+- `test-bayan.php` - Knowledge graph system tests
+- `debug-bayan.php` - Knowledge graph debugging
+- `bayan-test.php` - Web interface tests
 
-# Create sample data
-php scripts/database/create_sample_data.php
-```
+## 🔒 Security
 
-## 📝 Recent Changes
+### Features
+- **CSRF Protection** - Cross-site request forgery prevention
+- **Input Validation** - Comprehensive input sanitization
+- **SQL Injection Prevention** - Prepared statements and parameter binding
+- **XSS Protection** - Output encoding and sanitization
+- **Session Security** - Secure session management
+- **Error Handling** - Secure error reporting without information disclosure
 
-### v0.0.32 (2025-08-01)
-- **Fixed**: Critical database connection issue in SettingsController
-- **Improved**: Database abstraction layer usage
-- **Enhanced**: Production security and reliability
+### Best Practices
+- Always validate and sanitize user input
+- Use prepared statements for database queries
+- Implement proper authentication and authorization
+- Keep dependencies updated
+- Use HTTPS in production
+- Regular security audits
 
-### v0.0.31 (2025-08-01)
-- **Fixed**: ZamZam.js framework reactive data binding
-- **Resolved**: CSRF token issues and login authentication
-- **Improved**: Skin system functionality
+## 📈 Performance
 
-### v0.0.30 (2025-08-01)
-- **Fixed**: Authentication system and session management
-- **Enhanced**: CSRF protection and database integration
-- **Added**: Comprehensive debugging tools
+### Optimization Features
+- **Database Indexing** - Optimized queries with proper indexes
+- **Caching** - Redis-based caching for frequently accessed data
+- **CDN Integration** - Content delivery network for static assets
+- **Pagination** - Efficient pagination for large datasets
+- **Lazy Loading** - On-demand resource loading
+
+### Monitoring
+- **Error Logging** - Comprehensive error tracking
+- **Performance Metrics** - Response time and throughput monitoring
+- **Database Analytics** - Query performance and optimization
+- **User Analytics** - Usage patterns and behavior tracking
 
 ## 🤝 Contributing
 
+### Development Setup
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+### Coding Standards
+- Follow PSR-12 coding standards
+- Use meaningful variable and function names
+- Add comprehensive documentation
+- Write unit tests for new features
+- Follow the existing code style
+
+### Testing Guidelines
+- Write tests for all new features
+- Ensure existing tests pass
+- Test edge cases and error conditions
+- Use descriptive test names
+
+## 📚 Documentation
+
+### Additional Resources
+- [API Documentation](docs/api.md)
+- [Database Schema](docs/database.md)
+- [Deployment Guide](docs/deployment.md)
+- [Security Guide](docs/security.md)
+- [Performance Guide](docs/performance.md)
+
+### Knowledge Graph Documentation
+- [Bayan System Guide](docs/bayan-system.md)
+- [Graph Query Examples](docs/graph-queries.md)
+- [API Reference](docs/bayan-api.md)
+- [User Guide](docs/bayan-user-guide.md)
 
 ## 📄 License
 
@@ -173,12 +337,31 @@ This project is licensed under the GNU Affero General Public License v3.0 - see 
 
 ## 🙏 Acknowledgments
 
-- Built with modern PHP practices and security in mind
-- Designed for the Islamic community's knowledge sharing needs
-- Open source and community-driven development
+- **Islamic Scholars** - For their contributions to Islamic knowledge
+- **Open Source Community** - For the tools and libraries used
+- **Contributors** - For their time and expertise
+- **Users** - For feedback and suggestions
+
+## 📞 Support
+
+### Getting Help
+- **Documentation** - Check the docs folder for detailed guides
+- **Issues** - Report bugs and feature requests on GitHub
+- **Discussions** - Join community discussions
+- **Email** - Contact the development team
+
+### Reporting Issues
+When reporting issues, please include:
+- **Version** - IslamWiki version you're using
+- **Environment** - PHP version, database, web server
+- **Steps** - Detailed steps to reproduce the issue
+- **Expected vs Actual** - What you expected vs what happened
+- **Logs** - Relevant error logs and stack traces
 
 ---
 
-**IslamWiki** - Empowering Islamic knowledge sharing through modern technology.
+**Version:** 0.0.34  
+**Last Updated:** August 1, 2025  
+**Status:** Production Ready
 
 

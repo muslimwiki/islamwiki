@@ -159,6 +159,11 @@ class Application
         $skinServiceProvider = new \IslamWiki\Providers\SkinServiceProvider($this);
         $skinServiceProvider->register();
         $skinServiceProvider->boot();
+
+        // Register the BayanServiceProvider
+        $bayanServiceProvider = new \IslamWiki\Providers\BayanServiceProvider();
+        $bayanServiceProvider->register($this->container);
+        $bayanServiceProvider->boot($this->container);
     }
 
     /**

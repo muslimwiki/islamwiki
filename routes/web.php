@@ -267,3 +267,13 @@ $router->get('/api/search/suggestions', 'IslamWiki\Http\Controllers\SearchContro
 $router->get('/test-router-alive', function($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
 });
+
+// Bayan Knowledge Graph Routes - Version 0.0.34
+$router->get('/bayan', 'IslamWiki\Http\Controllers\BayanController@index');
+$router->get('/bayan/search', 'IslamWiki\Http\Controllers\BayanController@search');
+$router->get('/bayan/create', 'IslamWiki\Http\Controllers\BayanController@create');
+$router->post('/bayan/create', 'IslamWiki\Http\Controllers\BayanController@create');
+$router->get('/bayan/node/{id}', 'IslamWiki\Http\Controllers\BayanController@show');
+$router->post('/bayan/relationship', 'IslamWiki\Http\Controllers\BayanController@createRelationship');
+$router->get('/bayan/statistics', 'IslamWiki\Http\Controllers\BayanController@statistics');
+$router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPaths');
