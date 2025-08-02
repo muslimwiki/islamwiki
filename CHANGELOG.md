@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Improved database integration for user settings storage
 - Enhanced security with hidden attributes and privacy controls
 - Added responsive design improvements for mobile devices
+- Added comprehensive .gitignore file with session file protection
 
 ## [0.0.33] - 2025-08-01
 

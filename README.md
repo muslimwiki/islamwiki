@@ -44,6 +44,7 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
 - **Route Conflict Resolution**: Fixed conflicting profile routes between controllers
 - **Database Integration**: Enhanced user settings storage and retrieval
 - **Error Handling**: Improved error handling and validation throughout the profile system
+- **Git Management**: Comprehensive .gitignore file with proper file exclusions and security
 
 ## 🛠️ Installation
 
@@ -102,6 +103,8 @@ IslamWiki features a robust and flexible skin system:
 
 - **CSRF Protection**: All forms protected against cross-site request forgery
 - **Session Management**: Secure session handling with proper authentication
+- **File Security**: Comprehensive .gitignore file protecting sensitive data
+- **Session File Protection**: Session files properly excluded from version control
 - **Input Validation**: Comprehensive input sanitization and validation
 - **Database Security**: Prepared statements and proper connection handling
 
