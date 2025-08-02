@@ -94,20 +94,34 @@ class Application
         $this->container->instance('db', $db);
         $this->container->instance(\IslamWiki\Core\Database\Connection::class, $db);
 
-        // Bind LoggerInterface
+        // Bind Logger
         $logDir = $this->basePath('storage/logs');
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }
-        $logger = new \IslamWiki\Core\Logging\Logger($logDir, \Psr\Log\LogLevel::DEBUG);
-        $this->container->instance(\Psr\Log\LoggerInterface::class, $logger);
+        $logger = new \IslamWiki\Core\Logging\Logger($logDir, 'debug');
         $this->container->instance(\IslamWiki\Core\Logging\Logger::class, $logger);
 
         // Bind ControllerFactory for IslamRouter
         $this->container->singleton('controller.factory', function () {
             $db = $this->container->get(\IslamWiki\Core\Database\Connection::class);
-            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+            $logger = $this->container->get(\IslamWiki\Core\Logging\Logger::class);
             return new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $this->container);
+        });
+
+        // Register core settings binding (needed by LoggingServiceProvider)
+        $this->container->singleton('settings', function () {
+            return [
+                'logging' => [
+                    'log_path' => $this->basePath('storage/logs'),
+                    'level' => \Psr\Log\LogLevel::DEBUG,
+                    'max_file_size' => 10,
+                    'max_files' => 5,
+                ],
+                'app_name' => 'IslamWiki',
+                'app_debug' => true,
+                'default_skin' => 'Bismillah',
+            ];
         });
 
         // Register service providers
@@ -176,8 +190,8 @@ class Application
         \IslamWiki\Core\Error\ErrorHandler::initialize($debug);
         
         // Set up the logger for the error handler
-        $this->container->afterResolving(\Psr\Log\LoggerInterface::class, function ($logger) {
-            if ($logger instanceof \Psr\Log\LoggerInterface) {
+        $this->container->afterResolving(\IslamWiki\Core\Logging\Logger::class, function ($logger) {
+            if ($logger instanceof \IslamWiki\Core\Logging\Logger) {
                 \IslamWiki\Core\Error\ErrorHandler::setLogger($logger);
             }
         });

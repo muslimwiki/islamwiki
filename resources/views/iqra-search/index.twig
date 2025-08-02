@@ -1,0 +1,577 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Iqra Search - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <!-- Iqra Search Header -->
+    <div class="bg-white shadow-lg border-b border-green-200">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <div class="flex justify-center items-center mb-4">
+                    <div class="text-6xl mr-4">📖</div>
+                    <div>
+                        <h1 class="text-5xl font-bold text-gray-900 mb-2">Iqra</h1>
+                        <p class="text-xl text-gray-600">Advanced Islamic Search Engine</p>
+                    </div>
+                </div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    "Read in the name of your Lord who created" - Discover Islamic knowledge across Quran, Hadith, 
+                    Calendar events, Prayer times, and scholarly works with our advanced search engine.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Interface -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Advanced Search Form -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <form method="GET" action="/iqra-search" class="bg-white rounded-xl shadow-xl p-8 border border-green-200">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Search Input -->
+                    <div class="lg:col-span-2">
+                        <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
+                            Search Query
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   name="q" 
+                                   value="{{ query }}" 
+                                   placeholder="Search for anything in Islamic content..."
+                                   class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                   autocomplete="off"
+                                   id="search-input">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <button type="submit" class="text-green-600 hover:text-green-800">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Type Filter -->
+                    <div>
+                        <label for="content-type" class="block text-sm font-medium text-gray-700 mb-2">
+                            Content Type
+                        </label>
+                        <select name="type" id="content-type" class="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            {% for key, label in searchTypes %}
+                                <option value="{{ key }}" {% if type == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Sort Options -->
+                    <div>
+                        <label for="sort-option" class="block text-sm font-medium text-gray-700 mb-2">
+                            Sort By
+                        </label>
+                        <select name="sort" id="sort-option" class="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            {% for key, label in sortOptions %}
+                                <option value="{{ key }}" {% if sort == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="order-option" class="block text-sm font-medium text-gray-700 mb-2">
+                            Order
+                        </label>
+                        <select name="order" id="order-option" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            {% for key, label in orderOptions %}
+                                <option value="{{ key }}" {% if order == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Search with Iqra
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button type="button" id="advanced-search-btn" class="w-full bg-gray-100 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                            Advanced Options
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results -->
+        {% if query %}
+            <div class="max-w-7xl mx-auto">
+                <!-- Results Header -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+                                {% if totalResults == 1 %}
+                                    1 result found
+                                {% else %}
+                                    {{ totalResults }} results found
+                                {% endif %}
+                            </h2>
+                            <p class="text-gray-600">for "{{ query }}"</p>
+                            {% if searchTime %}
+                                <p class="text-sm text-gray-500 mt-1">Search completed in {{ searchTime }} seconds</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Search Statistics -->
+                        {% if searchStats %}
+                            <div class="mt-4 md:mt-0">
+                                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-blue-600">📄</div>
+                                        <div class="text-gray-600">{{ searchStats.total_pages }}</div>
+                                        <div class="text-xs text-gray-500">Pages</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-green-600">📖</div>
+                                        <div class="text-gray-600">{{ searchStats.total_quran }}</div>
+                                        <div class="text-xs text-gray-500">Quran</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-purple-600">📚</div>
+                                        <div class="text-gray-600">{{ searchStats.total_hadith }}</div>
+                                        <div class="text-xs text-gray-500">Hadith</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-orange-600">📅</div>
+                                        <div class="text-gray-600">{{ searchStats.total_calendar }}</div>
+                                        <div class="text-xs text-gray-500">Events</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-red-600">🕌</div>
+                                        <div class="text-gray-600">{{ searchStats.total_prayer }}</div>
+                                        <div class="text-xs text-gray-500">Prayer</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-indigo-600">👨‍🎓</div>
+                                        <div class="text-gray-600">{{ searchStats.total_scholars }}</div>
+                                        <div class="text-xs text-gray-500">Scholars</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Results -->
+                {% if results %}
+                    <div class="space-y-6">
+                        {% for result in results %}
+                            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border-l-4 border-green-500">
+                                <!-- Result Header -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-3">
+                                        {% if result.type == 'page' %}
+                                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">📄 Page</span>
+                                        {% elseif result.type == 'quran' %}
+                                            <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">📖 Quran</span>
+                                        {% elseif result.type == 'hadith' %}
+                                            <span class="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">📚 Hadith</span>
+                                        {% elseif result.type == 'calendar' %}
+                                            <span class="px-3 py-1 bg-orange-100 text-orange-800 text-sm font-medium rounded-full">📅 Event</span>
+                                        {% elseif result.type == 'prayer' %}
+                                            <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">🕌 Prayer</span>
+                                        {% elseif result.type == 'scholar' %}
+                                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">👨‍🎓 Scholar</span>
+                                        {% endif %}
+                                        
+                                        {% if result.relevance %}
+                                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                                Relevance: {{ (result.relevance / 10) | round(1) }}%
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="text-sm text-gray-500">
+                                        {% if result.updated_at %}
+                                            {{ result.updated_at | date('M j, Y') }}
+                                        {% elseif result.event_date %}
+                                            {{ result.event_date | date('M j, Y') }}
+                                        {% elseif result.prayer_date %}
+                                            {{ result.prayer_date | date('M j, Y') }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Result Title -->
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                                    <a href="{{ result.url }}" class="hover:text-green-600 transition-colors duration-200">
+                                        {{ result.title }}
+                                    </a>
+                                </h3>
+
+                                <!-- Result Details -->
+                                {% if result.type == 'quran' %}
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600 mb-2">
+                                            <strong>Surah:</strong> {{ result.surah_name }} ({{ result.surah_id }}:{{ result.verse_number }})
+                                            {% if result.english_name %}
+                                                • {{ result.english_name }}
+                                            {% endif %}
+                                        </p>
+                                        {% if result.arabic_text %}
+                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
+                                                {{ result.arabic_text }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% elseif result.type == 'hadith' %}
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600 mb-2">
+                                            <strong>Collection:</strong> {{ result.collection_name }} #{{ result.hadith_number }}
+                                            {% if result.authenticity %}
+                                                <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                                                    {{ result.authenticity }}
+                                                </span>
+                                            {% endif %}
+                                        </p>
+                                        {% if result.narrator %}
+                                            <p class="text-sm text-gray-600">
+                                                <strong>Narrator:</strong> {{ result.narrator }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                {% elseif result.type == 'calendar' %}
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600">
+                                            <strong>Date:</strong> {{ result.event_date | date('F j, Y') }}
+                                            {% if result.hijri_date %}
+                                                ({{ result.hijri_date }})
+                                            {% endif %}
+                                            {% if result.category_name %}
+                                                <span class="ml-2">• {{ result.category_name }}</span>
+                                            {% endif %}
+                                        </p>
+                                        {% if result.arabic_title %}
+                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
+                                                {{ result.arabic_title }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% elseif result.type == 'prayer' %}
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600">
+                                            <strong>Location:</strong> {{ result.city }}, {{ result.country }}
+                                            {% if result.location_name %}
+                                                ({{ result.location_name }})
+                                            {% endif %}
+                                        </p>
+                                        <div class="grid grid-cols-5 gap-2 text-xs mt-2">
+                                            <div><strong>Fajr:</strong> {{ result.fajr }}</div>
+                                            <div><strong>Dhuhr:</strong> {{ result.dhuhr }}</div>
+                                            <div><strong>Asr:</strong> {{ result.asr }}</div>
+                                            <div><strong>Maghrib:</strong> {{ result.maghrib }}</div>
+                                            <div><strong>Isha:</strong> {{ result.isha }}</div>
+                                        </div>
+                                    </div>
+                                {% elseif result.type == 'scholar' %}
+                                    <div class="mb-4">
+                                        <p class="text-sm text-gray-600">
+                                            {% if result.era %}
+                                                <strong>Era:</strong> {{ result.era }}
+                                            {% endif %}
+                                            {% if result.school %}
+                                                <span class="ml-2">• <strong>School:</strong> {{ result.school }}</span>
+                                            {% endif %}
+                                            {% if result.specialization %}
+                                                <span class="ml-2">• <strong>Specialization:</strong> {{ result.specialization }}</span>
+                                            {% endif %}
+                                        </p>
+                                        {% if result.arabic_name %}
+                                            <div class="text-right text-lg mb-3 p-3 bg-gray-50 rounded" dir="rtl">
+                                                {{ result.arabic_name }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% elseif result.type == 'page' %}
+                                    <div class="mb-4">
+                                        {% if result.author %}
+                                            <p class="text-sm text-gray-600">
+                                                <strong>Author:</strong> {{ result.author }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Excerpt -->
+                                {% if result.excerpt %}
+                                    <div class="text-gray-700 leading-relaxed mb-4">
+                                        {{ result.excerpt | raw }}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Action Buttons -->
+                                <div class="flex flex-wrap gap-2">
+                                    <a href="{{ result.url }}" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200">
+                                        View Details
+                                    </a>
+                                    
+                                    {% if result.type == 'quran' %}
+                                        <a href="/quran/widget/{{ result.surah_id }}/{{ result.verse_number }}" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                            Widget
+                                        </a>
+                                    {% elseif result.type == 'hadith' %}
+                                        <a href="/hadith/widget/{{ result.collection_id }}/{{ result.hadith_number }}" class="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors duration-200">
+                                            Widget
+                                        </a>
+                                    {% endif %}
+                                    
+                                    <button class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200" onclick="shareResult('{{ result.title }}', '{{ result.url }}')">
+                                        Share
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if totalPages > 1 %}
+                        <div class="mt-8 flex justify-center">
+                            <nav class="flex space-x-2">
+                                {% if currentPage > 1 %}
+                                    <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ currentPage - 1 }}" 
+                                       class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                        Previous
+                                    </a>
+                                {% endif %}
+                                
+                                {% for page in range(1, totalPages) %}
+                                    {% if page == currentPage %}
+                                        <span class="px-4 py-2 bg-green-600 text-white rounded-lg">{{ page }}</span>
+                                    {% else %}
+                                        <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ page }}" 
+                                           class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                            {{ page }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if currentPage < totalPages %}
+                                    <a href="?q={{ query }}&type={{ type }}&sort={{ sort }}&order={{ order }}&page={{ currentPage + 1 }}" 
+                                       class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                        Next
+                                    </a>
+                                {% endif %}
+                            </nav>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <!-- No Results -->
+                    <div class="text-center py-12">
+                        <div class="text-8xl mb-4">🔍</div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2">No results found</h3>
+                        <p class="text-gray-600 mb-6">Try different keywords or search in a specific category</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            {% for key, label in searchTypes %}
+                                <a href="?q={{ query }}&type={{ key }}" 
+                                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                                    {{ label }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <!-- Search Tips -->
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-6">Search Tips for Iqra</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">📖</span>
+                                Quran Search
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search by verse content or translation</li>
+                                <li>• Use surah names or numbers</li>
+                                <li>• Search for specific themes or topics</li>
+                                <li>• Arabic text is fully supported</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">📚</span>
+                                Hadith Search
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search by hadith content or narrator</li>
+                                <li>• Filter by collection (Bukhari, Muslim, etc.)</li>
+                                <li>• Search by authenticity level</li>
+                                <li>• Arabic and English text supported</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">📅</span>
+                                Calendar Search
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search Islamic events and holidays</li>
+                                <li>• Find events by date or description</li>
+                                <li>• Browse upcoming events</li>
+                                <li>• Both Gregorian and Hijri dates</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">🕌</span>
+                                Prayer Search
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search prayer times by location</li>
+                                <li>• Find cities or countries</li>
+                                <li>• Get prayer time schedules</li>
+                                <li>• Worldwide coverage</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">👨‍🎓</span>
+                                Scholar Search
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search Islamic scholars and scholars</li>
+                                <li>• Find by name or specialization</li>
+                                <li>• Browse by era or school</li>
+                                <li>• Biographical information</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">📄</span>
+                                Wiki Pages
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Search wiki articles and content</li>
+                                <li>• Find by title or content</li>
+                                <li>• Browse by namespace</li>
+                                <li>• Community-contributed content</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Search Suggestions JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    let suggestionsTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(suggestionsTimeout);
+        const query = this.value.trim();
+        
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+
+        suggestionsTimeout = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 300);
+    });
+
+    function fetchSuggestions(query) {
+        fetch(`/iqra-search/api/suggestions?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.suggestions && data.suggestions.length > 0) {
+                    showSuggestions(data.suggestions);
+                } else {
+                    hideSuggestions();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                hideSuggestions();
+            });
+    }
+
+    function showSuggestions(suggestions) {
+        let suggestionsDiv = document.getElementById('search-suggestions');
+        if (!suggestionsDiv) {
+            suggestionsDiv = document.createElement('div');
+            suggestionsDiv.id = 'search-suggestions';
+            suggestionsDiv.className = 'absolute z-50 w-full bg-white border-2 border-green-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto';
+            searchInput.parentNode.style.position = 'relative';
+            searchInput.parentNode.appendChild(suggestionsDiv);
+        }
+
+        suggestionsDiv.innerHTML = suggestions.map(suggestion => `
+            <a href="${suggestion.url}" class="block px-4 py-3 hover:bg-green-50 text-gray-700 border-b border-gray-100 last:border-b-0 transition-colors duration-150">
+                <div class="flex items-center">
+                    <span class="mr-3 text-lg">
+                        ${getTypeIcon(suggestion.type)}
+                    </span>
+                    <span class="flex-1">${suggestion.text}</span>
+                    <span class="text-xs text-gray-500">${suggestion.type}</span>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    function hideSuggestions() {
+        const suggestionsDiv = document.getElementById('search-suggestions');
+        if (suggestionsDiv) {
+            suggestionsDiv.remove();
+        }
+    }
+
+    function getTypeIcon(type) {
+        const icons = {
+            'page': '📄',
+            'quran': '📖',
+            'hadith': '📚',
+            'calendar': '📅',
+            'prayer': '🕌',
+            'scholar': '👨‍🎓'
+        };
+        return icons[type] || '📄';
+    }
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !document.getElementById('search-suggestions')?.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+
+    // Share functionality
+    window.shareResult = function(title, url) {
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                url: window.location.origin + url
+            });
+        } else {
+            // Fallback to copying to clipboard
+            const fullUrl = window.location.origin + url;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    };
+});
+</script>
+{% endblock %} 

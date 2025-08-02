@@ -20,6 +20,50 @@
     </div>
 </div>
 
+<!-- User Navigation Section -->
+{% if user %}
+<div class="user-nav-section">
+    <div class="container">
+        <div class="user-nav-card">
+            <div class="user-nav-header">
+                <h2>Welcome back, {{ user.username }}! 👋</h2>
+                <p>Quick access to your most used features</p>
+            </div>
+            <div class="user-nav-grid">
+                <a href="/dashboard" class="user-nav-item">
+                    <div class="user-nav-icon">📊</div>
+                    <div class="user-nav-content">
+                        <h3>Dashboard</h3>
+                        <p>View your activity and stats</p>
+                    </div>
+                </a>
+                <a href="/pages/create" class="user-nav-item">
+                    <div class="user-nav-icon">✏️</div>
+                    <div class="user-nav-content">
+                        <h3>Create Page</h3>
+                        <p>Start writing new content</p>
+                    </div>
+                </a>
+                <a href="/profile" class="user-nav-item">
+                    <div class="user-nav-icon">👤</div>
+                    <div class="user-nav-content">
+                        <h3>Profile</h3>
+                        <p>Manage your account</p>
+                    </div>
+                </a>
+                <a href="/settings" class="user-nav-item">
+                    <div class="user-nav-icon">⚙️</div>
+                    <div class="user-nav-content">
+                        <h3>Settings</h3>
+                        <p>Customize your experience</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Stats Section -->
 <div class="stats-grid">
     <div class="stat-card">

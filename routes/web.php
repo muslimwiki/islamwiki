@@ -277,3 +277,9 @@ $router->get('/bayan/node/{id}', 'IslamWiki\Http\Controllers\BayanController@sho
 $router->post('/bayan/relationship', 'IslamWiki\Http\Controllers\BayanController@createRelationship');
 $router->get('/bayan/statistics', 'IslamWiki\Http\Controllers\BayanController@statistics');
 $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPaths');
+
+// Iqra Search Engine Routes - Advanced Islamic Search
+$router->get('/iqra-search', 'IslamWiki\Http\Controllers\IqraSearchController@index');
+$router->get('/iqra-search/api/search', 'IslamWiki\Http\Controllers\IqraSearchController@apiSearch');
+$router->get('/iqra-search/api/suggestions', 'IslamWiki\Http\Controllers\IqraSearchController@apiSuggestions');
+$router->get('/iqra-search/api/analytics', 'IslamWiki\Http\Controllers\IqraSearchController@apiAnalytics');

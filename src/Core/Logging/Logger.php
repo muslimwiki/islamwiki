@@ -3,33 +3,28 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Logging;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\LoggerTrait;
-use Psr\Log\LogLevel;
 use DateTimeImmutable;
 
 /**
- * PSR-3 compatible logger implementation for IslamWiki.
+ * Simple logger implementation for IslamWiki.
  * 
  * This logger handles different log levels and writes to specified log files
  * with proper formatting and rotation support.
  */
-class Logger implements LoggerInterface
+class Logger
 {
-    use LoggerTrait;
-
     /**
      * The log levels with their severity.
      */
     private const LEVELS = [
-        LogLevel::DEBUG => 0,
-        LogLevel::INFO => 1,
-        LogLevel::NOTICE => 2,
-        LogLevel::WARNING => 3,
-        LogLevel::ERROR => 4,
-        LogLevel::CRITICAL => 5,
-        LogLevel::ALERT => 6,
-        LogLevel::EMERGENCY => 7,
+        'debug' => 0,
+        'info' => 1,
+        'notice' => 2,
+        'warning' => 3,
+        'error' => 4,
+        'critical' => 5,
+        'alert' => 6,
+        'emergency' => 7,
     ];
 
     /**
@@ -67,7 +62,7 @@ class Logger implements LoggerInterface
      */
     public function __construct(
         string $logDir,
-        string $minLevel = LogLevel::DEBUG,
+        string $minLevel = 'debug',
         int $maxFileSize = 10,
         int $maxFiles = 5
     ) {
@@ -94,7 +89,7 @@ class Logger implements LoggerInterface
      *
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = []): void
+    public function log(string $level, string $message, array $context = []): void
     {
         // Check if we should log this level
         if (!$this->shouldLog($level)) {
@@ -139,57 +134,57 @@ class Logger implements LoggerInterface
     /**
      * Log a debug message with additional context.
      */
-    public function debug($message, array $context = []): void
+    public function debug(string $message, array $context = []): void
     {
-        $this->log(LogLevel::DEBUG, $message, $context);
+        $this->log('debug', $message, $context);
     }
 
     /**
      * Log an info message with additional context.
      */
-    public function info($message, array $context = []): void
+    public function info(string $message, array $context = []): void
     {
-        $this->log(LogLevel::INFO, $message, $context);
+        $this->log('info', $message, $context);
     }
 
     /**
      * Log a warning message with additional context.
      */
-    public function warning($message, array $context = []): void
+    public function warning(string $message, array $context = []): void
     {
-        $this->log(LogLevel::WARNING, $message, $context);
+        $this->log('warning', $message, $context);
     }
 
     /**
      * Log an error message with additional context.
      */
-    public function error($message, array $context = []): void
+    public function error(string $message, array $context = []): void
     {
-        $this->log(LogLevel::ERROR, $message, $context);
+        $this->log('error', $message, $context);
     }
 
     /**
      * Log a critical message with additional context.
      */
-    public function critical($message, array $context = []): void
+    public function critical(string $message, array $context = []): void
     {
-        $this->log(LogLevel::CRITICAL, $message, $context);
+        $this->log('critical', $message, $context);
     }
 
     /**
      * Log an alert message with additional context.
      */
-    public function alert($message, array $context = []): void
+    public function alert(string $message, array $context = []): void
     {
-        $this->log(LogLevel::ALERT, $message, $context);
+        $this->log('alert', $message, $context);
     }
 
     /**
      * Log an emergency message with additional context.
      */
-    public function emergency($message, array $context = []): void
+    public function emergency(string $message, array $context = []): void
     {
-        $this->log(LogLevel::EMERGENCY, $message, $context);
+        $this->log('emergency', $message, $context);
     }
 
     /**
@@ -242,7 +237,7 @@ class Logger implements LoggerInterface
     /**
      * Log exception with full context.
      */
-    public function exception(\Throwable $e, array $context = [], string $level = LogLevel::ERROR): void
+    public function exception(\Throwable $e, array $context = [], string $level = 'error'): void
     {
         $context['exception_class'] = get_class($e);
         $context['exception_message'] = $e->getMessage();

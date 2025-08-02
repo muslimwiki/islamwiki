@@ -2,14 +2,19 @@
 
 A comprehensive Islamic knowledge management platform built with modern web technologies.
 
+**Current Version:** 0.0.35  
+**Release Date:** August 2, 2025
+
 ## 🌟 Features
 
 ### 🏗️ Core Platform
 - **Modern PHP Framework** - Built with custom MVC architecture
 - **Responsive Design** - Mobile-friendly interface with multiple skins
-- **User Management** - Registration, authentication, and profile management
+- **User Management** - Complete authentication system with session management
+- **User Profiles** - Private and public profile viewing with user statistics
 - **Content Management** - Wiki-style page creation and editing
 - **Search System** - Advanced search with filters and suggestions
+- **Navigation System** - User dropdown menu with ZamZam.js integration
 
 ### 📚 Islamic Features
 - **Quran Integration** - Verse search, tafsir, and recitation
@@ -38,6 +43,24 @@ A comprehensive Islamic knowledge management platform built with modern web tech
 - **RESTful API** - Programmatic access to all features
 - **Security Features** - CSRF protection, input validation, XSS prevention
 - **Error Handling** - Comprehensive logging and debugging
+
+## 📁 Project Structure
+
+### Organization
+- **`public/`** - Web-accessible files only (clean and secure)
+- **`tests/`** - All test files organized by type
+  - `tests/web/` - Web/integration tests (73 files)
+  - `tests/Unit/` - Unit tests
+- **`debug/`** - Debug scripts and development tools (20 files)
+- **`src/`** - Application source code
+- **`resources/`** - Views and assets
+- **`docs/`** - Documentation
+
+### Security
+- Development files moved out of web-accessible directory
+- Test files properly organized and secured
+- Debug tools in dedicated directory
+- Clean public directory structure
 
 ## 🚀 Quick Start
 

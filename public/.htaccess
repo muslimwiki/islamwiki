@@ -13,6 +13,11 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
     
+    # Route all requests to index.php except static files
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+    
     # Redirect all other requests to index.php for routing
     RewriteRule ^ index.php [L]
 </IfModule>

@@ -5,6 +5,67 @@ All notable changes to IslamWiki will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.35] - 2025-08-02
+
+### Added
+- **Complete User Authentication System** - Full login/logout functionality with session management
+  - `AuthManager` - Complete authentication system with database integration
+  - `SessionManager` - Secure session handling with proper configuration
+  - User profile pages with private and public viewing
+  - User dropdown menu with ZamZam.js integration
+- **Navigation & UI Improvements** - Enhanced user interface
+  - Search bar in top navigation with comprehensive functionality
+  - User dropdown menu with Dashboard, Profile, Settings, and Logout links
+  - Responsive design with mobile-friendly navigation
+  - Proper authentication state detection and display
+- **Project Organization** - Improved file structure and organization
+  - Moved 73 test files from `public/` to `tests/web/`
+  - Moved 20 debug files from `public/` to `debug/`
+  - Clean public directory with only web-accessible files
+  - Proper web application structure following best practices
+- **Service Provider System** - Enhanced dependency injection
+  - `SkinServiceProvider` - Properly registered skin management system
+  - Settings binding for all service providers
+  - Unified container management across the application
+  - All service providers properly registered and booted
+- **Security Improvements** - Enhanced security features
+  - Session security with proper configuration
+  - Password hashing with bcrypt
+  - CSRF protection for forms
+  - Input validation and sanitization
+  - Development files moved out of web-accessible directory
+
+### Changed
+- Updated version to 0.0.35
+- Reorganized project structure for better security and organization
+- Enhanced service provider system with proper registration
+- Improved authentication system with secure session handling
+- Updated file organization following web application best practices
+
+### Fixed
+- **Critical Fixes**
+  - Profile page error: "No binding found for [skin.manager]"
+  - Settings binding missing for LoggingServiceProvider
+  - Session regeneration warnings
+  - Container conflicts in dependency injection
+- **Navigation Fixes**
+  - Missing user dropdown for authenticated users
+  - Authentication state detection and display
+  - Search bar functionality in top navigation
+  - Mobile navigation display issues
+- **File Organization**
+  - Test files properly organized in `tests/web/`
+  - Debug files properly organized in `debug/`
+  - Clean public directory structure
+  - Updated .gitignore for new organization
+
+### Security
+- Moved development files out of web-accessible directory
+- Enhanced session security with proper configuration
+- Implemented secure password hashing
+- Added CSRF protection for forms
+- Improved input validation and sanitization
+
 ## [0.0.34] - 2025-08-01
 
 ### Added

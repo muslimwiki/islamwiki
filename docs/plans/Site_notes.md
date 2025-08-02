@@ -1,7 +1,5 @@
 # Notes
 
-
-
 ## Tailwind
 
 - [x] Tailwind CSS CDN to the layout so all Tailwind classes work properly
@@ -21,3 +19,7 @@
 ## Github
 
 - [ ] Not getting commit contributions?
+
+---
+
+What did you do? When you created Iqra, you deleted all of the pages that we created including the dashboard, profile, settings. Bring them back

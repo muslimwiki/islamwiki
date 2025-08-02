@@ -132,8 +132,9 @@ abstract class Controller
      */
     protected function user(Request $request): ?array
     {
-        // TODO: Implement authentication
-        return $request->getAttribute('user');
+        // Get AuthManager from container
+        $auth = $this->container->get('auth');
+        return $auth->user();
     }
 
     /**
@@ -141,7 +142,8 @@ abstract class Controller
      */
     protected function isAuthenticated(Request $request): bool
     {
-        return $this->user($request) !== null;
+        $auth = $this->container->get('auth');
+        return $auth->check();
     }
 
     /**
@@ -149,8 +151,8 @@ abstract class Controller
      */
     protected function isAdmin(Request $request): bool
     {
-        $user = $this->user($request);
-        return $user && ($user['is_admin'] ?? false);
+        $auth = $this->container->get('auth');
+        return $auth->isAdmin();
     }
 
     /**

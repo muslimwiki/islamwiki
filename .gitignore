@@ -230,8 +230,8 @@ storage/framework/cache/views/
 # =============================================================================
 
 # Keep these files even if they match patterns above
-!public/tests/
-!public/debug/
+!tests/
+!debug/
 !scripts/tests/
 !docs/tests/
 

@@ -63,10 +63,14 @@ class AuthManager
             );
             
             // Update last login
-            $this->db->update('users', [
-                'last_login_at' => date('Y-m-d H:i:s'),
-                'last_login_ip' => $_SERVER['REMOTE_ADDR'] ?? null
-            ], ['id' => $userData['id']]);
+            $this->db->update(
+                'UPDATE users SET last_login_at = ?, last_login_ip = ? WHERE id = ?',
+                [
+                    date('Y-m-d H:i:s'),
+                    $_SERVER['REMOTE_ADDR'] ?? null,
+                    $userData['id']
+                ]
+            );
             
             $this->currentUser = $userData;
             return true;
@@ -111,7 +115,10 @@ class AuthManager
             $userData['updated_at'] = date('Y-m-d H:i:s');
             
             // Insert user
-            $userId = $this->db->insert('users', $userData);
+            $columns = implode(', ', array_keys($userData));
+            $placeholders = implode(', ', array_fill(0, count($userData), '?'));
+            $sql = "INSERT INTO users ({$columns}) VALUES ({$placeholders})";
+            $userId = $this->db->insert($sql, array_values($userData));
             
             // Auto-login after registration
             if ($userId) {

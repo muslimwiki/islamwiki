@@ -1,0 +1,169 @@
+# IslamWiki Release Notes - Version 0.0.35
+
+**Release Date:** August 2, 2025  
+**Previous Version:** 0.0.34  
+**Next Version:** 0.0.36
+
+## 🎉 Major Features
+
+### ✅ User Authentication & Profile System
+- **Complete User Authentication**: Full login/logout functionality with session management
+- **User Profile Pages**: Private and public profile viewing with user statistics
+- **User Dropdown Menu**: ZamZam.js-powered dropdown with Dashboard, Profile, Settings, and Logout links
+- **Session Management**: Proper session handling with secure configuration
+
+### ✅ Navigation & UI Improvements
+- **Search Bar**: Added comprehensive search functionality to top navigation
+- **User Navigation**: Restored user dropdown menu with proper authentication state
+- **Responsive Design**: Mobile-friendly navigation with proper breakpoints
+- **ZamZam.js Integration**: Maintained custom framework integration for interactivity
+
+### ✅ Project Organization
+- **Test File Organization**: Moved all test files from `public/` to `tests/web/` (73 files)
+- **Debug File Organization**: Moved all debug files from `public/` to `debug/` (20 files)
+- **Clean Public Directory**: Removed development files from web-accessible directory
+- **Proper Structure**: Follows web application best practices
+
+## 🔧 Technical Improvements
+
+### ✅ Dependency Injection & Service Providers
+- **SkinServiceProvider**: Properly registered skin management system
+- **Settings Binding**: Added comprehensive settings configuration for all services
+- **Application Container**: Unified container management across the application
+- **Service Registration**: All service providers properly registered and booted
+
+### ✅ Authentication System
+- **AuthManager Integration**: Complete authentication system with database integration
+- **Session Security**: Secure session handling with proper configuration
+- **User Management**: Full user CRUD operations with proper validation
+- **Admin User**: Default admin user (admin/password) for system access
+
+### ✅ Error Handling & Debugging
+- **Comprehensive Error Handling**: Proper error pages and logging
+- **Debug Tools**: Organized debug scripts in dedicated directory
+- **Development Tools**: Test scripts properly organized and accessible
+- **Logging System**: Structured logging with proper configuration
+
+## 🐛 Bug Fixes
+
+### ✅ Critical Fixes
+- **Profile Page Error**: Fixed "No binding found for [skin.manager]" error
+- **Settings Binding**: Resolved missing settings binding for LoggingServiceProvider
+- **Session Issues**: Fixed session regeneration warnings
+- **Container Conflicts**: Resolved dependency injection container conflicts
+
+### ✅ Navigation Fixes
+- **User Dropdown**: Fixed missing user dropdown for authenticated users
+- **Authentication State**: Proper detection and display of user login status
+- **Search Bar**: Restored search functionality to top navigation
+- **Responsive Issues**: Fixed mobile navigation display issues
+
+## 📁 File Organization
+
+### ✅ Moved Files
+- **Test Files**: `public/test-*.php` → `tests/web/test-*.php` (73 files)
+- **Debug Files**: `public/debug-*.php` → `debug/debug-*.php` (20 files)
+- **Test Directory**: `public/tests/` → `tests/web/` (consolidated)
+- **Debug Directory**: `public/debug/` → `debug/` (consolidated)
+
+### ✅ Updated Files
+- **public/index.php**: Main application entry point with proper service registration
+- **src/Core/Application.php**: Added settings binding for service providers
+- **src/Http/Controllers/ProfileController.php**: Fixed authentication integration
+- **.gitignore**: Updated to reflect new file organization
+
+## 🔒 Security Improvements
+
+### ✅ Authentication Security
+- **Session Security**: Proper session configuration with secure settings
+- **Password Hashing**: Secure password hashing with bcrypt
+- **CSRF Protection**: CSRF token implementation for forms
+- **Input Validation**: Proper input validation and sanitization
+
+### ✅ File Organization Security
+- **Development Files**: Moved development files out of web-accessible directory
+- **Test Files**: Organized test files in dedicated directory
+- **Debug Files**: Organized debug files in dedicated directory
+- **Public Directory**: Clean public directory with only web-accessible files
+
+## 🚀 Performance Improvements
+
+### ✅ Application Performance
+- **Service Provider Optimization**: Proper service registration and booting
+- **Container Optimization**: Unified container management
+- **Session Optimization**: Efficient session handling
+- **Database Optimization**: Proper database connection management
+
+### ✅ Development Performance
+- **File Organization**: Faster development with organized file structure
+- **Debug Tools**: Efficient debugging with organized debug scripts
+- **Test Organization**: Better test management and execution
+- **Documentation**: Improved documentation and code organization
+
+## 📚 Documentation Updates
+
+### ✅ Updated Documentation
+- **README.md**: Updated with new features and organization
+- **CHANGELOG.md**: Comprehensive changelog updates
+- **Release Notes**: Detailed release notes for version 0.0.35
+- **File Organization**: Documentation of new file structure
+
+### ✅ New Documentation
+- **Authentication Guide**: User authentication system documentation
+- **File Organization Guide**: New file structure documentation
+- **Development Guide**: Updated development workflow
+- **Security Guide**: Security improvements documentation
+
+## 🔄 Migration Notes
+
+### ✅ For Developers
+- **Test Files**: Update test file paths to `tests/web/`
+- **Debug Files**: Update debug file paths to `debug/`
+- **Service Providers**: All service providers now properly registered
+- **Container Usage**: Use Application container for all dependencies
+
+### ✅ For Users
+- **Login Required**: Profile pages now require authentication
+- **User Dropdown**: New user dropdown menu with navigation options
+- **Search Functionality**: Enhanced search bar in top navigation
+- **Mobile Support**: Improved mobile navigation experience
+
+## 🎯 Next Steps
+
+### ✅ Planned for 0.0.36
+- **Settings Pages**: Complete user settings functionality
+- **Dashboard Enhancement**: Improved dashboard with user statistics
+- **Search Enhancement**: Advanced search functionality
+- **Mobile Optimization**: Further mobile interface improvements
+
+### ✅ Future Enhancements
+- **User Registration**: Public user registration system
+- **Profile Customization**: User profile customization options
+- **Advanced Search**: Full-text search with filters
+- **API Development**: RESTful API for external integrations
+
+## 📊 Statistics
+
+### ✅ File Changes
+- **Files Added**: 0 new files
+- **Files Modified**: 15 files
+- **Files Moved**: 93 files (73 tests + 20 debug)
+- **Files Deleted**: 0 files
+
+### ✅ Code Changes
+- **Lines Added**: ~200 lines
+- **Lines Modified**: ~150 lines
+- **Lines Deleted**: ~50 lines
+- **Total Changes**: ~400 lines
+
+## 🙏 Acknowledgments
+
+- **Custom Frameworks**: Maintained ZamZam.js, Safa.css, Iqra, and Bayan frameworks
+- **Security**: Implemented proper authentication and session security
+- **Organization**: Improved project structure and file organization
+- **Documentation**: Comprehensive documentation updates
+
+---
+
+**IslamWiki Team**  
+*Building the future of Islamic knowledge sharing* 

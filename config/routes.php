@@ -1,6 +1,7 @@
-<?
+<?php
 declare(strict_types=1);
-php\nuse IslamWiki\Core\Database\Connection;
+
+use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
@@ -9,6 +10,7 @@ use IslamWiki\Http\Controllers\UserController;
 use IslamWiki\Http\Controllers\ApiController;
 use IslamWiki\Http\Controllers\ConfigurationController;
 use IslamWiki\Http\Controllers\SearchController;
+use IslamWiki\Http\Controllers\IqraSearchController;
 use IslamWiki\Http\Controllers\PrayerTimeController;
 use IslamWiki\Http\Controllers\HadithController;
 use IslamWiki\Http\Controllers\QuranController;
@@ -31,6 +33,7 @@ return function (\IslamWiki\Core\Application $app) {
     $apiController = new ApiController($db, $container);
     $configController = new ConfigurationController($container);
     $searchController = new SearchController($db, $container);
+    $iqraSearchController = new IqraSearchController($db, $container);
     $prayerController = new PrayerTimeController($db, $container);
     $hadithController = new HadithController($db, $container);
     $quranController = new QuranController($db, $container);
@@ -94,6 +97,12 @@ return function (\IslamWiki\Core\Application $app) {
     $app->post('/search', [$searchController, 'search']);
     $app->get('/search/suggestions', [$searchController, 'suggestions']);
     $app->get('/search/analytics', [$searchController, 'analytics']);
+    
+    // Iqra Search routes
+    $app->get('/iqra-search', [$iqraSearchController, 'index']);
+    $app->get('/iqra-search/api/search', [$iqraSearchController, 'apiSearch']);
+    $app->get('/iqra-search/api/suggestions', [$iqraSearchController, 'apiSuggestions']);
+    $app->get('/iqra-search/api/analytics', [$iqraSearchController, 'apiAnalytics']);
     
     // Prayer routes
     $app->get('/prayer', [$prayerController, 'index']);

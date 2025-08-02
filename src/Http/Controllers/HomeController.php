@@ -84,13 +84,14 @@ class HomeController extends Controller
                 $recentPages = [];
             }
 
-            // Get current user from session
+            // Get current user from AuthManager
             $user = null;
             try {
-                $session = $this->container->get('session');
-                if ($session->isLoggedIn()) {
-                    $userId = $session->getUserId();
-                    $user = \IslamWiki\Models\User::find($userId, $this->db);
+                $auth = $this->container->get('auth');
+                $user = $auth->user();
+                error_log('HomeController: User authenticated: ' . ($user ? 'yes' : 'no'));
+                if ($user) {
+                    error_log('HomeController: User ID: ' . $user['id'] . ', Username: ' . $user['username']);
                 }
             } catch (\Exception $e) {
                 error_log('HomeController: Error getting user: ' . $e->getMessage());
