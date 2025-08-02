@@ -375,4 +375,36 @@ class User
         
         return $revisions;
     }
+
+    /**
+     * Convert the model instance to an array.
+     */
+    public function toArray(): array
+    {
+        $array = [];
+        
+        foreach ($this->attributes as $key => $value) {
+            // Skip hidden attributes
+            if (in_array($key, $this->hidden)) {
+                continue;
+            }
+            
+            // Handle datetime casting
+            if ($value instanceof DateTime) {
+                $array[$key] = $value->format('Y-m-d H:i:s');
+            } else {
+                $array[$key] = $value;
+            }
+        }
+        
+        return $array;
+    }
+
+    /**
+     * Convert the model instance to JSON.
+     */
+    public function toJson(int $options = 0): string
+    {
+        return json_encode($this->toArray(), $options);
+    }
 }

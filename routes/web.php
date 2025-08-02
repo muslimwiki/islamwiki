@@ -36,10 +36,10 @@ $router->post('/forgot-password', 'IslamWiki\Http\Controllers\Auth\AuthControlle
 $router->get('/reset-password', 'IslamWiki\Http\Controllers\Auth\AuthController@showResetPassword');
 $router->post('/reset-password', 'IslamWiki\Http\Controllers\Auth\AuthController@resetPassword');
 
-// Profile Routes
-$router->get('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@profile');
-$router->post('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@updateProfile');
-$router->post('/profile/change-password', 'IslamWiki\Http\Controllers\Auth\AuthController@changePassword');
+// Auth Profile Routes (Legacy - keeping for backward compatibility)
+// $router->get('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@profile');
+// $router->post('/profile', 'IslamWiki\Http\Controllers\Auth\AuthController@updateProfile');
+// $router->post('/profile/change-password', 'IslamWiki\Http\Controllers\Auth\AuthController@changePassword');
 
 // Debug session route (must be before variable routes)
 $router->get('/debug-session', function($request) use ($router) {
@@ -75,9 +75,12 @@ $router->get('/debug-session', function($request) use ($router) {
 // Dashboard
 $router->get('/dashboard', 'IslamWiki\Http\Controllers\DashboardController@index');
 
-// Profile
-$router->get('/profile', 'IslamWiki\Http\Controllers\ProfileController@show');
+// Profile Routes
+$router->get('/profile', 'IslamWiki\Http\Controllers\ProfileController@show'); // Private profile
 $router->post('/profile/update', 'IslamWiki\Http\Controllers\ProfileController@update');
+$router->get('/user/{username}', 'IslamWiki\Http\Controllers\ProfileController@showPublic'); // Public profile
+$router->post('/profile/privacy-settings', 'IslamWiki\Http\Controllers\ProfileController@updatePrivacySettings');
+$router->post('/profile/customization-settings', 'IslamWiki\Http\Controllers\ProfileController@updateCustomizationSettings');
 
 // Settings (Temporarily unprotected for debugging)
 $router->get('/settings', 'IslamWiki\Http\Controllers\SettingsController@index');

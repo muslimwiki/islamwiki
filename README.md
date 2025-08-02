@@ -4,7 +4,7 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
 ## 🚀 Current Version: 0.0.34
 
-**Latest Feature**: Complete skin system fix and major file organization overhaul with enhanced debugging tools.
+**Latest Feature**: Enhanced profile system with privacy controls and customization options.
 
 ## ✨ Features
 
@@ -20,26 +20,30 @@ A comprehensive Islamic knowledge platform built with modern PHP architecture.
 
 ## 🔧 Recent Features (v0.0.34)
 
-### Complete Skin System Fix
-- **Enhanced SkinManager**: Improved initialization and error handling with fallback mechanisms
-- **LocalSettings Integration**: Fixed variable loading and global scope issues
-- **Security Configuration**: Resolved secret key warnings with proper random key generation
-- **Comprehensive Debugging**: Created advanced debugging tools for skin system validation
-- **System Status Reporting**: Added detailed skin system status reporting
+### Enhanced Profile System
+- **Dual Profile System**: Separate public (`/user/{username}`) and private (`/profile`) profile pages
+- **Privacy Controls**: Users can control exactly what information is visible on their public profile
+- **Profile Customization**: Users can customize how their profile appears to others
+- **Real-time Updates**: AJAX functionality for privacy and customization settings
+- **Responsive Design**: All profile sections work perfectly on mobile and desktop
 
-### File Organization Overhaul
-- **Clean Public Directory**: Moved 60+ test and debug files to organized subdirectories
-- **Structured Organization**: Created `/tests/` (41 files) and `/debug/` (19 files) subdirectories
-- **Improved Security**: Separated debug files from main application
-- **Better Maintenance**: Clear separation of concerns for development files
-- **Enhanced Documentation**: Added comprehensive README for new file structure
+### Privacy Controls Tab
+- **Profile Visibility**: Public, registered users only, or private profiles
+- **Activity Visibility**: Control visibility of recent activity, statistics, and watchlist
+- **Data Visibility**: Control visibility of email, join date, and last active status
+- **Granular Control**: Fine-grained privacy settings for complete user control
+
+### Profile Customization Tab
+- **Profile Information**: Customize display name, bio, location, and website
+- **Visual Customization**: Choose from multiple profile themes and layouts
+- **Content Preferences**: Featured content and personal profile messages
+- **Personal Branding**: Complete control over profile appearance and content
 
 ### Technical Improvements
-- Enhanced SkinManager with better error handling and validation
-- Improved container service registration and validation
-- Added comprehensive skin validation and debugging tools
-- Enhanced logging and debugging capabilities throughout the application
-- Better organized development workflow with structured file organization
+- **User Model Enhancement**: Added `toArray()` and `toJson()` methods for better data handling
+- **Route Conflict Resolution**: Fixed conflicting profile routes between controllers
+- **Database Integration**: Enhanced user settings storage and retrieval
+- **Error Handling**: Improved error handling and validation throughout the profile system
 
 ## 🛠️ Installation
 

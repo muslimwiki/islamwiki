@@ -2,6 +2,10 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="/css/profile-styles.css">
+{% endblock %}
+
 {% block content %}
 <div class="profile-container">
     <div class="container">
@@ -10,11 +14,13 @@
             <div class="profile-avatar-section">
                 <div class="profile-avatar">
                     <img src="{{ user.avatar ?? '/images/default-avatar.png' }}" alt="Profile Picture" class="avatar-image">
+                    {% if isOwnProfile %}
                     <div class="avatar-overlay">
                         <button class="avatar-edit-btn" onclick="editAvatar()">
                             <span>📷</span>
                         </button>
                     </div>
+                    {% endif %}
                 </div>
                 <div class="profile-info">
                     <h1 class="profile-name">{{ user.display_name ?? user.username ?? 'User' }}</h1>
@@ -29,11 +35,18 @@
                             <span class="meta-icon">🕒</span>
                             Last active {{ userStats.last_active }}
                         </span>
+                        {% if not isOwnProfile %}
+                        <span class="meta-item">
+                            <span class="meta-icon">🔒</span>
+                            {{ userSettings.privacy_level ?? 'public' }} profile
+                        </span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             
             <div class="profile-actions">
+                {% if isOwnProfile %}
                 <a href="/settings" class="btn btn-primary">
                     <span>⚙️</span>
                     Settings
@@ -42,6 +55,18 @@
                     <span>✏️</span>
                     Edit Profile
                 </button>
+                {% else %}
+                <a href="/user/{{ user.username }}" class="btn btn-primary">
+                    <span>👤</span>
+                    View Profile
+                </a>
+                {% if currentUserId %}
+                <button class="btn btn-outline" onclick="sendMessage()">
+                    <span>💬</span>
+                    Send Message
+                </button>
+                {% endif %}
+                {% endif %}
             </div>
         </div>
 
@@ -80,22 +105,30 @@
             </div>
         </div>
 
-        <!-- Profile Content Tabs -->
-        <div class="profile-tabs">
-            <div class="tab-nav">
-                <button class="tab-btn active" data-tab="overview">
-                    📊 Overview
-                </button>
-                <button class="tab-btn" data-tab="activity">
-                    📝 Recent Activity
-                </button>
-                <button class="tab-btn" data-tab="contributions">
-                    🎯 Contributions
-                </button>
-                <button class="tab-btn" data-tab="settings">
-                    ⚙️ Settings Summary
-                </button>
-            </div>
+                    <!-- Profile Content Tabs -->
+            <div class="profile-tabs">
+                <div class="tab-nav">
+                    <button class="tab-btn active" data-tab="overview">
+                        📊 Overview
+                    </button>
+                    <button class="tab-btn" data-tab="activity">
+                        📝 Recent Activity
+                    </button>
+                    <button class="tab-btn" data-tab="contributions">
+                        🎯 Contributions
+                    </button>
+                    {% if isOwnProfile %}
+                    <button class="tab-btn" data-tab="privacy">
+                        🔒 Privacy Controls
+                    </button>
+                    <button class="tab-btn" data-tab="customization">
+                        🎨 Profile Customization
+                    </button>
+                    <button class="tab-btn" data-tab="settings">
+                        ⚙️ Settings Summary
+                    </button>
+                    {% endif %}
+                </div>
 
             <!-- Overview Tab -->
             <div class="tab-content active" id="overview">
@@ -168,7 +201,13 @@
             <div class="tab-content" id="activity">
                 <div class="profile-section">
                     <h2 class="section-title">📝 Recent Activity</h2>
-                    {% if recentActivity|length > 0 %}
+                    {% if not isOwnProfile and userSettings.privacy_level != 'public' %}
+                        <div class="privacy-notice">
+                            <div class="privacy-icon">🔒</div>
+                            <h3>Activity is Private</h3>
+                            <p>This user has set their activity to private.</p>
+                        </div>
+                    {% elseif recentActivity|length > 0 %}
                         <div class="activity-list">
                             {% for activity in recentActivity %}
                             <div class="activity-item">
@@ -189,8 +228,10 @@
                         <div class="empty-state">
                             <div class="empty-icon">📝</div>
                             <h3>No Recent Activity</h3>
-                            <p>Start contributing to see your activity here!</p>
+                            <p>{% if isOwnProfile %}Start contributing to see your activity here!{% else %}This user hasn't been active recently.{% endif %}</p>
+                            {% if isOwnProfile %}
                             <a href="/pages/create" class="btn btn-primary">Create Your First Page</a>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
@@ -226,6 +267,235 @@
                                 <div class="contribution-number">{{ userStats.watchlist_items }}</div>
                                 <p>Pages you're following for updates</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if isOwnProfile %}
+            <!-- Privacy Controls Tab -->
+            <div class="tab-content" id="privacy">
+                <div class="profile-section">
+                    <h2 class="section-title">🔒 Privacy Controls</h2>
+                    <p class="section-description">Control what information is visible on your public profile.</p>
+                    
+                    <div class="privacy-settings">
+                        <div class="privacy-group">
+                            <h3>👤 Profile Visibility</h3>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="radio" name="profile_visibility" value="public" 
+                                           {% if userSettings.privacy_level == 'public' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('profile_visibility', this.value)">
+                                    <span class="privacy-text">
+                                        <strong>Public Profile</strong>
+                                        <small>Anyone can view your profile and activity</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="radio" name="profile_visibility" value="registered" 
+                                           {% if userSettings.privacy_level == 'registered' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('profile_visibility', this.value)">
+                                    <span class="privacy-text">
+                                        <strong>Registered Users Only</strong>
+                                        <small>Only logged-in users can view your profile</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="radio" name="profile_visibility" value="private" 
+                                           {% if userSettings.privacy_level == 'private' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('profile_visibility', this.value)">
+                                    <span class="privacy-text">
+                                        <strong>Private Profile</strong>
+                                        <small>Only you can view your profile</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="privacy-group">
+                            <h3>📝 Activity Visibility</h3>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_recent_activity" 
+                                           {% if userSettings.show_recent_activity != '0' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_recent_activity', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Recent Activity</strong>
+                                        <small>Display your recent page edits and contributions</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_statistics" 
+                                           {% if userSettings.show_statistics != '0' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_statistics', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Statistics</strong>
+                                        <small>Display your contribution statistics</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_watchlist" 
+                                           {% if userSettings.show_watchlist != '0' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_watchlist', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Watchlist</strong>
+                                        <small>Display pages you're following</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="privacy-group">
+                            <h3>📊 Data Visibility</h3>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_email" 
+                                           {% if userSettings.show_email == '1' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_email', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Email Address</strong>
+                                        <small>Display your email on public profile</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_join_date" 
+                                           {% if userSettings.show_join_date != '0' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_join_date', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Join Date</strong>
+                                        <small>Display when you joined the community</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="privacy-label">
+                                    <input type="checkbox" name="show_last_active" 
+                                           {% if userSettings.show_last_active != '0' %}checked{% endif %}
+                                           onchange="updatePrivacySetting('show_last_active', this.checked ? '1' : '0')">
+                                    <span class="privacy-text">
+                                        <strong>Show Last Active</strong>
+                                        <small>Display your last activity timestamp</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="privacy-actions">
+                            <button class="btn btn-primary" onclick="savePrivacySettings()">
+                                <span>💾</span>
+                                Save Privacy Settings
+                            </button>
+                            <button class="btn btn-outline" onclick="resetPrivacySettings()">
+                                <span>🔄</span>
+                                Reset to Defaults
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Customization Tab -->
+            <div class="tab-content" id="customization">
+                <div class="profile-section">
+                    <h2 class="section-title">🎨 Profile Customization</h2>
+                    <p class="section-description">Customize how your profile appears to others.</p>
+                    
+                    <div class="customization-settings">
+                        <div class="customization-group">
+                            <h3>👤 Profile Information</h3>
+                            <div class="form-group">
+                                <label class="form-label">Display Name</label>
+                                <input type="text" class="form-control" name="custom_display_name" 
+                                       value="{{ user.display_name ?? '' }}" 
+                                       placeholder="Enter your display name">
+                                <small class="form-help">This name will be shown on your public profile</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-control" name="custom_bio" rows="3" 
+                                          placeholder="Tell others about yourself...">{{ user.bio ?? '' }}</textarea>
+                                <small class="form-help">A short description about yourself (max 500 characters)</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" name="custom_location" 
+                                       value="{{ user.location ?? '' }}" 
+                                       placeholder="City, Country">
+                                <small class="form-help">Optional: Share your general location</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Website</label>
+                                <input type="url" class="form-control" name="custom_website" 
+                                       value="{{ user.website ?? '' }}" 
+                                       placeholder="https://your-website.com">
+                                <small class="form-help">Optional: Link to your personal website</small>
+                            </div>
+                        </div>
+
+                        <div class="customization-group">
+                            <h3>🎨 Visual Customization</h3>
+                            <div class="form-group">
+                                <label class="form-label">Profile Theme</label>
+                                <select class="form-control" name="custom_theme" onchange="updateCustomizationSetting('custom_theme', this.value)">
+                                    <option value="default" {% if userSettings.custom_theme == 'default' %}selected{% endif %}>Default Theme</option>
+                                    <option value="islamic" {% if userSettings.custom_theme == 'islamic' %}selected{% endif %}>Islamic Theme</option>
+                                    <option value="minimal" {% if userSettings.custom_theme == 'minimal' %}selected{% endif %}>Minimal Theme</option>
+                                    <option value="colorful" {% if userSettings.custom_theme == 'colorful' %}selected{% endif %}>Colorful Theme</option>
+                                </select>
+                                <small class="form-help">Choose how your profile appears to visitors</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Profile Layout</label>
+                                <select class="form-control" name="custom_layout" onchange="updateCustomizationSetting('custom_layout', this.value)">
+                                    <option value="standard" {% if userSettings.custom_layout == 'standard' %}selected{% endif %}>Standard Layout</option>
+                                    <option value="compact" {% if userSettings.custom_layout == 'compact' %}selected{% endif %}>Compact Layout</option>
+                                    <option value="detailed" {% if userSettings.custom_layout == 'detailed' %}selected{% endif %}>Detailed Layout</option>
+                                </select>
+                                <small class="form-help">Choose the layout style for your profile</small>
+                            </div>
+                        </div>
+
+                        <div class="customization-group">
+                            <h3>📋 Content Preferences</h3>
+                            <div class="form-group">
+                                <label class="form-label">Featured Content</label>
+                                <textarea class="form-control" name="custom_featured_content" rows="3" 
+                                          placeholder="Highlight specific pages or achievements...">{{ userSettings.custom_featured_content ?? '' }}</textarea>
+                                <small class="form-help">Optional: Showcase your best work or achievements</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Profile Message</label>
+                                <textarea class="form-control" name="custom_profile_message" rows="2" 
+                                          placeholder="A personal message for visitors...">{{ userSettings.custom_profile_message ?? '' }}</textarea>
+                                <small class="form-help">Optional: A personal message shown to profile visitors</small>
+                            </div>
+                        </div>
+
+                        <div class="customization-actions">
+                            <button class="btn btn-primary" onclick="saveCustomizationSettings()">
+                                <span>💾</span>
+                                Save Customization
+                            </button>
+                            <button class="btn btn-outline" onclick="previewProfile()">
+                                <span>👁️</span>
+                                Preview Profile
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -287,10 +557,12 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
+{% if isOwnProfile %}
 <!-- Edit Profile Modal -->
 <div class="modal" id="editProfileModal">
     <div class="modal-content">
@@ -323,6 +595,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -361,7 +634,13 @@ function editAvatar() {
     alert('Avatar upload functionality will be implemented soon!');
 }
 
-// Handle form submission
+function sendMessage() {
+    // TODO: Implement messaging functionality
+    alert('Messaging functionality will be implemented soon!');
+}
+
+// Handle form submission (only for own profiles)
+{% if isOwnProfile %}
 document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -392,6 +671,122 @@ document.getElementById('editProfileForm').addEventListener('submit', async func
         showNotification('An error occurred while updating profile', 'error');
     }
 });
+{% endif %}
+
+// Privacy and Customization Settings Functions
+function updatePrivacySetting(setting, value) {
+    // Store the setting temporarily
+    if (!window.privacySettings) {
+        window.privacySettings = {};
+    }
+    window.privacySettings[setting] = value;
+}
+
+function updateCustomizationSetting(setting, value) {
+    // Store the setting temporarily
+    if (!window.customizationSettings) {
+        window.customizationSettings = {};
+    }
+    window.customizationSettings[setting] = value;
+}
+
+async function savePrivacySettings() {
+    if (!window.privacySettings) {
+        showNotification('No privacy settings to save', 'warning');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/profile/privacy-settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify(window.privacySettings)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Privacy settings saved successfully!', 'success');
+            window.privacySettings = {};
+        } else {
+            showNotification(result.message || 'Failed to save privacy settings', 'error');
+        }
+    } catch (error) {
+        showNotification('An error occurred while saving privacy settings', 'error');
+    }
+}
+
+async function saveCustomizationSettings() {
+    const formData = new FormData();
+    
+    // Collect all customization form data
+    const customizationForm = document.querySelector('#customization');
+    const inputs = customizationForm.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+        if (input.name && input.value) {
+            formData.append(input.name, input.value);
+        }
+    });
+    
+    // Add any stored customization settings
+    if (window.customizationSettings) {
+        Object.keys(window.customizationSettings).forEach(key => {
+            formData.append(key, window.customizationSettings[key]);
+        });
+    }
+    
+    try {
+        const response = await fetch('/profile/customization-settings', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Customization settings saved successfully!', 'success');
+            window.customizationSettings = {};
+        } else {
+            showNotification(result.message || 'Failed to save customization settings', 'error');
+        }
+    } catch (error) {
+        showNotification('An error occurred while saving customization settings', 'error');
+    }
+}
+
+function resetPrivacySettings() {
+    if (confirm('Are you sure you want to reset all privacy settings to defaults?')) {
+        // Reset all privacy checkboxes and radio buttons
+        const privacyForm = document.querySelector('#privacy');
+        const inputs = privacyForm.querySelectorAll('input');
+        
+        inputs.forEach(input => {
+            if (input.type === 'radio') {
+                if (input.name === 'profile_visibility') {
+                    input.checked = (input.value === 'public');
+                }
+            } else if (input.type === 'checkbox') {
+                input.checked = true; // Default to showing most information
+            }
+        });
+        
+        showNotification('Privacy settings reset to defaults', 'info');
+    }
+}
+
+function previewProfile() {
+    // Open a new window/tab to preview the public profile
+    const username = '{{ user.username }}';
+    const previewUrl = `/user/${username}?preview=true`;
+    window.open(previewUrl, '_blank');
+}
 
 function showNotification(message, type) {
     const notification = document.createElement('div');

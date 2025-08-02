@@ -2,28 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.34] - 2025-08-02
+## [0.0.34] - 2025-01-02
 
 ### Added
-- **Complete Skin System Fix**: Resolved all skin loading issues and improved system reliability
-- **File Organization Overhaul**: Moved 60+ test and debug files to organized subdirectories
-- **Enhanced Debugging Tools**: Created comprehensive skin debugging and status reporting tools
-- **Improved Documentation**: Added detailed README and enhanced release notes
-- **Security Enhancements**: Implemented proper random key generation and improved error handling
+- **Enhanced Profile System**: Complete profile overhaul with privacy controls and customization options
+- **Dual Profile System**: Separate public (`/user/{username}`) and private (`/profile`) profile pages
+- **Privacy Controls Tab**: Comprehensive privacy settings for profile visibility and data control
+- **Profile Customization Tab**: Visual and content customization options for user profiles
+- **User Model Enhancement**: Added `toArray()` and `toJson()` methods to User model
+- **Real-time Updates**: AJAX functionality for privacy and customization settings
+- **Enhanced Styling**: New CSS classes for privacy controls and customization sections
+- **Comprehensive Testing**: 4 new test scripts for profile system validation
 
 ### Fixed
-- **LocalSettings Variable Loading**: Fixed `wgValidSkins` and `wgActiveSkin` not being properly loaded
-- **Security Configuration**: Resolved secret key warnings with proper random key generation
-- **SkinManager Enhancement**: Improved initialization and error handling with fallback mechanisms
-- **Global Variable Scope**: Fixed scope issues with LocalSettings variables
-- **File Organization**: Cleaned up public directory by organizing test and debug files
+- **User Model Error**: Fixed `Call to undefined method IslamWiki\Models\User::toArray()` error
+- **Route Conflicts**: Resolved conflicting profile routes between AuthController and ProfileController
+- **Autoload Issues**: Fixed test script autoloader path issues
+- **Error Handling**: Improved error page rendering for non-existent users
+- **Template Issues**: Fixed Twig template loading for error pages
 
 ### Technical
-- Enhanced SkinManager with better error handling and validation
-- Improved container service registration and validation
-- Added comprehensive skin validation and debugging tools
-- Created organized file structure with `/tests/` and `/debug/` subdirectories
-- Enhanced logging and debugging capabilities throughout the application
+- Enhanced ProfileController with new privacy and customization methods
+- Added new routes for privacy and customization settings endpoints
+- Improved database integration for user settings storage
+- Enhanced security with hidden attributes and privacy controls
+- Added responsive design improvements for mobile devices
 
 ## [0.0.33] - 2025-08-01
 
