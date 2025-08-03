@@ -84,7 +84,7 @@
 ### ✅ Updated Documentation
 - **README.md**: Updated with new features and organization
 - **CHANGELOG.md**: Comprehensive changelog updates
-- **RELEASE-NOTES-0.0.35**: Detailed release notes
+- **[RELEASE-NOTES-0.0.35](RELEASE-NOTES-0.0.35)**: Detailed release notes
 - **VERSION**: Updated to 0.0.35
 
 ### ✅ New Documentation

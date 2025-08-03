@@ -59,7 +59,7 @@ This release addresses critical search functionality issues that emerged after m
 - `VERSION` - Updated to 0.0.36
 - `CHANGELOG.md` - Added comprehensive version entry
 - `README.md` - Updated version information
-- `RELEASE-NOTES-0.0.36` - Created detailed release notes
+- **[RELEASE-NOTES-0.0.36](RELEASE-NOTES-0.0.36)** - Created detailed release notes
 - `.gitignore` - Updated version information
 
 ## 🔍 Search Features
@@ -155,7 +155,7 @@ The Bismillah skin uses a sophisticated color palette:
 ## 📞 Support
 
 For issues or questions related to this version, please refer to:
-- Release Notes: `RELEASE-NOTES-0.0.36`
+- Release Notes: **[RELEASE-NOTES-0.0.36](RELEASE-NOTES-0.0.36)**
 - Changelog: `CHANGELOG.md`
 - Documentation: `docs/` directory
 
@@ -163,4 +163,4 @@ For issues or questions related to this version, please refer to:
 
 **Commit Hash:** 63a9991  
 **Files Changed:** 12 files, 1,894 insertions, 1,135 deletions  
-**New Files:** 1 (RELEASE-NOTES-0.0.36) 
+**New Files:** 1 ([RELEASE-NOTES-0.0.36](RELEASE-NOTES-0.0.36)) 
