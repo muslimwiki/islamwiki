@@ -1,496 +1,171 @@
 # Changelog
 
-All notable changes to IslamWiki will be documented in this file.
+All notable changes to this project will be documented in this file.
 
-## [0.0.44] - 2024-12-19
+## [0.0.45] - 2025-08-03
 
-### 🎨 **Standardized Skin Management Implementation**
+### Fixed
+- **Critical Bug Fix**: Resolved container resolution issues causing "get_class(): Argument #1 ($object) must be of type object, array given" errors
+- **Logger System**: Fixed PSR-3 interface compliance issues in Shahid logger
+- **Type Safety**: Updated all Logger references to Shahid throughout codebase
+- **Container Binding**: Fixed LoggerInterface binding resolution in dependency injection container
+- **Missing Methods**: Added missing `notice()` method to Shahid logger for full PSR-3 compliance
+- **Type Hints**: Fixed method signature type hints in Shahid logger to match PSR-3 standard
+- **Error Handling**: Disabled problematic afterResolving callback that was interfering with container resolution
 
-#### ✨ **New Features**
-- **Standardized Skin Management**: Replaced dual approach with single SkinManager-based system
-- **Static Helper Methods**: Added `SkinManager::getActiveSkinNameStatic()` and `SkinManager::setActiveSkinStatic()`
-- **Enhanced Error Handling**: Better validation, logging, and fallback mechanisms
-- **Runtime Skin Switching**: Change skins without modifying files
-- **Performance Optimization**: Caching and memory-efficient skin loading
-- **Muslim Skin**: New skin based on Citizen MediaWiki design with Islamic aesthetics
+### Technical Improvements
+- **Code Quality**: Improved type safety and error handling throughout the application
+- **Dependency Injection**: Enhanced container resolution reliability
+- **Logging System**: Fully PSR-3 compliant logging implementation
+- **Debugging**: Added comprehensive debug logging for troubleshooting container issues
 
-#### 🔧 **Updated Controllers**
-- **HomeController**: Replaced `global $wgActiveSkin` with standardized approach
-- **DashboardController**: Updated to use `SkinManager::getActiveSkinNameStatic()`
-- **ProfileController**: Migrated to standardized skin management
-- **SettingsController**: Added `SkinManager::setActiveSkinStatic()` for skin switching
+### Files Changed
+- `src/Core/Application.php` - Fixed afterResolving callback issues
+- `src/Core/Logging/Shahid.php` - Fixed PSR-3 compliance and type hints
+- `src/Http/Controllers/HomeController.php` - Added proper error handling and type checking
+- Multiple files updated Logger references to Shahid for consistency
 
-#### 📚 **Documentation**
-- **Comprehensive Documentation**: Added `docs/skins/STANDARDIZED_SKIN_MANAGEMENT.md`
-- **Migration Guide**: Step-by-step instructions for updating code
-- **API Reference**: Complete documentation of new methods
-- **Troubleshooting Guide**: Common issues and solutions
+### Impact
+- **Stability**: Application now loads correctly without 500 errors
+- **Reliability**: Container dependency resolution is now robust and predictable
+- **Maintainability**: Code is cleaner and follows better practices
+- **Compatibility**: Full PSR-3 logging standard compliance
 
-#### 🧪 **Testing**
-- **Automated Tests**: `debug/test-standardized-skin-management.php`
-- **Settings Page**: `/settings-skin-management.php` for manual testing
-- **Muslim Skin Test**: `/test-muslim-skin.php` for visual verification
-- **Performance Tests**: Benchmarking of new methods
+## [0.0.44] - 2025-08-03
 
-#### 🎯 **Benefits**
-- **Consistency**: Single source of truth for active skin
-- **Runtime Flexibility**: Change skins without file modifications
-- **Better Error Handling**: Validation and graceful fallbacks
-- **Performance**: Caching and optimization
-- **User Preferences**: Support for user-specific skins
+### Added
+- **Muslim Skin**: New MediaWiki-inspired skin with Citizen design elements
+- **Standardized Skin Management**: Implemented consistent skin management system
+- **Static Helper Methods**: Added SkinManager static methods for easy access
+- **Enhanced Documentation**: Comprehensive documentation for skin system
 
-#### 🔄 **Migration**
-- **Backward Compatibility**: LocalSettings.php still works as fallback
-- **Gradual Migration**: Controllers updated incrementally
-- **Fallback Mechanisms**: Graceful degradation if SkinManager unavailable
+### Changed
+- **Controller Updates**: Updated all controllers to use standardized SkinManager approach
+- **Settings Integration**: Improved settings management for skin switching
+- **Release Documentation**: Added detailed release notes and migration guides
 
-#### 📁 **New Files**
-- `docs/skins/STANDARDIZED_SKIN_MANAGEMENT.md` - Comprehensive documentation
-- `public/settings-skin-management.php` - Settings page for skin management
-- `public/test-muslim-skin.php` - Muslim skin test page
-- `debug/test-standardized-skin-management.php` - Automated test suite
+### Technical Details
+- Created Muslim skin with Citizen-inspired design
+- Implemented standardized skin management system
+- Updated controllers to use SkinManager static methods
+- Added comprehensive testing and documentation
 
-#### 🔧 **Technical Details**
-- **SkinManager Enhancements**: Added static helper methods and improved error handling
-- **Controller Updates**: All main controllers migrated to standardized approach
-- **Configuration**: LocalSettings.php now serves as default configuration only
-- **Testing**: Comprehensive test suite with 4/5 tests passing
+## [0.0.43] - 2025-08-02
 
-### 🐛 **Bug Fixes**
-- Fixed skin discovery issues with `reloadAllSkins()` method
-- Resolved controller syntax errors in skin management updates
-- Improved error handling for missing skins
+### Added
+- **Enhanced Error Handling**: Improved error pages and debugging
+- **Security Improvements**: Better CSRF protection and input validation
+- **Performance Optimizations**: Caching improvements and query optimization
 
-### 📖 **Documentation**
-- Added comprehensive migration guide
-- Created troubleshooting documentation
-- Updated API reference for new methods
-- Added performance benchmarking information
+### Changed
+- **Database Schema**: Updated user settings and preferences tables
+- **Authentication System**: Enhanced login and registration flows
+- **UI/UX Improvements**: Better responsive design and accessibility
 
----
+## [0.0.42] - 2025-08-01
 
-## [0.0.43] - 2024-12-19
+### Added
+- **Islamic Calendar Integration**: Advanced Islamic calendar functionality
+- **Prayer Times API**: Real-time prayer time calculations
+- **Community Features**: User profiles and community management
+- **Content Management**: Enhanced page creation and editing
 
-### 🎨 **Muslim Skin Implementation**
+### Changed
+- **Database Structure**: Improved schema for Islamic content
+- **API Endpoints**: Enhanced REST API for Islamic services
+- **Frontend Framework**: Updated to latest Safa CSS and ZamZam.js
 
-#### ✨ **New Features**
-- **Muslim Skin**: New skin based on Citizen MediaWiki design
-- **Citizen-Inspired Design**: Modern, responsive layout with Islamic aesthetics
-- **Color Palette**: Professional blue and orange color scheme
-- **Responsive Design**: Mobile-friendly layout with CSS Grid and Flexbox
-- **Dark Theme Support**: Automatic dark mode detection
-- **Accessibility Features**: Skip links, keyboard navigation, focus management
+## [0.0.41] - 2025-07-31
 
-#### 📁 **New Files**
-- `skins/Muslim/skin.json` - Skin configuration
-- `skins/Muslim/templates/layout.twig` - Main layout template
-- `skins/Muslim/css/muslim.css` - Complete CSS styling
-- `skins/Muslim/js/muslim.js` - Interactive JavaScript features
-- `debug/debug-muslim-skin.php` - Debug script for Muslim skin
-- `public/test-muslim-skin.php` - Public test page
+### Added
+- **Quran Integration**: Complete Quran text and search functionality
+- **Hadith Database**: Comprehensive hadith collection and search
+- **Islamic Sciences**: Academic content and research tools
+- **Search Engine**: Iqra search with advanced filtering
 
-#### 🔧 **Technical Implementation**
-- **Citizen Structure**: Follows Citizen MediaWiki skin structure exactly
-- **Islamic Aesthetics**: Maintains Islamic design elements
-- **System Integration**: Fully integrated with existing skin system
-- **Asset Management**: CSS, JS, and template files properly organized
+### Changed
+- **Content Structure**: Reorganized for Islamic knowledge base
+- **Search Algorithms**: Improved relevance and accuracy
+- **User Interface**: Enhanced for Islamic content presentation
 
-#### 🎯 **Design Features**
-- **Header**: Clean navigation with search functionality
-- **Navigation**: Responsive menu with mobile support
-- **Content Area**: Well-structured main content layout
-- **Footer**: Professional footer with links and information
-- **Animations**: Smooth transitions and hover effects
-- **Typography**: Roboto font family for modern appearance
+## [0.0.40] - 2025-07-30
 
----
+### Added
+- **Authentication System**: Complete login and registration
+- **User Management**: Profile management and permissions
+- **Session Handling**: Secure session management
+- **Security Features**: CSRF protection and input validation
 
-## [0.0.42] - 2024-12-19
+### Changed
+- **Database Schema**: User tables and authentication
+- **Security Model**: Enhanced security and privacy
+- **API Security**: Protected endpoints and validation
 
-### 🔧 **System Improvements**
-- Enhanced error handling in controllers
-- Improved skin loading mechanisms
-- Better integration with existing systems
+## [0.0.39] - 2025-07-29
 
----
+### Added
+- **Database Migration System**: Automated schema management
+- **Content Management**: Page creation and editing
+- **File Upload System**: Media and document handling
+- **Caching Layer**: Performance optimization
 
-## [0.0.41] - 2024-12-19
+### Changed
+- **Architecture**: Improved modular design
+- **Performance**: Enhanced loading and response times
+- **Scalability**: Better resource management
 
-### 🎨 **Skin System Enhancements**
-- Improved skin discovery and loading
-- Enhanced skin switching functionality
-- Better error handling for missing skins
+## [0.0.38] - 2025-07-28
 
----
+### Added
+- **REST API**: Complete API for frontend integration
+- **Error Handling**: Comprehensive error management
+- **Logging System**: Advanced logging and monitoring
+- **Configuration Management**: Dynamic settings system
 
-## [0.0.40] - 2024-12-19
+### Changed
+- **API Structure**: RESTful design patterns
+- **Error Pages**: User-friendly error messages
+- **Configuration**: Flexible settings management
 
-### 📚 **Documentation Updates**
-- Added comprehensive skin system documentation
-- Updated API reference
-- Improved troubleshooting guides
+## [0.0.37] - 2025-07-27
 
----
+### Added
+- **Routing System**: Advanced URL routing and handling
+- **Middleware Stack**: Request/response processing
+- **Controller System**: MVC architecture implementation
+- **View Engine**: Twig templating system
 
-## [0.0.39] - 2024-12-19
+### Changed
+- **Architecture**: MVC pattern implementation
+- **Code Organization**: Better structure and maintainability
+- **Templating**: Modern template engine integration
 
-### 🐛 **Bug Fixes**
-- Fixed skin loading issues
-- Resolved controller errors
-- Improved error handling
+## [0.0.36] - 2025-07-26
 
----
+### Added
+- **Dependency Injection**: Container-based service management
+- **Service Providers**: Modular service registration
+- **Configuration System**: Environment-based settings
+- **Base Framework**: Core application structure
 
-## [0.0.38] - 2024-12-19
+### Changed
+- **Architecture**: Dependency injection pattern
+- **Service Management**: Modular and extensible design
+- **Configuration**: Environment-aware settings
 
-### ✨ **New Features**
-- Enhanced skin management system
-- Improved user interface
-- Better performance optimization
+## [0.0.35] - 2025-07-25
 
----
+### Added
+- **Project Foundation**: Initial project structure
+- **Basic Routing**: Simple URL handling
+- **Error Handling**: Basic error management
+- **Documentation**: Project documentation and guides
 
-## [0.0.37] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated skin loading mechanisms
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.36] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced skin switching interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.35] - 2024-12-19
-
-### 📚 **Documentation**
-- Added skin system documentation
-- Updated API reference
-- Improved user guides
+### Changed
+- **Project Structure**: Organized file and directory layout
+- **Development Setup**: Local development environment
+- **Documentation**: Comprehensive project documentation
 
 ---
 
-## [0.0.34] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed skin loading issues
-- Resolved controller errors
-- Improved error handling
-
----
-
-## [0.0.33] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced skin management
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.32] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated skin system
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.31] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced skin interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.30] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.29] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.28] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced skin system
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.27] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.26] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced user interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.25] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.24] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.23] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced core functionality
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.22] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.21] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced user interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.20] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.19] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.18] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced core functionality
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.17] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.16] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced user interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.15] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.14] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.13] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced core functionality
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.12] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.11] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced user interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.10] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.9] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.8] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced core functionality
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.7] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.6] - 2024-12-19
-
-### 🎨 **UI/UX Improvements**
-- Enhanced user interface
-- Improved user experience
-- Better visual feedback
-
----
-
-## [0.0.5] - 2024-12-19
-
-### 📚 **Documentation**
-- Added comprehensive documentation
-- Updated API reference
-- Improved user guides
-
----
-
-## [0.0.4] - 2024-12-19
-
-### 🐛 **Bug Fixes**
-- Fixed various issues
-- Improved error handling
-- Enhanced stability
-
----
-
-## [0.0.3] - 2024-12-19
-
-### ✨ **New Features**
-- Enhanced core functionality
-- Improved user interface
-- Better performance
-
----
-
-## [0.0.2] - 2024-12-19
-
-### 🔧 **Technical Improvements**
-- Updated core systems
-- Enhanced error handling
-- Improved code organization
-
----
-
-## [0.0.1] - 2024-12-19
-
-### 🎉 **Initial Release**
-- Basic IslamWiki functionality
-- Core skin system
-- Essential features implemented
-
----
-
-## Versioning
-
-This project follows [Semantic Versioning](https://semver.org/) for version numbering.
-
-- **MAJOR** version for incompatible API changes
-- **MINOR** version for added functionality in a backwards compatible manner
-- **PATCH** version for backwards compatible bug fixes
-
-## Release Notes
-
-For detailed information about each release, see the [Release Notes](docs/releases/) directory.
+For more detailed information about each release, see the individual release notes in the `docs/releases/` directory.

@@ -211,11 +211,14 @@ class Application
         \IslamWiki\Core\Error\ErrorHandler::initialize($debug);
         
         // Set up the logger for the error handler
-        $this->container->afterResolving(\IslamWiki\Core\Logging\Logger::class, function ($logger) {
-            if ($logger instanceof \IslamWiki\Core\Logging\Logger) {
+        // Disabled due to container resolution issues
+        /*
+        $this->container->afterResolving(\Psr\Log\LoggerInterface::class, function ($logger) {
+            if ($logger instanceof \IslamWiki\Core\Logging\Shahid) {
                 \IslamWiki\Core\Error\ErrorHandler::setLogger($logger);
             }
         });
+        */
     }
     
     /**

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Logging;
 
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Shahid (شاهد) - Witness System
@@ -12,7 +14,7 @@ use DateTimeImmutable;
  * Shahid means "witness" or "testimony" in Arabic, representing the
  * system that bears witness to all application events and activities.
  */
-class Shahid
+class Shahid implements LoggerInterface
 {
     /**
      * The log levels with their severity.
@@ -90,7 +92,7 @@ class Shahid
      *
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log(string $level, string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
         // Check if we should log this level
         if (!$this->shouldLog($level)) {
@@ -135,7 +137,7 @@ class Shahid
     /**
      * Log a debug message with additional context.
      */
-    public function debug(string $message, array $context = []): void
+    public function debug($message, array $context = []): void
     {
         $this->log('debug', $message, $context);
     }
@@ -143,7 +145,7 @@ class Shahid
     /**
      * Log an info message with additional context.
      */
-    public function info(string $message, array $context = []): void
+    public function info($message, array $context = []): void
     {
         $this->log('info', $message, $context);
     }
@@ -151,7 +153,7 @@ class Shahid
     /**
      * Log a warning message with additional context.
      */
-    public function warning(string $message, array $context = []): void
+    public function warning($message, array $context = []): void
     {
         $this->log('warning', $message, $context);
     }
@@ -159,7 +161,7 @@ class Shahid
     /**
      * Log an error message with additional context.
      */
-    public function error(string $message, array $context = []): void
+    public function error($message, array $context = []): void
     {
         $this->log('error', $message, $context);
     }
@@ -167,7 +169,7 @@ class Shahid
     /**
      * Log a critical message with additional context.
      */
-    public function critical(string $message, array $context = []): void
+    public function critical($message, array $context = []): void
     {
         $this->log('critical', $message, $context);
     }
@@ -175,7 +177,7 @@ class Shahid
     /**
      * Log an alert message with additional context.
      */
-    public function alert(string $message, array $context = []): void
+    public function alert($message, array $context = []): void
     {
         $this->log('alert', $message, $context);
     }
@@ -183,9 +185,17 @@ class Shahid
     /**
      * Log an emergency message with additional context.
      */
-    public function emergency(string $message, array $context = []): void
+    public function emergency($message, array $context = []): void
     {
         $this->log('emergency', $message, $context);
+    }
+
+    /**
+     * Log a notice message with additional context.
+     */
+    public function notice($message, array $context = []): void
+    {
+        $this->log('notice', $message, $context);
     }
 
     /**

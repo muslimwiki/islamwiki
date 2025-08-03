@@ -23,7 +23,9 @@ class LoggingServiceProvider
      */
     public function register(ContainerInterface $container): void
     {
+        error_log('LoggingServiceProvider: register() called');
         $container->bind(LoggerInterface::class, function (ContainerInterface $c) {
+            error_log('LoggingServiceProvider: Creating Shahid logger');
             $config = $c->get('settings')['logging'] ?? [];
             
             // Ensure logs directory exists
@@ -32,14 +34,15 @@ class LoggingServiceProvider
                 mkdir($logDir, 0755, true);
             }
             
-                    // Create Shahid witness system instance
-        $logger = new Shahid(
+            // Create Shahid witness system instance
+            $logger = new Shahid(
                 $logDir,
                 $config['level'] ?? \Psr\Log\LogLevel::DEBUG,
                 $config['max_file_size'] ?? 10, // MB
                 $config['max_files'] ?? 5
             );
             
+            error_log('LoggingServiceProvider: Shahid logger created successfully');
             return $logger;
         });
         
@@ -47,6 +50,8 @@ class LoggingServiceProvider
         $container->bind('logger', function (ContainerInterface $c) {
             return $c->get(LoggerInterface::class);
         });
+        
+        error_log('LoggingServiceProvider: register() completed');
     }
     
     /**

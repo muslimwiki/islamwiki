@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Bayan;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Logger;
+use IslamWiki\Core\Logging\Shahid;
 use Psr\Log\LoggerInterface;
 
 /**

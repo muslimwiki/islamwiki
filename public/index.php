@@ -1,4 +1,5 @@
 <?php
+file_put_contents(__DIR__ . '/../storage/logs/debug.log', "\n[" . date('Y-m-d H:i:s') . "] Entered index.php\n", FILE_APPEND);
 /**
  * IslamWiki Main Application Entry Point
  * 
@@ -55,6 +56,9 @@ use IslamWiki\Core\Http\Response;
 // Initialize Application (which creates its own container)
 $app = new \IslamWiki\Core\Application(BASE_PATH);
 $container = $app->getContainer();
+
+// Register the application in the container
+$container->instance('app', $app);
 
 
 
