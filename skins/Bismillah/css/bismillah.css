@@ -4279,6 +4279,120 @@ a:hover {
     box-shadow: var(--shadow-md);
 }
 
+/* Privacy Settings Styles */
+.privacy-settings {
+    max-width: 800px;
+}
+
+.privacy-group {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--settings-bg);
+    border-radius: 8px;
+    border: 1px solid var(--settings-border);
+}
+
+.privacy-group h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--settings-text);
+}
+
+.privacy-option {
+    margin-bottom: 1rem;
+}
+
+.privacy-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.privacy-label:hover {
+    background-color: var(--settings-bg);
+}
+
+.privacy-label input[type="radio"],
+.privacy-label input[type="checkbox"] {
+    margin: 0;
+    margin-top: 0.25rem;
+}
+
+.privacy-text {
+    flex: 1;
+}
+
+.privacy-text strong {
+    display: block;
+    font-weight: 600;
+    color: var(--settings-text);
+    margin-bottom: 0.25rem;
+}
+
+.privacy-text small {
+    display: block;
+    color: var(--settings-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.privacy-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--settings-border);
+}
+
+/* Customization Settings Styles */
+.customization-settings {
+    max-width: 800px;
+}
+
+.customization-group {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--settings-bg);
+    border-radius: 8px;
+    border: 1px solid var(--settings-border);
+}
+
+.customization-group h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--settings-text);
+}
+
+.customization-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--settings-border);
+}
+
+/* Section Description */
+.section-description {
+    color: var(--settings-text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Form Help Text */
+.form-help {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--settings-text-secondary);
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .home-three-column-layout {
@@ -4309,5 +4423,19 @@ a:hover {
         min-width: 120px;
         text-align: center;
         justify-content: center;
+    }
+    
+    .privacy-actions,
+    .customization-actions {
+        flex-direction: column;
+    }
+    
+    .privacy-label {
+        padding: 1rem;
+    }
+    
+    .customization-group,
+    .privacy-group {
+        padding: 1rem;
     }
 } 

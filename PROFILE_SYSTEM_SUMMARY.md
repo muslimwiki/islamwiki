@@ -65,7 +65,7 @@ $router->post('/profile/update', 'ProfileController@update');
 - **Action Buttons**: Context-appropriate actions for different profile types
 
 ### CSS Styling
-- **profile-styles.css**: Comprehensive styling for all profile components
+- **Bismillah skin**: Comprehensive styling for all profile components integrated into skin system
 - **Responsive Design**: Mobile-friendly layout
 - **Modern UI**: Beautiful gradients, cards, and animations
 - **Accessibility**: Proper contrast and focus states
@@ -220,4 +220,4 @@ The system provides a solid foundation for user profiles while maintaining priva
 **Access URLs:**
 - Private Profile: `https://local.islam.wiki/profile`
 - Public Profile: `https://local.islam.wiki/user/{username}`
-- Profile Styles: `https://local.islam.wiki/css/profile-styles.css` 
+- Profile Styles: Integrated into Bismillah skin system 

@@ -82,7 +82,7 @@ Version 0.0.37 focuses on comprehensive UI/UX improvements and layout enhancemen
 ### Styling Files
 - `public/css/safa.css` - Main styling framework updates
 - `skins/Bismillah/css/bismillah.css` - Theme-specific styling updates
-- `public/css/profile-styles.css` - Profile page styling consistency
+- Profile styles integrated into skin system - Profile page styling now uses Bismillah skin
 
 ## 🔄 Migration Notes
 
