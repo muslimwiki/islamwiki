@@ -101,18 +101,14 @@ class Wisal
         // Set session name BEFORE starting session
         session_name($this->sessionName);
         
-        // Handle session state
-        if (session_status() === PHP_SESSION_NONE) {
-            // Session not started, start it
+        // Always start session if not already active
+        if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
-        } elseif (session_status() === PHP_SESSION_ACTIVE) {
-            // Session is active, check if it's properly configured
-            if (session_name() !== $this->sessionName) {
-                // Session name doesn't match, close and restart
-                session_write_close();
-                session_name($this->sessionName);
-                session_start();
-            }
+        } elseif (session_name() !== $this->sessionName) {
+            // Session name doesn't match, close and restart
+            session_write_close();
+            session_name($this->sessionName);
+            session_start();
         }
         
         // Only regenerate session ID if this is a completely new session
@@ -121,6 +117,12 @@ class Wisal
             $this->regenerate();
         } elseif ($this->has('last_regeneration') && (time() - $this->get('last_regeneration', 0) > 1800)) { // 30 minutes instead of 5
             $this->regenerate();
+        }
+        
+        // Ensure session data is written at the end of start()
+        if (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION)) {
+            session_write_close();
+            session_start();
         }
     }
     
@@ -147,6 +149,14 @@ class Wisal
     public function put(string $key, $value): void
     {
         $_SESSION[$key] = $value;
+        
+        // Ensure session data is written immediately for critical operations
+        if (in_array($key, ['user_id', 'username', 'is_admin', 'logged_in_at'])) {
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+                session_start();
+            }
+        }
     }
     
     /**
@@ -183,7 +193,12 @@ class Wisal
         $this->put('username', $username);
         $this->put('is_admin', $isAdmin);
         $this->put('logged_in_at', time());
-        $this->regenerate();
+        
+        // Ensure session data is written immediately
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+            session_start();
+        }
     }
     
     /**
@@ -195,7 +210,12 @@ class Wisal
         $this->forget('username');
         $this->forget('is_admin');
         $this->forget('logged_in_at');
-        $this->regenerate();
+        
+        // Ensure session data is written immediately
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+            session_start();
+        }
     }
     
     /**

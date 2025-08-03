@@ -1,6 +1,6 @@
 # IslamWiki
 
-**Version:** 0.0.45  
+**Version:** 0.0.46  
 **Release Date:** 2025-08-03  
 **Status:** Active Development
 

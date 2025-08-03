@@ -1,0 +1,128 @@
+# IslamWiki Release Notes - Version 0.0.46
+
+**Release Date:** 2025-08-03  
+**Status:** Critical Bug Fix Release  
+**Focus:** Session Persistence & Authentication Fixes
+
+## 🚨 Critical Bug Fix
+
+This release addresses a **critical session persistence bug** that was preventing user authentication from persisting between requests. Users were experiencing login loss when navigating between pages, significantly impacting the user experience.
+
+## 🔧 What Was Fixed
+
+### Session Persistence Issues
+- **Session Data Not Written**: Sessions were being created but data wasn't being written to disk
+- **Session Regeneration**: Aggressive session regeneration was causing data loss
+- **Session Configuration**: Session save path and name configuration issues
+- **Session Write Timing**: Session data wasn't being written immediately for critical operations
+
+### Authentication Issues
+- **Login State Loss**: Users were losing login state when navigating between pages
+- **UI Display Problems**: User menu showed sign-in button instead of avatar even when logged in
+- **Session Restoration**: Session data wasn't being properly restored between requests
+
+## 🛠️ Technical Improvements
+
+### Session Management Enhancements
+- **Removed Session Regeneration**: Eliminated aggressive session regeneration that was causing data loss
+- **Session Write Enforcement**: Added immediate session write for critical authentication data
+- **Session Start Logic**: Improved session start handling for all session states
+- **Session File Management**: Sessions now properly saved to custom storage directory
+
+### Security Improvements
+- **Session Security**: Enhanced session management with proper write/close cycles
+- **Session Data Integrity**: Ensured session data is written immediately for critical operations
+- **Session State Handling**: Improved handling of session states and transitions
+
+### Debug Tools
+- **Session Writing Test**: Added comprehensive session writing test tool
+- **Web Session Testing**: Enhanced web-based session testing capabilities
+- **Session Troubleshooting**: Comprehensive tools for session debugging
+
+## 📁 Files Changed
+
+### Core Session Management
+- `src/Core/Session/Wisal.php` - Fixed session writing and regeneration logic
+- `src/Providers/SessionServiceProvider.php` - Improved session initialization
+
+### Debug Tools
+- `debug/test-session-writing.php` - Added session writing test tool
+- `debug/test-session-web.php` - Enhanced web-based session testing
+
+## 🎯 Impact
+
+### User Experience
+- **Login Persistence**: Login state now persists correctly across page navigation
+- **UI Consistency**: User menu properly displays avatar when logged in
+- **Session Reliability**: Sessions are consistently maintained throughout user sessions
+
+### Security
+- **Session Security**: Sessions are properly managed with secure write/close cycles
+- **Data Integrity**: Session data is consistently saved and restored
+- **Authentication Reliability**: Login state is reliably maintained
+
+### Development
+- **Debugging Tools**: Comprehensive tools for session troubleshooting
+- **Session Monitoring**: Better visibility into session state and behavior
+- **Error Prevention**: Proactive session management prevents data loss
+
+## 🔍 Testing Results
+
+### Before Fix
+- Session files were empty (0 bytes)
+- Login state lost between requests
+- UI showed sign-in button instead of avatar
+- Session data not written to disk
+
+### After Fix
+- Session files contain actual data (75+ bytes)
+- Login state persists across navigation
+- UI properly displays user avatar when logged in
+- Session data consistently written and restored
+
+## 🚀 Migration Notes
+
+### For Developers
+- No breaking changes to session API
+- Session management is now more reliable
+- Debug tools available for session troubleshooting
+- Session configuration is more robust
+
+### For Users
+- Login state now persists correctly
+- No action required - fixes are automatic
+- Improved user experience with consistent authentication
+
+## 📋 Technical Details
+
+### Session Writing Fix
+The core issue was that session data wasn't being written to disk. This was caused by:
+1. Aggressive session regeneration removing data
+2. Session write timing issues
+3. Improper session state handling
+
+### Solution Implemented
+1. **Removed Session Regeneration**: Eliminated `$this->regenerate()` from login/logout methods
+2. **Added Write Enforcement**: Added `session_write_close()` and `session_start()` for critical data
+3. **Improved Session Logic**: Enhanced session start handling for all states
+4. **Enhanced Critical Data Writing**: Added immediate write for authentication data
+
+## 🔮 Future Improvements
+
+### Planned Enhancements
+- **Session Encryption**: Additional security layer for session data
+- **Session Analytics**: Better monitoring and analytics for session behavior
+- **Performance Optimization**: Further optimization of session management
+- **Advanced Debugging**: Enhanced debugging tools for complex session issues
+
+## 📞 Support
+
+If you encounter any issues with this release:
+1. Check the debug tools in the `debug/` directory
+2. Review session configuration in `src/Core/Session/Wisal.php`
+3. Verify session file permissions in `storage/sessions/`
+4. Contact the development team for assistance
+
+---
+
+**Next Release:** 0.0.47 - Planned for additional security and performance improvements 

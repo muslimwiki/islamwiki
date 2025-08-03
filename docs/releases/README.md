@@ -4,7 +4,13 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.38 (Latest)
+### Version 0.0.46 (Latest)
+- **[RELEASE-NOTES-0.0.46](RELEASE-NOTES-0.0.46)** - Critical Session Persistence Fix
+- **Date**: 2025-08-03
+- **Status**: Critical Bug Fix Release
+- **Focus**: Fixed session data not being written to disk and authentication persistence issues
+
+### Version 0.0.38
 - **[RELEASE-NOTES-0.0.38](RELEASE-NOTES-0.0.38)** - Error Fixes & Code Quality Improvements
 - **Date**: 2025-08-02
 - **Status**: Bug Fix Release

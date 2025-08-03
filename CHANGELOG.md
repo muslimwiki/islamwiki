@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.46] - 2025-08-03
+
+### Fixed
+- **Critical Session Persistence Bug**: Resolved session data not being written to disk
+- **Session Configuration**: Fixed session save path and name configuration issues
+- **Session Regeneration**: Removed aggressive session regeneration that was causing data loss
+- **Session Write Enforcement**: Added immediate session write for critical authentication data
+- **Session Start Logic**: Improved session start handling for all session states
+- **Authentication Persistence**: Fixed login state not persisting between requests
+- **UI Display Issues**: Resolved user menu showing sign-in button instead of avatar
+
+### Technical Improvements
+- **Session Security**: Enhanced session management with proper write/close cycles
+- **Session File Management**: Sessions now properly saved to custom storage directory
+- **Session Data Integrity**: Ensured session data is written immediately for critical operations
+- **Session State Handling**: Improved handling of session states and transitions
+- **Debug Tools**: Added comprehensive session debugging tools for troubleshooting
+
+### Files Changed
+- `src/Core/Session/Wisal.php` - Fixed session writing and regeneration logic
+- `src/Providers/SessionServiceProvider.php` - Improved session initialization
+- `debug/test-session-writing.php` - Added session writing test tool
+- `debug/test-session-web.php` - Enhanced web-based session testing
+
+### Impact
+- **User Experience**: Login state now persists correctly across page navigation
+- **Security**: Sessions are properly managed with secure write/close cycles
+- **Reliability**: Session data is consistently saved and restored
+- **Debugging**: Comprehensive tools for session troubleshooting
+
 ## [0.0.45] - 2025-08-03
 
 ### Fixed
