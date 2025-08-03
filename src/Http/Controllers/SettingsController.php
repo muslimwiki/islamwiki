@@ -17,19 +17,19 @@ use IslamWiki\Core\Application;
 use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\SessionManager;
 use IslamWiki\Skins\SkinManager;
 
 class SettingsController extends Controller
 {
     private SkinManager $skinManager;
-    private Wisal $session;
+    private SessionManager $session;
 
-    public function __construct(Connection $db, Asas $asas)
+    public function __construct(Connection $db, Asas $container)
     {
-        parent::__construct($db, $asas);
-        $this->skinManager = $asas->get('skin.manager');
-        $this->session = $asas->get('session');
+        parent::__construct($db, $container);
+        $this->skinManager = $container->get('skin.manager');
+        $this->session = $container->get('session');
     }
 
     /**

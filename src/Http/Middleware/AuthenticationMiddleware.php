@@ -25,7 +25,7 @@ namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\SessionManager;
 
 /**
  * Authentication Middleware
@@ -35,14 +35,14 @@ use IslamWiki\Core\Session\Wisal;
 class AuthenticationMiddleware
 {
     /**
-     * @var Wisal Session manager instance
+     * @var SessionManager Session manager instance
      */
-    private Wisal $session;
+    private SessionManager $session;
     
     /**
      * Create a new authentication middleware instance.
      */
-    public function __construct(Wisal $session)
+    public function __construct(SessionManager $session)
     {
         $this->session = $session;
     }

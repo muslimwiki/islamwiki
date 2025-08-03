@@ -31,7 +31,7 @@ class PageController extends Controller
     /**
      * @var LoggerInterface Logger instance
      */
-    private Shahid $shahid;
+    private $logger;
     
     /**
      * Create a new controller instance.
@@ -44,7 +44,7 @@ class PageController extends Controller
         \IslamWiki\Core\Asas $container
     ) {
         parent::__construct($db, $container);
-        $this->shahid = $asas->get(Shahid::class);
+        $this->logger = $container->get(LoggerInterface::class);
     }
     /**
      * Show the about page.

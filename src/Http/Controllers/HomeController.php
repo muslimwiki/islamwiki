@@ -13,7 +13,7 @@ class HomeController extends Controller
     /**
      * @var LoggerInterface Logger instance
      */
-    private Shahid $shahid;
+    private $logger;
     
     /**
      * Create a new controller instance.
@@ -23,17 +23,17 @@ class HomeController extends Controller
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Asas $asas
+        \IslamWiki\Core\Asas $container
     ) {
         error_log('HomeController: Constructor called');
         error_log('HomeController: DB class: ' . get_class($db));
-        error_log('HomeController: Container class: ' . get_class($asas));
+        error_log('HomeController: Container class: ' . get_class($container));
         
         try {
-                    parent::__construct($db, $asas);
-        // Get logger from container
-        $this->shahid = $asas->get(Shahid::class);
-            error_log('HomeController: Logger class: ' . get_class($this->shahid));
+            parent::__construct($db, $container);
+            // Get logger from container
+            $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
+            error_log('HomeController: Logger class: ' . get_class($this->logger));
             error_log('HomeController: Constructor completed successfully');
         } catch (\Throwable $e) {
             error_log('HomeController: Error in constructor: ' . $e->getMessage());

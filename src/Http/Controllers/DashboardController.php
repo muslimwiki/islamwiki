@@ -14,22 +14,22 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\SessionManager;
 use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class DashboardController extends Controller
 {
-    private Wisal $session;
+    private SessionManager $session;
 
     /**
      * Create a new controller instance.
      */
-    public function __construct(Connection $db, Asas $asas)
+    public function __construct(Connection $db, Asas $container)
     {
-        parent::__construct($db, $asas);
-        $this->session = $asas->get('session');
+        parent::__construct($db, $container);
+        $this->session = $container->get('session');
     }
 
     /**

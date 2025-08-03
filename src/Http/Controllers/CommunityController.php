@@ -36,17 +36,17 @@ class CommunityController extends Controller
     /**
      * The logger instance.
      */
-    private Shahid $shahid;
+    private Logger $logger;
 
     /**
      * Create a new community controller instance.
      */
-    public function __construct(Asas $asas)
+    public function __construct(Asas $container)
     {
-        parent::__construct($asas);
-        $this->db = $asas->get(Connection::class);
-        $this->shahid = $asas->get(Shahid::class);
-        $this->communityManager = new CommunityManager($this->db, $this->shahid);
+        parent::__construct($container);
+        $this->db = $container->get(Connection::class);
+        $this->logger = $container->get(Logger::class);
+        $this->communityManager = new CommunityManager($this->db, $this->logger);
     }
 
     /**
@@ -66,7 +66,7 @@ class CommunityController extends Controller
                 'title' => 'Community Dashboard'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Community dashboard error: ' . $e->getMessage());
+            $this->logger->error('Community dashboard error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load community dashboard', 500);
         }
     }
@@ -149,7 +149,7 @@ class CommunityController extends Controller
                 'title' => 'Community Members'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Community users error: ' . $e->getMessage());
+            $this->logger->error('Community users error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load community users', 500);
         }
     }
@@ -167,7 +167,7 @@ class CommunityController extends Controller
                 'title' => 'Community Activity'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Community activity error: ' . $e->getMessage());
+            $this->logger->error('Community activity error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load community activity', 500);
         }
     }

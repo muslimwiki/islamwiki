@@ -44,6 +44,7 @@ return function (\IslamWiki\Core\Application $app) {
     $homeController = new HomeController($db, $container);
     $dashboardController = new DashboardController($db, $container);
     $profileController = new ProfileController($db, $container);
+    $queueController = new QueueController($db, $container);
     
     // Create middleware instances
     $authMiddleware = new AuthenticationMiddleware($container->get('session'));
@@ -78,6 +79,16 @@ return function (\IslamWiki\Core\Application $app) {
     $app->post('/profile', [$profileController, 'update'])->middleware($authMiddleware);
     $app->get('/profile/edit', [$profileController, 'edit'])->middleware($authMiddleware);
     $app->post('/profile/password', [$profileController, 'updatePassword'])->middleware($authMiddleware);
+    
+    // Queue management routes
+    $app->get('/queue', [$queueController, 'index'])->middleware($authMiddleware);
+    $app->get('/queue/stats', [$queueController, 'stats'])->middleware($authMiddleware);
+    $app->post('/queue/process', [$queueController, 'process'])->middleware($authMiddleware);
+    $app->post('/queue/clear-failed', [$queueController, 'clearFailed'])->middleware($authMiddleware);
+    $app->post('/queue/retry-failed', [$queueController, 'retryFailed'])->middleware($authMiddleware);
+    $app->get('/queue/failed', [$queueController, 'getFailed'])->middleware($authMiddleware);
+    $app->post('/queue/create-test-job', [$queueController, 'createTestJob'])->middleware($authMiddleware);
+    $app->get('/queue/driver-info', [$queueController, 'getDriverInfo'])->middleware($authMiddleware);
     
     // Configuration routes
     $app->get('/configuration', [$configController, 'index']);

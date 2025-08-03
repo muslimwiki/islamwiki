@@ -192,7 +192,12 @@ class Application
         $rihlahServiceProvider = new \IslamWiki\Providers\RihlahServiceProvider();
         $rihlahServiceProvider->register($this->container);
         $rihlahServiceProvider->boot($this->container);
-
+        
+        // Register Sabr queue system
+        $sabrServiceProvider = new \IslamWiki\Providers\SabrServiceProvider();
+        $sabrServiceProvider->register($this->container);
+        $sabrServiceProvider->boot($this->container);
+        
         $bayanServiceProvider->boot($this->container);
     }
 

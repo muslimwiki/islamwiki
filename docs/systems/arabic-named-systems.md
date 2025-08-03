@@ -301,4 +301,36 @@ All references have been updated across:
 - Test files
 
 ### Backward Compatibility
-The new systems maintain the same interfaces and functionality as the old systems, ensuring smooth migration and operation. 
+The new systems maintain the same interfaces and functionality as the old systems, ensuring smooth migration and operation.
+
+---
+
+### Sabr (صبر) - Queue System
+**File:** `src/Core/Queue/Sabr.php`
+
+**Meaning:** "Patience" in Arabic, representing the system that patiently processes background tasks and time-consuming operations.
+
+**Purpose:** Comprehensive asynchronous job processing system for IslamWiki.
+
+**Features:**
+- Multiple queue drivers (Database, File, Memory, Redis)
+- Job types: Email, Notification, Report, Cleanup
+- Job management: Push, pop, retry, clear failed jobs
+- Queue monitoring dashboard with real-time statistics
+- Queue controller for management and monitoring
+- Service provider for dependency injection
+- Support for job priorities, delays, and timeouts
+- Failed job handling with retry mechanisms
+- Queue statistics and performance monitoring
+- Test job creation for development and testing
+
+**Usage:**
+```php
+use IslamWiki\Core\Queue\Sabr;
+
+$sabr = new Sabr($container, $logger, $db);
+$sabr->email('user@example.com', 'Welcome', 'Welcome to IslamWiki!');
+$sabr->notify(123, 'welcome', ['message' => 'Welcome!']);
+$sabr->report('user_activity', ['period' => 'daily']);
+$sabr->cleanup('temp_files', ['max_age' => 86400]);
+``` 

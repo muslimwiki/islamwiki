@@ -35,9 +35,9 @@ use IslamWiki\Core\Asas;
 
 class SearchController extends Controller
 {
-    public function __construct(Connection $db, Asas $asas)
+    public function __construct(Connection $db, Asas $container)
     {
-        parent::__construct($db, $asas);
+        parent::__construct($db, $container);
     }
 
     /**

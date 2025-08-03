@@ -9,7 +9,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Http\Controllers\Controller;
 use IslamWiki\Models\IslamicUser;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\SessionManager;
 
 /**
  * Islamic Authentication Controller
@@ -25,9 +25,9 @@ class IslamicAuthController extends AuthController
     /**
      * Create a new Islamic authentication controller instance.
      */
-    public function __construct(Connection $db, Asas $asas)
+    public function __construct(Connection $db, Asas $container)
     {
-        parent::__construct($db, $asas);
+        parent::__construct($db, $container);
     }
 
     /**

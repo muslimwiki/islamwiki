@@ -30,12 +30,12 @@ abstract class Controller
      * Create a new controller instance.
      *
      * @param Connection $db The database connection
-     * @param Asas $asas The dependency injection container
+     * @param Asas $container The dependency injection container
      */
-    public function __construct(Connection $db, Asas $asas)
+    public function __construct(Connection $db, Asas $container)
     {
         $this->db = $db;
-        $this->container = $asas;
+        $this->container = $container;
     }
 
     /**

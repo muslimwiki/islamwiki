@@ -1,0 +1,340 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Queue Management Dashboard</h1>
+        <p class="text-gray-600">Monitor and manage the Sabr queue system for asynchronous job processing.</p>
+    </div>
+
+    <!-- Queue Statistics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Total Jobs</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ stats.total_jobs }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Processed Jobs</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ stats.system.jobs_processed }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-red-100 text-red-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Failed Jobs</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ stats.failed_jobs }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600">Processing Time</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ "%.2f"|format(stats.system.processing_time) }}s</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Queue Drivers -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Queue Drivers</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {% for driver in drivers %}
+                <div class="border rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-medium text-gray-900">{{ driver|title }}</h3>
+                            <p class="text-sm text-gray-600">
+                                Jobs: {{ stats.drivers[driver].total_jobs ?? 0 }}
+                            </p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="processJobs('{{ driver }}')" class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                                Process
+                            </button>
+                            <button onclick="clearFailed('{{ driver }}')" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                                Clear Failed
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Queue Actions -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Queue Actions</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Process Jobs -->
+                <div>
+                    <h3 class="text-md font-medium text-gray-900 mb-4">Process Jobs</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Driver</label>
+                            <select id="processDriver" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                {% for driver in drivers %}
+                                <option value="{{ driver }}">{{ driver|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Max Jobs</label>
+                            <input type="number" id="maxJobs" value="10" min="1" max="100" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        </div>
+                        <button onclick="processJobs()" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Process Jobs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Test Jobs -->
+                <div>
+                    <h3 class="text-md font-medium text-gray-900 mb-4">Create Test Jobs</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Job Type</label>
+                            <select id="testJobType" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                <option value="email">Email</option>
+                                <option value="notification">Notification</option>
+                                <option value="report">Report</option>
+                                <option value="cleanup">Cleanup</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Driver</label>
+                            <select id="testJobDriver" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                {% for driver in drivers %}
+                                <option value="{{ driver }}">{{ driver|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button onclick="createTestJob()" class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                            Create Test Job
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Failed Jobs -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Failed Jobs</h2>
+        </div>
+        <div class="p-6">
+            {% if failed_jobs %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Queue</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempts</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Failure Reason</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for job in failed_jobs %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ job.id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ job.queue }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ job.class|split('\\')|last }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ job.attempts }}/{{ job.max_attempts }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ job.failure_reason|default('Unknown error') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="retryJob('{{ job.id }}')" class="text-blue-600 hover:text-blue-900">Retry</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No failed jobs found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Queue management functions
+function processJobs(driver = null) {
+    const processDriver = driver || document.getElementById('processDriver').value;
+    const maxJobs = document.getElementById('maxJobs').value;
+
+    fetch('/queue/process', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            driver: processDriver,
+            max_jobs: maxJobs
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Processed ${data.data.processed} jobs, ${data.data.failed} failed`);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to process jobs');
+    });
+}
+
+function clearFailed(driver = null) {
+    const clearDriver = driver || document.getElementById('processDriver').value;
+
+    if (!confirm('Are you sure you want to clear all failed jobs?')) {
+        return;
+    }
+
+    fetch('/queue/clear-failed', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            driver: clearDriver
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Cleared ${data.data.cleared_count} failed jobs`);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to clear failed jobs');
+    });
+}
+
+function retryFailed() {
+    fetch('/queue/retry-failed', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            driver: 'database',
+            max_retries: 3
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Retried ${data.data.retried_count} failed jobs`);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to retry failed jobs');
+    });
+}
+
+function createTestJob() {
+    const type = document.getElementById('testJobType').value;
+    const driver = document.getElementById('testJobDriver').value;
+
+    fetch('/queue/create-test-job', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            type: type,
+            driver: driver
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to create test job');
+    });
+}
+
+function retryJob(jobId) {
+    // This would need to be implemented in the backend
+    alert('Retry individual job functionality not yet implemented');
+}
+
+// Auto-refresh stats every 30 seconds
+setInterval(() => {
+    fetch('/queue/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update stats display
+            console.log('Stats updated:', data.data);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating stats:', error);
+    });
+}, 30000);
+</script>
+{% endblock %} 

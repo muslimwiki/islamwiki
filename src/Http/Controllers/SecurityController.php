@@ -42,18 +42,18 @@ class SecurityController extends Controller
     /**
      * The logger instance.
      */
-    private Shahid $shahid;
+    private Logger $logger;
 
     /**
      * Create a new security controller instance.
      */
-    public function __construct(Asas $asas)
+    public function __construct(Asas $container)
     {
-        parent::__construct($asas);
-        $this->db = $asas->get(Connection::class);
-        $this->shahid = $asas->get(Shahid::class);
-        $this->encryption = new ConfigurationEncryption($this->shahid);
-        $this->accessControl = new ConfigurationAccessControl($this->db, $this->shahid, $this->getCurrentUserId());
+        parent::__construct($container);
+        $this->db = $container->get(Connection::class);
+        $this->logger = $container->get(Logger::class);
+        $this->encryption = new ConfigurationEncryption($this->logger);
+        $this->accessControl = new ConfigurationAccessControl($this->db, $this->logger, $this->getCurrentUserId());
     }
 
     /**
@@ -79,7 +79,7 @@ class SecurityController extends Controller
                 'title' => 'Security Dashboard'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Security dashboard error: ' . $e->getMessage());
+            $this->logger->error('Security dashboard error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load security dashboard', 500);
         }
     }
@@ -112,7 +112,7 @@ class SecurityController extends Controller
                 'title' => 'Security Audit Log'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Audit log error: ' . $e->getMessage());
+            $this->logger->error('Audit log error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load audit log', 500);
         }
     }
@@ -134,7 +134,7 @@ class SecurityController extends Controller
                 'title' => 'Configuration Approvals'
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Approvals error: ' . $e->getMessage());
+            $this->logger->error('Approvals error: ' . $e->getMessage());
             return $this->errorResponse('Failed to load approvals', 500);
         }
     }
@@ -175,7 +175,7 @@ class SecurityController extends Controller
                 ], 400);
             }
         } catch (\Exception $e) {
-            $this->shahid->error('Configuration approval error: ' . $e->getMessage());
+            $this->logger->error('Configuration approval error: ' . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
                 'message' => 'Internal server error'
@@ -220,7 +220,7 @@ class SecurityController extends Controller
                 ], 400);
             }
         } catch (\Exception $e) {
-            $this->shahid->error('Configuration rejection error: ' . $e->getMessage());
+            $this->logger->error('Configuration rejection error: ' . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
                 'message' => 'Internal server error'
@@ -253,7 +253,7 @@ class SecurityController extends Controller
                 ], 400);
             }
         } catch (\Exception $e) {
-            $this->shahid->error('Key rotation error: ' . $e->getMessage());
+            $this->logger->error('Key rotation error: ' . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
                 'message' => 'Internal server error'
@@ -281,7 +281,7 @@ class SecurityController extends Controller
                 'encryption_info' => $keyInfo
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Encryption info error: ' . $e->getMessage());
+            $this->logger->error('Encryption info error: ' . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
                 'message' => 'Internal server error'
@@ -309,7 +309,7 @@ class SecurityController extends Controller
                 'security_stats' => $stats
             ]);
         } catch (\Exception $e) {
-            $this->shahid->error('Security stats error: ' . $e->getMessage());
+            $this->logger->error('Security stats error: ' . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
                 'message' => 'Internal server error'
@@ -357,7 +357,7 @@ class SecurityController extends Controller
 
             return $stats;
         } catch (\Exception $e) {
-            $this->shahid->error('Failed to get security stats: ' . $e->getMessage());
+            $this->logger->error('Failed to get security stats: ' . $e->getMessage());
             return [];
         }
     }
@@ -374,7 +374,7 @@ class SecurityController extends Controller
                 ->get()
                 ->toArray();
         } catch (\Exception $e) {
-            $this->shahid->error('Failed to get recent audit logs: ' . $e->getMessage());
+            $this->logger->error('Failed to get recent audit logs: ' . $e->getMessage());
             return [];
         }
     }
@@ -401,7 +401,7 @@ class SecurityController extends Controller
                 ->get()
                 ->toArray();
         } catch (\Exception $e) {
-            $this->shahid->error('Failed to get audit logs: ' . $e->getMessage());
+            $this->logger->error('Failed to get audit logs: ' . $e->getMessage());
             return [];
         }
     }
@@ -424,7 +424,7 @@ class SecurityController extends Controller
 
             return $query->count();
         } catch (\Exception $e) {
-            $this->shahid->error('Failed to get audit log count: ' . $e->getMessage());
+            $this->logger->error('Failed to get audit log count: ' . $e->getMessage());
             return 0;
         }
     }

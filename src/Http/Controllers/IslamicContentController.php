@@ -28,9 +28,9 @@ class IslamicContentController extends PageController
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Asas $asas
+        \IslamWiki\Core\Asas $container
     ) {
-        parent::__construct($db, $asas);
+        parent::__construct($db, $container);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 A comprehensive Islamic knowledge management platform built with modern web technologies.
 
-**Current Version:** 0.0.41  
+**Current Version:** 0.0.42  
 **Release Date:** August 3, 2025
 
 ## 🌟 Features
@@ -52,6 +52,7 @@ A comprehensive Islamic knowledge management platform built with modern web tech
   - **Siraj** (سراج) - API management and guidance system
   - **Usul** (أصول) - Knowledge engine and ontology system
   - **Rihlah** (رحلة) - Multi-driver caching system with monitoring
+  - **Sabr** (صبر) - Asynchronous job processing and queue system
 - **Database Migration System** - Automated schema management
 - **Service Provider Architecture** - Modular, extensible design
 - **RESTful API** - Programmatic access to all features
