@@ -35,20 +35,10 @@
             <div class="settings-tab active" id="appearance">
                 <div class="settings-section">
                     <h2 class="section-title">🎨 Skin Selection</h2>
-                    <p class="section-description">Choose the visual theme for your IslamWiki experience.</p>
+                    <p class="section-description">Choose the visual theme for your IslamWiki experience. New skins are automatically discovered and available for selection.</p>
                     
-                        <!-- 🚨🚨🚨 TEMPLATE DEBUG - " . date('Y-m-d H:i:s') . " 🚨🚨🚨 -->
-    <!-- DEBUG: SettingsController called at {{ "now"|date('Y-m-d H:i:s') }} -->
-    <!-- DEBUG: availableSkins = {{ availableSkins|keys|join(', ') }} -->
-    <!-- DEBUG: wgValidSkins = {{ debugInfo.wgValidSkins|keys|join(', ') }} -->
-    <!-- DEBUG: isset_wgValidSkins = {{ debugInfo.isset_wgValidSkins ? 'true' : 'false' }} -->
-    <!-- DEBUG: is_array_wgValidSkins = {{ debugInfo.is_array_wgValidSkins ? 'true' : 'false' }} -->
-    <!-- DEBUG: count_wgValidSkins = {{ debugInfo.count_wgValidSkins }} -->
-    <div class="skin-grid">
-        <!-- DEBUG: skinOptions count = {{ skinOptions|length }} -->
-        <!-- DEBUG: skinOptions keys = {{ skinOptions|keys|join(', ') }} -->
-        {% for skinName, skin in skinOptions %}
-        <!-- DEBUG: Rendering skin {{ skinName }} -->
+                    <div class="skin-grid">
+                        {% for skinName, skin in skinOptions %}
                         <div class="skin-card {{ skin.active ? 'active' : '' }}" data-skin="{{ skinName }}">
                             <div class="skin-info">
                                 <h3 class="skin-name">{{ skin.name }}</h3>
@@ -57,6 +47,15 @@
                                     <span class="skin-version">v{{ skin.version }}</span>
                                     <span class="skin-author">by {{ skin.author }}</span>
                                 </div>
+                                
+                                {% if skin.features %}
+                                <div class="skin-features">
+                                    <span class="features-label">Features:</span>
+                                    {% for feature in skin.features %}
+                                    <span class="feature-tag">{{ feature }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                                 
                                 <div class="skin-actions">
                                     {% if skin.active %}

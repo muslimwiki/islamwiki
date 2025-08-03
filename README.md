@@ -1,6 +1,6 @@
 # IslamWiki
 
-**Version:** 0.0.46  
+**Version:** 0.0.47  
 **Release Date:** 2025-08-03  
 **Status:** Active Development
 
@@ -26,10 +26,13 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **Error Handling**: Comprehensive error management and debugging
 
 ### Skin System
-- **Bismillah Skin**: Default Islamic-themed skin
-- **Muslim Skin**: Citizen MediaWiki-inspired design with Islamic aesthetics
-- **Standardized Management**: Consistent skin switching and management
-- **Responsive Design**: Mobile-friendly layouts
+- **Dynamic Skin Discovery**: Automatic discovery of skins from `/skins/` directory
+- **Multi-Skin Support**: Full support for multiple skins (Bismillah, Muslim)
+- **User-Specific Preferences**: Individual user skin settings stored in database
+- **Settings Interface**: Comprehensive settings page with skin selection
+- **Case-Insensitive Access**: Support for both `Muslim` and `muslim` naming
+- **Skin Information**: Detailed metadata and feature information display
+- **Responsive Design**: Mobile-friendly layouts for all skins
 - **Accessibility**: Skip links, keyboard navigation, focus management
 
 ### Development Features
@@ -89,8 +92,15 @@ php -S localhost:8000 -t public/
 ## 🎨 Skins
 
 ### Available Skins
-- **Bismillah**: Default Islamic-themed skin with traditional design
+- **Bismillah**: Default Islamic-themed skin with traditional design and beautiful gradients
 - **Muslim**: Modern skin inspired by Citizen MediaWiki with Islamic aesthetics
+
+### Skin Management
+- **Dynamic Discovery**: New skins automatically appear in settings
+- **User Preferences**: Individual skin preferences stored per user
+- **Settings API**: RESTful endpoints for skin management
+- **Skin Information**: Detailed metadata, features, and dependencies
+- **Validation**: Comprehensive skin validation and error handling
 
 ### Skin Features
 - Responsive design for all devices
@@ -98,6 +108,8 @@ php -S localhost:8000 -t public/
 - Accessibility features (WCAG compliant)
 - Dark theme support
 - Customizable layouts and components
+- Animation and gradient support
+- Glass morphism effects
 
 ## 🔧 Configuration
 

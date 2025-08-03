@@ -18,8 +18,17 @@ class ViewServiceProvider
      */
     public function register(Asas $container): void
     {
-        // Use a relative path approach - assume we're in the project root
-        $basePath = dirname(__DIR__, 2); // Go up from src/Providers to project root
+        // Get the base path from the application if available
+        $basePath = null;
+        
+        if ($container->has('app')) {
+            $app = $container->get('app');
+            $basePath = $app->basePath();
+        } else {
+            // Fallback: try to find the project root
+            $basePath = $this->findProjectRoot();
+        }
+        
         $templatePath = $basePath . '/resources/views';
         $cachePath = $basePath . '/storage/framework/views';
         
@@ -48,5 +57,31 @@ class ViewServiceProvider
         // Register the Twig renderer instance with the container
         $container->instance('view', $twigRenderer);
         $container->instance(TwigRenderer::class, $twigRenderer);
+    }
+    
+    /**
+     * Find the project root directory.
+     */
+    private function findProjectRoot(): string
+    {
+        // Start from the current file and work backwards
+        $currentDir = __DIR__;
+        
+        // Try different levels up
+        $possiblePaths = [
+            dirname($currentDir, 2), // src/Providers -> project root
+            dirname($currentDir, 3), // src/Providers -> parent -> project root
+            dirname($currentDir, 4), // src/Providers -> parent -> parent -> project root
+            getcwd(), // Current working directory
+        ];
+        
+        foreach ($possiblePaths as $path) {
+            if (is_dir($path . '/resources/views') && is_dir($path . '/src')) {
+                return $path;
+            }
+        }
+        
+        // If all else fails, use the current directory
+        return getcwd();
     }
 }

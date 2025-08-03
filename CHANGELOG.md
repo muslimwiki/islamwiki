@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.47] - 2025-08-03
+
+### Added
+- **Dynamic Skin Discovery**: Automatic discovery of skins from `/skins/` directory
+- **Enhanced Settings Page**: Comprehensive settings interface with skin selection
+- **Multi-Skin Support**: Full support for multiple skins (Bismillah, Muslim)
+- **User-Specific Skin Preferences**: Individual user skin settings stored in database
+- **Skin Information Display**: Detailed skin metadata and feature information
+- **Case-Insensitive Skin Access**: Support for both `Muslim` and `muslim` naming
+- **Settings API Endpoints**: RESTful API for skin management and settings
+
+### Fixed
+- **Skin Loading Issue**: Resolved problem where only one skin was being loaded
+- **LocalSettings Integration**: Fixed `$wgValidSkins` array loading issues
+- **Skin Validation**: Improved skin validation and error handling
+- **Settings Controller**: Enhanced skin discovery and switching functionality
+
+### Technical Improvements
+- **SkinManager Enhancement**: Improved skin loading logic for dynamic discovery
+- **Settings Controller**: Added comprehensive skin management functionality
+- **Database Integration**: User skin preferences properly stored and retrieved
+- **Debug Tools**: Added comprehensive skin management debugging tools
+
+### Files Changed
+- `src/Skins/SkinManager.php` - Enhanced skin loading for dynamic discovery
+- `src/Http/Controllers/SettingsController.php` - Improved skin management
+- `resources/views/settings/index.twig` - Enhanced settings interface
+- `debug/debug-skin-management.php` - Added skin management debugging
+- `debug/debug-settings-test.php` - Added settings functionality testing
+
+### Impact
+- **User Experience**: Users can now easily switch between available skins
+- **Developer Experience**: New skins automatically appear in settings
+- **Maintainability**: Dynamic skin discovery reduces configuration overhead
+- **Flexibility**: Support for unlimited number of skins
+
 ## [0.0.46] - 2025-08-03
 
 ### Fixed

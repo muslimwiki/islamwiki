@@ -1,259 +1,140 @@
 <?php
+declare(strict_types=1);
+
 /**
- * Debug script for Muslim skin testing
+ * Debug Muslim Skin
  * 
- * This script tests the Muslim skin functionality and displays
- * information about the skin system.
+ * Tests why the Muslim skin is not being loaded by the SkinManager.
+ * 
+ * @package IslamWiki\Debug
+ * @version 0.0.28
+ * @license AGPL-3.0-only
  */
 
-// Load autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Load core files
-require_once __DIR__ . '/../src/Core/Application.php';
-require_once __DIR__ . '/../src/Skins/SkinManager.php';
-require_once __DIR__ . '/../src/Skins/Skin.php';
-
-use IslamWiki\Core\Application;
-use IslamWiki\Skins\SkinManager;
+echo "🔍 Testing Muslim Skin Loading\n";
+echo "=============================\n\n";
 
 // Initialize application
-$app = new Application(__DIR__ . '/..');
+$app = new \IslamWiki\Core\Application(__DIR__ . '/..');
+$container = $app->getContainer();
 
-echo "<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Muslim Skin Debug</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .success { color: green; }
-        .error { color: red; }
-        .info { color: blue; }
-        .warning { color: orange; }
-        .card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    </style>
-</head>
-<body>
-    <h1>🕌 Muslim Skin Debug</h1>
-    <p>Testing the Muslim skin functionality and integration.</p>
-";
+echo "✅ Application initialized\n";
 
-try {
-    // Get container and skin manager
-    $container = $app->getContainer();
-    $skinManager = $container->get('skin.manager');
-    
-    echo "<div class='card'>
-        <h2>✅ Application Status</h2>
-        <p>Application initialized successfully</p>
-        <p>Container: " . get_class($container) . "</p>
-        <p>Skin Manager: " . get_class($skinManager) . "</p>
-    </div>";
-    
-    // Test skin discovery
-    echo "<div class='grid'>";
-    
-    echo "<div class='card'>
-        <h3>🎨 Available Skins</h3>";
-    
-    $availableSkins = $skinManager->getAvailableSkinNames();
-    if (!empty($availableSkins)) {
-        echo "<ul>";
-        foreach ($availableSkins as $skinName) {
-            $status = $skinManager->hasSkin($skinName) ? "✅" : "❌";
-            echo "<li>$status $skinName</li>";
-        }
-        echo "</ul>";
-    } else {
-        echo "<p class='error'>No skins found</p>";
+// Test 1: Check if Muslim skin directory exists
+echo "\n📊 Test 1: Muslim Skin Directory\n";
+echo "==================================\n";
+
+$muslimSkinDir = __DIR__ . '/../skins/Muslim';
+$muslimSkinConfig = $muslimSkinDir . '/skin.json';
+
+echo "Muslim skin directory: $muslimSkinDir\n";
+echo "Muslim skin directory exists: " . (is_dir($muslimSkinDir) ? 'Yes' : 'No') . "\n";
+echo "Muslim skin config: $muslimSkinConfig\n";
+echo "Muslim skin config exists: " . (file_exists($muslimSkinConfig) ? 'Yes' : 'No') . "\n";
+
+if (file_exists($muslimSkinConfig)) {
+    $config = json_decode(file_get_contents($muslimSkinConfig), true);
+    echo "Muslim skin config valid: " . (json_last_error() === JSON_ERROR_NONE ? 'Yes' : 'No') . "\n";
+    if ($config) {
+        echo "Muslim skin name: {$config['name']}\n";
+        echo "Muslim skin version: {$config['version']}\n";
+        echo "Muslim skin author: {$config['author']}\n";
     }
-    echo "</div>";
-    
-    // Test Muslim skin specifically
-    echo "<div class='card'>
-        <h3>🕌 Muslim Skin Test</h3>";
-    
-    if ($skinManager->hasSkin('Muslim')) {
-        echo "<p class='success'>✅ Muslim skin found</p>";
-        
-        $muslimSkin = $skinManager->getSkin('Muslim');
-        if ($muslimSkin) {
-            echo "<p class='success'>✅ Muslim skin loaded successfully</p>";
-            echo "<p>Skin Name: " . $muslimSkin->getName() . "</p>";
-            echo "<p>Version: " . $muslimSkin->getVersion() . "</p>";
-            echo "<p>Author: " . $muslimSkin->getAuthor() . "</p>";
-            echo "<p>Description: " . $muslimSkin->getDescription() . "</p>";
-            
-            // Test skin assets
-            $cssPath = $muslimSkin->getCssPath();
-            $jsPath = $muslimSkin->getJsPath();
-            $layoutPath = $muslimSkin->getLayoutPath();
-            
-            echo "<h4>📁 Asset Paths:</h4>";
-            echo "<ul>";
-            echo "<li>CSS: " . ($cssPath && file_exists($cssPath) ? "✅" : "❌") . " $cssPath</li>";
-            echo "<li>JS: " . ($jsPath && file_exists($jsPath) ? "✅" : "❌") . " $jsPath</li>";
-            echo "<li>Layout: " . ($layoutPath && file_exists($layoutPath) ? "✅" : "❌") . " $layoutPath</li>";
-            echo "</ul>";
-            
-            // Test skin configuration
-            $config = $muslimSkin->getConfig();
-            echo "<h4>⚙️ Configuration:</h4>";
-            echo "<pre>" . json_encode($config, JSON_PRETTY_PRINT) . "</pre>";
-            
-        } else {
-            echo "<p class='error'>❌ Failed to load Muslim skin</p>";
-        }
-    } else {
-        echo "<p class='error'>❌ Muslim skin not found</p>";
-    }
-    echo "</div>";
-    
-    echo "</div>";
-    
-    // Test skin switching
-    echo "<div class='card'>
-        <h3>🔄 Skin Switching Test</h3>";
-    
-    $originalSkin = $skinManager->getActiveSkinName();
-    echo "<p>Current active skin: <strong>$originalSkin</strong></p>";
-    
-    if ($skinManager->setActiveSkin('Muslim')) {
-        echo "<p class='success'>✅ Successfully switched to Muslim skin</p>";
-        echo "<p>New active skin: <strong>" . $skinManager->getActiveSkinName() . "</strong></p>";
-        
-        // Switch back
-        $skinManager->setActiveSkin($originalSkin);
-        echo "<p class='info'>🔄 Switched back to $originalSkin</p>";
-    } else {
-        echo "<p class='error'>❌ Failed to switch to Muslim skin</p>";
-    }
-    
-    // Test file structure
-    echo "<div class='card'>
-        <h3>📁 File Structure Check</h3>";
-    
-    $muslimSkinDir = __DIR__ . '/../skins/Muslim';
-    $requiredFiles = [
-        'skin.json' => 'Skin configuration',
-        'css/muslim.css' => 'CSS styles',
-        'js/muslim.js' => 'JavaScript',
-        'templates/layout.twig' => 'Layout template'
-    ];
-    
-    foreach ($requiredFiles as $file => $description) {
-        $fullPath = $muslimSkinDir . '/' . $file;
-        $exists = file_exists($fullPath);
-        $status = $exists ? "✅" : "❌";
-        echo "<p>$status $description: $file</p>";
-        
-        if ($exists) {
-            $size = filesize($fullPath);
-            echo "<p style='margin-left: 20px; color: #666;'>Size: " . number_format($size) . " bytes</p>";
-        }
-    }
-    
-    echo "</div>";
-    
-    // Test LocalSettings integration
-    echo "<div class='card'>
-        <h3>⚙️ LocalSettings Integration</h3>";
-    
-    // Load LocalSettings
-    require_once __DIR__ . '/../LocalSettings.php';
-    global $wgValidSkins;
-    
-    if (isset($wgValidSkins) && is_array($wgValidSkins)) {
-        echo "<p class='success'>✅ wgValidSkins is set</p>";
-        echo "<p>Available skins in LocalSettings:</p>";
-        echo "<ul>";
-        foreach ($wgValidSkins as $key => $value) {
-            $status = $key === 'Muslim' ? "🕌" : "📄";
-            echo "<li>$status $key => $value</li>";
-        }
-        echo "</ul>";
-    } else {
-        echo "<p class='error'>❌ wgValidSkins is not set</p>";
-    }
-    
-    echo "</div>";
-    
-    // Test force reload
-    echo "<div class='card'>
-        <h3>🔄 Force Reload Test</h3>";
-    
-    // Try to create a new skin manager instance
-    try {
-        $newSkinManager = new SkinManager($app);
-        echo "<p class='info'>✅ Created new SkinManager instance</p>";
-        
-        $newAvailableSkins = $newSkinManager->getAvailableSkinNames();
-        echo "<p>Available skins in new instance:</p>";
-        echo "<ul>";
-        foreach ($newAvailableSkins as $skinName) {
-            $status = $newSkinManager->hasSkin($skinName) ? "✅" : "❌";
-            echo "<li>$status $skinName</li>";
-        }
-        echo "</ul>";
-        
-        if ($newSkinManager->hasSkin('Muslim')) {
-            echo "<p class='success'>✅ Muslim skin found in new instance!</p>";
-        } else {
-            echo "<p class='error'>❌ Muslim skin still not found in new instance</p>";
-        }
-        
-    } catch (Exception $e) {
-        echo "<p class='error'>❌ Failed to create new SkinManager: " . htmlspecialchars($e->getMessage()) . "</p>";
-    }
-    
-    echo "</div>";
-    
-    // Test reloadAllSkins method
-    echo "<div class='card'>
-        <h3>🔄 Reload All Skins Test</h3>";
-    
-    try {
-        echo "<p class='info'>Calling reloadAllSkins() method...</p>";
-        $skinManager->reloadAllSkins();
-        echo "<p class='success'>✅ reloadAllSkins() completed</p>";
-        
-        $reloadedSkins = $skinManager->getAvailableSkinNames();
-        echo "<p>Available skins after reload:</p>";
-        echo "<ul>";
-        foreach ($reloadedSkins as $skinName) {
-            $status = $skinManager->hasSkin($skinName) ? "✅" : "❌";
-            echo "<li>$status $skinName</li>";
-        }
-        echo "</ul>";
-        
-        if ($skinManager->hasSkin('Muslim')) {
-            echo "<p class='success'>✅ Muslim skin found after reload!</p>";
-            
-            $muslimSkin = $skinManager->getSkin('Muslim');
-            if ($muslimSkin) {
-                echo "<p class='success'>✅ Muslim skin loaded successfully after reload</p>";
-                echo "<p>Skin Name: " . $muslimSkin->getName() . "</p>";
-                echo "<p>Version: " . $muslimSkin->getVersion() . "</p>";
-            }
-        } else {
-            echo "<p class='error'>❌ Muslim skin still not found after reload</p>";
-        }
-        
-    } catch (Exception $e) {
-        echo "<p class='error'>❌ Failed to reload skins: " . htmlspecialchars($e->getMessage()) . "</p>";
-    }
-    
-    echo "</div>";
-    
-} catch (Exception $e) {
-    echo "<div class='card'>
-        <h2 class='error'>❌ Error</h2>
-        <p class='error'>" . htmlspecialchars($e->getMessage()) . "</p>
-        <pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>
-    </div>";
 }
 
-echo "</body></html>"; 
+// Test 2: Check SkinManager loading
+echo "\n📊 Test 2: SkinManager Loading\n";
+echo "==============================\n";
+
+try {
+    $skinManager = $container->get('skin.manager');
+    $loadedSkins = $skinManager->getSkins();
+    
+    echo "✅ SkinManager loaded\n";
+    echo "Loaded skins: " . count($loadedSkins) . "\n";
+    
+    foreach ($loadedSkins as $key => $skin) {
+        echo "  - $key: {$skin->getName()} (v{$skin->getVersion()})\n";
+    }
+    
+    // Check if Muslim skin is loaded
+    if (isset($loadedSkins['muslim'])) {
+        echo "✅ Muslim skin is loaded by SkinManager\n";
+    } else {
+        echo "❌ Muslim skin is NOT loaded by SkinManager\n";
+    }
+    
+    if (isset($loadedSkins['Muslim'])) {
+        echo "✅ Muslim skin (capitalized) is loaded by SkinManager\n";
+    } else {
+        echo "❌ Muslim skin (capitalized) is NOT loaded by SkinManager\n";
+    }
+    
+} catch (\Exception $e) {
+    echo "❌ SkinManager error: " . $e->getMessage() . "\n";
+}
+
+// Test 3: Check LocalSettings configuration
+echo "\n📊 Test 3: LocalSettings Configuration\n";
+echo "=====================================\n";
+
+$localSettingsPath = __DIR__ . '/../LocalSettings.php';
+if (file_exists($localSettingsPath)) {
+    // Load LocalSettings to check $wgValidSkins
+    require_once $localSettingsPath;
+    
+    global $wgValidSkins;
+    echo "✅ LocalSettings loaded\n";
+    echo "wgValidSkins: " . (isset($wgValidSkins) ? 'Yes' : 'No') . "\n";
+    
+    if (isset($wgValidSkins)) {
+        echo "Valid skins:\n";
+        foreach ($wgValidSkins as $key => $value) {
+            echo "  - $key => $value\n";
+        }
+        
+        if (isset($wgValidSkins['Muslim'])) {
+            echo "✅ Muslim skin is in wgValidSkins\n";
+        } else {
+            echo "❌ Muslim skin is NOT in wgValidSkins\n";
+        }
+    }
+} else {
+    echo "❌ LocalSettings.php not found\n";
+}
+
+// Test 4: Check skin discovery in SettingsController
+echo "\n📊 Test 4: SettingsController Skin Discovery\n";
+echo "============================================\n";
+
+try {
+    $db = $container->get('db');
+    $settingsController = new \IslamWiki\Http\Controllers\SettingsController($db, $container);
+    
+    // Use reflection to access the private discoverAvailableSkins method
+    $reflection = new ReflectionClass($settingsController);
+    $discoverMethod = $reflection->getMethod('discoverAvailableSkins');
+    $discoverMethod->setAccessible(true);
+    
+    $availableSkins = $discoverMethod->invoke($settingsController);
+    
+    echo "✅ SettingsController skin discovery completed\n";
+    echo "Available skins: " . count($availableSkins) . "\n";
+    
+    foreach ($availableSkins as $key => $skinData) {
+        echo "  - $key: {$skinData['name']} (v{$skinData['version']}) by {$skinData['author']}\n";
+    }
+    
+    if (isset($availableSkins['muslim'])) {
+        echo "✅ Muslim skin is discovered by SettingsController\n";
+    } else {
+        echo "❌ Muslim skin is NOT discovered by SettingsController\n";
+    }
+    
+} catch (\Exception $e) {
+    echo "❌ SettingsController error: " . $e->getMessage() . "\n";
+}
+
+echo "\n✅ Muslim skin test completed!\n"; 

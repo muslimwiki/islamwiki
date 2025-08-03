@@ -2,7 +2,7 @@
 
 ## Overview
 
-The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code.
+The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface.
 
 ## Architecture
 
@@ -14,8 +14,8 @@ The IslamWiki Skin System provides a modular theming architecture that separates
 
 ### User Skins (`/skins/`)
 - **Bismillah**: Default skin with Islamic design
-- **BlueSkin**: Example blue-themed skin
-- **Custom skins**: User-created skins
+- **Muslim**: Modern skin inspired by Citizen MediaWiki
+- **Dynamic Discovery**: New skins automatically appear in settings
 
 ## Directory Structure
 
@@ -29,7 +29,7 @@ The IslamWiki Skin System provides a modular theming architecture that separates
 │   │   └── bismillah.js        # Skin JavaScript
 │   └── templates/
 │       └── layout.twig         # Custom layout template
-├── BlueSkin/                    # Example user skin
+├── Muslim/                      # Modern skin
 │   ├── skin.json
 │   ├── css/
 │   ├── js/
@@ -43,11 +43,28 @@ src/Skins/                      # Backend skin system
 └── SkinServiceProvider.php     # Service integration
 ```
 
-## Default Skin: Bismillah
+## Dynamic Skin Discovery
 
+**New Feature**: The skin system now automatically discovers all skins in the `/skins/` directory. New skins will automatically appear in the settings interface without requiring configuration changes.
+
+### How It Works
+1. **Automatic Scanning**: The system scans the `/skins/` directory on startup
+2. **Configuration Validation**: Each skin's `skin.json` is validated
+3. **Settings Integration**: Discovered skins appear in the settings page
+4. **User Selection**: Users can switch between any available skin
+
+### Settings Interface
+- **Comprehensive Settings Page**: Visit `/settings` to manage skins
+- **Skin Information**: View detailed metadata, features, and dependencies
+- **User Preferences**: Individual skin preferences stored per user
+- **API Endpoints**: RESTful API for skin management
+
+## Available Skins
+
+### Bismillah (Default)
 The **Bismillah** skin is the default skin for IslamWiki, featuring:
 
-### Features
+#### Features
 - **Modern Islamic Design**: Beautiful gradients and Islamic-inspired colors
 - **Responsive Layout**: Works perfectly on all devices
 - **Glass Morphism**: Modern glass-like effects
@@ -55,7 +72,7 @@ The **Bismillah** skin is the default skin for IslamWiki, featuring:
 - **Animations**: Smooth transitions and hover effects
 - **Accessibility**: WCAG compliant design
 
-### Configuration
+#### Configuration
 ```json
 {
     "name": "Bismillah",
@@ -65,8 +82,8 @@ The **Bismillah** skin is the default skin for IslamWiki, featuring:
     "type": "user-skin",
     "directory": "Bismillah",
     "assets": {
-        "css": "css/style.css",
-        "js": "js/script.js",
+        "css": "css/bismillah.css",
+        "js": "js/bismillah.js",
         "layout": "templates/layout.twig"
     },
     "config": {
@@ -96,6 +113,97 @@ The **Bismillah** skin is the default skin for IslamWiki, featuring:
     }
 }
 ```
+
+### Muslim
+The **Muslim** skin provides a modern, responsive design inspired by Citizen MediaWiki:
+
+#### Features
+- **Citizen-Inspired Design**: Modern MediaWiki-inspired layout
+- **Islamic Aesthetics**: Beautiful Islamic design elements
+- **Responsive Design**: Mobile-friendly interface
+- **Extension Support**: Enhanced support for extensions
+- **Accessibility**: Full accessibility compliance
+
+#### Configuration
+```json
+{
+    "name": "Muslim",
+    "version": "0.0.1",
+    "author": "IslamWiki Team",
+    "description": "A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.",
+    "type": "user-skin",
+    "directory": "Muslim",
+    "assets": {
+        "css": "css/muslim.css",
+        "js": "js/muslim.js",
+        "layout": "templates/layout.twig"
+    },
+    "config": {
+        "primary_color": "#2c5aa0",
+        "secondary_color": "#4a90e2",
+        "accent_color": "#f39c12",
+        "text_color": "#2c3e50",
+        "background_color": "#ecf0f1",
+        "card_background": "#ffffff",
+        "border_color": "#bdc3c7",
+        "enable_animations": true,
+        "enable_gradients": true,
+        "font_family": "Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    },
+    "features": [
+        "responsive",
+        "dark-theme",
+        "animations",
+        "gradients",
+        "glass-morphism",
+        "accessibility",
+        "extension-support"
+    ],
+    "dependencies": {
+        "tailwind": "cdn",
+        "zamzamjs": "local",
+        "prism": "cdn"
+    }
+}
+```
+
+## Settings Management
+
+### Settings Page
+Visit `/settings` to access the comprehensive settings interface:
+
+#### Appearance Tab
+- **Skin Selection**: Choose from all available skins
+- **Skin Information**: View detailed metadata and features
+- **Theme Options**: Configure animations, gradients, and dark theme
+- **Live Preview**: See skin changes immediately
+
+#### Account Tab
+- **Profile Management**: Update user information
+- **Security Settings**: Change password and security preferences
+- **Account Actions**: Export data, delete account
+
+#### Privacy Tab
+- **Privacy Settings**: Control profile visibility and data sharing
+- **Cookie Preferences**: Manage cookie settings
+- **Data Management**: Download or delete personal data
+
+#### Notifications Tab
+- **Notification Preferences**: Configure email and browser notifications
+- **Email Settings**: Choose which emails to receive
+- **Schedule Settings**: Set notification frequency and quiet hours
+
+### API Endpoints
+- `GET /settings` - Settings page
+- `POST /settings/skin` - Update user's skin preference
+- `GET /settings/skins` - Get available skins
+- `GET /settings/skin/{name}` - Get skin information
+
+### User Preferences
+- **Individual Settings**: Each user has their own skin preference
+- **Database Storage**: Preferences stored in `user_settings` table
+- **Session Persistence**: Settings persist across sessions
+- **Fallback System**: Default to global skin if no user preference
 
 ## Creating a New Skin
 
@@ -205,9 +313,19 @@ Create `skins/MyCustomSkin/templates/layout.twig`:
 </html>
 ```
 
+### Step 6: Automatic Discovery
+Once you create your skin, it will automatically appear in the settings page. No additional configuration required!
+
 ## Activating a Skin
 
-### Method 1: LocalSettings Configuration
+### Method 1: Settings Page (Recommended)
+1. Visit `/settings`
+2. Go to the "Appearance" tab
+3. Select your desired skin
+4. Click "Select Skin"
+5. The change takes effect immediately
+
+### Method 2: LocalSettings Configuration
 Edit `LocalSettings.php`:
 ```php
 // Set the active skin
@@ -221,7 +339,7 @@ $wgSkinConfig = [
 ];
 ```
 
-### Method 2: Environment Variables
+### Method 3: Environment Variables
 Set in your `.env` file:
 ```env
 ACTIVE_SKIN=MyCustomSkin
@@ -245,7 +363,7 @@ echo $activeSkin->getVersion(); // "0.0.28"
 
 ### Get All Available Skins
 ```php
-$availableSkins = $skinManager->getAvailableSkins();
+$availableSkins = $skinManager->getSkins();
 foreach ($availableSkins as $skinName => $skin) {
     echo $skinName . ': ' . $skin->getDescription() . "\n";
 }
@@ -254,6 +372,13 @@ foreach ($availableSkins as $skinName => $skin) {
 ### Switch Active Skin
 ```php
 $skinManager->setActiveSkin('BlueSkin');
+```
+
+### Get User-Specific Skin
+```php
+$userId = 1;
+$userSkin = $skinManager->getActiveSkinForUser($userId);
+echo $userSkin->getName(); // User's preferred skin
 ```
 
 ## View Helpers
@@ -386,13 +511,14 @@ Skins can include custom JavaScript functionality:
 
 ### Test Your Skin
 ```bash
-php scripts/test_user_skin_system.php
+php debug/debug-skin-management.php
+php debug/debug-settings-test.php
 ```
 
 ### Manual Testing
 1. Create your skin in `/skins/`
-2. Set it as active in `LocalSettings.php`
-3. Visit your site to see the changes
+2. Visit `/settings` to see it in the skin selection
+3. Select your skin to test it
 4. Test on different devices and browsers
 
 ## Troubleshooting
@@ -403,6 +529,7 @@ php scripts/test_user_skin_system.php
 - Check that `skin.json` exists and is valid JSON
 - Verify all asset files exist
 - Check file permissions
+- Run debug scripts to identify issues
 
 #### CSS Not Applying
 - Ensure CSS file path is correct in `skin.json`
@@ -419,11 +546,30 @@ php scripts/test_user_skin_system.php
 - Verify Twig syntax in layout files
 - Test with default layout first
 
+#### Settings Not Working
+- Check if user is logged in
+- Verify database connection
+- Check user_settings table exists
+- Run debug scripts to identify issues
+
 ### Debug Mode
 Enable debug mode to see detailed error messages:
 ```php
 // In LocalSettings.php
 $wgDebug = true;
+```
+
+### Debug Tools
+Use the provided debug scripts:
+```bash
+# Test skin management
+php debug/debug-skin-management.php
+
+# Test settings functionality
+php debug/debug-settings-test.php
+
+# Test detailed skin loading
+php debug/debug-skin-loading-detailed.php
 ```
 
 ## Contributing
@@ -446,6 +592,7 @@ $wgDebug = true;
 2. Provide detailed reproduction steps
 3. Include browser and device information
 4. Attach screenshots if relevant
+5. Run debug scripts and include output
 
 ## Future Enhancements
 

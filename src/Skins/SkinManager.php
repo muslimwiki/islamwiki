@@ -81,18 +81,16 @@ class SkinManager
         global $wgValidSkins;
         $validSkins = $wgValidSkins ?? [];
         
-        // If no valid skins defined, load all skins (backward compatibility)
-        if (empty($validSkins)) {
-            $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
+        // Always load all skins from the directory for dynamic discovery
+        // LocalSettings can be used to restrict which skins are available for selection
+        $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
+        error_log("SkinManager: Loading all skins from directory: " . implode(', ', array_map('basename', $skinDirs)));
+        
+        // Log the valid skins from LocalSettings for reference
+        if (!empty($validSkins)) {
+            error_log("SkinManager: Valid skins from LocalSettings: " . implode(', ', array_keys($validSkins)));
         } else {
-            // Only load skins that are defined in $wgValidSkins
-            $skinDirs = [];
-            foreach ($validSkins as $skinKey => $skinName) {
-                $skinDir = $skinsPath . '/' . $skinName;
-                if (is_dir($skinDir)) {
-                    $skinDirs[] = $skinDir;
-                }
-            }
+            error_log("SkinManager: No valid skins defined in LocalSettings");
         }
         
         foreach ($skinDirs as $skinDir) {

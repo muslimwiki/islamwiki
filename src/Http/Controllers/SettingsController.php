@@ -37,19 +37,10 @@ class SettingsController extends Controller
      */
     public function index(): Response
     {
-        // Debug: Log that the controller is being called
-        error_log("🚨🚨🚨 SETTINGS CONTROLLER CALLED - " . date('Y-m-d H:i:s') . " 🚨🚨🚨");
-        error_log("SettingsController: Starting index() method");
-        
-
-        
         // Check if user is logged in
         if (!$this->session->isLoggedIn()) {
-            error_log("SettingsController: User not logged in");
             return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
         }
-        
-        error_log("SettingsController: User is logged in");
 
         $userId = $this->session->getUserId();
         
@@ -65,133 +56,97 @@ class SettingsController extends Controller
             // User not found, continue with null user
         }
         
-        // Load LocalSettings.php to get available skins
-        $localSettingsPath = __DIR__ . '/../../../LocalSettings.php';
-        // Alternative path if the first one doesn't work
-        if (!file_exists($localSettingsPath)) {
-            $localSettingsPath = dirname(__DIR__, 3) . '/LocalSettings.php';
-        }
-        error_log("SettingsController: LocalSettings path: $localSettingsPath");
-        error_log("SettingsController: LocalSettings exists: " . (file_exists($localSettingsPath) ? 'true' : 'false'));
-        
-        // Load LocalSettings.php to get available skins
-        if (file_exists($localSettingsPath)) {
-            $fileContents = file_get_contents($localSettingsPath);
-            
-            // Try to load LocalSettings.php
-            try {
-                require_once $localSettingsPath;
-            } catch (Throwable $e) {
-                error_log("SettingsController: Error loading LocalSettings.php: " . $e->getMessage());
-            }
-            
-            // If $wgValidSkins is not set, extract it from the file content
-            if (!isset($wgValidSkins) || empty($wgValidSkins)) {
-                if (preg_match('/\$wgValidSkins\s*=\s*\[(.*?)\];/s', $fileContents, $matches)) {
-                    // Set the skins based on LocalSettings.php content
-                    $wgValidSkins = [
-                        'Bismillah' => 'Bismillah',
-                        'BlueSkin' => 'BlueSkin',
-                    ];
-                }
-            }
-            
-            // Always ensure $wgValidSkins is set with the correct skins in global scope
-            $GLOBALS['wgValidSkins'] = [
-                'Bismillah' => 'Bismillah',
-            ];
-        }
-        
-        // Get available skins from LocalSettings.php
-        $availableSkins = $GLOBALS['wgValidSkins'] ?? [];
-        
-        // Debug: Log what we got from LocalSettings.php
-        error_log("SettingsController: wgValidSkins from LocalSettings.php: " . var_export($wgValidSkins, true));
-        error_log("SettingsController: availableSkins after assignment: " . var_export($availableSkins, true));
-        
-        // Also add debug to template
-        $debugInfo = [
-            'wgValidSkins' => $wgValidSkins,
-            'availableSkins' => $availableSkins,
-            'isset_wgValidSkins' => isset($wgValidSkins),
-            'is_array_wgValidSkins' => is_array($wgValidSkins),
-            'count_wgValidSkins' => is_array($wgValidSkins) ? count($wgValidSkins) : 'not array'
-        ];
-        
-        // Fallback: Only use dynamic discovery if $wgValidSkins is completely not set
-        if (!isset($wgValidSkins)) {
-            $skinsDir = __DIR__ . '/../../skins';
-            $availableSkins = [];
-            
-            if (is_dir($skinsDir)) {
-                $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
-                foreach ($skinDirs as $skinDir) {
-                    $skinName = basename($skinDir);
-                    $availableSkins[$skinName] = $skinName;
-                }
-            }
-            
-            // If still empty, provide minimal fallback
-            if (empty($availableSkins)) {
-                $availableSkins = [
-                    'Bismillah' => 'Bismillah',
-                ];
-            }
-        }
-        
-
+        // Dynamically discover available skins from the skins directory
+        $availableSkins = $this->discoverAvailableSkins();
         
         // Get skin manager to load skin details
         $skinManager = $this->container->get('skin.manager');
         $loadedSkins = $skinManager->getSkins();
         
-        error_log("SettingsController: SkinManager loaded " . count($loadedSkins) . " skins");
-        error_log("SettingsController: Loaded skin keys: " . implode(', ', array_keys($loadedSkins)));
-        
         $skinOptions = [];
         
-        // Only show skins that are defined in $wgValidSkins
-        foreach ($availableSkins as $skinKey => $skinName) {
+        // Process discovered skins
+        foreach ($availableSkins as $skinKey => $skinData) {
             // Check if the skin is loaded by the skin manager (case-insensitive)
-            $lowerSkinName = strtolower($skinName);
-            error_log("SettingsController: Checking skin '$skinName' (lowercase: '$lowerSkinName')");
+            $lowerSkinName = strtolower($skinData['name']);
             
             if (isset($loadedSkins[$lowerSkinName])) {
                 $skin = $loadedSkins[$lowerSkinName];
-                error_log("SettingsController: Found skin '$skinName' in SkinManager");
                 
                 // Simple case-insensitive comparison for active skin
                 $isActive = $lowerSkinName === strtolower($userActiveSkin);
                 
-                $skinOptions[$skinName] = [
+                $skinOptions[$skinData['name']] = [
                     'name' => $skin->getName(),
                     'version' => $skin->getVersion(),
                     'author' => $skin->getAuthor(),
                     'description' => $skin->getDescription(),
                     'active' => $isActive,
-                    'css_key' => $lowerSkinName
+                    'css_key' => $lowerSkinName,
+                    'directory' => $skinData['directory'],
+                    'features' => $skinData['features'] ?? [],
+                    'config' => $skinData['config'] ?? []
                 ];
-                
-            } else {
-                error_log("SettingsController: Skin '$skinName' NOT found in SkinManager");
             }
         }
         
-        error_log("SettingsController: About to render template with " . count($skinOptions) . " skins");
-        
-        return $this->view('settings/index', [
+        return $this->view('settings/index.twig', [
             'title' => 'Settings - IslamWiki',
             'user' => $user,
             'skinOptions' => $skinOptions,
             'activeSkin' => $userActiveSkin,
             'availableSkins' => $availableSkins,
-            'userSettings' => $userSettings,
-            'debugInfo' => $debugInfo
+            'userSettings' => $userSettings
         ], 200, [
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => '0'
         ]);
+    }
+
+    /**
+     * Dynamically discover available skins from the skins directory
+     */
+    private function discoverAvailableSkins(): array
+    {
+        // Use a more reliable path calculation
+        $skinsDir = dirname(__DIR__, 3) . '/skins';
+        $availableSkins = [];
+        
+        if (!is_dir($skinsDir)) {
+            return $availableSkins;
+        }
+        
+        $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
+        
+        foreach ($skinDirs as $skinDir) {
+            $skinName = basename($skinDir);
+            $skinConfigFile = $skinDir . '/skin.json';
+            
+            if (file_exists($skinConfigFile)) {
+                try {
+                    $config = json_decode(file_get_contents($skinConfigFile), true);
+                    
+                    if ($config && isset($config['name'])) {
+                        $availableSkins[strtolower($skinName)] = [
+                            'name' => $config['name'],
+                            'version' => $config['version'] ?? '0.0.1',
+                            'author' => $config['author'] ?? 'Unknown',
+                            'description' => $config['description'] ?? '',
+                            'directory' => $skinName,
+                            'features' => $config['features'] ?? [],
+                            'config' => $config['config'] ?? [],
+                            'dependencies' => $config['dependencies'] ?? []
+                        ];
+                    }
+                } catch (\Exception $e) {
+                    // Log error but continue loading other skins
+                    error_log("Failed to load skin config for {$skinName}: " . $e->getMessage());
+                }
+            }
+        }
+        
+        return $availableSkins;
     }
 
     /**
@@ -243,9 +198,18 @@ class SettingsController extends Controller
                 return $this->json(['error' => 'Skin name is required'], 400);
             }
 
-            $availableSkins = $this->skinManager->getSkins();
+            // Validate that the skin exists in our discovered skins
+            $availableSkins = $this->discoverAvailableSkins();
+            $skinExists = false;
             
-            if (!$this->skinManager->hasSkin($skinName)) {
+            foreach ($availableSkins as $skinData) {
+                if (strtolower($skinData['name']) === strtolower($skinName)) {
+                    $skinExists = true;
+                    break;
+                }
+            }
+            
+            if (!$skinExists) {
                 return $this->json(['error' => 'Invalid skin selected'], 400);
             }
             
@@ -282,17 +246,18 @@ class SettingsController extends Controller
         $userSettings = $this->getUserSettings($userId);
         $userActiveSkin = $userSettings['skin'] ?? 'bismillah';
         
-        $skinManager = $this->container->get('skin.manager');
-        $availableSkins = $skinManager->getSkins();
+        $availableSkins = $this->discoverAvailableSkins();
         
         $skins = [];
-        foreach ($availableSkins as $name => $skin) {
-            $skins[$name] = [
-                'name' => $skin->getName(),
-                'version' => $skin->getVersion(),
-                'author' => $skin->getAuthor(),
-                'description' => $skin->getDescription(),
-                'active' => strtolower($name) === strtolower($userActiveSkin)
+        foreach ($availableSkins as $key => $skinData) {
+            $skins[$skinData['name']] = [
+                'name' => $skinData['name'],
+                'version' => $skinData['version'],
+                'author' => $skinData['author'],
+                'description' => $skinData['description'],
+                'active' => strtolower($skinData['name']) === strtolower($userActiveSkin),
+                'features' => $skinData['features'],
+                'config' => $skinData['config']
             ];
         }
         
@@ -309,25 +274,32 @@ class SettingsController extends Controller
             return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view skin information.');
         }
 
-        $skinManager = $this->container->get('skin.manager');
+        $availableSkins = $this->discoverAvailableSkins();
+        $skinData = null;
         
-        if (!$skinManager->hasSkin($skinName)) {
+        // Find the skin data
+        foreach ($availableSkins as $skinInfo) {
+            if (strtolower($skinInfo['name']) === strtolower($skinName)) {
+                $skinData = $skinInfo;
+                break;
+            }
+        }
+        
+        if (!$skinData) {
             return $this->json(['error' => 'Skin not found'], 404);
         }
-
-        $skin = $skinManager->getSkin($skinName);
         
         return $this->json([
-            'name' => $skin->getName(),
-            'version' => $skin->getVersion(),
-            'author' => $skin->getAuthor(),
-            'description' => $skin->getDescription(),
-            'config' => $skin->getConfig(),
-            'features' => $skin->getFeatures(),
-            'dependencies' => $skin->getDependencies(),
-            'hasCustomCss' => $skin->hasCustomCss(),
-            'hasCustomJs' => $skin->hasCustomJs(),
-            'hasCustomLayout' => $skin->hasCustomLayout()
+            'name' => $skinData['name'],
+            'version' => $skinData['version'],
+            'author' => $skinData['author'],
+            'description' => $skinData['description'],
+            'config' => $skinData['config'],
+            'features' => $skinData['features'],
+            'dependencies' => $skinData['dependencies'],
+            'hasCustomCss' => true, // All skins have CSS
+            'hasCustomJs' => true,  // All skins have JS
+            'hasCustomLayout' => true // All skins have layout
         ]);
     }
 
@@ -382,8 +354,6 @@ class SettingsController extends Controller
             return false;
         }
     }
-
-
 
     /**
      * Render an error page for authentication failures
