@@ -47,11 +47,11 @@ class SecurityController extends Controller
     /**
      * Create a new security controller instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(Asas $asas)
     {
-        parent::__construct($container);
-        $this->db = $container->get(Connection::class);
-        $this->logger = $container->get(Logger::class);
+        parent::__construct($asas);
+        $this->db = $asas->get(Connection::class);
+        $this->logger = $asas->get(Shahid::class);
         $this->encryption = new ConfigurationEncryption($this->logger);
         $this->accessControl = new ConfigurationAccessControl($this->db, $this->logger, $this->getCurrentUserId());
     }

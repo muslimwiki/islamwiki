@@ -35,11 +35,11 @@ class ConfigurationController extends Controller
     /**
      * Create a new configuration controller instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(Asas $asas)
     {
-        parent::__construct($container);
-        $this->configManager = $container->get(ConfigurationManager::class);
-        $this->logger = $container->get(Shahid::class);
+        parent::__construct($asas);
+        $this->configManager = $asas->get(ConfigurationManager::class);
+        $this->logger = $asas->get(Shahid::class);
     }
 
     /**

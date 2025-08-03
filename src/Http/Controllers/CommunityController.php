@@ -41,11 +41,11 @@ class CommunityController extends Controller
     /**
      * Create a new community controller instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(Asas $asas)
     {
-        parent::__construct($container);
-        $this->db = $container->get(Connection::class);
-        $this->logger = $container->get(Logger::class);
+        parent::__construct($asas);
+        $this->db = $asas->get(Connection::class);
+        $this->logger = $asas->get(Shahid::class);
         $this->communityManager = new CommunityManager($this->db, $this->logger);
     }
 

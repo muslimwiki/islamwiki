@@ -23,16 +23,16 @@ class HomeController extends Controller
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Asas $container
+        \IslamWiki\Core\Asas $asas
     ) {
         error_log('HomeController: Constructor called');
         error_log('HomeController: DB class: ' . get_class($db));
-        error_log('HomeController: Container class: ' . get_class($container));
+        error_log('HomeController: Container class: ' . get_class($asas));
         
         try {
-            parent::__construct($db, $container);
-            // Get logger from container
-            $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
+                    parent::__construct($db, $asas);
+        // Get logger from container
+        $this->logger = $asas->get(\Psr\Log\LoggerInterface::class);
             error_log('HomeController: Logger class: ' . get_class($this->logger));
             error_log('HomeController: Constructor completed successfully');
         } catch (\Throwable $e) {

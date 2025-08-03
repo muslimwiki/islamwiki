@@ -44,9 +44,9 @@ class IqraSearchController extends Controller
 {
     protected IqraSearchEngine $searchEngine;
 
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, Asas $asas)
     {
-        parent::__construct($db, $container);
+        parent::__construct($db, $asas);
         $this->searchEngine = new IqraSearchEngine($this->db);
     }
 

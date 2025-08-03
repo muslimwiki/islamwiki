@@ -23,11 +23,11 @@ class CacheController extends Controller
     /**
      * Create a new cache controller.
      */
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, Asas $asas)
     {
-        parent::__construct($db, $container);
-        $this->cache = $container->get('cache');
-        $this->logger = $container->get(Shahid::class);
+        parent::__construct($db, $asas);
+        $this->cache = $asas->get('cache');
+        $this->logger = $asas->get(Shahid::class);
     }
     
     /**
