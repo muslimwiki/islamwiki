@@ -65,10 +65,8 @@ $container->instance('app', $app);
 // Get the database connection from the application's container
 $db = $container->get('db');
 
-// Initialize and register Wisal connection manager
-$sessionManager = new \IslamWiki\Core\Session\Wisal();
-$sessionManager->start(); // Start the session
-$container->instance('session', $sessionManager);
+// Session is already initialized by SessionServiceProvider
+$sessionManager = $container->get('session');
 
 // Initialize and register Aman
 $authManager = new \IslamWiki\Core\Auth\Aman($sessionManager, $db);

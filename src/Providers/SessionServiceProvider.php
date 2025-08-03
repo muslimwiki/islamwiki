@@ -72,22 +72,9 @@ class SessionServiceProvider
             }
             session_save_path($sessionPath);
             
-            // Set session name before any session operations
-            session_name('islamwiki_session');
-            
-            // Start session manually to ensure proper initialization
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-            
-            // Get the session manager and configure it
+            // Get the session manager and start it properly
             $session = $container->get('session');
-            
-            // Force session write to ensure cookie is set
-            if (session_status() === PHP_SESSION_ACTIVE) {
-                session_write_close();
-                session_start();
-            }
+            $session->start();
         }
     }
 } 

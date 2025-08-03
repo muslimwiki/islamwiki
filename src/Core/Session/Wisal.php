@@ -94,9 +94,18 @@ class Wisal
         // Set session name
         session_name($this->sessionName);
         
-        // Start session if not already started
+        // Handle session state
         if (session_status() === PHP_SESSION_NONE) {
+            // Session not started, start it
             session_start();
+        } elseif (session_status() === PHP_SESSION_ACTIVE) {
+            // Session is active, check if it's properly configured
+            if (session_name() !== $this->sessionName) {
+                // Session name doesn't match, close and restart
+                session_write_close();
+                session_name($this->sessionName);
+                session_start();
+            }
         }
         
         // Only regenerate session ID if this is a completely new session
