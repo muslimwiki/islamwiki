@@ -19,7 +19,7 @@ class HomeController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container $container The container instance
+     * @param \IslamWiki\Core\Asas $container The container instance
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,

@@ -42,7 +42,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 
 // Initialize container
-$container = new Container();
+$container = new Asas();
 
 // Initialize database connection
 $db = new Connection();

@@ -17,7 +17,7 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Core\Configuration\ConfigurationManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Logging\Shahid;
 
 class ConfigurationController extends Controller
@@ -35,7 +35,7 @@ class ConfigurationController extends Controller
     /**
      * Create a new configuration controller instance.
      */
-    public function __construct(Container $container)
+    public function __construct(Asas $container)
     {
         parent::__construct($container);
         $this->configManager = $container->get(ConfigurationManager::class);

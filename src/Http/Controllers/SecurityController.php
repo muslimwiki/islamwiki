@@ -18,7 +18,7 @@ use IslamWiki\Core\Security\ConfigurationEncryption;
 use IslamWiki\Core\Security\ConfigurationAccessControl;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Logging\Logger;
 use IslamWiki\Core\Database\Connection;
 
@@ -47,7 +47,7 @@ class SecurityController extends Controller
     /**
      * Create a new security controller instance.
      */
-    public function __construct(Container $container)
+    public function __construct(Asas $container)
     {
         parent::__construct($container);
         $this->db = $container->get(Connection::class);

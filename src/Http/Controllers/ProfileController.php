@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Application;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\SessionManager;
@@ -26,7 +26,7 @@ class ProfileController extends Controller
     private SkinManager $skinManager;
     private SessionManager $session;
 
-    public function __construct(Connection $db, Container $container)
+    public function __construct(Connection $db, Asas $container)
     {
         parent::__construct($db, $container);
         $this->skinManager = $container->get('skin.manager');

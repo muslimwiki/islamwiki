@@ -17,7 +17,7 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Core\Community\CommunityManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Logging\Logger;
 use IslamWiki\Core\Database\Connection;
 
@@ -41,7 +41,7 @@ class CommunityController extends Controller
     /**
      * Create a new community controller instance.
      */
-    public function __construct(Container $container)
+    public function __construct(Asas $container)
     {
         parent::__construct($container);
         $this->db = $container->get(Connection::class);

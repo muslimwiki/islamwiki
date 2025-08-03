@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers\Auth;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Http\Controllers\Controller;
@@ -25,7 +25,7 @@ class IslamicAuthController extends AuthController
     /**
      * Create a new Islamic authentication controller instance.
      */
-    public function __construct(Connection $db, Container $container)
+    public function __construct(Connection $db, Asas $container)
     {
         parent::__construct($db, $container);
     }

@@ -31,11 +31,11 @@ use IslamWiki\Models\IslamicCalendar;
 use IslamWiki\Models\PrayerTime;
 use IslamWiki\Core\Database\Connection;
 use Exception;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 
 class SearchController extends Controller
 {
-    public function __construct(Connection $db, Container $container)
+    public function __construct(Connection $db, Asas $container)
     {
         parent::__construct($db, $container);
     }
