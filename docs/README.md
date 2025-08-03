@@ -78,6 +78,7 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **[Testing Guidelines](testing/README.md)** - Testing strategies and procedures
 
 ### Feature Documentation
+- **[Feature Summaries](features/README.md)** - Detailed feature implementation summaries
 - **[Wiki Pages](features/wiki-pages.md)** - Wiki page system documentation
 - **[Authentication](features/auth.md)** - User authentication and authorization
 - **[Content Rendering](features/content-rendering.md)** - Content processing and display
@@ -109,6 +110,9 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **[Database Setup](DATABASE_SETUP.md)** - Database configuration and setup
 - **[Session Management](security/session-management.md)** - Session handling and security
 
+### Troubleshooting & Support
+- **[Issue Resolution](troubleshooting/README.md)** - Problem diagnosis and resolution guides
+
 ### Development Resources
 - **[Development Plans](plans/)** - Project roadmaps and planning documents
 - **[Initial Project Prompt](Cursor_initial-prompt.md)** - Original project requirements
@@ -123,7 +127,8 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 ├── 📁 architecture/       # System architecture docs
 ├── 📁 components/         # Component documentation
 ├── 📁 security/           # Security documentation
-├── 📁 features/           # Feature documentation
+├── 📁 features/           # Feature documentation and summaries
+├── 📁 troubleshooting/    # Issue resolution and troubleshooting
 ├── 📁 deployment/         # Deployment guides
 ├── 📁 testing/            # Testing documentation
 ├── 📁 controllers/        # Controller documentation
