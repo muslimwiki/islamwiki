@@ -17,6 +17,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\Wisal;
 use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
+use IslamWiki\Skins\SkinManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class DashboardController extends Controller
@@ -71,14 +72,8 @@ class DashboardController extends Controller
             error_log('DashboardController: Error loading dashboard data: ' . $e->getMessage());
         }
         
-        // Load LocalSettings.php to get active skin
-        $localSettingsPath = __DIR__ . '/../../../LocalSettings.php';
-        if (file_exists($localSettingsPath)) {
-            require_once $localSettingsPath;
-        }
-        
-        global $wgActiveSkin;
-        $activeSkinName = $wgActiveSkin ?? 'Bismillah';
+        // Get active skin using standardized skin manager
+        $activeSkinName = SkinManager::getActiveSkinNameStatic($this->app);
         
         $data = [
             'title' => 'Dashboard - IslamWiki',

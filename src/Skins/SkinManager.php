@@ -51,18 +51,19 @@ class SkinManager
             require_once $localSettingsPath;
         }
         
-        // Get active skin from LocalSettings
-        global $wgActiveSkin, $wgValidSkins;
-        $this->activeSkin = $wgActiveSkin ?? 'Bismillah';
-        
         // Ensure $wgValidSkins is set
+        global $wgValidSkins;
         if (!isset($wgValidSkins)) {
             $wgValidSkins = [
                 'Bismillah' => 'Bismillah',
             ];
         }
         
+        // Load all skins first
         $this->loadSkins();
+        
+        // Then initialize the active skin from LocalSettings
+        $this->initializeFromLocalSettings();
     }
     
     /**
@@ -170,23 +171,73 @@ class SkinManager
     }
     
     /**
-     * Set the active skin (case-insensitive)
+     * Get the active skin name (standardized method)
+     * This is the preferred way to get the active skin name
      */
-    public function setActiveSkin(string $name): bool
+    public function getActiveSkinName(): string
     {
-        $skin = $this->getSkin($name);
-        if ($skin !== null) {
-            // Preserve original case for consistency with LocalSettings
-            $this->activeSkin = $name;
-            $this->currentSkin = $skin;
-            return true;
-        }
-        
-        return false;
+        return $this->activeSkin;
     }
     
     /**
-     * Get the currently active skin
+     * Set the active skin (standardized method)
+     * This is the preferred way to change the active skin
+     */
+    public function setActiveSkin(string $name): bool
+    {
+        if (!$this->hasSkin($name)) {
+            error_log("SkinManager: Cannot set active skin to '$name' - skin not found");
+            return false;
+        }
+        
+        $this->activeSkin = $name;
+        
+        // Reset the current skin so it will be reloaded on next access
+        $this->currentSkin = null;
+        
+        // Update the container's cached instances
+        $container = $this->app->getContainer();
+        if ($container->has('skin.manager')) {
+            $container->instance('skin.manager', $this);
+        }
+        if ($container->has('skin.active')) {
+            $container->instance('skin.active', $this->getActiveSkin());
+        }
+        if ($container->has('skin.data')) {
+            $activeSkin = $this->getActiveSkin();
+            $skinData = [
+                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
+                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'name' => $activeSkin ? $activeSkin->getName() : 'default',
+                'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
+                'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
+            ];
+            $container->instance('skin.data', $skinData);
+        }
+        
+        error_log("SkinManager: Active skin set to '$name'");
+        return true;
+    }
+    
+    /**
+     * Get the active skin name with fallback to LocalSettings
+     * This provides backward compatibility with the old $wgActiveSkin approach
+     */
+    public function getActiveSkinNameWithFallback(): string
+    {
+        // First try to get from SkinManager
+        $activeSkin = $this->getActiveSkinName();
+        if (!empty($activeSkin)) {
+            return $activeSkin;
+        }
+        
+        // Fallback to LocalSettings
+        global $wgActiveSkin;
+        return $wgActiveSkin ?? 'Bismillah';
+    }
+    
+    /**
+     * Get the currently active skin object
      */
     public function getActiveSkin(): ?Skin
     {
@@ -197,6 +248,61 @@ class SkinManager
         }
         
         return $this->currentSkin;
+    }
+    
+    /**
+     * Initialize the active skin from LocalSettings
+     * This should be called after LocalSettings is loaded
+     */
+    public function initializeFromLocalSettings(): void
+    {
+        global $wgActiveSkin;
+        
+        if (isset($wgActiveSkin) && !empty($wgActiveSkin)) {
+            // Only set if the skin exists
+            if ($this->hasSkin($wgActiveSkin)) {
+                $this->activeSkin = $wgActiveSkin;
+                error_log("SkinManager: Initialized active skin from LocalSettings: $wgActiveSkin");
+            } else {
+                error_log("SkinManager: Warning - LocalSettings specifies skin '$wgActiveSkin' but it's not available");
+                $this->activeSkin = 'Bismillah'; // fallback
+            }
+        } else {
+            $this->activeSkin = 'Bismillah'; // fallback
+        }
+    }
+    
+    /**
+     * Static helper to get the active skin name
+     * This provides a consistent way to get the active skin across the application
+     */
+    public static function getActiveSkinNameStatic(Application $app): string
+    {
+        try {
+            $container = $app->getContainer();
+            $skinManager = $container->get('skin.manager');
+            return $skinManager->getActiveSkinName();
+        } catch (Exception $e) {
+            // Fallback to LocalSettings if SkinManager is not available
+            global $wgActiveSkin;
+            return $wgActiveSkin ?? 'Bismillah';
+        }
+    }
+    
+    /**
+     * Static helper to set the active skin
+     * This provides a consistent way to change the active skin across the application
+     */
+    public static function setActiveSkinStatic(Application $app, string $skinName): bool
+    {
+        try {
+            $container = $app->getContainer();
+            $skinManager = $container->get('skin.manager');
+            return $skinManager->setActiveSkin($skinName);
+        } catch (Exception $e) {
+            error_log("SkinManager::setActiveSkinStatic - Error: " . $e->getMessage());
+            return false;
+        }
     }
     
     /**
@@ -266,19 +372,6 @@ class SkinManager
     }
     
     /**
-     * Get the name of the currently active skin
-     */
-    public function getActiveSkinName(): string
-    {
-        // Return the proper display name from the skin object if available
-        $skin = $this->getActiveSkin();
-        if ($skin !== null) {
-            return $skin->getName();
-        }
-        return $this->activeSkin;
-    }
-    
-    /**
      * Reload the active skin from LocalSettings.php
      */
     public function reloadActiveSkin(): void
@@ -295,6 +388,56 @@ class SkinManager
                 $this->activeSkin = 'Bismillah'; // fallback
             }
         }
+        
+        // Reset the current skin so it will be reloaded on next access
+        $this->currentSkin = null;
+        
+        // Update the container's cached instances
+        $container = $this->app->getContainer();
+        if ($container->has('skin.manager')) {
+            $container->instance('skin.manager', $this);
+        }
+        if ($container->has('skin.active')) {
+            $container->instance('skin.active', $this->getActiveSkin());
+        }
+        if ($container->has('skin.data')) {
+            $activeSkin = $this->getActiveSkin();
+            $skinData = [
+                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
+                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'name' => $activeSkin ? $activeSkin->getName() : 'default',
+                'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
+                'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
+            ];
+            $container->instance('skin.data', $skinData);
+        }
+    }
+    
+    /**
+     * Reload all skins from LocalSettings.php
+     */
+    public function reloadAllSkins(): void
+    {
+        // Clear existing skins
+        $this->skins = [];
+        
+        // Reload LocalSettings.php
+        $localSettingsPath = $this->app->basePath('LocalSettings.php');
+        if (file_exists($localSettingsPath)) {
+            // Clear any existing globals to ensure fresh loading
+            unset($GLOBALS['wgValidSkins']);
+            unset($GLOBALS['wgActiveSkin']);
+            
+            // Reload LocalSettings
+            require_once $localSettingsPath;
+            
+            // Get updated values
+            global $wgValidSkins, $wgActiveSkin;
+            $this->activeSkin = $wgActiveSkin ?? 'Bismillah';
+        }
+        
+        // Reload all skins
+        $this->loadSkins();
         
         // Reset the current skin so it will be reloaded on next access
         $this->currentSkin = null;

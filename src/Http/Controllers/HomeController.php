@@ -5,6 +5,7 @@ namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
+use IslamWiki\Skins\SkinManager;
 use Psr\Log\LoggerInterface;
 use function error_log;
 
@@ -97,31 +98,47 @@ class HomeController extends Controller
                 error_log('HomeController: Error getting user: ' . $e->getMessage());
             }
 
-            // Get skin data from proper skin manager
+            // Get skin data from standardized skin manager
             $skinData = [];
             try {
-                // Load LocalSettings to get active skin
-                require_once dirname(__DIR__, 3) . '/LocalSettings.php';
-                global $wgActiveSkin;
+                $activeSkinName = SkinManager::getActiveSkinNameStatic($this->app);
+                $skinManager = $this->container->get('skin.manager');
+                $activeSkin = $skinManager->getActiveSkin();
                 
-                $activeSkinName = $wgActiveSkin ?? 'Bismillah';
-                $skinPath = dirname(__DIR__, 3) . '/skins/' . $activeSkinName;
-                $cssPath = $skinPath . '/css/bismillah.css';
-                $jsPath = $skinPath . '/js/bismillah.js';
-                
-                $skinData = [
-                    'skin_css' => file_exists($cssPath) ? file_get_contents($cssPath) : '/* ' . $activeSkinName . ' CSS not found */',
-                    'skin_js' => file_exists($jsPath) ? file_get_contents($jsPath) : '/* ' . $activeSkinName . ' JS not found */',
-                    'skin_name' => $activeSkinName,
-                    'skin_version' => '1.0.0',
-                    'skin_config' => [],
-                    'active_skin' => $activeSkinName,
-                ];
-                error_log('HomeController: Active skin: ' . $activeSkinName);
-                error_log('HomeController: CSS path: ' . $cssPath . ' (exists: ' . (file_exists($cssPath) ? 'yes' : 'no') . ')');
-                error_log('HomeController: Skin data loaded successfully');
+                if ($activeSkin) {
+                    $skinData = [
+                        'skin_css' => $activeSkin->getCssContent(),
+                        'skin_js' => $activeSkin->getJsContent(),
+                        'skin_name' => $activeSkin->getName(),
+                        'skin_version' => $activeSkin->getVersion(),
+                        'skin_config' => $activeSkin->getConfig() ?? [],
+                        'active_skin' => $activeSkinName,
+                    ];
+                    error_log('HomeController: Active skin: ' . $activeSkinName);
+                    error_log('HomeController: Skin data loaded successfully via SkinManager');
+                } else {
+                    // Fallback to default skin data
+                    $skinData = [
+                        'skin_css' => '/* Default skin CSS */',
+                        'skin_js' => '/* Default skin JS */',
+                        'skin_name' => $activeSkinName,
+                        'skin_version' => '1.0.0',
+                        'skin_config' => [],
+                        'active_skin' => $activeSkinName,
+                    ];
+                    error_log('HomeController: Using fallback skin data for: ' . $activeSkinName);
+                }
             } catch (\Exception $e) {
                 error_log('HomeController: Error loading skin data: ' . $e->getMessage());
+                // Fallback to default skin data
+                $skinData = [
+                    'skin_css' => '/* Error loading skin CSS */',
+                    'skin_js' => '/* Error loading skin JS */',
+                    'skin_name' => 'Bismillah',
+                    'skin_version' => '1.0.0',
+                    'skin_config' => [],
+                    'active_skin' => 'Bismillah',
+                ];
             }
 
             // Use Twig template instead of hardcoded HTML

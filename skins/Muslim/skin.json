@@ -1,0 +1,39 @@
+{
+    "name": "Muslim",
+    "version": "0.0.1",
+    "author": "IslamWiki Team",
+    "description": "A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.",
+    "type": "user-skin",
+    "directory": "Muslim",
+    "assets": {
+        "css": "css/muslim.css",
+        "js": "js/muslim.js",
+        "layout": "templates/layout.twig"
+    },
+    "config": {
+        "primary_color": "#2c5aa0",
+        "secondary_color": "#4a90e2",
+        "accent_color": "#f39c12",
+        "text_color": "#2c3e50",
+        "background_color": "#ecf0f1",
+        "card_background": "#ffffff",
+        "border_color": "#bdc3c7",
+        "enable_animations": true,
+        "enable_gradients": true,
+        "font_family": "Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    },
+    "features": [
+        "responsive",
+        "dark-theme",
+        "animations",
+        "gradients",
+        "glass-morphism",
+        "accessibility",
+        "extension-support"
+    ],
+    "dependencies": {
+        "tailwind": "cdn",
+        "zamzamjs": "local",
+        "prism": "cdn"
+    }
+} 

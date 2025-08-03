@@ -124,12 +124,16 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
  */
 $wgValidSkins = [
     'Bismillah' => 'Bismillah',
+    'Muslim' => 'Muslim',
 ];
 
 /**
  * Active skin configuration
  * Set this to the name of the skin folder in /skins/
- * Available skins: Bismillah, etc.
+ * Available skins: Bismillah, Muslim, etc.
+ * 
+ * Note: This is the default skin. For runtime skin switching,
+ * use $skinManager->setActiveSkin('SkinName') instead.
  */
 $wgActiveSkin = env('ACTIVE_SKIN', 'Bismillah');
 

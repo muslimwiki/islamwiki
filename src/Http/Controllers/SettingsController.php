@@ -249,6 +249,9 @@ class SettingsController extends Controller
                 return $this->json(['error' => 'Invalid skin selected'], 400);
             }
             
+            // Set the active skin using standardized approach
+            $skinSetResult = SkinManager::setActiveSkinStatic($this->app, $skinName);
+            
             // Update user's skin preference in database
             $updateResult = $this->updateUserSkin($userId, $skinName);
             

@@ -26,8 +26,10 @@
     {% block styles %}{% endblock %}
     
     {% block head %}{% endblock %}
+    
+    {% block body_class %}{% endblock %}
 </head>
-<body>
+<body{% if block('body_class') %} class="{{ block('body_class') }}"{% endif %}>
     <div class="header">
         <!-- Top Navigation Bar -->
         <div class="header-top-bar">

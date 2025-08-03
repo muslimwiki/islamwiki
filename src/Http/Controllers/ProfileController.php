@@ -102,14 +102,8 @@ class ProfileController extends Controller
             $recentActivity = $this->getRecentActivity($userId);
         }
         
-        // Load LocalSettings.php to get active skin
-        $localSettingsPath = __DIR__ . '/../../../LocalSettings.php';
-        if (file_exists($localSettingsPath)) {
-            require_once $localSettingsPath;
-        }
-        
-        global $wgActiveSkin;
-        $activeSkinName = $wgActiveSkin ?? 'Bismillah';
+        // Get active skin using standardized skin manager
+        $activeSkinName = SkinManager::getActiveSkinNameStatic($this->app);
         
         // Determine if current user can edit this profile
         $canEdit = $isOwnProfile;
