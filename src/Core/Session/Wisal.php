@@ -80,6 +80,13 @@ class Wisal
      */
     public function start(): void
     {
+        // Set session save path to our custom directory
+        $sessionPath = __DIR__ . '/../../../storage/sessions';
+        if (!is_dir($sessionPath)) {
+            mkdir($sessionPath, 0777, true);
+        }
+        session_save_path($sessionPath);
+        
         // Set secure session configuration
         ini_set('session.use_strict_mode', '1');
         ini_set('session.use_cookies', '1');
@@ -91,7 +98,7 @@ class Wisal
         ini_set('session.gc_maxlifetime', (string) $this->sessionLifetime);
         ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
         
-        // Set session name
+        // Set session name BEFORE starting session
         session_name($this->sessionName);
         
         // Handle session state
@@ -109,7 +116,7 @@ class Wisal
         }
         
         // Only regenerate session ID if this is a completely new session
-        // Don't regenerate if we have any session data or if there's a session cookie
+        // Don't regenerate if there's a session cookie (indicating an existing session)
         if (empty($_SESSION) && !$this->has('last_regeneration') && !isset($_COOKIE[$this->sessionName])) {
             $this->regenerate();
         } elseif ($this->has('last_regeneration') && (time() - $this->get('last_regeneration', 0) > 1800)) { // 30 minutes instead of 5

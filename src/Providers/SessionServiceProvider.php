@@ -65,19 +65,10 @@ class SessionServiceProvider
     {
         // Start session early for web requests to ensure consistency
         if (php_sapi_name() !== 'cli') {
-            // Set session save path to local storage BEFORE any session operations
-            $sessionPath = __DIR__ . '/../../storage/sessions';
-            if (!is_dir($sessionPath)) {
-                mkdir($sessionPath, 0777, true);
-            }
-            
-            // Set session save path before any session operations
-            if (session_status() === PHP_SESSION_NONE) {
-                session_save_path($sessionPath);
-            }
-            
-            // Get the session manager and start it properly
+            // Get the session manager first to ensure proper configuration
             $session = $container->get('session');
+            
+            // Let Wisal handle the session configuration and start
             $session->start();
         }
     }
