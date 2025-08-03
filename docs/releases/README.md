@@ -4,8 +4,30 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.34 (Latest)
+### Version 0.0.37 (Latest)
+- **[RELEASE-NOTES-0.0.37](../RELEASE-NOTES-0.0.37)** - UI/UX Improvements & Three-Column Layout
+- **[VERSION_0.0.37_SUMMARY.md](VERSION_0.0.37_SUMMARY.md)** - Detailed Implementation Summary
+- **Date**: 2025-08-02
+- **Status**: Feature Release
+- **Focus**: Enhanced header navigation, three-column layout, and improved styling
+
+### Version 0.0.36
+- **[RELEASE-NOTES-0.0.36](../RELEASE-NOTES-0.0.36)** - Search Functionality & Bismillah Skin
+- **[VERSION_0.0.36_SUMMARY.md](VERSION_0.0.36_SUMMARY.md)** - Detailed Implementation Summary
+- **Date**: 2025-08-02
+- **Status**: Feature Release
+- **Focus**: Complete search system overhaul with Bismillah skin styling
+
+### Version 0.0.35
+- **[RELEASE-NOTES-0.0.35](../RELEASE-NOTES-0.0.35)** - Enhanced Search Interfaces
+- **[VERSION_0.0.35_SUMMARY.md](VERSION_0.0.35_SUMMARY.md)** - Detailed Implementation Summary
+- **Date**: 2025-08-02
+- **Status**: Feature Release
+- **Focus**: Modern search interfaces and improved user experience
+
+### Version 0.0.34
 - **[RELEASE-NOTES-0.0.34](RELEASE-NOTES-0.0.34)** - Enhanced Profile System with Privacy Controls
+- **[VERSION_0.0.34_SUMMARY.md](VERSION_0.0.34_SUMMARY.md)** - Detailed Implementation Summary
 - **Date**: 2025-01-02
 - **Status**: Feature Release
 - **Focus**: Complete profile system overhaul with privacy controls and customization options
@@ -33,6 +55,15 @@ This directory contains release notes for all versions of IslamWiki.
 - **Date**: 2025-07-30
 - **Status**: Development Release
 - **Focus**: Root structure implementation and documentation
+
+## Version Summaries
+
+Detailed implementation summaries for recent versions:
+
+- **[VERSION_0.0.37_SUMMARY.md](VERSION_0.0.37_SUMMARY.md)** - UI/UX Improvements & Three-Column Layout
+- **[VERSION_0.0.36_SUMMARY.md](VERSION_0.0.36_SUMMARY.md)** - Search Functionality & Bismillah Skin
+- **[VERSION_0.0.35_SUMMARY.md](VERSION_0.0.35_SUMMARY.md)** - Enhanced Search Interfaces
+- **[VERSION_0.0.34_SUMMARY.md](VERSION_0.0.34_SUMMARY.md)** - Enhanced Profile System
 
 ## Release Categories
 
@@ -80,5 +111,5 @@ For detailed versioning information, see [Versioning Strategy](../guides/version
 
 ---
 
-**Last Updated**: 2025-01-02  
-**Current Version**: 0.0.34 
+**Last Updated**: 2025-08-02  
+**Current Version**: 0.0.37 
