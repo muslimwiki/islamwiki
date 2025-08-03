@@ -43,6 +43,7 @@ class DashboardController extends Controller
         $recentActivity = [];
         $watchlist = [];
         $quickStats = [];
+        $siteStats = [];
         
         try {
             if ($this->session->isLoggedIn()) {
@@ -63,6 +64,9 @@ class DashboardController extends Controller
                     $quickStats = $this->getQuickStats($userId);
                 }
             }
+            
+            // Get site statistics (available for all users)
+            $siteStats = $this->getSiteStatistics();
         } catch (\Exception $e) {
             error_log('DashboardController: Error loading dashboard data: ' . $e->getMessage());
         }
@@ -83,6 +87,7 @@ class DashboardController extends Controller
             'recentActivity' => $recentActivity,
             'watchlist' => $watchlist,
             'quickStats' => $quickStats,
+            'siteStats' => $siteStats,
             'activeSkin' => $activeSkinName,
             'currentTime' => date('Y-m-d H:i:s'),
             'isLoggedIn' => $this->session->isLoggedIn()
@@ -278,6 +283,52 @@ class DashboardController extends Controller
                 'week_activity' => 0,
                 'month_activity' => 0,
                 'total_pages_site' => 0
+            ];
+        }
+    }
+
+    /**
+     * Get site-wide statistics
+     */
+    private function getSiteStatistics(): array
+    {
+        try {
+            // Get total pages count
+            $totalPages = $this->db->select(
+                'SELECT COUNT(*) as count FROM pages',
+                []
+            );
+            
+            // Get total users count
+            $totalUsers = $this->db->select(
+                'SELECT COUNT(*) as count FROM users',
+                []
+            );
+            
+            // Get total edits count
+            $totalEdits = $this->db->select(
+                'SELECT COUNT(*) as count FROM page_history',
+                []
+            );
+            
+            // Get total categories count
+            $totalCategories = $this->db->select(
+                'SELECT COUNT(DISTINCT namespace) as count FROM pages WHERE namespace != "main"',
+                []
+            );
+            
+            return [
+                'total_pages' => $totalPages[0]['count'] ?? 0,
+                'total_users' => $totalUsers[0]['count'] ?? 0,
+                'total_edits' => $totalEdits[0]['count'] ?? 0,
+                'total_categories' => $totalCategories[0]['count'] ?? 0
+            ];
+        } catch (\Exception $e) {
+            return [
+                'total_pages' => 0,
+                'total_users' => 0,
+                'total_edits' => 0,
+                'total_categories' => 0
             ];
         }
     }

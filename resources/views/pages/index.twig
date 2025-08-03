@@ -3,124 +3,453 @@
 {% block title %}All Pages - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>All Pages</h1>
-    <p>Browse all wiki pages in the system</p>
-</div>
-
-<!-- Search and Filter Controls -->
-<div class="filters-section">
-    <form method="GET" action="/pages" class="filters-form">
-        <div class="filter-row">
-            <div class="filter-group">
-                <label for="search">Search:</label>
-                <input type="text" id="search" name="q" value="{{ filters.search }}" placeholder="Search pages...">
+<div class="home-three-column-layout full-width">
+    <!-- Left Column: Create New Content (2/10) -->
+    <div class="second-nav-column">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📝 Create Content</h2>
             </div>
-            
-            <div class="filter-group">
-                <label for="namespace">Namespace:</label>
-                <select id="namespace" name="namespace">
-                    <option value="">All Namespaces</option>
-                    <option value="main" {{ filters.namespace == 'main' ? 'selected' : '' }}>Main</option>
-                    <option value="help" {{ filters.namespace == 'help' ? 'selected' : '' }}>Help</option>
-                    <option value="user" {{ filters.namespace == 'user' ? 'selected' : '' }}>User</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="sort">Sort by:</label>
-                <select id="sort" name="sort">
-                    <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>Title</option>
-                    <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
-                    <option value="views" {{ filters.sort == 'views' ? 'selected' : '' }}>Views</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="order">Order:</label>
-                <select id="order" name="order">
-                    <option value="asc" {{ filters.order == 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ filters.order == 'desc' ? 'selected' : '' }}>Descending</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                <a href="/pages" class="btn btn-secondary">Clear</a>
+            <div class="flex gap-4 flex-wrap">
+                <a href="/pages/create" class="btn">✏️ Create New Page</a>
+                <a href="/pages/create?template=article" class="btn btn-secondary">📄 Article Template</a>
+                <a href="/pages/create?template=guide" class="btn btn-secondary">📚 Guide Template</a>
+                <a href="/pages/create?template=reference" class="btn btn-secondary">📖 Reference Template</a>
             </div>
         </div>
-    </form>
-</div>
 
-<!-- Pages List -->
-<div class="pages-list">
-    {% if pages is empty %}
-        <div class="empty-state">
-            <h3>No pages found</h3>
-            <p>No pages match your current filters.</p>
-            <a href="/pages" class="btn btn-primary">Clear Filters</a>
+        <!-- Stats Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📊 Page Statistics</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📄</div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ pagination.total }}</div>
+                        <div class="stat-label">Total Pages</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ pages|length }}</div>
+                        <div class="stat-label">Showing</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ pagination.current_page }}</div>
+                        <div class="stat-label">Current Page</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔍</div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ filters.search ? 'Active' : 'None' }}</div>
+                        <div class="stat-label">Search Filter</div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% else %}
-        <div class="pages-grid">
-            {% for page in pages %}
-            <div class="page-card">
-                <div class="page-header">
-                    <h3><a href="/{{ page.slug }}">{{ page.title }}</a></h3>
-                    <span class="page-namespace">{{ page.namespace }}</span>
+    </div>
+
+    <!-- Middle Column: Main Content - Pages List (6/10) -->
+    <div class="main-content-column">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>📚 All Pages</h1>
+                <p>Browse and discover all wiki pages in the system</p>
+            </div>
+        </div>
+
+        <!-- Pages List -->
+        <div class="pages-list">
+            {% if pages is empty %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <h3>No pages found</h3>
+                            <p>No pages match your current filters. Try adjusting your search criteria or create a new page.</p>
+                            <div class="empty-actions">
+                                <a href="/pages" class="btn btn-primary">
+                                    <span>🔄</span> Clear Filters
+                                </a>
+                                <a href="/pages/create" class="btn btn-outline">
+                                    <span>📝</span> Create New Page
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="pages-grid">
+                    {% for page in pages %}
+                    <div class="page-card">
+                        <div class="page-header">
+                            <h3>
+                                <a href="/{{ page.slug }}" class="page-title">
+                                    <span class="page-icon">
+                                        {% if page.namespace == 'help' %}❓
+                                        {% elseif page.namespace == 'user' %}👤
+                                        {% else %}📄{% endif %}
+                                    </span>
+                                    {{ page.title }}
+                                </a>
+                            </h3>
+                            <span class="page-namespace">{{ page.namespace }}</span>
+                        </div>
+                        
+                        <div class="page-meta">
+                            <div class="meta-item">
+                                <span class="label">👁️ Views:</span>
+                                <span class="value">{{ page.view_count }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="label">📝 Revisions:</span>
+                                <span class="value">{{ page.revision_count }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="label">🕒 Updated:</span>
+                                <span class="value">{{ page.updated_at|date('M j, Y') }}</span>
+                            </div>
+                            {% if page.author_name %}
+                            <div class="meta-item">
+                                <span class="label">👤 Author:</span>
+                                <span class="value">{{ page.author_name }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="page-actions">
+                            <a href="/{{ page.slug }}" class="btn btn-small btn-primary">
+                                <span>👁️</span> View
+                            </a>
+                            <a href="/{{ page.slug }}/edit" class="btn btn-small btn-secondary">
+                                <span>✏️</span> Edit
+                            </a>
+                            <a href="/{{ page.slug }}/history" class="btn btn-small btn-outline">
+                                <span>📜</span> History
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 
-                <div class="page-meta">
-                    <div class="meta-item">
-                        <span class="label">Views:</span>
-                        <span class="value">{{ page.view_count }}</span>
+                <!-- Pagination -->
+                {% if pagination.last_page > 1 %}
+                <div class="pagination-section">
+                    <div class="pagination">
+                        {% if pagination.current_page > 1 %}
+                            <a href="?page={{ pagination.current_page - 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" 
+                               class="btn btn-small">
+                                <span>⬅️</span> Previous
+                            </a>
+                        {% endif %}
+                        
+                        <span class="pagination-info">
+                            📄 Page {{ pagination.current_page }} of {{ pagination.last_page }}
+                            <br>
+                            <small>({{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} pages)</small>
+                        </span>
+                        
+                        {% if pagination.current_page < pagination.last_page %}
+                            <a href="?page={{ pagination.current_page + 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" 
+                               class="btn btn-small">
+                                Next <span>➡️</span>
+                            </a>
+                        {% endif %}
                     </div>
-                    <div class="meta-item">
-                        <span class="label">Revisions:</span>
-                        <span class="value">{{ page.revision_count }}</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="label">Last Updated:</span>
-                        <span class="value">{{ page.updated_at|date('M j, Y') }}</span>
-                    </div>
-                    {% if page.author_name %}
-                    <div class="meta-item">
-                        <span class="label">Author:</span>
-                        <span class="value">{{ page.author_name }}</span>
-                    </div>
-                    {% endif %}
                 </div>
-                
-                <div class="page-actions">
-                    <a href="/{{ page.slug }}" class="btn btn-small">View</a>
-                    <a href="/{{ page.slug }}/edit" class="btn btn-small btn-secondary">Edit</a>
-                    <a href="/{{ page.slug }}/history" class="btn btn-small btn-secondary">History</a>
-                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column: Search and Filter (2/10) -->
+    <div class="sidebar-column">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🔍 Search & Filter</h2>
             </div>
-            {% endfor %}
+            <div class="card-body">
+                <form method="GET" action="/pages" class="filters-form">
+                    <div class="filter-group">
+                        <label for="search" class="form-label">Search Pages:</label>
+                        <input type="text" id="search" name="q" value="{{ filters.search }}" 
+                               placeholder="Search pages by title..." class="form-control">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="namespace" class="form-label">Namespace:</label>
+                        <select id="namespace" name="namespace" class="form-control">
+                            <option value="">All Namespaces</option>
+                            <option value="main" {{ filters.namespace == 'main' ? 'selected' : '' }}>📚 Main</option>
+                            <option value="help" {{ filters.namespace == 'help' ? 'selected' : '' }}>❓ Help</option>
+                            <option value="user" {{ filters.namespace == 'user' ? 'selected' : '' }}>👤 User</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="sort" class="form-label">Sort by:</label>
+                        <select id="sort" name="sort" class="form-control">
+                            <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>📝 Title</option>
+                            <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>🕒 Last Updated</option>
+                            <option value="view_count" {{ filters.sort == 'view_count' ? 'selected' : '' }}>👁️ Views</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="order" class="form-label">Order:</label>
+                        <select id="order" name="order" class="form-control">
+                            <option value="asc" {{ filters.order == 'asc' ? 'selected' : '' }}>⬆️ Ascending</option>
+                            <option value="desc" {{ filters.order == 'desc' ? 'selected' : '' }}>⬇️ Descending</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button type="submit" class="btn btn-primary">
+                            <span>🔍</span> Apply Filters
+                        </button>
+                        <a href="/pages" class="btn btn-secondary">
+                            <span>🔄</span> Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-        
-        <!-- Pagination -->
-        {% if pagination.last_page > 1 %}
-        <div class="pagination">
-            {% if pagination.current_page > 1 %}
-                <a href="?page={{ pagination.current_page - 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" class="btn btn-small">Previous</a>
-            {% endif %}
-            
-            <span class="pagination-info">
-                Page {{ pagination.current_page }} of {{ pagination.last_page }}
-                ({{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} pages)
-            </span>
-            
-            {% if pagination.current_page < pagination.last_page %}
-                <a href="?page={{ pagination.current_page + 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" class="btn btn-small">Next</a>
-            {% endif %}
-        </div>
-        {% endif %}
-    {% endif %}
+    </div>
 </div>
 
-<!-- Create New Page Button -->
-<div class="create-page-section">
-    <a href="/pages/create" class="btn btn-primary">Create New Page</a>
-</div>
+<style>
+/* Enhanced Pages List Styling */
+.pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.page-card {
+    background: var(--card-background);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.page-card:hover::before {
+    opacity: 1;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.page-title:hover {
+    color: var(--primary-hover);
+    text-decoration: none;
+}
+
+.page-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.page-namespace {
+    background: var(--background-color);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.page-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 0.5rem;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.meta-item .label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.meta-item .value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.page-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.page-actions .btn {
+    flex: 1;
+    min-width: 80px;
+    justify-content: center;
+}
+
+/* Filter Form Styling */
+.filters-form {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.filter-group .form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.filter-group .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Pagination Styling */
+.pagination-section {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card-background);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.pagination-info {
+    text-align: center;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.pagination-info small {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pages-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .page-meta {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .page-actions {
+        flex-direction: column;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-meta {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %} 

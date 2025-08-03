@@ -71,7 +71,7 @@ class SecurityController extends Controller
             $pendingApprovals = $this->accessControl->getApprovalRequests();
             $encryptionInfo = $this->encryption->getKeyInfo();
 
-            return $this->render('security/index.twig', [
+            return $this->view('security/index', [
                 'security_stats' => $securityStats,
                 'recent_audit_logs' => $recentAuditLogs,
                 'pending_approvals' => $pendingApprovals,
@@ -102,7 +102,7 @@ class SecurityController extends Controller
             $auditLogs = $this->getAuditLogs($limit, $offset, $severity, $action);
             $totalCount = $this->getAuditLogCount($severity, $action);
 
-            return $this->render('security/audit-log.twig', [
+            return $this->view('security/audit-log', [
                 'audit_logs' => $auditLogs,
                 'total_count' => $totalCount,
                 'limit' => $limit,
@@ -129,7 +129,7 @@ class SecurityController extends Controller
 
             $approvals = $this->accessControl->getApprovalRequests();
 
-            return $this->render('security/approvals.twig', [
+            return $this->view('security/approvals', [
                 'approvals' => $approvals,
                 'title' => 'Configuration Approvals'
             ]);

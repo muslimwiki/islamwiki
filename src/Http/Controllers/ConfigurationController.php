@@ -51,7 +51,7 @@ class ConfigurationController extends Controller
             $categories = $this->configManager->getCategories();
             $validation = $this->configManager->validateConfiguration();
             
-            return $this->render('configuration/index.twig', [
+            return $this->view('configuration/index', [
                 'categories' => $categories,
                 'validation' => $validation,
                 'title' => 'Configuration Management'
@@ -70,7 +70,7 @@ class ConfigurationController extends Controller
         try {
             $templates = $this->getConfigurationTemplates();
             
-            return $this->render('configuration/builder.twig', [
+            return $this->view('configuration/builder', [
                 'templates' => $templates,
                 'title' => 'Configuration Builder'
             ]);
@@ -95,7 +95,7 @@ class ConfigurationController extends Controller
             $configurations = $this->configManager->getCategory($category);
             $categoryInfo = $categories[$category];
             
-            return $this->render('configuration/show.twig', [
+            return $this->view('configuration/show', [
                 'category' => $categoryInfo,
                 'configurations' => $configurations,
                 'title' => "Configuration - {$categoryInfo['display_name']}"

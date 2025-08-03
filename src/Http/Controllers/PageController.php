@@ -54,9 +54,9 @@ class PageController extends Controller
      */
     public function about(Request $request): Response
     {
-        return $this->render('pages/about.twig', [
+        return $this->view('pages/about', [
             'title' => 'About - IslamWiki',
-            'user' => $this->getUser($request)
+            'user' => $this->user($request)
         ]);
     }
 

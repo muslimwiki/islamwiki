@@ -1,0 +1,99 @@
+# Release Notes - Version 0.0.39
+
+**Release Date:** August 2, 2025  
+**Version:** 0.0.39
+
+## 🎉 What's New
+
+### Three-Column Layout System
+IslamWiki now features a comprehensive three-column layout system across multiple pages, providing better organization and user experience:
+
+#### Pages Page
+- **Left Column (2/10):** Create content section with page statistics
+- **Middle Column (6/10):** Hero section and pages list with pagination
+- **Right Column (2/10):** Search and filter controls
+
+#### About Page
+- **Left Column (2/10):** Get involved section with community actions
+- **Middle Column (6/10):** Main content including mission, features, values, and technology
+- **Right Column (2/10):** Contact us section with communication methods
+
+#### Dashboard Page
+- **Left Column (2/10):** Quick actions and user statistics
+- **Middle Column (6/10):** Welcome section, recent activity, and watched pages
+- **Right Column (2/10):** Learning resources and site statistics
+
+### Dynamic Site Statistics
+The dashboard now displays real-time, accurate site statistics instead of placeholder values:
+
+- **Total Pages:** Real count from the database
+- **Active Users:** Actual user count from the users table
+- **Total Edits:** Real edit count from page history
+- **Categories:** Dynamic count of distinct namespaces
+
+### Enhanced Dashboard Organization
+- Consolidated duplicate "Your Contributions" section into "Your Stats"
+- Added contribution action buttons directly to the stats card
+- Improved space utilization and cleaner layout
+- Better responsive design for all screen sizes
+
+## 🔧 Technical Improvements
+
+### Dashboard Controller Enhancements
+- Added `getSiteStatistics()` method for dynamic site-wide statistics
+- Updated `index()` method to include site statistics in view data
+- Improved error handling for database queries
+
+### Template Structure Improvements
+- Standardized three-column layout across pages, about, and dashboard
+- Enhanced card layouts with better spacing and organization
+- Improved responsive design for mobile and desktop
+- Better content organization and user flow
+
+## 🐛 Bug Fixes
+
+### Duplicate Information Issues
+- Removed redundant "Your Contributions" section from dashboard
+- Consolidated user statistics into single "Your Stats" card
+- Eliminated duplicate data presentation across dashboard sections
+
+### Static Data Issues
+- Replaced hardcoded site statistics with dynamic database queries
+- Fixed placeholder values (1,234 users, 5,678 edits, 890 categories)
+- Now shows real-time accurate site statistics
+
+## 🔒 Security
+
+- Maintained existing security measures
+- No database changes - purely frontend and data presentation improvements
+- Backward compatible with all existing functionality
+
+## 📋 System Requirements
+
+- PHP 8.0+
+- MySQL 5.7+
+- Composer
+- Web server (Apache/Nginx)
+
+## 🚀 Installation
+
+1. Update to version 0.0.39
+2. Clear browser cache to see new styling
+3. No database migrations required
+
+## 📈 Performance
+
+- Improved page load times with better content organization
+- Enhanced user experience with logical content flow
+- Better mobile responsiveness across all pages
+
+## 🎯 User Experience
+
+- More intuitive navigation with logical content placement
+- Better information hierarchy and visual organization
+- Improved accessibility with better content structure
+- Real-time statistics provide accurate platform insights
+
+---
+
+**For support and questions, please visit our community forums or create an issue on GitHub.** 

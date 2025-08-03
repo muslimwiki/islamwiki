@@ -2,7 +2,7 @@
 
 A comprehensive Islamic knowledge management platform built with modern web technologies.
 
-**Current Version:** 0.0.38  
+**Current Version:** 0.0.39  
 **Release Date:** August 2, 2025
 
 ## 🌟 Features
@@ -35,8 +35,12 @@ A comprehensive Islamic knowledge management platform built with modern web tech
 - **Multi-Skin Support** - Multiple themes including Bismillah, BlueSkin, GreenSkin
 - **Responsive Design** - Works on desktop, tablet, and mobile devices
 - **Modern UI** - Clean, intuitive interface with enhanced navigation and layout
-- **Three-Column Layout** - Full-width responsive layout with sticky sidebar
+- **Three-Column Layout System** - Comprehensive full-width responsive layout
+  - **Pages Page:** Left (create content & stats), Middle (hero & pages list), Right (search & filter)
+  - **About Page:** Left (get involved), Middle (main content), Right (contact us)
+  - **Dashboard:** Left (quick actions & user stats), Middle (main content), Right (learning resources & site stats)
 - **Enhanced Navigation** - Separated top and primary navigation with improved styling
+- **Dynamic Site Statistics** - Real-time dashboard statistics with accurate data
 - **Accessibility** - WCAG compliant design with better contrast and readability
 
 ### 🔧 Technical Features

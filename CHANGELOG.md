@@ -5,6 +5,52 @@ All notable changes to IslamWiki will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.39] - 2025-08-02
+
+### Added
+- **Three-Column Layout System** - Comprehensive implementation across multiple pages
+  - **Pages Page:** Restructured with left column (create content & stats), middle column (hero & pages list), right column (search & filter)
+  - **About Page:** Implemented with left column (get involved), middle column (main content), right column (contact us)
+  - **Dashboard Page:** Organized with left column (quick actions & user stats), middle column (main content), right column (learning resources & site stats)
+  - **Consistent Design:** All pages now follow the same 2/10, 6/10, 2/10 column distribution
+- **Dynamic Site Statistics** - Real-time dashboard statistics
+  - Replaced hardcoded placeholders with dynamic database queries
+  - Added `getSiteStatistics()` method to DashboardController
+  - Real-time counts for total pages, users, edits, and categories
+  - Statistics update automatically as the site grows
+- **Enhanced Dashboard Organization** - Improved user experience and data presentation
+  - Consolidated duplicate "Your Contributions" section into "Your Stats"
+  - Added contribution action buttons directly to stats card
+  - Better space utilization and cleaner layout
+  - Improved responsive design for all screen sizes
+
+### Changed
+- Updated version to 0.0.39
+- **Dashboard Controller Enhancements**
+  - Added `getSiteStatistics()` method for dynamic site-wide statistics
+  - Updated `index()` method to include site statistics in view data
+  - Improved error handling for database queries
+- **Template Structure Improvements**
+  - Standardized three-column layout across pages, about, and dashboard
+  - Enhanced card layouts with better spacing and organization
+  - Improved responsive design for mobile and desktop
+  - Better content organization and user flow
+
+### Fixed
+- **Duplicate Information Issues**
+  - Removed redundant "Your Contributions" section from dashboard
+  - Consolidated user statistics into single "Your Stats" card
+  - Eliminated duplicate data presentation across dashboard sections
+- **Static Data Issues**
+  - Replaced hardcoded site statistics with dynamic database queries
+  - Fixed placeholder values (1,234 users, 5,678 edits, 890 categories)
+  - Now shows real-time accurate site statistics
+
+### Security
+- Maintained existing security measures
+- No database changes - purely frontend and data presentation improvements
+- Backward compatible with all existing functionality
+
 ## [0.0.38] - 2025-08-02
 
 ### Fixed

@@ -52,12 +52,18 @@ class AuthController
         $error = $request->getQueryParam('error');
         $redirect = $request->getQueryParam('redirect', '/dashboard');
         
-        return $this->view('auth/login', [
+        // Use the proper Twig renderer
+        $view = $this->container->get('view');
+        $html = $view->render('auth/login.twig', [
             'title' => 'Login - IslamWiki',
             'error' => $error,
             'redirect' => $redirect,
-            'auth' => $this->auth
+            'auth' => $this->auth,
+            'csrf_token' => $this->container->get('session')->get('csrf_token', ''),
+            'user' => null
         ]);
+        
+        return new Response(200, ['Content-Type' => 'text/html'], $html);
     }
     
     /**
@@ -103,11 +109,17 @@ class AuthController
         
         $error = $request->getQueryParam('error');
         
-        return $this->view('auth/register', [
+        // Use the proper Twig renderer
+        $view = $this->container->get('view');
+        $html = $view->render('auth/register.twig', [
             'title' => 'Register - IslamWiki',
             'error' => $error,
-            'auth' => $this->auth
+            'auth' => $this->auth,
+            'csrf_token' => $this->container->get('session')->get('csrf_token', ''),
+            'user' => null
         ]);
+        
+        return new Response(200, ['Content-Type' => 'text/html'], $html);
     }
     
     /**

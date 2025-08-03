@@ -67,7 +67,7 @@ class PrayerTimeController extends Controller
                 $nextPrayer = $this->prayerTime->getNextPrayer($todayPrayerTimes['prayer_times']);
             }
             
-            return $this->render('prayer/index.twig', [
+            return $this->view('prayer/index', [
                 'title' => 'Prayer Times',
                 'preferences' => $preferences,
                 'locations' => $locations,
@@ -141,7 +141,7 @@ class PrayerTimeController extends Controller
             // Get next prayer
             $nextPrayer = $this->prayerTime->getNextPrayer($prayerTimes['prayer_times']);
             
-            return $this->render('prayer/show.twig', [
+            return $this->view('prayer/show', [
                 'title' => "Prayer Times - {$date}",
                 'date' => $date,
                 'location' => $location,
@@ -168,7 +168,7 @@ class PrayerTimeController extends Controller
             $calculationMethods = $this->prayerTime->getCalculationMethods();
             $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
             
-            return $this->render('prayer/search.twig', [
+            return $this->view('prayer/search', [
                 'title' => 'Search Prayer Times',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,
@@ -218,7 +218,7 @@ class PrayerTimeController extends Controller
                 ->where('widget_key', $widgetKey)
                 ->update(['view_count' => $widget['view_count'] + 1]);
             
-            return $this->render('prayer/widget.twig', [
+            return $this->view('prayer/widget', [
                 'widget' => $widget,
                 'prayerTimes' => $prayerTimes,
                 'prayerNames' => $this->prayerTime->getPrayerNames($widget['language'])
@@ -238,7 +238,7 @@ class PrayerTimeController extends Controller
             $userId = $this->getUserId($request);
             $locations = $this->prayerTime->getUserLocations($userId);
             
-            return $this->render('prayer/locations.twig', [
+            return $this->view('prayer/locations', [
                 'title' => 'My Locations',
                 'locations' => $locations
             ]);
@@ -259,7 +259,7 @@ class PrayerTimeController extends Controller
             $calculationMethods = $this->prayerTime->getCalculationMethods();
             $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
             
-            return $this->render('prayer/preferences.twig', [
+            return $this->view('prayer/preferences', [
                 'title' => 'Prayer Preferences',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,

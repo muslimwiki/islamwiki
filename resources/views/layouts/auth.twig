@@ -10,11 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Safa CSS Framework -->
-    <link rel="stylesheet" href="/css/safa.css">
+    <link rel="stylesheet" href="/css/safa.css?v={{ 'now'|date('U') }}">
     
     <!-- Skin CSS (must come after Safa to take precedence) -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
+    
     <style>
-        {{ skin_css|raw }}
+        body {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
     </style>
     
     {% block styles %}{% endblock %}
@@ -85,7 +92,10 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="/login" class="nav-link">Sign In</a>
+                        <a href="/login" class="btn btn-primary sign-in-btn">
+                            <span class="btn-icon">🔐</span>
+                            Sign In
+                        </a>
                         <a href="/register" class="btn btn-small">Get Started</a>
                     {% endif %}
                 </div>

@@ -59,7 +59,7 @@ class CommunityController extends Controller
             $recentDiscussions = $this->communityManager->getCommunityDiscussions(10);
             $topContributors = $this->getTopContributors();
 
-            return $this->render('community/index.twig', [
+            return $this->view('community/index', [
                 'stats' => $stats,
                 'recent_discussions' => $recentDiscussions,
                 'top_contributors' => $topContributors,
@@ -141,7 +141,7 @@ class CommunityController extends Controller
                 'pages' => range(max(1, $page - 2), min($totalPages, $page + 2))
             ];
             
-            return $this->render('community/users.twig', [
+            return $this->view('community/users', [
                 'users' => $users,
                 'pagination' => $pagination,
                 'search_query' => $search,
@@ -162,7 +162,7 @@ class CommunityController extends Controller
         try {
             $activities = $this->communityManager->getCommunityActivity();
             
-            return $this->render('community/activity.twig', [
+            return $this->view('community/activity', [
                 'activities' => $activities,
                 'title' => 'Community Activity'
             ]);
@@ -185,7 +185,7 @@ class CommunityController extends Controller
             $discussion = $this->communityManager->getDiscussion($id);
             $replies = $this->communityManager->getDiscussionReplies($id);
             
-            return $this->render('community/show-discussion.twig', [
+            return $this->view('community/show-discussion', [
                 'discussion' => $discussion,
                 'replies' => $replies,
                 'title' => $discussion['title'] ?? 'Discussion'
@@ -244,7 +244,7 @@ class CommunityController extends Controller
             $categories = $this->getContributionCategories();
             $contributionTypes = $this->getContributionTypes();
 
-            return $this->render('community/contribute.twig', [
+            return $this->view('community/contribute', [
                 'categories' => $categories,
                 'contribution_types' => $contributionTypes,
                 'title' => 'Submit Contribution'
@@ -305,7 +305,7 @@ class CommunityController extends Controller
             $contributions = $this->communityManager->getUserContributions($userId);
             $reputation = $this->communityManager->getUserReputation($userId);
 
-            return $this->render('community/my-contributions.twig', [
+            return $this->view('community/my-contributions', [
                 'contributions' => $contributions,
                 'reputation' => $reputation,
                 'title' => 'My Contributions'
@@ -329,7 +329,7 @@ class CommunityController extends Controller
             $pendingContributions = $this->communityManager->getPendingContributions();
             $moderationStats = $this->getModerationStats();
 
-            return $this->render('community/moderation.twig', [
+            return $this->view('community/moderation', [
                 'pending_contributions' => $pendingContributions,
                 'moderation_stats' => $moderationStats,
                 'title' => 'Moderation Panel'
@@ -409,7 +409,7 @@ class CommunityController extends Controller
             $discussions = $this->communityManager->getCommunityDiscussions(50);
             $categories = $this->getDiscussionCategories();
 
-            return $this->render('community/discussions.twig', [
+            return $this->view('community/discussions', [
                 'discussions' => $discussions,
                 'categories' => $categories,
                 'title' => 'Community Discussions'
@@ -428,7 +428,7 @@ class CommunityController extends Controller
         try {
             $categories = $this->getDiscussionCategories();
 
-            return $this->render('community/create-discussion.twig', [
+            return $this->view('community/create-discussion', [
                 'categories' => $categories,
                 'title' => 'Create Discussion'
             ]);
@@ -488,7 +488,7 @@ class CommunityController extends Controller
             $reputation = $this->communityManager->getUserReputation($userId);
             $userStats = $this->getUserStats($userId);
 
-            return $this->render('community/profile.twig', [
+            return $this->view('community/profile', [
                 'user' => $user,
                 'contributions' => $contributions,
                 'reputation' => $reputation,
