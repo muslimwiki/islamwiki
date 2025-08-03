@@ -25,7 +25,7 @@ namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\SessionManager;
+use IslamWiki\Core\Session\Wisal;
 
 /**
  * CSRF Protection Middleware
@@ -35,9 +35,9 @@ use IslamWiki\Core\Session\SessionManager;
 class CsrfMiddleware
 {
     /**
-     * @var SessionManager Session manager instance
+     * @var Wisal Session manager instance
      */
-    private SessionManager $session;
+    private Wisal $session;
     
     /**
      * @var array Routes that should be excluded from CSRF protection
@@ -53,7 +53,7 @@ class CsrfMiddleware
     /**
      * Create a new CSRF middleware instance.
      */
-    public function __construct(SessionManager $session)
+    public function __construct(Wisal $session)
     {
         $this->session = $session;
     }

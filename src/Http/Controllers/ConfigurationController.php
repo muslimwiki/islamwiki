@@ -35,7 +35,7 @@ class ConfigurationController extends Controller
     /**
      * Create a new configuration controller instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(\IslamWiki\Core\Container\Asas $container)
     {
         parent::__construct($container);
         $this->configManager = $container->get(ConfigurationManager::class);

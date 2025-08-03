@@ -9,7 +9,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Http\Controllers\Controller;
 use IslamWiki\Models\IslamicUser;
-use IslamWiki\Core\Session\SessionManager;
+use IslamWiki\Core\Session\Wisal;
 
 /**
  * Islamic Authentication Controller

@@ -2,7 +2,7 @@
 
 A comprehensive Islamic knowledge management platform built with modern web technologies.
 
-**Current Version:** 0.0.42  
+**Current Version:** 0.0.43  
 **Release Date:** August 3, 2025
 
 ## 🌟 Features
@@ -398,8 +398,8 @@ When reporting issues, please include:
 
 ---
 
-**Version:** 0.0.34  
-**Last Updated:** August 1, 2025  
+**Version:** 0.0.43  
+**Last Updated:** August 3, 2025  
 **Status:** Production Ready
 
 

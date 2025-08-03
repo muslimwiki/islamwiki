@@ -47,7 +47,7 @@ class SecurityController extends Controller
     /**
      * Create a new security controller instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(\IslamWiki\Core\Container\Asas $container)
     {
         parent::__construct($container);
         $this->db = $container->get(Connection::class);

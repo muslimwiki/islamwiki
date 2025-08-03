@@ -37,11 +37,11 @@ class PageController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container $container The dependency injection container
+     * @param \IslamWiki\Core\Container\Asas $container The dependency injection container
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Asas $container
+        \IslamWiki\Core\Container\Asas $container
     ) {
         parent::__construct($db, $container);
         $this->logger = $container->get(LoggerInterface::class);

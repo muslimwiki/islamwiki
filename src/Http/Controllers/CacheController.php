@@ -23,7 +23,7 @@ class CacheController extends Controller
     /**
      * Create a new cache controller.
      */
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
     {
         parent::__construct($db, $container);
         $this->cache = $container->get('cache');

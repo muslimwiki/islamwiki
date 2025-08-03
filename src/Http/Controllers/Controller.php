@@ -30,9 +30,9 @@ abstract class Controller
      * Create a new controller instance.
      *
      * @param Connection $db The database connection
-     * @param Asas $container The dependency injection container
+     * @param \IslamWiki\Core\Container\Asas $container The dependency injection container
      */
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
     {
         $this->db = $db;
         $this->container = $container;

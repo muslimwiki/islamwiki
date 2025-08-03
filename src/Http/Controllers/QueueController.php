@@ -20,7 +20,7 @@ class QueueController extends Controller
     private Sabr $queue;
     private Shahid $logger;
 
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
     {
         parent::__construct($db, $container);
         $this->queue = $container->get('queue');

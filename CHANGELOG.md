@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.43] - 2025-08-03
+
+### Fixed
+- **Type Mismatch Issues**: Resolved critical type hint mismatches across the codebase
+  - Fixed `BayanServiceProvider` import from `IslamWiki\Core\Asas` to `IslamWiki\Core\Container\Asas`
+  - Updated all controller constructors to use correct `\IslamWiki\Core\Container\Asas` type hints
+  - Fixed `HomeController`, `PageController`, and all other controllers
+  - Resolved `SessionManager` vs `Wisal` type mismatches in all files
+  - Updated `AuthenticationMiddleware`, `CsrfMiddleware`, `AuthManager`
+  - Fixed `ProfileController`, `SettingsController`, `IslamicAuthController`
+  - Ensured all session-related properties use `Wisal` instead of non-existent `SessionManager`
+  - Updated all use statements and docblocks for consistency
+
+### Changed
+- All container type hints now consistently use `\IslamWiki\Core\Container\Asas`
+- All session manager type hints now use `Wisal` (the actual implementation)
+- Improved type safety and dependency injection consistency
+- Enhanced error handling and logging throughout the application
+
+### Technical
+- Resolved fatal errors related to type mismatches in service providers
+- Fixed Internal Server Errors caused by incorrect type hints
+- Updated all controller constructors for proper dependency injection
+- Ensured all middleware and auth components use correct types
+- Maintained backward compatibility while fixing type safety issues
+
 ## [0.0.42] - 2024-01-XX
 
 ### Added
@@ -295,6 +321,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version History
 
+- **0.0.43**: Fixed type mismatch issues across the codebase
 - **0.0.42**: Added Sabr queue system with comprehensive job processing
 - **0.0.41**: Fixed all Container references to use Asas naming
 - **0.0.40**: Added Rihlah caching system with multiple drivers
