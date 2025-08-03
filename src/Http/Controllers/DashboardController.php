@@ -73,7 +73,8 @@ class DashboardController extends Controller
         }
         
         // Get active skin using standardized skin manager
-        $activeSkinName = SkinManager::getActiveSkinNameStatic($this->app);
+        $app = $this->container->get('app');
+        $activeSkinName = SkinManager::getActiveSkinNameStatic($app);
         
         $data = [
             'title' => 'Dashboard - IslamWiki',

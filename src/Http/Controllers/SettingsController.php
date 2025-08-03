@@ -250,7 +250,8 @@ class SettingsController extends Controller
             }
             
             // Set the active skin using standardized approach
-            $skinSetResult = SkinManager::setActiveSkinStatic($this->app, $skinName);
+            $app = $this->container->get('app');
+            $skinSetResult = SkinManager::setActiveSkinStatic($app, $skinName);
             
             // Update user's skin preference in database
             $updateResult = $this->updateUserSkin($userId, $skinName);
