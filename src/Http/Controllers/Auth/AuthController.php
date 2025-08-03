@@ -18,7 +18,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
 use IslamWiki\Core\Auth\Aman;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 
 class AuthController
 {

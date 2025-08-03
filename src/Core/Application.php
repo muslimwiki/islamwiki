@@ -38,7 +38,7 @@ class Application
     /**
      * The application's service container.
      */
-    protected Asas $container;
+    protected \IslamWiki\Core\Container\Asas $container;
 
     /**
      * The application's router instance.
@@ -68,7 +68,7 @@ class Application
     protected function bootstrap(): void
     {
         // Initialize the service container first
-        $this->container = new Asas();
+        $this->container = new \IslamWiki\Core\Container\Asas();
 
         // Bind the application instance to the container
         $this->container->instance(self::class, $this);
@@ -374,7 +374,7 @@ class Application
     /**
      * Get the application's service container.
      */
-    public function getContainer(): Asas
+    public function getContainer(): \IslamWiki\Core\Container\Asas
     {
         return $this->container;
     }

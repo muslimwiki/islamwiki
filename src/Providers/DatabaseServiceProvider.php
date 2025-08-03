@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Database\Migrations\Migrator;
 

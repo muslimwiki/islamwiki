@@ -1,6 +1,6 @@
 <?php
 
-namespace IslamWiki\Core;
+namespace IslamWiki\Core\Container;
 
 // First, check if we need to define the PSR-11 ContainerInterface
 if (!interface_exists('Psr\Container\ContainerInterface')) {

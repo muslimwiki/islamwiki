@@ -15,7 +15,7 @@ namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\SessionManager;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

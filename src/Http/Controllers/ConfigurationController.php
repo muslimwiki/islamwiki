@@ -17,7 +17,7 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Core\Configuration\ConfigurationManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Logging\Shahid;
 
 class ConfigurationController extends Controller

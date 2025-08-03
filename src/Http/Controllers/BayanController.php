@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Bayan\BayanManager;
+use IslamWiki\Core\Formatter\BayanManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use Psr\Log\LoggerInterface;

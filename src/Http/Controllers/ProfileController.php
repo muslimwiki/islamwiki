@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Application;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\SessionManager;

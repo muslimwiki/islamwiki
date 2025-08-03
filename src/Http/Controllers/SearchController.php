@@ -31,7 +31,7 @@ use IslamWiki\Models\IslamicCalendar;
 use IslamWiki\Models\PrayerTime;
 use IslamWiki\Core\Database\Connection;
 use Exception;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 
 class SearchController extends Controller
 {

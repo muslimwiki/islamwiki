@@ -89,14 +89,14 @@ register_shutdown_function(function() {
 define('BASE_PATH', dirname(__DIR__));
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Asas.php';
+require_once BASE_PATH . '/src/Core/Container/Asas.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Logging/Logger.php';
 require_once BASE_PATH . '/src/Core/Search/IqraSearchEngine.php';
 require_once BASE_PATH . '/src/Http/Controllers/Controller.php';
 require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
 
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Logging\Logger;
 use IslamWiki\Core\Search\IqraSearchEngine;

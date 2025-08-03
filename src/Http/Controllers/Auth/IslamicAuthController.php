@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers\Auth;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Http\Controllers\Controller;

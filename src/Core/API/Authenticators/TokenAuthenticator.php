@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\API\Authenticators;
 
 use IslamWiki\Core\API\Interfaces\AuthenticatorInterface;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**

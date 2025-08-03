@@ -21,7 +21,7 @@ define('BASE_PATH', dirname(__DIR__));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Asas.php';
+require_once BASE_PATH . '/src/Core/Container/Asas.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
 require_once BASE_PATH . '/src/Core/Auth/Aman.php';
@@ -46,7 +46,7 @@ require_once BASE_PATH . '/src/Models/Hadith.php';
 require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
 require_once BASE_PATH . '/src/Models/PrayerTime.php';
 
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;

@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Configuration;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Logging\Logger;
 
 class ConfigurationManager

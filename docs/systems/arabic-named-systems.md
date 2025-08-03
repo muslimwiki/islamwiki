@@ -85,7 +85,7 @@ $shahid->error('Database connection failed', ['error' => $e->getMessage()]);
 ---
 
 ### Asas (أساس) - Foundation Container
-**File:** `src/Core/Asas.php`
+**File:** `src/Core/Container/Asas.php`
 
 **Meaning:** "Foundation" or "base" in Arabic, representing the foundational layer that holds and manages all application services.
 
@@ -101,9 +101,9 @@ $shahid->error('Database connection failed', ['error' => $e->getMessage()]);
 
 **Usage:**
 ```php
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 
-$asas = new Asas();
+$container = new Asas();
 $asas->singleton('auth', function() {
     return new Aman($session, $db);
 });

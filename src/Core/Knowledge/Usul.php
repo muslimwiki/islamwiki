@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge;
 
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Logging\Shahid;
 use IslamWiki\Core\Database\Connection;
 

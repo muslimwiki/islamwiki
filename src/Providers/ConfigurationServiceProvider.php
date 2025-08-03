@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Configuration\ConfigurationManager;
-use IslamWiki\Core\Asas;
+use IslamWiki\Core\Container\Asas;
 
 /**
  * ConfigurationServiceProvider - Configuration System Integration

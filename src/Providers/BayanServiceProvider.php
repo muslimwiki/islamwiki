@@ -23,10 +23,10 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Bayan\BayanManager;
-use IslamWiki\Core\Bayan\NodeManager;
-use IslamWiki\Core\Bayan\EdgeManager;
-use IslamWiki\Core\Bayan\QueryManager;
+use IslamWiki\Core\Formatter\BayanManager;
+use IslamWiki\Core\Formatter\NodeManager;
+use IslamWiki\Core\Formatter\EdgeManager;
+use IslamWiki\Core\Formatter\QueryManager;
 use IslamWiki\Core\Asas;
 use Psr\Log\LoggerInterface;
 
