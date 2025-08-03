@@ -34,12 +34,12 @@ if (file_exists($skinConfigPath)) {
 }
 
 // Check CSS file
-$cssPath = $skinPath . '/css/style.css';
+$cssPath = $skinPath . '/css/bismillah.css';
 echo "\nCSS path: $cssPath\n";
 echo "CSS file exists: " . (file_exists($cssPath) ? 'YES' : 'NO') . "\n";
 
 // Check JS file
-$jsPath = $skinPath . '/js/script.js';
+$jsPath = $skinPath . '/js/bismillah.js';
 echo "JS path: $jsPath\n";
 echo "JS file exists: " . (file_exists($jsPath) ? 'YES' : 'NO') . "\n";
 

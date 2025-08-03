@@ -156,8 +156,8 @@ Create `skins/MyCustomSkin/skin.json`:
 ```
 
 ### Step 3: Add Assets
-- **CSS**: `css/style.css` - Your custom styles
-- **JavaScript**: `js/script.js` - Your custom functionality
+- **CSS**: `css/bismillah.css` - Your custom styles
+- **JavaScript**: `js/bismillah.js` - Your custom functionality
 - **Layout**: `templates/layout.twig` - Custom layout (optional)
 
 ### Step 4: Activate Skin

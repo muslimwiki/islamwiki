@@ -6,8 +6,8 @@
     "type": "user-skin",
     "directory": "Bismillah",
     "assets": {
-        "css": "css/style.css",
-        "js": "js/script.js",
+        "css": "css/bismillah.css",
+        "js": "js/bismillah.js",
         "layout": "templates/layout.twig"
     },
     "config": {

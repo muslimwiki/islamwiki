@@ -87,8 +87,8 @@ try {
         foreach ($skinDirs as $skinDir) {
             $skinName = basename($skinDir);
             $configFile = $skinDir . '/skin.json';
-            $cssFile = $skinDir . '/css/style.css';
-            $jsFile = $skinDir . '/js/script.js';
+            $cssFile = $skinDir . '/css/bismillah.css';
+            $jsFile = $skinDir . '/js/bismillah.js';
             $layoutFile = $skinDir . '/templates/layout.twig';
             
             echo "Checking $skinName:<br>\n";

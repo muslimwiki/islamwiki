@@ -155,14 +155,14 @@ try {
         foreach ($skinDirs as $skinDir) {
             $skinName = basename($skinDir);
             $configFile = $skinDir . '/skin.json';
-            $cssFile = $skinDir . '/css/style.css';
-            $jsFile = $skinDir . '/js/script.js';
+                    $cssFile = $skinDir . '/css/bismillah.css';
+        $jsFile = $skinDir . '/js/bismillah.js';
             $layoutFile = $skinDir . '/templates/layout.twig';
             
             echo "<div class='status info'>📁 $skinName:</div>\n";
             echo "<div class='status " . (file_exists($configFile) ? 'success' : 'error') . "'>  " . (file_exists($configFile) ? '✅' : '❌') . " skin.json</div>\n";
-            echo "<div class='status " . (file_exists($cssFile) ? 'success' : 'error') . "'>  " . (file_exists($cssFile) ? '✅' : '❌') . " css/style.css</div>\n";
-            echo "<div class='status " . (file_exists($jsFile) ? 'success' : 'error') . "'>  " . (file_exists($jsFile) ? '✅' : '❌') . " js/script.js</div>\n";
+            echo "<div class='status " . (file_exists($cssFile) ? 'success' : 'error') . "'>  " . (file_exists($cssFile) ? '✅' : '❌') . " css/bismillah.css</div>\n";
+            echo "<div class='status " . (file_exists($jsFile) ? 'success' : 'error') . "'>  " . (file_exists($jsFile) ? '✅' : '❌') . " js/bismillah.js</div>\n";
             echo "<div class='status " . (file_exists($layoutFile) ? 'success' : 'error') . "'>  " . (file_exists($layoutFile) ? '✅' : '❌') . " templates/layout.twig</div>\n";
         }
     } else {

@@ -40,8 +40,8 @@ if (file_exists($skinConfigFile)) {
 }
 
 echo "<h2>3. Testing CSS and JS files</h2>";
-$cssPath = $blueSkinDir . '/css/style.css';
-$jsPath = $blueSkinDir . '/js/script.js';
+$cssPath = $blueSkinDir . '/css/bismillah.css';
+$jsPath = $blueSkinDir . '/js/bismillah.js';
 
 echo "CSS file: $cssPath<br>";
 echo "CSS exists: " . (file_exists($cssPath) ? 'Yes' : 'No') . "<br>";

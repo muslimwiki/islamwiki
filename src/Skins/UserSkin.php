@@ -75,7 +75,7 @@ class UserSkin extends Skin
             return '';
         }
         
-        $cssFile = $this->jsonConfig['assets']['css'] ?? 'css/style.css';
+        $cssFile = $this->jsonConfig['assets']['css'] ?? 'css/bismillah.css';
         return $this->skinPath . '/' . $cssFile;
     }
     
@@ -88,7 +88,7 @@ class UserSkin extends Skin
             return '';
         }
         
-        $jsFile = $this->jsonConfig['assets']['js'] ?? 'js/script.js';
+        $jsFile = $this->jsonConfig['assets']['js'] ?? 'js/bismillah.js';
         return $this->skinPath . '/' . $jsFile;
     }
     

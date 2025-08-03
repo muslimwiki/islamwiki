@@ -106,8 +106,8 @@ class HomeController extends Controller
                 
                 $activeSkinName = $wgActiveSkin ?? 'Bismillah';
                 $skinPath = dirname(__DIR__, 3) . '/skins/' . $activeSkinName;
-                $cssPath = $skinPath . '/css/style.css';
-                $jsPath = $skinPath . '/js/script.js';
+                $cssPath = $skinPath . '/css/bismillah.css';
+                $jsPath = $skinPath . '/js/bismillah.js';
                 
                 $skinData = [
                     'skin_css' => file_exists($cssPath) ? file_get_contents($cssPath) : '/* ' . $activeSkinName . ' CSS not found */',

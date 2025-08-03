@@ -24,9 +24,9 @@ The IslamWiki Skin System provides a modular theming architecture that separates
 ├── Bismillah/                   # Default skin
 │   ├── skin.json               # Skin configuration
 │   ├── css/
-│   │   └── style.css           # Skin CSS
+│   │   └── bismillah.css       # Skin CSS
 │   ├── js/
-│   │   └── script.js           # Skin JavaScript
+│   │   └── bismillah.js        # Skin JavaScript
 │   └── templates/
 │       └── layout.twig         # Custom layout template
 ├── BlueSkin/                    # Example user skin
@@ -138,7 +138,7 @@ Create `skins/MyCustomSkin/skin.json`:
 ```
 
 ### Step 3: Create CSS File
-Create `skins/MyCustomSkin/css/style.css`:
+Create `skins/MyCustomSkin/css/mycustomskin.css`:
 ```css
 :root {
     --primary-color: #your-color;
@@ -156,7 +156,7 @@ body {
 ```
 
 ### Step 4: Create JavaScript File
-Create `skins/MyCustomSkin/js/script.js`:
+Create `skins/MyCustomSkin/js/mycustomskin.js`:
 ```javascript
 // Your custom JavaScript
 document.addEventListener('DOMContentLoaded', function() {
@@ -306,8 +306,8 @@ Returns a list of all available skins:
 ### `skin_asset`
 Generates a URL for a skin asset:
 ```twig
-<link rel="stylesheet" href="{{ skin_asset('css/style.css') }}">
-<script src="{{ skin_asset('js/script.js') }}"></script>
+<link rel="stylesheet" href="{{ skin_asset('css/bismillah.css') }}">
+<script src="{{ skin_asset('js/bismillah.js') }}"></script>
 ```
 
 ### `skin_has_custom_layout`

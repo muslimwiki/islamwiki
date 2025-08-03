@@ -12,7 +12,7 @@ $activeSkinName = $wgActiveSkin ?? 'Bismillah';
 
 // Get skin CSS
 $skinPath = __DIR__ . '/../skins/' . $activeSkinName;
-$cssPath = $skinPath . '/css/style.css';
+$cssPath = $skinPath . '/css/bismillah.css';
 $cssContent = file_exists($cssPath) ? file_get_contents($cssPath) : '/* CSS not found */';
 
 ?>

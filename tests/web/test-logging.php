@@ -23,7 +23,7 @@ foreach ($testLogs as $logFile) {
     ini_set('error_log', $logFile);
     
     // Test logging
-    $testMessage = "[TEST] Testing error logging to: $logFile - " . date('Y-m-d H:i:s") . "\n";
+    $testMessage = "[TEST] Testing error logging to: $logFile - " . date('Y-m-d H:i:s') . "\n";
     error_log($testMessage);
     
     // Check if log was written
@@ -41,7 +41,7 @@ foreach ($testLogs as $logFile) {
 
 // Test direct file writing
 $directTestFile = '/tmp/php-direct-test.log';
-$testMessage = "[DIRECT TEST] Testing direct file writing - " . date('Y-m-d H:i:s") . "\n";
+$testMessage = "[DIRECT TEST] Testing direct file writing - " . date('Y-m-d H:i:s') . "\n";
 $directWrite = file_put_contents($directTestFile, $testMessage, FILE_APPEND);
 
 echo "<h3>Direct File Write Test</h3>";
