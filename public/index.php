@@ -21,13 +21,13 @@ define('BASE_PATH', dirname(__DIR__));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Container.php';
+require_once BASE_PATH . '/src/Core/Asas.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-require_once BASE_PATH . '/src/Core/Auth/AuthManager.php';
-require_once BASE_PATH . '/src/Core/Session/SessionManager.php';
+require_once BASE_PATH . '/src/Core/Auth/Aman.php';
+require_once BASE_PATH . '/src/Core/Session/Wisal.php';
 require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
-require_once BASE_PATH . '/src/Core/Auth/AuthManager.php';
+require_once BASE_PATH . '/src/Core/Auth/Aman.php';
 require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
 require_once BASE_PATH . '/src/Core/Application.php';
 require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
@@ -46,7 +46,7 @@ require_once BASE_PATH . '/src/Models/Hadith.php';
 require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
 require_once BASE_PATH . '/src/Models/PrayerTime.php';
 
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;
@@ -61,13 +61,13 @@ $container = $app->getContainer();
 // Get the database connection from the application's container
 $db = $container->get('db');
 
-// Initialize and register session manager
-$sessionManager = new \IslamWiki\Core\Session\SessionManager();
+// Initialize and register Wisal connection manager
+$sessionManager = new \IslamWiki\Core\Session\Wisal();
 $sessionManager->start(); // Start the session
 $container->instance('session', $sessionManager);
 
-// Initialize and register AuthManager
-$authManager = new \IslamWiki\Core\Auth\AuthManager($sessionManager, $db);
+// Initialize and register Aman
+$authManager = new \IslamWiki\Core\Auth\Aman($sessionManager, $db);
 $container->instance('auth', $authManager);
 
 // Create a simple logger (since we don't have a proper logger yet)

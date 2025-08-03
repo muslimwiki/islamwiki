@@ -16,24 +16,24 @@ namespace IslamWiki\Http\Controllers\Auth;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
-use IslamWiki\Core\Auth\AuthManager;
+use IslamWiki\Core\Auth\Aman;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 
 class AuthController
 {
-    private AuthManager $auth;
+    private Aman $auth;
     private Connection $db;
-    private Container $container;
+    private Asas $container;
     
     /**
      * Create a new authentication controller instance.
      */
-    public function __construct(Connection $db, Container $container)
+    public function __construct(Connection $db, Asas $container)
     {
         $this->db = $db;
         $this->container = $container;
-        $this->auth = new AuthManager(
+        $this->auth = new Aman(
             $container->get('session'),
             $db
         );

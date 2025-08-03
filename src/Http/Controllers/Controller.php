@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Request;
@@ -19,7 +19,7 @@ abstract class Controller
     /**
      * The container instance.
      */
-    protected Container $container;
+    protected Asas $container;
 
     /**
      * The Twig renderer instance.
@@ -32,7 +32,7 @@ abstract class Controller
      * @param Connection $db The database connection
      * @param Container $container The dependency injection container
      */
-    public function __construct(Connection $db, Container $container)
+    public function __construct(Connection $db, Asas $container)
     {
         $this->db = $db;
         $this->container = $container;
@@ -132,7 +132,7 @@ abstract class Controller
      */
     protected function user(Request $request): ?array
     {
-        // Get AuthManager from container
+        // Get Aman from container
         $auth = $this->container->get('auth');
         return $auth->user();
     }

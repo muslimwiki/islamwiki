@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container;
-use IslamWiki\Core\Session\SessionManager;
+use IslamWiki\Core\Asas;
+use IslamWiki\Core\Session\Wisal;
 
 /**
  * Session Service Provider
@@ -36,10 +36,10 @@ class SessionServiceProvider
     /**
      * Register the session services.
      */
-    public function register(Container $container): void
+    public function register(Asas $container): void
     {
         // Register session manager
-        $container->bind(SessionManager::class, function() {
+        $container->bind(Wisal::class, function() {
             $config = [
                 'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
                 'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
@@ -49,19 +49,19 @@ class SessionServiceProvider
                 'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
             ];
             
-            return new SessionManager($config);
+            return new Wisal($config);
         });
         
         // Register session manager as singleton
         $container->singleton('session', function($container) {
-            return $container->get(SessionManager::class);
+            return $container->get(Wisal::class);
         });
     }
     
     /**
      * Boot the session services.
      */
-    public function boot(Container $container): void
+    public function boot(Asas $container): void
     {
         // Start session early for web requests to ensure consistency
         if (php_sapi_name() !== 'cli') {

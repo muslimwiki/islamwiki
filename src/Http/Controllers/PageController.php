@@ -41,7 +41,7 @@ class PageController extends Controller
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container $container
+        \IslamWiki\Core\Asas $container
     ) {
         parent::__construct($db, $container);
         $this->logger = $container->get(LoggerInterface::class);
@@ -386,8 +386,8 @@ class PageController extends Controller
         ]);
         
         try {
-            // Use new AuthManager for authentication
-            $auth = new \IslamWiki\Core\Auth\AuthManager(
+            // Use new Aman for authentication
+            $auth = new \IslamWiki\Core\Auth\Aman(
                 $this->container->get('session'),
                 $this->db
             );
@@ -505,8 +505,8 @@ class PageController extends Controller
             }
             */
             
-            // Use new AuthManager for authentication
-            $auth = new \IslamWiki\Core\Auth\AuthManager(
+            // Use new Aman for authentication
+            $auth = new \IslamWiki\Core\Auth\Aman(
                 $this->container->get('session'),
                 $this->db
             );
@@ -723,8 +723,8 @@ class PageController extends Controller
             $this->abort(403, 'This page is locked and cannot be edited');
         }
 
-        // Create auth manager for template
-        $auth = new \IslamWiki\Core\Auth\AuthManager(
+        // Create Aman for template
+        $auth = new \IslamWiki\Core\Auth\Aman(
             $this->container->get('session'),
             $this->db
         );

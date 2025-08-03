@@ -355,9 +355,9 @@ class IslamRouter implements RequestHandlerInterface
             }
             
             try {
-                $sessionManager = $this->container->has(\IslamWiki\Core\Session\SessionManager::class) 
-                    ? $this->container->get(\IslamWiki\Core\Session\SessionManager::class)
-                    : new \IslamWiki\Core\Session\SessionManager();
+                        $sessionManager = $this->container->has(\IslamWiki\Core\Session\Wisal::class)
+            ? $this->container->get(\IslamWiki\Core\Session\Wisal::class)
+            : new \IslamWiki\Core\Session\Wisal();
                 $this->middlewareStack->add(new \IslamWiki\Http\Middleware\CsrfMiddleware($sessionManager));
             } catch (\Throwable $e) {
                 //

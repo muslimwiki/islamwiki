@@ -38,7 +38,7 @@ class Application
     /**
      * The application's service container.
      */
-    protected Container $container;
+    protected Asas $container;
 
     /**
      * The application's router instance.
@@ -68,7 +68,7 @@ class Application
     protected function bootstrap(): void
     {
         // Initialize the service container first
-        $this->container = new Container();
+        $this->container = new Asas();
 
         // Bind the application instance to the container
         $this->container->instance(self::class, $this);
@@ -94,18 +94,18 @@ class Application
         $this->container->instance('db', $db);
         $this->container->instance(\IslamWiki\Core\Database\Connection::class, $db);
 
-        // Bind Logger
+        // Bind Shahid
         $logDir = $this->basePath('storage/logs');
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }
-        $logger = new \IslamWiki\Core\Logging\Logger($logDir, 'debug');
-        $this->container->instance(\IslamWiki\Core\Logging\Logger::class, $logger);
+        $logger = new \IslamWiki\Core\Logging\Shahid($logDir, 'debug');
+        $this->container->instance(\IslamWiki\Core\Logging\Shahid::class, $logger);
 
         // Bind ControllerFactory for IslamRouter
         $this->container->singleton('controller.factory', function () {
             $db = $this->container->get(\IslamWiki\Core\Database\Connection::class);
-            $logger = $this->container->get(\IslamWiki\Core\Logging\Logger::class);
+            $logger = $this->container->get(\IslamWiki\Core\Logging\Shahid::class);
             return new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $this->container);
         });
 
@@ -177,6 +177,22 @@ class Application
         // Register the BayanServiceProvider
         $bayanServiceProvider = new \IslamWiki\Providers\BayanServiceProvider();
         $bayanServiceProvider->register($this->container);
+
+        // Register the SirajServiceProvider
+        $sirajServiceProvider = new \IslamWiki\Providers\SirajServiceProvider();
+        $sirajServiceProvider->register($this->container);
+        $sirajServiceProvider->boot($this->container);
+
+        // Register the UsulServiceProvider
+        $usulServiceProvider = new \IslamWiki\Providers\UsulServiceProvider();
+        $usulServiceProvider->register($this->container);
+        $usulServiceProvider->boot($this->container);
+
+        // Register the RihlahServiceProvider
+        $rihlahServiceProvider = new \IslamWiki\Providers\RihlahServiceProvider();
+        $rihlahServiceProvider->register($this->container);
+        $rihlahServiceProvider->boot($this->container);
+
         $bayanServiceProvider->boot($this->container);
     }
 
@@ -353,7 +369,7 @@ class Application
     /**
      * Get the application's service container.
      */
-    public function getContainer(): Container
+    public function getContainer(): Asas
     {
         return $this->container;
     }

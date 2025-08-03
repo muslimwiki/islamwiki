@@ -6,12 +6,13 @@ namespace IslamWiki\Core\Logging;
 use DateTimeImmutable;
 
 /**
- * Simple logger implementation for IslamWiki.
+ * Shahid (شاهد) - Witness System
  * 
- * This logger handles different log levels and writes to specified log files
- * with proper formatting and rotation support.
+ * Comprehensive logging system for IslamWiki.
+ * Shahid means "witness" or "testimony" in Arabic, representing the
+ * system that bears witness to all application events and activities.
  */
-class Logger
+class Shahid
 {
     /**
      * The log levels with their severity.
@@ -53,7 +54,7 @@ class Logger
     private int $maxFiles;
 
     /**
-     * Create a new logger instance.
+     * Create a new Shahid witness system instance.
      *
      * @param string $logDir The directory where log files are stored
      * @param string $minLevel The minimum log level to log

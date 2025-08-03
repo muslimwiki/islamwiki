@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Database\Islamic\IslamicDatabaseManager;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 
 /**
  * Islamic Database Service Provider
@@ -17,7 +17,7 @@ class IslamicDatabaseServiceProvider
     /**
      * Register the service provider.
      */
-    public function register(Container $container): void
+    public function register(Asas $container): void
     {
         // Register the Islamic database manager
         $container->singleton(IslamicDatabaseManager::class, function (Container $container) {

@@ -27,7 +27,7 @@ use IslamWiki\Core\Bayan\BayanManager;
 use IslamWiki\Core\Bayan\NodeManager;
 use IslamWiki\Core\Bayan\EdgeManager;
 use IslamWiki\Core\Bayan\QueryManager;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -40,7 +40,7 @@ class BayanServiceProvider
     /**
      * Register Bayan services with the container.
      */
-    public function register(Container $container): void
+    public function register(Asas $container): void
     {
         // Register BayanManager as singleton
         $container->singleton(BayanManager::class, function () use ($container) {
@@ -80,7 +80,7 @@ class BayanServiceProvider
     /**
      * Boot the Bayan service provider.
      */
-    public function boot(Container $container): void
+    public function boot(Asas $container): void
     {
         // Log that Bayan system is ready
         $logger = $container->get(LoggerInterface::class);

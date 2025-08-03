@@ -21,11 +21,11 @@ define('BASE_PATH', dirname(__DIR__));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Container.php';
+require_once BASE_PATH . '/src/Core/Asas.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-require_once BASE_PATH . '/src/Core/Auth/AuthManager.php';
-require_once BASE_PATH . '/src/Core/Session/SessionManager.php';
+require_once BASE_PATH . '/src/Core/Auth/Aman.php';
+require_once BASE_PATH . '/src/Core/Session/Wisal.php';
 require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
 require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
 require_once BASE_PATH . '/src/Http/Controllers/DashboardController.php';
@@ -35,7 +35,7 @@ require_once BASE_PATH . '/src/Http/Controllers/HomeController.php';
 require_once BASE_PATH . '/src/Http/Controllers/PageController.php';
 require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
 
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;
@@ -52,7 +52,7 @@ $container->instance('db', $db);
 $container->instance('connection', $db);
 
 // Initialize and register session manager
-$sessionManager = new \IslamWiki\Core\Session\SessionManager();
+$sessionManager = new \IslamWiki\Core\Session\Wisal();
 $container->instance('session', $sessionManager);
 
 // Create a simple logger (since we don't have a proper logger yet)

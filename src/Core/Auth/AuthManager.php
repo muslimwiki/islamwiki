@@ -2,9 +2,11 @@
 declare(strict_types=1);
 
 /**
- * Authentication Manager
+ * Aman (أمان) - Security Manager
  * 
- * Comprehensive authentication system for IslamWiki.
+ * Comprehensive authentication and security system for IslamWiki.
+ * Aman means "security" or "safety" in Arabic, representing the protective
+ * layer that ensures user authentication and authorization.
  * 
  * @package IslamWiki\Core\Auth
  * @version 0.0.28
@@ -17,14 +19,14 @@ use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Session\SessionManager;
 use IslamWiki\Models\User;
 
-class AuthManager
+class Aman
 {
     private SessionManager $session;
     private Connection $db;
     private ?array $currentUser = null;
     
     /**
-     * Create a new authentication manager.
+     * Create a new Aman security manager.
      */
     public function __construct(SessionManager $session, Connection $db)
     {
@@ -76,7 +78,7 @@ class AuthManager
             return true;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::attempt error: ' . $e->getMessage());
+            error_log('Aman::attempt error: ' . $e->getMessage());
             return false;
         }
     }
@@ -129,7 +131,7 @@ class AuthManager
             return $userId;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::register error: ' . $e->getMessage());
+            error_log('Aman::register error: ' . $e->getMessage());
             return null;
         }
     }
@@ -170,7 +172,7 @@ class AuthManager
             return null;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::user error: ' . $e->getMessage());
+            error_log('Aman::user error: ' . $e->getMessage());
             return null;
         }
     }
@@ -303,7 +305,7 @@ class AuthManager
             return $token;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::generatePasswordResetToken error: ' . $e->getMessage());
+            error_log('Aman::generatePasswordResetToken error: ' . $e->getMessage());
             return null;
         }
     }
@@ -335,7 +337,7 @@ class AuthManager
             return true;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::resetPassword error: ' . $e->getMessage());
+            error_log('Aman::resetPassword error: ' . $e->getMessage());
             return false;
         }
     }
@@ -361,7 +363,7 @@ class AuthManager
             return true;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::updateProfile error: ' . $e->getMessage());
+            error_log('Aman::updateProfile error: ' . $e->getMessage());
             return false;
         }
     }
@@ -394,7 +396,7 @@ class AuthManager
             return true;
             
         } catch (\Exception $e) {
-            error_log('AuthManager::changePassword error: ' . $e->getMessage());
+            error_log('Aman::changePassword error: ' . $e->getMessage());
             return false;
         }
     }

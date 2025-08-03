@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\View\TwigRenderer;
 
 /**
@@ -16,7 +16,7 @@ class ViewServiceProvider
      *
      * @param Container $container The dependency injection container
      */
-    public function register(Container $container): void
+    public function register(Asas $container): void
     {
         // Use a relative path approach - assume we're in the project root
         $basePath = dirname(__DIR__, 2); // Go up from src/Providers to project root

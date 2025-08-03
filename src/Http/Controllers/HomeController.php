@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container $container
+        \IslamWiki\Core\Asas $container
     ) {
         error_log('HomeController: Constructor called');
         error_log('HomeController: DB class: ' . get_class($db));
@@ -84,7 +84,7 @@ class HomeController extends Controller
                 $recentPages = [];
             }
 
-            // Get current user from AuthManager
+            // Get current user from Aman
             $user = null;
             try {
                 $auth = $this->container->get('auth');

@@ -184,12 +184,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved error handling without exposing sensitive information
 - Secure database query execution with proper parameterization
 
+## [0.0.37] - 2025-08-03
+
+### Added
+- **Rihlah Caching System** (رحلة - Journey) - Complete caching system with monitoring
+  - `Rihlah` - Main caching orchestrator with multi-driver support
+  - `MemoryCacheDriver` - APCu-based memory caching
+  - `FileCacheDriver` - File-based persistent caching
+  - `DatabaseCacheDriver` - Database-based caching with automatic table creation
+  - `SessionCacheDriver` - Session-based user-specific caching
+  - `RedisCacheDriver` - High-performance Redis caching with pattern invalidation
+  - `CacheController` - Web interface for cache management and monitoring
+  - Cache dashboard with real-time statistics and management tools
+  - Cache invalidation by pattern matching
+  - Cache warm-up functionality for common data
+- **Cache Management Features**
+  - Real-time cache statistics and monitoring
+  - Multi-driver cache management (Memory, File, Database, Session, Redis)
+  - Pattern-based cache invalidation
+  - Cache warm-up for performance optimization
+  - Comprehensive cache dashboard with visual metrics
+  - Cache driver information and detailed statistics
+- **Redis Integration**
+  - Full Redis support with connection management
+  - Redis pattern matching for cache invalidation
+  - Redis pipeline operations for bulk operations
+  - Redis statistics and monitoring
+  - Automatic Redis driver detection and fallback
+
+### Changed
+- Enhanced Rihlah caching system with comprehensive monitoring
+- Added Redis support to existing cache drivers
+- Improved cache performance with multi-driver architecture
+- Updated cache configuration with Redis settings
+
+### Fixed
+- **Cache Management**
+  - Fixed cache driver initialization with proper error handling
+  - Improved cache statistics collection across all drivers
+  - Enhanced cache invalidation with pattern matching
+  - Fixed cache warm-up functionality
+
+## [0.0.36] - 2025-08-03
+
+### Added
+- **System Renames with Arabic Names** - Renamed core systems with meaningful Arabic names
+  - `AuthManager` → `Aman` (أمان - Security/Safety) - Authentication system
+  - `SessionManager` → `Wisal` (وصال - Connection/Link) - Session management
+  - `Logger` → `Shahid` (شاهد - Witness/Testimony) - Logging system
+  - `Container` → `Asas` (أساس - Foundation/Base) - Dependency injection container
+- **Siraj API System** (سراج - Lamp/Light) - Complete API management system
+  - `Siraj` - Main API management orchestrator
+  - `RateLimiter` - Request rate limiting with configurable limits
+  - `SessionAuthenticator` - Session-based API authentication
+  - `JsonResponseFormatter` - JSON response formatting
+  - `AuthenticatorInterface` & `ResponseFormatterInterface` - Extensible interfaces
+- **Updated Service Providers** - All service providers updated to use new system names
+- **Comprehensive Testing** - All renamed systems tested and working correctly
+
+### Changed
+- Updated all references to renamed systems across the codebase
+- Updated service providers to use `Asas` instead of `Container`
+- Updated controllers to use new system names
+- Updated documentation to reflect new Arabic system names
+
+### Fixed
+- **Critical Fixes**
+  - Fixed type hints in all service providers
+  - Fixed use statements in all controllers
+  - Removed duplicate Logger.php file
+  - Updated all Container references to Asas
+- **Application Stability**
+  - Application now starts successfully with new system names
+  - All authentication and session management working correctly
+  - All logging functionality working with Shahid system
+
 ## [0.0.35] - 2025-08-02
 
 ### Added
 - **Complete User Authentication System** - Full login/logout functionality with session management
-  - `AuthManager` - Complete authentication system with database integration
-  - `SessionManager` - Secure session handling with proper configuration
+  - `Aman` (أمان) - Complete authentication system with database integration
+  - `Wisal` (وصال) - Secure session handling with proper configuration
   - User profile pages with private and public viewing
   - User dropdown menu with ZamZam.js integration
 - **Navigation & UI Improvements** - Enhanced user interface

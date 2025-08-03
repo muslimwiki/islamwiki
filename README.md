@@ -2,8 +2,8 @@
 
 A comprehensive Islamic knowledge management platform built with modern web technologies.
 
-**Current Version:** 0.0.39  
-**Release Date:** August 2, 2025
+**Current Version:** 0.0.41  
+**Release Date:** August 3, 2025
 
 ## 🌟 Features
 
@@ -44,6 +44,14 @@ A comprehensive Islamic knowledge management platform built with modern web tech
 - **Accessibility** - WCAG compliant design with better contrast and readability
 
 ### 🔧 Technical Features
+- **Arabic-Named Core Systems** - Meaningful Arabic names for core components
+  - **Aman** (أمان) - Authentication and security system
+  - **Wisal** (وصال) - Session management and user connections
+  - **Shahid** (شاهد) - Comprehensive logging and witness system
+  - **Asas** (أساس) - Dependency injection container and foundation
+  - **Siraj** (سراج) - API management and guidance system
+  - **Usul** (أصول) - Knowledge engine and ontology system
+  - **Rihlah** (رحلة) - Multi-driver caching system with monitoring
 - **Database Migration System** - Automated schema management
 - **Service Provider Architecture** - Modular, extensible design
 - **RESTful API** - Programmatic access to all features

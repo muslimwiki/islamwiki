@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Database\Migrations\Migrator;
 
@@ -37,7 +37,7 @@ class DatabaseServiceProvider
     /**
      * Register database services with the container.
      */
-    public function register(Container $container): void
+    public function register(Asas $container): void
     {
         // Register database connection
         $container->bind('db', function () {

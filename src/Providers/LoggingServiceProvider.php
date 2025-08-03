@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Logging\Logger;
+use IslamWiki\Core\Logging\Shahid;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -32,8 +32,8 @@ class LoggingServiceProvider
                 mkdir($logDir, 0755, true);
             }
             
-            // Create logger instance
-            $logger = new Logger(
+                    // Create Shahid witness system instance
+        $logger = new Shahid(
                 $logDir,
                 $config['level'] ?? \Psr\Log\LogLevel::DEBUG,
                 $config['max_file_size'] ?? 10, // MB

@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Configuration\ConfigurationManager;
-use IslamWiki\Core\Container;
+use IslamWiki\Core\Asas;
 
 /**
  * ConfigurationServiceProvider - Configuration System Integration
@@ -40,14 +40,14 @@ class ConfigurationServiceProvider
     /**
      * @var Container Application container
      */
-    private Container $container;
+    private Asas $container;
 
     /**
      * Constructor
      * 
      * @param Container $container Application container
      */
-    public function __construct(Container $container)
+    public function __construct(Asas $container)
     {
         $this->container = $container;
     }
