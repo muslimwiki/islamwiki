@@ -21,7 +21,7 @@ use IslamWiki\Models\User;
 
 class Aman
 {
-    private Wisal $session;
+    private Wisal $wisal;
     private Connection $db;
     private ?array $currentUser = null;
     
@@ -30,7 +30,7 @@ class Aman
      */
     public function __construct(Wisal $session, Connection $db)
     {
-        $this->session = $session;
+        $this->wisal = $session;
         $this->db = $db;
     }
     
@@ -58,7 +58,7 @@ class Aman
             }
             
             // Login the user
-            $this->session->login(
+            $this->wisal->login(
                 $userData['id'],
                 $userData['username'],
                 (bool) $userData['is_admin']
@@ -124,7 +124,7 @@ class Aman
             
             // Auto-login after registration
             if ($userId) {
-                $this->session->login($userId, $userData['username'], false);
+                $this->wisal->login($userId, $userData['username'], false);
                 $this->currentUser = array_merge($userData, ['id' => $userId]);
             }
             
@@ -141,7 +141,7 @@ class Aman
      */
     public function logout(): void
     {
-        $this->session->logout();
+        $this->wisal->logout();
         $this->currentUser = null;
     }
     
@@ -154,12 +154,12 @@ class Aman
             return $this->currentUser;
         }
         
-        if (!$this->session->isLoggedIn()) {
+        if (!$this->wisal->isLoggedIn()) {
             return null;
         }
         
         try {
-            $userId = $this->session->getUserId();
+            $userId = $this->wisal->getUserId();
             $user = $this->db->select('SELECT * FROM users WHERE id = ?', [$userId]);
             
             if (!empty($user)) {

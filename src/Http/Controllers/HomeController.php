@@ -13,7 +13,7 @@ class HomeController extends Controller
     /**
      * @var LoggerInterface Logger instance
      */
-    private $logger;
+    private Shahid $shahid;
     
     /**
      * Create a new controller instance.
@@ -32,8 +32,8 @@ class HomeController extends Controller
         try {
                     parent::__construct($db, $asas);
         // Get logger from container
-        $this->logger = $asas->get(\Psr\Log\LoggerInterface::class);
-            error_log('HomeController: Logger class: ' . get_class($this->logger));
+        $this->shahid = $asas->get(Shahid::class);
+            error_log('HomeController: Logger class: ' . get_class($this->shahid));
             error_log('HomeController: Constructor completed successfully');
         } catch (\Throwable $e) {
             error_log('HomeController: Error in constructor: ' . $e->getMessage());
