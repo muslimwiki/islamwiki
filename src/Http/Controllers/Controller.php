@@ -80,6 +80,17 @@ abstract class Controller
             // Debug: Log the template being requested
             error_log("Attempting to render template: " . $template);
             
+            // Automatically include user data in all views
+            if (!isset($data['user'])) {
+                try {
+                    $auth = $this->container->get('auth');
+                    $data['user'] = $auth->user();
+                } catch (\Exception $e) {
+                    error_log('Error getting user for view: ' . $e->getMessage());
+                    $data['user'] = null;
+                }
+            }
+            
             // Render the template using TwigRenderer
             $content = $this->getView()->render($template, $data);
             

@@ -68,9 +68,8 @@ $db = $container->get('db');
 // Session is already initialized by SessionServiceProvider
 $sessionManager = $container->get('session');
 
-// Initialize and register Aman
-$authManager = new \IslamWiki\Core\Auth\Aman($sessionManager, $db);
-$container->instance('auth', $authManager);
+// Auth service is now registered via AuthServiceProvider
+// No manual registration needed
 
 // Create a simple logger (since we don't have a proper logger yet)
 $logger = new class implements \Psr\Log\LoggerInterface {

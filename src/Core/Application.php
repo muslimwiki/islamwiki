@@ -154,6 +154,11 @@ class Application
         $sessionServiceProvider->register($this->container);
         $sessionServiceProvider->boot($this->container);
 
+        // Register the AuthServiceProvider
+        $authServiceProvider = new \IslamWiki\Providers\AuthServiceProvider();
+        $authServiceProvider->register($this->container);
+        $authServiceProvider->boot($this->container);
+
         // Register the ExtensionServiceProvider
         $extensionServiceProvider = new \IslamWiki\Providers\ExtensionServiceProvider();
         $extensionServiceProvider->register($this->container);

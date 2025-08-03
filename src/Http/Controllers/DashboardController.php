@@ -38,7 +38,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
-        // Get current user from session
+        // Get current user from Aman
         $user = null;
         $userStats = [];
         $recentActivity = [];
@@ -47,23 +47,22 @@ class DashboardController extends Controller
         $siteStats = [];
         
         try {
-            if ($this->session->isLoggedIn()) {
-                $userId = $this->session->getUserId();
-                $user = \IslamWiki\Models\User::find($userId, $this->db);
+            $auth = $this->container->get('auth');
+            $user = $auth->user();
+            
+            if ($user) {
+                $userId = $user['id'];
+                // Get user statistics
+                $userStats = $this->getUserStatistics($userId);
                 
-                if ($user) {
-                    // Get user statistics
-                    $userStats = $this->getUserStatistics($userId);
-                    
-                    // Get recent activity
-                    $recentActivity = $this->getRecentActivity($userId);
-                    
-                    // Get watchlist
-                    $watchlist = $this->getWatchlist($userId);
-                    
-                    // Get quick stats
-                    $quickStats = $this->getQuickStats($userId);
-                }
+                // Get recent activity
+                $recentActivity = $this->getRecentActivity($userId);
+                
+                // Get watchlist
+                $watchlist = $this->getWatchlist($userId);
+                
+                // Get quick stats
+                $quickStats = $this->getQuickStats($userId);
             }
             
             // Get site statistics (available for all users)
@@ -78,7 +77,6 @@ class DashboardController extends Controller
         
         $data = [
             'title' => 'Dashboard - IslamWiki',
-            'user' => $user,
             'userStats' => $userStats,
             'recentActivity' => $recentActivity,
             'watchlist' => $watchlist,
