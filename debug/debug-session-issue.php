@@ -5,9 +5,6 @@ use IslamWiki\Core\Container\Asas;
 use IslamWiki\Core\Session\Wisal;
 use IslamWiki\Providers\SessionServiceProvider;
 
-echo "🔍 Debug Session Issue\n";
-echo "=====================\n\n";
-
 try {
     // Create container
     $container = new Asas();
@@ -15,7 +12,18 @@ try {
     // Register session service provider
     $sessionProvider = new SessionServiceProvider();
     $sessionProvider->register($container);
+    
+    // Start session before any output
     $sessionProvider->boot($container);
+    
+    echo "🔍 Debug Session Issue\n";
+    echo "=====================\n\n";
+    
+    // For CLI, we need to modify session configuration
+    if (php_sapi_name() === 'cli') {
+        echo "🖥️  CLI Environment Detected\n";
+        echo "- Session configuration will be handled by Wisal class\n";
+    }
     
     // Get session manager
     $session = $container->get('session');
@@ -25,10 +33,11 @@ try {
     
     // Check session status
     echo "\n📊 Session Status:\n";
-    echo "- Session Status: " . session_status() . "\n";
+    echo "- Session Status: " . session_status() . " (" . getSessionStatusText(session_status()) . ")\n";
     echo "- Session Name: " . session_name() . "\n";
-    echo "- Session ID: " . session_id() . "\n";
+    echo "- Session ID: " . (session_id() ?: 'Not set') . "\n";
     echo "- Session Save Path: " . session_save_path() . "\n";
+    echo "- SAPI: " . php_sapi_name() . "\n";
     
     // Check if user is logged in
     echo "\n👤 Authentication Status:\n";
@@ -94,9 +103,42 @@ try {
         echo "- Username: " . ($session->getUsername() ?? 'null') . "\n";
     }
     
+    // Test session file creation
+    echo "\n📁 Testing Session File Creation:\n";
+    $sessionPath = __DIR__ . '/../storage/sessions';
+    $sessionFiles = glob($sessionPath . '/sess_*');
+    echo "- Session directory: " . $sessionPath . "\n";
+    echo "- Session files count: " . count($sessionFiles) . "\n";
+    
+    if (session_id()) {
+        $sessionFile = $sessionPath . '/sess_' . session_id();
+        echo "- Current session file: " . $sessionFile . "\n";
+        echo "- Session file exists: " . (file_exists($sessionFile) ? 'Yes' : 'No') . "\n";
+        if (file_exists($sessionFile)) {
+            echo "- Session file size: " . filesize($sessionFile) . " bytes\n";
+            echo "- Session file content: " . file_get_contents($sessionFile) . "\n";
+        }
+    }
+    
     echo "\n✅ Session debugging completed successfully\n";
     
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace: " . $e->getTraceAsString() . "\n";
+}
+
+/**
+ * Get human-readable session status text
+ */
+function getSessionStatusText($status) {
+    switch ($status) {
+        case PHP_SESSION_DISABLED:
+            return 'PHP_SESSION_DISABLED';
+        case PHP_SESSION_NONE:
+            return 'PHP_SESSION_NONE';
+        case PHP_SESSION_ACTIVE:
+            return 'PHP_SESSION_ACTIVE';
+        default:
+            return 'UNKNOWN';
+    }
 } 

@@ -89,14 +89,25 @@ class Wisal
         
         // Set secure session configuration
         ini_set('session.use_strict_mode', '1');
-        ini_set('session.use_cookies', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.cookie_httponly', $this->httpOnly ? '1' : '0');
-        ini_set('session.cookie_secure', $this->secure ? '1' : '0');
-        ini_set('session.cookie_samesite', $this->sameSite);
-        ini_set('session.cookie_path', $this->cookiePath);
+        
+        // Handle CLI vs web environment
+        if (php_sapi_name() === 'cli') {
+            // For CLI, disable cookies and enable trans_sid
+            ini_set('session.use_cookies', '0');
+            ini_set('session.use_only_cookies', '0');
+            ini_set('session.use_trans_sid', '1');
+        } else {
+            // For web, use secure cookie configuration
+            ini_set('session.use_cookies', '1');
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.cookie_httponly', $this->httpOnly ? '1' : '0');
+            ini_set('session.cookie_secure', $this->secure ? '1' : '0');
+            ini_set('session.cookie_samesite', $this->sameSite);
+            ini_set('session.cookie_path', $this->cookiePath);
+            ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
+        }
+        
         ini_set('session.gc_maxlifetime', (string) $this->sessionLifetime);
-        ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
         
         // Set session name BEFORE starting session
         session_name($this->sessionName);

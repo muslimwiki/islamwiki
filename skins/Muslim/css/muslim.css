@@ -1,8 +1,8 @@
-/* Muslim Skin - Citizen-inspired design for IslamWiki */
+/* Muslim Skin - Islamic design for IslamWiki */
 /* This skin provides all styling - Safa CSS provides only framework utilities */
 
 :root {
-    /* Citizen-inspired color palette with Islamic elements */
+    /* Islamic color palette with Islamic elements */
     --primary-color: #2c5aa0;
     --primary-hover: #1e3a8a;
     --secondary-color: #4a90e2;
@@ -89,8 +89,8 @@ body {
     direction: rtl;
 }
 
-/* ===== CITIZEN-HEADER STYLING ===== */
-.citizen-header {
+/* ===== MUSLIM-HEADER STYLING ===== */
+.muslim-header {
     background: var(--header-background);
     border-bottom: 1px solid var(--border-light);
     position: sticky;
@@ -100,30 +100,30 @@ body {
 }
 
 /* Header Container */
-.citizen-header-container {
+.muslim-header-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
 }
 
 /* Top Header */
-.citizen-header-top {
+.muslim-header-top {
     padding: var(--spacing-md) 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.citizen-header-left,
-.citizen-header-center,
-.citizen-header-right {
+.muslim-header-left,
+.muslim-header-center,
+.muslim-header-right {
     display: flex;
     align-items: center;
     gap: var(--spacing-lg);
 }
 
 /* Logo */
-.citizen-logo {
+.muslim-logo {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -134,7 +134,7 @@ body {
     transition: color var(--transition-normal);
 }
 
-.citizen-logo:hover {
+.muslim-logo:hover {
     color: var(--primary-color);
 }
 
@@ -147,7 +147,7 @@ body {
 }
 
 /* Search */
-.citizen-search {
+.muslim-search {
     flex: 1;
     max-width: 500px;
     margin: 0 auto;
@@ -206,7 +206,7 @@ body {
 }
 
 /* Navigation */
-.citizen-nav {
+.muslim-nav {
     display: flex;
     align-items: center;
     gap: var(--spacing-lg);
@@ -232,7 +232,7 @@ body {
 }
 
 /* User Menu */
-.citizen-user-menu {
+.muslim-user-menu {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -252,6 +252,8 @@ body {
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: background-color var(--transition-normal);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
 }
 
 .user-button:hover {
@@ -267,6 +269,7 @@ body {
     align-items: center;
     justify-content: center;
     color: white;
+    flex-shrink: 0;
 }
 
 .avatar-icon {
@@ -277,6 +280,7 @@ body {
 .user-name {
     font-weight: 500;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .dropdown-arrow {
@@ -284,6 +288,7 @@ body {
     height: 16px;
     color: var(--text-secondary);
     transition: transform var(--transition-normal);
+    flex-shrink: 0;
 }
 
 .user-button:hover .dropdown-arrow {
@@ -300,11 +305,12 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     min-width: 200px;
-    z-index: 1000;
+    z-index: 1001;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all var(--transition-normal);
+    backdrop-filter: blur(10px);
 }
 
 .user-dropdown-menu[z-show="true"] {
@@ -321,6 +327,12 @@ body {
     color: var(--text-primary);
     text-decoration: none;
     transition: background-color var(--transition-normal);
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-size: var(--font-size-base);
+    cursor: pointer;
 }
 
 .dropdown-item:hover {
@@ -335,6 +347,7 @@ body {
 .dropdown-icon {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
 }
 
 .dropdown-divider {
@@ -363,13 +376,13 @@ body {
 }
 
 /* Secondary Header */
-.citizen-header-secondary {
+.muslim-header-secondary {
     background: var(--background-color);
     border-bottom: 1px solid var(--border-light);
     padding: var(--spacing-sm) 0;
 }
 
-.citizen-secondary-nav {
+.muslim-secondary-nav {
     display: flex;
     align-items: center;
     gap: var(--spacing-lg);
@@ -396,19 +409,19 @@ body {
 }
 
 /* ===== MAIN CONTENT ===== */
-.citizen-main {
+.muslim-main {
     min-height: calc(100vh - 200px);
     padding: var(--spacing-xl) 0;
 }
 
-.citizen-container {
+.muslim-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
 }
 
 /* ===== FOOTER ===== */
-.citizen-footer {
+.muslim-footer {
     background: var(--footer-background);
     color: var(--text-light);
     padding: var(--spacing-2xl) 0 var(--spacing-lg);
@@ -605,34 +618,34 @@ body {
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1024px) {
-    .citizen-header-container {
+    .muslim-header-container {
         padding: 0 var(--spacing-md);
     }
     
-    .citizen-container {
+    .muslim-container {
         padding: 0 var(--spacing-md);
     }
 }
 
 @media (max-width: 768px) {
-    .citizen-header-top {
+    .muslim-header-top {
         flex-direction: column;
         gap: var(--spacing-md);
         padding: var(--spacing-md) 0;
     }
     
-    .citizen-header-left,
-    .citizen-header-center,
-    .citizen-header-right {
+    .muslim-header-left,
+    .muslim-header-center,
+    .muslim-header-right {
         width: 100%;
         justify-content: center;
     }
     
-    .citizen-search {
+    .muslim-search {
         max-width: 100%;
     }
     
-    .citizen-nav {
+    .muslim-nav {
         display: none;
     }
     
@@ -640,7 +653,7 @@ body {
         display: flex;
     }
     
-    .citizen-secondary-nav {
+    .muslim-secondary-nav {
         padding: var(--spacing-sm) var(--spacing-md);
     }
     
@@ -649,26 +662,57 @@ body {
         gap: var(--spacing-lg);
     }
     
-    .citizen-main {
+    .muslim-main {
         padding: var(--spacing-lg) 0;
+    }
+    
+    /* Mobile dropdown improvements */
+    .user-dropdown-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .user-button {
+        padding: var(--spacing-sm);
+    }
+    
+    .user-name {
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .citizen-header-container {
+    .muslim-header-container {
         padding: 0 var(--spacing-sm);
     }
     
-    .citizen-container {
+    .muslim-container {
         padding: 0 var(--spacing-sm);
     }
     
-    .citizen-logo {
+    .muslim-logo {
         font-size: var(--font-size-lg);
     }
     
     .search-input {
         font-size: var(--font-size-sm);
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .btn {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 }
 
@@ -714,7 +758,8 @@ body {
 /* Focus styles for accessibility */
 .btn:focus,
 .nav-link:focus,
-.search-input:focus {
+.search-input:focus,
+.user-button:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
@@ -725,4 +770,53 @@ body {
         --border-color: #000000;
         --text-secondary: #000000;
     }
+}
+
+/* ===== ZAMZAM INTEGRATION FIXES ===== */
+/* Ensure dropdown works properly with ZamZam */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Fix for ZamZam z-show directive */
+[z-show="false"] {
+    display: none !important;
+}
+
+[z-show="true"] {
+    display: block !important;
+}
+
+/* Ensure proper z-index stacking */
+.muslim-header {
+    z-index: 1000;
+}
+
+.user-dropdown-menu {
+    z-index: 1001;
+}
+
+/* ===== SAFA CSS COMPATIBILITY ===== */
+/* Override any conflicting Safa CSS styles */
+.muslim-header *,
+.muslim-main *,
+.muslim-footer * {
+    box-sizing: border-box;
+}
+
+/* Ensure our styles take precedence */
+.muslim-header,
+.muslim-main,
+.muslim-footer {
+    font-family: var(--font-family) !important;
+}
+
+/* Fix any potential conflicts with Safa utility classes */
+.muslim-header .container,
+.muslim-main .container,
+.muslim-footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
 } 

@@ -1,6 +1,6 @@
 # IslamWiki
 
-**Version:** 0.0.48  
+**Version:** 0.0.49  
 **Release Date:** 2025-08-04  
 **Status:** Active Development
 
@@ -35,6 +35,8 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **Responsive Design**: Mobile-friendly layouts for all skins
 - **Accessibility**: Skip links, keyboard navigation, focus management
 - **Authentication Safe**: Skin middleware doesn't interfere with login process
+- **Content Rendering**: Proper content display in main body area for all skins
+- **CSS Framework Integration**: Seamless integration with Safa CSS framework
 
 ### Development Features
 - **Dependency Injection**: Container-based service management
@@ -94,7 +96,7 @@ php -S localhost:8000 -t public/
 
 ### Available Skins
 - **Bismillah**: Default Islamic-themed skin with traditional design and beautiful gradients
-- **Muslim**: Modern skin inspired by Citizen MediaWiki with Islamic aesthetics
+- **Muslim**: Modern skin inspired by Citizen MediaWiki with Islamic aesthetics and proper content rendering
 
 ### Skin Management
 - **Dynamic Discovery**: New skins automatically appear in settings

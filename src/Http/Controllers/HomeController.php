@@ -130,53 +130,8 @@ class HomeController extends Controller
                 error_log('HomeController: Error getting user: ' . $e->getMessage());
             }
 
-            // Get skin data from standardized skin manager
-            $skinData = [];
-            try {
-                // Get the application from the container
-                $app = $this->container->get('app');
-                $activeSkinName = SkinManager::getActiveSkinNameStatic($app);
-                $skinManager = $this->container->get('skin.manager');
-                $activeSkin = $skinManager->getActiveSkin();
-                
-                if ($activeSkin) {
-                    $skinData = [
-                        'skin_css' => $activeSkin->getCssContent(),
-                        'skin_js' => $activeSkin->getJsContent(),
-                        'skin_name' => $activeSkin->getName(),
-                        'skin_version' => $activeSkin->getVersion(),
-                        'skin_config' => $activeSkin->getConfig() ?? [],
-                        'active_skin' => $activeSkinName,
-                    ];
-                    error_log('HomeController: Active skin: ' . $activeSkinName);
-                    error_log('HomeController: Skin data loaded successfully via SkinManager');
-                } else {
-                    // Fallback to default skin data
-                    $skinData = [
-                        'skin_css' => '/* Default skin CSS */',
-                        'skin_js' => '/* Default skin JS */',
-                        'skin_name' => $activeSkinName,
-                        'skin_version' => '1.0.0',
-                        'skin_config' => [],
-                        'active_skin' => $activeSkinName,
-                    ];
-                    error_log('HomeController: Using fallback skin data for: ' . $activeSkinName);
-                }
-            } catch (\Exception $e) {
-                error_log('HomeController: Error loading skin data: ' . $e->getMessage());
-                // Fallback to default skin data
-                $skinData = [
-                    'skin_css' => '/* Error loading skin CSS */',
-                    'skin_js' => '/* Error loading skin JS */',
-                    'skin_name' => 'Bismillah',
-                    'skin_version' => '1.0.0',
-                    'skin_config' => [],
-                    'active_skin' => 'Bismillah',
-                ];
-            }
-
             // Use Twig template instead of hardcoded HTML
-            $data = array_merge([
+            $data = [
                 'title' => 'Welcome to IslamWiki',
                 'message' => 'Your Islamic knowledge base and resource center',
                 'recentPages' => $recentPages,
@@ -192,7 +147,7 @@ class HomeController extends Controller
                     'Dependency injection container',
                     'Comprehensive error handling and logging'
                 ]
-            ], $skinData);
+            ];
             
             error_log('HomeController@index: Rendering Twig template');
             $response = $this->view('pages/home', $data);

@@ -63,13 +63,11 @@ class SessionServiceProvider
      */
     public function boot(Asas $container): void
     {
-        // Start session early for web requests to ensure consistency
-        if (php_sapi_name() !== 'cli') {
-            // Get the session manager first to ensure proper configuration
-            $session = $container->get('session');
-            
-            // Let Wisal handle the session configuration and start
-            $session->start();
-        }
+        // Get the session manager first to ensure proper configuration
+        $session = $container->get('session');
+        
+        // Let Wisal handle the session configuration and start
+        // This works for both web and CLI environments
+        $session->start();
     }
 } 

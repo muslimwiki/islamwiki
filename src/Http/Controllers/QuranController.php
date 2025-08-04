@@ -5,7 +5,6 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Models\QuranVerse;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\View\TwigRenderer;
 
 /**
  * QuranController
@@ -20,12 +19,11 @@ use IslamWiki\Core\View\TwigRenderer;
 class QuranController extends Controller
 {
     private $quranVerse;
-    private $renderer;
 
-    public function __construct()
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\Asas $container)
     {
+        parent::__construct($db, $container);
         $this->quranVerse = new QuranVerse();
-        $this->renderer = new TwigRenderer();
     }
 
     /**
@@ -52,8 +50,7 @@ class QuranController extends Controller
             'total_results' => count($results)
         ];
 
-        $html = $this->renderer->render('quran/search.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('quran/search', $data);
     }
 
     /**
@@ -87,8 +84,7 @@ class QuranController extends Controller
             'verse_number' => $verse
         ];
 
-        $html = $this->renderer->render('quran/verse.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('quran/verse', $data);
     }
 
     /**
@@ -100,9 +96,8 @@ class QuranController extends Controller
      */
     public function chapterPage(Request $request, $chapter)
     {
-        $verses = $this->quranVerse->getByChapter($chapter);
-        $chapterInfo = $this->quranVerse->getChapterInfo($chapter);
-
+        $verses = $this->quranVerse->getChapter($chapter);
+        
         if (empty($verses)) {
             return $this->notFound('Chapter not found');
         }
@@ -110,12 +105,10 @@ class QuranController extends Controller
         $data = [
             'title' => "Quran Chapter {$chapter} - IslamWiki",
             'verses' => $verses,
-            'chapter_info' => $chapterInfo,
-            'chapter_number' => $chapter
+            'chapter' => $chapter
         ];
 
-        $html = $this->renderer->render('quran/chapter.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('quran/chapter', $data);
     }
 
     /**
@@ -388,8 +381,7 @@ class QuranController extends Controller
             'is_widget' => true
         ];
 
-        $html = $this->renderer->render('quran/widget.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('quran/widget', $data);
     }
 
     /**
@@ -433,8 +425,7 @@ class QuranController extends Controller
             'random_verse' => $randomVerse
         ];
 
-        $html = $this->renderer->render('quran/index.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('quran/index', $data);
     }
 
     /**

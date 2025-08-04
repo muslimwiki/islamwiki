@@ -5,7 +5,6 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Models\Hadith;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\View\TwigRenderer;
 
 /**
  * HadithController
@@ -20,12 +19,11 @@ use IslamWiki\Core\View\TwigRenderer;
 class HadithController extends Controller
 {
     private $hadith;
-    private $renderer;
 
-    public function __construct()
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\Asas $container)
     {
+        parent::__construct($db, $container);
         $this->hadith = new Hadith();
-        $this->renderer = new TwigRenderer();
     }
 
     /**
@@ -57,8 +55,7 @@ class HadithController extends Controller
             'total_results' => count($results)
         ];
 
-        $html = $this->renderer->render('hadith/search.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('hadith/search', $data);
     }
 
     /**
@@ -92,8 +89,7 @@ class HadithController extends Controller
             'hadith_number' => $hadithNumber
         ];
 
-        $html = $this->renderer->render('hadith/hadith.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('hadith/hadith', $data);
     }
 
     /**
@@ -119,8 +115,7 @@ class HadithController extends Controller
             'collection_id' => $collectionId
         ];
 
-        $html = $this->renderer->render('hadith/collection.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('hadith/collection', $data);
     }
 
     /**
@@ -433,8 +428,7 @@ class HadithController extends Controller
             'is_widget' => true
         ];
 
-        $html = $this->renderer->render('hadith/widget.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('hadith/widget', $data);
     }
 
     /**
@@ -480,8 +474,7 @@ class HadithController extends Controller
             'random_hadith' => $randomHadith
         ];
 
-        $html = $this->renderer->render('hadith/index.twig', $data);
-        return new Response($html, 200, ['Content-Type' => 'text/html']);
+        return $this->view('hadith/index', $data);
     }
 
     /**

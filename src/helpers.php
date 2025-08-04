@@ -1,14 +1,29 @@
 <?php
+declare(strict_types=1);
+
 /**
- * Helper functions for the IslamWiki application.
- *
- * This file contains global helper functions that are used throughout the application.
- * These functions provide common functionality that can be accessed from any part of the application.
+ * Helper functions for IslamWiki
+ * 
+ * This file contains utility functions that are used throughout the application.
+ * 
+ * @package IslamWiki
+ * @version 0.0.29
+ * @license AGPL-3.0-only
  */
+
+// Define ROOT_PATH if not already defined
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__));
+}
+
+// Define BASE_PATH if not already defined
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__));
+}
 
 if (!function_exists('env')) {
     /**
-     * Gets the value of an environment variable.
+     * Get an environment variable.
      *
      * @param string $key
      * @param mixed $default
@@ -16,38 +31,41 @@ if (!function_exists('env')) {
      */
     function env(string $key, $default = null)
     {
-        $value = $_ENV[$key] ?? getenv($key);
-
-        if ($value === false) {
+        $value = $_ENV[$key] ?? $_SERVER[$key] ?? null;
+        
+        if ($value === null) {
             return $default;
         }
-
+        
         switch (strtolower($value)) {
             case 'true':
+            case '(true)':
                 return true;
             case 'false':
+            case '(false)':
                 return false;
-            case 'null':
-                return null;
             case 'empty':
+            case '(empty)':
                 return '';
+            case 'null':
+            case '(null)':
+                return null;
         }
-
+        
         return $value;
     }
 }
 
 if (!function_exists('storage_path')) {
     /**
-     * Get the path to the storage directory.
+     * Get the storage path.
      *
      * @param string $path
      * @return string
      */
     function storage_path(string $path = ''): string
     {
-        $storagePath = ROOT_PATH . '/storage';
-        return $storagePath . ($path ? '/' . ltrim($path, '/') : '');
+        return BASE_PATH . '/storage' . ($path ? '/' . $path : '');
     }
 }
 
@@ -64,7 +82,12 @@ if (!function_exists('config')) {
         static $config = null;
 
         if ($config === null) {
-            $config = require ROOT_PATH . '/config/app.php';
+            $configPath = ROOT_PATH . '/config/app.php';
+            if (file_exists($configPath)) {
+                $config = require $configPath;
+            } else {
+                $config = [];
+            }
         }
 
         return $config[$key] ?? $default;
@@ -157,24 +180,22 @@ if (!function_exists('abort')) {
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort(int $code, string $message = '', array $headers = []): void
     {
-        throw new \IslamWiki\Core\Http\Exceptions\HttpException($code, $message, null, $headers);
+        throw new \IslamWiki\Core\Http\Exceptions\HttpException($message, $code, $headers);
     }
 }
 
 if (!function_exists('abort_if')) {
     /**
-     * Throw an HttpException with the given data if the given condition is true.
+     * Throw an HttpException if the given boolean is true.
      *
      * @param bool $boolean
      * @param int $code
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort_if(bool $boolean, int $code, string $message = '', array $headers = []): void
     {
@@ -186,14 +207,13 @@ if (!function_exists('abort_if')) {
 
 if (!function_exists('abort_unless')) {
     /**
-     * Throw an HttpException with the given data unless the given condition is true.
+     * Throw an HttpException unless the given boolean is true.
      *
      * @param bool $boolean
      * @param int $code
      * @param string $message
      * @param array $headers
      * @return void
-     * @throws \IslamWiki\Core\Http\Exceptions\HttpException
      */
     function abort_unless(bool $boolean, int $code, string $message = '', array $headers = []): void
     {
@@ -205,7 +225,7 @@ if (!function_exists('abort_unless')) {
 
 if (!function_exists('dd')) {
     /**
-     * Dump the passed variables and end the script.
+     * Dump and die.
      *
      * @param mixed ...$vars
      * @return void
@@ -213,11 +233,8 @@ if (!function_exists('dd')) {
     function dd(...$vars): void
     {
         foreach ($vars as $var) {
-            echo '<pre>';
             var_dump($var);
-            echo '</pre>';
         }
-        
-        die(1);
+        exit(1);
     }
 }

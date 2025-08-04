@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.49] - 2025-08-04
+
+### Fixed
+- **Critical Muslim Skin Content Rendering**: Resolved issue where Muslim skin content was not displaying in main body area
+- **LocalSettings Loading Issue**: Fixed missing LocalSettings.php loading in main application entry point
+- **Skin Initialization Bug**: Resolved SkinManager not picking up `$wgActiveSkin` configuration from LocalSettings
+- **Muslim Skin Activation**: Fixed Muslim skin not being activated as default despite LocalSettings configuration
+- **Content Block Rendering**: Resolved Twig template content block positioning and rendering issues
+- **CSS Class Naming**: Updated all `citizen-` prefixed CSS classes to `muslim-` for proper Muslim skin styling
+
+### Technical Improvements
+- **Application Bootstrap**: Added LocalSettings.php loading to main application entry point
+- **Skin Configuration**: Improved skin initialization from LocalSettings configuration
+- **Template Structure**: Enhanced layout template with proper content block positioning
+- **CSS Framework Integration**: Updated Muslim skin CSS with correct class naming convention
+- **Debug Tools**: Added comprehensive skin activation and configuration debugging tools
+
+### Files Changed
+- `public/index.php` - Added LocalSettings.php loading for proper skin configuration
+- `resources/views/layouts/app.twig` - Fixed content block positioning and Muslim skin layout
+- `public/skins/Muslim/css/muslim.css` - Updated all CSS classes from `citizen-` to `muslim-` prefix
+- `debug/debug-skin-activation.php` - Added skin activation debugging tool
+- `debug/test-muslim-skin-availability.php` - Added Muslim skin availability testing
+- `debug/test-localsettings-skin.php` - Added LocalSettings configuration testing
+- `debug/test-skin-initialization.php` - Added skin initialization debugging
+
+### Impact
+- **User Experience**: Muslim skin now displays content correctly in main body area
+- **Skin Management**: Muslim skin is properly activated as default skin
+- **Visual Design**: Muslim skin styling is now applied with correct CSS classes
+- **System Reliability**: Skin configuration is properly loaded from LocalSettings
+- **Developer Experience**: Comprehensive debugging tools for skin management
+
 ## [0.0.48] - 2025-08-04
 
 ### Fixed

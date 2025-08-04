@@ -45,17 +45,22 @@ class SkinManager
     {
         $this->app = $app;
         
-        // Load LocalSettings.php to get the active skin
+        // Force reload LocalSettings.php to get updated configuration
         $localSettingsPath = $this->app->basePath('LocalSettings.php');
         if (file_exists($localSettingsPath)) {
+            // Clear any potential caching
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate($localSettingsPath, true);
+            }
             require_once $localSettingsPath;
         }
         
-        // Ensure $wgValidSkins is set
+        // Ensure $wgValidSkins is set with both skins
         global $wgValidSkins;
-        if (!isset($wgValidSkins)) {
+        if (!isset($wgValidSkins) || !isset($wgValidSkins['Muslim'])) {
             $wgValidSkins = [
                 'Bismillah' => 'Bismillah',
+                'Muslim' => 'Muslim',
             ];
         }
         

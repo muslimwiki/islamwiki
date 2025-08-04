@@ -98,7 +98,6 @@ console.log('ZamZam.js loading...');
                     });
                     
                     console.log('Reactive data after adding methods:', reactiveData);
-                    console.log('Reactive data keys:', Object.keys(reactiveData));
                 } catch (e) {
                     console.error('Error parsing z-methods:', e);
                     console.error('Methods attribute was:', methodsAttr);
@@ -154,10 +153,28 @@ console.log('ZamZam.js loading...');
                 console.log('Click expression:', expression);
                 el.addEventListener('click', (e) => {
                     console.log('Click event fired, evaluating:', expression);
+                    e.preventDefault();
+                    e.stopPropagation();
                     const result = this.evaluateExpression(expression, data, e);
                     console.log('Click result:', result);
                     // Update the component after the expression is evaluated
                     this.updateComponent(element, data);
+                });
+            });
+
+            // Click away events
+            element.querySelectorAll('[z-click-away]').forEach(el => {
+                console.log('Binding click-away event to:', el);
+                const expression = el.getAttribute('z-click-away');
+                console.log('Click-away expression:', expression);
+                
+                document.addEventListener('click', (e) => {
+                    if (!element.contains(e.target)) {
+                        console.log('Click away detected, evaluating:', expression);
+                        const result = this.evaluateExpression(expression, data, e);
+                        console.log('Click-away result:', result);
+                        this.updateComponent(element, data);
+                    }
                 });
             });
 
@@ -184,10 +201,13 @@ console.log('ZamZam.js loading...');
                 console.log('Show expression:', expression);
                 const isVisible = this.evaluateExpression(expression, data);
                 console.log('Show result:', isVisible);
+                
                 if (isVisible) {
-                    el.style.display = 'block';
+                    el.style.display = '';
+                    el.setAttribute('z-show', 'true');
                 } else {
                     el.style.display = 'none';
+                    el.setAttribute('z-show', 'false');
                 }
             });
 
@@ -198,7 +218,17 @@ console.log('ZamZam.js loading...');
                 console.log('Text expression:', expression);
                 const value = this.evaluateExpression(expression, data);
                 console.log('Text result:', value);
-                el.textContent = value;
+                el.textContent = value || '';
+            });
+
+            // z-html directive
+            element.querySelectorAll('[z-html]').forEach(el => {
+                console.log('Applying z-html to:', el);
+                const expression = el.getAttribute('z-html');
+                console.log('HTML expression:', expression);
+                const value = this.evaluateExpression(expression, data);
+                console.log('HTML result:', value);
+                el.innerHTML = value || '';
             });
 
             // z-class directive
@@ -206,194 +236,50 @@ console.log('ZamZam.js loading...');
                 console.log('Applying z-class to:', el);
                 const expression = el.getAttribute('z-class');
                 console.log('Class expression:', expression);
-                try {
-                    // Parse the expression as a dynamic object
-                    const classObject = {};
-                    
-                    // Extract class mappings from the expression
-                    // Format: {"className": expression, "className2": expression2}
-                    const matches = expression.match(/"([^"]+)":\s*([^,}]+)/g);
-                    if (matches) {
-                        // First, remove all classes that might be added by this directive
-                        matches.forEach(match => {
-                            const classMatch = match.match(/"([^"]+)":\s*([^,}]+)/);
-                            if (classMatch) {
-                                const className = classMatch[1];
-                                el.classList.remove(className);
-                                console.log('Removed class:', className);
-                            }
-                        });
-                        
-                        // Then add only the classes that should be active
-                        // Make classes mutually exclusive - prioritize error over success
-                        let hasActiveClass = false;
-                        let hasErrorClass = false;
-                        
-                        // First pass: check if error should be active
-                        for (const match of matches) {
-                            const classMatch = match.match(/"([^"]+)":\s*([^,}]+)/);
-                            if (classMatch) {
-                                const className = classMatch[1];
-                                const valueExpression = classMatch[2].trim();
-                                
-                                if (className === 'alert-error') {
-                                    const value = this.evaluateExpression(valueExpression, data);
-                                    console.log('Class', className, 'value:', value);
-                                    if (value) {
-                                        hasErrorClass = true;
-                                        el.classList.add(className);
-                                        console.log('Added class:', className);
-                                        break; // Stop here, don't add success class
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Second pass: only add success if no error class was added
-                        if (!hasErrorClass) {
-                            for (const match of matches) {
-                                const classMatch = match.match(/"([^"]+)":\s*([^,}]+)/);
-                                if (classMatch) {
-                                    const className = classMatch[1];
-                                    const valueExpression = classMatch[2].trim();
-                                    
-                                    if (className === 'alert-success') {
-                                        const value = this.evaluateExpression(valueExpression, data);
-                                        console.log('Class', className, 'value:', value);
-                                        if (value) {
-                                            hasActiveClass = true;
-                                            el.classList.add(className);
-                                            console.log('Added class:', className);
-                                            break; // Only add one success class
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error parsing z-class expression:', e);
-                    console.error('Expression was:', expression);
+                const value = this.evaluateExpression(expression, data);
+                console.log('Class result:', value);
+                
+                if (value) {
+                    el.classList.add(value);
+                }
+            });
+
+            // z-bind directive
+            element.querySelectorAll('[z-bind]').forEach(el => {
+                console.log('Applying z-bind to:', el);
+                const expression = el.getAttribute('z-bind');
+                console.log('Bind expression:', expression);
+                
+                // Parse the expression like "src: imageUrl"
+                const parts = expression.split(':');
+                if (parts.length === 2) {
+                    const attribute = parts[0].trim();
+                    const property = parts[1].trim();
+                    const value = this.evaluateExpression(property, data);
+                    console.log('Bind result:', attribute, '=', value);
+                    el.setAttribute(attribute, value || '');
                 }
             });
         }
 
         evaluateExpression(expression, data, event = null) {
-            console.log('Evaluating expression:', expression);
-            console.log('Data:', data);
-            try {
-                // Pass the reactive data directly, not a copy
-                const context = data;
-                console.log('Context before event:', context);
-                if (event) {
-                    context.$event = event;
-                    context.$el = event.target;
-                    console.log('Context after event:', context);
-                }
-
-                console.log('About to call safeEval with expression:', expression);
-                const result = this.safeEval(expression, context);
-                console.log('Expression result:', result);
-                return result;
-            } catch (e) {
-                console.error('Error evaluating expression:', expression, e);
-                console.error('Error stack:', e.stack);
-                return null;
-            }
-        }
-
-        safeEval(expression, context) {
-            console.log('safeEval called with expression:', expression);
-            console.log('safeEval context:', context);
+            console.log('Evaluating expression:', expression, 'with data:', data);
             
-            // Handle increment/decrement
-            if (expression.includes('++')) {
-                const varName = expression.replace('++', '').trim();
-                console.log('Handling increment for:', varName);
-                if (context[varName] !== undefined) {
-                    context[varName]++;
-                    console.log('Incremented', varName, 'to:', context[varName]);
-                    return context[varName];
-                }
+            const context = { ...data };
+            if (event) {
+                context.$event = event;
             }
             
-            if (expression.includes('--')) {
-                const varName = expression.replace('--', '').trim();
-                console.log('Handling decrement for:', varName);
-                if (context[varName] !== undefined) {
-                    context[varName]--;
-                    console.log('Decremented', varName, 'to:', context[varName]);
-                    return context[varName];
-                }
-            }
-
-            // Handle assignment
-            if (expression.includes('=')) {
-                const parts = expression.split('=');
-                const varName = parts[0].trim();
-                const value = parts[1].trim();
-                console.log('Handling assignment:', varName, '=', value);
-                
-                // Handle boolean values
-                if (value === 'true') {
-                    console.log('Setting', varName, 'to true');
-                    context[varName] = true;
-                    return true;
-                }
-                if (value === 'false') {
-                    console.log('Setting', varName, 'to false');
-                    context[varName] = false;
-                    return false;
-                }
-                
-                // Handle string values
-                if (value.startsWith("'") && value.endsWith("'")) {
-                    const stringValue = value.slice(1, -1);
-                    console.log('Setting', varName, 'to string:', stringValue);
-                    context[varName] = stringValue;
-                    return context[varName];
-                }
-                if (value.startsWith('"') && value.endsWith('"')) {
-                    const stringValue = value.slice(1, -1);
-                    console.log('Setting', varName, 'to string:', stringValue);
-                    context[varName] = stringValue;
-                    return context[varName];
-                }
-                
-                // Handle numbers
-                if (!isNaN(value)) {
-                    const numValue = parseFloat(value);
-                    console.log('Setting', varName, 'to number:', numValue);
-                    context[varName] = numValue;
-                    return context[varName];
-                }
-                
-                // Handle negation like "!show"
-                if (value.startsWith('!')) {
-                    const targetVar = value.substring(1);
-                    console.log('Handling negation:', varName, '= !', targetVar);
-                    if (context[targetVar] !== undefined) {
-                        const newValue = !context[targetVar];
-                        console.log('Setting', varName, 'to:', newValue, '(negation of', context[targetVar], ')');
-                        context[varName] = newValue;
-                        return newValue;
-                    }
-                }
-                
-                // Handle other variables
-                if (context[value] !== undefined) {
-                    console.log('Setting', varName, 'to value of', value, ':', context[value]);
-                    context[varName] = context[value];
-                    return context[varName];
-                }
-            }
-
+            // Handle simple boolean expressions
+            if (expression === 'true') return true;
+            if (expression === 'false') return false;
+            
             // Handle simple property access
             if (context[expression] !== undefined) {
                 console.log('Getting', expression, ':', context[expression]);
                 return context[expression];
             }
-
+            
             // Handle logical expressions like "name || 'Guest'"
             if (expression.includes('||')) {
                 const parts = expression.split('||');
@@ -408,7 +294,15 @@ console.log('ZamZam.js loading...');
                 console.log('Returning last part:', parts[parts.length - 1].trim());
                 return parts[parts.length - 1].trim();
             }
-
+            
+            // Handle negation like "!open"
+            if (expression.startsWith('!')) {
+                const property = expression.substring(1);
+                const value = context[property];
+                console.log('Handling negation:', property, '=', !value);
+                return !value;
+            }
+            
             // Handle function calls like "showMessage('Hello')"
             if (expression.includes('(') && expression.includes(')')) {
                 const match = expression.match(/^(\w+)\(([^)]*)\)$/);
@@ -443,9 +337,53 @@ console.log('ZamZam.js loading...');
                     }
                 }
             }
+            
+            // Handle simple expressions like "open = !open"
+            if (expression.includes('=')) {
+                const parts = expression.split('=');
+                if (parts.length === 2) {
+                    const property = parts[0].trim();
+                    const value = parts[1].trim();
+                    console.log('Handling assignment:', property, '=', value);
+                    
+                    if (value === '!open') {
+                        context[property] = !context.open;
+                        return context[property];
+                    } else if (value === 'true') {
+                        context[property] = true;
+                        return context[property];
+                    } else if (value === 'false') {
+                        context[property] = false;
+                        return context[property];
+                    }
+                }
+            }
 
             console.log('No matching pattern found for expression:', expression);
             return null;
+        }
+
+        safeEval(expression, context) {
+            console.log('Safe eval:', expression, 'with context:', context);
+            
+            try {
+                // Create a safe evaluation environment
+                const safeContext = {};
+                Object.keys(context).forEach(key => {
+                    if (typeof context[key] !== 'function') {
+                        safeContext[key] = context[key];
+                    }
+                });
+                
+                // Use Function constructor for safer evaluation
+                const func = new Function(...Object.keys(safeContext), `return ${expression}`);
+                const result = func(...Object.values(safeContext));
+                console.log('Safe eval result:', result);
+                return result;
+            } catch (e) {
+                console.error('Safe eval error:', e);
+                return null;
+            }
         }
 
         triggerReactivity(data, key, value) {

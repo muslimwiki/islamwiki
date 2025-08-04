@@ -21,6 +21,12 @@ define('BASE_PATH', dirname(__DIR__));
 // Include Composer autoloader
 require_once BASE_PATH . '/vendor/autoload.php';
 
+// Include helpers
+require_once BASE_PATH . '/src/helpers.php';
+
+// Load LocalSettings.php for configuration
+require_once BASE_PATH . '/LocalSettings.php';
+
 // Include necessary files
 require_once BASE_PATH . '/src/Core/Container/Asas.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';

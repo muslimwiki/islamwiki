@@ -2,7 +2,7 @@
 
 ## Overview
 
-The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface. **Fixed in v0.0.48**: Authentication compatibility and session safety.
+The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface. **Fixed in v0.0.48**: Authentication compatibility and session safety. **Fixed in v0.0.49**: Muslim skin content rendering and proper skin activation.
 
 ## Architecture
 
@@ -116,14 +116,16 @@ The **Bismillah** skin is the default skin for IslamWiki, featuring:
 ```
 
 ### Muslim
-The **Muslim** skin provides a modern, responsive design inspired by Citizen MediaWiki:
+The **Muslim** skin provides a modern, responsive design inspired by Citizen MediaWiki with proper content rendering:
 
 #### Features
 - **Citizen-Inspired Design**: Modern MediaWiki-inspired layout
-- **Islamic Aesthetics**: Beautiful Islamic design elements
+- **Islamic Aesthetics**: Beautiful Islamic design elements with proper CSS class naming
 - **Responsive Design**: Mobile-friendly interface
 - **Extension Support**: Enhanced support for extensions
 - **Accessibility**: Full accessibility compliance
+- **Content Rendering**: Proper content display in main body area
+- **CSS Framework Integration**: Seamless integration with Safa CSS framework
 
 #### Configuration
 ```json

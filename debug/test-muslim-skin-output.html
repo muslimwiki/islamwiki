@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title>IslamWiki</title>
+    
+    <!-- Google Fonts for Islamic Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Safa CSS Framework -->
+    <link rel="stylesheet" href="/css/safa.css?v=1754288422">
+    
+    <!-- Skin CSS (must come after Safa to take precedence) -->
+            <style>/* Muslim Skin - Citizen-inspired design for IslamWiki */
+/* This skin provides all styling - Safa CSS provides only framework utilities */
+
+:root {
+    /* Citizen-inspired color palette with Islamic elements */
+    --primary-color: #2c5aa0;
+    --primary-hover: #1e3a8a;
+    --secondary-color: #4a90e2;
+    --secondary-hover: #3b82f6;
+    --accent-color: #f39c12;
+    --accent-hover: #e67e22;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --error-color: #e74c3c;
+    --info-color: #3498db;
+    
+    /* Background colors */
+    --background-color: #ecf0f1;
+    --card-background: #ffffff;
+    --header-background: #ffffff;
+    --footer-background: #2c3e50;
+    
+    /* Text colors */
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-muted: #95a5a6;
+    --text-light: #ffffff;
+    
+    /* Border and shadow */
+    --border-color: #bdc3c7;
+    --border-light: #ecf0f1;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+    
+    /* Link colors */
+    --link-color: var(--primary-color);
+    --link-hover-color: var(--primary-hover);
+    
+    /* Typography */
+    --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family-arabic: 'Amiri', serif;
+    --font-size-base: 16px;
+    --font-size-sm: 14px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 24px;
+    --font-size-3xl: 30px;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ===== BASE STYLING ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+    background-color: var(--background-color);
+    font-size: var(--font-size-base);
+}
+
+/* Arabic text support */
+.arabic-text {
+    font-family: var(--font-family-arabic);
+    direction: rtl;
+}
+
+/* ===== CITIZEN-HEADER STYLING ===== */
+.citizen-header {
+    background: var(--header-background);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Header Container */
+.citizen-header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+/* Top Header */
+.citizen-header-top {
+    padding: var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.citizen-header-left,
+.citizen-header-center,
+.citizen-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+/* Logo */
+.citizen-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: var(--font-size-xl);
+    transition: color var(--transition-normal);
+}
+
+.citizen-logo:hover {
+    color: var(--primary-color);
+}
+
+.logo-icon {
+    font-size: var(--font-size-2xl);
+}
+
+.logo-text {
+    font-weight: 600;
+}
+
+/* Search */
+.citizen-search {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-form {
+    position: relative;
+    width: 100%;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    padding-right: 50px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    background: var(--card-background);
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.search-button {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: var(--spacing-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: color var(--transition-normal), background-color var(--transition-normal);
+}
+
+.search-button:hover {
+    color: var(--primary-color);
+    background-color: rgba(44, 90, 160, 0.1);
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Navigation */
+.citizen-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: color var(--transition-normal), background-color var(--transition-normal);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background-color: rgba(44, 90, 160, 0.1);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(44, 90, 160, 0.1);
+}
+
+/* User Menu */
+.citizen-user-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-dropdown {
+    position: relative;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: none;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+}
+
+.user-button:hover {
+    background-color: rgba(44, 90, 160, 0.1);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.avatar-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.user-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.dropdown-arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+    transition: transform var(--transition-normal);
+}
+
+.user-button:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--spacing-sm);
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-normal);
+}
+
+.user-dropdown-menu[z-show="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color var(--transition-normal);
+}
+
+.dropdown-item:hover {
+    background-color: rgba(44, 90, 160, 0.1);
+}
+
+.dropdown-item.active {
+    background-color: rgba(44, 90, 160, 0.1);
+    color: var(--primary-color);
+}
+
+.dropdown-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: var(--spacing-sm) 0;
+}
+
+.dropdown-form {
+    margin: 0;
+}
+
+.logout-item {
+    color: var(--error-color);
+}
+
+.logout-item:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Secondary Header */
+.citizen-header-secondary {
+    background: var(--background-color);
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--spacing-sm) 0;
+}
+
+.citizen-secondary-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    overflow-x: auto;
+    padding: var(--spacing-sm) 0;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    background: none;
+    border: none;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+    width: 20px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: all var(--transition-normal);
+}
+
+/* ===== MAIN CONTENT ===== */
+.citizen-main {
+    min-height: calc(100vh - 200px);
+    padding: var(--spacing-xl) 0;
+}
+
+.citizen-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+/* ===== FOOTER ===== */
+.citizen-footer {
+    background: var(--footer-background);
+    color: var(--text-light);
+    padding: var(--spacing-2xl) 0 var(--spacing-lg);
+    margin-top: auto;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.footer-section h3,
+.footer-section h4 {
+    margin: 0 0 var(--spacing-md);
+    color: var(--text-light);
+}
+
+.footer-section h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+}
+
+.footer-section h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+}
+
+.footer-section p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.footer-section a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-normal);
+}
+
+.footer-section a:hover {
+    color: var(--text-light);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: var(--spacing-lg);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* ===== CARDS ===== */
+.card {
+    background: var(--card-background);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.card-body {
+    padding: var(--spacing-lg);
+}
+
+.card-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ===== ALERTS ===== */
+.alert {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: rgba(39, 174, 96, 0.1);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-error {
+    background: rgba(231, 76, 60, 0.1);
+    border-left-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.alert-warning {
+    background: rgba(243, 156, 18, 0.1);
+    border-left-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.alert-info {
+    background: rgba(52, 152, 219, 0.1);
+    border-left-color: var(--info-color);
+    color: var(--info-color);
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-4 { margin-bottom: var(--spacing-md); }
+.mb-8 { margin-bottom: var(--spacing-xl); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-4 { margin-top: var(--spacing-md); }
+.mt-8 { margin-top: var(--spacing-xl); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.gap-1 { gap: var(--spacing-xs); }
+.gap-2 { gap: var(--spacing-sm); }
+.gap-4 { gap: var(--spacing-md); }
+.gap-8 { gap: var(--spacing-xl); }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .citizen-header-container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .citizen-container {
+        padding: 0 var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .citizen-header-top {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) 0;
+    }
+    
+    .citizen-header-left,
+    .citizen-header-center,
+    .citizen-header-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .citizen-search {
+        max-width: 100%;
+    }
+    
+    .citizen-nav {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .citizen-secondary-nav {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .citizen-main {
+        padding: var(--spacing-lg) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .citizen-header-container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .citizen-container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .citizen-logo {
+        font-size: var(--font-size-lg);
+    }
+    
+    .search-input {
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-normal);
+}
+
+/* ===== DARK THEME SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #1a1a1a;
+        --card-background: #2d2d2d;
+        --header-background: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --text-muted: #808080;
+        --border-color: #404040;
+        --border-light: #404040;
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for accessibility */
+.btn:focus,
+.nav-link:focus,
+.search-input:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+        --text-secondary: #000000;
+    }
+} </style>
+        
+    <!-- ZamZam.js for frontend interactivity -->
+    <script defer src="/js/zamzam.js"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+        
+        
+    </head>
+<body>
+                    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamWiki</title>
+    
+    <!-- Google Fonts for Islamic Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Safa CSS Framework -->
+    <link rel="stylesheet" href="/css/safa.css?v=1754288422">
+    
+    <!-- Skin CSS (must come after Safa to take precedence) -->
+    <link rel="stylesheet" href="/skins/Muslim/css/muslim.css?v=1754288422">
+    
+    <!-- ZamZam.js for frontend interactivity -->
+    <script defer src="/js/zamzam.js"></script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+        
+        
+    </head>
+<body>
+    <!-- Citizen-inspired Header Structure -->
+    <header class="citizen-header">
+        <!-- Top Bar -->
+        <div class="citizen-header-top">
+            <div class="citizen-header-container">
+                <div class="citizen-header-left">
+                    <a href="/" class="citizen-logo">
+                        <span class="logo-icon">🕌</span>
+                        <span class="logo-text">IslamWiki</span>
+                    </a>
+                </div>
+                
+                <div class="citizen-header-center">
+                    <div class="citizen-search">
+                        <form class="search-form" method="GET" action="/iqra-search">
+                            <div class="search-input-wrapper">
+                                <input type="text" name="q" class="search-input" 
+                                       placeholder="Search Islamic knowledge..." 
+                                       value="">
+                                <button type="submit" class="search-button">
+                                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="citizen-header-right">
+                    <nav class="citizen-nav">
+                        <a href="/" class="nav-link active">Home</a>
+                        <a href="/pages" class="nav-link ">Browse</a>
+                        <a href="/quran" class="nav-link ">Quran</a>
+                        <a href="/hadith" class="nav-link ">Hadith</a>
+                    </nav>
+                    
+                    <div class="citizen-user-menu">
+                                                    <div class="user-dropdown" z-data='{"open": false}'>
+                                <button z-click="open = !open" class="user-button" aria-label="User menu for admin">
+                                    <div class="user-avatar">
+                                        <svg class="avatar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="user-name">admin</span>
+                                    <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                
+                                <div z-show="open" 
+                                     z-click-away="open = false"
+                                     class="user-dropdown-menu">
+                                    <a href="/dashboard" class="dropdown-item ">
+                                        <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                                        </svg>
+                                        Dashboard
+                                    </a>
+                                    <a href="/profile" class="dropdown-item ">
+                                        <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                        Profile
+                                    </a>
+                                    <a href="/settings" class="dropdown-item ">
+                                        <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        Settings
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <form action="/logout" method="POST" class="dropdown-form">
+                                        <button type="submit" class="dropdown-item logout-item">
+                                            <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                            </svg>
+                                            Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                                            </div>
+                    
+                    <!-- Mobile menu toggle -->
+                    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Secondary Navigation -->
+        <div class="citizen-header-secondary">
+            <div class="citizen-header-container">
+                <nav class="citizen-secondary-nav">
+                    <a href="/islamic-sciences" class="nav-link ">Islamic Sciences</a>
+                    <a href="/prayer-times" class="nav-link ">Prayer Times</a>
+                    <a href="/calendar" class="nav-link ">Islamic Calendar</a>
+                    <a href="/community" class="nav-link ">Community</a>
+                    <a href="/about" class="nav-link ">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="citizen-main">
+        <div class="citizen-container">
+                    </div>
+    </main>
+
+    <!-- Citizen-inspired Footer -->
+    <footer class="citizen-footer">
+        <div class="citizen-header-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>IslamWiki</h3>
+                    <p>Your comprehensive source for Islamic knowledge and community.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/pages">Browse Pages</a></li>
+                        <li><a href="/quran">Quran</a></li>
+                        <li><a href="/hadith">Hadith</a></li>
+                        <li><a href="/community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/prayer-times">Prayer Times</a></li>
+                        <li><a href="/calendar">Islamic Calendar</a></li>
+                        <li><a href="/islamic-sciences">Islamic Sciences</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 IslamWiki. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Skin JavaScript -->
+    <script>
+        /**
+ * Muslim Skin JavaScript
+ * Citizen-inspired functionality for IslamWiki
+ */
+
+(function() {
+    'use strict';
+
+    // DOM Ready
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeMuslimSkin();
+    });
+
+    /**
+     * Initialize Muslim Skin functionality
+     */
+    function initializeMuslimSkin() {
+        initializeMobileMenu();
+        initializeSearchEnhancements();
+        initializeDropdowns();
+        initializeAnimations();
+        initializeAccessibility();
+        initializeThemeSupport();
+    }
+
+    /**
+     * Mobile menu functionality
+     */
+    function initializeMobileMenu() {
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const header = document.querySelector('.citizen-header');
+        
+        if (mobileToggle && header) {
+            mobileToggle.addEventListener('click', function() {
+                header.classList.toggle('mobile-menu-open');
+                mobileToggle.classList.toggle('active');
+                
+                // Animate hamburger to X
+                const spans = mobileToggle.querySelectorAll('span');
+                spans.forEach((span, index) => {
+                    if (index === 0) {
+                        span.style.transform = header.classList.contains('mobile-menu-open') 
+                            ? 'rotate(45deg) translate(5px, 5px)' : '';
+                    } else if (index === 1) {
+                        span.style.opacity = header.classList.contains('mobile-menu-open') ? '0' : '1';
+                    } else if (index === 2) {
+                        span.style.transform = header.classList.contains('mobile-menu-open') 
+                            ? 'rotate(-45deg) translate(7px, -6px)' : '';
+                    }
+                });
+            });
+        }
+    }
+
+    /**
+     * Search functionality enhancements
+     */
+    function initializeSearchEnhancements() {
+        const searchInput = document.querySelector('.search-input');
+        const searchForm = document.querySelector('.search-form');
+        
+        if (searchInput && searchForm) {
+            // Auto-focus search on keyboard shortcut
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+
+            // Search suggestions (placeholder for future implementation)
+            searchInput.addEventListener('input', function() {
+                // TODO: Implement search suggestions
+                console.log('Search input:', this.value);
+            });
+
+            // Search form submission enhancement
+            searchForm.addEventListener('submit', function(e) {
+                const query = searchInput.value.trim();
+                if (!query) {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+        }
+    }
+
+    /**
+     * Dropdown functionality
+     */
+    function initializeDropdowns() {
+        const dropdowns = document.querySelectorAll('.user-dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const button = dropdown.querySelector('.user-button');
+            const menu = dropdown.querySelector('.user-dropdown-menu');
+            
+            if (button && menu) {
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target)) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                    }
+                });
+
+                // Toggle dropdown on button click
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = menu.style.opacity === '1';
+                    
+                    if (isVisible) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                    } else {
+                        menu.style.opacity = '1';
+                        menu.style.visibility = 'visible';
+                        menu.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Animation enhancements
+     */
+    function initializeAnimations() {
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements with animation classes
+        const animatedElements = document.querySelectorAll('.card, .alert, .btn');
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    }
+
+    /**
+     * Accessibility enhancements
+     */
+    function initializeAccessibility() {
+        // Skip to main content link
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.textContent = 'Skip to main content';
+        skipLink.className = 'skip-link';
+        skipLink.style.cssText = `
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 10000;
+        `;
+        
+        skipLink.addEventListener('focus', function() {
+            this.style.top = '6px';
+        });
+        
+        skipLink.addEventListener('blur', function() {
+            this.style.top = '-40px';
+        });
+        
+        document.body.insertBefore(skipLink, document.body.firstChild);
+
+        // Add main content ID
+        const mainContent = document.querySelector('.citizen-main');
+        if (mainContent) {
+            mainContent.id = 'main-content';
+        }
+
+        // Enhanced focus management
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+    }
+
+    /**
+     * Theme support
+     */
+    function initializeThemeSupport() {
+        // Check for saved theme preference or default to light mode
+        const savedTheme = localStorage.getItem('muslim-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        // Theme toggle functionality (if theme toggle button exists)
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('muslim-theme', newTheme);
+            });
+        }
+    }
+
+    /**
+     * Utility functions
+     */
+    const MuslimSkin = {
+        // Show notification
+        showNotification: function(message, type = 'info', duration = 5000) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} notification`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                max-width: 300px;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, duration);
+        },
+
+        // Debounce function
+        debounce: function(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        },
+
+        // Throttle function
+        throttle: function(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+    };
+
+    // Expose to global scope for debugging
+    window.MuslimSkin = MuslimSkin;
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .keyboard-navigation *:focus {
+            outline: 2px solid var(--primary-color) !important;
+            outline-offset: 2px !important;
+        }
+        
+        .skip-link:focus {
+            top: 6px !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+})(); 
+    </script>
+    
+    </body>
+</html>         
+            <script>/**
+ * Muslim Skin JavaScript
+ * Citizen-inspired functionality for IslamWiki
+ */
+
+(function() {
+    'use strict';
+
+    // DOM Ready
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeMuslimSkin();
+    });
+
+    /**
+     * Initialize Muslim Skin functionality
+     */
+    function initializeMuslimSkin() {
+        initializeMobileMenu();
+        initializeSearchEnhancements();
+        initializeDropdowns();
+        initializeAnimations();
+        initializeAccessibility();
+        initializeThemeSupport();
+    }
+
+    /**
+     * Mobile menu functionality
+     */
+    function initializeMobileMenu() {
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const header = document.querySelector('.citizen-header');
+        
+        if (mobileToggle && header) {
+            mobileToggle.addEventListener('click', function() {
+                header.classList.toggle('mobile-menu-open');
+                mobileToggle.classList.toggle('active');
+                
+                // Animate hamburger to X
+                const spans = mobileToggle.querySelectorAll('span');
+                spans.forEach((span, index) => {
+                    if (index === 0) {
+                        span.style.transform = header.classList.contains('mobile-menu-open') 
+                            ? 'rotate(45deg) translate(5px, 5px)' : '';
+                    } else if (index === 1) {
+                        span.style.opacity = header.classList.contains('mobile-menu-open') ? '0' : '1';
+                    } else if (index === 2) {
+                        span.style.transform = header.classList.contains('mobile-menu-open') 
+                            ? 'rotate(-45deg) translate(7px, -6px)' : '';
+                    }
+                });
+            });
+        }
+    }
+
+    /**
+     * Search functionality enhancements
+     */
+    function initializeSearchEnhancements() {
+        const searchInput = document.querySelector('.search-input');
+        const searchForm = document.querySelector('.search-form');
+        
+        if (searchInput && searchForm) {
+            // Auto-focus search on keyboard shortcut
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+
+            // Search suggestions (placeholder for future implementation)
+            searchInput.addEventListener('input', function() {
+                // TODO: Implement search suggestions
+                console.log('Search input:', this.value);
+            });
+
+            // Search form submission enhancement
+            searchForm.addEventListener('submit', function(e) {
+                const query = searchInput.value.trim();
+                if (!query) {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+        }
+    }
+
+    /**
+     * Dropdown functionality
+     */
+    function initializeDropdowns() {
+        const dropdowns = document.querySelectorAll('.user-dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const button = dropdown.querySelector('.user-button');
+            const menu = dropdown.querySelector('.user-dropdown-menu');
+            
+            if (button && menu) {
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target)) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                    }
+                });
+
+                // Toggle dropdown on button click
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = menu.style.opacity === '1';
+                    
+                    if (isVisible) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateY(-10px)';
+                    } else {
+                        menu.style.opacity = '1';
+                        menu.style.visibility = 'visible';
+                        menu.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Animation enhancements
+     */
+    function initializeAnimations() {
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements with animation classes
+        const animatedElements = document.querySelectorAll('.card, .alert, .btn');
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    }
+
+    /**
+     * Accessibility enhancements
+     */
+    function initializeAccessibility() {
+        // Skip to main content link
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.textContent = 'Skip to main content';
+        skipLink.className = 'skip-link';
+        skipLink.style.cssText = `
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 10000;
+        `;
+        
+        skipLink.addEventListener('focus', function() {
+            this.style.top = '6px';
+        });
+        
+        skipLink.addEventListener('blur', function() {
+            this.style.top = '-40px';
+        });
+        
+        document.body.insertBefore(skipLink, document.body.firstChild);
+
+        // Add main content ID
+        const mainContent = document.querySelector('.citizen-main');
+        if (mainContent) {
+            mainContent.id = 'main-content';
+        }
+
+        // Enhanced focus management
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+    }
+
+    /**
+     * Theme support
+     */
+    function initializeThemeSupport() {
+        // Check for saved theme preference or default to light mode
+        const savedTheme = localStorage.getItem('muslim-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        // Theme toggle functionality (if theme toggle button exists)
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('muslim-theme', newTheme);
+            });
+        }
+    }
+
+    /**
+     * Utility functions
+     */
+    const MuslimSkin = {
+        // Show notification
+        showNotification: function(message, type = 'info', duration = 5000) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} notification`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                max-width: 300px;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, duration);
+        },
+
+        // Debounce function
+        debounce: function(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        },
+
+        // Throttle function
+        throttle: function(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+    };
+
+    // Expose to global scope for debugging
+    window.MuslimSkin = MuslimSkin;
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .keyboard-navigation *:focus {
+            outline: 2px solid var(--primary-color) !important;
+            outline-offset: 2px !important;
+        }
+        
+        .skip-link:focus {
+            top: 6px !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+})(); </script>
+    </body>
+</html> 

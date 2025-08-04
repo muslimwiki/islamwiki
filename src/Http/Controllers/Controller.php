@@ -91,8 +91,8 @@ abstract class Controller
                 }
             }
             
-            // Render the template using TwigRenderer
-            $content = $this->getView()->render($template, $data);
+            // Render the template using TwigRenderer with skin support
+            $content = $this->getView()->renderWithSkin($template, $data);
             
             // Create and return the response
             $response = new Response();

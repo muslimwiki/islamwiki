@@ -135,17 +135,17 @@ $wgValidSkins = [
  * Note: This is the default skin. For runtime skin switching,
  * use $skinManager->setActiveSkin('SkinName') instead.
  */
-$wgActiveSkin = env('ACTIVE_SKIN', 'Bismillah');
+$wgActiveSkin = env('ACTIVE_SKIN', 'Muslim');
 
 // Ensure the active skin is always set
 if (empty($wgActiveSkin)) {
-    $wgActiveSkin = 'Bismillah';
+    $wgActiveSkin = 'Muslim';
 }
 
 /**
  * Default skin for new users
  */
-$wgDefaultSkin = env('DEFAULT_SKIN', 'Bismillah');
+$wgDefaultSkin = env('DEFAULT_SKIN', 'Muslim');
 
 /**
  * Skin configuration options

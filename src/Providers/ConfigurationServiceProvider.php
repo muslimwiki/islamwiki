@@ -75,113 +75,8 @@ class ConfigurationServiceProvider
      */
     private function registerConfigurationHelpers(): void
     {
-        // Global configuration helper function
-        if (!function_exists('config')) {
-            function config(string $key, $default = null) {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getValue($key, $default);
-                }
-                return $default;
-            }
-        }
-
-        // Database configuration helper
-        if (!function_exists('db_config')) {
-            function db_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Database');
-                }
-                return [];
-            }
-        }
-
-        // Islamic database configuration helper
-        if (!function_exists('islamic_db_config')) {
-            function islamic_db_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Islamic');
-                }
-                return [];
-            }
-        }
-
-        // Islamic feature configuration helper
-        if (!function_exists('islamic_feature_config')) {
-            function islamic_feature_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Islamic');
-                }
-                return [];
-            }
-        }
-
-        // Search configuration helper
-        if (!function_exists('search_config')) {
-            function search_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Core');
-                }
-                return [];
-            }
-        }
-
-        // Cache configuration helper
-        if (!function_exists('cache_config')) {
-            function cache_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Performance');
-                }
-                return [];
-            }
-        }
-
-        // Logging configuration helper
-        if (!function_exists('logging_config')) {
-            function logging_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Logging');
-                }
-                return [];
-            }
-        }
-
-        // Extension configuration helper
-        if (!function_exists('extension_config')) {
-            function extension_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Extensions');
-                }
-                return [];
-            }
-        }
-
-        // Islamic configuration helper
-        if (!function_exists('islamic_config')) {
-            function islamic_config(): array {
-                global $app;
-                if ($app) {
-                    $configManager = $app->getContainer()->get(\IslamWiki\Core\Configuration\ConfigurationManager::class);
-                    return $configManager->getCategory('Islamic');
-                }
-                return [];
-            }
-        }
+        // All helper functions removed to avoid conflicts with helpers.php
+        // Helper functions are now defined in src/helpers.php
     }
 
     /**
@@ -216,7 +111,7 @@ class ConfigurationServiceProvider
         }
         
         // In development mode, throw an exception
-        if (config('wgDebug', false)) {
+        if (\config('wgDebug', false)) {
             $errorMessages = array_map(function($error) {
                 return is_array($error) ? json_encode($error) : (string) $error;
             }, $errors);
@@ -271,12 +166,12 @@ class ConfigurationServiceProvider
      */
     private function setupEnvironmentConfiguration(): void
     {
-        $environment = config('APP_ENV', 'production');
+        $environment = \config('APP_ENV', 'production');
         
         switch ($environment) {
             case 'development':
                 // Development-specific settings
-                if (config('wgDebug', false)) {
+                if (\config('wgDebug', false)) {
                     error_reporting(E_ALL);
                     ini_set('display_errors', '1');
                 }
@@ -284,16 +179,16 @@ class ConfigurationServiceProvider
                 
             case 'testing':
                 // Testing-specific settings
-                config('wgDebug', true);
-                config('wgShowExceptionDetails', true);
+                \config('wgDebug', true);
+                \config('wgShowExceptionDetails', true);
                 break;
                 
             case 'production':
             default:
                 // Production-specific settings
-                config('wgDebug', false);
-                config('wgShowExceptionDetails', false);
-                config('wgShowSQLErrors', false);
+                \config('wgDebug', false);
+                \config('wgShowExceptionDetails', false);
+                \config('wgShowSQLErrors', false);
                 break;
         }
     }
@@ -306,21 +201,21 @@ class ConfigurationServiceProvider
     private function setupIslamicConfiguration(): void
     {
         // Set up Islamic content templates
-        $templates = config('wgIslamicContentTemplates', []);
+        $templates = \config('wgIslamicContentTemplates', []);
         if (!empty($templates)) {
             // Register templates with the view system
             $this->registerIslamicTemplates($templates);
         }
         
         // Set up Islamic API endpoints
-        $endpoints = config('wgIslamicAPIEndpoints', []);
+        $endpoints = \config('wgIslamicAPIEndpoints', []);
         if (!empty($endpoints)) {
             // Register API endpoints
             $this->registerIslamicAPIEndpoints($endpoints);
         }
         
         // Set up Islamic search settings
-        $searchSettings = config('wgIslamicSearchSettings', []);
+        $searchSettings = \config('wgIslamicSearchSettings', []);
         if (!empty($searchSettings)) {
             // Configure Islamic search
             $this->configureIslamicSearch($searchSettings);
@@ -334,7 +229,7 @@ class ConfigurationServiceProvider
      */
     private function setupPerformanceConfiguration(): void
     {
-        $performanceSettings = config('wgIslamicPerformanceSettings', []);
+        $performanceSettings = \config('wgIslamicPerformanceSettings', []);
         
         // Enable caching if configured
         if ($performanceSettings['enable_quran_caching'] ?? true) {
@@ -412,7 +307,7 @@ class ConfigurationServiceProvider
      */
     private function enableQuranCaching(): void
     {
-        $cacheSettings = config('wgIslamicCacheSettings', []);
+        $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['quran_cache_ttl'] ?? 86400;
         
         error_log("Quran caching enabled with TTL: {$ttl} seconds");
@@ -425,7 +320,7 @@ class ConfigurationServiceProvider
      */
     private function enableHadithCaching(): void
     {
-        $cacheSettings = config('wgIslamicCacheSettings', []);
+        $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['hadith_cache_ttl'] ?? 86400;
         
         error_log("Hadith caching enabled with TTL: {$ttl} seconds");
@@ -438,7 +333,7 @@ class ConfigurationServiceProvider
      */
     private function enablePrayerTimesCaching(): void
     {
-        $cacheSettings = config('wgIslamicCacheSettings', []);
+        $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['prayer_times_cache_ttl'] ?? 1800;
         
         error_log("Prayer times caching enabled with TTL: {$ttl} seconds");
@@ -451,7 +346,7 @@ class ConfigurationServiceProvider
      */
     private function enableCalendarCaching(): void
     {
-        $cacheSettings = config('wgIslamicCacheSettings', []);
+        $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['calendar_cache_ttl'] ?? 7200;
         
         error_log("Islamic calendar caching enabled with TTL: {$ttl} seconds");
@@ -464,7 +359,7 @@ class ConfigurationServiceProvider
      */
     private function enableSearchCaching(): void
     {
-        $cacheSettings = config('wgIslamicCacheSettings', []);
+        $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['search_cache_ttl'] ?? 3600;
         
         error_log("Search caching enabled with TTL: {$ttl} seconds");

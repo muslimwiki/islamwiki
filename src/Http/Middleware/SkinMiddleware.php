@@ -102,6 +102,20 @@ class SkinMiddleware
                 $activeSkinName = $skinManager->getActiveSkinName();
             }
             
+            // Set the active skin layout path in the view renderer
+            if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
+                $layoutPath = $activeSkin->getLayoutPath();
+                if ($layoutPath && is_dir(dirname($layoutPath))) {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - About to set skin layout path: " . dirname($layoutPath));
+                    $viewRenderer->setActiveSkinLayoutPath(dirname($layoutPath));
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Set skin layout path: " . dirname($layoutPath));
+                } else {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Layout path not found or invalid: " . $layoutPath);
+                }
+            } else {
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Active skin or getLayoutPath method not available");
+            }
+            
             // Prepare skin data
             $skinData = [
                 'css' => $activeSkin ? $activeSkin->getCssContent() : '',
@@ -111,6 +125,16 @@ class SkinMiddleware
                 'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
             ];
             
+            // Check if skin has custom layout
+            $skinLayoutPath = null;
+            if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
+                $layoutPath = $activeSkin->getLayoutPath();
+                if ($layoutPath && file_exists($layoutPath)) {
+                    $skinLayoutPath = $activeSkinName . '/templates/layout.twig';
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin has custom layout: " . $skinLayoutPath);
+                }
+            }
+            
             // Update the view globals with current user's skin data
             $viewRenderer->addGlobals([
                 'skin_css' => $skinData['css'],
@@ -119,6 +143,7 @@ class SkinMiddleware
                 'skin_version' => $skinData['version'],
                 'skin_config' => $skinData['config'],
                 'active_skin' => $activeSkinName,
+                'skin_layout_path' => $skinLayoutPath,
             ]);
             
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Added skin data to view globals");
@@ -136,7 +161,7 @@ class SkinMiddleware
                     'skin_name' => 'default',
                     'skin_version' => '0.0.29',
                     'skin_config' => [],
-                    'active_skin' => 'bismillah',
+                    'active_skin' => 'Muslim',
                 ]);
             } catch (\Throwable $fallbackError) {
                 error_log("SkinMiddleware::updateSkinDataForCurrentUser - Fallback error: " . $fallbackError->getMessage());

@@ -29,6 +29,8 @@ class ViewServiceProvider
             $basePath = $this->findProjectRoot();
         }
         
+        // Ensure we have an absolute path
+        $basePath = realpath($basePath);
         $templatePath = $basePath . '/resources/views';
         $cachePath = $basePath . '/storage/framework/views';
         
