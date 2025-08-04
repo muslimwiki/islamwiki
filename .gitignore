@@ -31,7 +31,9 @@ composer.lock
 # Configuration files with sensitive data
 config/database.php
 config/app.php
-LocalSettings.php
+# LocalSettings.php - Keep for development, but should be ignored in production
+# Uncomment the line below for production environments:
+# LocalSettings.php
 
 # =============================================================================
 # Sessions & Temporary Files
@@ -214,8 +216,9 @@ out/
 storage/sessions/sess_*
 
 # Debug files (keep organized debug scripts but ignore runtime debug files)
-debug_*.php
+# Note: debug/ directory scripts are kept, but runtime debug files are ignored
 debug_*.log
+debug_*.tmp
 
 # Temporary test files
 test_*.tmp
@@ -224,6 +227,20 @@ debug_*.tmp
 # User settings cache
 storage/framework/cache/data/
 storage/framework/cache/views/
+
+# =============================================================================
+# Skin System
+# =============================================================================
+
+# Keep all skin directories and files
+# Skins are part of the application and should be version controlled
+# skins/*/ - This is intentionally NOT ignored to keep all skins
+
+# Skin-specific temporary files (if any)
+skins/*/tmp/
+skins/*/cache/
+skins/*/*.tmp
+skins/*/*.log
 
 # =============================================================================
 # Exceptions (Files to keep)
@@ -249,3 +266,8 @@ storage/framework/cache/views/
 # Keep configuration templates
 !config/*.example.php
 !LocalSettings.example.php
+
+# Keep all skin files and directories
+!skins/
+!skins/*/
+!skins/*/*
