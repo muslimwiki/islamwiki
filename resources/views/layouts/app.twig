@@ -13,7 +13,12 @@
     <link rel="stylesheet" href="/css/safa.css?v={{ 'now'|date('U') }}">
     
     <!-- Skin CSS (must come after Safa to take precedence) -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
+    {% if skin_css %}
+        <style>{{ skin_css|raw }}</style>
+    {% else %}
+        <!-- Fallback to default skin if no dynamic CSS -->
+        <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
+    {% endif %}
     
     <!-- ZamZam.js for frontend interactivity -->
     <script defer src="/js/zamzam.js"></script>
@@ -125,5 +130,10 @@
     </div>
 
     {% block scripts %}{% endblock %}
+    
+    <!-- Skin JavaScript -->
+    {% if skin_js %}
+        <script>{{ skin_js|raw }}</script>
+    {% endif %}
 </body>
 </html> 

@@ -41,6 +41,15 @@ class SkinMiddleware
         error_log("SkinMiddleware::handle - Starting skin middleware execution");
         error_log("SkinMiddleware::handle - Request URI: " . $request->getUri()->getPath());
         
+        // Skip skin middleware for authentication routes to prevent session interference
+        $authRoutes = ['/login', '/register', '/forgot-password', '/logout'];
+        $currentPath = $request->getUri()->getPath();
+        
+        if (in_array($currentPath, $authRoutes)) {
+            error_log("SkinMiddleware::handle - Skipping skin middleware for auth route: " . $currentPath);
+            return $next($request);
+        }
+        
         // Update skin data for the current user
         $this->updateSkinDataForCurrentUser();
         
@@ -63,7 +72,6 @@ class SkinMiddleware
         
         try {
             $container = $this->app->getContainer();
-            $session = $container->get('session');
             $skinManager = $container->get('skin.manager');
             $viewRenderer = $container->get('view');
             
@@ -73,11 +81,23 @@ class SkinMiddleware
             $activeSkin = null;
             $activeSkinName = '';
             
-            if ($session->isLoggedIn()) {
-                $userId = $session->getUserId();
-                $activeSkin = $skinManager->getActiveSkinForUser($userId);
-                $activeSkinName = $skinManager->getActiveSkinNameForUser($userId);
-            } else {
+            // Safely check session state without interfering with authentication
+            try {
+                $session = $container->get('session');
+                
+                if ($session && method_exists($session, 'isLoggedIn') && $session->isLoggedIn()) {
+                    $userId = $session->getUserId();
+                    if ($userId) {
+                        $activeSkin = $skinManager->getActiveSkinForUser($userId);
+                        $activeSkinName = $skinManager->getActiveSkinNameForUser($userId);
+                    }
+                }
+            } catch (\Throwable $sessionError) {
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Session error (non-critical): " . $sessionError->getMessage());
+            }
+            
+            // Fallback to default skin if no user-specific skin found
+            if (!$activeSkin) {
                 $activeSkin = $skinManager->getActiveSkin();
                 $activeSkinName = $skinManager->getActiveSkinName();
             }
@@ -108,15 +128,19 @@ class SkinMiddleware
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error: " . $e->getMessage());
             
             // Fallback to default skin data
-            $viewRenderer = $this->app->getContainer()->get('view');
-            $viewRenderer->addGlobals([
-                'skin_css' => '',
-                'skin_js' => '',
-                'skin_name' => 'default',
-                'skin_version' => '0.0.29',
-                'skin_config' => [],
-                'active_skin' => 'bismillah',
-            ]);
+            try {
+                $viewRenderer = $this->app->getContainer()->get('view');
+                $viewRenderer->addGlobals([
+                    'skin_css' => '',
+                    'skin_js' => '',
+                    'skin_name' => 'default',
+                    'skin_version' => '0.0.29',
+                    'skin_config' => [],
+                    'active_skin' => 'bismillah',
+                ]);
+            } catch (\Throwable $fallbackError) {
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Fallback error: " . $fallbackError->getMessage());
+            }
         }
     }
 } 

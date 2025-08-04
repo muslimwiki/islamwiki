@@ -2,7 +2,7 @@
 
 ## Overview
 
-The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface.
+The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface. **Fixed in v0.0.48**: Authentication compatibility and session safety.
 
 ## Architecture
 
@@ -58,6 +58,7 @@ src/Skins/                      # Backend skin system
 - **Skin Information**: View detailed metadata, features, and dependencies
 - **User Preferences**: Individual skin preferences stored per user
 - **API Endpoints**: RESTful API for skin management
+- **Authentication Safe**: Skin middleware doesn't interfere with login process
 
 ## Available Skins
 

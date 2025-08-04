@@ -129,6 +129,9 @@ class Application
 
         // Initialize the router
         $this->router = new \IslamWiki\Core\Routing\IslamRouter($this->container);
+        
+        // Bind the router to the container
+        $this->container->instance('router', $this->router);
 
         // Initialize error handling after all services are set up
         $this->initializeErrorHandling();

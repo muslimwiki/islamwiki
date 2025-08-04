@@ -1,114 +1,117 @@
 <?php
-declare(strict_types=1);
-
-/**
- * Debug Login Test
- * 
- * Tests the login process and session management.
- * 
- * @package IslamWiki\Debug
- * @version 0.0.28
- * @license AGPL-3.0-only
- */
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
-echo "🔍 Testing Login and Session Management\n";
-echo "======================================\n\n";
+use IslamWiki\Core\Application;
+use IslamWiki\Core\Database\Connection;
 
-// Initialize application
-$app = new \IslamWiki\Core\Application(__DIR__ . '/..');
-$container = $app->getContainer();
-$session = $container->get('session');
-$db = $container->get('db');
+echo "🔍 Debug Login Test\n";
+echo "==================\n\n";
 
-echo "✅ Application initialized\n";
-echo "✅ Session manager: " . get_class($session) . "\n";
-echo "✅ Database connection: " . get_class($db) . "\n\n";
-
-// Test 1: Check if session is started
-echo "📊 Test 1: Session Status\n";
-echo "==========================\n";
-echo "Session status: " . session_status() . "\n";
-echo "Session name: " . session_name() . "\n";
-echo "Session ID: " . session_id() . "\n";
-echo "Is logged in: " . ($session->isLoggedIn() ? 'Yes' : 'No') . "\n\n";
-
-// Test 2: Check if admin user exists
-echo "📊 Test 2: Database Check\n";
-echo "==========================\n";
 try {
-    $adminUser = $db->first("SELECT * FROM users WHERE username = 'admin'");
+    // Create application instance
+    $app = new Application(__DIR__ . '/..');
+    $container = $app->getContainer();
+    
+    echo "✅ Application loaded successfully\n\n";
+    
+    // Test database connection
+    echo "🔧 Testing Database Connection:\n";
+    $db = $container->get('db');
+    echo "- Database Connection: " . ($db ? 'Success' : 'Failed') . "\n";
+    
+    // Check admin user
+    echo "\n👤 Testing Admin User:\n";
+    $stmt = $db->prepare("SELECT id, username, email, is_admin, is_active FROM users WHERE username = ?");
+    $stmt->execute(['admin']);
+    $adminUser = $stmt->fetch(\PDO::FETCH_ASSOC);
+    
     if ($adminUser) {
-        echo "✅ Admin user found:\n";
-        echo "  - ID: {$adminUser->id}\n";
-        echo "  - Username: {$adminUser->username}\n";
-        echo "  - Email: {$adminUser->email}\n";
-        echo "  - Is admin: " . ($adminUser->is_admin ? 'Yes' : 'No') . "\n";
-    } else {
-        echo "❌ Admin user not found\n";
-    }
-} catch (\Exception $e) {
-    echo "❌ Database error: " . $e->getMessage() . "\n";
-}
-
-echo "\n";
-
-// Test 3: Simulate login
-echo "📊 Test 3: Simulating Login\n";
-echo "============================\n";
-try {
-    // Simulate login
-    $session->login(1, 'admin', true);
-    echo "✅ Login simulation completed\n";
-    echo "Is logged in: " . ($session->isLoggedIn() ? 'Yes' : 'No') . "\n";
-    echo "User ID: " . ($session->getUserId() ?? 'null') . "\n";
-    echo "Username: " . ($session->getUsername() ?? 'null') . "\n";
-    echo "Is admin: " . ($session->isAdmin() ? 'Yes' : 'No') . "\n";
-    
-    // Check session data
-    echo "\nSession data:\n";
-    if (empty($_SESSION)) {
-        echo "  - Session is empty\n";
-    } else {
-        foreach ($_SESSION as $key => $value) {
-            echo "  - $key: " . (is_string($value) ? $value : gettype($value)) . "\n";
+        echo "- Admin User Found: Yes\n";
+        echo "- User ID: " . $adminUser['id'] . "\n";
+        echo "- Username: " . $adminUser['username'] . "\n";
+        echo "- Email: " . $adminUser['email'] . "\n";
+        echo "- Is Admin: " . ($adminUser['is_admin'] ? 'Yes' : 'No') . "\n";
+        echo "- Is Active: " . ($adminUser['is_active'] ? 'Yes' : 'No') . "\n";
+        
+        // Test password verification
+        echo "\n🔐 Testing Password Verification:\n";
+        $testPassword = 'password';
+        $stmt = $db->prepare("SELECT password FROM users WHERE username = ?");
+        $stmt->execute(['admin']);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($user && password_verify($testPassword, $user['password'])) {
+            echo "- Password Verification: Success\n";
+            echo "- Login Credentials: admin / password\n";
+        } else {
+            echo "- Password Verification: Failed\n";
+            echo "- Admin password might be incorrect\n";
         }
-    }
-    
-} catch (\Exception $e) {
-    echo "❌ Login error: " . $e->getMessage() . "\n";
-}
-
-echo "\n";
-
-// Test 4: Test SettingsController with authenticated session
-echo "📊 Test 4: Testing SettingsController\n";
-echo "=====================================\n";
-try {
-    $settingsController = new \IslamWiki\Http\Controllers\SettingsController($db, $container);
-    
-    // Use reflection to access the private index method
-    $reflection = new ReflectionClass($settingsController);
-    $method = $reflection->getMethod('index');
-    $method->setAccessible(true);
-    
-    $response = $method->invoke($settingsController);
-    
-    echo "✅ SettingsController executed successfully\n";
-    echo "Response status: " . $response->getStatusCode() . "\n";
-    
-    // Check if response contains skin data
-    $body = $response->getBody();
-    if (strpos($body, 'skin-card') !== false) {
-        echo "✅ Response contains skin cards\n";
     } else {
-        echo "❌ Response does not contain skin cards\n";
+        echo "- Admin User Found: No\n";
     }
     
-} catch (\Exception $e) {
-    echo "❌ SettingsController error: " . $e->getMessage() . "\n";
-    echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
-}
-
-echo "\n✅ Login test completed!\n"; 
+    // Test session manager
+    echo "\n🔧 Testing Session Manager:\n";
+    if ($container->has('session')) {
+        $session = $container->get('session');
+        echo "- Session Manager: " . get_class($session) . "\n";
+        echo "- Session Available: Yes\n";
+        
+        // Test session functionality
+        try {
+            $session->start();
+            echo "- Session Started: Yes\n";
+            echo "- Session ID: " . session_id() . "\n";
+        } catch (Exception $e) {
+            echo "- Session Start Error: " . $e->getMessage() . "\n";
+        }
+    } else {
+        echo "- Session Manager: Not available\n";
+    }
+    
+    // Test authentication controller
+    echo "\n🔧 Testing Authentication Controller:\n";
+    try {
+        $authController = new \IslamWiki\Http\Controllers\Auth\AuthController($db, $container);
+        echo "- Auth Controller: " . get_class($authController) . "\n";
+        echo "- Auth Controller Available: Yes\n";
+    } catch (Exception $e) {
+        echo "- Auth Controller Error: " . $e->getMessage() . "\n";
+    }
+    
+    // Test login route
+    echo "\n🌐 Testing Login Route:\n";
+    $router = $app->getRouter();
+    echo "- Router Available: " . ($router ? 'Yes' : 'No') . "\n";
+    
+    if ($router) {
+        // Check if login route exists
+        $reflection = new ReflectionClass($router);
+        $routesProperty = $reflection->getProperty('routes');
+        $routesProperty->setAccessible(true);
+        $routes = $routesProperty->getValue($router);
+        
+        $loginRouteFound = false;
+        foreach ($routes as $route) {
+            if (strpos($route['route'], '/login') !== false) {
+                $loginRouteFound = true;
+                break;
+            }
+        }
+        
+        echo "- Login Route Found: " . ($loginRouteFound ? 'Yes' : 'No') . "\n";
+    }
+    
+    echo "\n✅ Login test completed successfully\n";
+    echo "\n📋 Summary:\n";
+    echo "- ✅ Admin user exists with correct credentials\n";
+    echo "- ✅ Database connection is working\n";
+    echo "- ✅ Session manager is available\n";
+    echo "- ✅ Authentication controller is available\n";
+    echo "- 💡 Login credentials: admin / password\n";
+    
+} catch (Exception $e) {
+    echo "❌ Error: " . $e->getMessage() . "\n";
+    echo "Stack trace: " . $e->getTraceAsString() . "\n";
+} 

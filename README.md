@@ -1,7 +1,7 @@
 # IslamWiki
 
-**Version:** 0.0.47  
-**Release Date:** 2025-08-03  
+**Version:** 0.0.48  
+**Release Date:** 2025-08-04  
 **Status:** Active Development
 
 A comprehensive Islamic knowledge base and resource center built with modern web technologies.
@@ -34,6 +34,7 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **Skin Information**: Detailed metadata and feature information display
 - **Responsive Design**: Mobile-friendly layouts for all skins
 - **Accessibility**: Skip links, keyboard navigation, focus management
+- **Authentication Safe**: Skin middleware doesn't interfere with login process
 
 ### Development Features
 - **Dependency Injection**: Container-based service management

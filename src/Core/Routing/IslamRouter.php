@@ -144,6 +144,16 @@ class IslamRouter implements RequestHandlerInterface
             error_log("IslamRouter::handle - Middleware stack initialized: " . ($this->middlewareStack ? 'yes' : 'no'));
         }
         
+        // Ensure middleware stack is available
+        if (!$this->middlewareStack) {
+            error_log("IslamRouter::handle - Middleware stack initialization failed, creating fallback");
+            try {
+                $this->initializeMiddlewareStack();
+            } catch (\Throwable $e) {
+                error_log("IslamRouter::handle - Fallback middleware initialization failed: " . $e->getMessage());
+            }
+        }
+        
         // Strip query string and decode URI
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
@@ -216,12 +226,6 @@ class IslamRouter implements RequestHandlerInterface
         // Convert PSR-7 request to our Request class for middleware
         $ourRequest = \IslamWiki\Core\Http\Request::fromPsr7($request);
         
-        // TEMPORARILY DISABLE MIDDLEWARE FOR TESTING
-        // TODO: Re-enable middleware when routing issues are fixed
-        error_log("IslamRouter::handle - Bypassing middleware for testing");
-        $response = $finalHandler($ourRequest);
-        
-        /*
         // Execute middleware stack if available
         if ($this->middlewareStack) {
             error_log("IslamRouter::handle - Middleware stack available, executing");
@@ -230,7 +234,6 @@ class IslamRouter implements RequestHandlerInterface
             error_log("IslamRouter::handle - No middleware stack, executing final handler directly");
             $response = $finalHandler($ourRequest);
         }
-        */
         
         return $response;
     }
@@ -368,9 +371,10 @@ class IslamRouter implements RequestHandlerInterface
                     ? $this->container->get(\IslamWiki\Core\Application::class)
                     : null;
                 if ($app) {
-                    // Create SkinMiddleware directly without dependency injection
+                    // Create SkinMiddleware with improved session handling
                     $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($app);
                     $this->middlewareStack->add($skinMiddleware);
+                    error_log("IslamRouter::initializeMiddlewareStack - SkinMiddleware enabled with auth route protection");
                 }
             } catch (\Throwable $e) {
                 error_log("IslamRouter::initializeMiddlewareStack - Error adding SkinMiddleware: " . $e->getMessage());

@@ -26,4 +26,12 @@
 
 ---
 
-- [ ] looks like you have two search pages, one iqra-search and one search. the correct url is search. make sure we are using the iqra search engine.---
+- [x] looks like you have two search pages, one iqra-search and one search. the correct url is search. make sure we are using the iqra search engine.---
+
+- [x] in order to help with API, i want to develop a comprehensive API system called Siraj.  
+  
+  dont forget to incorporate this with the Iqra and other systems.
+
+---
+
+create autoload as local

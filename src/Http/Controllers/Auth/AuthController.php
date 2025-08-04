@@ -59,7 +59,7 @@ class AuthController
             'error' => $error,
             'redirect' => $redirect,
             'auth' => $this->auth,
-            'csrf_token' => $this->container->get('session')->get('csrf_token', ''),
+            'csrf_token' => $this->container->get('session')->getCsrfToken(),
             'user' => null
         ]);
         
@@ -76,6 +76,13 @@ class AuthController
             $username = trim($data['username'] ?? '');
             $password = $data['password'] ?? '';
             $redirect = $data['redirect'] ?? '/dashboard';
+            $csrfToken = $data['_token'] ?? '';
+            
+            // Validate CSRF token
+            $session = $this->container->get('session');
+            if (!$session->verifyCsrfToken($csrfToken)) {
+                return $this->redirect('/login?error=Invalid security token');
+            }
             
             // Validate input
             if (empty($username) || empty($password)) {
@@ -115,7 +122,7 @@ class AuthController
             'title' => 'Register - IslamWiki',
             'error' => $error,
             'auth' => $this->auth,
-            'csrf_token' => $this->container->get('session')->get('csrf_token', ''),
+            'csrf_token' => $this->container->get('session')->getCsrfToken(),
             'user' => null
         ]);
         

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.48] - 2025-08-04
+
+### Fixed
+- **Critical Authentication Bug**: Resolved login failure caused by SkinMiddleware session interference
+- **SkinMiddleware Session Handling**: Fixed middleware accessing session data during authentication
+- **Authentication Route Protection**: Added protection for login/register routes from skin middleware
+- **Session State Management**: Improved session handling to prevent authentication conflicts
+- **Middleware Error Handling**: Enhanced error handling for session-related operations
+
+### Technical Improvements
+- **Route-based Middleware Protection**: SkinMiddleware now skips authentication routes
+- **Safe Session Access**: Added try-catch blocks and null checks for session operations
+- **Non-Critical Error Handling**: Session errors in middleware no longer break authentication
+- **Improved Logging**: Better error logging for debugging middleware issues
+
+### Files Changed
+- `src/Http/Middleware/SkinMiddleware.php` - Added authentication route protection and safe session handling
+- `src/Core/Routing/IslamRouter.php` - Re-enabled SkinMiddleware with improved error handling
+
+### Impact
+- **User Experience**: Login now works correctly with skin switching functionality
+- **Authentication Reliability**: No more session interference during login process
+- **Skin Management**: Dynamic skin switching works without breaking authentication
+- **System Stability**: Middleware no longer interferes with core authentication flow
+
 ## [0.0.47] - 2025-08-03
 
 ### Added
