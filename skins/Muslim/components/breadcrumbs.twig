@@ -1,0 +1,31 @@
+<!-- Muslim Skin Breadcrumbs Component -->
+{% if enabled %}
+    <nav class="breadcrumbs" aria-label="Breadcrumb navigation">
+        <ol class="breadcrumb-list">
+            <li class="breadcrumb-item">
+                <a href="/" class="breadcrumb-link">
+                    <span class="breadcrumb-icon">🏠</span>
+                    Home
+                </a>
+            </li>
+            {% if breadcrumbs %}
+                {% for breadcrumb in breadcrumbs %}
+                    <li class="breadcrumb-item">
+                        {% if breadcrumb.url and not loop.last %}
+                            <a href="{{ breadcrumb.url }}" class="breadcrumb-link">
+                                {{ breadcrumb.label }}
+                            </a>
+                        {% else %}
+                            <span class="breadcrumb-current">{{ breadcrumb.label }}</span>
+                        {% endif %}
+                    </li>
+                    {% if not loop.last %}
+                        <li class="breadcrumb-separator">
+                            <span class="separator">{{ separator }}</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </ol>
+    </nav>
+{% endif %} 

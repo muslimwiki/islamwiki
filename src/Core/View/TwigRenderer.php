@@ -110,12 +110,72 @@ class TwigRenderer
      */
     public function renderWithSkin(string $template, array $data = []): string
     {
-        // If we have an active skin layout, try to use it
-        if ($this->activeSkinLayoutPath && file_exists($this->activeSkinLayoutPath . '/layout.twig')) {
-            // Add the skin layout path to the data
-            $data['skin_layout_path'] = 'skin:layout.twig';
+        // Get skin data from the container if available
+        try {
+            // Try to get the application instance from the global scope
+            if (isset($GLOBALS['app']) && $GLOBALS['app'] instanceof \IslamWiki\Core\Application) {
+                $app = $GLOBALS['app'];
+                $container = $app->getContainer();
+                
+                if ($container->has('skin.data')) {
+                    $skinData = $container->get('skin.data');
+                    
+                    // Update the global variables so the template can access them
+                    $this->addGlobals([
+                        'skin_css' => $skinData['css'] ?? '',
+                        'skin_js' => $skinData['js'] ?? '',
+                        'active_skin' => $skinData['name'] ?? 'default',
+                        'skin_version' => $skinData['version'] ?? '0.0.29',
+                        'skin_config' => $skinData['config'] ?? [],
+                    ]);
+                    
+                    // Also add to template data for backward compatibility
+                    $data['skin_css'] = $skinData['css'] ?? '';
+                    $data['skin_js'] = $skinData['js'] ?? '';
+                    $data['active_skin'] = $skinData['name'] ?? 'default';
+                    $data['skin_version'] = $skinData['version'] ?? '0.0.29';
+                    $data['skin_config'] = $skinData['config'] ?? [];
+                    
+                    // Check if we have a skin layout path and use it
+                    if ($this->activeSkinLayoutPath && is_file($this->activeSkinLayoutPath . '/layout.twig')) {
+                        // Set the skin layout path for the template to use
+                        $data['skin_layout_path'] = $this->activeSkinLayoutPath;
+                        
+                        // Create a wrapper template that extends the skin layout
+                        $wrapperTemplate = "{% extends 'skin:layout.twig' %}\n{% block content %}{% include '" . $template . "' %}{% endblock %}";
+                        
+                        // Create a temporary template name
+                        $tempTemplateName = 'temp_' . uniqid();
+                        
+                        // Store the original loader
+                        $originalLoader = $this->twig->getLoader();
+                        
+                        // Create a new loader that includes both the original paths and our temporary template
+                        $arrayLoader = new \Twig\Loader\ArrayLoader([
+                            $tempTemplateName => $wrapperTemplate
+                        ]);
+                        
+                        // Create a chain loader to combine both loaders
+                        $chainLoader = new \Twig\Loader\ChainLoader([$arrayLoader, $originalLoader]);
+                        
+                        // Set the chain loader
+                        $this->twig->setLoader($chainLoader);
+                        
+                        // Render the wrapper template
+                        $result = $this->twig->render($tempTemplateName, $data);
+                        
+                        // Restore the original loader
+                        $this->twig->setLoader($originalLoader);
+                        
+                        return $result;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            error_log('TwigRenderer::renderWithSkin - Error getting skin data: ' . $e->getMessage());
         }
         
+        // Fallback to regular rendering if no skin layout is available
         return $this->render($template, $data);
     }
 

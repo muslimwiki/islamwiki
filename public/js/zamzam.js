@@ -38,12 +38,36 @@ console.log('ZamZam.js loading...');
 
         scanForComponents() {
             console.log('Scanning for components...');
+            
+            // First, hide all z-show elements to prevent flash
+            document.querySelectorAll('[z-show]').forEach(el => {
+                if (!el.classList.contains('zamzam-processed')) {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                    el.style.opacity = '0';
+                    console.log('Hidden element initially:', el);
+                }
+            });
+            
             const elements = document.querySelectorAll('[z-data]');
             console.log('Found', elements.length, 'elements with z-data');
             elements.forEach((element, index) => {
                 console.log('Processing element', index, element);
                 this.initializeComponent(element);
             });
+            
+            // After all components are initialized, show elements that should be visible
+            setTimeout(() => {
+                document.querySelectorAll('[z-show].zamzam-processed').forEach(el => {
+                    const expression = el.getAttribute('z-show');
+                    const isVisible = this.evaluateExpression(expression, this.components.get(el.closest('[z-data]')));
+                    if (isVisible) {
+                        el.style.display = '';
+                        el.style.visibility = 'visible';
+                        el.style.opacity = '1';
+                    }
+                });
+            }, 100);
         }
 
         initializeComponent(element) {
@@ -98,27 +122,21 @@ console.log('ZamZam.js loading...');
                     });
                     
                     console.log('Reactive data after adding methods:', reactiveData);
-                } catch (e) {
-                    console.error('Error parsing z-methods:', e);
-                    console.error('Methods attribute was:', methodsAttr);
-                    console.error('Error details:', e.message, e.stack);
+                } catch (methodParseError) {
+                    console.error('Error parsing methods:', methodParseError);
                 }
             }
+
+            // Store the component data
+            this.components.set(element, reactiveData);
             
-            // Store component
-            const componentId = 'component_' + Math.random().toString(36).substr(2, 9);
-            this.components.set(componentId, {
-                element,
-                data: reactiveData
-            });
-            
-            // Bind events
+            // Bind events first
             this.bindComponentEvents(element, reactiveData);
             
-            // Apply directives
+            // Then apply directives
             this.applyDirectives(element, reactiveData);
             
-            console.log('Component initialized:', componentId, reactiveData);
+            console.log('Component initialized successfully:', element);
         }
 
         makeReactive(data) {
@@ -147,11 +165,14 @@ console.log('ZamZam.js loading...');
             console.log('Binding events for element:', element);
             
             // Click events
-            element.querySelectorAll('[z-click]').forEach(el => {
-                console.log('Binding click event to:', el);
+            const clickElements = element.querySelectorAll('[z-click]');
+            console.log('Found', clickElements.length, 'elements with z-click');
+            clickElements.forEach((el, index) => {
+                console.log(`Binding click event ${index} to:`, el);
                 const expression = el.getAttribute('z-click');
                 console.log('Click expression:', expression);
                 el.addEventListener('click', (e) => {
+                    console.log('Click event fired on element:', el);
                     console.log('Click event fired, evaluating:', expression);
                     e.preventDefault();
                     e.stopPropagation();
@@ -160,27 +181,34 @@ console.log('ZamZam.js loading...');
                     // Update the component after the expression is evaluated
                     this.updateComponent(element, data);
                 });
+                console.log('Click event bound successfully to:', el);
             });
 
             // Click away events
-            element.querySelectorAll('[z-click-away]').forEach(el => {
-                console.log('Binding click-away event to:', el);
+            const clickAwayElements = element.querySelectorAll('[z-click-away]');
+            console.log('Found', clickAwayElements.length, 'elements with z-click-away');
+            clickAwayElements.forEach((el, index) => {
+                console.log(`Binding click-away event ${index} to:`, el);
                 const expression = el.getAttribute('z-click-away');
                 console.log('Click-away expression:', expression);
                 
                 document.addEventListener('click', (e) => {
                     if (!element.contains(e.target)) {
+                        console.log('Click away detected on element:', el);
                         console.log('Click away detected, evaluating:', expression);
                         const result = this.evaluateExpression(expression, data, e);
                         console.log('Click-away result:', result);
                         this.updateComponent(element, data);
                     }
                 });
+                console.log('Click-away event bound successfully to:', el);
             });
 
             // Input events
-            element.querySelectorAll('[z-model]').forEach(el => {
-                console.log('Binding model event to:', el);
+            const modelElements = element.querySelectorAll('[z-model]');
+            console.log('Found', modelElements.length, 'elements with z-model');
+            modelElements.forEach((el, index) => {
+                console.log(`Binding model event ${index} to:`, el);
                 const property = el.getAttribute('z-model');
                 el.addEventListener('input', (e) => {
                     console.log('Input event, setting', property, 'to', e.target.value);
@@ -188,6 +216,7 @@ console.log('ZamZam.js loading...');
                     // Update the component after the data changes
                     this.updateComponent(element, data);
                 });
+                console.log('Model event bound successfully to:', el);
             });
         }
 
@@ -197,6 +226,7 @@ console.log('ZamZam.js loading...');
             // z-show directive
             element.querySelectorAll('[z-show]').forEach(el => {
                 console.log('Applying z-show to:', el);
+                // Always read the original expression from the HTML, never modify the attribute
                 const expression = el.getAttribute('z-show');
                 console.log('Show expression:', expression);
                 const isVisible = this.evaluateExpression(expression, data);
@@ -204,11 +234,16 @@ console.log('ZamZam.js loading...');
                 
                 if (isVisible) {
                     el.style.display = '';
-                    el.setAttribute('z-show', 'true');
+                    el.style.visibility = 'visible';
+                    el.style.opacity = '1';
                 } else {
                     el.style.display = 'none';
-                    el.setAttribute('z-show', 'false');
+                    el.style.visibility = 'hidden';
+                    el.style.opacity = '0';
                 }
+                
+                // Mark as processed
+                el.classList.add('zamzam-processed');
             });
 
             // z-text directive
@@ -265,14 +300,20 @@ console.log('ZamZam.js loading...');
         evaluateExpression(expression, data, event = null) {
             console.log('Evaluating expression:', expression, 'with data:', data);
             
-            const context = { ...data };
-            if (event) {
-                context.$event = event;
-            }
+            const context = data;
             
             // Handle simple boolean expressions
             if (expression === 'true') return true;
             if (expression === 'false') return false;
+            
+            // Handle negation expressions like "!open"
+            if (expression.startsWith('!')) {
+                const property = expression.substring(1);
+                if (context[property] !== undefined) {
+                    console.log('Handling negation:', property, '=', !context[property]);
+                    return !context[property];
+                }
+            }
             
             // Handle simple property access
             if (context[expression] !== undefined) {
@@ -287,75 +328,57 @@ console.log('ZamZam.js loading...');
                 for (let part of parts) {
                     part = part.trim();
                     if (context[part] !== undefined && context[part]) {
-                        console.log('Returning first truthy value:', context[part]);
                         return context[part];
                     }
                 }
-                console.log('Returning last part:', parts[parts.length - 1].trim());
-                return parts[parts.length - 1].trim();
+                return parts[parts.length - 1].trim().replace(/['"]/g, '');
             }
             
-            // Handle negation like "!open"
-            if (expression.startsWith('!')) {
-                const property = expression.substring(1);
-                const value = context[property];
-                console.log('Handling negation:', property, '=', !value);
-                return !value;
-            }
-            
-            // Handle function calls like "showMessage('Hello')"
+            // Handle function calls like "toggleOpen()"
             if (expression.includes('(') && expression.includes(')')) {
-                const match = expression.match(/^(\w+)\(([^)]*)\)$/);
-                if (match) {
-                    const functionName = match[1];
-                    const argsString = match[2];
-                    console.log('Handling function call:', functionName, 'with args:', argsString);
-                    
-                    if (typeof context[functionName] === 'function') {
-                        // Parse arguments
-                        const args = [];
-                        if (argsString.trim()) {
-                            // Simple argument parsing - split by comma and trim
-                            argsString.split(',').forEach(arg => {
-                                arg = arg.trim();
-                                // Remove quotes if present
-                                if ((arg.startsWith("'") && arg.endsWith("'")) || 
-                                    (arg.startsWith('"') && arg.endsWith('"'))) {
-                                    args.push(arg.slice(1, -1));
-                                } else {
-                                    args.push(arg);
-                                }
-                            });
-                        }
-                        
-                        console.log('Calling function:', functionName, 'with args:', args);
-                        const result = context[functionName](...args);
-                        console.log('Function result:', result);
-                        return result;
-                    } else {
-                        console.log('Function not found:', functionName);
-                    }
+                const functionName = expression.split('(')[0];
+                if (context[functionName] && typeof context[functionName] === 'function') {
+                    console.log('Calling function:', functionName);
+                    const result = context[functionName]();
+                    console.log('Function result:', result);
+                    return result;
+                } else {
+                    console.log('Function not found:', functionName);
                 }
             }
             
-            // Handle simple expressions like "open = !open"
+            // Handle assignments like "open = !open" or "open = true"
             if (expression.includes('=')) {
                 const parts = expression.split('=');
                 if (parts.length === 2) {
                     const property = parts[0].trim();
-                    const value = parts[1].trim();
-                    console.log('Handling assignment:', property, '=', value);
+                    const valueExpression = parts[1].trim();
+                    console.log('Handling assignment:', property, '=', valueExpression);
                     
-                    if (value === '!open') {
-                        context[property] = !context.open;
-                        return context[property];
-                    } else if (value === 'true') {
-                        context[property] = true;
-                        return context[property];
-                    } else if (value === 'false') {
-                        context[property] = false;
-                        return context[property];
+                    // Evaluate the right side of the assignment
+                    let newValue;
+                    if (valueExpression === 'true') {
+                        newValue = true;
+                    } else if (valueExpression === 'false') {
+                        newValue = false;
+                    } else if (valueExpression.startsWith('!')) {
+                        // Handle negation like "!open"
+                        const negatedProperty = valueExpression.substring(1);
+                        newValue = !context[negatedProperty];
+                    } else {
+                        // Try to evaluate as a simple expression
+                        try {
+                            newValue = this.safeEval(valueExpression, context);
+                        } catch (e) {
+                            console.error('Error evaluating expression:', e);
+                            newValue = false;
+                        }
                     }
+                    
+                    // Update the property
+                    context[property] = newValue;
+                    console.log('Updated', property, 'to:', newValue);
+                    return newValue;
                 }
             }
 
@@ -398,7 +421,9 @@ console.log('ZamZam.js loading...');
 
         updateComponent(element, data) {
             console.log('Updating component:', element);
+            console.log('Component data:', data);
             this.applyDirectives(element, data);
+            console.log('Component updated successfully');
         }
     }
 

@@ -76,7 +76,8 @@ class SkinManager
      */
     private function loadSkins(): void
     {
-        $skinsPath = $this->app->basePath('skins');
+        // Use public/skins as the base directory for skins
+        $skinsPath = $this->app->basePath('public/skins');
         
         if (!is_dir($skinsPath)) {
             return;

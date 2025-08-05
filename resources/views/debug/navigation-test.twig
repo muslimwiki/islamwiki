@@ -1,0 +1,124 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Navigation Test - IslamWiki{% endblock %}
+
+{% block content %}
+    <div class="test-page">
+        <div class="container">
+            <h1>Navigation Test</h1>
+            
+            <div class="test-section">
+                <h2>Test Instructions</h2>
+                <p>This page tests the user dropdown functionality and navigation flash fix.</p>
+                <ol>
+                    <li>Look for the user dropdown in the header (admin button)</li>
+                    <li>Click on the admin button to test the dropdown</li>
+                    <li>Click the links below to simulate page navigation</li>
+                    <li>Check if the dropdown flashes when navigating</li>
+                </ol>
+            </div>
+            
+            <div class="test-section">
+                <h2>Navigation Links</h2>
+                <p>Click these links to test navigation and check for dropdown flash:</p>
+                <div class="nav-links">
+                    <a href="/" class="btn btn-primary">Home</a>
+                    <a href="/login" class="btn btn-secondary">Login</a>
+                    <a href="/register" class="btn btn-outline">Register</a>
+                    <a href="/pages" class="btn btn-primary">Pages</a>
+                    <a href="/quran" class="btn btn-secondary">Quran</a>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>Manual Dropdown Test</h2>
+                <button onclick="testDropdownClick()" class="btn btn-primary">Test Dropdown Click</button>
+                <button onclick="checkDropdownState()" class="btn btn-secondary">Check Dropdown State</button>
+            </div>
+            
+            <div class="test-section">
+                <h2>Debug Information</h2>
+                <p><strong>User:</strong> {{ user.username }}</p>
+                <p><strong>Skin:</strong> {{ active_skin }}</p>
+                <p><strong>ZamZam.js Status:</strong> <span id="zamzam-status">Checking...</span></p>
+                <p><strong>Dropdown Element:</strong> <span id="dropdown-status">Checking...</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .test-page { padding: 20px; }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+        }
+        .test-section h2 { margin-top: 0; }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { margin: 5px; }
+    </style>
+    
+    <script>
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Navigation test page loaded');
+            
+            // Check if ZamZam.js is loaded
+            setTimeout(() => {
+                const zamzamStatus = document.getElementById('zamzam-status');
+                if (window.ZamZam) {
+                    zamzamStatus.textContent = 'Loaded';
+                    zamzamStatus.style.color = 'green';
+                } else {
+                    zamzamStatus.textContent = 'Not loaded';
+                    zamzamStatus.style.color = 'red';
+                }
+                
+                // Check for dropdown element
+                const dropdown = document.querySelector('.user-dropdown');
+                const dropdownStatus = document.getElementById('dropdown-status');
+                if (dropdown) {
+                    dropdownStatus.textContent = 'Found';
+                    dropdownStatus.style.color = 'green';
+                    console.log('Dropdown element found:', dropdown);
+                } else {
+                    dropdownStatus.textContent = 'Not found';
+                    dropdownStatus.style.color = 'red';
+                }
+            }, 1000);
+        });
+        
+        function testDropdownClick() {
+            console.log('Testing dropdown click...');
+            const dropdown = document.querySelector('.user-dropdown');
+            if (dropdown) {
+                const button = dropdown.querySelector('[z-click]');
+                if (button) {
+                    console.log('Simulating click on dropdown button...');
+                    button.click();
+                } else {
+                    console.log('No click button found in dropdown');
+                }
+            } else {
+                console.log('No dropdown found');
+            }
+        }
+        
+        function checkDropdownState() {
+            console.log('Checking dropdown state...');
+            const dropdown = document.querySelector('.user-dropdown');
+            if (dropdown) {
+                const dataAttr = dropdown.getAttribute('z-data');
+                console.log('Dropdown z-data:', dataAttr);
+                
+                const showElement = dropdown.querySelector('[z-show]');
+                if (showElement) {
+                    console.log('Show element display:', showElement.style.display);
+                    console.log('Show element visibility:', showElement.style.visibility);
+                    console.log('Show element opacity:', showElement.style.opacity);
+                }
+            }
+        }
+    </script>
+{% endblock %} 

@@ -1,0 +1,62 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}User Dropdown Test - IslamWiki{% endblock %}
+
+{% block content %}
+    <div class="test-page">
+        <div class="container">
+            <h1>User Dropdown Test</h1>
+            
+            <div class="test-section">
+                <h2>Test Instructions</h2>
+                <p>This page tests the user dropdown functionality with a mock user.</p>
+                <ul>
+                    <li>Look for the user dropdown in the header (top right)</li>
+                    <li>Click on the user icon/name to open the dropdown</li>
+                    <li>Verify that the dropdown shows: Dashboard, Profile, Settings, Logout</li>
+                    <li>Test clicking outside to close the dropdown</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h2>Mock User Data</h2>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Admin:</strong> {{ user.is_admin ? 'Yes' : 'No' }}</p>
+            </div>
+            
+            <div class="test-section">
+                <h2>Static Data Verification</h2>
+                <p><strong>User Menu Items:</strong></p>
+                <ul>
+                    {% for item in static_data.navigation.user %}
+                        <li>{{ item.icon }} {{ item.label }} - {{ item.url }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h2>Component Data</h2>
+                <p><strong>Header Component:</strong></p>
+                <pre>{{ components.header|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .test-page { padding: 20px; }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+        }
+        .test-section h2 { margin-top: 0; }
+        pre { 
+            background: #f5f5f5; 
+            padding: 10px; 
+            border-radius: 4px; 
+            overflow-x: auto; 
+        }
+    </style>
+{% endblock %} 

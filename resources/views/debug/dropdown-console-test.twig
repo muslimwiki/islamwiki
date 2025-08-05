@@ -1,0 +1,128 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Dropdown Console Test - IslamWiki{% endblock %}
+
+{% block content %}
+    <div class="test-page">
+        <div class="container">
+            <h1>Dropdown Console Test</h1>
+            
+            <div class="test-section">
+                <h2>Instructions</h2>
+                <p>1. Open your browser's developer console (F12)</p>
+                <p>2. Look for any JavaScript errors</p>
+                <p>3. Click on the user dropdown button (admin) in the header</p>
+                <p>4. Check the console for ZamZam.js debug messages</p>
+            </div>
+            
+            <div class="test-section">
+                <h2>Debug Information</h2>
+                <p><strong>User:</strong> {{ user.username }}</p>
+                <p><strong>ZamZam.js Status:</strong> <span id="zamzam-status">Checking...</span></p>
+                <p><strong>Dropdown Element:</strong> <span id="dropdown-status">Checking...</span></p>
+            </div>
+            
+            <div class="test-section">
+                <h2>Manual Test</h2>
+                <button onclick="testDropdown()" class="btn btn-primary">Test Dropdown Manually</button>
+                <button onclick="checkZamZam()" class="btn btn-secondary">Check ZamZam.js</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .test-page { padding: 20px; }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+        }
+        .test-section h2 { margin-top: 0; }
+        .btn { margin: 5px; }
+    </style>
+    
+    <script>
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, checking ZamZam.js...');
+            
+            // Check if ZamZam.js is loaded
+            setTimeout(() => {
+                const zamzamStatus = document.getElementById('zamzam-status');
+                if (window.ZamZam) {
+                    zamzamStatus.textContent = 'Loaded';
+                    zamzamStatus.style.color = 'green';
+                } else {
+                    zamzamStatus.textContent = 'Not loaded';
+                    zamzamStatus.style.color = 'red';
+                }
+                
+                // Check for dropdown element
+                const dropdown = document.querySelector('.user-dropdown');
+                const dropdownStatus = document.getElementById('dropdown-status');
+                if (dropdown) {
+                    dropdownStatus.textContent = 'Found';
+                    dropdownStatus.style.color = 'green';
+                    console.log('Dropdown element found:', dropdown);
+                    console.log('Dropdown z-data:', dropdown.getAttribute('z-data'));
+                    console.log('Dropdown z-click:', dropdown.querySelector('[z-click]')?.getAttribute('z-click'));
+                    console.log('Dropdown z-show:', dropdown.querySelector('[z-show]')?.getAttribute('z-show'));
+                } else {
+                    dropdownStatus.textContent = 'Not found';
+                    dropdownStatus.style.color = 'red';
+                }
+            }, 1000);
+        });
+        
+        function testDropdown() {
+            console.log('Manual dropdown test...');
+            const dropdown = document.querySelector('.user-dropdown');
+            if (dropdown) {
+                console.log('Found dropdown, checking data...');
+                const dataAttr = dropdown.getAttribute('z-data');
+                console.log('z-data:', dataAttr);
+                
+                try {
+                    const data = JSON.parse(dataAttr);
+                    console.log('Parsed data:', data);
+                    
+                    // Toggle the open state
+                    if (data.open !== undefined) {
+                        data.open = !data.open;
+                        console.log('Toggled open to:', data.open);
+                        
+                        // Update the attribute
+                        dropdown.setAttribute('z-data', JSON.stringify(data));
+                        
+                        // Trigger ZamZam update
+                        if (window.ZamZam) {
+                            console.log('Triggering ZamZam update...');
+                            // This would need to be implemented in ZamZam.js
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing z-data:', e);
+                }
+            } else {
+                console.log('Dropdown not found');
+            }
+        }
+        
+        function checkZamZam() {
+            console.log('Checking ZamZam.js...');
+            console.log('window.ZamZam:', window.ZamZam);
+            console.log('ZamZam components:', window.ZamZam?.components);
+            
+            // Check for elements with z-data
+            const elements = document.querySelectorAll('[z-data]');
+            console.log('Elements with z-data:', elements.length);
+            elements.forEach((el, index) => {
+                console.log(`Element ${index}:`, el);
+                console.log(`  z-data:`, el.getAttribute('z-data'));
+                console.log(`  z-click:`, el.querySelector('[z-click]')?.getAttribute('z-click'));
+                console.log(`  z-show:`, el.querySelector('[z-show]')?.getAttribute('z-show'));
+            });
+        }
+    </script>
+{% endblock %} 

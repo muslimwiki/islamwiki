@@ -1,7 +1,7 @@
 # IslamWiki
 
-**Version:** 0.0.49  
-**Release Date:** 2025-08-04  
+**Version:** 0.0.50  
+**Release Date:** 2025-08-05  
 **Status:** Active Development
 
 A comprehensive Islamic knowledge base and resource center built with modern web technologies.
@@ -37,6 +37,9 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **Authentication Safe**: Skin middleware doesn't interfere with login process
 - **Content Rendering**: Proper content display in main body area for all skins
 - **CSS Framework Integration**: Seamless integration with Safa CSS framework
+- **URL Parameter Override**: Quick skin switching via URL parameters (`?skin=bismillah`, `?skin=muslim`)
+- **Temporary Skin Testing**: Non-persistent skin switching for development and testing
+- **Validation & Fallback**: Only accepts valid skin names, falls back to user preference
 
 ### Development Features
 - **Dependency Injection**: Container-based service management

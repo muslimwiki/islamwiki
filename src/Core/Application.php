@@ -182,6 +182,11 @@ class Application
         $skinServiceProvider->register();
         $skinServiceProvider->boot();
 
+        // Register the StaticDataServiceProvider
+        $staticDataServiceProvider = new \IslamWiki\Providers\StaticDataServiceProvider($this);
+        $staticDataServiceProvider->register();
+        $staticDataServiceProvider->boot();
+
         // Register the BayanServiceProvider
         $bayanServiceProvider = new \IslamWiki\Providers\BayanServiceProvider();
         $bayanServiceProvider->register($this->container);

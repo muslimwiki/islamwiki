@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.50] - 2025-08-05
+
+### Added
+- **URL Parameter Skin Override**: Added ability to switch skins via URL parameter for testing and development
+- **Temporary Skin Switching**: Users can now use `?skin=bismillah` or `?skin=muslim` in URLs
+- **Case-Insensitive Parameter Support**: Works with `?skin=Bismillah`, `?skin=bismillah`, `?skin=BISMILLAH`
+- **Skin Validation**: Only accepts valid skin names, falls back to user's preferred skin
+- **Non-Persistent Override**: URL parameter changes don't affect user's saved skin preference
+
+### Technical Improvements
+- **SkinMiddleware Enhancement**: Added URL parameter detection and skin override logic
+- **Container Data Updates**: Improved skin data management in application container
+- **Template Global Updates**: Enhanced global variable management for skin switching
+- **Asset Loading**: Improved CSS and JS loading from correct skin directories
+- **Error Handling**: Added comprehensive validation and fallback mechanisms
+
+### Files Changed
+- `src/Http/Middleware/SkinMiddleware.php` - Added URL parameter skin override functionality
+- `src/Core/View/TwigRenderer.php` - Enhanced global variable management for skin switching
+- `src/Skins/UserSkin.php` - Improved CSS and JS loading from correct skin paths
+- `src/Skins/SkinManager.php` - Updated to load skins from public/skins directory
+- `.gitignore` - Updated to ignore debug log files created during development
+
+### Usage Examples
+- **Bismillah Skin**: `https://local.islam.wiki/?skin=bismillah`
+- **Muslim Skin**: `https://local.islam.wiki/?skin=muslim`
+- **Default (no parameter)**: `https://local.islam.wiki/` (uses user's preferred skin)
+
+### Impact
+- **Developer Experience**: Easy skin testing and comparison via URL parameters
+- **User Experience**: Quick skin switching for demonstration purposes
+- **Testing Efficiency**: No need to change user settings for temporary skin testing
+- **System Flexibility**: Maintains user preferences while allowing temporary overrides
+
 ## [0.0.49] - 2025-08-04
 
 ### Fixed

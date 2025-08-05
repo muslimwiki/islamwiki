@@ -1,0 +1,47 @@
+<!-- Muslim Skin Pagination Component -->
+{% if enabled and pagination %}
+    <nav class="pagination" aria-label="Page navigation">
+        <div class="pagination-info">
+            <span class="pagination-text">
+                Showing {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} results
+            </span>
+        </div>
+        
+        {% if pagination.last_page > 1 %}
+            <ul class="pagination-list">
+                <!-- Previous Page -->
+                {% if pagination.current_page > 1 %}
+                    <li class="pagination-item">
+                        <a href="{{ pagination.prev_page_url }}" class="pagination-link pagination-prev">
+                            <span class="pagination-icon">←</span>
+                            Previous
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <!-- Page Numbers -->
+                {% for page in pagination.pages %}
+                    <li class="pagination-item">
+                        {% if page.url %}
+                            <a href="{{ page.url }}" class="pagination-link {{ page.current ? 'pagination-current' : '' }}">
+                                {{ page.number }}
+                            </a>
+                        {% else %}
+                            <span class="pagination-ellipsis">...</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                
+                <!-- Next Page -->
+                {% if pagination.current_page < pagination.last_page %}
+                    <li class="pagination-item">
+                        <a href="{{ pagination.next_page_url }}" class="pagination-link pagination-next">
+                            Next
+                            <span class="pagination-icon">→</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </nav>
+{% endif %} 

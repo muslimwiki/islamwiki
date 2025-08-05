@@ -51,7 +51,7 @@ class SkinMiddleware
         }
         
         // Update skin data for the current user
-        $this->updateSkinDataForCurrentUser();
+        $this->updateSkinDataForCurrentUser($request);
         
         error_log("SkinMiddleware::handle - Skin middleware execution completed");
         
@@ -66,7 +66,7 @@ class SkinMiddleware
     /**
      * Update skin data for the current user
      */
-    private function updateSkinDataForCurrentUser(): void
+    private function updateSkinDataForCurrentUser(Request $request): void
     {
         error_log("SkinMiddleware::updateSkinDataForCurrentUser - Starting");
         
@@ -76,6 +76,66 @@ class SkinMiddleware
             $viewRenderer = $container->get('view');
             
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Got container services");
+            
+            // Check for URL parameter skin override
+            $urlSkinOverride = $request->getQueryParam('skin');
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Query params: " . json_encode($request->getQueryParams()));
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override value: " . ($urlSkinOverride ?? 'null'));
+            if ($urlSkinOverride) {
+                $urlSkinOverride = strtolower(trim($urlSkinOverride));
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override detected: " . $urlSkinOverride);
+                
+                // Validate the skin exists
+                $availableSkins = $skinManager->getAvailableSkinNames();
+                $validSkin = false;
+                foreach ($availableSkins as $skinName) {
+                    if (strtolower($skinName) === $urlSkinOverride) {
+                        $validSkin = true;
+                        $urlSkinOverride = $skinName; // Use the correct case
+                        break;
+                    }
+                }
+                
+                if ($validSkin) {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Using URL override skin: " . $urlSkinOverride);
+                    $activeSkin = $skinManager->getSkin($urlSkinOverride);
+                    
+                    // Set the active skin layout path in the view renderer
+                    if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
+                        $layoutPath = $activeSkin->getLayoutPath();
+                        if ($layoutPath && is_dir(dirname($layoutPath))) {
+                            $viewRenderer->setActiveSkinLayoutPath(dirname($layoutPath));
+                        }
+                    }
+                    
+                    // Update the view globals with URL override skin data
+                    $viewRenderer->addGlobals([
+                        'skin_css' => $activeSkin->getCssContent(),
+                        'skin_js' => $activeSkin->getJsContent(),
+                        'skin_name' => $activeSkin->getName(),
+                        'skin_version' => $activeSkin->getVersion(),
+                        'skin_config' => $activeSkin->getConfig(),
+                        'active_skin' => $activeSkin->getName(),
+                        'skin_layout_path' => $activeSkin->getLayoutPath(),
+                    ]);
+                    
+                    // Also update the container with the skin data
+                    $skinDataArray = [
+                        'css' => $activeSkin->getCssContent(),
+                        'js' => $activeSkin->getJsContent(),
+                        'name' => $activeSkin->getName(),
+                        'version' => $activeSkin->getVersion(),
+                        'config' => $activeSkin->getConfig() ?? [],
+                    ];
+                    $container->instance('skin.data', $skinDataArray);
+                    
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Applied URL override skin: " . $activeSkin->getName());
+                    // RETURN IMMEDIATELY to prevent fallback logic from running
+                    return;
+                } else {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Invalid URL skin override: " . $urlSkinOverride);
+                }
+            }
             
             // Get the active skin for the current user
             $activeSkin = null;

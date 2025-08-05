@@ -123,29 +123,25 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
  * Add skins here to make them available for selection
  */
 $wgValidSkins = [
-    'Bismillah' => 'Bismillah',
     'Muslim' => 'Muslim',
+    'Bismillah' => 'Bismillah',
 ];
 
 /**
  * Active skin configuration
- * Set this to the name of the skin folder in /skins/
- * Available skins: Bismillah, Muslim, etc.
  * 
- * Note: This is the default skin. For runtime skin switching,
- * use $skinManager->setActiveSkin('SkinName') instead.
+ * Set the active skin for the site. Available options:
+ * - 'Muslim': Modern Islamic design with comprehensive styling
+ * - 'Bismillah': Default skin with clean, minimal design
+ * 
+ * To change skins dynamically, use $skinManager->setActiveSkin('SkinName') instead.
  */
-$wgActiveSkin = env('ACTIVE_SKIN', 'Muslim');
-
-// Ensure the active skin is always set
-if (empty($wgActiveSkin)) {
-    $wgActiveSkin = 'Muslim';
-}
+$wgActiveSkin = 'Muslim';
 
 /**
  * Default skin for new users
  */
-$wgDefaultSkin = env('DEFAULT_SKIN', 'Muslim');
+$wgDefaultSkin = 'Muslim';
 
 /**
  * Skin configuration options
@@ -179,7 +175,6 @@ $wgSkinConfig = [
 $wgSitename = env('SITE_NAME', 'IslamWiki');
 $wgMetaNamespace = env('META_NAMESPACE', 'IslamWiki');
 $wgLanguageCode = env('LANGUAGE_CODE', 'en');
-$wgDefaultSkin = env('DEFAULT_SKIN', 'islamic');
 
 /**
  * URL configuration

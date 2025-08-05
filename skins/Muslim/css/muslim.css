@@ -299,13 +299,11 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: var(--spacing-sm);
     background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     min-width: 200px;
-    z-index: 1001;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -313,11 +311,7 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.user-dropdown-menu[z-show="true"] {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
+/* ZamZam.js handles visibility dynamically, so we don't need CSS rules for z-show */
 
 .dropdown-item {
     display: flex;
@@ -779,14 +773,7 @@ body {
     display: inline-block;
 }
 
-/* Fix for ZamZam z-show directive */
-[z-show="false"] {
-    display: none !important;
-}
-
-[z-show="true"] {
-    display: block !important;
-}
+/* ZamZam.js handles z-show dynamically, so we don't need CSS rules for it */
 
 /* Ensure proper z-index stacking */
 .muslim-header {

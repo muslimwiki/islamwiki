@@ -1,5 +1,15 @@
 # Notes
 
+---
+
+## Helpful scripts
+
+### Update
+
+update gitignore, release notes, readme, changelog, docs, and upload to git
+
+---
+
 ## Tailwind
 
 - [x] Tailwind CSS CDN to the layout so all Tailwind classes work properly
@@ -35,3 +45,7 @@
 ---
 
 create autoload as local
+
+---
+
+Looks like we are having loading the separate skins with the same nav, content, footer, etc.. we need to create a global static data file that will link the various static items (header, main content, footer, etc) with the current active skin.

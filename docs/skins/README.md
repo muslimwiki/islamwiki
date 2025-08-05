@@ -351,6 +351,33 @@ SKIN_GRADIENTS=true
 SKIN_DARK_THEME=false
 ```
 
+### Method 4: URL Parameter Override (New in v0.0.50)
+For quick testing and development, you can override the skin temporarily using URL parameters:
+
+#### Usage Examples
+- **Bismillah Skin**: `https://local.islam.wiki/?skin=bismillah`
+- **Muslim Skin**: `https://local.islam.wiki/?skin=muslim`
+- **Case Insensitive**: Works with `?skin=Bismillah`, `?skin=bismillah`, `?skin=BISMILLAH`
+
+#### Features
+- **Temporary Override**: URL parameter changes don't affect your saved skin preference
+- **Validation**: Only accepts valid skin names, falls back to your preferred skin
+- **Development Friendly**: Perfect for testing different skins without changing settings
+- **Non-Persistent**: Your user settings remain unchanged
+
+#### Use Cases
+- **Skin Testing**: Quickly test different skins during development
+- **Demonstrations**: Show different skins to users without changing settings
+- **Comparison**: Easily compare skins side-by-side
+- **Troubleshooting**: Test if skin issues are user-specific or global
+
+#### Technical Details
+- **Middleware Processing**: Handled by `SkinMiddleware` with URL parameter detection
+- **Container Updates**: Updates skin data in application container
+- **Template Globals**: Updates `skin_css`, `skin_js`, `active_skin` variables
+- **Asset Loading**: Loads CSS and JS from correct skin directories
+- **Fallback System**: Falls back to user's preferred skin if invalid parameter
+
 ## Using Skins Programmatically
 
 ### Get Active Skin

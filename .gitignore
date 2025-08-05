@@ -1,6 +1,6 @@
 # IslamWiki .gitignore
-# Version: 0.0.36
-# Date: 2025-08-02
+# Version: 0.0.37
+# Date: 2025-08-05
 
 # =============================================================================
 # PHP & Composer
@@ -76,6 +76,11 @@ logs/
 *.log
 php_errors.log
 error_log
+
+# Debug log files (created during development)
+debug.log
+debug_*.log
+storage/logs/debug.log.bak
 
 # =============================================================================
 # Database

@@ -52,7 +52,14 @@ class AuthController
         $error = $request->getQueryParam('error');
         $redirect = $request->getQueryParam('redirect', '/dashboard');
         
-        // Use the proper Twig renderer
+        // Get skin data if available
+        $skinData = $this->getSkinData();
+        
+        // Get static data manager
+        $staticDataManager = $this->container->get('static.data');
+        $staticData = $staticDataManager->getStaticData('login');
+        
+        // Use the proper Twig renderer with skin support
         $view = $this->container->get('view');
         $html = $view->render('auth/login.twig', [
             'title' => 'Login - IslamWiki',
@@ -60,7 +67,20 @@ class AuthController
             'redirect' => $redirect,
             'auth' => $this->auth,
             'csrf_token' => $this->container->get('session')->getCsrfToken(),
-            'user' => null
+            'user' => null,
+            'skin_css' => $skinData['css'] ?? '',
+            'skin_js' => $skinData['js'] ?? '',
+            'active_skin' => $skinData['name'] ?? 'default',
+            'skin_version' => $skinData['version'] ?? '0.0.29',
+            'skin_config' => $skinData['config'] ?? [],
+            // Add static data
+            'static_data' => $staticData,
+            'site_info' => $staticData['site'],
+            'navigation' => $staticData['navigation'],
+            'footer' => $staticData['footer'],
+            'features' => $staticData['features'],
+            'social' => $staticData['social'],
+            'components' => $staticData['components'],
         ]);
         
         return new Response(200, ['Content-Type' => 'text/html'], $html);
@@ -116,14 +136,34 @@ class AuthController
         
         $error = $request->getQueryParam('error');
         
-        // Use the proper Twig renderer
+        // Get skin data if available
+        $skinData = $this->getSkinData();
+        
+        // Get static data manager
+        $staticDataManager = $this->container->get('static.data');
+        $staticData = $staticDataManager->getStaticData('register');
+        
+        // Use the proper Twig renderer with skin support
         $view = $this->container->get('view');
         $html = $view->render('auth/register.twig', [
             'title' => 'Register - IslamWiki',
             'error' => $error,
             'auth' => $this->auth,
             'csrf_token' => $this->container->get('session')->getCsrfToken(),
-            'user' => null
+            'user' => null,
+            'skin_css' => $skinData['css'] ?? '',
+            'skin_js' => $skinData['js'] ?? '',
+            'active_skin' => $skinData['name'] ?? 'default',
+            'skin_version' => $skinData['version'] ?? '0.0.29',
+            'skin_config' => $skinData['config'] ?? [],
+            // Add static data
+            'static_data' => $staticData,
+            'site_info' => $staticData['site'],
+            'navigation' => $staticData['navigation'],
+            'footer' => $staticData['footer'],
+            'features' => $staticData['features'],
+            'social' => $staticData['social'],
+            'components' => $staticData['components'],
         ]);
         
         return new Response(200, ['Content-Type' => 'text/html'], $html);
@@ -638,5 +678,45 @@ class AuthController
         <div class="links">
             <a href="/dashboard">Back to Dashboard</a>
         </div>';
+    }
+
+    /**
+     * Get skin data for the current user
+     */
+    private function getSkinData(): array
+    {
+        try {
+            // Try to get skin data from container
+            if ($this->container->has('skin.data')) {
+                return $this->container->get('skin.data');
+            }
+            
+            // Fallback: try to get skin manager
+            if ($this->container->has('skin.manager')) {
+                $skinManager = $this->container->get('skin.manager');
+                $activeSkin = $skinManager->getActiveSkin();
+                
+                if ($activeSkin) {
+                    return [
+                        'css' => $activeSkin->getCssContent(),
+                        'js' => $activeSkin->getJsContent(),
+                        'name' => $activeSkin->getName(),
+                        'version' => $activeSkin->getVersion(),
+                        'config' => $activeSkin->getConfig() ?? [],
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            error_log('AuthController::getSkinData - Error: ' . $e->getMessage());
+        }
+        
+        // Return default skin data
+        return [
+            'css' => '',
+            'js' => '',
+            'name' => 'default',
+            'version' => '0.0.29',
+            'config' => [],
+        ];
     }
 } 

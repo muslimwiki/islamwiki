@@ -1,0 +1,38 @@
+<!-- Muslim Skin Footer Component -->
+<footer class="muslim-footer">
+    <div class="muslim-header-container">
+        <div class="footer-content">
+            {% for section in sections %}
+                <div class="footer-section">
+                    <h3>{{ section.title }}</h3>
+                    {% if section.description %}
+                        <p>{{ section.description }}</p>
+                    {% endif %}
+                    {% if section.links %}
+                        <ul>
+                            {% for link in section.links %}
+                                <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <div class="footer-bottom-left">
+                    <p>{{ bottom.copyright }}</p>
+                    <p>{{ bottom.license }}</p>
+                </div>
+                <div class="footer-bottom-right">
+                    <nav class="footer-nav">
+                        {% for link in bottom.links %}
+                            <a href="{{ link.url }}">{{ link.label }}</a>
+                        {% endfor %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer> 

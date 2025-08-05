@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}{{ title|default(site_info.name) }}{% endblock %}</title>
+    
+    <!-- Google Fonts for Islamic Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Safa CSS Framework -->
+    <link rel="stylesheet" href="/css/safa.css?v={{ 'now'|date('U') }}">
+    
+    <!-- Skin CSS (must come after Safa to take precedence) -->
+    {% if skin_css %}
+        <style>{{ skin_css|raw }}</style>
+    {% endif %}
+    
+    <!-- ZamZam.js Flash Prevention -->
+    <style>
+        /* Hide z-show elements by default to prevent flash */
+        [z-show] {
+            display: none !important;
+        }
+        
+        /* Only show when ZamZam.js has processed them */
+        [z-show].zamzam-processed {
+            display: initial !important;
+        }
+    </style>
+    
+    <!-- ZamZam.js for frontend interactivity -->
+    <script defer src="/js/zamzam.js"></script>
+    
+    <!-- Simple ZamZam.js test -->
+    <script>
+        // Test if ZamZam.js is working
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Base layout loaded, checking ZamZam.js...');
+            
+            // Wait a bit for ZamZam.js to initialize
+            setTimeout(() => {
+                console.log('Checking for ZamZam.js...');
+                
+                // Check if ZamZam.js is loaded
+                if (typeof window.ZamZam !== 'undefined') {
+                    console.log('ZamZam.js is loaded');
+                } else {
+                    console.log('ZamZam.js is NOT loaded');
+                }
+                
+                // Check for user dropdown
+                const userDropdown = document.querySelector('.user-dropdown');
+                if (userDropdown) {
+                    console.log('User dropdown found:', userDropdown);
+                    console.log('z-data:', userDropdown.getAttribute('z-data'));
+                    
+                    const clickButton = userDropdown.querySelector('[z-click]');
+                    if (clickButton) {
+                        console.log('Click button found:', clickButton);
+                        console.log('z-click:', clickButton.getAttribute('z-click'));
+                    } else {
+                        console.log('No click button found in dropdown');
+                    }
+                    
+                    const showElement = userDropdown.querySelector('[z-show]');
+                    if (showElement) {
+                        console.log('Show element found:', showElement);
+                        console.log('z-show:', showElement.getAttribute('z-show'));
+                    } else {
+                        console.log('No show element found in dropdown');
+                    }
+                } else {
+                    console.log('No user dropdown found');
+                }
+            }, 2000);
+        });
+    </script>
+    
+    {% block styles %}{% endblock %}
+    {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Header Component -->
+    {% if components.header %}
+        {% include components.header.template with components.header.data %}
+    {% else %}
+        <!-- Fallback Header -->
+        <header class="default-header">
+            <div class="container">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🏠</span>
+                    <span class="logo-text">{{ site_info.name }}</span>
+                </a>
+                <nav class="main-nav">
+                    {% for item in navigation.main %}
+                        <a href="{{ item.url }}" class="nav-link">{{ item.icon }} {{ item.label }}</a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </header>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Breadcrumbs Component -->
+            {% if components.breadcrumbs and components.breadcrumbs.data.enabled %}
+                {% include components.breadcrumbs.template with components.breadcrumbs.data %}
+            {% endif %}
+
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer Component -->
+    {% if components.footer %}
+        {% include components.footer.template with components.footer.data %}
+    {% else %}
+        <!-- Fallback Footer -->
+        <footer class="default-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>{{ site_info.name }}</h3>
+                        <p>{{ site_info.tagline }}</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            {% for link in footer.sections.quick_links.links %}
+                                <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>{{ footer.bottom.copyright }}</p>
+                    <p>{{ footer.bottom.license }}</p>
+                </div>
+            </div>
+        </footer>
+    {% endif %}
+
+    <!-- Skin JavaScript -->
+    {% if skin_js %}
+        <script>{{ skin_js|raw }}</script>
+    {% endif %}
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html> 
