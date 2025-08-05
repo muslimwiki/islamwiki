@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Skins;
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Skins\UserSkin;
 
 class SkinManager
@@ -46,23 +46,7 @@ class SkinManager
         $this->app = $app;
         
         // Force reload LocalSettings.php to get updated configuration
-        $localSettingsPath = $this->app->basePath('LocalSettings.php');
-        if (file_exists($localSettingsPath)) {
-            // Clear any potential caching
-            if (function_exists('opcache_invalidate')) {
-                opcache_invalidate($localSettingsPath, true);
-            }
-            require_once $localSettingsPath;
-        }
-        
-        // Ensure $wgValidSkins is set with both skins
-        global $wgValidSkins;
-        if (!isset($wgValidSkins) || !isset($wgValidSkins['Muslim'])) {
-            $wgValidSkins = [
-                'Bismillah' => 'Bismillah',
-                'Muslim' => 'Muslim',
-            ];
-        }
+        $this->forceReloadLocalSettings();
         
         // Load all skins first
         $this->loadSkins();
@@ -72,69 +56,126 @@ class SkinManager
     }
     
     /**
+     * Force reload LocalSettings.php and clear all caching
+     */
+    private function forceReloadLocalSettings(): void
+    {
+        $localSettingsPath = $this->app->basePath('LocalSettings.php');
+        if (file_exists($localSettingsPath)) {
+            // Clear all potential caching layers
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate($localSettingsPath, true);
+            }
+            if (function_exists('apc_delete_file')) {
+                apc_delete_file($localSettingsPath);
+            }
+            
+            // Force reload the file without clearing globals
+            require_once $localSettingsPath;
+            
+            // Ensure globals are available after reload
+            global $wgValidSkins, $wgActiveSkin;
+            if (!isset($wgValidSkins)) {
+                error_log("SkinManager: Warning - \$wgValidSkins not set after reload");
+            } else {
+                error_log("SkinManager: Force reloaded LocalSettings.php - Valid skins: " . implode(', ', array_keys($wgValidSkins)));
+            }
+        }
+    }
+    
+    /**
+     * Check if LocalSettings has been modified since last load
+     */
+    private function hasLocalSettingsChanged(): bool
+    {
+        static $lastModified = null;
+        $localSettingsPath = $this->app->basePath('LocalSettings.php');
+        
+        if (!file_exists($localSettingsPath)) {
+            return false;
+        }
+        
+        $currentModified = filemtime($localSettingsPath);
+        
+        if ($lastModified === null) {
+            $lastModified = $currentModified;
+            return false;
+        }
+        
+        if ($currentModified > $lastModified) {
+            $lastModified = $currentModified;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
      * Load all available skins
      */
     private function loadSkins(): void
     {
-        // Use public/skins as the base directory for skins
-        $skinsPath = $this->app->basePath('public/skins');
-        
-        if (!is_dir($skinsPath)) {
-            return;
-        }
-        
-        // Get valid skins from LocalSettings
+        // Get valid skins from LocalSettings - this is the single source of truth
         global $wgValidSkins;
         $validSkins = $wgValidSkins ?? [];
         
-        // Always load all skins from the directory for dynamic discovery
-        // LocalSettings can be used to restrict which skins are available for selection
-        $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
-        error_log("SkinManager: Loading all skins from directory: " . implode(', ', array_map('basename', $skinDirs)));
-        
-        // Log the valid skins from LocalSettings for reference
-        if (!empty($validSkins)) {
-            error_log("SkinManager: Valid skins from LocalSettings: " . implode(', ', array_keys($validSkins)));
-        } else {
-            error_log("SkinManager: No valid skins defined in LocalSettings");
+        if (empty($validSkins)) {
+            error_log("SkinManager: No valid skins defined in LocalSettings - no skins will be loaded");
+            return;
         }
         
-        foreach ($skinDirs as $skinDir) {
-            $skinName = basename($skinDir);
+        // Use public/skins as the base directory for skins
+        $skinsPath = $this->app->basePath('skins');
+        
+        if (!is_dir($skinsPath)) {
+            error_log("SkinManager: Skins directory not found: $skinsPath");
+            return;
+        }
+        
+        error_log("SkinManager: Loading skins defined in LocalSettings: " . implode(', ', array_keys($validSkins)));
+        
+        // Only load skins that are explicitly defined in LocalSettings
+        foreach ($validSkins as $skinName => $skinDisplayName) {
+            $skinDir = $skinsPath . '/' . $skinName;
             $skinConfigFile = $skinDir . '/skin.json';
             
-            error_log("SkinManager: Processing skin directory: $skinDir");
-            error_log("SkinManager: Skin name: $skinName");
+            error_log("SkinManager: Processing skin: $skinName");
+            error_log("SkinManager: Skin directory: $skinDir");
             error_log("SkinManager: Config file: $skinConfigFile");
             
-            if (file_exists($skinConfigFile)) {
-                error_log("SkinManager: Config file exists for $skinName");
-                try {
-                    $config = json_decode(file_get_contents($skinConfigFile), true);
+            if (!is_dir($skinDir)) {
+                error_log("SkinManager: Warning - Skin directory not found for '$skinName': $skinDir");
+                continue;
+            }
+            
+            if (!file_exists($skinConfigFile)) {
+                error_log("SkinManager: Warning - Config file not found for '$skinName': $skinConfigFile");
+                continue;
+            }
+            
+            try {
+                $config = json_decode(file_get_contents($skinConfigFile), true);
+                
+                if ($config && isset($config['name'])) {
+                    error_log("SkinManager: Valid config for $skinName, creating UserSkin");
+                    // Create a generic skin instance for user skins
+                    $skin = new UserSkin($config, $skinDir);
                     
-                    if ($config && isset($config['name'])) {
-                        error_log("SkinManager: Valid config for $skinName, creating UserSkin");
-                        // Create a generic skin instance for user skins
-                        $skin = new UserSkin($config, $skinDir);
-                        
-                        if ($skin->validate()) {
-                            // Store skin with original case for proper matching
-                            $this->skins[$skinName] = $skin;
-                            // Also store with lowercase key for case-insensitive access
-                            $this->skins[strtolower($skinName)] = $skin;
-                            error_log("SkinManager: Successfully loaded skin $skinName");
-                        } else {
-                            error_log("SkinManager: Skin $skinName failed validation");
-                        }
+                    if ($skin->validate()) {
+                        // Store skin with original case for proper matching
+                        $this->skins[$skinName] = $skin;
+                        // Also store with lowercase key for case-insensitive access
+                        $this->skins[strtolower($skinName)] = $skin;
+                        error_log("SkinManager: Successfully loaded skin $skinName");
                     } else {
-                        error_log("SkinManager: Invalid config for $skinName - missing name");
+                        error_log("SkinManager: Skin $skinName failed validation");
                     }
-                } catch (\Exception $e) {
-                    // Log error but continue loading other skins
-                    error_log("Failed to load skin {$skinName}: " . $e->getMessage());
+                } else {
+                    error_log("SkinManager: Invalid config for $skinName - missing name");
                 }
-            } else {
-                error_log("SkinManager: Config file not found for $skinName");
+            } catch (\Exception $e) {
+                // Log error but continue loading other skins
+                error_log("SkinManager: Failed to load skin {$skinName}: " . $e->getMessage());
             }
         }
     }
@@ -210,8 +251,8 @@ class SkinManager
         if ($container->has('skin.data')) {
             $activeSkin = $this->getActiveSkin();
             $skinData = [
-                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
-                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'css_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/css/' . strtolower($activeSkin->getName()) . '.css' : '',
+                'js_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/js/' . strtolower($activeSkin->getName()) . '.js' : '',
                 'name' => $activeSkin ? $activeSkin->getName() : 'default',
                 'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
                 'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
@@ -237,7 +278,7 @@ class SkinManager
         
         // Fallback to LocalSettings
         global $wgActiveSkin;
-        return $wgActiveSkin ?? 'Bismillah';
+        return $wgActiveSkin ?? 'Muslim';
     }
     
     /**
@@ -245,6 +286,13 @@ class SkinManager
      */
     public function getActiveSkin(): ?Skin
     {
+        // Check if LocalSettings has changed and reload if necessary
+        if ($this->hasLocalSettingsChanged()) {
+            error_log("SkinManager: LocalSettings changed, forcing reload");
+            $this->forceReloadLocalSettings();
+            $this->reloadAllSkins();
+        }
+        
         if ($this->currentSkin === null) {
             error_log("SkinManager::getActiveSkin - Looking for skin: " . $this->activeSkin);
             $this->currentSkin = $this->getSkin($this->activeSkin);
@@ -407,8 +455,8 @@ class SkinManager
         if ($container->has('skin.data')) {
             $activeSkin = $this->getActiveSkin();
             $skinData = [
-                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
-                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'css_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/css/' . strtolower($activeSkin->getName()) . '.css' : '',
+                'js_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/js/' . strtolower($activeSkin->getName()) . '.js' : '',
                 'name' => $activeSkin ? $activeSkin->getName() : 'default',
                 'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
                 'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
@@ -425,20 +473,8 @@ class SkinManager
         // Clear existing skins
         $this->skins = [];
         
-        // Reload LocalSettings.php
-        $localSettingsPath = $this->app->basePath('LocalSettings.php');
-        if (file_exists($localSettingsPath)) {
-            // Clear any existing globals to ensure fresh loading
-            unset($GLOBALS['wgValidSkins']);
-            unset($GLOBALS['wgActiveSkin']);
-            
-            // Reload LocalSettings
-            require_once $localSettingsPath;
-            
-            // Get updated values
-            global $wgValidSkins, $wgActiveSkin;
-            $this->activeSkin = $wgActiveSkin ?? 'Bismillah';
-        }
+        // Force reload LocalSettings
+        $this->forceReloadLocalSettings();
         
         // Reload all skins
         $this->loadSkins();
@@ -446,7 +482,7 @@ class SkinManager
         // Reset the current skin so it will be reloaded on next access
         $this->currentSkin = null;
         
-        // Update the container's cached instances
+        // Update the container's cached instances (disable caching for skin data)
         $container = $this->app->getContainer();
         if ($container->has('skin.manager')) {
             $container->instance('skin.manager', $this);
@@ -457,14 +493,16 @@ class SkinManager
         if ($container->has('skin.data')) {
             $activeSkin = $this->getActiveSkin();
             $skinData = [
-                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
-                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
+                'css_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/css/' . strtolower($activeSkin->getName()) . '.css' : '',
+                'js_url' => $activeSkin ? '/skins/' . $activeSkin->getName() . '/js/' . strtolower($activeSkin->getName()) . '.js' : '',
                 'name' => $activeSkin ? $activeSkin->getName() : 'default',
                 'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.28',
                 'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
             ];
             $container->instance('skin.data', $skinData);
         }
+        
+        error_log("SkinManager: All skins reloaded from LocalSettings");
     }
     
     /**
@@ -592,5 +630,36 @@ class SkinManager
         }
         
         return $removed;
+    }
+    
+    /**
+     * Disable caching for skin operations
+     */
+    public function disableCaching(): void
+    {
+        // Clear any cached data
+        $this->currentSkin = null;
+        
+        // Clear container cache for skin services
+        $container = $this->app->getContainer();
+        if ($container->has('skin.data')) {
+            $container->forget('skin.data');
+        }
+        if ($container->has('skin.active')) {
+            $container->forget('skin.active');
+        }
+        
+        error_log("SkinManager: Caching disabled for skin operations");
+    }
+    
+    /**
+     * Force immediate reload of skin configuration
+     */
+    public function forceReload(): void
+    {
+        $this->disableCaching();
+        $this->forceReloadLocalSettings();
+        $this->reloadAllSkins();
+        error_log("SkinManager: Forced immediate reload of skin configuration");
     }
 } 

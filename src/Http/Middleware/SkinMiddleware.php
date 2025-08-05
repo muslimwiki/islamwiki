@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Middleware;
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Skins\SkinManager;
@@ -221,7 +221,7 @@ class SkinMiddleware
                     'skin_name' => 'default',
                     'skin_version' => '0.0.29',
                     'skin_config' => [],
-                    'active_skin' => 'Muslim',
+                    'active_skin' => 'Bismillah', // Updated to match LocalSettings
                 ]);
             } catch (\Throwable $fallbackError) {
                 error_log("SkinMiddleware::updateSkinDataForCurrentUser - Fallback error: " . $fallbackError->getMessage());

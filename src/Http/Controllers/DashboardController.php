@@ -15,7 +15,7 @@ namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\Wisal;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Skins\SkinManager;
 use Psr\Http\Message\ServerRequestInterface as Request;

@@ -1,453 +1,276 @@
-/* Muslim Skin - Islamic design for IslamWiki */
-/* This skin provides all styling - Safa CSS provides only framework utilities */
+/* Muslim Skin CSS */
+/* Modern Islamic design with comprehensive styling */
 
 :root {
-    /* Islamic color palette with Islamic elements */
-    --primary-color: #2c5aa0;
-    --primary-hover: #1e3a8a;
-    --secondary-color: #4a90e2;
-    --secondary-hover: #3b82f6;
-    --accent-color: #f39c12;
-    --accent-hover: #e67e22;
-    --success-color: #27ae60;
-    --warning-color: #f39c12;
-    --error-color: #e74c3c;
-    --info-color: #3498db;
-    
-    /* Background colors */
-    --background-color: #ecf0f1;
+    --primary-color: #059669;
+    --primary-hover: #047857;
+    --secondary-color: #6b7280;
+    --secondary-hover: #4b5563;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --background-color: #f8fafc;
     --card-background: #ffffff;
-    --header-background: #ffffff;
-    --footer-background: #2c3e50;
-    
-    /* Text colors */
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --text-muted: #95a5a6;
-    --text-light: #ffffff;
-    
-    /* Border and shadow */
-    --border-color: #bdc3c7;
-    --border-light: #ecf0f1;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-    
-    /* Link colors */
-    --link-color: var(--primary-color);
-    --link-hover-color: var(--primary-hover);
-    
-    /* Typography */
-    --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-family-arabic: 'Amiri', serif;
-    --font-size-base: 16px;
-    --font-size-sm: 14px;
-    --font-size-lg: 18px;
-    --font-size-xl: 20px;
-    --font-size-2xl: 24px;
-    --font-size-3xl: 30px;
-    
-    /* Spacing */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    
-    /* Border radius */
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    
-    /* Transitions */
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --islamic-green: #059669;
+    --islamic-gold: #d97706;
+    --islamic-blue: #1e40af;
+    --islamic-purple: #7c3aed;
+    --islamic-teal: #0d9488;
 }
 
-/* ===== BASE STYLING ===== */
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: 'Amiri', 'Noto Naskh Arabic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
     color: var(--text-primary);
-    background-color: var(--background-color);
-    font-size: var(--font-size-base);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    font-size: 16px;
+    min-height: 100vh;
 }
 
-/* Arabic text support */
-.arabic-text {
-    font-family: var(--font-family-arabic);
-    direction: rtl;
-}
-
-/* ===== MUSLIM-HEADER STYLING ===== */
-.muslim-header {
-    background: var(--header-background);
-    border-bottom: 1px solid var(--border-light);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: var(--shadow-sm);
-}
-
-/* Header Container */
-.muslim-header-container {
+.container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-lg);
+    padding: 0 20px;
 }
 
-/* Top Header */
-.muslim-header-top {
-    padding: var(--spacing-md) 0;
+/* Header Styles */
+.header {
+    background: linear-gradient(135deg, var(--islamic-green) 0%, var(--islamic-blue) 50%, var(--islamic-purple) 100%);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="islamic-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23islamic-pattern)"/></svg>');
+    opacity: 0.3;
+}
+
+.header-top-bar {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.header-top-content {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-}
-
-.muslim-header-left,
-.muslim-header-center,
-.muslim-header-right {
-    display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
-}
-
-/* Logo */
-.muslim-logo {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    text-decoration: none;
-    color: var(--text-primary);
-    font-weight: 700;
-    font-size: var(--font-size-xl);
-    transition: color var(--transition-normal);
-}
-
-.muslim-logo:hover {
-    color: var(--primary-color);
-}
-
-.logo-icon {
-    font-size: var(--font-size-2xl);
-}
-
-.logo-text {
-    font-weight: 600;
-}
-
-/* Search */
-.muslim-search {
-    flex: 1;
-    max-width: 500px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.search-container {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 2rem;
 }
 
 .search-form {
-    position: relative;
-    width: 100%;
-}
-
-.search-input-wrapper {
-    position: relative;
     display: flex;
-    align-items: center;
+    position: relative;
 }
 
 .search-input {
     width: 100%;
-    padding: var(--spacing-sm) var(--spacing-lg);
-    padding-right: 50px;
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-base);
-    background: var(--card-background);
-    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+    padding: 1rem 1.25rem;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
 }
 
 .search-button {
     position: absolute;
-    right: var(--spacing-sm);
+    right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
+    background: var(--islamic-green);
     border: none;
-    padding: var(--spacing-sm);
-    color: var(--text-secondary);
+    border-radius: 50%;
+    padding: 0.75rem;
+    color: white;
     cursor: pointer;
-    border-radius: var(--radius-md);
-    transition: color var(--transition-normal), background-color var(--transition-normal);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .search-button:hover {
-    color: var(--primary-color);
-    background-color: rgba(44, 90, 160, 0.1);
+    background: var(--primary-hover);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .search-icon {
-    width: 20px;
-    height: 20px;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-/* Navigation */
-.muslim-nav {
+.user-menu {
     display: flex;
+    gap: 1.5rem;
     align-items: center;
-    gap: var(--spacing-lg);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: var(--islamic-gold);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #b45309;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.header-primary-nav {
+    padding: 1.5rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-menu {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .nav-link {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
-    font-weight: 500;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    transition: color var(--transition-normal), background-color var(--transition-normal);
-}
-
-.nav-link:hover {
-    color: var(--primary-color);
-    background-color: rgba(44, 90, 160, 0.1);
-}
-
-.nav-link.active {
-    color: var(--primary-color);
-    background-color: rgba(44, 90, 160, 0.1);
-}
-
-/* User Menu */
-.muslim-user-menu {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-}
-
-.user-dropdown {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
     position: relative;
+    overflow: hidden;
 }
 
-.user-button {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    background: none;
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: background-color var(--transition-normal);
-    color: var(--text-primary);
-    font-size: var(--font-size-base);
-}
-
-.user-button:hover {
-    background-color: rgba(44, 90, 160, 0.1);
-}
-
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    flex-shrink: 0;
-}
-
-.avatar-icon {
-    width: 18px;
-    height: 18px;
-}
-
-.user-name {
-    font-weight: 500;
-    color: var(--text-primary);
-    white-space: nowrap;
-}
-
-.dropdown-arrow {
-    width: 16px;
-    height: 16px;
-    color: var(--text-secondary);
-    transition: transform var(--transition-normal);
-    flex-shrink: 0;
-}
-
-.user-button:hover .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-.user-dropdown-menu {
+.nav-link::before {
+    content: '';
     position: absolute;
-    top: 100%;
-    right: 0;
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all var(--transition-normal);
-    backdrop-filter: blur(10px);
-}
-
-/* ZamZam.js handles visibility dynamically, so we don't need CSS rules for z-show */
-
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: background-color var(--transition-normal);
-    border: none;
-    background: none;
+    top: 0;
+    left: -100%;
     width: 100%;
-    text-align: left;
-    font-size: var(--font-size-base);
-    cursor: pointer;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
 }
 
-.dropdown-item:hover {
-    background-color: rgba(44, 90, 160, 0.1);
+.nav-link:hover::before {
+    left: 100%;
 }
 
-.dropdown-item.active {
-    background-color: rgba(44, 90, 160, 0.1);
-    color: var(--primary-color);
+.nav-link:hover,
+.nav-link.active {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-.dropdown-icon {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+/* Footer Styles */
+.footer {
+    background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+    color: white;
+    padding: 4rem 0 2rem;
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.dropdown-divider {
-    height: 1px;
-    background: var(--border-color);
-    margin: var(--spacing-sm) 0;
-}
-
-.dropdown-form {
-    margin: 0;
-}
-
-.logout-item {
-    color: var(--error-color);
-}
-
-.logout-item:hover {
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
-/* Auth Buttons */
-.auth-buttons {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-/* Secondary Header */
-.muslim-header-secondary {
-    background: var(--background-color);
-    border-bottom: 1px solid var(--border-light);
-    padding: var(--spacing-sm) 0;
-}
-
-.muslim-secondary-nav {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    overflow-x: auto;
-    padding: var(--spacing-sm) 0;
-}
-
-/* Mobile Menu Toggle */
-.mobile-menu-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 3px;
-    background: none;
-    border: none;
-    padding: var(--spacing-sm);
-    cursor: pointer;
-}
-
-.mobile-menu-toggle span {
-    width: 20px;
-    height: 2px;
-    background: var(--text-primary);
-    transition: all var(--transition-normal);
-}
-
-/* ===== MAIN CONTENT ===== */
-.muslim-main {
-    min-height: calc(100vh - 200px);
-    padding: var(--spacing-xl) 0;
-}
-
-.muslim-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
-}
-
-/* ===== FOOTER ===== */
-.muslim-footer {
-    background: var(--footer-background);
-    color: var(--text-light);
-    padding: var(--spacing-2xl) 0 var(--spacing-lg);
-    margin-top: auto;
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-pattern" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-pattern)"/></svg>');
+    opacity: 0.5;
 }
 
 .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
 }
 
 .footer-section h3,
 .footer-section h4 {
-    margin: 0 0 var(--spacing-md);
-    color: var(--text-light);
-}
-
-.footer-section h3 {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-}
-
-.footer-section h4 {
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-}
-
-.footer-section p {
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: var(--islamic-gold);
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .footer-section ul {
@@ -456,265 +279,54 @@ body {
     margin: 0;
 }
 
-.footer-section li {
-    margin-bottom: var(--spacing-sm);
+.footer-section ul li {
+    margin-bottom: 0.75rem;
 }
 
-.footer-section a {
-    color: var(--text-secondary);
+.footer-section ul li a {
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: color var(--transition-normal);
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+    display: inline-block;
+    position: relative;
 }
 
-.footer-section a:hover {
-    color: var(--text-light);
+.footer-section ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--islamic-gold);
+    transition: width 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.footer-section ul li a:hover::after {
+    width: 100%;
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: var(--spacing-lg);
     text-align: center;
-    color: var(--text-secondary);
+    padding-top: 3rem;
+    margin-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    position: relative;
+    z-index: 1;
 }
 
-/* ===== BUTTONS ===== */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    background: var(--primary-color);
-    color: white;
-}
-
-.btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-outline {
-    background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-}
-
-.btn-outline:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-}
-
-/* ===== CARDS ===== */
-.card {
-    background: var(--card-background);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-light);
-    transition: box-shadow var(--transition-normal), transform var(--transition-normal);
-}
-
-.card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.card-header {
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-light);
-}
-
-.card-body {
-    padding: var(--spacing-lg);
-}
-
-.card-title {
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-/* ===== ALERTS ===== */
-.alert {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-md);
-    border-left: 4px solid;
-}
-
-.alert-success {
-    background: rgba(39, 174, 96, 0.1);
-    border-left-color: var(--success-color);
-    color: var(--success-color);
-}
-
-.alert-error {
-    background: rgba(231, 76, 60, 0.1);
-    border-left-color: var(--error-color);
-    color: var(--error-color);
-}
-
-.alert-warning {
-    background: rgba(243, 156, 18, 0.1);
-    border-left-color: var(--warning-color);
-    color: var(--warning-color);
-}
-
-.alert-info {
-    background: rgba(52, 152, 219, 0.1);
-    border-left-color: var(--info-color);
-    color: var(--info-color);
-}
-
-/* ===== UTILITY CLASSES ===== */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
-.mb-0 { margin-bottom: 0; }
-.mb-1 { margin-bottom: var(--spacing-xs); }
-.mb-2 { margin-bottom: var(--spacing-sm); }
-.mb-4 { margin-bottom: var(--spacing-md); }
-.mb-8 { margin-bottom: var(--spacing-xl); }
-
-.mt-0 { margin-top: 0; }
-.mt-1 { margin-top: var(--spacing-xs); }
-.mt-2 { margin-top: var(--spacing-sm); }
-.mt-4 { margin-top: var(--spacing-md); }
-.mt-8 { margin-top: var(--spacing-xl); }
-
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-
-.gap-1 { gap: var(--spacing-xs); }
-.gap-2 { gap: var(--spacing-sm); }
-.gap-4 { gap: var(--spacing-md); }
-.gap-8 { gap: var(--spacing-xl); }
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 1024px) {
-    .muslim-header-container {
-        padding: 0 var(--spacing-md);
-    }
-    
-    .muslim-container {
-        padding: 0 var(--spacing-md);
-    }
-}
-
-@media (max-width: 768px) {
-    .muslim-header-top {
-        flex-direction: column;
-        gap: var(--spacing-md);
-        padding: var(--spacing-md) 0;
-    }
-    
-    .muslim-header-left,
-    .muslim-header-center,
-    .muslim-header-right {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .muslim-search {
-        max-width: 100%;
-    }
-    
-    .muslim-nav {
-        display: none;
-    }
-    
-    .mobile-menu-toggle {
-        display: flex;
-    }
-    
-    .muslim-secondary-nav {
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
-    }
-    
-    .muslim-main {
-        padding: var(--spacing-lg) 0;
-    }
-    
-    /* Mobile dropdown improvements */
-    .user-dropdown-menu {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: 0;
-        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        max-height: 60vh;
-        overflow-y: auto;
-    }
-    
-    .user-button {
-        padding: var(--spacing-sm);
-    }
-    
-    .user-name {
-        display: none;
-    }
-}
-
-@media (max-width: 480px) {
-    .muslim-header-container {
-        padding: 0 var(--spacing-sm);
-    }
-    
-    .muslim-container {
-        padding: 0 var(--spacing-sm);
-    }
-    
-    .muslim-logo {
-        font-size: var(--font-size-lg);
-    }
-    
-    .search-input {
-        font-size: var(--font-size-sm);
-    }
-    
-    .auth-buttons {
-        flex-direction: column;
-        gap: var(--spacing-xs);
-    }
-    
-    .btn {
-        font-size: var(--font-size-sm);
-        padding: var(--spacing-xs) var(--spacing-md);
-    }
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
+/* Animations */
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -722,88 +334,51 @@ body {
     }
 }
 
-.fade-in {
-    animation: fadeIn var(--transition-normal);
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-/* ===== DARK THEME SUPPORT ===== */
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-top-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .search-container {
+        margin: 0;
+        max-width: 100%;
+    }
+    
+    .nav-menu {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+}
+
+/* Dark theme support */
 @media (prefers-color-scheme: dark) {
     :root {
-        --background-color: #1a1a1a;
-        --card-background: #2d2d2d;
-        --header-background: #2d2d2d;
-        --text-primary: #ffffff;
-        --text-secondary: #b0b0b0;
-        --text-muted: #808080;
-        --border-color: #404040;
-        --border-light: #404040;
+        --background-color: #1f2937;
+        --card-background: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
     }
-}
-
-/* ===== ACCESSIBILITY ===== */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Focus styles for accessibility */
-.btn:focus,
-.nav-link:focus,
-.search-input:focus,
-.user-button:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    :root {
-        --border-color: #000000;
-        --text-secondary: #000000;
-    }
-}
-
-/* ===== ZAMZAM INTEGRATION FIXES ===== */
-/* Ensure dropdown works properly with ZamZam */
-.user-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-/* ZamZam.js handles z-show dynamically, so we don't need CSS rules for it */
-
-/* Ensure proper z-index stacking */
-.muslim-header {
-    z-index: 1000;
-}
-
-.user-dropdown-menu {
-    z-index: 1001;
-}
-
-/* ===== SAFA CSS COMPATIBILITY ===== */
-/* Override any conflicting Safa CSS styles */
-.muslim-header *,
-.muslim-main *,
-.muslim-footer * {
-    box-sizing: border-box;
-}
-
-/* Ensure our styles take precedence */
-.muslim-header,
-.muslim-main,
-.muslim-footer {
-    font-family: var(--font-family) !important;
-}
-
-/* Fix any potential conflicts with Safa utility classes */
-.muslim-header .container,
-.muslim-main .container,
-.muslim-footer .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
 } 

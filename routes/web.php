@@ -10,6 +10,7 @@ use IslamWiki\Http\Controllers\PageController;
 use IslamWiki\Http\Controllers\ProfileController;
 use IslamWiki\Http\Controllers\DashboardController;
 use IslamWiki\Http\Controllers\HomeController;
+use IslamWiki\Http\Controllers\AssetController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -135,6 +136,10 @@ $router->get('/iqra-search', 'IslamWiki\Http\Controllers\IqraSearchController@in
 $router->get('/iqra-search/api/search', 'IslamWiki\Http\Controllers\IqraSearchController@apiSearch');
 $router->get('/iqra-search/api/suggestions', 'IslamWiki\Http\Controllers\IqraSearchController@apiSuggestions');
 $router->get('/iqra-search/api/analytics', 'IslamWiki\Http\Controllers\IqraSearchController@apiAnalytics');
+
+// Asset serving routes (serve files from resources through application)
+$router->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');
+$router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveJs');
 
 // Additional page routes (variable routes - must come after specific routes)
 $router->get('/{slug}', 'IslamWiki\Http\Controllers\PageController@show');
@@ -282,4 +287,12 @@ $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPat
 
 $router->get('/test-router-alive', function($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
+});
+
+// Test route to check if AssetController is working
+$router->get('/test-asset', 'IslamWiki\Http\Controllers\AssetController@test');
+
+// Simple test route without AssetController
+$router->get('/test-simple', function($request) {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Simple test route working!');
 });

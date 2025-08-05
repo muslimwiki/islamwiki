@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Queue\Sabr;
 use IslamWiki\Core\Logging\Shahid;
 use IslamWiki\Core\Database\Connection;

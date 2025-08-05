@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Routing;
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
 
@@ -34,7 +34,7 @@ class ControllerFactory
      * @param LoggerInterface $logger Logger instance
      * @param Container $container The dependency injection container
      */
-    public function __construct(Connection $db, LoggerInterface $logger, Asas $container)
+    public function __construct(Connection $db, LoggerInterface $logger, AsasContainer $container)
     {
         $this->db = $db;
         $this->logger = $logger;

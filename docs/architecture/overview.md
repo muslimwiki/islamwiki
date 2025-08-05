@@ -141,8 +141,9 @@ islamwiki/
 │   └── index.php          # Application entry point
 ├── src/                   # Application source code
 │   ├── Core/             # Core framework components
-│   │   ├── Application.php
-│   │   ├── Container.php
+│   │   ├── NizamApplication.php
+│   │   ├── Container/
+│   │   │   └── AsasContainer.php
 │   │   ├── Routing/
 │   │   ├── Http/
 │   │   ├── View/

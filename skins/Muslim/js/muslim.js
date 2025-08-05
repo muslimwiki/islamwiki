@@ -1,338 +1,354 @@
+// Muslim Skin JavaScript
+// Modern Islamic design with comprehensive functionality
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Muslim skin loaded');
+    
+    // Initialize all functionality
+    initializeSearch();
+    initializeNavigation();
+    initializeResponsiveMenu();
+    initializeAnimations();
+    initializePrayerTimes();
+    initializeDarkMode();
+    initializeNotifications();
+});
+
 /**
- * Muslim Skin JavaScript
- * Citizen-inspired functionality for IslamWiki
+ * Initialize search functionality with enhanced features
  */
-
-(function() {
-    'use strict';
-
-    // DOM Ready
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeMuslimSkin();
-    });
-
-    /**
-     * Initialize Muslim Skin functionality
-     */
-    function initializeMuslimSkin() {
-        initializeMobileMenu();
-        initializeSearchEnhancements();
-        initializeDropdowns();
-        initializeAnimations();
-        initializeAccessibility();
-        initializeThemeSupport();
-    }
-
-    /**
-     * Mobile menu functionality
-     */
-    function initializeMobileMenu() {
-        const mobileToggle = document.querySelector('.mobile-menu-toggle');
-        const header = document.querySelector('.citizen-header');
-        
-        if (mobileToggle && header) {
-            mobileToggle.addEventListener('click', function() {
-                header.classList.toggle('mobile-menu-open');
-                mobileToggle.classList.toggle('active');
-                
-                // Animate hamburger to X
-                const spans = mobileToggle.querySelectorAll('span');
-                spans.forEach((span, index) => {
-                    if (index === 0) {
-                        span.style.transform = header.classList.contains('mobile-menu-open') 
-                            ? 'rotate(45deg) translate(5px, 5px)' : '';
-                    } else if (index === 1) {
-                        span.style.opacity = header.classList.contains('mobile-menu-open') ? '0' : '1';
-                    } else if (index === 2) {
-                        span.style.transform = header.classList.contains('mobile-menu-open') 
-                            ? 'rotate(-45deg) translate(7px, -6px)' : '';
-                    }
-                });
-            });
-        }
-    }
-
-    /**
-     * Search functionality enhancements
-     */
-    function initializeSearchEnhancements() {
-        const searchInput = document.querySelector('.search-input');
-        const searchForm = document.querySelector('.search-form');
-        
-        if (searchInput && searchForm) {
-            // Auto-focus search on keyboard shortcut
-            document.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    searchInput.focus();
-                }
-            });
-
-            // Search suggestions (placeholder for future implementation)
-            searchInput.addEventListener('input', function() {
-                // TODO: Implement search suggestions
-                console.log('Search input:', this.value);
-            });
-
-            // Search form submission enhancement
-            searchForm.addEventListener('submit', function(e) {
-                const query = searchInput.value.trim();
-                if (!query) {
-                    e.preventDefault();
-                    searchInput.focus();
-                }
-            });
-        }
-    }
-
-    /**
-     * Dropdown functionality
-     */
-    function initializeDropdowns() {
-        const dropdowns = document.querySelectorAll('.user-dropdown');
-        
-        dropdowns.forEach(dropdown => {
-            const button = dropdown.querySelector('.user-button');
-            const menu = dropdown.querySelector('.user-dropdown-menu');
-            
-            if (button && menu) {
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target)) {
-                        menu.style.opacity = '0';
-                        menu.style.visibility = 'hidden';
-                        menu.style.transform = 'translateY(-10px)';
-                    }
-                });
-
-                // Toggle dropdown on button click
-                button.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isVisible = menu.style.opacity === '1';
-                    
-                    if (isVisible) {
-                        menu.style.opacity = '0';
-                        menu.style.visibility = 'hidden';
-                        menu.style.transform = 'translateY(-10px)';
-                    } else {
-                        menu.style.opacity = '1';
-                        menu.style.visibility = 'visible';
-                        menu.style.transform = 'translateY(0)';
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Animation enhancements
-     */
-    function initializeAnimations() {
-        // Intersection Observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements with animation classes
-        const animatedElements = document.querySelectorAll('.card, .alert, .btn');
-        animatedElements.forEach(el => {
-            observer.observe(el);
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+function initializeSearch() {
+    const searchForm = document.querySelector('.search-form');
+    const searchInput = document.querySelector('.search-input');
+    
+    if (searchForm && searchInput) {
+        searchForm.addEventListener('submit', function(e) {
+            const query = searchInput.value.trim();
+            if (!query) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                searchInput.focus();
+                showNotification('Please enter a search term', 'warning');
+            }
+        });
+        
+        // Add search suggestions
+        searchInput.addEventListener('input', debounce(function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                fetchSearchSuggestions(query);
+            }
+        }, 300));
+        
+        // Add keyboard navigation
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                this.form.submit();
+            }
+        });
+    }
+}
+
+/**
+ * Initialize navigation with smooth scrolling
+ */
+function initializeNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Remove active class from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Smooth scroll to anchor links
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth' });
                 }
-            });
-        });
-    }
-
-    /**
-     * Accessibility enhancements
-     */
-    function initializeAccessibility() {
-        // Skip to main content link
-        const skipLink = document.createElement('a');
-        skipLink.href = '#main-content';
-        skipLink.textContent = 'Skip to main content';
-        skipLink.className = 'skip-link';
-        skipLink.style.cssText = `
-            position: absolute;
-            top: -40px;
-            left: 6px;
-            background: var(--primary-color);
-            color: white;
-            padding: 8px;
-            text-decoration: none;
-            border-radius: 4px;
-            z-index: 10000;
-        `;
-        
-        skipLink.addEventListener('focus', function() {
-            this.style.top = '6px';
-        });
-        
-        skipLink.addEventListener('blur', function() {
-            this.style.top = '-40px';
-        });
-        
-        document.body.insertBefore(skipLink, document.body.firstChild);
-
-        // Add main content ID
-        const mainContent = document.querySelector('.citizen-main');
-        if (mainContent) {
-            mainContent.id = 'main-content';
-        }
-
-        // Enhanced focus management
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
             }
         });
+    });
+}
 
-        document.addEventListener('mousedown', function() {
-            document.body.classList.remove('keyboard-navigation');
+/**
+ * Initialize responsive menu functionality
+ */
+function initializeResponsiveMenu() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            this.classList.toggle('active');
+            
+            // Animate menu items
+            const menuItems = navMenu.querySelectorAll('.nav-link');
+            menuItems.forEach((item, index) => {
+                if (navMenu.classList.contains('active')) {
+                    item.style.animation = `slideInLeft 0.3s ease ${index * 0.1}s both`;
+                } else {
+                    item.style.animation = '';
+                }
+            });
         });
     }
+}
 
-    /**
-     * Theme support
-     */
-    function initializeThemeSupport() {
-        // Check for saved theme preference or default to light mode
-        const savedTheme = localStorage.getItem('muslim-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        } else if (prefersDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-
-        // Theme toggle functionality (if theme toggle button exists)
-        const themeToggle = document.querySelector('.theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('muslim-theme', newTheme);
-            });
-        }
-    }
-
-    /**
-     * Utility functions
-     */
-    const MuslimSkin = {
-        // Show notification
-        showNotification: function(message, type = 'info', duration = 5000) {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} notification`;
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                max-width: 300px;
-                animation: slideInRight 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, duration);
-        },
-
-        // Debounce function
-        debounce: function(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        },
-
-        // Throttle function
-        throttle: function(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            };
-        }
+/**
+ * Initialize animations and effects
+ */
+function initializeAnimations() {
+    // Add scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease both';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    const animatedElements = document.querySelectorAll('.container > *');
+    animatedElements.forEach(el => observer.observe(el));
+}
 
-    // Expose to global scope for debugging
-    window.MuslimSkin = MuslimSkin;
+/**
+ * Initialize prayer times functionality
+ */
+function initializePrayerTimes() {
+    const prayerTimeElements = document.querySelectorAll('.prayer-time');
+    
+    prayerTimeElements.forEach(element => {
+        // Add countdown functionality
+        const time = element.getAttribute('data-time');
+        if (time) {
+            updatePrayerCountdown(element, time);
+        }
+    });
+}
 
-    // Add CSS animations
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+/**
+ * Update prayer countdown
+ */
+function updatePrayerCountdown(element, prayerTime) {
+    const now = new Date();
+    const prayer = new Date(prayerTime);
+    
+    if (prayer > now) {
+        const diff = prayer - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
+        element.textContent = `${hours}h ${minutes}m`;
+    } else {
+        element.textContent = 'Now';
+        element.classList.add('prayer-time-now');
+    }
+}
+
+/**
+ * Initialize dark mode functionality
+ */
+function initializeDarkMode() {
+    const darkModeToggle = document.querySelector('.dark-mode-toggle');
+    
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            
+            showNotification(
+                isDark ? 'Dark mode enabled' : 'Light mode enabled',
+                'success'
+            );
+        });
         
-        .keyboard-navigation *:focus {
-            outline: 2px solid var(--primary-color) !important;
-            outline-offset: 2px !important;
+        // Check for saved preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            document.body.classList.add('dark-mode');
         }
-        
-        .skip-link:focus {
-            top: 6px !important;
-        }
+    }
+}
+
+/**
+ * Initialize notification system
+ */
+function initializeNotifications() {
+    // Create notification container if it doesn't exist
+    if (!document.querySelector('.notification-container')) {
+        const container = document.createElement('div');
+        container.className = 'notification-container';
+        container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            pointer-events: none;
+        `;
+        document.body.appendChild(container);
+    }
+}
+
+/**
+ * Show notification message with enhanced styling
+ */
+function showNotification(message, type = 'info', duration = 5000) {
+    const container = document.querySelector('.notification-container');
+    const notification = document.createElement('div');
+    
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Enhanced styles
+    notification.style.cssText = `
+        background: ${getNotificationColor(type)};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        pointer-events: auto;
+        cursor: pointer;
+        max-width: 300px;
+        word-wrap: break-word;
     `;
-    document.head.appendChild(style);
+    
+    container.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove on click
+    notification.addEventListener('click', () => {
+        removeNotification(notification);
+    });
+    
+    // Auto remove
+    setTimeout(() => {
+        removeNotification(notification);
+    }, duration);
+}
 
-})(); 
+/**
+ * Remove notification with animation
+ */
+function removeNotification(notification) {
+    notification.style.transform = 'translateX(100%)';
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 300);
+}
+
+/**
+ * Get notification color based on type
+ */
+function getNotificationColor(type) {
+    switch (type) {
+        case 'success': return '#10b981';
+        case 'error': return '#ef4444';
+        case 'warning': return '#f59e0b';
+        default: return '#3b82f6';
+    }
+}
+
+/**
+ * Fetch search suggestions
+ */
+function fetchSearchSuggestions(query) {
+    // TODO: Implement actual search suggestions API
+    console.log('Fetching suggestions for:', query);
+}
+
+/**
+ * Debounce function for performance
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * Add CSS animations
+ */
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .prayer-time-now {
+        color: #ef4444;
+        font-weight: bold;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .dark-mode {
+        --background-color: #1f2937;
+        --card-background: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+    }
+`;
+document.head.appendChild(style);
+
+// Export functions for global use
+window.MuslimSkin = {
+    showNotification,
+    initializeSearch,
+    initializeNavigation,
+    initializeResponsiveMenu,
+    initializeAnimations,
+    initializePrayerTimes,
+    initializeDarkMode
+}; 

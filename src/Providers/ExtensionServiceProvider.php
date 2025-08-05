@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Extensions\ExtensionManager;
 use IslamWiki\Core\Extensions\Hooks\HookManager;
 

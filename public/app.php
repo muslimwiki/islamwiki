@@ -21,7 +21,7 @@ define('BASE_PATH', dirname(__DIR__));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Container/Asas.php';
+require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
 require_once BASE_PATH . '/src/Core/Auth/Aman.php';
@@ -35,14 +35,14 @@ require_once BASE_PATH . '/src/Http/Controllers/HomeController.php';
 require_once BASE_PATH . '/src/Http/Controllers/PageController.php';
 require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 
 // Initialize container
-$container = new Asas();
+$container = new AsasContainer();
 
 // Initialize database connection
 $db = new Connection();

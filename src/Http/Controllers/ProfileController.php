@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Application;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\NizamApplication;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\Wisal;
@@ -185,7 +185,7 @@ class ProfileController extends Controller
         
         // Return default settings
         return [
-            'skin' => 'Bismillah',
+                            'skin' => 'Bismillah',
             'theme' => 'light',
             'language' => 'en',
             'timezone' => 'UTC',

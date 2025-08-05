@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Configuration;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Logging\Shahid;
 
 class ConfigurationManager
@@ -28,7 +28,7 @@ class ConfigurationManager
     /**
      * The service container.
      */
-    private Asas $container;
+    private AsasContainer $container;
 
     /**
      * The logger instance.
@@ -53,7 +53,7 @@ class ConfigurationManager
     /**
      * Create a new configuration manager instance.
      */
-    public function __construct(Asas $container)
+    public function __construct(AsasContainer $container)
     {
         $this->container = $container;
         $this->db = $container->get(Connection::class);

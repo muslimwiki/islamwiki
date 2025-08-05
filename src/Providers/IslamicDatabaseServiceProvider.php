@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Database\Islamic\IslamicDatabaseManager;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 
 /**
  * Islamic Database Service Provider

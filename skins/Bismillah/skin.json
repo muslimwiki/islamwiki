@@ -1,38 +1,15 @@
 {
     "name": "Bismillah",
     "version": "0.0.28",
+    "description": "Default Islamic-themed skin with traditional design and beautiful gradients",
     "author": "IslamWiki Team",
-    "description": "The default skin for IslamWiki with modern Islamic design and beautiful gradients.",
-    "type": "user-skin",
-    "directory": "Bismillah",
     "assets": {
         "css": "css/bismillah.css",
-        "js": "js/bismillah.js",
-        "layout": "templates/layout.twig"
+        "js": "js/bismillah.js"
     },
     "config": {
-        "primary_color": "#667eea",
-        "secondary_color": "#764ba2",
-        "accent_color": "#f093fb",
-        "text_color": "#1f2937",
-        "background_color": "#f8fafc",
-        "card_background": "#ffffff",
-        "border_color": "#e5e7eb",
-        "enable_animations": true,
-        "enable_gradients": true,
-        "font_family": "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
-    },
-    "features": [
-        "responsive",
-        "dark-theme",
-        "animations",
-        "gradients",
-        "glass-morphism",
-        "accessibility"
-    ],
-    "dependencies": {
-        "tailwind": "cdn",
-        "zamzamjs": "local",
-        "prism": "cdn"
+        "primary_color": "#4F46E5",
+        "secondary_color": "#7C3AED",
+        "accent_color": "#A855F7"
     }
 } 

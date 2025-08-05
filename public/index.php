@@ -28,7 +28,7 @@ require_once BASE_PATH . '/src/helpers.php';
 require_once BASE_PATH . '/LocalSettings.php';
 
 // Include necessary files
-require_once BASE_PATH . '/src/Core/Container/Asas.php';
+require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
 require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
 require_once BASE_PATH . '/src/Core/Auth/Aman.php';
@@ -36,7 +36,7 @@ require_once BASE_PATH . '/src/Core/Session/Wisal.php';
 require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
 require_once BASE_PATH . '/src/Core/Auth/Aman.php';
 require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
-require_once BASE_PATH . '/src/Core/Application.php';
+require_once BASE_PATH . '/src/Core/NizamApplication.php';
 require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
 require_once BASE_PATH . '/src/Http/Controllers/DashboardController.php';
 require_once BASE_PATH . '/src/Http/Controllers/ProfileController.php';
@@ -52,15 +52,17 @@ require_once BASE_PATH . '/src/Models/QuranVerse.php';
 require_once BASE_PATH . '/src/Models/Hadith.php';
 require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
 require_once BASE_PATH . '/src/Models/PrayerTime.php';
+require_once BASE_PATH . '/src/Http/Controllers/Controller.php';
+require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 
 // Initialize Application (which creates its own container)
-$app = new \IslamWiki\Core\Application(BASE_PATH);
+$app = new \IslamWiki\Core\NizamApplication(BASE_PATH);
 $container = $app->getContainer();
 
 // Register the application in the container

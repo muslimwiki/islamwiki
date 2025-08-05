@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions;
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
@@ -17,7 +17,7 @@ class ExtensionManager
     /**
      * @var Container Application container
      */
-    private Asas $container;
+    private AsasContainer $container;
 
     /**
      * @var HookManager Hook manager instance
@@ -42,7 +42,7 @@ class ExtensionManager
     /**
      * Constructor
      */
-    public function __construct(Asas $container)
+    public function __construct(AsasContainer $container)
     {
         $this->container = $container;
         $this->hookManager = $container->get(HookManager::class);

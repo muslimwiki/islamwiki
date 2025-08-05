@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.51] - 2025-08-05
+
+### Major Refactoring
+- **Container Class Rename**: Renamed `Asas.php` to `AsasContainer.php` for better clarity
+- **Application Consolidation**: Merged `Application.php` and `Nizam.php` into single `NizamApplication.php`
+- **Class Name Updates**: Updated `Asas` class to `AsasContainer` and `Application` to `NizamApplication`
+- **Comprehensive File Updates**: Updated 100+ files to use new class names and file paths
+- **Type Hint Updates**: Updated all constructor parameters and type hints to use `AsasContainer`
+- **Documentation Updates**: Updated all documentation to reflect new naming conventions
+
+### Technical Improvements
+- **Clear Naming Convention**: `AsasContainer` clearly indicates dependency injection container purpose
+- **Consolidated Architecture**: Single `NizamApplication.php` eliminates confusion between multiple application classes
+- **Consistent Structure**: File names now match class names throughout the codebase
+- **Islamic Naming Convention**: `NizamApplication` properly follows Arabic naming system
+- **Professional Standards**: Eliminates confusion and provides clear, descriptive naming
+
+### Files Renamed
+- `src/Core/Container/Asas.php` → `src/Core/Container/AsasContainer.php`
+- `src/Core/Application.php` → **DELETED** (merged into NizamApplication.php)
+- `src/Core/Nizam.php` → **DELETED** (merged into NizamApplication.php)
+- `src/Core/NizamApplication.php` → **CREATED** (consolidated file)
+
+### Files Updated (100+ files)
+- All `require_once` statements updated to reference `AsasContainer.php`
+- All `new Application()` → `new NizamApplication()`
+- All `new Asas()` → `new AsasContainer()`
+- All `use` statements updated
+- All type hints updated (`Asas $container` → `AsasContainer $container`)
+- All constructor parameters updated
+- All documentation references updated
+
+### Impact
+- **Code Clarity**: Clear, descriptive class names that indicate purpose
+- **Architecture Simplification**: Single application class eliminates confusion
+- **Maintainability**: Consistent naming conventions throughout codebase
+- **Developer Experience**: Easier to understand and work with the codebase
+- **Professional Standards**: Follows modern PHP and Islamic naming best practices
+
 ## [0.0.50] - 2025-08-05
 
 ### Added

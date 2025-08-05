@@ -45,11 +45,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Configuration\ConfigurationManager;
 
 // Initialize application
-$app = new Application(__DIR__ . '/..');
+$app = new NizamApplication(__DIR__ . '/..');
 $container = $app->getContainer();
 
 // Get configuration manager

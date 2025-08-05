@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Skin;
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Skins\SkinManager;
 
 class StaticDataManager
@@ -256,7 +256,7 @@ class StaticDataManager
     {
         $logos = [
             'Muslim' => '🕌',
-            'Bismillah' => '📖',
+            'Muslim' => '📖',
             'default' => '🏠',
         ];
         

@@ -27,7 +27,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\View\TwigRenderer;
 use IslamWiki\Core\Search\IqraSearchEngine;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use Exception;
 
 /**

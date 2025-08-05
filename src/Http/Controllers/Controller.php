@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Request;
@@ -19,7 +19,7 @@ abstract class Controller
     /**
      * The container instance.
      */
-    protected Asas $container;
+    protected AsasContainer $container;
 
     /**
      * The Twig renderer instance.
@@ -30,9 +30,9 @@ abstract class Controller
      * Create a new controller instance.
      *
      * @param Connection $db The database connection
-     * @param \IslamWiki\Core\Container\Asas $container The dependency injection container
+     * @param \IslamWiki\Core\Container\AsasContainer $container The dependency injection container
      */
-    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         $this->db = $db;
         $this->container = $container;

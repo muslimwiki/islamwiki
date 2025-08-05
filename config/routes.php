@@ -252,6 +252,13 @@ return function (\IslamWiki\Core\Application $app) {
         $this->put('/profile/password', [$profileController, 'apiUpdatePassword']);
     });
     
+    // Asset serving routes (serve files from resources through application)
+    $app->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');
+    $app->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveJs');
+    
+    // Skin asset serving routes (serve files from skins directory)
+    $app->get('/skins/{skin}/{type}/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinAsset');
+    
     // Error handling
     $app->addErrorMiddleware(true, true, true);
     

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Application;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\NizamApplication;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\Wisal;
@@ -46,7 +46,7 @@ class SettingsController extends Controller
         
         // Get user settings using the application's database connection
         $userSettings = $this->getUserSettings($userId);
-        $userActiveSkin = $userSettings['skin'] ?? 'bismillah'; // Default to bismillah
+        $userActiveSkin = $userSettings['skin'] ?? 'Bismillah'; // Default to Bismillah
         
         // Get current user from session
         $user = null;
@@ -244,7 +244,7 @@ class SettingsController extends Controller
         
         $userId = $this->session->getUserId();
         $userSettings = $this->getUserSettings($userId);
-        $userActiveSkin = $userSettings['skin'] ?? 'bismillah';
+                    $userActiveSkin = $userSettings['skin'] ?? 'muslim';
         
         $availableSkins = $this->discoverAvailableSkins();
         

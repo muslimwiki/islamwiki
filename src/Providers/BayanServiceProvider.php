@@ -27,7 +27,7 @@ use IslamWiki\Core\Formatter\BayanManager;
 use IslamWiki\Core\Formatter\NodeManager;
 use IslamWiki\Core\Formatter\EdgeManager;
 use IslamWiki\Core\Formatter\QueryManager;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use Psr\Log\LoggerInterface;
 
 /**

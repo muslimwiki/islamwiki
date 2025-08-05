@@ -32,23 +32,23 @@ src/Core/
 
 ## 🏷️ **Class Names (Arabic for Uniqueness)**
 
-| System | Arabic Name | Meaning | Purpose | Directory |
-|--------|-------------|---------|---------|-----------|
-| Aman | أمان | Security/Safety | Authentication | `Auth/` |
-| Wisal | وصال | Connection/Link | Session Management | `Session/` |
-| Shahid | شاهد | Witness/Testimony | Logging | `Logging/` |
-| Asas | أساس | Foundation/Base | Dependency Injection | `Container/` |
-| Siraj | سراج | Lamp/Light | API Management | `API/` |
-| Usul | أصول | Principles/Roots | Knowledge System | `Knowledge/` |
-| Rihlah | رحلة | Journey | Caching System | `Caching/` |
-| Sabr | صبر | Patience | Queue System | `Queue/` |
-| Bayan | بيان | Explanation | Content Formatting | `Formatter/` |
+| System | Arabic Name | Meaning           | Purpose              | Directory    |
+| ------ | ----------- | ----------------- | -------------------- | ------------ |
+| Aman   | أمان        | Security/Safety   | Authentication       | `Auth/`      |
+| Wisal  | وصال        | Connection/Link   | Session Management   | `Session/`   |
+| Shahid | شاهد        | Witness/Testimony | Logging              | `Logging/`   |
+| Asas   | أساس        | Foundation/Base   | Dependency Injection | `Container/` |
+| Siraj  | سراج        | Lamp/Light        | API Management       | `API/`       |
+| Usul   | أصول        | Principles/Roots  | Knowledge System     | `Knowledge/` |
+| Rihlah | رحلة        | Journey           | Caching System       | `Caching/`   |
+| Sabr   | صبر         | Patience          | Queue System         | `Queue/`     |
+| Bayan  | بيان        | Explanation       | Content Formatting   | `Formatter/` |
 
 ## 💼 **Variable Names (English for Clarity)**
 
 ```php
 // ✅ GOOD - Use English variable names for clarity
-$container = new Asas();           // Dependency injection container
+$container = new AsasContainer();           // Dependency injection container
 $auth = new Aman();               // Authentication system  
 $session = new Wisal();           // Session management
 $logger = new Shahid();           // Logging system
@@ -59,7 +59,7 @@ $queue = new Sabr();              // Queue system
 $formatter = new Bayan();         // Content formatting
 
 // ❌ AVOID - Don't use Arabic variable names
-$asas = new Asas();               // Confusing
+$asas = new AsasContainer();               // Confusing
 $aman = new Aman();               // Hard to understand
 $wisal = new Wisal();             // Not clear
 ```
@@ -71,7 +71,7 @@ $wisal = new Wisal();             // Not clear
 use IslamWiki\Core\Auth\Aman;
 use IslamWiki\Core\Session\Wisal;
 use IslamWiki\Core\Logging\Shahid;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\API\Siraj;
 use IslamWiki\Core\Knowledge\Usul;
 use IslamWiki\Core\Caching\Rihlah;
@@ -82,9 +82,10 @@ use IslamWiki\Core\Formatter\Bayan;
 ## 🔧 **Usage Examples**
 
 ### **Service Registration**
+
 ```php
 // ✅ GOOD - Clear and professional
-$container = new Asas();
+$container = new AsasContainer();
 $container->singleton('auth', function() {
     return new Aman($session, $db);
 });
@@ -94,6 +95,7 @@ $container->singleton('cache', function() {
 ```
 
 ### **Controller Construction**
+
 ```php
 // ✅ GOOD - Professional variable names
 class UserController extends Controller
@@ -109,6 +111,7 @@ class UserController extends Controller
 ```
 
 ### **Service Provider Registration**
+
 ```php
 // ✅ GOOD - Clear service registration
 class AuthServiceProvider
@@ -127,16 +130,19 @@ class AuthServiceProvider
 ## 🎨 **Benefits of This Approach**
 
 ### **✅ Professional Standards**
+
 - **English directories** - Easy to navigate and understand
 - **English variables** - Clear and readable code
 - **Consistent structure** - Follows industry conventions
 
 ### **✅ Unique Identity**
+
 - **Arabic class names** - Memorable and culturally relevant
 - **Meaningful names** - Each name has deep significance
 - **Brand differentiation** - Sets IslamWiki apart from other frameworks
 
 ### **✅ Developer Experience**
+
 - **Easy to learn** - Familiar directory structure
 - **Clear intent** - Variable names explain their purpose
 - **Consistent patterns** - Predictable code organization
@@ -144,6 +150,7 @@ class AuthServiceProvider
 ## 📋 **Implementation Checklist**
 
 ### **✅ Directory Structure**
+
 - [x] `src/Core/Auth/` - Authentication system
 - [x] `src/Core/Session/` - Session management
 - [x] `src/Core/Logging/` - Logging system
@@ -155,6 +162,7 @@ class AuthServiceProvider
 - [x] `src/Core/Formatter/` - Content formatting
 
 ### **✅ Class Names**
+
 - [x] `Aman` - Authentication class
 - [x] `Wisal` - Session class
 - [x] `Shahid` - Logging class
@@ -166,6 +174,7 @@ class AuthServiceProvider
 - [x] `Bayan` - Formatter class
 
 ### **✅ Variable Names**
+
 - [x] `$container` - Dependency injection container
 - [x] `$auth` - Authentication system
 - [x] `$session` - Session management
@@ -179,6 +188,7 @@ class AuthServiceProvider
 ## 🚀 **Best Practices**
 
 ### **✅ DO**
+
 - Use English directory names for clarity
 - Use English variable names for readability
 - Use Arabic class names for uniqueness
@@ -186,6 +196,7 @@ class AuthServiceProvider
 - Document naming conventions clearly
 
 ### **❌ DON'T**
+
 - Use Arabic variable names (confusing)
 - Mix naming conventions inconsistently
 - Use unclear or ambiguous names

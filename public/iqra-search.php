@@ -6,21 +6,21 @@
  */
 
 // Include necessary files
-require_once __DIR__ . '/../src/Core/Container/Asas.php';
+require_once __DIR__ . '/../src/Core/Container/AsasContainer.php';
 require_once __DIR__ . '/../src/Core/Database/Connection.php';
 require_once __DIR__ . '/../src/Core/Logging/Logger.php';
 require_once __DIR__ . '/../src/Http/Controllers/Controller.php';
 require_once __DIR__ . '/../src/Core/Search/IqraSearchEngine.php';
 require_once __DIR__ . '/../src/Http/Controllers/IqraSearchController.php';
 
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Logging\Logger;
 use IslamWiki\Core\Search\IqraSearchEngine;
 use IslamWiki\Http\Controllers\IqraSearchController;
 
 // Initialize components
-$container = new Asas();
+$container = new AsasContainer();
 $logDir = __DIR__ . '/../storage/logs';
 if (!is_dir($logDir)) {
     mkdir($logDir, 0755, true);

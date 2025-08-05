@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\API\Authenticators;
 
 use IslamWiki\Core\API\Interfaces\AuthenticatorInterface;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -15,12 +15,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ApiKeyAuthenticator implements AuthenticatorInterface
 {
-    private Asas $container;
+    private AsasContainer $container;
     
     /**
      * Create a new API key authenticator.
      */
-    public function __construct(Asas $container)
+    public function __construct(AsasContainer $container)
     {
         $this->container = $container;
     }

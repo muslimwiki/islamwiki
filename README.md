@@ -1,6 +1,6 @@
 # IslamWiki
 
-**Version:** 0.0.50  
+**Version:** 0.0.51  
 **Release Date:** 2025-08-05  
 **Status:** Active Development
 
@@ -57,7 +57,7 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **CSS Framework**: Safa CSS (custom Islamic framework)
 - **JavaScript**: ZamZam.js (lightweight framework)
 - **Logging**: PSR-3 compliant Shahid logger
-- **Container**: Asas dependency injection container
+- **Container**: AsasContainer dependency injection container
 
 ## 📦 Installation
 

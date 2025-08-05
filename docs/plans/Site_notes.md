@@ -49,3 +49,7 @@ create autoload as local
 ---
 
 Looks like we are having loading the separate skins with the same nav, content, footer, etc.. we need to create a global static data file that will link the various static items (header, main content, footer, etc) with the current active skin.
+
+---
+
+why do we have the skins in public folder, shouldn't they be in the root folder skins?

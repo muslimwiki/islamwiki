@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -35,7 +35,7 @@ echo "================================================\n\n";
 
 try {
     // Initialize application
-    $app = new Application(__DIR__ . '/../..');
+    $app = new NizamApplication(__DIR__ . '/../..');
     $container = $app->getContainer();
     $db = $container->get('db');
 

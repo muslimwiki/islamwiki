@@ -18,18 +18,18 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
 use IslamWiki\Core\Auth\Aman;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 
 class AuthController
 {
     private Aman $auth;
     private Connection $db;
-    private Asas $container;
+    private AsasContainer $container;
     
     /**
      * Create a new authentication controller instance.
      */
-    public function __construct(Connection $db, Asas $container)
+    public function __construct(Connection $db, AsasContainer $container)
     {
         $this->db = $db;
         $this->container = $container;

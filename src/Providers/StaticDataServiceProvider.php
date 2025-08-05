@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Skin\StaticDataManager;
 
 class StaticDataServiceProvider

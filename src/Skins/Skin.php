@@ -122,7 +122,8 @@ abstract class Skin
         if ($this->skinPath === null) {
             return '';
         }
-        return $this->skinPath . '/css/bismillah.css';
+        $skinName = strtolower($this->getName());
+        return $this->skinPath . '/css/' . $skinName . '.css';
     }
     
     /**
@@ -133,7 +134,8 @@ abstract class Skin
         if ($this->skinPath === null) {
             return '';
         }
-        return $this->skinPath . '/js/bismillah.js';
+        $skinName = strtolower($this->getName());
+        return $this->skinPath . '/js/' . $skinName . '.js';
     }
     
     /**

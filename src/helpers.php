@@ -145,7 +145,8 @@ if (!function_exists('asset')) {
         $baseUrl = rtrim(env('APP_URL', 'https://local.islam.wiki'), '/');
         $assetPath = ltrim($path, '/');
         
-        return "{$baseUrl}/public/{$assetPath}";
+        // Use the new secure asset serving system (not public folder)
+        return "{$baseUrl}/assets/{$assetPath}";
     }
 }
 

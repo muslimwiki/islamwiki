@@ -121,27 +121,30 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
 /**
  * Available skins - similar to MediaWiki's $wgValidSkinNames
  * Add skins here to make them available for selection
+ * 
+ * NOTE: Muslim skin temporarily disabled to focus on Bismillah skin development
  */
 $wgValidSkins = [
-    'Muslim' => 'Muslim',
     'Bismillah' => 'Bismillah',
+    // 'Muslim' => 'Muslim', // Temporarily disabled
 ];
 
 /**
  * Active skin configuration
  * 
  * Set the active skin for the site. Available options:
- * - 'Muslim': Modern Islamic design with comprehensive styling
- * - 'Bismillah': Default skin with clean, minimal design
+ * - 'Bismillah': Default Islamic-themed skin with traditional design and beautiful gradients
+ * 
+ * NOTE: Muslim skin temporarily disabled to focus on Bismillah skin development
  * 
  * To change skins dynamically, use $skinManager->setActiveSkin('SkinName') instead.
  */
-$wgActiveSkin = 'Muslim';
+$wgActiveSkin = 'Bismillah';
 
 /**
  * Default skin for new users
  */
-$wgDefaultSkin = 'Muslim';
+$wgDefaultSkin = 'Bismillah';
 
 /**
  * Skin configuration options

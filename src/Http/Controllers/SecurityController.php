@@ -18,7 +18,7 @@ use IslamWiki\Core\Security\ConfigurationEncryption;
 use IslamWiki\Core\Security\ConfigurationAccessControl;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\Asas;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Logging\Shahid;
 use IslamWiki\Core\Database\Connection;
 

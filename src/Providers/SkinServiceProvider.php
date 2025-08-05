@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Application;
+use IslamWiki\Core\NizamApplication;
 use IslamWiki\Skins\SkinManager;
 
 class SkinServiceProvider
@@ -129,7 +129,7 @@ class SkinServiceProvider
             'skin_name' => 'default',
             'skin_version' => '0.0.29',
             'skin_config' => [],
-            'active_skin' => 'bismillah',
+            'active_skin' => 'Bismillah', // Updated to match LocalSettings
         ]);
         
         // Register view helpers for skin functionality
