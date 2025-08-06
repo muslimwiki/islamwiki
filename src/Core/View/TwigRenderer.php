@@ -122,6 +122,8 @@ class TwigRenderer
                     
                     // Update the global variables so the template can access them
                     $this->addGlobals([
+                        'skin_css' => $skinData['css'] ?? '',
+                        'skin_js' => $skinData['js'] ?? '',
                         'skin_css_url' => $skinData['css_url'] ?? '',
                         'skin_js_url' => $skinData['js_url'] ?? '',
                         'active_skin' => $skinData['name'] ?? 'default',
@@ -130,6 +132,8 @@ class TwigRenderer
                     ]);
                     
                     // Also add to template data for backward compatibility
+                    $data['skin_css'] = $skinData['css'] ?? '';
+                    $data['skin_js'] = $skinData['js'] ?? '';
                     $data['skin_css_url'] = $skinData['css_url'] ?? '';
                     $data['skin_js_url'] = $skinData['js_url'] ?? '';
                     $data['active_skin'] = $skinData['name'] ?? 'default';

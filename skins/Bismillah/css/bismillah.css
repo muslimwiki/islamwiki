@@ -1,40 +1,79 @@
-/* Bismillah Skin CSS */
-/* Default CSS for Bismillah skin */
+/* Bismillah Skin CSS - Modern Islamic Theme */
+/* Beautiful Islamic-themed design with gradients and modern styling */
 
 /* Root Variables */
 :root {
-    --bismillah-primary: #4F46E5;
-    --bismillah-secondary: #7C3AED;
-    --bismillah-accent: #A855F7;
+    --bismillah-primary: #1E40AF;
+    --bismillah-secondary: #3B82F6;
+    --bismillah-accent: #60A5FA;
+    --bismillah-success: #10B981;
+    --bismillah-warning: #F59E0B;
+    --bismillah-danger: #EF4444;
     --bismillah-text: #1F2937;
+    --bismillah-text-light: #6B7280;
     --bismillah-bg: #FFFFFF;
+    --bismillah-bg-light: #F9FAFB;
     --bismillah-border: #E5E7EB;
+    --bismillah-border-light: #F3F4F6;
+    --bismillah-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bismillah-gradient-alt: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+    --bismillah-gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    --bismillah-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --bismillah-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --bismillah-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --bismillah-radius: 0.75rem;
+    --bismillah-radius-lg: 1rem;
+    --bismillah-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Amiri', 'Noto Naskh Arabic', serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    background: var(--bismillah-bg-light);
     color: var(--bismillah-text);
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Header Styles */
 .muslim-header {
-    background: linear-gradient(135deg, var(--bismillah-primary) 0%, var(--bismillah-secondary) 100%);
+    background: var(--bismillah-gradient-alt);
     color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--bismillah-shadow-lg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.muslim-header-top {
     padding: 1rem 0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .muslim-header-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 2rem;
+}
+
+.muslim-header-left {
+    display: flex;
+    align-items: center;
 }
 
 .muslim-logo {
@@ -42,140 +81,670 @@ body {
     align-items: center;
     text-decoration: none;
     color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.75rem;
+    font-weight: 700;
+    transition: var(--bismillah-transition);
+}
+
+.muslim-logo:hover {
+    transform: scale(1.05);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
 .logo-icon {
-    font-size: 2rem;
-    margin-right: 0.5rem;
+    font-size: 2.5rem;
+    margin-right: 0.75rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
-/* Navigation */
-.muslim-nav {
-    display: flex;
-    gap: 2rem;
+.logo-text {
+    font-weight: 800;
+    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.nav-link {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.nav-link:hover,
-.nav-link.active {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Search */
-.muslim-search {
+/* Search Bar */
+.muslim-header-center {
     flex: 1;
-    max-width: 500px;
-    margin: 0 2rem;
+    max-width: 600px;
+}
+
+.muslim-search {
+    width: 100%;
+}
+
+.search-form {
+    position: relative;
+    width: 100%;
 }
 
 .search-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: var(--bismillah-transition);
+    overflow: hidden;
+}
+
+.search-input-wrapper:focus-within {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3), 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .search-input {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
     border: none;
-    border-radius: 2rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: transparent;
     font-size: 1rem;
+    color: var(--bismillah-text);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: var(--bismillah-text-light);
 }
 
 .search-button {
     position: absolute;
     right: 0.5rem;
-    background: var(--bismillah-primary);
+    background: var(--bismillah-gradient-alt);
     border: none;
     border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 3rem;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: var(--bismillah-transition);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.search-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
+.search-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Navigation */
+.muslim-header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.muslim-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--bismillah-radius);
+    transition: var(--bismillah-transition);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* User Menu */
+.muslim-user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.user-dropdown {
+    position: relative;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--bismillah-radius);
+    padding: 0.75rem 1.25rem;
+    color: white;
+    cursor: pointer;
+    transition: var(--bismillah-transition);
+    backdrop-filter: blur(10px);
+}
+
+.user-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.dropdown-arrow {
+    width: 1rem;
+    height: 1rem;
+    transition: var(--bismillah-transition);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: var(--bismillah-radius-lg);
+    box-shadow: var(--bismillah-shadow-xl);
+    min-width: 250px;
+    border: 1px solid var(--bismillah-border);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--bismillah-transition);
+}
+
+.user-dropdown-menu[z-show="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    color: var(--bismillah-text);
+    text-decoration: none;
+    transition: var(--bismillah-transition);
+    border-bottom: 1px solid var(--bismillah-border-light);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: var(--bismillah-bg-light);
+    color: var(--bismillah-primary);
+}
+
+.dropdown-item.active {
+    background: var(--bismillah-primary);
+    color: white;
+}
+
+.dropdown-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--bismillah-border);
+    margin: 0.5rem 0;
+}
+
+.logout-item {
+    color: var(--bismillah-danger);
+}
+
+.logout-item:hover {
+    background: #FEF2F2;
+    color: var(--bismillah-danger);
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--bismillah-radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--bismillah-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: var(--bismillah-gradient-alt);
+    color: white;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Secondary Navigation */
+.muslim-header-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.muslim-secondary-nav {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.muslim-secondary-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.muslim-secondary-nav .nav-link {
+    white-space: nowrap;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
 }
 
 /* Main Content */
-.container {
-    max-width: 1200px;
+.muslim-main {
+    min-height: calc(100vh - 200px);
+    padding: 3rem 0;
+    background: var(--bismillah-bg-light);
+}
+
+.muslim-container {
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 0 2rem;
+}
+
+/* Layout Components */
+.home-three-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.second-nav-column,
+.right-sidebar-column {
+    position: sticky;
+    top: 2rem;
 }
 
 /* Cards */
 .card {
     background: white;
-    border-radius: 1rem;
+    border-radius: var(--bismillah-radius-lg);
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--bismillah-shadow);
     border: 1px solid var(--bismillah-border);
+    transition: var(--bismillah-transition);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 0.5rem;
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--bismillah-gradient-alt);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--bismillah-shadow-lg);
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    color: var(--bismillah-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Navigation Items */
+.second-nav .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    color: var(--bismillah-text);
     text-decoration: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    border-radius: var(--bismillah-radius);
+    transition: var(--bismillah-transition);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--bismillah-primary) 0%, var(--bismillah-secondary) 100%);
+.second-nav .nav-item:hover {
+    background: var(--bismillah-bg-light);
+    color: var(--bismillah-primary);
+    transform: translateX(4px);
+}
+
+.second-nav .nav-item.active {
+    background: var(--bismillah-primary);
     color: white;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+/* Hero Section */
+.hero {
+    background: var(--bismillah-gradient-hero);
+    border-radius: var(--bismillah-radius-lg);
+    padding: 4rem 3rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     color: var(--bismillah-primary);
     margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 h1 {
     font-size: 2.5rem;
-    font-weight: bold;
 }
 
 h2 {
     font-size: 2rem;
-    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: var(--bismillah-text);
 }
 
 /* Footer */
-footer {
-    background: var(--bismillah-primary);
+.muslim-footer {
+    background: var(--bismillah-gradient-alt);
     color: white;
-    padding: 2rem 0;
+    padding: 4rem 0 2rem;
     margin-top: 4rem;
-    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Responsive */
+.muslim-footer .muslim-header-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.muslim-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.05"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-grain)"/></svg>');
+}
+
+.footer-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 0;
+}
+
+.footer-section h3,
+.footer-section h4 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.footer-section h3 {
+    font-size: 1.5rem;
+}
+
+.footer-section h4 {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.footer-section p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-section ul li {
+    margin: 0;
+}
+
+.footer-section ul li a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--bismillah-transition);
+    display: inline-block;
+    padding: 0.25rem 0;
+}
+
+.footer-section ul li a:hover {
+    color: white;
+    transform: translateX(4px);
+}
+
+.footer-bottom {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.footer-bottom p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (min-width: 1400px) {
+    .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .home-three-column-layout {
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .home-three-column-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .second-nav-column,
+    .right-sidebar-column {
+        position: static;
+    }
+    
+    .muslim-container {
+        padding: 0 1.5rem;
+    }
+}
+
 @media (max-width: 768px) {
     .muslim-header-container {
         flex-direction: column;
         gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .muslim-header-right {
+        width: 100%;
+        justify-content: center;
     }
     
     .muslim-search {
@@ -185,5 +754,160 @@ footer {
     
     .muslim-nav {
         gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .hero {
+        padding: 3rem 2rem;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+    }
+    
+    .muslim-container {
+        padding: 0 1rem;
+    }
+    
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .footer-section ul {
+        gap: 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .footer-section h3,
+    .footer-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.second-nav-column {
+    animation: slideInLeft 0.6s ease-out 0.2s both;
+}
+
+.right-sidebar-column {
+    animation: slideInLeft 0.6s ease-out 0.4s both;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--bismillah-border);
+    border-top: 2px solid var(--bismillah-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Focus States */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--bismillah-primary);
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .muslim-header,
+    .muslim-footer,
+    .second-nav-column,
+    .right-sidebar-column {
+        display: none;
+    }
+    
+    .muslim-main {
+        padding: 0;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
     }
 } 

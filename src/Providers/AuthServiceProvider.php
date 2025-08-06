@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Auth\Aman;
+use IslamWiki\Core\Auth\AmanSecurity;
 
 class AuthServiceProvider
 {
@@ -27,11 +27,11 @@ class AuthServiceProvider
         $container->singleton('auth', function (AsasContainer $container) {
             $session = $container->get('session');
             $db = $container->get('db');
-            return new Aman($session, $db);
+            return new AmanSecurity($session, $db);
         });
         
         // Register Aman as a singleton with its class name
-        $container->singleton(Aman::class, function (AsasContainer $container) {
+        $container->singleton(AmanSecurity::class, function (AsasContainer $container) {
             return $container->get('auth');
         });
     }

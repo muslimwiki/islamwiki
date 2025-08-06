@@ -17,7 +17,7 @@ class IslamicDatabaseServiceProvider
     /**
      * Register the service provider.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register the Islamic database manager
         $container->singleton(IslamicDatabaseManager::class, function (Container $container) {

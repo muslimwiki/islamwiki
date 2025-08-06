@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -14,7 +14,7 @@ use IslamWiki\Core\Database\Connection;
  */
 class DatabaseCacheDriver implements CacheDriverInterface
 {
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private Connection $db;
     private array $stats = [
         'hits' => 0,
@@ -26,7 +26,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
     /**
      * Create a new database cache driver.
      */
-    public function __construct(Shahid $logger, Connection $db)
+    public function __construct(ShahidLogger $logger, Connection $db)
     {
         $this->logger = $logger;
         $this->db = $db;
@@ -46,7 +46,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
             INDEX idx_expires_at (expires_at)
         )";
         
-        $this->db->execute($sql);
+        $this->db->statement($sql);
     }
     
     /**
@@ -88,7 +88,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
             $expiresAt = date('Y-m-d H:i:s', time() + $ttl);
             $jsonValue = json_encode($value);
             
-            $this->db->execute(
+            $this->db->statement(
                 'INSERT INTO rihlah_cache (`key`, value, expires_at) VALUES (?, ?, ?) 
                  ON DUPLICATE KEY UPDATE value = ?, expires_at = ?',
                 [$key, $jsonValue, $expiresAt, $jsonValue, $expiresAt]
@@ -117,7 +117,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
     public function delete(string $key): bool
     {
         try {
-            $this->db->execute(
+            $this->db->statement(
                 'DELETE FROM rihlah_cache WHERE `key` = ?',
                 [$key]
             );
@@ -141,7 +141,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
     public function clear(): bool
     {
         try {
-            $this->db->execute('DELETE FROM rihlah_cache');
+            $this->db->statement('DELETE FROM rihlah_cache');
             
             $this->logger->info('Database cache cleared');
             return true;
@@ -207,7 +207,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
     public function cleanup(): int
     {
         try {
-            $result = $this->db->execute(
+            $result = $this->db->statement(
                 'DELETE FROM rihlah_cache WHERE expires_at <= NOW()'
             );
             

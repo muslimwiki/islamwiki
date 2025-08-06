@@ -24,13 +24,13 @@ class AssetController extends Controller
     public function serveCss(Request $request, string $filename): Response
     {
         try {
-            error_log("AssetController::serveCss called with filename: " . $filename);
+            // error_log("AssetController::serveCss called with filename: " . $filename);
             
             $filePath = dirname(dirname(dirname(__DIR__))) . '/resources/assets/css/' . $filename;
-            error_log("Looking for file at: " . $filePath);
+            // error_log("Looking for file at: " . $filePath);
             
             if (!file_exists($filePath)) {
-                error_log("File not found: " . $filePath);
+                // error_log("File not found: " . $filePath);
                 return new Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
             }
 
@@ -40,13 +40,15 @@ class AssetController extends Controller
             
             $response = new Response(200, [
                 'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=31536000',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
                 'X-Content-Type-Options' => 'nosniff',
                 'X-Frame-Options' => 'DENY'
             ], $content);
             
-            error_log("Response created with status: " . $response->getStatusCode());
-            error_log("AssetController::serveCss completed successfully");
+            // error_log("Response created with status: " . $response->getStatusCode());
+            // error_log("AssetController::serveCss completed successfully");
             return $response;
         } catch (\Exception $e) {
             error_log("AssetController::serveCss exception: " . $e->getMessage());
@@ -59,47 +61,49 @@ class AssetController extends Controller
      */
     public function serveJs(Request $request, string $filename): Response
     {
-        error_log("AssetController::serveJs called with filename: " . $filename);
+        // error_log("AssetController::serveJs called with filename: " . $filename);
         
         $filePath = dirname(dirname(dirname(__DIR__))) . '/resources/assets/js/' . $filename;
-        error_log("Looking for file at: " . $filePath);
+        // error_log("Looking for file at: " . $filePath);
         
         if (!file_exists($filePath)) {
-            error_log("File not found: " . $filePath);
+            // error_log("File not found: " . $filePath);
             return new Response(404, ['Content-Type' => 'text/plain'], 'JavaScript file not found');
         }
 
-        error_log("File found, reading content...");
+        // error_log("File found, reading content...");
         $content = file_get_contents($filePath);
-        error_log("Content length: " . strlen($content));
+        // error_log("Content length: " . strlen($content));
         
         return new Response(200, [
             'Content-Type' => 'application/javascript; charset=utf-8',
-            'Cache-Control' => 'public, max-age=31536000',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
             'X-Content-Type-Options' => 'nosniff',
             'X-Frame-Options' => 'DENY'
         ], $content);
     }
 
     /**
-     * Serve skin asset files (CSS/JS) with proper headers
+     * Serve skin CSS files with proper headers
      */
-    public function serveSkinAsset(Request $request, string $skin, string $type, string $filename): Response
+    public function serveSkinCss(Request $request, string $skin, string $filename): Response
     {
         try {
-            error_log("AssetController::serveSkinAsset called with skin: $skin, type: $type, filename: $filename");
+            // error_log("AssetController::serveSkinCss called with skin: $skin, filename: $filename");
             
-            $filePath = dirname(dirname(dirname(__DIR__))) . "/skins/$skin/$type/$filename";
-            error_log("Looking for file at: " . $filePath);
+            $filePath = dirname(dirname(dirname(__DIR__))) . "/skins/$skin/css/$filename";
+            // error_log("Looking for file at: " . $filePath);
             
             if (!file_exists($filePath)) {
-                error_log("File not found: " . $filePath);
+                // error_log("File not found: " . $filePath);
                 return new Response(404, ['Content-Type' => 'text/plain'], 'Skin asset file not found');
             }
 
-            error_log("File found, reading content...");
+            // error_log("File found, reading content...");
             $content = file_get_contents($filePath);
-            error_log("Content length: " . strlen($content));
+            // error_log("Content length: " . strlen($content));
             
             // Determine content type based on file extension
             $extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -113,17 +117,70 @@ class AssetController extends Controller
             
             $response = new Response(200, [
                 'Content-Type' => $contentType,
-                'Cache-Control' => 'public, max-age=31536000',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'X-Content-Type-Options' => 'nosniff',
+                'X-Frame-Options' => 'DENY'
+            ], $content);
+            
+            // error_log("Response created with status: " . $response->getStatusCode());
+            // error_log("AssetController::serveSkinCss completed successfully");
+            return $response;
+        } catch (\Exception $e) {
+            // error_log("AssetController::serveSkinCss exception: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Serve skin JavaScript files with proper headers
+     */
+    public function serveSkinJs(Request $request, string $skin, string $filename): Response
+    {
+        try {
+            error_log("AssetController::serveSkinJs called with skin: $skin, filename: $filename");
+            
+            $filePath = dirname(dirname(dirname(__DIR__))) . "/skins/$skin/js/$filename";
+            error_log("Looking for file at: " . $filePath);
+            
+            if (!file_exists($filePath)) {
+                error_log("File not found: " . $filePath);
+                return new Response(404, ['Content-Type' => 'text/plain'], 'Skin JavaScript file not found');
+            }
+
+            error_log("File found, reading content...");
+            $content = file_get_contents($filePath);
+            error_log("Content length: " . strlen($content));
+            
+            $response = new Response(200, [
+                'Content-Type' => 'application/javascript; charset=utf-8',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
                 'X-Content-Type-Options' => 'nosniff',
                 'X-Frame-Options' => 'DENY'
             ], $content);
             
             error_log("Response created with status: " . $response->getStatusCode());
-            error_log("AssetController::serveSkinAsset completed successfully");
+            error_log("AssetController::serveSkinJs completed successfully");
             return $response;
         } catch (\Exception $e) {
-            error_log("AssetController::serveSkinAsset exception: " . $e->getMessage());
+            error_log("AssetController::serveSkinJs exception: " . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Test method for debugging asset serving
+     */
+    public function test(Request $request): Response
+    {
+        return new Response(200, [
+            'Content-Type' => 'text/plain; charset=utf-8',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ], 'AssetController test method working!');
     }
 } 

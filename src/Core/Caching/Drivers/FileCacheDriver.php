@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * File Cache Driver
@@ -13,7 +13,7 @@ use IslamWiki\Core\Logging\Shahid;
  */
 class FileCacheDriver implements CacheDriverInterface
 {
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private string $cacheDir;
     private array $stats = [
         'hits' => 0,
@@ -25,7 +25,7 @@ class FileCacheDriver implements CacheDriverInterface
     /**
      * Create a new file cache driver.
      */
-    public function __construct(Shahid $logger, string $cacheDir)
+    public function __construct(ShahidLogger $logger, string $cacheDir)
     {
         $this->logger = $logger;
         $this->cacheDir = rtrim($cacheDir, '/');

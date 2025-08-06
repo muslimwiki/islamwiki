@@ -18,7 +18,7 @@ use IslamWiki\Core\Community\CommunityManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 class CommunityController extends Controller
@@ -45,7 +45,7 @@ class CommunityController extends Controller
     {
         parent::__construct($container);
         $this->db = $container->get(Connection::class);
-        $this->logger = $container->get(Shahid::class);
+        $this->logger = $container->get(ShahidLogger::class);
         $this->communityManager = new CommunityManager($this->db, $this->logger);
     }
 

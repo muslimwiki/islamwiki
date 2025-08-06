@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -23,10 +23,16 @@ class LoggingServiceProvider
      */
     public function register(ContainerInterface $container): void
     {
-        error_log('LoggingServiceProvider: register() called');
+        // error_log('LoggingServiceProvider: register() called');
         $container->bind(LoggerInterface::class, function (ContainerInterface $c) {
-            error_log('LoggingServiceProvider: Creating Shahid logger');
-            $config = $c->get('settings')['logging'] ?? [];
+            // error_log('LoggingServiceProvider: Creating Shahid logger');
+            $config = [];
+            try {
+                $config = $c->get('settings')['logging'] ?? [];
+            } catch (\Exception $e) {
+                // If settings binding doesn't exist, use defaults
+                // error_log('LoggingServiceProvider: No settings binding found, using defaults');
+            }
             
             // Ensure logs directory exists
             $logDir = $config['log_path'] ?? __DIR__ . '/../../storage/logs';
@@ -35,14 +41,14 @@ class LoggingServiceProvider
             }
             
             // Create Shahid witness system instance
-            $logger = new Shahid(
+            $logger = new ShahidLogger(
                 $logDir,
                 $config['level'] ?? \Psr\Log\LogLevel::DEBUG,
                 $config['max_file_size'] ?? 10, // MB
                 $config['max_files'] ?? 5
             );
             
-            error_log('LoggingServiceProvider: Shahid logger created successfully');
+            // error_log('LoggingServiceProvider: Shahid logger created successfully');
             return $logger;
         });
         
@@ -51,7 +57,7 @@ class LoggingServiceProvider
             return $c->get(LoggerInterface::class);
         });
         
-        error_log('LoggingServiceProvider: register() completed');
+        // error_log('LoggingServiceProvider: register() completed');
     }
     
     /**

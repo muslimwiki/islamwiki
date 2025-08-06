@@ -16,16 +16,21 @@ class ViewServiceProvider
      *
      * @param Container $container The dependency injection container
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Get the base path from the application if available
         $basePath = null;
         
-        if ($container->has('app')) {
-            $app = $container->get('app');
-            $basePath = $app->basePath();
-        } else {
-            // Fallback: try to find the project root
+        try {
+            if ($container->has('app')) {
+                $app = $container->get('app');
+                $basePath = $app->basePath();
+            } else {
+                // Fallback: try to find the project root
+                $basePath = $this->findProjectRoot();
+            }
+        } catch (\Exception $e) {
+            // If app binding fails, use fallback
             $basePath = $this->findProjectRoot();
         }
         
@@ -49,11 +54,15 @@ class ViewServiceProvider
         );
         
         // Add CSRF token as a global variable
-        if ($container->has('session')) {
-            $session = $container->get('session');
-            $twigRenderer->addGlobals([
-                'csrf_token' => $session->getCsrfToken()
-            ]);
+        try {
+            if ($container->has('session')) {
+                $session = $container->get('session');
+                $twigRenderer->addGlobals([
+                    'csrf_token' => $session->getCsrfToken()
+                ]);
+            }
+        } catch (\Exception $e) {
+            // If session is not available, skip CSRF token
         }
         
         // Register the Twig renderer instance with the container

@@ -21,14 +21,14 @@ use IslamWiki\Skins\SkinManager;
 class SkinMiddleware
 {
     /**
-     * @var Application The application instance
+     * @var NizamApplication The application instance
      */
-    private Application $app;
+    private NizamApplication $app;
     
     /**
      * Constructor
      */
-    public function __construct(Application $app)
+    public function __construct(NizamApplication $app)
     {
         $this->app = $app;
     }
@@ -206,8 +206,8 @@ class SkinMiddleware
                 'skin_layout_path' => $skinLayoutPath,
             ]);
             
-            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Added skin data to view globals");
-            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin CSS length: " . strlen($skinData['css']));
+            // error_log("SkinMiddleware::updateSkinDataForCurrentUser - Added skin data to view globals");
+            // error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin CSS length: " . strlen($skinData['css']));
             
         } catch (\Throwable $e) {
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error: " . $e->getMessage());

@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace IslamWiki\Core\API;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Logging\ShahidLogger;
+use IslamWiki\Core\Session\WisalSession;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use IslamWiki\Core\API\RateLimiter;
@@ -35,8 +35,8 @@ use IslamWiki\Core\API\Formatters\JsonResponseFormatter;
 class SirajAPI
 {
     private AsasContainer $container;
-    private Shahid $logger;
-    private Wisal $session;
+    private ShahidLogger $logger;
+    private WisalSession $session;
     private array $rateLimiters = [];
     private array $authenticators = [];
     private array $responseFormatters = [];
@@ -44,7 +44,7 @@ class SirajAPI
     /**
      * Create a new Siraj API management system.
      */
-    public function __construct(AsasContainer $container, Shahid $logger, Wisal $session)
+    public function __construct(AsasContainer $container, ShahidLogger $logger, WisalSession $session)
     {
         $this->container = $container;
         $this->logger = $logger;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Caching\Rihlah;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Caching\RihlahCaching;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,11 +23,11 @@ class CacheController extends Controller
     /**
      * Create a new cache controller.
      */
-    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
         $this->cache = $container->get('cache');
-        $this->logger = $container->get(Shahid::class);
+        $this->logger = $container->get(ShahidLogger::class);
     }
     
     /**

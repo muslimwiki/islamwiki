@@ -5,7 +5,7 @@ namespace IslamWiki\Core\Knowledge\Classifications;
 
 use IslamWiki\Core\Knowledge\Interfaces\ClassificationInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * ScholarClassification
@@ -16,12 +16,12 @@ use IslamWiki\Core\Logging\Shahid;
 class ScholarClassification implements ClassificationInterface
 {
     private Connection $db;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     
     /**
      * Create a new ScholarClassification instance.
      */
-    public function __construct(Connection $db, Shahid $logger)
+    public function __construct(Connection $db, ShahidLogger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
@@ -74,64 +74,5 @@ class ScholarClassification implements ClassificationInterface
         ];
     }
     
-    /**
-     * Get ontology type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('Ontology', '', 'ScholarClassification'));
-    }
-    
-    /**
-     * Add a concept to the ontology.
-     */
-    public function addConcept(string $concept, array $properties = []): bool
-    {
-        // TODO: Implement concept addition
-        return false;
-    }
-    
-    /**
-     * Get concept relationships.
-     */
-    public function getRelationships(string $concept): array
-    {
-        // TODO: Implement relationship retrieval
-        return [];
-    }
-    
-    /**
-     * Get schema layer type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('SchemaLayer', '', 'ScholarClassification'));
-    }
-    
-    /**
-     * Define schema structure.
-     */
-    public function defineSchema(array $structure): bool
-    {
-        // TODO: Implement schema definition
-        return false;
-    }
-    
-    /**
-     * Validate data against schema.
-     */
-    public function validateData(array $data): bool
-    {
-        // TODO: Implement data validation
-        return false;
-    }
-    
-    /**
-     * Get schema definition.
-     */
-    public function getSchema(): array
-    {
-        // TODO: Implement schema retrieval
-        return [];
-    }
+
 }

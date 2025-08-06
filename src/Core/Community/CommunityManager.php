@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Community;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 class CommunityManager
 {

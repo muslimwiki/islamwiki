@@ -315,14 +315,14 @@ class Request implements ServerRequestInterface
         
         // Debug: Log the header being accessed
         if (!isset($this->headers[$name])) {
-            error_log(sprintf('Header not found: %s', $name));
+            // error_log(sprintf('Header not found: %s', $name));
             return [];
         }
         
         // Ensure we return an array of strings
         $headerValues = $this->headers[$name];
         if (!is_array($headerValues)) {
-            error_log(sprintf('Header value is not an array: %s', print_r($headerValues, true)));
+            // error_log(sprintf('Header value is not an array: %s', print_r($headerValues, true)));
             return [];
         }
         
@@ -335,14 +335,14 @@ class Request implements ServerRequestInterface
             $headerValues = $this->getHeader($name);
             
             // Debug: Log the header values
-            error_log(sprintf('Header values for %s: %s', $name, print_r($headerValues, true)));
+            // error_log(sprintf('Header values for %s: %s', $name, print_r($headerValues, true)));
             
             // Ensure all values are strings before imploding
             $headerValues = array_map('strval', $headerValues);
             
             return implode(', ', $headerValues);
         } catch (\Throwable $e) {
-            error_log(sprintf('Error in getHeaderLine(%s): %s', $name, $e->getMessage()));
+            // error_log(sprintf('Error in getHeaderLine(%s): %s', $name, $e->getMessage()));
             return '';
         }
     }

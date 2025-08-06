@@ -40,7 +40,7 @@ class BayanServiceProvider
     /**
      * Register Bayan services with the container.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register BayanManager as singleton
         $container->singleton(BayanManager::class, function () use ($container) {
@@ -80,7 +80,7 @@ class BayanServiceProvider
     /**
      * Boot the Bayan service provider.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         // Log that Bayan system is ready
         $logger = $container->get(LoggerInterface::class);

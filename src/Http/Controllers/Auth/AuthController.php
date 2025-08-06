@@ -16,13 +16,13 @@ namespace IslamWiki\Http\Controllers\Auth;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
-use IslamWiki\Core\Auth\Aman;
+use IslamWiki\Core\Auth\AmanSecurity;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Container\AsasContainer;
 
 class AuthController
 {
-    private Aman $auth;
+    private AmanSecurity $auth;
     private Connection $db;
     private AsasContainer $container;
     
@@ -33,7 +33,7 @@ class AuthController
     {
         $this->db = $db;
         $this->container = $container;
-        $this->auth = new Aman(
+        $this->auth = new AmanSecurity(
             $container->get('session'),
             $db
         );

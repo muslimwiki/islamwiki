@@ -134,25 +134,35 @@ class SabilRouting implements RequestHandlerInterface
     
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // error_log("SabilRouting::handle - Starting request handling");
         $httpMethod = $request->getMethod();
         $uri = $request->getUri()->getPath();
         
+        // Temporarily disable middleware to isolate the issue
+        // Initialize middleware stack if not already done
+        // if (!$this->middlewareStack) {
+        //     // error_log("SabilRouting::handle - Initializing middleware stack");
+        //     $this->initializeMiddlewareStack();
+        //     // error_log("SabilRouting::handle - Middleware stack initialized: " . ($this->middlewareStack ? 'yes' : 'no'));
+        // }
+        
+        // Temporarily disable middleware stack
+        // // Ensure middleware stack is available
+        // if (!$this->middlewareStack) {
+        //     // error_log("SabilRouting::handle - Middleware stack initialization failed, creating fallback");
+        //     try {
+        //         $this->initializeMiddlewareStack();
+        //     } catch (\Throwable $e) {
+        //         // error_log("SabilRouting::handle - Fallback middleware initialization failed: " . $e->getMessage());
+        //     }
+        // }
+        
         // Initialize middleware stack if not already done
         if (!$this->middlewareStack) {
-            error_log("IslamRouter::handle - Initializing middleware stack");
             $this->initializeMiddlewareStack();
-            error_log("IslamRouter::handle - Middleware stack initialized: " . ($this->middlewareStack ? 'yes' : 'no'));
         }
         
-        // Ensure middleware stack is available
-        if (!$this->middlewareStack) {
-            error_log("IslamRouter::handle - Middleware stack initialization failed, creating fallback");
-            try {
-                $this->initializeMiddlewareStack();
-            } catch (\Throwable $e) {
-                error_log("IslamRouter::handle - Fallback middleware initialization failed: " . $e->getMessage());
-            }
-        }
+
         
         // Strip query string and decode URI
         if (false !== $pos = strpos($uri, '?')) {
@@ -161,13 +171,16 @@ class SabilRouting implements RequestHandlerInterface
         $uri = rawurldecode($uri);
         
         // Find matching route
-        error_log("IslamRouter::handle - Looking for route: {$httpMethod} {$uri}");
-        error_log("IslamRouter::handle - Registered routes: " . count($this->routes));
+        // error_log("IslamRouter::handle - Looking for route: {$httpMethod} {$uri}");
+        // error_log("IslamRouter::handle - Registered routes: " . count($this->routes));
+        
+
+        
         $routeMatch = $this->findRoute($httpMethod, $uri);
         if ($routeMatch) {
-            error_log("IslamRouter::handle - Route matched: " . json_encode($routeMatch));
+            // error_log("IslamRouter::handle - Route matched: " . json_encode($routeMatch));
         } else {
-            error_log("IslamRouter::handle - No route found for {$httpMethod} {$uri}");
+            // error_log("IslamRouter::handle - No route found for {$httpMethod} {$uri}");
         }
         
         // Create the final handler function
@@ -208,6 +221,7 @@ class SabilRouting implements RequestHandlerInterface
                     // Convert GuzzleHttp\Psr7\ServerRequest to IslamWiki\Core\Http\Request
                     $convertedRequest = \IslamWiki\Core\Http\Request::capture();
                     
+                    // error_log("SabilRouting::handle - Calling controller method: $controllerClass@$method with vars: " . json_encode($vars));
                     $response = $controller->$method($convertedRequest, ...array_values($vars));
                     return $response;
                 } catch (\Throwable $e) {
@@ -228,10 +242,10 @@ class SabilRouting implements RequestHandlerInterface
         
         // Execute middleware stack if available
         if ($this->middlewareStack) {
-            error_log("IslamRouter::handle - Middleware stack available, executing");
+            error_log("SabilRouting::handle - Middleware stack available, executing");
             $response = $this->middlewareStack->execute($ourRequest, $finalHandler);
         } else {
-            error_log("IslamRouter::handle - No middleware stack, executing final handler directly");
+            // error_log("IslamRouter::handle - No middleware stack, executing final handler directly");
             $response = $finalHandler($ourRequest);
         }
         
@@ -358,17 +372,17 @@ class SabilRouting implements RequestHandlerInterface
             }
             
             try {
-                        $sessionManager = $this->container->has(\IslamWiki\Core\Session\Wisal::class)
-            ? $this->container->get(\IslamWiki\Core\Session\Wisal::class)
-            : new \IslamWiki\Core\Session\Wisal();
+                                    $sessionManager = $this->container->has(\IslamWiki\Core\Session\WisalSession::class)
+                ? $this->container->get(\IslamWiki\Core\Session\WisalSession::class)
+                            : new \IslamWiki\Core\Session\WisalSession();
                 $this->middlewareStack->add(new \IslamWiki\Http\Middleware\CsrfMiddleware($sessionManager));
             } catch (\Throwable $e) {
                 //
             }
             
             try {
-                $app = $this->container->has(\IslamWiki\Core\Application::class) 
-                    ? $this->container->get(\IslamWiki\Core\Application::class)
+                $app = $this->container->has(\IslamWiki\Core\NizamApplication::class) 
+                    ? $this->container->get(\IslamWiki\Core\NizamApplication::class)
                     : null;
                 if ($app) {
                     // Create SkinMiddleware with improved session handling

@@ -5,7 +5,8 @@ namespace IslamWiki\Core\API\Formatters;
 
 use IslamWiki\Core\API\Interfaces\ResponseFormatterInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
+use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Http\Stream;
 
 /**
  * JSON Response Formatter
@@ -21,7 +22,23 @@ class JsonResponseFormatter implements ResponseFormatterInterface
      */
     public function __construct(StreamFactoryInterface $streamFactory = null)
     {
-        $this->streamFactory = $streamFactory ?? new \GuzzleHttp\Psr7\StreamFactory();
+        // Use our own Stream implementation instead of GuzzleHttp
+        $this->streamFactory = $streamFactory ?? new class implements StreamFactoryInterface {
+            public function createStream($content = ''): \Psr\Http\Message\StreamInterface
+            {
+                return new \IslamWiki\Core\Http\Stream($content);
+            }
+            
+            public function createStreamFromFile($filename, $mode = 'r'): \Psr\Http\Message\StreamInterface
+            {
+                return new \IslamWiki\Core\Http\Stream($filename, $mode);
+            }
+            
+            public function createStreamFromResource($resource): \Psr\Http\Message\StreamInterface
+            {
+                return new \IslamWiki\Core\Http\Stream($resource);
+            }
+        };
     }
     
     /**
@@ -38,11 +55,8 @@ class JsonResponseFormatter implements ResponseFormatterInterface
         
         $stream = $this->streamFactory->createStream($jsonData);
         
-        return new \GuzzleHttp\Psr7\Response(
-            $statusCode,
-            ['Content-Type' => 'application/json'],
-            $stream
-        );
+        // Use our own Response implementation instead of GuzzleHttp
+        return new Response($statusCode, ['Content-Type' => 'application/json'], $stream);
     }
     
     /**

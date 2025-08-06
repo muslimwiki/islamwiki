@@ -5,7 +5,7 @@ IslamWiki uses meaningful Arabic names for its core systems, reflecting the cult
 ## 🏗️ Core Systems Overview
 
 ### Aman (أمان) - Security System
-**File:** `src/Core/Auth/Aman.php`
+**File:** `src/Core/Auth/AmanSecurity.php`
 
 **Meaning:** "Security" or "safety" in Arabic, representing the protective layer that ensures user authentication and authorization.
 
@@ -21,9 +21,9 @@ IslamWiki uses meaningful Arabic names for its core systems, reflecting the cult
 
 **Usage:**
 ```php
-use IslamWiki\Core\Auth\Aman;
+use IslamWiki\Core\Auth\AmanSecurity;
 
-$aman = new Aman($session, $db);
+$aman = new AmanSecurity($session, $db);
 if ($aman->attempt($username, $password)) {
     // User authenticated successfully
 }
@@ -48,9 +48,9 @@ if ($aman->attempt($username, $password)) {
 
 **Usage:**
 ```php
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 
-$wisal = new Wisal($config);
+$wisal = new WisalSession($config);
 $wisal->start();
 $wisal->login($userId, $username, $isAdmin);
 ```
@@ -75,9 +75,9 @@ $wisal->login($userId, $username, $isAdmin);
 
 **Usage:**
 ```php
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
-$shahid = new Shahid($logDir, 'debug');
+$shahid = new ShahidLogger($logDir, 'debug');
 $shahid->info('User logged in', ['user_id' => $userId]);
 $shahid->error('Database connection failed', ['error' => $e->getMessage()]);
 ```
@@ -105,7 +105,7 @@ use IslamWiki\Core\Container\AsasContainer;
 
 $container = new AsasContainer();
 $asas->singleton('auth', function() {
-    return new Aman($session, $db);
+    return new AmanSecurity($session, $db);
 });
 $auth = $asas->get('auth');
 ```
@@ -129,9 +129,9 @@ $auth = $asas->get('auth');
 
 **Usage:**
 ```php
-use IslamWiki\Core\API\Siraj;
+use IslamWiki\Core\API\SirajAPI;
 
-$siraj = new Siraj($container, $logger, $session);
+$siraj = new SirajAPI($container, $logger, $session);
 
 // Handle API request with full lifecycle management
 $response = $siraj->handleRequest($request, function($req) {
@@ -155,17 +155,17 @@ $container->singleton('auth', function() {
 
 // Wisal (Session)
 $container->singleton('session', function() {
-    return new Wisal($config);
+    return new WisalSession($config);
 });
 
 // Shahid (Logging)
 $container->singleton(LoggerInterface::class, function() {
-    return new Shahid($logDir, $config['level']);
+    return new ShahidLogger($logDir, $config['level']);
 });
 
 // Siraj (API)
 $container->singleton('api', function() {
-    return new Siraj($container, $logger, $session);
+    return new SirajAPI($container, $logger, $session);
 });
 ```
 
@@ -224,7 +224,7 @@ The following systems are planned for implementation:
 
 **Usage:**
 ```php
-use IslamWiki\Core\Caching\Rihlah;
+use IslamWiki\Core\Caching\RihlahCaching;
 
 $cache = $container->get('cache');
 
@@ -326,9 +326,9 @@ The new systems maintain the same interfaces and functionality as the old system
 
 **Usage:**
 ```php
-use IslamWiki\Core\Queue\Sabr;
+use IslamWiki\Core\Queue\SabrQueue;
 
-$sabr = new Sabr($container, $logger, $db);
+$sabr = new SabrQueue($container, $logger, $db);
 $sabr->email('user@example.com', 'Welcome', 'Welcome to IslamWiki!');
 $sabr->notify(123, 'welcome', ['message' => 'Welcome!']);
 $sabr->report('user_activity', ['period' => 'daily']);

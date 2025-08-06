@@ -433,6 +433,7 @@ console.log('ZamZam.js loading...');
         console.log('Initializing ZamZam...');
         if (!window.ZamZamInstance) {
             window.ZamZamInstance = new ZamZam();
+            console.log('ZamZam instance created:', window.ZamZamInstance);
         }
     }
 
@@ -447,5 +448,12 @@ console.log('ZamZam.js loading...');
     // Expose to global scope
     window.ZamZam = ZamZam;
     console.log('ZamZam.js loaded successfully');
+    
+    // Also try to initialize immediately if possible
+    try {
+        initializeZamZam();
+    } catch (e) {
+        console.log('Initial initialization failed, will retry:', e);
+    }
 
 })(); 

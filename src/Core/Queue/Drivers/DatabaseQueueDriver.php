@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Queue\Drivers;
 use IslamWiki\Core\Queue\Interfaces\QueueDriverInterface;
 use IslamWiki\Core\Queue\Interfaces\JobInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Database Queue Driver
@@ -16,7 +16,7 @@ use IslamWiki\Core\Logging\Shahid;
 class DatabaseQueueDriver implements QueueDriverInterface
 {
     private Connection $db;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private array $stats = [
         'total_jobs' => 0,
         'failed_jobs' => 0,
@@ -26,7 +26,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
     /**
      * Create a new database queue driver.
      */
-    public function __construct(Connection $db, Shahid $logger)
+    public function __construct(Connection $db, ShahidLogger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

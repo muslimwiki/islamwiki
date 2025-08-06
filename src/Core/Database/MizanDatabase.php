@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Database;
 
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use PDO;
 use PDOException;
 
@@ -28,9 +28,9 @@ class MizanDatabase
     /**
      * The logger instance.
      *
-     * @var Shahid
+     * @var ShahidLogger
      */
-    private Shahid $logger;
+    private ShahidLogger $logger;
 
     /**
      * Database configuration.
@@ -54,10 +54,10 @@ class MizanDatabase
     /**
      * Create a new Mizan database instance.
      *
-     * @param Shahid $logger The logger instance
+     * @param ShahidLogger $logger The logger instance
      * @param array $config Database configuration
      */
-    public function __construct(Shahid $logger, array $config = [])
+    public function __construct(ShahidLogger $logger, array $config = [])
     {
         $this->logger = $logger;
         $this->config = $config;

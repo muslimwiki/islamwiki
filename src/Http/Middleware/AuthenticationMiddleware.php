@@ -25,7 +25,7 @@ namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Authentication Middleware

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Session Cache Driver
@@ -13,7 +13,7 @@ use IslamWiki\Core\Logging\Shahid;
  */
 class SessionCacheDriver implements CacheDriverInterface
 {
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private array $stats = [
         'hits' => 0,
         'misses' => 0,
@@ -24,12 +24,21 @@ class SessionCacheDriver implements CacheDriverInterface
     /**
      * Create a new session cache driver.
      */
-    public function __construct(Shahid $logger)
+    public function __construct(ShahidLogger $logger)
     {
         $this->logger = $logger;
         
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        // Only start session if not already active and not in CLI
+        if (session_status() === PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
+            try {
+                session_start();
+            } catch (\Exception $e) {
+                // If session start fails, just continue without session cache
+                $this->logger->warning('Session cache driver: Could not start session', [
+                    'error' => $e->getMessage()
+                ]);
+                return;
+            }
         }
         
         if (!isset($_SESSION['rihlah_cache'])) {

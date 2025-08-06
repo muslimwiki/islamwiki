@@ -19,9 +19,9 @@ use IslamWiki\Skins\UserSkin;
 class SkinManager
 {
     /**
-     * @var Application The application instance
+     * @var NizamApplication The application instance
      */
-    private Application $app;
+    private NizamApplication $app;
     
     /**
      * @var array Registered skins
@@ -41,7 +41,7 @@ class SkinManager
     /**
      * Constructor
      */
-    public function __construct(Application $app)
+    public function __construct(NizamApplication $app)
     {
         $this->app = $app;
         
@@ -328,7 +328,7 @@ class SkinManager
      * Static helper to get the active skin name
      * This provides a consistent way to get the active skin across the application
      */
-    public static function getActiveSkinNameStatic(Application $app): string
+    public static function getActiveSkinNameStatic(NizamApplication $app): string
     {
         try {
             $container = $app->getContainer();
@@ -345,7 +345,7 @@ class SkinManager
      * Static helper to set the active skin
      * This provides a consistent way to change the active skin across the application
      */
-    public static function setActiveSkinStatic(Application $app, string $skinName): bool
+    public static function setActiveSkinStatic(NizamApplication $app, string $skinName): bool
     {
         try {
             $container = $app->getContainer();

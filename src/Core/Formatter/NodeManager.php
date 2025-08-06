@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace IslamWiki\Core\Bayan;
+namespace IslamWiki\Core\Formatter;
 
 use IslamWiki\Core\Database\Connection;
 use Psr\Log\LoggerInterface;

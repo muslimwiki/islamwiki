@@ -14,42 +14,29 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\NizamApplication;
+use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Skin\StaticDataManager;
 
 class StaticDataServiceProvider
 {
     /**
-     * @var Application The application instance
-     */
-    private Application $app;
-    
-    /**
-     * Constructor
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-    
-    /**
      * Register static data services
      */
-    public function register(): void
+    public function register(AsasContainer $container): void
     {
         // Register the static data manager as a singleton
-        $this->app->getContainer()->singleton('static.data', function () {
-            return new StaticDataManager($this->app);
+        $container->singleton('static.data', function (AsasContainer $container) {
+            return new StaticDataManager($container->get('app'));
         });
         
         // Register the static data manager as a factory for dynamic updates
-        $this->app->getContainer()->bind('static.data.manager', function () {
-            return new StaticDataManager($this->app);
+        $container->bind('static.data.manager', function (AsasContainer $container) {
+            return new StaticDataManager($container->get('app'));
         });
         
         // Register global static data as a singleton
-        $this->app->getContainer()->singleton('static.data.global', function () {
-            $manager = $this->app->getContainer()->get('static.data');
+        $container->singleton('static.data.global', function (AsasContainer $container) {
+            $manager = $container->get('static.data');
             return $manager->getStaticData();
         });
     }
@@ -57,15 +44,15 @@ class StaticDataServiceProvider
     /**
      * Boot the static data service provider
      */
-    public function boot(): void
+    public function boot(AsasContainer $container): void
     {
         try {
             // Get the static data manager
-            $staticDataManager = $this->app->getContainer()->get('static.data');
+            $staticDataManager = $container->get('static.data');
             
             // Add global static data to the view renderer if available
-            if ($this->app->getContainer()->has('view')) {
-                $viewRenderer = $this->app->getContainer()->get('view');
+            if ($container->has('view')) {
+                $viewRenderer = $container->get('view');
                 $staticData = $staticDataManager->getStaticData();
                 
                 // Add static data as global variables
@@ -84,7 +71,7 @@ class StaticDataServiceProvider
             $this->registerHelperFunctions();
             
         } catch (\Exception $e) {
-            error_log('StaticDataServiceProvider::boot - Error: ' . $e->getMessage());
+            // error_log('StaticDataServiceProvider::boot - Error: ' . $e->getMessage());
         }
     }
     
@@ -102,35 +89,28 @@ class StaticDataServiceProvider
                     return $static_data ?? [];
                 }
                 
-                $keys = explode('.', $key);
-                $value = $static_data ?? [];
-                
-                foreach ($keys as $k) {
-                    if (isset($value[$k])) {
-                        $value = $value[$k];
-                    } else {
-                        return $default;
-                    }
-                }
-                
-                return $value;
+                return $static_data[$key] ?? $default;
             }
         }
         
-        // Helper function to get navigation
+        // Helper function to get navigation data
         if (!function_exists('get_navigation')) {
             function get_navigation(string $type = 'main'): array {
-                return static_data("navigation.{$type}", []);
+                $navigation = static_data('navigation', []);
+                return $navigation[$type] ?? [];
             }
         }
         
         // Helper function to get site info
         if (!function_exists('get_site_info')) {
             function get_site_info(string $key = null) {
+                $siteInfo = static_data('site', []);
+                
                 if ($key === null) {
-                    return static_data('site', []);
+                    return $siteInfo;
                 }
-                return static_data("site.{$key}");
+                
+                return $siteInfo[$key] ?? null;
             }
         }
         
@@ -141,17 +121,19 @@ class StaticDataServiceProvider
             }
         }
         
-        // Helper function to check if feature is enabled
+        // Helper function to check if a feature is enabled
         if (!function_exists('is_feature_enabled')) {
             function is_feature_enabled(string $feature): bool {
-                return static_data("features.{$feature}.enabled", false);
+                $features = static_data('features', []);
+                return $features[$feature] ?? false;
             }
         }
         
         // Helper function to get component data
         if (!function_exists('get_component')) {
             function get_component(string $componentName): ?array {
-                return static_data("components.{$componentName}");
+                $components = static_data('components', []);
+                return $components[$componentName] ?? null;
             }
         }
         

@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-namespace IslamWiki\Core\Bayan;
+namespace IslamWiki\Core\Formatter;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use Psr\Log\LoggerInterface;
 
 /**

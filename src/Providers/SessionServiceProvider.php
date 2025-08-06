@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Session Service Provider
@@ -36,10 +36,10 @@ class SessionServiceProvider
     /**
      * Register the session services.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
-        // Register session manager
-        $container->bind(Wisal::class, function() {
+        // Register session manager as singleton
+        $container->singleton('session', function() {
             $config = [
                 'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
                 'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
@@ -49,25 +49,16 @@ class SessionServiceProvider
                 'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
             ];
             
-            return new Wisal($config);
-        });
-        
-        // Register session manager as singleton
-        $container->singleton('session', function($container) {
-            return $container->get(Wisal::class);
+            return new WisalSession($config);
         });
     }
     
     /**
      * Boot the session services.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
-        // Get the session manager first to ensure proper configuration
-        $session = $container->get('session');
-        
-        // Let Wisal handle the session configuration and start
-        // This works for both web and CLI environments
-        $session->start();
+        // Session boot disabled to prevent hanging
+        // Sessions will be started when needed during request handling
     }
 } 

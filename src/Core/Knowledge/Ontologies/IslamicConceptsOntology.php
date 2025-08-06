@@ -5,7 +5,7 @@ namespace IslamWiki\Core\Knowledge\Ontologies;
 
 use IslamWiki\Core\Knowledge\Interfaces\OntologyInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * IslamicConceptsOntology
@@ -16,12 +16,12 @@ use IslamWiki\Core\Logging\Shahid;
 class IslamicConceptsOntology implements OntologyInterface
 {
     private Connection $db;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     
     /**
      * Create a new IslamicConceptsOntology instance.
      */
-    public function __construct(Connection $db, Shahid $logger)
+    public function __construct(Connection $db, ShahidLogger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
@@ -41,27 +41,15 @@ class IslamicConceptsOntology implements OntologyInterface
             ]
         ];
     }
-    
+
     /**
-     * Get classification type.
+     * Get ontology type.
      */
     public function getType(): string
     {
-        return strtolower(str_replace('Classification', '', 'IslamicConceptsOntology'));
+        return strtolower(str_replace('Ontology', '', 'IslamicConceptsOntology'));
     }
-    
-    /**
-     * Classify a term into categories.
-     */
-    public function classify(string $term): array
-    {
-        // TODO: Implement classification
-        return [
-            'term' => $term,
-            'categories' => [],
-        ];
-    }
-    
+
     /**
      * Search the ontology.
      */
@@ -73,15 +61,7 @@ class IslamicConceptsOntology implements OntologyInterface
             'results' => [],
         ];
     }
-    
-    /**
-     * Get ontology type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('Ontology', '', 'IslamicConceptsOntology'));
-    }
-    
+
     /**
      * Add a concept to the ontology.
      */
@@ -90,7 +70,7 @@ class IslamicConceptsOntology implements OntologyInterface
         // TODO: Implement concept addition
         return false;
     }
-    
+
     /**
      * Get concept relationships.
      */
@@ -99,39 +79,5 @@ class IslamicConceptsOntology implements OntologyInterface
         // TODO: Implement relationship retrieval
         return [];
     }
-    
-    /**
-     * Get schema layer type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('SchemaLayer', '', 'IslamicConceptsOntology'));
-    }
-    
-    /**
-     * Define schema structure.
-     */
-    public function defineSchema(array $structure): bool
-    {
-        // TODO: Implement schema definition
-        return false;
-    }
-    
-    /**
-     * Validate data against schema.
-     */
-    public function validateData(array $data): bool
-    {
-        // TODO: Implement data validation
-        return false;
-    }
-    
-    /**
-     * Get schema definition.
-     */
-    public function getSchema(): array
-    {
-        // TODO: Implement schema retrieval
-        return [];
-    }
+
 }

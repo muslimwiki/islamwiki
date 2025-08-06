@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use IslamWiki\Core\Routing\IslamRouter;
+use IslamWiki\Core\Routing\SabilRouting;
 use IslamWiki\Http\Controllers\Auth\LoginController;
 use IslamWiki\Http\Controllers\Auth\RegisterController;
 use IslamWiki\Http\Controllers\Auth\ForgotPasswordController;
@@ -14,9 +14,10 @@ use IslamWiki\Http\Controllers\AssetController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/** @var IslamRouter $router */
+/** @var SabilRouting $router */
 
 // Homepage
+// error_log("Loading route: / -> HomeController@index");
 $router->get('/', 'IslamWiki\Http\Controllers\HomeController@index');
 
 // About page
@@ -141,16 +142,12 @@ $router->get('/iqra-search/api/analytics', 'IslamWiki\Http\Controllers\IqraSearc
 $router->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');
 $router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveJs');
 
-// Additional page routes (variable routes - must come after specific routes)
-$router->get('/{slug}', 'IslamWiki\Http\Controllers\PageController@show');
-$router->get('/{slug}/history', 'IslamWiki\Http\Controllers\PageController@history');
-$router->get('/{slug}/edit', 'IslamWiki\Http\Controllers\PageController@edit');
-$router->put('/{slug}', 'IslamWiki\Http\Controllers\PageController@update');
-$router->delete('/{slug}', 'IslamWiki\Http\Controllers\PageController@destroy');
+// Skin asset routes
+$router->get('/skins/{skin}/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinCss');
+$router->get('/skins/{skin}/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinJs');
 
-// Watchlist
-$router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\PageController@watch');
-$router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\PageController@unwatch');
+// Additional page routes (variable routes - must come after specific routes)
+// MOVED TO END OF FILE
 
 // Configuration Routes - Version 0.0.20
 $router->get('/configuration', 'IslamWiki\Http\Controllers\ConfigurationController@index');
@@ -296,3 +293,14 @@ $router->get('/test-asset', 'IslamWiki\Http\Controllers\AssetController@test');
 $router->get('/test-simple', function($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Simple test route working!');
 });
+
+// Additional page routes (variable routes - must come after specific routes)
+$router->get('/{slug}', 'IslamWiki\Http\Controllers\PageController@show');
+$router->get('/{slug}/history', 'IslamWiki\Http\Controllers\PageController@history');
+$router->get('/{slug}/edit', 'IslamWiki\Http\Controllers\PageController@edit');
+$router->put('/{slug}', 'IslamWiki\Http\Controllers\PageController@update');
+$router->delete('/{slug}', 'IslamWiki\Http\Controllers\PageController@destroy');
+
+// Watchlist
+$router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\PageController@watch');
+$router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\PageController@unwatch');

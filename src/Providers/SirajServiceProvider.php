@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\API\Siraj;
-use IslamWiki\Core\Logging\Shahid;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\API\SirajAPI;
+use IslamWiki\Core\Logging\ShahidLogger;
+use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Siraj Service Provider
@@ -20,13 +20,13 @@ class SirajServiceProvider
     /**
      * Register Siraj API services with the container.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register Siraj as singleton
         $container->singleton(Siraj::class, function () use ($container) {
-            $logger = $container->get(Shahid::class);
-            $session = $container->get(Wisal::class);
-            return new Siraj($container, $logger, $session);
+            $logger = $container->get(ShahidLogger::class);
+            $session = $container->get(WisalSession::class);
+            return new SirajAPI($container, $logger, $session);
         });
 
         // Register Siraj with alias for easier access
@@ -54,14 +54,19 @@ class SirajServiceProvider
     /**
      * Boot the Siraj service provider.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         // Log that Siraj API system is ready
-        $logger = $container->get(Shahid::class);
-        $logger->info('Siraj API management system initialized', [
-            'system' => 'Siraj',
-            'version' => '0.0.40',
-            'features' => ['authentication', 'rate_limiting', 'response_formatting']
-        ]);
+        try {
+            $logger = $container->get(ShahidLogger::class);
+            $logger->info('Siraj API management system initialized', [
+                'system' => 'Siraj',
+                'version' => '0.0.40',
+                'features' => ['authentication', 'rate_limiting', 'response_formatting']
+            ]);
+        } catch (\Exception $e) {
+            // If logger is not available, just continue without logging
+            error_log('Siraj API management system initialized (logger not available)');
+        }
     }
 } 

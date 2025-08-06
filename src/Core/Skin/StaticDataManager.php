@@ -21,9 +21,9 @@ use IslamWiki\Skins\SkinManager;
 class StaticDataManager
 {
     /**
-     * @var Application The application instance
+     * @var NizamApplication The application instance
      */
-    private Application $app;
+    private NizamApplication $app;
     
     /**
      * @var SkinManager The skin manager instance
@@ -43,7 +43,7 @@ class StaticDataManager
     /**
      * Constructor
      */
-    public function __construct(Application $app)
+    public function __construct(NizamApplication $app)
     {
         $this->app = $app;
         $this->skinManager = new SkinManager($app);

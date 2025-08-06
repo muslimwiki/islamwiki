@@ -37,11 +37,11 @@ class PageController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container\Asas $container The dependency injection container
+     * @param \IslamWiki\Core\Container\AsasContainer $container The dependency injection container
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\Asas $container
+        \IslamWiki\Core\Container\AsasContainer $container
     ) {
         parent::__construct($db, $container);
         $this->logger = $container->get(LoggerInterface::class);
@@ -386,8 +386,8 @@ class PageController extends Controller
         ]);
         
         try {
-            // Use new Aman for authentication
-            $auth = new \IslamWiki\Core\Auth\Aman(
+            // Use new AmanSecurity for authentication
+            $auth = new \IslamWiki\Core\Auth\AmanSecurity(
                 $this->container->get('session'),
                 $this->db
             );
@@ -505,8 +505,8 @@ class PageController extends Controller
             }
             */
             
-            // Use new Aman for authentication
-            $auth = new \IslamWiki\Core\Auth\Aman(
+            // Use new AmanSecurity for authentication
+            $auth = new \IslamWiki\Core\Auth\AmanSecurity(
                 $this->container->get('session'),
                 $this->db
             );
@@ -723,8 +723,8 @@ class PageController extends Controller
             $this->abort(403, 'This page is locked and cannot be edited');
         }
 
-        // Create Aman for template
-        $auth = new \IslamWiki\Core\Auth\Aman(
+        // Create AmanSecurity for template
+        $auth = new \IslamWiki\Core\Auth\AmanSecurity(
             $this->container->get('session'),
             $this->db
         );

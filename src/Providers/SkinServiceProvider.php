@@ -19,73 +19,56 @@ use IslamWiki\Skins\SkinManager;
 class SkinServiceProvider
 {
     /**
-     * @var Application The application instance
-     */
-    private Application $app;
-    
-    /**
-     * @var SkinManager The skin manager instance
-     */
-    private SkinManager $skinManager;
-    
-    /**
-     * Constructor
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        $this->skinManager = new SkinManager($app);
-    }
-    
-    /**
      * Register skin services
      */
-    public function register(): void
+    public function register(\Psr\Container\ContainerInterface $container): void
     {
         // Register the skin manager as a factory to avoid caching issues
-        $this->app->getContainer()->bind('skin.manager', function () {
-            return new \IslamWiki\Skins\SkinManager($this->app);
+        $container->bind('skin.manager', function () use ($container) {
+            $app = $container->get('app');
+            return new \IslamWiki\Skins\SkinManager($app);
         });
         
         // Register the active skin (will be resolved dynamically)
-        $this->app->getContainer()->singleton('skin.active', function () {
-            return $this->getActiveSkinForCurrentUser();
+        $container->singleton('skin.active', function () use ($container) {
+            return $this->getActiveSkinForCurrentUser($container);
         });
         
         // Add skin data to the view context (will be resolved dynamically)
-        $this->app->getContainer()->singleton('skin.data', function () {
-            return $this->getSkinDataForCurrentUser();
+        $container->singleton('skin.data', function () use ($container) {
+            return $this->getSkinDataForCurrentUser($container);
         });
     }
     
     /**
      * Get the active skin for the current user
      */
-    private function getActiveSkinForCurrentUser()
+    private function getActiveSkinForCurrentUser(\Psr\Container\ContainerInterface $container)
     {
         try {
-            $session = $this->app->getContainer()->get('session');
+            $session = $container->get('session');
+            $skinManager = $container->get('skin.manager');
             
             if ($session->isLoggedIn()) {
                 $userId = $session->getUserId();
-                return $this->skinManager->getActiveSkinForUser($userId);
+                return $skinManager->getActiveSkinForUser($userId);
             }
             
             // Fallback to global skin for non-logged-in users
-            return $this->skinManager->getActiveSkin();
+            return $skinManager->getActiveSkin();
         } catch (\Throwable $e) {
-            error_log("SkinServiceProvider::getActiveSkinForCurrentUser - Error: " . $e->getMessage());
-            return $this->skinManager->getActiveSkin();
+            // error_log("SkinServiceProvider::getActiveSkinForCurrentUser - Error: " . $e->getMessage());
+            return $skinManager->getActiveSkin();
         }
     }
     
     /**
      * Get skin data for the current user
      */
-    private function getSkinDataForCurrentUser(): array
+    private function getSkinDataForCurrentUser(\Psr\Container\ContainerInterface $container): array
     {
         try {
-            $activeSkin = $this->getActiveSkinForCurrentUser();
+            $activeSkin = $this->getActiveSkinForCurrentUser($container);
             
             if ($activeSkin === null) {
                 return [
@@ -104,7 +87,7 @@ class SkinServiceProvider
                 'config' => $activeSkin->getConfig() ?? [],
             ];
         } catch (\Throwable $e) {
-            error_log("SkinServiceProvider::getSkinDataForCurrentUser - Error: " . $e->getMessage());
+            // error_log("SkinServiceProvider::getSkinDataForCurrentUser - Error: " . $e->getMessage());
             return [
                 'css' => '',
                 'js' => '',
@@ -117,10 +100,10 @@ class SkinServiceProvider
     /**
      * Boot the skin service provider
      */
-    public function boot(): void
+    public function boot(\Psr\Container\ContainerInterface $container): void
     {
         // Get the view renderer
-        $viewRenderer = $this->app->getContainer()->get('view');
+        $viewRenderer = $container->get('view');
         
         // Add empty skin variables - will be populated by SkinMiddleware
         $viewRenderer->addGlobals([

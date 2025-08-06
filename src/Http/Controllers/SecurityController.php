@@ -19,7 +19,7 @@ use IslamWiki\Core\Security\ConfigurationAccessControl;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 class SecurityController extends Controller
@@ -51,7 +51,7 @@ class SecurityController extends Controller
     {
         parent::__construct($container);
         $this->db = $container->get(Connection::class);
-        $this->logger = $container->get(Shahid::class);
+        $this->logger = $container->get(ShahidLogger::class);
         $this->encryption = new ConfigurationEncryption($this->logger);
         $this->accessControl = new ConfigurationAccessControl($this->db, $this->logger, $this->getCurrentUserId());
     }

@@ -16,19 +16,19 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Auth;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 use IslamWiki\Models\User;
 
 class AmanSecurity
 {
-    private Wisal $session;
+    private WisalSession $session;
     private Connection $db;
     private ?array $currentUser = null;
     
     /**
      * Create a new Aman security manager.
      */
-    public function __construct(Wisal $session, Connection $db)
+    public function __construct(WisalSession $session, Connection $db)
     {
         $this->session = $session;
         $this->db = $db;

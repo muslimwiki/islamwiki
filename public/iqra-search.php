@@ -10,7 +10,7 @@ require_once __DIR__ . '/../src/Core/Container/AsasContainer.php';
 require_once __DIR__ . '/../src/Core/Database/Connection.php';
 require_once __DIR__ . '/../src/Core/Logging/Logger.php';
 require_once __DIR__ . '/../src/Http/Controllers/Controller.php';
-require_once __DIR__ . '/../src/Core/Search/IqraSearchEngine.php';
+require_once __DIR__ . '/../src/Core/Search/IqraSearch.php';
 require_once __DIR__ . '/../src/Http/Controllers/IqraSearchController.php';
 
 use IslamWiki\Core\Container\AsasContainer;

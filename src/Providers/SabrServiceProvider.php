@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Queue\Sabr;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Queue\SabrQueue;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -30,18 +30,18 @@ class SabrServiceProvider
      *
      * @param Asas $container The dependency injection container
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register Sabr queue system
-        $container->singleton(Sabr::class, function () use ($container) {
-            $logger = $container->get(Shahid::class);
+        $container->singleton(SabrQueue::class, function () use ($container) {
+            $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
-            return new Sabr($container, $logger, $db);
+            return new SabrQueue($container, $logger, $db);
         });
 
         // Register queue aliases
-        $container->alias('queue', Sabr::class);
-        $container->alias('sabr', Sabr::class);
+        $container->alias('queue', SabrQueue::class);
+        $container->alias('sabr', SabrQueue::class);
 
         // Register queue configuration
         $container->singleton('queue.config', function () {
@@ -103,11 +103,11 @@ class SabrServiceProvider
      *
      * @param Asas $container The dependency injection container
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         try {
-            $logger = $container->get(Shahid::class);
-            $queue = $container->get(Sabr::class);
+            $logger = $container->get(ShahidLogger::class);
+            $queue = $container->get(SabrQueue::class);
 
             // Log queue system initialization
             $logger->info('Sabr queue system booted successfully', [
@@ -119,20 +119,24 @@ class SabrServiceProvider
             $this->scheduleCleanupJobs($container);
 
         } catch (\Exception $e) {
-            $logger->error('Failed to boot Sabr queue system', [
-                'error' => $e->getMessage()
-            ]);
+            if ($logger) {
+                $logger->error('Failed to boot Sabr queue system', [
+                    'error' => $e->getMessage()
+                ]);
+            } else {
+                error_log('Failed to boot Sabr queue system: ' . $e->getMessage());
+            }
         }
     }
 
     /**
      * Schedule cleanup jobs.
      */
-    private function scheduleCleanupJobs(Asas $container): void
+    private function scheduleCleanupJobs(AsasContainer $container): void
     {
         try {
-            $queue = $container->get(Sabr::class);
-            $logger = $container->get(Shahid::class);
+            $queue = $container->get(SabrQueue::class);
+            $logger = $container->get(ShahidLogger::class);
 
             // Schedule daily cleanup jobs
             $queue->cleanup('temp_files', ['max_age' => 86400]); // 24 hours
@@ -140,12 +144,18 @@ class SabrServiceProvider
             $queue->cleanup('expired_sessions', ['max_age' => 86400]); // 24 hours
             $queue->cleanup('failed_jobs', ['max_age' => 604800]); // 7 days
 
-            $logger->info('Cleanup jobs scheduled successfully');
+            if ($logger) {
+                $logger->info('Cleanup jobs scheduled successfully');
+            }
 
         } catch (\Exception $e) {
-            $logger->error('Failed to schedule cleanup jobs', [
-                'error' => $e->getMessage()
-            ]);
+            if ($logger) {
+                $logger->error('Failed to schedule cleanup jobs', [
+                    'error' => $e->getMessage()
+                ]);
+            } else {
+                error_log('Failed to schedule cleanup jobs: ' . $e->getMessage());
+            }
         }
     }
 } 

@@ -25,18 +25,19 @@ use Exception;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Routing\IslamRouter;
-use IslamWiki\Core\Routing\Sabil;
-use IslamWiki\Core\Logging\Shahid;
-use IslamWiki\Core\Auth\Aman;
-use IslamWiki\Core\Session\Wisal;
-use IslamWiki\Core\Caching\Rihlah;
-use IslamWiki\Core\Queue\Sabr;
-use IslamWiki\Core\Knowledge\Usul;
-use IslamWiki\Core\Search\IqraSearchEngine;
-use IslamWiki\Core\Formatter\BayanManager;
-use IslamWiki\Core\API\Siraj;
-use IslamWiki\Core\Database\Mizan;
-use IslamWiki\Core\Configuration\Tadbir;
+use IslamWiki\Core\Routing\SabilRouting;
+use IslamWiki\Core\Logging\ShahidLogger;
+use IslamWiki\Core\Auth\AmanSecurity;
+use IslamWiki\Core\Session\WisalSession;
+use IslamWiki\Core\Caching\RihlahCaching;
+use IslamWiki\Core\Queue\SabrQueue;
+use IslamWiki\Core\Knowledge\UsulKnowledge;
+use IslamWiki\Core\Search\IqraSearch;
+use IslamWiki\Core\Formatter\BayanFormatter;
+use IslamWiki\Core\API\SirajAPI;
+use IslamWiki\Core\Database\MizanDatabase;
+use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Configuration\TadbirConfiguration;
 
 /**
  * NizamApplication (نظام) - Main Application System
@@ -123,6 +124,11 @@ class NizamApplication
     private MizanDatabase $database;
 
     /**
+     * The database connection.
+     */
+    private Connection $connection;
+
+    /**
      * The configuration management system.
      */
     private TadbirConfiguration $config;
@@ -181,18 +187,24 @@ class NizamApplication
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }
-        $logger = new \IslamWiki\Core\Logging\Shahid($logDir);
+        $logger = new \IslamWiki\Core\Logging\ShahidLogger($logDir);
         $this->container->instance('logger', $logger);
-        $this->container->instance(\IslamWiki\Core\Logging\Shahid::class, $logger);
+        $this->container->instance(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
 
-        // Initialize all Islamic systems
-        $this->initializeSystems();
-
-        // Register service providers
+        // Register service providers first
         $this->registerServiceProviders();
+
+        // Initialize all Islamic systems after providers are registered
+        $this->initializeSystems();
 
         // Initialize error handling
         $this->initializeErrorHandling();
+        
+        // Register ControllerFactory
+        $db = $this->container->get('db');
+        $logger = $this->container->get('logger');
+        $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $this->container);
+        $this->container->instance('controller.factory', $controllerFactory);
     }
 
     /**
@@ -200,41 +212,44 @@ class NizamApplication
      */
     private function initializeSystems(): void
     {
-        // Initialize Sabil (Routing)
-        $this->sabilRouter = new Sabil($this->container);
+        // Initialize SabilRouting (Routing)
+        $this->sabilRouter = new SabilRouting($this->container);
 
         // Initialize Shahid (Logging)
-        $this->logger = new Shahid($this->basePath('storage/logs'));
-
-        // Initialize Aman (Security)
-        $this->auth = new Aman($this->container);
-
-        // Initialize Wisal (Session)
-        $this->session = new Wisal($this->container);
-
-        // Initialize Rihlah (Caching)
-        $this->cache = new Rihlah($this->container, $this->logger, $this->database);
-
-        // Initialize Sabr (Queue)
-        $this->queue = new Sabr($this->container, $this->logger, $this->database);
-
-        // Initialize Usul (Knowledge)
-        $this->knowledge = new Usul($this->container, $this->logger, $this->database);
-
-        // Initialize Iqra (Search)
-        $this->search = new IqraSearchEngine($this->container);
-
-        // Initialize Bayan (Formatter)
-        $this->formatter = new BayanManager($this->container);
-
-        // Initialize Siraj (API)
-        $this->api = new Siraj($this->container, $this->logger, $this->session);
+        $this->logger = new ShahidLogger($this->basePath('storage/logs'));
 
         // Initialize Mizan (Database)
-        $this->database = new Mizan($this->container);
+        $this->database = new MizanDatabase($this->logger, []);
+
+        // Initialize Connection (Database)
+        $this->connection = new Connection([]);
+
+        // Initialize Wisal (Session)
+        $this->session = new WisalSession([]);
+
+        // Initialize Aman (Security)
+        $this->auth = new AmanSecurity($this->session, $this->connection);
+
+        // Initialize Rihlah (Caching)
+        $this->cache = new RihlahCaching($this->container, $this->logger, $this->connection);
+
+        // Initialize Sabr (Queue)
+        $this->queue = new SabrQueue($this->container, $this->logger, $this->connection);
+
+        // Initialize Usul (Knowledge)
+        $this->knowledge = new UsulKnowledge($this->container, $this->logger, $this->connection);
+
+        // Initialize Iqra (Search)
+        $this->search = new IqraSearch($this->connection);
+
+        // Initialize Bayan (Formatter)
+        $this->formatter = new BayanFormatter($this->connection, $this->logger);
+
+        // Initialize Siraj (API) - temporarily disabled due to GuzzleHttp StreamFactory issue
+        // $this->api = new SirajAPI($this->container, $this->logger, $this->session);
 
         // Initialize Tadbir (Configuration)
-        $this->config = new Tadbir($this->container);
+        $this->config = new TadbirConfiguration($this->logger);
     }
 
     /**
@@ -244,33 +259,44 @@ class NizamApplication
     {
         $providers = [
             \IslamWiki\Providers\DatabaseServiceProvider::class,
+            \IslamWiki\Providers\ConfigurationServiceProvider::class,
             \IslamWiki\Providers\LoggingServiceProvider::class,
             \IslamWiki\Providers\SessionServiceProvider::class,
             \IslamWiki\Providers\AuthServiceProvider::class,
             \IslamWiki\Providers\ViewServiceProvider::class,
-            \IslamWiki\Providers\ConfigurationServiceProvider::class,
-            \IslamWiki\Providers\RihlahServiceProvider::class,
-            \IslamWiki\Providers\SabrServiceProvider::class,
-            \IslamWiki\Providers\UsulServiceProvider::class,
-            \IslamWiki\Providers\SirajServiceProvider::class,
-            \IslamWiki\Providers\BayanServiceProvider::class,
-            \IslamWiki\Providers\ExtensionServiceProvider::class,
+            \IslamWiki\Providers\SkinServiceProvider::class,
+            \IslamWiki\Providers\StaticDataServiceProvider::class,
+            // Temporarily disable non-essential providers
+            // \IslamWiki\Providers\RihlahServiceProvider::class,
+            // \IslamWiki\Providers\SabrServiceProvider::class,
+            // \IslamWiki\Providers\UsulServiceProvider::class,
+            // \IslamWiki\Providers\SirajServiceProvider::class,
+            // \IslamWiki\Providers\BayanServiceProvider::class,
+            // \IslamWiki\Providers\ExtensionServiceProvider::class,
         ];
 
+        // Register all providers first
+        $providerInstances = [];
         foreach ($providers as $provider) {
             if (class_exists($provider)) {
-                $providerInstance = new $provider();
-                $providerInstance->register($this->container);
+                try {
+                    $providerInstance = new $provider();
+                    $providerInstance->register($this->container);
+                    $providerInstances[] = $providerInstance;
+                } catch (\Exception $e) {
+                    error_log("Failed to register provider $provider: " . $e->getMessage());
+                }
             }
         }
 
         // Boot all providers
-        foreach ($providers as $provider) {
-            if (class_exists($provider)) {
-                $providerInstance = new $provider();
+        foreach ($providerInstances as $providerInstance) {
+            try {
                 if (method_exists($providerInstance, 'boot')) {
                     $providerInstance->boot($this->container);
                 }
+            } catch (\Exception $e) {
+                error_log("Failed to boot provider " . get_class($providerInstance) . ": " . $e->getMessage());
             }
         }
     }
@@ -284,25 +310,21 @@ class NizamApplication
             if (!(error_reporting() & $severity)) {
                 return;
             }
-            throw new ErrorException($message, 0, $severity, $file, $line);
+            throw new \ErrorException($message, 0, $severity, $file, $line);
         });
 
-        set_exception_handler([$this, 'handleException']);
+        set_exception_handler([self::class, 'handleException']);
     }
 
     /**
      * Handle exceptions.
      */
-    protected function handleException(\Throwable $e): void
+    public static function handleException(\Throwable $e): void
     {
-        $this->logger->error('Unhandled exception: ' . $e->getMessage(), [
-            'exception' => $e,
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
+        // Log the exception
+        error_log('Unhandled exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
 
-        if ($this->runningInConsole()) {
+        if (php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg') {
             echo "Error: " . $e->getMessage() . "\n";
         } else {
             http_response_code(500);
@@ -318,16 +340,17 @@ class NizamApplication
         $this->container->alias('app', self::class);
         $this->container->alias('container', \IslamWiki\Core\Container\AsasContainer::class);
         $this->container->alias('db', \IslamWiki\Core\Database\Connection::class);
-        $this->container->alias('logger', \IslamWiki\Core\Logging\Shahid::class);
-        $this->container->alias('auth', \IslamWiki\Core\Auth\Aman::class);
-        $this->container->alias('session', \IslamWiki\Core\Session\Wisal::class);
-        $this->container->alias('cache', \IslamWiki\Core\Caching\Rihlah::class);
-        $this->container->alias('queue', \IslamWiki\Core\Queue\Sabr::class);
-        $this->container->alias('knowledge', \IslamWiki\Core\Knowledge\Usul::class);
-        $this->container->alias('search', \IslamWiki\Core\Search\IqraSearchEngine::class);
-        $this->container->alias('formatter', \IslamWiki\Core\Formatter\BayanManager::class);
-        $this->container->alias('api', \IslamWiki\Core\API\Siraj::class);
-        $this->container->alias('config', \IslamWiki\Core\Configuration\Tadbir::class);
+        $this->container->alias('logger', \IslamWiki\Core\Logging\ShahidLogger::class);
+        $this->container->alias(\Psr\Log\LoggerInterface::class, \IslamWiki\Core\Logging\ShahidLogger::class);
+        $this->container->alias('auth', \IslamWiki\Core\Auth\AmanSecurity::class);
+        $this->container->alias('session', \IslamWiki\Core\Session\WisalSession::class);
+        $this->container->alias('cache', \IslamWiki\Core\Caching\RihlahCaching::class);
+        $this->container->alias('queue', \IslamWiki\Core\Queue\SabrQueue::class);
+        $this->container->alias('knowledge', \IslamWiki\Core\Knowledge\UsulKnowledge::class);
+        $this->container->alias('search', \IslamWiki\Core\Search\IqraSearch::class);
+        $this->container->alias('formatter', \IslamWiki\Core\Formatter\BayanFormatter::class);
+        $this->container->alias('api', \IslamWiki\Core\API\SirajAPI::class);
+        $this->container->alias('config', \IslamWiki\Core\Configuration\TadbirConfiguration::class);
     }
 
     /**
@@ -446,7 +469,7 @@ class NizamApplication
     }
 
     /**
-     * Get the Sabil routing system.
+     * Get the SabilRouting routing system.
      */
     public function getSabilRouter(): SabilRouting
     {

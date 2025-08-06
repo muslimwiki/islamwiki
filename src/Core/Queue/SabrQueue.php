@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Queue;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Queue\Interfaces\JobInterface;
 use IslamWiki\Core\Queue\Interfaces\QueueDriverInterface;
@@ -40,7 +40,7 @@ use IslamWiki\Core\Queue\Jobs\CleanupJob;
 class SabrQueue
 {
     private AsasContainer $container;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private Connection $db;
     private array $drivers = [];
     private array $config = [];
@@ -54,7 +54,7 @@ class SabrQueue
     /**
      * Create a new Sabr queue system.
      */
-    public function __construct(AsasContainer $container, Shahid $logger, Connection $db)
+    public function __construct(AsasContainer $container, ShahidLogger $logger, Connection $db)
     {
         $this->container = $container;
         $this->logger = $logger;

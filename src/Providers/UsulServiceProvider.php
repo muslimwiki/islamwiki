@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Knowledge\Usul;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Knowledge\UsulKnowledge;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -20,13 +20,13 @@ class UsulServiceProvider
     /**
      * Register Usul knowledge services with the container.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register Usul as singleton
         $container->singleton(Usul::class, function () use ($container) {
-            $logger = $container->get(Shahid::class);
+            $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
-            return new Usul($container, $logger, $db);
+            return new UsulKnowledge($container, $logger, $db);
         });
 
         // Register Usul with alias for easier access
@@ -63,19 +63,24 @@ class UsulServiceProvider
     /**
      * Boot the Usul service provider.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         // Log that Usul knowledge system is ready
-        $logger = $container->get(Shahid::class);
-        $logger->info('Usul knowledge system initialized', [
-            'system' => 'Usul',
-            'version' => '0.0.40',
-            'features' => [
-                'root_systems' => ['quranic', 'hadith', 'fiqh'],
-                'classifications' => ['hadith', 'scholars', 'topics'],
-                'ontologies' => ['islamic_concepts', 'quranic_verses', 'hadith_chain'],
-                'schema_layers' => ['content', 'relationships', 'metadata']
-            ]
-        ]);
+        try {
+            $logger = $container->get(ShahidLogger::class);
+            $logger->info('Usul knowledge system initialized', [
+                'system' => 'Usul',
+                'version' => '0.0.40',
+                'features' => [
+                    'root_systems' => ['quranic', 'hadith', 'fiqh'],
+                    'classifications' => ['hadith', 'scholars', 'topics'],
+                    'ontologies' => ['islamic_concepts', 'quranic_verses', 'hadith_chain'],
+                    'schema_layers' => ['content', 'relationships', 'metadata']
+                ]
+            ]);
+        } catch (\Exception $e) {
+            // If logger is not available, just continue without logging
+            error_log('Usul knowledge system initialized (logger not available)');
+        }
     }
 } 

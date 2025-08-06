@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Knowledge;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -32,7 +32,7 @@ use IslamWiki\Core\Database\Connection;
 class UsulKnowledge
 {
     private AsasContainer $container;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private Connection $db;
     private array $ontologies = [];
     private array $classifications = [];
@@ -42,7 +42,7 @@ class UsulKnowledge
     /**
      * Create a new Usul knowledge system.
      */
-    public function __construct(AsasContainer $container, Shahid $logger, Connection $db)
+    public function __construct(AsasContainer $container, ShahidLogger $logger, Connection $db)
     {
         $this->container = $container;
         $this->logger = $logger;

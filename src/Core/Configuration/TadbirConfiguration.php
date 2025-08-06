@@ -3,7 +3,12 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Configuration;
 
-use IslamWiki\Core\Logging\Shahid;
+// Define the path to LocalSettings.php
+if (!defined('LOCAL_SETTINGS_PATH')) {
+    define('LOCAL_SETTINGS_PATH', __DIR__ . '/../../../LocalSettings.php');
+}
+
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Tadbir (تدبير) - Configuration Management System
@@ -21,7 +26,7 @@ class TadbirConfiguration
      *
      * @var Shahid
      */
-    private Shahid $logger;
+    private ShahidLogger $logger;
 
     /**
      * Configuration data.
@@ -69,7 +74,7 @@ class TadbirConfiguration
      *
      * @param Shahid $logger The logger instance
      */
-    public function __construct(Shahid $logger)
+    public function __construct(ShahidLogger $logger)
     {
         $this->logger = $logger;
         $this->initializeDefaultConfig();

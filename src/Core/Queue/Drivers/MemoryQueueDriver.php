@@ -5,7 +5,7 @@ namespace IslamWiki\Core\Queue\Drivers;
 
 use IslamWiki\Core\Queue\Interfaces\QueueDriverInterface;
 use IslamWiki\Core\Queue\Interfaces\JobInterface;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Memory Queue Driver
@@ -14,7 +14,7 @@ use IslamWiki\Core\Logging\Shahid;
  */
 class MemoryQueueDriver implements QueueDriverInterface
 {
-    private Shahid $logger;
+    private ShahidLogger $logger;
     private array $jobs = [];
     private array $failedJobs = [];
     private array $stats = [
@@ -26,7 +26,7 @@ class MemoryQueueDriver implements QueueDriverInterface
     /**
      * Create a new memory queue driver.
      */
-    public function __construct(Shahid $logger)
+    public function __construct(ShahidLogger $logger)
     {
         $this->logger = $logger;
     }

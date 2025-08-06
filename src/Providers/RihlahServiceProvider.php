@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Caching\Rihlah;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Caching\RihlahCaching;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -20,13 +20,13 @@ class RihlahServiceProvider
     /**
      * Register Rihlah caching services with the container.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register Rihlah as singleton
         $container->singleton(Rihlah::class, function () use ($container) {
-            $logger = $container->get(Shahid::class);
+            $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
-            return new Rihlah($container, $logger, $db);
+            return new RihlahCaching($container, $logger, $db);
         });
 
         // Register Rihlah with alias for easier access
@@ -78,21 +78,26 @@ class RihlahServiceProvider
     /**
      * Boot the Rihlah service provider.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         // Log that Rihlah caching system is ready
-        $logger = $container->get(Shahid::class);
-        $logger->info('Rihlah caching system initialized', [
-            'system' => 'Rihlah',
-            'version' => '0.0.40',
-            'features' => [
-                'memory_caching' => extension_loaded('apcu'),
-                'redis_caching' => extension_loaded('redis'),
-                'file_caching' => true,
-                'database_caching' => true,
-                'session_caching' => true,
-                'cache_warmup' => true,
-            ]
-        ]);
+        try {
+            $logger = $container->get(ShahidLogger::class);
+            $logger->info('Rihlah caching system initialized', [
+                'system' => 'Rihlah',
+                'version' => '0.0.40',
+                'features' => [
+                    'memory_caching' => extension_loaded('apcu'),
+                    'redis_caching' => extension_loaded('redis'),
+                    'file_caching' => true,
+                    'database_caching' => true,
+                    'session_caching' => true,
+                    'cache_warmup' => true,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            // If logger is not available, just continue without logging
+            error_log('Rihlah caching system initialized (logger not available)');
+        }
     }
 } 

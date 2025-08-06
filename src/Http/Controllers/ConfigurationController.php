@@ -18,7 +18,7 @@ use IslamWiki\Core\Configuration\ConfigurationManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 class ConfigurationController extends Controller
 {
@@ -39,7 +39,7 @@ class ConfigurationController extends Controller
     {
         parent::__construct($container);
         $this->configManager = $container->get(ConfigurationManager::class);
-        $this->logger = $container->get(Shahid::class);
+        $this->logger = $container->get(ShahidLogger::class);
     }
 
     /**

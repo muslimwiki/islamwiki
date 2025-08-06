@@ -38,29 +38,15 @@ use IslamWiki\Core\Container\AsasContainer;
 class ConfigurationServiceProvider
 {
     /**
-     * @var Container Application container
-     */
-    private AsasContainer $container;
-
-    /**
-     * Constructor
-     * 
-     * @param Container $container Application container
-     */
-    public function __construct(AsasContainer $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
      * Register configuration services
      * 
+     * @param AsasContainer $container The dependency injection container
      * @return void
      */
-    public function register(): void
+    public function register(AsasContainer $container): void
     {
         // Register configuration manager as a singleton
-        $this->container->singleton(ConfigurationManager::class, function ($container) {
+        $container->singleton(ConfigurationManager::class, function ($container) {
             return new ConfigurationManager($container);
         });
 
@@ -84,10 +70,10 @@ class ConfigurationServiceProvider
      * 
      * @return void
      */
-    private function registerConfigurationValidation(): void
+    private function registerConfigurationValidation(AsasContainer $container): void
     {
         // Get configuration manager instance
-        $configManager = $this->container->get(ConfigurationManager::class);
+        $configManager = $container->get(ConfigurationManager::class);
         
         // Validate configuration on startup
         $validation = $configManager->validateConfiguration();
@@ -107,7 +93,7 @@ class ConfigurationServiceProvider
     {
         foreach ($errors as $error) {
             $errorMessage = is_array($error) ? json_encode($error) : (string) $error;
-            error_log("Configuration Error: {$errorMessage}");
+            // error_log("Configuration Error: {$errorMessage}");
         }
         
         // In development mode, throw an exception
@@ -130,20 +116,21 @@ class ConfigurationServiceProvider
     private function handleConfigurationWarnings(array $warnings): void
     {
         foreach ($warnings as $warning) {
-            error_log("Configuration Warning: {$warning}");
+            // error_log("Configuration Warning: {$warning}");
         }
     }
 
     /**
      * Boot configuration services
      * 
+     * @param AsasContainer $container The dependency injection container
      * @return void
      */
-    public function boot(): void
+    public function boot(AsasContainer $container): void
     {
         // Register configuration validation (only after database is ready)
         try {
-            $this->registerConfigurationValidation();
+            $this->registerConfigurationValidation($container);
         } catch (\Exception $e) {
             // Ignore configuration validation errors during boot
             // This allows the application to start even if configuration tables don't exist yet
@@ -264,7 +251,7 @@ class ConfigurationServiceProvider
         // This would integrate with the view system
         // For now, we'll just log the templates
         foreach ($templates as $type => $template) {
-            error_log("Registered Islamic template: {$type} -> {$template}");
+            // error_log("Registered Islamic template: {$type} -> {$template}");
         }
     }
 
@@ -279,7 +266,7 @@ class ConfigurationServiceProvider
         // This would integrate with the routing system
         // For now, we'll just log the endpoints
         foreach ($endpoints as $type => $config) {
-            error_log("Registered Islamic API endpoint: {$type} -> {$config['base_url']}");
+            // error_log("Registered Islamic API endpoint: {$type} -> {$config['base_url']}");
         }
     }
 
@@ -295,7 +282,7 @@ class ConfigurationServiceProvider
         // For now, we'll just log the settings
         foreach ($settings as $type => $enabled) {
             if ($enabled) {
-                error_log("Enabled Islamic search for: {$type}");
+                // error_log("Enabled Islamic search for: {$type}");
             }
         }
     }
@@ -310,7 +297,7 @@ class ConfigurationServiceProvider
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['quran_cache_ttl'] ?? 86400;
         
-        error_log("Quran caching enabled with TTL: {$ttl} seconds");
+        // error_log("Quran caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
@@ -323,7 +310,7 @@ class ConfigurationServiceProvider
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['hadith_cache_ttl'] ?? 86400;
         
-        error_log("Hadith caching enabled with TTL: {$ttl} seconds");
+        // error_log("Hadith caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
@@ -336,7 +323,7 @@ class ConfigurationServiceProvider
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['prayer_times_cache_ttl'] ?? 1800;
         
-        error_log("Prayer times caching enabled with TTL: {$ttl} seconds");
+        // error_log("Prayer times caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
@@ -349,7 +336,7 @@ class ConfigurationServiceProvider
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['calendar_cache_ttl'] ?? 7200;
         
-        error_log("Islamic calendar caching enabled with TTL: {$ttl} seconds");
+        // error_log("Islamic calendar caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
@@ -362,6 +349,6 @@ class ConfigurationServiceProvider
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['search_cache_ttl'] ?? 3600;
         
-        error_log("Search caching enabled with TTL: {$ttl} seconds");
+        // error_log("Search caching enabled with TTL: {$ttl} seconds");
     }
 } 

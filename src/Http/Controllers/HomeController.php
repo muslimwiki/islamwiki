@@ -20,48 +20,21 @@ class HomeController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container\Asas $container The container instance
+     * @param \IslamWiki\Core\Container\AsasContainer $container The container instance
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\Asas $container
+        \IslamWiki\Core\Container\AsasContainer $container
     ) {
-        $debugLog = BASE_PATH . '/storage/logs/debug.log';
-        file_put_contents($debugLog, "\n[" . date('Y-m-d H:i:s') . "] Entered HomeController::__construct\n", FILE_APPEND);
-        file_put_contents($debugLog, "db type: " . gettype($db) . ", value: " . var_export($db, true) . "\n", FILE_APPEND);
-        file_put_contents($debugLog, "container type: " . gettype($container) . ", value: " . var_export($container, true) . "\n", FILE_APPEND);
-        error_log('HomeController: Constructor called');
-        error_log('HomeController: DB class: ' . get_class($db));
-        error_log('HomeController: Container class: ' . get_class($container));
+        // Constructor completed successfully
         
         try {
-            file_put_contents($debugLog, "before parent::__construct\n", FILE_APPEND);
             parent::__construct($db, $container);
-            file_put_contents($debugLog, "after parent::__construct\n", FILE_APPEND);
-            file_put_contents($debugLog, "before logger assignment\n", FILE_APPEND);
+            
             // Get logger from container
-            file_put_contents($debugLog, "about to get logger from container\n", FILE_APPEND);
-            try {
-                $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
-                file_put_contents($debugLog, "logger assignment successful\n", FILE_APPEND);
-            } catch (\Throwable $e) {
-                file_put_contents($debugLog, "logger assignment failed: " . $e->getMessage() . "\n", FILE_APPEND);
-                throw $e;
-            }
-            file_put_contents($debugLog, "after logger assignment\n", FILE_APPEND);
-            file_put_contents($debugLog, "logger type: " . gettype($this->logger) . ", value: " . var_export($this->logger, true) . "\n", FILE_APPEND);
-            if (is_object($this->logger)) {
-                file_put_contents($debugLog, "about to call get_class on logger\n", FILE_APPEND);
-                error_log('HomeController: Logger class: ' . get_class($this->logger));
-                file_put_contents($debugLog, "get_class on logger successful\n", FILE_APPEND);
-            } else {
-                error_log('HomeController: Logger type: ' . gettype($this->logger));
-            }
-            error_log('HomeController: Constructor completed successfully');
+            $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
         } catch (\Throwable $e) {
-            error_log('HomeController: Constructor error: ' . $e->getMessage());
-            error_log('HomeController: Constructor error trace: ' . $e->getTraceAsString());
-            throw $e;
+            $this->logger = null;
         }
     }
     
@@ -73,13 +46,7 @@ class HomeController extends Controller
      */
     public function index(Request $request): Response
     {
-        $debugLog = BASE_PATH . '/storage/logs/debug.log';
-        file_put_contents($debugLog, "\n[" . date('Y-m-d H:i:s') . "] Entered HomeController@index\n", FILE_APPEND);
-        file_put_contents($debugLog, "request type: " . gettype($request) . ", value: " . var_export($request, true) . "\n", FILE_APPEND);
-        error_log('HomeController@index called');
-        
         try {
-            error_log('HomeController@index: Request class: ' . get_class($request));
             
             // Log the request
             $logData = [
@@ -90,12 +57,12 @@ class HomeController extends Controller
                 'method' => $request->getMethod(),
             ];
             
-            error_log('HomeController: Log data: ' . print_r($logData, true));
+            // error_log('HomeController: Log data: ' . print_r($logData, true));
             
             if ($this->logger) {
                 $this->logger->info('Home page accessed', $logData);
             } else {
-                error_log('HomeController: Logger not available');
+                // error_log('HomeController: Logger not available');
             }
             
             // Fetch recent pages from database
@@ -104,9 +71,9 @@ class HomeController extends Controller
                 $recentPages = $this->db->select(
                     'SELECT id, title, slug, content, created_at FROM pages ORDER BY created_at DESC LIMIT 5'
                 );
-                error_log('HomeController: Fetched ' . count($recentPages) . ' recent pages');
+                // error_log('HomeController: Fetched ' . count($recentPages) . ' recent pages');
             } catch (\Exception $e) {
-                error_log('HomeController: Error fetching pages: ' . $e->getMessage());
+                // error_log('HomeController: Error fetching pages: ' . $e->getMessage());
                 $recentPages = [];
             }
 
@@ -115,19 +82,8 @@ class HomeController extends Controller
             try {
                 $auth = $this->container->get('auth');
                 $user = $auth->user();
-                file_put_contents($debugLog, "user after auth->user(): type=" . gettype($user) . ", value=" . var_export($user, true) . "\n", FILE_APPEND);
-                error_log('HomeController: User authenticated: ' . ($user ? 'yes' : 'no'));
-                if ($user) {
-                    if (is_object($user)) {
-                        error_log('HomeController: User class: ' . get_class($user));
-                    } elseif (is_array($user)) {
-                        error_log('HomeController: User is array, username: ' . ($user['username'] ?? 'N/A'));
-                    } else {
-                        error_log('HomeController: User type: ' . gettype($user));
-                    }
-                }
             } catch (\Exception $e) {
-                error_log('HomeController: Error getting user: ' . $e->getMessage());
+                // error_log('HomeController: Error getting user: ' . $e->getMessage());
             }
 
             // Use Twig template instead of hardcoded HTML
@@ -149,20 +105,20 @@ class HomeController extends Controller
                 ]
             ];
             
-            error_log('HomeController@index: Rendering Twig template');
+            // error_log('HomeController@index: Rendering Twig template');
             $response = $this->view('pages/home', $data);
-            error_log('HomeController@index: Response generated successfully');
+            // error_log('HomeController@index: Response generated successfully');
             return $response;
             
         } catch (\Throwable $e) {
-            error_log('HomeController@index: Exception: ' . $e->getMessage());
-            error_log('HomeController@index: Stack trace: ' . $e->getTraceAsString());
+            // error_log('HomeController@index: Exception: ' . $e->getMessage());
+            // error_log('HomeController@index: Stack trace: ' . $e->getTraceAsString());
             $debugLog = BASE_PATH . '/storage/logs/debug.log';
             file_put_contents($debugLog, "\n[" . date('Y-m-d H:i:s') . "] Exception: " . $e->getMessage() . "\n", FILE_APPEND);
             file_put_contents($debugLog, "Stack trace: " . $e->getTraceAsString() . "\n", FILE_APPEND);
             if (isset($user)) {
-                error_log('HomeController@index: $user type: ' . gettype($user));
-                error_log('HomeController@index: $user value: ' . var_export($user, true));
+                // error_log('HomeController@index: $user type: ' . gettype($user));
+                // error_log('HomeController@index: $user value: ' . var_export($user, true));
                 file_put_contents($debugLog, "user type: " . gettype($user) . "\n", FILE_APPEND);
                 file_put_contents($debugLog, "user value: " . var_export($user, true) . "\n", FILE_APPEND);
             }

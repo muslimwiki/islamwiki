@@ -1,5 +1,10 @@
 <?php
 file_put_contents(__DIR__ . '/../storage/logs/debug.log', "\n[" . date('Y-m-d H:i:s') . "] Entered index.php\n", FILE_APPEND);
+
+// Temporarily redirect error_log to a file to prevent output before headers
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../storage/logs/error.log');
+
 /**
  * IslamWiki Main Application Entry Point
  * 
@@ -30,11 +35,11 @@ require_once BASE_PATH . '/LocalSettings.php';
 // Include necessary files
 require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';
-require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-require_once BASE_PATH . '/src/Core/Auth/Aman.php';
-require_once BASE_PATH . '/src/Core/Session/Wisal.php';
+require_once BASE_PATH . '/src/Core/Routing/SabilRouting.php';
+require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
+require_once BASE_PATH . '/src/Core/Session/WisalSession.php';
 require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
-require_once BASE_PATH . '/src/Core/Auth/Aman.php';
+require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
 require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
 require_once BASE_PATH . '/src/Core/NizamApplication.php';
 require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
@@ -46,7 +51,7 @@ require_once BASE_PATH . '/src/Http/Controllers/PageController.php';
 require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
 require_once BASE_PATH . '/src/Http/Controllers/SearchController.php';
 require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
-require_once BASE_PATH . '/src/Core/Search/IqraSearchEngine.php';
+require_once BASE_PATH . '/src/Core/Search/IqraSearch.php';
 require_once BASE_PATH . '/src/Models/Page.php';
 require_once BASE_PATH . '/src/Models/QuranVerse.php';
 require_once BASE_PATH . '/src/Models/Hadith.php';
@@ -57,7 +62,7 @@ require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
 
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Routing\IslamRouter;
+use IslamWiki\Core\Routing\SabilRouting;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 
@@ -65,58 +70,32 @@ use IslamWiki\Core\Http\Response;
 $app = new \IslamWiki\Core\NizamApplication(BASE_PATH);
 $container = $app->getContainer();
 
-// Register the application in the container
-$container->instance('app', $app);
-
-
-
-// Get the database connection from the application's container
+// Get services from the application
 $db = $container->get('db');
-
-// Session is already initialized by SessionServiceProvider
 $sessionManager = $container->get('session');
-
-// Auth service is now registered via AuthServiceProvider
-// No manual registration needed
-
-// Create a simple logger (since we don't have a proper logger yet)
-$logger = new class implements \Psr\Log\LoggerInterface {
-    public function emergency($message, array $context = []) { error_log("EMERGENCY: $message"); }
-    public function alert($message, array $context = []) { error_log("ALERT: $message"); }
-    public function critical($message, array $context = []) { error_log("CRITICAL: $message"); }
-    public function error($message, array $context = []) { error_log("ERROR: $message"); }
-    public function warning($message, array $context = []) { error_log("WARNING: $message"); }
-    public function notice($message, array $context = []) { error_log("NOTICE: $message"); }
-    public function info($message, array $context = []) { error_log("INFO: $message"); }
-    public function debug($message, array $context = []) { error_log("DEBUG: $message"); }
-    public function log($level, $message, array $context = []) { error_log("LOG[$level]: $message"); }
-};
-
-// Register logger in container
-$container->instance(\Psr\Log\LoggerInterface::class, $logger);
-
-// Initialize and register TwigRenderer
-$twigRenderer = new \IslamWiki\Core\View\TwigRenderer(
-    BASE_PATH . '/resources/views',
-    BASE_PATH . '/storage/framework/views',
-    true // debug mode
-);
-$container->instance('view', $twigRenderer);
+$logger = $container->get('logger');
+$view = $container->get('view');
 
 // Initialize and register controller factory
 $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $container);
 $container->instance('controller.factory', $controllerFactory);
 
 // Initialize router
-$router = new IslamRouter($container);
+$router = new SabilRouting($container);
+global $router;
 
 // Load routes
+error_log("index.php: About to load routes");
 require_once BASE_PATH . '/routes/web.php';
+// error_log("index.php: Routes loaded, router class: " . get_class($router));
 
 // Get current request
 $request = Request::capture();
 
 // Handle the request
+// error_log("index.php: About to handle request with router: " . get_class($router));
+// error_log("index.php: Request URI: " . $request->getUri()->getPath());
+// error_log("index.php: Request method: " . $request->getMethod());
 try {
     $response = $router->handle($request);
     

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Simple IslamWiki Application Entry Point
+ */
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -9,47 +13,30 @@ define('BASE_PATH', dirname(__DIR__));
 // Include Composer autoloader
 require_once BASE_PATH . '/vendor/autoload.php';
 
-// Include helpers
-require_once BASE_PATH . '/src/helpers.php';
+// Create a simple working application
+$container = new \IslamWiki\Core\Container\AsasContainer();
 
-// Load LocalSettings.php for configuration
-require_once BASE_PATH . '/LocalSettings.php';
+// Create basic services
+$logger = new \IslamWiki\Core\Logging\ShahidLogger(BASE_PATH . '/storage/logs');
+$db = new \IslamWiki\Core\Database\Connection([]);
+$session = new \IslamWiki\Core\Session\WisalSession([]);
 
-// Include necessary files
-require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
-require_once BASE_PATH . '/src/Core/Database/Connection.php';
-require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-require_once BASE_PATH . '/src/Core/Http/Request.php';
-require_once BASE_PATH . '/src/Core/Http/Response.php';
-require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
+// Bind services to container
+$container->instance('logger', $logger);
+$container->instance('db', $db);
+$container->instance('session', $session);
+$container->instance(\Psr\Log\LoggerInterface::class, $logger);
+$container->instance(\IslamWiki\Core\Database\Connection::class, $db);
+$container->instance(\IslamWiki\Core\Session\WisalSession::class, $session);
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Routing\IslamRouter;
-use IslamWiki\Core\Http\Request;
-use IslamWiki\Core\Http\Response;
+// Create router
+$router = new \IslamWiki\Core\Routing\SabilRouting($container);
 
-// Initialize Application
-$app = new \IslamWiki\Core\Application(BASE_PATH);
-$container = $app->getContainer();
-
-// Register the application in the container
-$container->instance('app', $app);
-
-// Initialize router
-$router = new IslamRouter($container);
-
-// Add asset routes directly
-$router->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');
-$router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveJs');
-
-// Add a simple test route
-$router->get('/test-simple', function($request) {
-    return new Response(200, ['Content-Type' => 'text/html'], '<h1>Simple test route works!</h1>');
-});
+// Load routes
+require_once BASE_PATH . '/routes/web.php';
 
 // Get current request
-$request = Request::capture();
+$request = \IslamWiki\Core\Http\Request::capture();
 
 // Handle the request
 try {
@@ -77,11 +64,8 @@ try {
     http_response_code(500);
     echo '<h1>Application Error</h1>';
     echo '<p>An error occurred while processing your request.</p>';
-    echo '<p><strong>Error:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
-    echo '<p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . '</p>';
-    echo '<p><strong>Line:</strong> ' . htmlspecialchars($e->getLine()) . '</p>';
     if (ini_get('display_errors')) {
-        echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+        echo '<pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
     }
 }
 ?> 

@@ -49,18 +49,18 @@ src/Core/
 ```php
 // ✅ GOOD - Use English variable names for clarity
 $container = new AsasContainer();           // Dependency injection container
-$auth = new Aman();               // Authentication system  
-$session = new Wisal();           // Session management
-$logger = new Shahid();           // Logging system
-$api = new Siraj();               // API management
-$knowledge = new Usul();          // Knowledge system
-$cache = new Rihlah();            // Caching system
-$queue = new Sabr();              // Queue system
-$formatter = new Bayan();         // Content formatting
+$auth = new AmanSecurity();               // Authentication system  
+$session = new WisalSession();           // Session management
+$logger = new ShahidLogger();           // Logging system
+$api = new SirajAPI();               // API management
+$knowledge = new UsulKnowledge();          // Knowledge system
+$cache = new RihlahCaching();            // Caching system
+$queue = new SabrQueue();              // Queue system
+$formatter = new BayanFormatter();         // Content formatting
 
 // ❌ AVOID - Don't use Arabic variable names
 $asas = new AsasContainer();               // Confusing
-$aman = new Aman();               // Hard to understand
+$aman = new AmanSecurity();               // Hard to understand
 $wisal = new Wisal();             // Not clear
 ```
 
@@ -68,15 +68,15 @@ $wisal = new Wisal();             // Not clear
 
 ```php
 // ✅ CORRECT - Professional namespace structure
-use IslamWiki\Core\Auth\Aman;
-use IslamWiki\Core\Session\Wisal;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Auth\AmanSecurity;
+use IslamWiki\Core\Session\WisalSession;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\API\Siraj;
-use IslamWiki\Core\Knowledge\Usul;
-use IslamWiki\Core\Caching\Rihlah;
-use IslamWiki\Core\Queue\Sabr;
-use IslamWiki\Core\Formatter\Bayan;
+use IslamWiki\Core\API\SirajAPI;
+use IslamWiki\Core\Knowledge\UsulKnowledge;
+use IslamWiki\Core\Caching\RihlahCaching;
+use IslamWiki\Core\Queue\SabrQueue;
+use IslamWiki\Core\Formatter\BayanFormatter;
 ```
 
 ## 🔧 **Usage Examples**
@@ -87,7 +87,7 @@ use IslamWiki\Core\Formatter\Bayan;
 // ✅ GOOD - Clear and professional
 $container = new AsasContainer();
 $container->singleton('auth', function() {
-    return new Aman($session, $db);
+    return new AmanSecurity($session, $db);
 });
 $container->singleton('cache', function() {
     return new Rihlah($container, $logger, $db);
@@ -103,8 +103,8 @@ class UserController extends Controller
     public function __construct(Connection $db, Asas $container)
     {
         parent::__construct($db, $container);
-        $this->auth = $container->get(Aman::class);
-        $this->logger = $container->get(Shahid::class);
+        $this->auth = $container->get(AmanSecurity::class);
+        $this->logger = $container->get(ShahidLogger::class);
         $this->cache = $container->get(Rihlah::class);
     }
 }
@@ -118,10 +118,10 @@ class AuthServiceProvider
 {
     public function register(Asas $container): void
     {
-        $container->singleton(Aman::class, function() use ($container) {
-            $session = $container->get(Wisal::class);
+        $container->singleton(AmanSecurity::class, function() use ($container) {
+            $session = $container->get(WisalSession::class);
             $db = $container->get(Connection::class);
-            return new Aman($session, $db);
+            return new AmanSecurity($session, $db);
         });
     }
 }
@@ -163,15 +163,15 @@ class AuthServiceProvider
 
 ### **✅ Class Names**
 
-- [x] `Aman` - Authentication class
-- [x] `Wisal` - Session class
-- [x] `Shahid` - Logging class
+- [x] `AmanSecurity` - Authentication class
+- [x] `WisalSession` - Session class
+- [x] `ShahidLogger` - Logging class
 - [x] `Asas` - Container class
-- [x] `Siraj` - API class
-- [x] `Usul` - Knowledge class
-- [x] `Rihlah` - Caching class
-- [x] `Sabr` - Queue class
-- [x] `Bayan` - Formatter class
+- [x] `SirajAPI` - API class
+- [x] `UsulKnowledge` - Knowledge class
+- [x] `RihlahCaching` - Caching class
+- [x] `SabrQueue` - Queue class
+- [x] `BayanFormatter` - Formatter class
 
 ### **✅ Variable Names**
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Queue\Sabr;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Queue\SabrQueue;
+use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,11 +20,11 @@ class QueueController extends Controller
     private Sabr $queue;
     private Shahid $logger;
 
-    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
         $this->queue = $container->get('queue');
-        $this->logger = $container->get(Shahid::class);
+        $this->logger = $container->get(ShahidLogger::class);
     }
 
     /**

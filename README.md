@@ -1,7 +1,7 @@
 # IslamWiki
 
-**Version:** 0.0.51  
-**Release Date:** 2025-08-05  
+**Version:** 0.0.52  
+**Release Date:** 2025-08-06  
 **Status:** Active Development
 
 A comprehensive Islamic knowledge base and resource center built with modern web technologies.
@@ -14,6 +14,7 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **User Authentication**: Secure login, registration, and profile management
 - **Community Features**: User profiles, contributions, and community interaction
 - **Islamic Calendar**: Advanced Islamic calendar with prayer times
+- **Modern Islamic Design**: Beautiful, modern interface with Islamic theme and animations
 - **Responsive Design**: Mobile-friendly interface with modern UI/UX
 
 ### Technical Features
@@ -40,6 +41,9 @@ A comprehensive Islamic knowledge base and resource center built with modern web
 - **URL Parameter Override**: Quick skin switching via URL parameters (`?skin=bismillah`, `?skin=muslim`)
 - **Temporary Skin Testing**: Non-persistent skin switching for development and testing
 - **Validation & Fallback**: Only accepts valid skin names, falls back to user preference
+- **Modern Islamic Theme**: Beautiful blue gradient design with glass morphism effects
+- **Advanced Animations**: Smooth transitions, hover effects, and loading animations
+- **Professional Typography**: Inter font family with proper hierarchy
 
 ### Development Features
 - **Dependency Injection**: Container-based service management

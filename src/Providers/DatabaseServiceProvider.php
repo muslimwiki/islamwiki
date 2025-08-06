@@ -37,7 +37,7 @@ class DatabaseServiceProvider
     /**
      * Register database services with the container.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register database connection
         $container->bind('db', function () {

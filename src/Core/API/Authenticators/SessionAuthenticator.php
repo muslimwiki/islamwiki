@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\API\Authenticators;
 
 use IslamWiki\Core\API\Interfaces\AuthenticatorInterface;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -14,12 +14,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class SessionAuthenticator implements AuthenticatorInterface
 {
-    private Wisal $session;
+    private WisalSession $session;
     
     /**
      * Create a new session authenticator.
      */
-    public function __construct(Wisal $session)
+    public function __construct(WisalSession $session)
     {
         $this->session = $session;
     }

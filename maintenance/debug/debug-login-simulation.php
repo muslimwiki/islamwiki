@@ -51,7 +51,7 @@ try {
                 echo "- Session started: Yes\n";
                 
                 // Create auth instance
-                $auth = new \IslamWiki\Core\Auth\Aman($session, $db);
+                $auth = new \IslamWiki\Core\Auth\AmanSecurity($session, $db);
                 echo "- Auth instance created: Yes\n";
                 
                 // Attempt login

@@ -18,7 +18,7 @@ use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\Wisal;
+use IslamWiki\Core\Session\WisalSession;
 use IslamWiki\Skins\SkinManager;
 
 class ProfileController extends Controller
@@ -26,7 +26,7 @@ class ProfileController extends Controller
     private SkinManager $skinManager;
     private Wisal $session;
 
-    public function __construct(Connection $db, \IslamWiki\Core\Container\Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
         $this->skinManager = $container->get('skin.manager');

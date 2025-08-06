@@ -17,7 +17,7 @@ class ExtensionServiceProvider
     /**
      * Register the service provider.
      */
-    public function register(Asas $container): void
+    public function register(AsasContainer $container): void
     {
         // Register the HookManager
         $container->singleton(HookManager::class, function () {
@@ -33,7 +33,7 @@ class ExtensionServiceProvider
     /**
      * Bootstrap the service provider.
      */
-    public function boot(Asas $container): void
+    public function boot(AsasContainer $container): void
     {
         // Don't load extensions during boot to avoid circular dependencies
         // Extensions will be loaded when the ExtensionManager is first accessed

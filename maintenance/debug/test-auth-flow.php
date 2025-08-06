@@ -11,7 +11,7 @@ try {
     
     // Get session and auth
     $session = $container->get('session');
-    $auth = new \IslamWiki\Core\Auth\Aman($session, $container->get('db'));
+    $auth = new \IslamWiki\Core\Auth\AmanSecurity($session, $container->get('db'));
     
     echo "📊 Initial State:\n";
     echo "- Session Status: " . session_status() . "\n";
@@ -30,8 +30,8 @@ try {
         echo "- No active session\n";
     }
     
-    // Test Aman::user() method
-    echo "\n🔍 Testing Aman::user():\n";
+    // Test AmanSecurity::user() method
+echo "\n🔍 Testing AmanSecurity::user():\n";
     $user = $auth->user();
     echo "- User returned: " . ($user ? 'Yes' : 'No') . "\n";
     if ($user) {

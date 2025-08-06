@@ -132,8 +132,9 @@ class WisalSession
         
         // Ensure session data is written at the end of start()
         if (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION)) {
+            // Don't restart session here as it can cause infinite loops
+            // Just ensure data is written
             session_write_close();
-            session_start();
         }
     }
     
@@ -143,7 +144,8 @@ class WisalSession
     public function regenerate(): void
     {
         session_regenerate_id(true);
-        $this->put('last_regeneration', time());
+        // Directly set the value to avoid triggering the put() method's write logic
+        $_SESSION['last_regeneration'] = time();
     }
     
     /**
@@ -165,7 +167,7 @@ class WisalSession
         if (in_array($key, ['user_id', 'username', 'is_admin', 'logged_in_at'])) {
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_write_close();
-                session_start();
+                // Don't restart session here as it can cause infinite loops
             }
         }
     }

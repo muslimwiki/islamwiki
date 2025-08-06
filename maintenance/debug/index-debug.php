@@ -39,10 +39,10 @@ try {
     require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
     require_once BASE_PATH . '/src/Core/Database/Connection.php';
     require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-    require_once BASE_PATH . '/src/Core/Auth/Aman.php';
+    require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
     require_once BASE_PATH . '/src/Core/Session/Wisal.php';
     require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
-    require_once BASE_PATH . '/src/Core/Auth/Aman.php';
+    require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
     require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
     require_once BASE_PATH . '/src/Core/NizamApplication.php';
     require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
@@ -54,7 +54,7 @@ try {
     require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
     require_once BASE_PATH . '/src/Http/Controllers/SearchController.php';
     require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
-    require_once BASE_PATH . '/src/Core/Search/IqraSearchEngine.php';
+    require_once BASE_PATH . '/src/Core/Search/IqraSearch.php';
     require_once BASE_PATH . '/src/Models/Page.php';
     require_once BASE_PATH . '/src/Models/QuranVerse.php';
     require_once BASE_PATH . '/src/Models/Hadith.php';
@@ -88,7 +88,7 @@ try {
 
     // Initialize and register Aman
     echo "<p>Initializing auth manager...</p>";
-    $authManager = new \IslamWiki\Core\Auth\Aman($sessionManager, $db);
+    $authManager = new \IslamWiki\Core\Auth\AmanSecurity($sessionManager, $db);
     $container->instance('auth', $authManager);
     echo "<p>✅ Auth manager initialized</p>";
 

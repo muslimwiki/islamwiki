@@ -5,7 +5,7 @@ namespace IslamWiki\Core\Knowledge\SchemaLayers;
 
 use IslamWiki\Core\Knowledge\Interfaces\SchemaLayerInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * MetadataSchemaLayer
@@ -16,12 +16,12 @@ use IslamWiki\Core\Logging\Shahid;
 class MetadataSchemaLayer implements SchemaLayerInterface
 {
     private Connection $db;
-    private Shahid $logger;
+    private ShahidLogger $logger;
     
     /**
      * Create a new MetadataSchemaLayer instance.
      */
-    public function __construct(Connection $db, Shahid $logger)
+    public function __construct(Connection $db, ShahidLogger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;
@@ -43,71 +43,13 @@ class MetadataSchemaLayer implements SchemaLayerInterface
     }
     
     /**
-     * Get classification type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('Classification', '', 'MetadataSchemaLayer'));
-    }
-    
-    /**
-     * Classify a term into categories.
-     */
-    public function classify(string $term): array
-    {
-        // TODO: Implement classification
-        return [
-            'term' => $term,
-            'categories' => [],
-        ];
-    }
-    
-    /**
-     * Search the ontology.
-     */
-    public function search(string $query, array $options = []): array
-    {
-        // TODO: Implement search functionality
-        return [
-            'query' => $query,
-            'results' => [],
-        ];
-    }
-    
-    /**
-     * Get ontology type.
-     */
-    public function getType(): string
-    {
-        return strtolower(str_replace('Ontology', '', 'MetadataSchemaLayer'));
-    }
-    
-    /**
-     * Add a concept to the ontology.
-     */
-    public function addConcept(string $concept, array $properties = []): bool
-    {
-        // TODO: Implement concept addition
-        return false;
-    }
-    
-    /**
-     * Get concept relationships.
-     */
-    public function getRelationships(string $concept): array
-    {
-        // TODO: Implement relationship retrieval
-        return [];
-    }
-    
-    /**
      * Get schema layer type.
      */
     public function getType(): string
     {
         return strtolower(str_replace('SchemaLayer', '', 'MetadataSchemaLayer'));
     }
-    
+
     /**
      * Define schema structure.
      */
@@ -116,7 +58,7 @@ class MetadataSchemaLayer implements SchemaLayerInterface
         // TODO: Implement schema definition
         return false;
     }
-    
+
     /**
      * Validate data against schema.
      */
@@ -125,7 +67,7 @@ class MetadataSchemaLayer implements SchemaLayerInterface
         // TODO: Implement data validation
         return false;
     }
-    
+
     /**
      * Get schema definition.
      */
