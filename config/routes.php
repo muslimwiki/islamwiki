@@ -22,6 +22,8 @@ use IslamWiki\Http\Controllers\SecurityController;
 use IslamWiki\Http\Controllers\HomeController;
 use IslamWiki\Http\Controllers\DashboardController;
 use IslamWiki\Http\Controllers\ProfileController;
+use IslamWiki\Http\Controllers\SettingsController;
+use IslamWiki\Http\Controllers\QueueController;
 use IslamWiki\Http\Middleware\AuthenticationMiddleware;
 
 return function (\IslamWiki\Core\Application $app) {
@@ -45,6 +47,7 @@ return function (\IslamWiki\Core\Application $app) {
     $homeController = new HomeController($db, $container);
     $dashboardController = new DashboardController($db, $container);
     $profileController = new ProfileController($db, $container);
+    $settingsController = new SettingsController($db, $container);
     $queueController = new QueueController($db, $container);
 
     // Create middleware instances
@@ -80,6 +83,12 @@ return function (\IslamWiki\Core\Application $app) {
     $app->post('/profile', [$profileController, 'update'])->middleware($authMiddleware);
     $app->get('/profile/edit', [$profileController, 'edit'])->middleware($authMiddleware);
     $app->post('/profile/password', [$profileController, 'updatePassword'])->middleware($authMiddleware);
+
+    // Settings routes
+    $app->get('/settings', [$settingsController, 'index'])->middleware($authMiddleware);
+    $app->post('/settings/skin', [$settingsController, 'updateSkin'])->middleware($authMiddleware);
+    $app->get('/settings/skins', [$settingsController, 'getAvailableSkins'])->middleware($authMiddleware);
+    $app->get('/settings/skin/{skinName}', [$settingsController, 'getSkinInfo'])->middleware($authMiddleware);
 
     // Queue management routes
     $app->get('/queue', [$queueController, 'index'])->middleware($authMiddleware);
@@ -167,7 +176,19 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/security/reports', [$securityController, 'reports']);
 
     // API routes
-    $app->group('/api', function () use ($apiController, $configController, $searchController, $prayerController, $hadithController, $quranController, $calendarController, $contentController, $communityController, $securityController, $profileController) {
+    $app->group('/api', function () use (
+        $apiController,
+        $configController,
+        $searchController,
+        $prayerController,
+        $hadithController,
+        $quranController,
+        $calendarController,
+        $contentController,
+        $communityController,
+        $securityController,
+        $profileController
+    ) {
         // Pages
         $this->get('/pages', [$apiController, 'listPages']);
         $this->post('/pages', [$apiController, 'createPage']);

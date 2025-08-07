@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.49] - 2025-01-27
+
+### 🎨 UI/UX Improvements
+- **Header Layout Redesign**: Completely restructured header layout for better user experience
+- **Search Bar Positioning**: Moved search bar to same line as logo and auth buttons
+- **Navigation Reorganization**: Moved primary navigation (Home, Browse, Quran, Hadith) to secondary navigation bar
+- **Auth Buttons Placement**: Positioned Sign In/Join buttons on same line as logo and search
+- **Full Width Layout**: Updated all Bismillah CSS pages to display in full width for header, main content, and footer
+- **Search Bar Centering**: Improved search bar centering and extended length for better usability
+- **Responsive Padding**: Added proper padding to header top row for better edge spacing
+
+### 🔧 Technical Improvements
+- **CSS Grid to Flexbox**: Converted header layout from grid to flexbox for better control
+- **HTML Structure Optimization**: Removed unnecessary wrapper divs that were causing layout issues
+- **Mobile Responsive**: Enhanced mobile responsive design for new header layout
+- **CSS Ordering**: Implemented proper CSS order properties for consistent element positioning
+- **Container Width Updates**: Changed all main containers from max-width constraints to full width
+
+### 📱 Layout Changes
+- **Top Row**: Logo | Search Bar | Sign In/Join buttons (all on same line)
+- **Bottom Row**: Centered navigation with all menu items (Home, Browse, Quran, Hadith, Islamic Sciences, Prayer Times, Islamic Calendar, Community, About)
+- **Full Width**: Header, main content, and footer now use full available width
+- **Better Spacing**: Added 2rem padding to header top row for proper edge spacing
+
+### 🎯 User Experience
+- **Improved Navigation**: More intuitive navigation structure with logical grouping
+- **Better Search Access**: Search bar is more prominent and accessible
+- **Cleaner Layout**: Streamlined header design with better visual hierarchy
+- **Enhanced Accessibility**: Better button and link positioning for easier interaction
+
 ## [0.0.45] - 2025-08-07
 
 ### Fixed

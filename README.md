@@ -2,21 +2,20 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.45)
+## 🚀 Latest Updates (v0.0.49)
 
-### ✅ Authentication System Fixed
-- **Login Now Works**: Users can successfully log in with admin/password credentials
-- **Session Persistence**: User sessions now persist correctly across page refreshes
-- **Navigation Dropdown**: User dropdown menu appears properly after login
-- **CSS Positioning**: Fixed dropdown z-index to appear above all navigation elements
+### ✅ Header Layout Redesign
+- **New Header Structure**: Logo, search bar, and auth buttons now on same line
+- **Improved Navigation**: Primary navigation moved to secondary bar for better organization
+- **Full Width Layout**: All pages now use full available width for better content display
+- **Enhanced Search**: Search bar is more prominent and better positioned
+- **Better Spacing**: Added proper padding for improved visual balance
 
-### 🔧 Technical Improvements
-- Fixed critical session management issues preventing user login
-- Resolved session data loss during login process
-- Added proper session initialization in application bootstrap
-- Fixed unnecessary session regeneration that was clearing user data
-- Enhanced user dropdown CSS positioning with proper z-index
-- Improved debug logging for authentication troubleshooting
+### 🎨 UI/UX Improvements
+- **Streamlined Design**: Cleaner, more intuitive header layout
+- **Better Accessibility**: Improved button and link positioning
+- **Mobile Responsive**: Enhanced mobile layout for new header structure
+- **Visual Hierarchy**: Better organization of navigation elements
 
 ## 🌟 Features
 

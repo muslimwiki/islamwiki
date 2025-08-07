@@ -53,6 +53,14 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display the current user's profile page (alias for show)
+     */
+    public function index(): Response
+    {
+        return $this->show();
+    }
+
+    /**
      * Display a public user profile page
      */
     public function showPublic(\IslamWiki\Core\Http\Request $request, string $username): Response
@@ -493,5 +501,181 @@ class ProfileController extends Controller
             ['Content-Type' => 'text/html'],
             $html
         );
+    }
+
+    /**
+     * API: Get current user profile
+     */
+    public function apiIndex(): Response
+    {
+        if (!$this->session->isLoggedIn()) {
+            return new Response(401, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'Authentication required'
+            ]));
+        }
+
+        $userId = $this->session->getUserId();
+        $userSettings = $this->getUserSettings($userId);
+        $userStats = $this->getUserStatistics($userId);
+
+        try {
+            $user = \IslamWiki\Models\User::find($userId, $this->db);
+            $userData = $user ? $user->toArray() : null;
+        } catch (\Exception $e) {
+            $userData = null;
+        }
+
+        if (!$userData) {
+            return new Response(404, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'User not found'
+            ]));
+        }
+
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'success' => true,
+            'user' => $userData,
+            'settings' => $userSettings,
+            'stats' => $userStats
+        ]));
+    }
+
+    /**
+     * API: Update user profile
+     */
+    public function apiUpdate(): Response
+    {
+        if (!$this->session->isLoggedIn()) {
+            return new Response(401, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'Authentication required'
+            ]));
+        }
+
+        $userId = $this->session->getUserId();
+        $requestData = $this->getRequestData();
+
+        try {
+            $success = $this->updateUserProfile($userId, $requestData);
+
+            if ($success) {
+                return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => true,
+                    'message' => 'Profile updated successfully'
+                ]));
+            } else {
+                return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => false,
+                    'message' => 'Failed to update profile'
+                ]));
+            }
+        } catch (\Exception $e) {
+            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'An error occurred while updating profile'
+            ]));
+        }
+    }
+
+    /**
+     * API: Update user password
+     */
+    public function apiUpdatePassword(): Response
+    {
+        if (!$this->session->isLoggedIn()) {
+            return new Response(401, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'Authentication required'
+            ]));
+        }
+
+        $userId = $this->session->getUserId();
+        $requestData = $this->getRequestData();
+
+        $currentPassword = $requestData['current_password'] ?? '';
+        $newPassword = $requestData['new_password'] ?? '';
+        $confirmPassword = $requestData['confirm_password'] ?? '';
+
+        if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+            return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'All password fields are required'
+            ]));
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'New passwords do not match'
+            ]));
+        }
+
+        try {
+            // Verify current password
+            $user = \IslamWiki\Models\User::find($userId, $this->db);
+            if (!$user || !password_verify($currentPassword, $user->password)) {
+                return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => false,
+                    'message' => 'Current password is incorrect'
+                ]));
+            }
+
+            // Update password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $this->db->update(
+                'users',
+                ['password' => $hashedPassword, 'updated_at' => date('Y-m-d H:i:s')],
+                ['id' => $userId]
+            );
+
+            return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => true,
+                'message' => 'Password updated successfully'
+            ]));
+        } catch (\Exception $e) {
+            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'An error occurred while updating password'
+            ]));
+        }
+    }
+
+    /**
+     * Update user password (non-API version)
+     */
+    public function updatePassword(): Response
+    {
+        return $this->apiUpdatePassword();
+    }
+
+    /**
+     * Edit profile page
+     */
+    public function edit(): Response
+    {
+        if (!$this->session->isLoggedIn()) {
+            return $this->renderErrorPage(
+                401,
+                'Authentication Required',
+                'You need to be logged in to edit your profile.'
+            );
+        }
+
+        $userId = $this->session->getUserId();
+        $userSettings = $this->getUserSettings($userId);
+
+        try {
+            $user = \IslamWiki\Models\User::find($userId, $this->db);
+            $userData = $user ? $user->toArray() : null;
+        } catch (\Exception $e) {
+            $userData = null;
+        }
+
+        if (!$userData) {
+            return $this->renderErrorPage(404, 'User Not Found', 'The requested user profile could not be found.');
+        }
+
+        return $this->view('profile/edit', [
+            'title' => 'Edit Profile - IslamWiki',
+            'user' => $userData,
+            'userSettings' => $userSettings
+        ]);
     }
 }
