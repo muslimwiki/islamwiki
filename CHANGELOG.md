@@ -32,6 +32,68 @@ All notable changes to this project will be documented in this file.
 - **Cleaner Layout**: Streamlined header design with better visual hierarchy
 - **Enhanced Accessibility**: Better button and link positioning for easier interaction
 
+## [0.0.48] - 2025-08-04
+
+### Fixed
+- **Authentication Bug**: Fixed critical authentication bug preventing user login after skin management implementation
+- **Session Interference**: Resolved SkinMiddleware interference with session state during authentication
+- **Route Protection**: Added protection for authentication routes in SkinMiddleware
+- **Safe Session Handling**: Implemented safe session access with error handling
+- **Error Recovery**: Enhanced error handling for skin-related operations
+
+### Technical Improvements
+- Added authentication route protection in SkinMiddleware
+- Implemented safe session access with try-catch blocks
+- Enhanced error logging for debugging middleware issues
+- Added fallback mechanisms for when session data is unavailable
+
+### User Experience
+- Login functionality restored and working properly
+- Dynamic skin switching works without breaking authentication
+- Session persistence maintained across page navigation
+- Settings page accessible without authentication interference
+
+## [0.0.47] - 2025-08-03
+
+### Added
+- **Dynamic Skin Discovery**: System automatically discovers all skins in `/skins/` directory
+- **Enhanced Settings Page**: Comprehensive settings management at `/settings`
+- **Multi-Skin Support**: Support for unlimited number of skins (Bismillah, Muslim, etc.)
+- **User-Specific Preferences**: Each user has their own skin preference stored in database
+- **API Endpoints**: RESTful endpoints for skin management (`GET /settings/skins`, `POST /settings/skin`)
+
+### Technical Improvements
+- Improved SkinManager with enhanced loading logic and better error handling
+- Enhanced SettingsController with improved skin discovery and switching
+- Database integration for user preferences with `user_settings` table
+- Comprehensive debug tools for skin management and troubleshooting
+
+### User Experience
+- Modern, responsive settings interface with tab navigation
+- Visual skin selection cards with detailed information
+- Individual skin settings per user with persistent storage
+- Simple one-click skin switching with immediate feedback
+
+## [0.0.46] - 2025-08-03
+
+### Fixed
+- **Critical Session Bug**: Fixed session persistence bug preventing user authentication from persisting
+- **Session Data Loss**: Resolved session regeneration issues causing data loss
+- **Login State Loss**: Fixed users losing login state when navigating between pages
+- **UI Display Problems**: Fixed user menu showing sign-in button instead of avatar when logged in
+
+### Technical Improvements
+- Removed aggressive session regeneration that was causing data loss
+- Added immediate session write for critical authentication data
+- Improved session start handling for all session states
+- Enhanced session management with proper write/close cycles
+
+### User Experience
+- Login state now persists correctly across page navigation
+- User menu properly displays avatar when logged in
+- Sessions are consistently maintained throughout user sessions
+- Improved session reliability and data integrity
+
 ## [0.0.45] - 2025-08-07
 
 ### Fixed
