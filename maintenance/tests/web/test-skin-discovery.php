@@ -1,4 +1,5 @@
 <?php
+
 // Test script to verify dynamic skin discovery
 echo "<h1>Skin Discovery Test</h1>";
 
@@ -13,7 +14,7 @@ echo "Directory exists: " . (is_dir($skinsDir) ? 'Yes' : 'No') . "<br>";
 if (is_dir($skinsDir)) {
     $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
     echo "Found " . count($skinDirs) . " skin directories:<br>";
-    
+
     foreach ($skinDirs as $skinDir) {
         $skinName = basename($skinDir);
         $availableSkins[$skinName] = $skinName;
@@ -48,4 +49,3 @@ if (empty($wgValidSkins)) {
     echo "Using LocalSettings.php configuration<br>";
     echo "Skins available: " . implode(', ', array_keys($wgValidSkins));
 }
-?> 

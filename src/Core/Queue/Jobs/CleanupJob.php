@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Jobs;
@@ -125,9 +126,9 @@ class CleanupJob extends AbstractJob
         // In a real application, you would clean up expired sessions from the database
         // For now, we'll just log the cleanup
         $maxAge = $this->options['max_age'] ?? 86400; // 24 hours
-        
+
         error_log("Cleanup: Cleaning up expired sessions older than {$maxAge} seconds");
-        
+
         // Simulate cleaning up sessions
         $deleted = rand(0, 10);
         error_log("Cleanup: Deleted {$deleted} expired sessions");
@@ -139,9 +140,9 @@ class CleanupJob extends AbstractJob
     private function cleanupFailedJobs(): void
     {
         $maxAge = $this->options['max_age'] ?? 604800; // 7 days
-        
+
         error_log("Cleanup: Cleaning up failed jobs older than {$maxAge} seconds");
-        
+
         // Simulate cleaning up failed jobs
         $deleted = rand(0, 5);
         error_log("Cleanup: Deleted {$deleted} old failed jobs");
@@ -179,7 +180,7 @@ class CleanupJob extends AbstractJob
     private function cleanupOrphanedFiles(): void
     {
         $uploadsDir = $this->options['uploads_dir'] ?? __DIR__ . '/../../../storage/app/uploads';
-        
+
         if (!is_dir($uploadsDir)) {
             return;
         }
@@ -187,7 +188,7 @@ class CleanupJob extends AbstractJob
         // In a real application, you would check for orphaned files
         // by comparing with database records
         error_log("Cleanup: Checking for orphaned files in uploads directory");
-        
+
         // Simulate finding and deleting orphaned files
         $deleted = rand(0, 3);
         error_log("Cleanup: Deleted {$deleted} orphaned files");
@@ -208,4 +209,4 @@ class CleanupJob extends AbstractJob
     {
         return $this->options;
     }
-} 
+}

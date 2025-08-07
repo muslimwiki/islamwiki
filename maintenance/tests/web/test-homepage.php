@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Enable error reporting
@@ -16,18 +17,20 @@ try {
     if (file_exists($envPath)) {
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
-            if (strpos(trim($line), '#') === 0) continue;
+            if (strpos(trim($line), '#') === 0) {
+                continue;
+            }
             putenv(trim($line));
         }
     }
-    
+
     $dbHost = getenv('DB_HOST') ?: 'localhost';
     $dbName = getenv('DB_DATABASE') ?: 'islamwiki';
     $dbUser = getenv('DB_USERNAME') ?: 'root';
     $dbPass = getenv('DB_PASSWORD') ?: '';
-    
+
     $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4";
-    
+
     $db = new PDO(
         $dsn,
         $dbUser,

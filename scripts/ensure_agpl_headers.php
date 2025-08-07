@@ -1,8 +1,10 @@
 <?php
-declare(strict_types=1);
+
 /**
  * Script to ensure all PHP files have the correct AGPL-3.0 license header
  */
+
+declare(strict_types=1);
 
 $licenseHeader = <<<EOT
 /**
@@ -27,37 +29,40 @@ $licenseHeader = <<<EOT
 EOT;
 
 // Function to process files
-function processFiles($path) {
+function processFiles($path)
+{
     global $licenseHeader;
-    
+
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     $filesProcessed = 0;
     $filesUpdated = 0;
-    
+
     foreach ($iterator as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
             $filePath = $file->getRealPath();
-            
+
             // Skip files in vendor directory
             if (strpos($filePath, '/vendor/') !== false) {
                 continue;
             }
-            
+
             $filesProcessed++;
-            
+
             // Read file content
             $content = file_get_contents($filePath);
-            
+
             // Extract the first 200 characters to check for PHP opening tag and header
             $first200 = substr($content, 0, 200);
-            
+
             // Check if file already has the complete AGPL header
-            if (strpos($content, 'GNU Affero General Public License') !== false && 
-                strpos($content, '<?php') === 0) {
+            if (
+                strpos($content, 'GNU Affero General Public License') !== false &&
+                strpos($content, '<?php') === 0
+            ) {
                 // Check if there's a duplicate PHP tag
                 $secondPhpTagPos = strpos(substr($content, 5), '<?php');
                 if ($secondPhpTagPos !== false && $secondPhpTagPos < 100) {
@@ -69,19 +74,19 @@ function processFiles($path) {
                 }
                 continue;
             }
-            
+
             // Remove existing header if it exists
             $pattern = '/<\?php\s*\/\*\*[\s\S]*?\*\/\s*/';
             $newContent = preg_replace($pattern, '', $content, 1, $count);
-            
+
             if ($count === 0) {
                 // No existing header found, remove just the opening PHP tag if it exists
                 $newContent = preg_replace('/^<\?php\s*/', '', $content, 1);
             }
-            
+
             // Add the new header
             $newContent = "<?php\n" . $licenseHeader . $newContent;
-            
+
             // Write back to file if content changed
             if ($newContent !== $content) {
                 file_put_contents($filePath, $newContent);
@@ -90,7 +95,7 @@ function processFiles($path) {
             }
         }
     }
-    
+
     return [$filesProcessed, $filesUpdated];
 }
 

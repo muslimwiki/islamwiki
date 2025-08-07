@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Settings Authentication Test
- * 
+ *
  * Tests the settings page with simulated authentication.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +19,7 @@ class DebugSettingsController
 {
     private $db;
     private $session;
-    
+
     public function __construct()
     {
         // Initialize database connection
@@ -32,24 +33,30 @@ class DebugSettingsController
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
         ];
-        
+
         $this->db = new \IslamWiki\Core\Database\Connection($dbConfig);
-        
+
         // Simulate authenticated session
         $this->session = new class {
-            public function isLoggedIn(): bool { return true; }
-            public function getUserId(): int { return 1; }
+            public function isLoggedIn(): bool
+            {
+                return true;
+            }
+            public function getUserId(): int
+            {
+                return 1;
+            }
         };
     }
-    
+
     public function index(): array
     {
         $userId = $this->session->getUserId();
-        
+
         // Get user settings
         $userSettings = $this->getUserSettings($userId);
         $userActiveSkin = $userSettings['skin'] ?? 'bismillah';
-        
+
         // Get current user
         $user = null;
         try {
@@ -57,24 +64,24 @@ class DebugSettingsController
         } catch (\Exception $e) {
             // User not found, continue with null user
         }
-        
+
         // Dynamically discover available skins
         $availableSkins = $this->discoverAvailableSkins();
-        
+
         // Simulate skin manager
         $loadedSkins = $this->simulateSkinManager();
-        
+
         $skinOptions = [];
-        
+
         // Process discovered skins
         foreach ($availableSkins as $skinKey => $skinData) {
             $lowerSkinName = strtolower($skinData['name']);
-            
+
             if (isset($loadedSkins[$lowerSkinName])) {
                 $skin = $loadedSkins[$lowerSkinName];
-                
+
                 $isActive = $lowerSkinName === strtolower($userActiveSkin);
-                
+
                 $skinOptions[$skinData['name']] = [
                     'name' => $skin->getName(),
                     'version' => $skin->getVersion(),
@@ -88,7 +95,7 @@ class DebugSettingsController
                 ];
             }
         }
-        
+
         return [
             'title' => 'Settings - IslamWiki',
             'user' => $user,
@@ -98,26 +105,26 @@ class DebugSettingsController
             'userSettings' => $userSettings
         ];
     }
-    
+
     private function discoverAvailableSkins(): array
     {
         $skinsDir = __DIR__ . '/../skins';
         $availableSkins = [];
-        
+
         if (!is_dir($skinsDir)) {
             return $availableSkins;
         }
-        
+
         $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
-        
+
         foreach ($skinDirs as $skinDir) {
             $skinName = basename($skinDir);
             $skinConfigFile = $skinDir . '/skin.json';
-            
+
             if (file_exists($skinConfigFile)) {
                 try {
                     $config = json_decode(file_get_contents($skinConfigFile), true);
-                    
+
                     if ($config && isset($config['name'])) {
                         $availableSkins[strtolower($skinName)] = [
                             'name' => $config['name'],
@@ -135,28 +142,52 @@ class DebugSettingsController
                 }
             }
         }
-        
+
         return $availableSkins;
     }
-    
+
     private function simulateSkinManager(): array
     {
         return [
             'bismillah' => new class {
-                public function getName(): string { return 'Bismillah'; }
-                public function getVersion(): string { return '0.0.28'; }
-                public function getAuthor(): string { return 'IslamWiki Team'; }
-                public function getDescription(): string { return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.'; }
+                public function getName(): string
+                {
+                    return 'Bismillah';
+                }
+                public function getVersion(): string
+                {
+                    return '0.0.28';
+                }
+                public function getAuthor(): string
+                {
+                    return 'IslamWiki Team';
+                }
+                public function getDescription(): string
+                {
+                    return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.';
+                }
             },
             'muslim' => new class {
-                public function getName(): string { return 'Muslim'; }
-                public function getVersion(): string { return '0.0.1'; }
-                public function getAuthor(): string { return 'IslamWiki Team'; }
-                public function getDescription(): string { return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.'; }
+                public function getName(): string
+                {
+                    return 'Muslim';
+                }
+                public function getVersion(): string
+                {
+                    return '0.0.1';
+                }
+                public function getAuthor(): string
+                {
+                    return 'IslamWiki Team';
+                }
+                public function getDescription(): string
+                {
+                    return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.';
+                }
             }
         ];
     }
-    
+
     private function getUserSettings(int $userId): array
     {
         try {
@@ -164,12 +195,12 @@ class DebugSettingsController
                 SELECT settings FROM user_settings 
                 WHERE user_id = ?
             ", [$userId]);
-            
+
             if ($result) {
                 $settings = json_decode($result->settings, true) ?? [];
                 return $settings;
             }
-            
+
             return [];
         } catch (\Throwable $e) {
             return [];
@@ -183,9 +214,9 @@ echo "======================================\n\n";
 try {
     $controller = new DebugSettingsController();
     $result = $controller->index();
-    
+
     echo "✅ Settings controller executed successfully\n\n";
-    
+
     echo "📊 Results:\n";
     echo "===========\n";
     echo "Title: {$result['title']}\n";
@@ -194,7 +225,7 @@ try {
     echo "Available Skins: " . count($result['availableSkins']) . "\n";
     echo "Skin Options: " . count($result['skinOptions']) . "\n";
     echo "User Settings: " . count($result['userSettings']) . "\n\n";
-    
+
     if (!empty($result['skinOptions'])) {
         echo "🎨 Skin Options:\n";
         echo "===============\n";
@@ -207,10 +238,9 @@ try {
     } else {
         echo "❌ No skin options generated\n";
     }
-    
 } catch (\Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
 }
 
-echo "✅ Authentication test completed!\n"; 
+echo "✅ Authentication test completed!\n";

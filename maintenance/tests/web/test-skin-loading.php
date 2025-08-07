@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test script to verify skin loading
  */
@@ -42,4 +43,4 @@ if ($activeSkin) {
     echo "ERROR: No active skin found!\n";
 }
 
-echo "</pre>\n"; 
+echo "</pre>\n";

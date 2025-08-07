@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <?php if (getenv('APP_DEBUG') === 'true'): ?>
+        <?php if (getenv('APP_DEBUG') === 'true') : ?>
             <div class="debug-section">
                 <h2>Debug Information</h2>
                 <p><strong>Session Status:</strong> <?php echo session_status(); ?></p>

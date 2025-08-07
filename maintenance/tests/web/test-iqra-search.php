@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Iqra Search Engine Test
- * 
+ *
  * This test demonstrates the Iqra search engine functionality
  * without requiring a database connection.
  */
@@ -14,13 +15,13 @@ class IqraSearchTest
     protected array $islamicTerms = [];
     protected array $englishStopWords = [];
     protected array $arabicStopWords = [];
-    
+
     public function __construct()
     {
         $this->loadIslamicTerms();
         $this->loadStopWords();
     }
-    
+
     /**
      * Load Islamic terms for enhanced search
      */
@@ -63,13 +64,13 @@ class IqraSearchTest
     {
         // Remove extra whitespace
         $query = preg_replace('/\s+/', ' ', trim($query));
-        
+
         // Convert to lowercase for case-insensitive search
         $query = strtolower($query);
-        
+
         // Remove common punctuation
         $query = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $query);
-        
+
         return trim($query);
     }
 
@@ -80,14 +81,14 @@ class IqraSearchTest
     {
         $words = explode(' ', $query);
         $tokens = [];
-        
+
         foreach ($words as $word) {
             $word = trim($word);
             if (strlen($word) >= 2 && !in_array($word, $this->englishStopWords)) {
                 $tokens[] = $word;
             }
         }
-        
+
         return array_unique($tokens);
     }
 
@@ -106,13 +107,13 @@ class IqraSearchTest
     {
         $query = strtolower($query);
         $foundTerms = [];
-        
+
         foreach ($this->islamicTerms as $term) {
             if (strpos($query, $term) !== false) {
                 $foundTerms[] = $term;
             }
         }
-        
+
         return $foundTerms;
     }
 
@@ -123,11 +124,11 @@ class IqraSearchTest
     {
         // Remove HTML tags
         $content = strip_tags($content);
-        
+
         // Find the position of the first search term
         $words = $this->tokenizeQuery($query);
         $position = -1;
-        
+
         foreach ($words as $word) {
             $pos = stripos($content, $word);
             if ($pos !== false && ($position === -1 || $pos < $position)) {
@@ -166,7 +167,7 @@ class IqraSearchTest
     public function getSearchAnalytics(string $query): array
     {
         $words = $this->tokenizeQuery($query);
-        
+
         $analytics = [
             'query_analysis' => [
                 'original_query' => $query,
@@ -192,13 +193,13 @@ class IqraSearchTest
     public function getHighRelevanceTerms(array $words): array
     {
         $highRelevanceTerms = [];
-        
+
         foreach ($words as $word) {
             if (strlen($word) >= 4) {
                 $highRelevanceTerms[] = $word;
             }
         }
-        
+
         return array_slice($highRelevanceTerms, 0, 5);
     }
 
@@ -208,16 +209,16 @@ class IqraSearchTest
     public function getSuggestedQueries(string $query): array
     {
         $suggestions = [];
-        
+
         // Add common Islamic terms to the query
         $islamicTerms = ['allah', 'quran', 'hadith', 'prayer', 'ramadan'];
-        
+
         foreach ($islamicTerms as $term) {
             if (strpos(strtolower($query), $term) === false) {
                 $suggestions[] = $query . ' ' . $term;
             }
         }
-        
+
         return array_slice($suggestions, 0, 3);
     }
 
@@ -227,7 +228,7 @@ class IqraSearchTest
     public function getRelatedTopics(array $words): array
     {
         $topics = [];
-        
+
         foreach ($words as $word) {
             switch (strtolower($word)) {
                 case 'allah':
@@ -251,7 +252,7 @@ class IqraSearchTest
                     break;
             }
         }
-        
+
         return array_unique($topics);
     }
 }
@@ -260,7 +261,7 @@ class IqraSearchTest
 try {
     $iqraTest = new IqraSearchTest();
     echo "✅ IqraSearchTest created<br>";
-    
+
     // Test query normalization
     $testQueries = [
         "  Allah   is   Great  ",
@@ -268,20 +269,20 @@ try {
         "صلاة الفجر",
         "The Prophet Muhammad (صلى الله عليه وسلم)"
     ];
-    
+
     echo "<h2>Query Normalization Test</h2>";
     foreach ($testQueries as $query) {
         $normalized = $iqraTest->normalizeQuery($query);
         echo "Original: '{$query}' → Normalized: '{$normalized}'<br>";
     }
-    
+
     // Test tokenization
     echo "<h2>Query Tokenization Test</h2>";
     $testQuery = "Allah is the most merciful and we should pray to Him";
     $tokens = $iqraTest->tokenizeQuery($testQuery);
     echo "Query: '{$testQuery}'<br>";
     echo "Tokens: " . implode(', ', $tokens) . "<br>";
-    
+
     // Test Arabic detection
     echo "<h2>Arabic Text Detection Test</h2>";
     $arabicTests = [
@@ -289,12 +290,12 @@ try {
         "Prayer time" => "English only",
         "Allah الرحمن" => "Mixed Arabic/English"
     ];
-    
+
     foreach ($arabicTests as $text => $description) {
         $hasArabic = $iqraTest->containsArabic($text) ? "Yes" : "No";
         echo "{$description}: '{$text}' → Has Arabic: {$hasArabic}<br>";
     }
-    
+
     // Test Islamic terms detection
     echo "<h2>Islamic Terms Detection Test</h2>";
     $islamicTests = [
@@ -303,13 +304,13 @@ try {
         "Prayer times",
         "Regular text without Islamic terms"
     ];
-    
+
     foreach ($islamicTests as $text) {
         $terms = $iqraTest->containsIslamicTerms($text);
         $foundTerms = empty($terms) ? "None" : implode(', ', $terms);
         echo "'{$text}' → Islamic terms: {$foundTerms}<br>";
     }
-    
+
     // Test excerpt creation
     echo "<h2>Excerpt Creation Test</h2>";
     $sampleContent = "The Quran is the holy book of Islam. It contains the words of Allah revealed to Prophet Muhammad (صلى الله عليه وسلم) through the Angel Gabriel. Muslims believe it to be the final revelation from Allah to humanity.";
@@ -318,12 +319,12 @@ try {
     echo "Content: {$sampleContent}<br>";
     echo "Search: '{$searchQuery}'<br>";
     echo "Excerpt: {$excerpt}<br>";
-    
+
     // Test search analytics
     echo "<h2>Search Analytics Test</h2>";
     $analytics = $iqraTest->getSearchAnalytics("Quran and Hadith about prayer");
     echo "<pre>" . json_encode($analytics, JSON_PRETTY_PRINT) . "</pre>";
-    
+
     echo "<h2>✅ All Iqra Search Engine tests passed!</h2>";
     echo "<p>The Iqra search engine is working correctly with:</p>";
     echo "<ul>";
@@ -334,9 +335,8 @@ try {
     echo "<li>✅ Search analytics and insights</li>";
     echo "<li>✅ Related topics and suggestions</li>";
     echo "</ul>";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "<br>";
     echo "File: " . $e->getFile() . "<br>";
     echo "Line: " . $e->getLine() . "<br>";
-} 
+}

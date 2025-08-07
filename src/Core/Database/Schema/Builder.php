@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Core\Database\Schema;
 
 use IslamWiki\Core\Database\Connection;
@@ -71,7 +69,7 @@ class Builder
     public function hasColumn(string $table, string $column): bool
     {
         return in_array(
-            strtolower($column), 
+            strtolower($column),
             array_map('strtolower', $this->getColumnListing($table))
         );
     }
@@ -82,13 +80,13 @@ class Builder
     public function hasColumns(string $table, array $columns): bool
     {
         $tableColumns = array_map('strtolower', $this->getColumnListing($table));
-        
+
         foreach ($columns as $column) {
             if (!in_array(strtolower($column), $tableColumns)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -170,13 +168,13 @@ class Builder
     {
         error_log("[Schema] createBlueprint() called for table: $table");
         $blueprint = new Blueprint($table, $callback);
-        
+
         if ($callback) {
             error_log("[Schema] Executing callback for table: $table");
             $blueprint->create(); // Add the create command
             $callback($blueprint);
         }
-        
+
         return $blueprint;
     }
 
@@ -220,7 +218,7 @@ class Builder
     protected function getTables(string $table): array
     {
         return $this->connection->select(
-            $this->grammar->compileTableExists(), 
+            $this->grammar->compileTableExists(),
             [$this->connection->getDatabaseName(), $table]
         );
     }

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace IslamWiki\Core\Search;
 
 use IslamWiki\Core\Database\Connection;
@@ -27,7 +28,7 @@ use Exception;
 
 /**
  * Iqra Search Engine
- * 
+ *
  * Advanced search engine optimized for Islamic content with:
  * - Relevance scoring based on Islamic content importance
  * - Arabic text support and transliteration
@@ -42,7 +43,7 @@ class IqraSearch
     protected array $islamicTerms = [];
     protected array $arabicStopWords = [];
     protected array $englishStopWords = [];
-    
+
     public function __construct(Connection $db)
     {
         $this->db = $db;
@@ -62,7 +63,7 @@ class IqraSearch
         $offset = (int) (($page - 1) * $limit);
 
         $results = [];
-        
+
         switch ($searchType) {
             case 'pages':
                 $results = $this->searchPages($query, $offset, $limit);
@@ -103,7 +104,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildRelevanceConditions($words);
-        
+
         $sql = "SELECT p.*, u.username as author_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
@@ -143,7 +144,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildQuranRelevanceConditions($words);
-        
+
         $sql = "SELECT v.*, s.name_english as surah_name, s.name_english, s.name_arabic,
                        vt.translation_text,
                        {$relevanceConditions['score']} as relevance_score,
@@ -188,7 +189,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildHadithRelevanceConditions($words);
-        
+
         $sql = "SELECT h.*, c.name as collection_name, c.reliability_level,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
@@ -231,7 +232,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildCalendarRelevanceConditions($words);
-        
+
         $sql = "SELECT e.*, c.name as category_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
@@ -273,7 +274,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildPrayerRelevanceConditions($words);
-        
+
         $sql = "SELECT pt.*, pt.location as location_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
@@ -316,7 +317,7 @@ class IqraSearch
     {
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildScholarRelevanceConditions($words);
-        
+
         $sql = "SELECT s.*, 
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
@@ -356,10 +357,10 @@ class IqraSearch
     protected function searchAll(string $query, int $offset, int $limit): array
     {
         $allResults = [];
-        
+
         // Search each type with reduced limits
         $subLimit = (int) ceil($limit / 5);
-        
+
         $pages = $this->searchPages($query, 0, $subLimit);
         $quran = $this->searchQuran($query, 0, $subLimit);
         $hadith = $this->searchHadith($query, 0, $subLimit);
@@ -369,12 +370,12 @@ class IqraSearch
 
         // Combine and normalize relevance scores
         $allResults = array_merge($pages, $quran, $hadith, $calendar, $prayer, $scholars);
-        
+
         // Apply content type weighting
         $allResults = $this->applyContentTypeWeighting($allResults);
-        
+
         // Sort by normalized relevance
-        usort($allResults, function($a, $b) {
+        usort($allResults, function ($a, $b) {
             return $b['relevance'] <=> $a['relevance'];
         });
 
@@ -397,13 +398,13 @@ class IqraSearch
             $conditions[] = "(p.title LIKE ? OR p.content LIKE ?)";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             // Higher weight for title matches
             $scoreParts[] = "CASE WHEN p.title LIKE ? THEN 10 ELSE 0 END";
             $scoreParts[] = "CASE WHEN p.content LIKE ? THEN 5 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN p.title LIKE ? OR p.content LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -437,7 +438,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             // Higher weight for Arabic text matches
             $scoreParts[] = "CASE WHEN v.text_arabic LIKE ? THEN 15 ELSE 0 END";
             $scoreParts[] = "CASE WHEN vt.translation_text LIKE ? THEN 10 ELSE 0 END";
@@ -445,7 +446,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN v.text_arabic LIKE ? OR vt.translation_text LIKE ? OR s.name_english LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -480,7 +481,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             // Higher weight for Arabic text matches
             $scoreParts[] = "CASE WHEN h.arabic_text LIKE ? THEN 15 ELSE 0 END";
             $scoreParts[] = "CASE WHEN h.english_text LIKE ? THEN 10 ELSE 0 END";
@@ -488,7 +489,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN h.arabic_text LIKE ? OR h.english_text LIKE ? OR c.name LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -524,7 +525,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $scoreParts[] = "CASE WHEN e.title LIKE ? THEN 12 ELSE 0 END";
             $scoreParts[] = "CASE WHEN e.title_arabic LIKE ? THEN 10 ELSE 0 END";
             $scoreParts[] = "CASE WHEN e.description LIKE ? THEN 8 ELSE 0 END";
@@ -533,7 +534,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN e.title LIKE ? OR e.description LIKE ? OR e.title_arabic LIKE ? OR c.name LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -567,10 +568,10 @@ class IqraSearch
             $param = "word_{$i}";
             $conditions[] = "(pt.location LIKE ?)";
             $params[] = "%{$word}%";
-            
+
             $scoreParts[] = "CASE WHEN pt.location LIKE ? THEN 10 ELSE 0 END";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN pt.location LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
         }
@@ -604,7 +605,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $scoreParts[] = "CASE WHEN s.name LIKE ? THEN 12 ELSE 0 END";
             $scoreParts[] = "CASE WHEN s.arabic_name LIKE ? THEN 10 ELSE 0 END";
             $scoreParts[] = "CASE WHEN s.biography LIKE ? THEN 8 ELSE 0 END";
@@ -613,7 +614,7 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
-            
+
             $matchCountParts[] = "CASE WHEN s.name LIKE ? OR s.arabic_name LIKE ? OR s.biography LIKE ? OR s.specialization LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -662,13 +663,13 @@ class IqraSearch
     {
         // Remove extra whitespace
         $query = preg_replace('/\s+/', ' ', trim($query));
-        
+
         // Convert to lowercase for case-insensitive search
         $query = strtolower($query);
-        
+
         // Remove common punctuation
         $query = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $query);
-        
+
         return trim($query);
     }
 
@@ -679,14 +680,14 @@ class IqraSearch
     {
         $words = explode(' ', $query);
         $tokens = [];
-        
+
         foreach ($words as $word) {
             $word = trim($word);
             if (strlen($word) >= 2 && !in_array($word, $this->englishStopWords)) {
                 $tokens[] = $word;
             }
         }
-        
+
         return array_unique($tokens);
     }
 
@@ -697,11 +698,11 @@ class IqraSearch
     {
         // Remove HTML tags
         $content = strip_tags($content);
-        
+
         // Find the position of the first search term
         $words = $this->tokenizeQuery($query);
         $position = -1;
-        
+
         foreach ($words as $word) {
             $pos = stripos($content, $word);
             if ($pos !== false && ($position === -1 || $pos < $position)) {
@@ -740,7 +741,7 @@ class IqraSearch
     protected function getTotalCount(string $query, string $type): int
     {
         $words = $this->tokenizeQuery($query);
-        
+
         switch ($type) {
             case 'pages':
                 return $this->getPageCount($words);
@@ -764,21 +765,23 @@ class IqraSearch
      */
     public function getPageCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(title LIKE ? OR content LIKE ?)";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM pages WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -787,22 +790,24 @@ class IqraSearch
      */
     public function getQuranCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(v.text_arabic LIKE ? OR vt.translation_text LIKE ? OR s.name_english LIKE ?)";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM verses v JOIN surahs s ON v.surah_number = s.number LEFT JOIN verse_translations vt ON v.id = vt.verse_id WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -811,22 +816,24 @@ class IqraSearch
      */
     public function getHadithCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(h.arabic_text LIKE ? OR h.english_text LIKE ? OR c.name LIKE ?)";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM hadiths h JOIN hadith_collections c ON h.collection_id = c.id WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -835,11 +842,13 @@ class IqraSearch
      */
     public function getCalendarCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(e.title LIKE ? OR e.description LIKE ? OR e.title_arabic LIKE ? OR c.name LIKE ?)";
             $params[] = "%{$word}%";
@@ -847,11 +856,11 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM islamic_events e LEFT JOIN event_categories c ON e.category_id = c.id WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -860,20 +869,22 @@ class IqraSearch
      */
     public function getPrayerCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(pt.location LIKE ?)";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM prayer_times pt WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -882,11 +893,13 @@ class IqraSearch
      */
     public function getScholarCount(array $words): int
     {
-        if (empty($words)) return 0;
-        
+        if (empty($words)) {
+            return 0;
+        }
+
         $conditions = [];
         $params = [];
-        
+
         foreach ($words as $word) {
             $conditions[] = "(s.name LIKE ? OR s.arabic_name LIKE ? OR s.biography LIKE ? OR s.specialization LIKE ?)";
             $params[] = "%{$word}%";
@@ -894,11 +907,11 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
         }
-        
+
         $sql = "SELECT COUNT(*) FROM scholars s WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -961,14 +974,14 @@ class IqraSearch
         }
 
         $suggestions = [];
-        
+
         // Get page suggestions
         $sql = "SELECT title, slug FROM pages 
                 WHERE title LIKE ? OR slug LIKE ? 
                 ORDER BY updated_at DESC LIMIT 5";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%", "%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'page',
@@ -986,7 +999,7 @@ class IqraSearch
                 ORDER BY v.surah_number ASC, v.verse_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%", "%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'quran',
@@ -1003,7 +1016,7 @@ class IqraSearch
                 ORDER BY h.collection_id ASC, h.hadith_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%", "%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'hadith',
@@ -1021,7 +1034,7 @@ class IqraSearch
     public function getSearchAnalytics(string $query): array
     {
         $words = $this->tokenizeQuery($query);
-        
+
         $analytics = [
             'query_analysis' => [
                 'original_query' => $query,
@@ -1064,18 +1077,18 @@ class IqraSearch
     {
         $query = strtolower($query);
         $foundTerms = [];
-        
+
         $islamicTerms = [
             'allah', 'muhammad', 'quran', 'hadith', 'sunnah', 'shariah', 'halal', 'haram',
             'salah', 'prayer', 'ramadan', 'eid', 'hajj', 'umrah', 'zakat', 'sadaqah'
         ];
-        
+
         foreach ($islamicTerms as $term) {
             if (strpos($query, $term) !== false) {
                 $foundTerms[] = $term;
             }
         }
-        
+
         return $foundTerms;
     }
 
@@ -1085,13 +1098,13 @@ class IqraSearch
     public function getHighRelevanceTerms(array $words): array
     {
         $highRelevanceTerms = [];
-        
+
         foreach ($words as $word) {
             if (strlen($word) >= 4) {
                 $highRelevanceTerms[] = $word;
             }
         }
-        
+
         return array_slice($highRelevanceTerms, 0, 5);
     }
 
@@ -1101,16 +1114,16 @@ class IqraSearch
     public function getSuggestedQueries(string $query): array
     {
         $suggestions = [];
-        
+
         // Add common Islamic terms to the query
         $islamicTerms = ['allah', 'quran', 'hadith', 'prayer', 'ramadan'];
-        
+
         foreach ($islamicTerms as $term) {
             if (strpos(strtolower($query), $term) === false) {
                 $suggestions[] = $query . ' ' . $term;
             }
         }
-        
+
         return array_slice($suggestions, 0, 3);
     }
 
@@ -1120,7 +1133,7 @@ class IqraSearch
     public function getRelatedTopics(array $words): array
     {
         $topics = [];
-        
+
         foreach ($words as $word) {
             switch (strtolower($word)) {
                 case 'allah':
@@ -1144,7 +1157,7 @@ class IqraSearch
                     break;
             }
         }
-        
+
         return array_unique($topics);
     }
-} 
+}

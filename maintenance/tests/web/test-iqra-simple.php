@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Simple Iqra Search Engine Test
  */
@@ -126,7 +127,7 @@ try {
             <p><strong>Search type:</strong> {$searchResult['type']}</p>
             <p><strong>Query:</strong> {$searchResult['query']}</p>
         </div>";
-        
+
         if (!empty($searchResult['results'])) {
             echo "<h3>Sample Results:</h3>";
             foreach (array_slice($searchResult['results'], 0, 3) as $result) {
@@ -160,7 +161,7 @@ try {
             'prayer' => $iqraEngine->getPrayerCount($tokens),
             'scholars' => $iqraEngine->getScholarCount($tokens)
         ];
-        
+
         echo "<div class='result'>
             <h3>Content Type Counts:</h3>
             <ul>";
@@ -193,7 +194,6 @@ try {
         </ul>
         <p><strong>Next steps:</strong> Visit <a href='/iqra-search'>/iqra-search</a> to use the full Iqra search interface.</p>
     </div>";
-
 } catch (Exception $e) {
     echo "<div class='test-section error'>
         <h2>❌ Error</h2>
@@ -206,4 +206,4 @@ try {
 
 echo "</div>
 </body>
-</html>"; 
+</html>";

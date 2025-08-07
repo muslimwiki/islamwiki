@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Advanced Islamic Calendar
- * 
+ *
  * Enhanced Islamic calendar system with lunar phases, Islamic events,
  * advanced date calculations, and comprehensive Islamic date features.
- * 
+ *
  * @package IslamWiki\Core\Islamic
  * @version 0.0.22
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Islamic;
 
@@ -93,12 +94,12 @@ class AdvancedIslamicCalendar
             // Advanced algorithm for more accurate conversion
             $jd = $this->gregorianToJulianDay($year, $month, $day);
             $hijri = $this->julianDayToHijri($jd);
-            
+
             $this->logger->info('Gregorian to Hijri conversion completed', [
                 'gregorian' => "{$year}-{$month}-{$day}",
                 'hijri' => $hijri
             ]);
-            
+
             return $hijri;
         } catch (\Exception $e) {
             $this->logger->error('Gregorian to Hijri conversion failed: ' . $e->getMessage());
@@ -115,12 +116,12 @@ class AdvancedIslamicCalendar
             // Advanced algorithm for more accurate conversion
             $jd = $this->hijriToJulianDay($year, $month, $day);
             $gregorian = $this->julianDayToGregorian($jd);
-            
+
             $this->logger->info('Hijri to Gregorian conversion completed', [
                 'hijri' => "{$year}-{$month}-{$day}",
                 'gregorian' => $gregorian
             ]);
-            
+
             return $gregorian;
         } catch (\Exception $e) {
             $this->logger->error('Hijri to Gregorian conversion failed: ' . $e->getMessage());
@@ -136,7 +137,7 @@ class AdvancedIslamicCalendar
         try {
             $jd = $this->gregorianToJulianDay($year, $month, $day);
             $phase = $this->calculateLunarPhase($jd);
-            
+
             return [
                 'phase' => $phase['phase'],
                 'illumination' => $phase['illumination'],
@@ -158,7 +159,7 @@ class AdvancedIslamicCalendar
         try {
             $hijri = $this->gregorianToHijri($year, $month, $day);
             $key = "{$hijri['month']}-{$hijri['day']}";
-            
+
             $events = [];
             if (isset($this->islamicEvents[$key])) {
                 $events[] = [
@@ -168,7 +169,7 @@ class AdvancedIslamicCalendar
                     'description' => $this->getEventDescription($this->islamicEvents[$key])
                 ];
             }
-            
+
             return $events;
         } catch (\Exception $e) {
             $this->logger->error('Islamic events lookup failed: ' . $e->getMessage());
@@ -184,15 +185,15 @@ class AdvancedIslamicCalendar
         try {
             $monthName = $this->islamicMonths[$month] ?? 'Unknown';
             $monthNameArabic = $this->islamicMonthsArabic[$month] ?? 'غير معروف';
-            
+
             // Calculate month length
             $firstDay = $this->hijriToGregorian($year, $month, 1);
             $lastDay = $this->hijriToGregorian($year, $month, 29);
-            
+
             // Check if month has 30 days
             $nextMonthFirst = $this->hijriToGregorian($year, $month + 1, 1);
             $daysInMonth = $this->calculateDaysBetween($firstDay, $nextMonthFirst);
-            
+
             return [
                 'year' => $year,
                 'month' => $month,
@@ -217,10 +218,10 @@ class AdvancedIslamicCalendar
         try {
             $isLeap = $this->isHijriLeapYear($year);
             $daysInYear = $isLeap ? 355 : 354;
-            
+
             $yearStart = $this->hijriToGregorian($year, 1, 1);
             $yearEnd = $this->hijriToGregorian($year, 12, 29);
-            
+
             return [
                 'year' => $year,
                 'is_leap_year' => $isLeap,
@@ -258,9 +259,9 @@ class AdvancedIslamicCalendar
             // Kaaba coordinates
             $kaabaLat = 21.4225;
             $kaabaLng = 39.8262;
-            
+
             $qiblaAngle = $this->calculateQiblaAngle($latitude, $longitude, $kaabaLat, $kaabaLng);
-            
+
             return [
                 'angle' => $qiblaAngle,
                 'direction' => $this->getDirectionName($qiblaAngle),
@@ -285,10 +286,10 @@ class AdvancedIslamicCalendar
             $year -= 1;
             $month += 12;
         }
-        
+
         $a = floor($year / 100);
         $b = 2 - $a + floor($a / 4);
-        
+
         return floor(365.25 * ($year + 4716)) + floor(30.6001 * ($month + 1)) + $day + $b - 1524.5;
     }
 
@@ -300,19 +301,19 @@ class AdvancedIslamicCalendar
         $jd = $jd + 0.5;
         $z = floor($jd);
         $f = $jd - $z;
-        
+
         if ($z < 2299161) {
             $a = $z;
         } else {
             $alpha = floor(($z - 1867216.25) / 36524.25);
             $a = $z + 1 + $alpha - floor($alpha / 4);
         }
-        
+
         $b = $a + 1524;
         $c = floor(($b - 122.1) / 365.25);
         $d = floor(365.25 * $c);
         $e = floor(($b - $d) / 30.6001);
-        
+
         $day = $b - $d - floor(30.6001 * $e) + $f;
         $month = $e - 1;
         if ($month > 12) {
@@ -322,7 +323,7 @@ class AdvancedIslamicCalendar
         if ($month > 2) {
             $year -= 1;
         }
-        
+
         return [
             'year' => (int) $year,
             'month' => (int) $month,
@@ -345,7 +346,7 @@ class AdvancedIslamicCalendar
         $l = floor($j / 11);
         $j = $j + 2 - 12 * $l;
         $i = 100 * ($n - 49) + $i + $l;
-        
+
         return [
             'year' => (int) $i,
             'month' => (int) $j,
@@ -368,10 +369,10 @@ class AdvancedIslamicCalendar
     {
         $phase = ($jd - 2451550.1) / 29.530588853;
         $phase = $phase - floor($phase);
-        
+
         $age = $phase * 29.530588853;
         $illumination = (1 - cos(2 * M_PI * $phase)) / 2;
-        
+
         return [
             'phase' => $phase,
             'illumination' => $illumination,
@@ -384,14 +385,30 @@ class AdvancedIslamicCalendar
      */
     private function getPhaseName(float $phase): string
     {
-        if ($phase < 0.0625) return 'New Moon';
-        if ($phase < 0.1875) return 'Waxing Crescent';
-        if ($phase < 0.3125) return 'First Quarter';
-        if ($phase < 0.4375) return 'Waxing Gibbous';
-        if ($phase < 0.5625) return 'Full Moon';
-        if ($phase < 0.6875) return 'Waning Gibbous';
-        if ($phase < 0.8125) return 'Last Quarter';
-        if ($phase < 0.9375) return 'Waning Crescent';
+        if ($phase < 0.0625) {
+            return 'New Moon';
+        }
+        if ($phase < 0.1875) {
+            return 'Waxing Crescent';
+        }
+        if ($phase < 0.3125) {
+            return 'First Quarter';
+        }
+        if ($phase < 0.4375) {
+            return 'Waxing Gibbous';
+        }
+        if ($phase < 0.5625) {
+            return 'Full Moon';
+        }
+        if ($phase < 0.6875) {
+            return 'Waning Gibbous';
+        }
+        if ($phase < 0.8125) {
+            return 'Last Quarter';
+        }
+        if ($phase < 0.9375) {
+            return 'Waning Crescent';
+        }
         return 'New Moon';
     }
 
@@ -400,14 +417,30 @@ class AdvancedIslamicCalendar
      */
     private function getPhaseNameArabic(float $phase): string
     {
-        if ($phase < 0.0625) return 'المحاق';
-        if ($phase < 0.1875) return 'الهلال المتزايد';
-        if ($phase < 0.3125) return 'التربيع الأول';
-        if ($phase < 0.4375) return 'الأحدب المتزايد';
-        if ($phase < 0.5625) return 'البدر';
-        if ($phase < 0.6875) return 'الأحدب المتناقص';
-        if ($phase < 0.8125) return 'التربيع الأخير';
-        if ($phase < 0.9375) return 'الهلال المتناقص';
+        if ($phase < 0.0625) {
+            return 'المحاق';
+        }
+        if ($phase < 0.1875) {
+            return 'الهلال المتزايد';
+        }
+        if ($phase < 0.3125) {
+            return 'التربيع الأول';
+        }
+        if ($phase < 0.4375) {
+            return 'الأحدب المتزايد';
+        }
+        if ($phase < 0.5625) {
+            return 'البدر';
+        }
+        if ($phase < 0.6875) {
+            return 'الأحدب المتناقص';
+        }
+        if ($phase < 0.8125) {
+            return 'التربيع الأخير';
+        }
+        if ($phase < 0.9375) {
+            return 'الهلال المتناقص';
+        }
         return 'المحاق';
     }
 
@@ -429,7 +462,7 @@ class AdvancedIslamicCalendar
             'Eid al-Adha' => 'عيد الأضحى',
             'Eid al-Ghadeer' => 'عيد الغدير'
         ];
-        
+
         return $arabicNames[$eventName] ?? $eventName;
     }
 
@@ -451,7 +484,7 @@ class AdvancedIslamicCalendar
             'Eid al-Adha' => 'The festival of sacrifice',
             'Eid al-Ghadeer' => 'The day of Ghadir Khumm'
         ];
-        
+
         return $descriptions[$eventName] ?? '';
     }
 
@@ -482,7 +515,7 @@ class AdvancedIslamicCalendar
     {
         $jd1 = $this->gregorianToJulianDay($date1['year'], $date1['month'], $date1['day']);
         $jd2 = $this->gregorianToJulianDay($date2['year'], $date2['month'], $date2['day']);
-        
+
         return (int) abs($jd2 - $jd1);
     }
 
@@ -495,12 +528,12 @@ class AdvancedIslamicCalendar
         $lngRad = deg2rad($lng);
         $kaabaLatRad = deg2rad($kaabaLat);
         $kaabaLngRad = deg2rad($kaabaLng);
-        
+
         $y = sin($kaabaLngRad - $lngRad);
         $x = cos($latRad) * tan($kaabaLatRad) - sin($latRad) * cos($kaabaLngRad - $lngRad);
-        
+
         $qiblaAngle = atan2($y, $x);
-        
+
         return rad2deg($qiblaAngle);
     }
 
@@ -510,16 +543,32 @@ class AdvancedIslamicCalendar
     private function getDirectionName(float $angle): string
     {
         $angle = fmod($angle + 360, 360);
-        
-        if ($angle >= 337.5 || $angle < 22.5) return 'North';
-        if ($angle >= 22.5 && $angle < 67.5) return 'Northeast';
-        if ($angle >= 67.5 && $angle < 112.5) return 'East';
-        if ($angle >= 112.5 && $angle < 157.5) return 'Southeast';
-        if ($angle >= 157.5 && $angle < 202.5) return 'South';
-        if ($angle >= 202.5 && $angle < 247.5) return 'Southwest';
-        if ($angle >= 247.5 && $angle < 292.5) return 'West';
-        if ($angle >= 292.5 && $angle < 337.5) return 'Northwest';
-        
+
+        if ($angle >= 337.5 || $angle < 22.5) {
+            return 'North';
+        }
+        if ($angle >= 22.5 && $angle < 67.5) {
+            return 'Northeast';
+        }
+        if ($angle >= 67.5 && $angle < 112.5) {
+            return 'East';
+        }
+        if ($angle >= 112.5 && $angle < 157.5) {
+            return 'Southeast';
+        }
+        if ($angle >= 157.5 && $angle < 202.5) {
+            return 'South';
+        }
+        if ($angle >= 202.5 && $angle < 247.5) {
+            return 'Southwest';
+        }
+        if ($angle >= 247.5 && $angle < 292.5) {
+            return 'West';
+        }
+        if ($angle >= 292.5 && $angle < 337.5) {
+            return 'Northwest';
+        }
+
         return 'North';
     }
 
@@ -529,16 +578,32 @@ class AdvancedIslamicCalendar
     private function getDirectionNameArabic(float $angle): string
     {
         $angle = fmod($angle + 360, 360);
-        
-        if ($angle >= 337.5 || $angle < 22.5) return 'الشمال';
-        if ($angle >= 22.5 && $angle < 67.5) return 'الشمال الشرقي';
-        if ($angle >= 67.5 && $angle < 112.5) return 'الشرق';
-        if ($angle >= 112.5 && $angle < 157.5) return 'الجنوب الشرقي';
-        if ($angle >= 157.5 && $angle < 202.5) return 'الجنوب';
-        if ($angle >= 202.5 && $angle < 247.5) return 'الجنوب الغربي';
-        if ($angle >= 247.5 && $angle < 292.5) return 'الغرب';
-        if ($angle >= 292.5 && $angle < 337.5) return 'الشمال الغربي';
-        
+
+        if ($angle >= 337.5 || $angle < 22.5) {
+            return 'الشمال';
+        }
+        if ($angle >= 22.5 && $angle < 67.5) {
+            return 'الشمال الشرقي';
+        }
+        if ($angle >= 67.5 && $angle < 112.5) {
+            return 'الشرق';
+        }
+        if ($angle >= 112.5 && $angle < 157.5) {
+            return 'الجنوب الشرقي';
+        }
+        if ($angle >= 157.5 && $angle < 202.5) {
+            return 'الجنوب';
+        }
+        if ($angle >= 202.5 && $angle < 247.5) {
+            return 'الجنوب الغربي';
+        }
+        if ($angle >= 247.5 && $angle < 292.5) {
+            return 'الغرب';
+        }
+        if ($angle >= 292.5 && $angle < 337.5) {
+            return 'الشمال الغربي';
+        }
+
         return 'الشمال';
     }
-} 
+}

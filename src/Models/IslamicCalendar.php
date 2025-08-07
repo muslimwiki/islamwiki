@@ -7,7 +7,7 @@ use App\Core\Database\Connection;
 
 /**
  * Islamic Calendar Model
- * 
+ *
  * Handles Islamic calendar operations including:
  * - Hijri date calculations and conversions
  * - Islamic events and holidays
@@ -36,39 +36,39 @@ class IslamicCalendar
                 FROM {$this->table} e 
                 LEFT JOIN {$this->categoryTable} c ON e.category_id = c.id 
                 WHERE 1=1";
-        
+
         $params = [];
-        
+
         if (!empty($filters['month'])) {
             $sql .= " AND MONTH(e.hijri_date) = :month";
             $params[':month'] = $filters['month'];
         }
-        
+
         if (!empty($filters['year'])) {
             $sql .= " AND YEAR(e.hijri_date) = :year";
             $params[':year'] = $filters['year'];
         }
-        
+
         if (!empty($filters['category'])) {
             $sql .= " AND e.category_id = :category";
             $params[':category'] = $filters['category'];
         }
-        
+
         if (!empty($filters['search'])) {
             $sql .= " AND (e.title LIKE :search OR e.description LIKE :search)";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
-        
+
         $sql .= " ORDER BY e.hijri_date ASC";
-        
+
         if (!empty($filters['limit'])) {
             $sql .= " LIMIT :limit";
             $params[':limit'] = $filters['limit'];
         }
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -81,10 +81,10 @@ class IslamicCalendar
                 FROM {$this->table} e 
                 LEFT JOIN {$this->categoryTable} c ON e.category_id = c.id 
                 WHERE e.id = :id";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $id]);
-        
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -99,7 +99,7 @@ class IslamicCalendar
                 VALUES 
                 (:title, :title_arabic, :description, :description_arabic, :hijri_date, :gregorian_date,
                  :category_id, :is_holiday, :is_public_holiday, NOW(), NOW())";
-        
+
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             ':title' => $data['title'],
@@ -112,7 +112,7 @@ class IslamicCalendar
             ':is_holiday' => $data['is_holiday'] ?? false,
             ':is_public_holiday' => $data['is_public_holiday'] ?? false
         ]);
-        
+
         return $result ? $this->db->lastInsertId() : false;
     }
 
@@ -128,7 +128,7 @@ class IslamicCalendar
                 category_id = :category_id, is_holiday = :is_holiday, 
                 is_public_holiday = :is_public_holiday, updated_at = NOW()
                 WHERE id = :id";
-        
+
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':id' => $id,
@@ -164,17 +164,17 @@ class IslamicCalendar
         $gregorianYear = date('Y', $timestamp);
         $gregorianMonth = date('n', $timestamp);
         $gregorianDay = date('j', $timestamp);
-        
+
         // Approximate conversion (this is a simplified version)
         $hijriYear = $gregorianYear - 622;
         $hijriMonth = $gregorianMonth;
         $hijriDay = $gregorianDay;
-        
+
         // Adjust for Hijri calendar differences
         if ($gregorianMonth < 7) {
             $hijriYear--;
         }
-        
+
         return [
             'year' => $hijriYear,
             'month' => $hijriMonth,
@@ -193,17 +193,17 @@ class IslamicCalendar
         $hijriYear = (int)$parts[0];
         $hijriMonth = (int)$parts[1];
         $hijriDay = (int)$parts[2];
-        
+
         // Approximate conversion (this is a simplified version)
         $gregorianYear = $hijriYear + 622;
         $gregorianMonth = $hijriMonth;
         $gregorianDay = $hijriDay;
-        
+
         // Adjust for Gregorian calendar differences
         if ($hijriMonth > 6) {
             $gregorianYear++;
         }
-        
+
         return [
             'year' => $gregorianYear,
             'month' => $gregorianMonth,
@@ -222,10 +222,10 @@ class IslamicCalendar
                 LEFT JOIN {$this->categoryTable} c ON e.category_id = c.id 
                 WHERE YEAR(e.hijri_date) = :year AND MONTH(e.hijri_date) = :month
                 ORDER BY e.hijri_date ASC";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':year' => $year, ':month' => $month]);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -240,11 +240,11 @@ class IslamicCalendar
                 WHERE e.gregorian_date >= CURDATE()
                 ORDER BY e.gregorian_date ASC 
                 LIMIT :limit";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -256,7 +256,7 @@ class IslamicCalendar
         $sql = "SELECT * FROM {$this->categoryTable} ORDER BY name ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -266,13 +266,13 @@ class IslamicCalendar
     public function getStatistics()
     {
         $stats = [];
-        
+
         // Total events
         $sql = "SELECT COUNT(*) as total FROM {$this->table}";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stats['total_events'] = $stmt->fetchColumn();
-        
+
         // Events by category
         $sql = "SELECT c.name, COUNT(e.id) as count 
                 FROM {$this->categoryTable} c 
@@ -281,19 +281,19 @@ class IslamicCalendar
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stats['events_by_category'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         // Upcoming events
         $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE gregorian_date >= CURDATE()";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stats['upcoming_events'] = $stmt->fetchColumn();
-        
+
         // Holidays
         $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE is_holiday = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stats['holidays'] = $stmt->fetchColumn();
-        
+
         return $stats;
     }
 
@@ -307,29 +307,29 @@ class IslamicCalendar
                 LEFT JOIN {$this->categoryTable} c ON e.category_id = c.id 
                 WHERE (e.title LIKE :query OR e.description LIKE :query 
                        OR e.title_arabic LIKE :query OR e.description_arabic LIKE :query)";
-        
+
         $params = [':query' => '%' . $query . '%'];
-        
+
         if (!empty($filters['category'])) {
             $sql .= " AND e.category_id = :category";
             $params[':category'] = $filters['category'];
         }
-        
+
         if (!empty($filters['year'])) {
             $sql .= " AND YEAR(e.hijri_date) = :year";
             $params[':year'] = $filters['year'];
         }
-        
+
         $sql .= " ORDER BY e.hijri_date ASC";
-        
+
         if (!empty($filters['limit'])) {
             $sql .= " LIMIT :limit";
             $params[':limit'] = $filters['limit'];
         }
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -341,7 +341,7 @@ class IslamicCalendar
         $sql = "SELECT * FROM {$this->prayerTable} WHERE date = :date";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':date' => $date]);
-        
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -356,7 +356,7 @@ class IslamicCalendar
                 ON DUPLICATE KEY UPDATE 
                 fajr = :fajr, sunrise = :sunrise, dhuhr = :dhuhr, 
                 asr = :asr, maghrib = :maghrib, isha = :isha, updated_at = NOW()";
-        
+
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':date' => $date,
@@ -368,4 +368,4 @@ class IslamicCalendar
             ':isha' => $times['isha']
         ]);
     }
-} 
+}

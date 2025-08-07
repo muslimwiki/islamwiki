@@ -44,26 +44,26 @@ try {
         'password' => $_ENV['DB_PASSWORD'] ?? '',
         'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
     ]);
-    
+
     echo "✅ Database connection successful\n";
-    
+
     // Create migrator
     $migrationPath = __DIR__ . '/../../database/migrations';
     $migrator = new Migrator($connection, $migrationPath);
-    
+
     echo "✅ Migrator created\n";
-    
+
     // Try to run the migration manually
     echo "Running migration manually...\n";
-    
+
     $migration = $migrator->resolve('0001_initial_schema');
     echo "✅ Migration resolved\n";
-    
+
     // Check if tables exist before
     echo "\nTables before migration:\n";
     $pdo = $connection->getPdo();
     $tables = ['users', 'pages', 'page_revisions', 'categories', 'page_categories', 'media_files', 'user_watchlist'];
-    
+
     foreach ($tables as $table) {
         $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = ? AND table_name = ?");
         $stmt->execute([$_ENV['DB_DATABASE'] ?? 'islamwiki', $table]);
@@ -71,12 +71,12 @@ try {
         $exists = $result['count'] > 0 ? '✓ Exists' : '✗ Missing';
         echo "  {$table}: {$exists}\n";
     }
-    
+
     // Run the migration
     echo "\nExecuting migration...\n";
     $migration->up();
     echo "✅ Migration executed\n";
-    
+
     // Check if tables exist after
     echo "\nTables after migration:\n";
     foreach ($tables as $table) {
@@ -86,11 +86,10 @@ try {
         $exists = $result['count'] > 0 ? '✓ Exists' : '✗ Missing';
         echo "  {$table}: {$exists}\n";
     }
-    
+
     echo "\n🎉 Single migration test completed!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

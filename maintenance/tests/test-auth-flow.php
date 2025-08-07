@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Initialize application
@@ -69,7 +70,7 @@ echo "<!DOCTYPE html>
 if ($_POST['action'] ?? false) {
     echo "<div class='test-section'>
         <h2>🔄 Action Result</h2>";
-    
+
     switch ($_POST['action']) {
         case 'login':
             $session->login(1, 'admin', true);
@@ -87,7 +88,7 @@ if ($_POST['action'] ?? false) {
             echo "<div class='status info'>✅ Page refreshed</div>";
             break;
     }
-    
+
     echo "<div class='status " . ($session->isLoggedIn() ? 'success' : 'error') . "'>
         <strong>Updated Status:</strong><br>
         Is Logged In: " . ($session->isLoggedIn() ? 'Yes' : 'No') . "<br>
@@ -118,7 +119,7 @@ try {
     $result = $db->select('SELECT COUNT(*) as count FROM users');
     echo "<div class='status success'>✅ Database connection working</div>";
     echo "<div class='status info'>Users count: " . ($result[0]['count'] ?? 'unknown') . "</div>";
-    
+
     if ($session->isLoggedIn()) {
         $userId = $session->getUserId();
         $userCheck = $db->select('SELECT id, username, is_active FROM users WHERE id = ?', [$userId]);
@@ -174,4 +175,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 </body>
-</html>"; 
+</html>";

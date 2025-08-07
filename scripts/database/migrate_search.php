@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -19,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use IslamWiki\Core\NizamApplication;
@@ -26,7 +28,7 @@ use IslamWiki\Core\Database\Connection;
 
 /**
  * Search Migration Runner
- * 
+ *
  * This script runs the search database migration for IslamWiki v0.0.17
  */
 
@@ -197,28 +199,28 @@ try {
         ['quran', 'Yasin', '/quran/chapter/36', 0.93],
         ['quran', 'Al-Kahf', '/quran/chapter/18', 0.92],
         ['quran', 'Ar-Rahman', '/quran/chapter/55', 0.91],
-        
+
         // Hadith suggestions
         ['hadith', 'Sahih Bukhari', '/hadith/collection/1', 0.95],
         ['hadith', 'Sahih Muslim', '/hadith/collection/2', 0.94],
         ['hadith', 'Abu Dawud', '/hadith/collection/3', 0.93],
         ['hadith', 'Tirmidhi', '/hadith/collection/4', 0.92],
         ['hadith', 'Nasai', '/hadith/collection/5', 0.91],
-        
+
         // Calendar suggestions
         ['calendar', 'Ramadan', '/calendar/search?q=Ramadan', 0.95],
         ['calendar', 'Eid al-Fitr', '/calendar/search?q=Eid al-Fitr', 0.94],
         ['calendar', 'Eid al-Adha', '/calendar/search?q=Eid al-Adha', 0.93],
         ['calendar', 'Mawlid', '/calendar/search?q=Mawlid', 0.92],
         ['calendar', 'Laylat al-Qadr', '/calendar/search?q=Laylat al-Qadr', 0.91],
-        
+
         // Prayer suggestions
         ['prayer', 'Mecca', '/prayer/search?q=Mecca', 0.95],
         ['prayer', 'Medina', '/prayer/search?q=Medina', 0.94],
         ['prayer', 'Jerusalem', '/prayer/search?q=Jerusalem', 0.93],
         ['prayer', 'Istanbul', '/prayer/search?q=Istanbul', 0.92],
         ['prayer', 'Cairo', '/prayer/search?q=Cairo', 0.91],
-        
+
         // Page suggestions
         ['page', 'Islam', '/Islam', 0.95],
         ['page', 'Quran', '/Quran', 0.94],
@@ -255,7 +257,7 @@ try {
             $stmt = $db->prepare("SHOW TABLES LIKE ?");
             $stmt->execute([$table]);
             $exists = $stmt->fetch();
-            
+
             if ($exists) {
                 echo "✅ Table '$table' exists\n";
             } else {
@@ -272,9 +274,8 @@ try {
     echo "✅ Full-text indexes added\n";
     echo "✅ Initial suggestions inserted\n";
     echo "✅ Search system ready for v0.0.17\n";
-
 } catch (Exception $e) {
     echo "❌ Migration failed with error: " . $e->getMessage() . "\n";
     echo "📋 Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

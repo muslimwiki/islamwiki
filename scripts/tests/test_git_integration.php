@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test GitIntegration Extension
- * 
+ *
  * This script tests the GitIntegration extension to ensure it's properly set up
  * and functioning correctly.
  */
@@ -52,7 +53,7 @@ try {
     echo "5. Checking available extensions...\n";
     $availableExtensions = $extensionManager->getAvailableExtensions();
     echo "Available extensions: " . implode(', ', $availableExtensions) . "\n";
-    
+
     if (in_array('GitIntegration', $availableExtensions)) {
         echo "✅ GitIntegration extension found\n";
     } else {
@@ -125,9 +126,8 @@ try {
 
     echo "\n=== All Tests Passed! ===\n";
     echo "✅ GitIntegration extension is properly set up and working\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

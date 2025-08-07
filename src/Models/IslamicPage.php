@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Models;
@@ -9,7 +10,7 @@ use DateTime;
 
 /**
  * Islamic Page Model
- * 
+ *
  * Enhanced page model with Islamic content features including:
  * - Islamic content categorization and tagging
  * - Scholar verification and approval workflow
@@ -122,7 +123,7 @@ class IslamicPage extends Page
     public function __construct(Connection $connection, array $attributes = [])
     {
         parent::__construct($connection, $attributes);
-        
+
         // Merge Islamic fillable attributes
         $this->fillable = array_merge($this->fillable, $this->islamicFillable);
         $this->casts = array_merge($this->casts, $this->islamicCasts);
@@ -261,7 +262,7 @@ class IslamicPage extends Page
                 $value = json_encode($value);
             }
         }
-        
+
         return parent::setAttribute($key, $value);
     }
 
@@ -271,14 +272,14 @@ class IslamicPage extends Page
     public function getDirty(): array
     {
         $dirty = parent::getDirty();
-        
+
         // Ensure JSON fields are serialized
         foreach (['islamic_references', 'islamic_citations', 'islamic_metadata', 'islamic_permissions', 'islamic_tags'] as $jsonField) {
             if (isset($dirty[$jsonField]) && is_array($dirty[$jsonField])) {
                 $dirty[$jsonField] = json_encode($dirty[$jsonField]);
             }
         }
-        
+
         return $dirty;
     }
 
@@ -434,7 +435,7 @@ class IslamicPage extends Page
         $this->setAttribute('moderated_by', $approvedBy);
         $this->setAttribute('moderated_at', (new DateTime())->format('Y-m-d H:i:s'));
         $this->setAttribute('moderation_notes', $notes);
-        
+
         return $this->save();
     }
 
@@ -447,7 +448,7 @@ class IslamicPage extends Page
         $this->setAttribute('moderated_by', $rejectedBy);
         $this->setAttribute('moderated_at', (new DateTime())->format('Y-m-d H:i:s'));
         $this->setAttribute('moderation_notes', $reason);
-        
+
         return $this->save();
     }
 
@@ -460,7 +461,7 @@ class IslamicPage extends Page
         $this->setAttribute('moderated_by', $requestedBy);
         $this->setAttribute('moderated_at', (new DateTime())->format('Y-m-d H:i:s'));
         $this->setAttribute('moderation_notes', $notes);
-        
+
         return $this->save();
     }
 
@@ -473,7 +474,7 @@ class IslamicPage extends Page
         $this->setAttribute('verified_by', $scholarId);
         $this->setAttribute('verified_at', (new DateTime())->format('Y-m-d H:i:s'));
         $this->setAttribute('verification_notes', $notes);
-        
+
         return $this->save();
     }
 
@@ -535,4 +536,4 @@ class IslamicPage extends Page
             'under_review' => 'Under Review',
         ];
     }
-} 
+}

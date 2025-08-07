@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -24,7 +25,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('verified_by')->nullable(); // Scholar who verified
                 $table->timestamp('verified_at')->nullable(); // Verification timestamp
                 $table->timestamps();
-                
+
                 $table->unique(['quran_verse_id', 'wiki_page_id', 'link_type']);
                 $table->index('quran_verse_id');
                 $table->index('wiki_page_id');
@@ -41,7 +42,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('results_count'); // Number of results
                 $table->timestamp('expires_at'); // Cache expiration
                 $table->timestamps();
-                
+
                 $table->unique(['search_query', 'language']);
                 $table->index('expires_at');
             });
@@ -56,7 +57,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('bookmarks_count')->default(0); // Number of bookmarks
                 $table->timestamp('last_viewed_at')->nullable(); // Last viewed timestamp
                 $table->timestamps();
-                
+
                 $table->unique('verse_id');
                 $table->index('views_count');
                 $table->index('searches_count');
@@ -70,7 +71,7 @@ return function(Connection $connection) {
                 $table->text('notes')->nullable(); // User notes
                 $table->string('tags', 255)->nullable(); // User tags
                 $table->timestamps();
-                
+
                 $table->unique(['user_id', 'verse_id']);
                 $table->index('user_id');
                 $table->index('verse_id');
@@ -86,7 +87,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('created_by')->nullable(); // User who created reference
                 $table->boolean('is_verified')->default(false); // Scholar verification
                 $table->timestamps();
-                
+
                 $table->unique(['source_verse_id', 'referenced_verse_id', 'reference_type']);
                 $table->index('source_verse_id');
                 $table->index('referenced_verse_id');
@@ -105,7 +106,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('duration_seconds')->default(0); // Session duration
                 $table->text('session_notes')->nullable(); // Session notes
                 $table->timestamps();
-                
+
                 $table->index('user_id');
                 $table->index('verse_id');
                 $table->index('started_at');
@@ -123,7 +124,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('approved_by')->nullable(); // Moderator
                 $table->timestamp('approved_at')->nullable(); // Approval timestamp
                 $table->timestamps();
-                
+
                 $table->index('user_id');
                 $table->index('verse_id');
                 $table->index('parent_comment_id');
@@ -139,7 +140,7 @@ return function(Connection $connection) {
                 $table->boolean('is_official')->default(false); // Official tag
                 $table->unsignedBigInteger('created_by')->nullable(); // User who created tag
                 $table->timestamps();
-                
+
                 $table->unique('tag_name');
                 $table->index('is_official');
             });
@@ -152,7 +153,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('assigned_by')->nullable(); // User who assigned tag
                 $table->boolean('is_verified')->default(false); // Scholar verification
                 $table->timestamps();
-                
+
                 $table->unique(['verse_id', 'tag_id']);
                 $table->index('verse_id');
                 $table->index('tag_id');
@@ -179,4 +180,4 @@ return function(Connection $connection) {
             error_log("[Migration] 0007_quran_integration down() completed successfully");
         }
     };
-}; 
+};

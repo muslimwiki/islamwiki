@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Application Configuration
- * 
+ *
  * Basic application configuration settings.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 return [
     'name' => env('APP_NAME', 'IslamWiki'),
@@ -21,7 +22,7 @@ return [
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
     'key' => env('APP_KEY', 'base64:your-secret-key-here'),
     'cipher' => env('APP_CIPHER', 'AES-256-CBC'),
-    
+
     // Database configuration
     'database' => [
         'default' => env('DB_CONNECTION', 'mysql'),
@@ -41,7 +42,7 @@ return [
             ],
         ],
     ],
-    
+
     // Logging configuration
     'logging' => [
         'default' => env('LOG_CHANNEL', 'stack'),
@@ -58,7 +59,7 @@ return [
             ],
         ],
     ],
-    
+
     // Cache configuration
     'cache' => [
         'default' => env('CACHE_DRIVER', 'file'),
@@ -69,7 +70,7 @@ return [
             ],
         ],
     ],
-    
+
     // Session configuration
     'session' => [
         'driver' => env('SESSION_DRIVER', 'file'),
@@ -91,30 +92,30 @@ return [
         'http_only' => true,
         'same_site' => 'lax',
     ],
-    
+
     // Security configuration
     'security' => [
         'csrf_protection' => true,
         'rate_limiting' => true,
         'session_lifetime' => 7200,
     ],
-    
+
     // Islamic configuration
     'islamic' => [
         'default_prayer_method' => 'MWL',
         'enable_quran_integration' => true,
         'enable_hadith_integration' => true,
     ],
-    
+
     // Extension configuration
     'extensions' => [
         'enable_enhanced_markdown' => true,
         'enable_git_integration' => false,
     ],
-    
+
     // Performance configuration
     'performance' => [
         'enable_caching' => true,
         'cache_lifetime' => 3600,
     ],
-]; 
+];

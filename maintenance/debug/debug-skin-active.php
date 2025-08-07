@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -37,7 +38,7 @@ $result = $stmt->fetch();
 if ($result) {
     $settings = json_decode($result['settings'], true);
     echo "<p>📋 User settings: " . json_encode($settings) . "</p>";
-    
+
     $activeSkin = $settings['skin'] ?? 'bismillah';
     echo "<p>🎨 Active skin: $activeSkin</p>";
 } else {
@@ -46,7 +47,8 @@ if ($result) {
 
 // Get available skins
 $availableSkins = $skinManager->getSkins();
-echo "<p>📚 Available skins: " . implode(', ', array_keys($availableSkins)) . "</p>";
+        $temp_59648183 = implode(', ', array_keys($availableSkins)) . "</p>";
+        echo "<p>📚 Available skins: " . $temp_59648183;
 
 // Check each skin's active status
 foreach ($availableSkins as $name => $skin) {
@@ -57,4 +59,3 @@ foreach ($availableSkins as $name => $skin) {
 
 echo "<hr>";
 echo "<p><a href='/settings'>Go to Settings</a></p>";
-?> 

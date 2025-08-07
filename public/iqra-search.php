@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Iqra Search Engine Web Interface
- * 
+ *
  * A simple web interface for testing the Iqra search engine functionality.
  */
 
@@ -66,7 +67,7 @@ if (!empty($query) && $searchEngine) {
             'page' => 1
         ]);
         $searchTime = microtime(true) - $startTime;
-        
+
         $searchStats = [
             'query' => $query,
             'total_results' => $searchResults['total'],
@@ -74,11 +75,10 @@ if (!empty($query) && $searchEngine) {
             'search_time' => round($searchTime, 3),
             'type' => $type
         ];
-        
+
         // Get analytics
         $analytics = $searchEngine->getSearchAnalytics($query);
         $suggestions = $searchEngine->getSuggestions($query);
-        
     } catch (Exception $e) {
         $error = 'Search failed: ' . $e->getMessage();
         $logger->error($error);
@@ -406,19 +406,20 @@ if (!empty($query) && $searchEngine) {
             </div>
         </div>
         
-        <?php if (!$db): ?>
+        <?php if (!$db) : ?>
         <div class="demo-mode">
-            <strong>Demo Mode:</strong> Database connection not available. This is a demonstration of the Iqra search engine's text processing capabilities.
+            <strong>Demo Mode:</strong> Database connection not available. 
+            This is a demonstration of the Iqra search engine's text processing capabilities.
         </div>
         <?php endif; ?>
         
-        <?php if ($error): ?>
+        <?php if ($error) : ?>
         <div class="error-message">
             <strong>Error:</strong> <?= htmlspecialchars($error) ?>
         </div>
         <?php endif; ?>
         
-        <?php if (!empty($searchResults)): ?>
+        <?php if (!empty($searchResults)) : ?>
         <div class="results-container">
             <div class="results-header">
                 <h2>Search Results</h2>
@@ -428,16 +429,16 @@ if (!empty($query) && $searchEngine) {
                 </div>
             </div>
             
-            <?php foreach ($searchResults['results'] as $result): ?>
+            <?php foreach ($searchResults['results'] as $result) : ?>
             <div class="result-item">
                 <span class="result-type <?= $result['type'] ?>"><?= ucfirst($result['type']) ?></span>
                 <div class="result-title"><?= htmlspecialchars($result['title']) ?></div>
-                <?php if (!empty($result['excerpt'])): ?>
+                <?php if (!empty($result['excerpt'])) : ?>
                 <div class="result-excerpt"><?= $result['excerpt'] ?></div>
                 <?php endif; ?>
                 <div class="result-meta">
                     <span>Relevance: <span class="result-relevance"><?= $result['relevance'] ?? 'N/A' ?></span></span>
-                    <?php if (!empty($result['url'])): ?>
+                    <?php if (!empty($result['url'])) : ?>
                     <span>URL: <?= htmlspecialchars($result['url']) ?></span>
                     <?php endif; ?>
                 </div>
@@ -445,7 +446,7 @@ if (!empty($query) && $searchEngine) {
             <?php endforeach; ?>
         </div>
         
-        <?php if (!empty($analytics)): ?>
+            <?php if (!empty($analytics)) : ?>
         <div class="analytics-container">
             <h2>Search Analytics</h2>
             <div class="analytics-grid">
@@ -456,43 +457,52 @@ if (!empty($query) && $searchEngine) {
                         <li><strong>Normalized:</strong> <?= htmlspecialchars($analytics['query_analysis']['normalized_query']) ?></li>
                         <li><strong>Word Count:</strong> <?= $analytics['query_analysis']['word_count'] ?></li>
                         <li><strong>Contains Arabic:</strong> <?= $analytics['query_analysis']['contains_arabic'] ? 'Yes' : 'No' ?></li>
-                        <li><strong>Islamic Terms:</strong> <?= implode(', ', $analytics['query_analysis']['contains_islamic_terms']) ?></li>
+                        <li><strong>Islamic Terms:</strong> 
+                            <?= implode(', ', $analytics['query_analysis']['contains_islamic_terms']) ?>
+                        </li>
                     </ul>
                 </div>
                 
                 <div class="analytics-card">
                     <h3>Relevance Insights</h3>
                     <ul class="analytics-list">
-                        <li><strong>High Relevance Terms:</strong> <?= implode(', ', $analytics['relevance_insights']['high_relevance_terms']) ?></li>
-                        <li><strong>Related Topics:</strong> <?= implode(', ', $analytics['relevance_insights']['related_topics']) ?></li>
+                        <li><strong>High Relevance Terms:</strong> 
+                            <?= implode(', ', $analytics['relevance_insights']['high_relevance_terms']) ?>
+                        </li>
+                        <li><strong>Related Topics:</strong> 
+                            <?= implode(', ', $analytics['relevance_insights']['related_topics']) ?>
+                        </li>
                     </ul>
                 </div>
                 
-                <?php if (!empty($suggestions)): ?>
+                <?php if (!empty($suggestions)) : ?>
                 <div class="analytics-card">
                     <h3>Search Suggestions</h3>
                     <ul class="analytics-list">
-                        <?php foreach ($suggestions as $suggestion): ?>
-                        <li><strong><?= ucfirst($suggestion['type']) ?>:</strong> <?= htmlspecialchars($suggestion['text']) ?></li>
+                        <?php foreach ($suggestions as $suggestion) : ?>
+                        <li><strong><?= ucfirst($suggestion['type']) ?>:</strong> 
+                            <?= htmlspecialchars($suggestion['text']) ?>
+                        </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>
                 <?php endif; ?>
             </div>
         </div>
-        <?php endif; ?>
+            <?php endif; ?>
         
-        <?php elseif (!empty($query)): ?>
+        <?php elseif (!empty($query)) : ?>
         <div class="results-container">
             <div class="no-results">
                 <h3>No Results Found</h3>
-                <p>No results found for "<?= htmlspecialchars($query) ?>" in <?= ucfirst($type) ?> content.</p>
+                <p>No results found for "<?= htmlspecialchars($query) ?>" 
+                   in <?= ucfirst($type) ?> content.</p>
                 <p>Try different keywords or search in "All Content" to find more results.</p>
             </div>
         </div>
         <?php endif; ?>
         
-        <?php if (empty($query)): ?>
+        <?php if (empty($query)) : ?>
         <div class="results-container">
             <div class="no-results">
                 <h3>Welcome to Iqra Search Engine</h3>

@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Home Controller
- * 
+ *
  * This script tests if the HomeController works without skin manager issues.
  */
 
@@ -25,31 +26,29 @@ try {
 
     // Initialize router
     $router = new \IslamWiki\Core\Routing\IslamRouter($container);
-    
+
     // Load routes
     require_once BASE_PATH . '/routes/web.php';
-    
+
     echo "<h2>Testing HomeController</h2>";
-    
+
     // Test with root request
     $request = new \IslamWiki\Core\Http\Request('GET', new \IslamWiki\Core\Http\Uri('/'));
-    
+
     try {
         $response = $router->handle($request);
         echo "<p>✅ HomeController handled request successfully</p>";
         echo "<p><strong>Response Status:</strong> " . $response->getStatusCode() . "</p>";
         echo "<p><strong>Response Body Length:</strong> " . strlen($response->getBody()) . " characters</p>";
-        
+
         // Show first 500 characters of response
         $body = $response->getBody();
         echo "<h3>Response Preview:</h3>";
         echo "<pre>" . htmlspecialchars(substr($body, 0, 500)) . "...</pre>";
-        
     } catch (\Exception $e) {
         echo "<p>❌ HomeController failed: " . $e->getMessage() . "</p>";
         echo "<p>Stack trace: <pre>" . $e->getTraceAsString() . "</pre></p>";
     }
-    
 } catch (\Exception $e) {
     echo "<h2>❌ Error</h2>";
     echo "<p>Error: " . $e->getMessage() . "</p>";
@@ -58,4 +57,3 @@ try {
     echo "<h3>Stack Trace:</h3>";
     echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
 }
-?> 

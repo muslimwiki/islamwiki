@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Page Creation When Logged In
- * 
+ *
  * This script logs in a user and then tests page creation access.
  */
 
@@ -40,7 +41,7 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['is_admin'] = $user['is_admin'];
-    
+
     echo "   ✅ Login successful\n";
     echo "   User ID: {$user['id']}\n";
     echo "   Username: {$user['username']}\n";
@@ -59,11 +60,11 @@ echo "   Is logged in: " . ($isLoggedIn ? 'Yes' : 'No') . "\n";
 
 if ($isLoggedIn) {
     echo "   ✅ User is authenticated\n";
-    
+
     // Test if user can create pages (basic check)
     $canCreatePages = true; // All authenticated users can create pages
     echo "   Can create pages: " . ($canCreatePages ? 'Yes' : 'No') . "\n";
-    
+
     if ($canCreatePages) {
         echo "   ✅ User has permission to create pages\n";
     } else {
@@ -141,4 +142,4 @@ echo "\n=== Test Complete ===\n";
 echo "\nSession Information:\n";
 echo "Session Name: " . session_name() . "\n";
 echo "Session ID: " . session_id() . "\n";
-echo "Session Data: " . json_encode($_SESSION) . "\n"; 
+echo "Session Data: " . json_encode($_SESSION) . "\n";

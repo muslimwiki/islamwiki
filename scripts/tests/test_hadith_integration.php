@@ -2,9 +2,9 @@
 
 /**
  * Hadith Integration Test Script
- * 
+ *
  * Tests the Hadith integration system for Phase 4 Islamic features.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.14
  * @since Phase 4
@@ -37,7 +37,7 @@ try {
             'collation' => 'utf8mb4_unicode_ci',
         ]
     ];
-    
+
     $islamicDbManager = new IslamicDatabaseManager($islamicConfigs);
     echo "✅ Islamic Database Manager initialized\n";
 
@@ -92,7 +92,7 @@ try {
 
     // Test API endpoints (simulated)
     echo "\n🔌 Testing API Endpoints...\n";
-    
+
     // Simulate API calls
     $testEndpoints = [
         'GET /api/hadith/hadiths' => 'List Hadiths',
@@ -109,7 +109,7 @@ try {
 
     // Test web routes (simulated)
     echo "\n🌐 Testing Web Routes...\n";
-    
+
     $testRoutes = [
         'GET /hadith' => 'Hadith Index',
         'GET /hadith/search' => 'Hadith Search',
@@ -124,7 +124,7 @@ try {
 
     // Test template existence
     echo "\n📄 Testing Templates...\n";
-    
+
     $templateDir = __DIR__ . '/../../resources/views/hadith/';
     $templates = [
         'index.twig' => 'Hadith Index Template',
@@ -144,11 +144,11 @@ try {
 
     // Test database migration
     echo "\n🗄️  Testing Database Migration...\n";
-    
+
     $migrationFile = __DIR__ . '/../../database/migrations/0008_hadith_integration.php';
     if (file_exists($migrationFile)) {
         echo "✅ Hadith integration migration exists\n";
-        
+
         // Check if migration can be loaded
         try {
             require_once $migrationFile;
@@ -162,7 +162,7 @@ try {
 
     // Test reference parsing
     echo "\n🔍 Testing Reference Parsing...\n";
-    
+
     $testReferences = [
         'Bukhari 1' => ['Bukhari', 1],
         'Muslim 123' => ['Muslim', 123],
@@ -181,7 +181,7 @@ try {
 
     // Test reference formatting
     echo "\n📝 Testing Reference Formatting...\n";
-    
+
     $testFormats = [
         ['collection' => 'Bukhari', 'number' => 1, 'expected' => 'Bukhari 1'],
         ['collection' => 'Muslim', 'number' => 123, 'expected' => 'Muslim 123'],
@@ -209,15 +209,14 @@ try {
     echo "✅ Reference System: Working\n";
     echo "✅ Search System: Working\n";
     echo "✅ Statistics System: Working\n";
-    
+
     echo "\n📋 Next Steps:\n";
     echo "1. Populate Hadith database with actual Hadith data\n";
     echo "2. Test with real Hadith collections (Bukhari, Muslim, etc.)\n";
     echo "3. Implement Hadith-wiki linking functionality\n";
     echo "4. Add user interaction features (bookmarks, comments)\n";
     echo "5. Implement authenticity verification system\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with exception: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
-} 
+}

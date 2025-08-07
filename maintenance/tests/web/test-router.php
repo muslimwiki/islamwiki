@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Enable error reporting
@@ -15,20 +16,19 @@ try {
         throw new Exception("Autoloader not found at: $autoloadPath");
     }
     require $autoloadPath;
-    
+
     // Try to create a simple route
     $router = new \Bramus\Router\Router();
-    
+
     // Test route
-    $router->get('/test-route', function() {
+    $router->get('/test-route', function () {
         echo "<p>Test route is working!</p>";
     });
-    
+
     echo "<p>Router initialized successfully. <a href='/test-route'>Test the route</a></p>";
-    
+
     // Run the router
     $router->run();
-    
 } catch (Exception $e) {
     echo "<div style='color:red; padding:10px; border:1px solid #f00;'>";
     echo "<h2>Error:</h2>";

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
@@ -18,7 +19,7 @@ if (empty($password)) {
     // Try common default passwords
     $commonPasswords = ['', 'root', 'password', 'mysql'];
     $connected = false;
-    
+
     foreach ($commonPasswords as $pwd) {
         try {
             $dsn = "mysql:host=$host;charset=utf8mb4";
@@ -33,7 +34,7 @@ if (empty($password)) {
             continue;
         }
     }
-    
+
     if (!$connected) {
         // If we get here, none of the common passwords worked
         echo "Could not connect with empty password. Please enter your MySQL password: ";
@@ -67,15 +68,14 @@ try {
         $config['password'],
         $config['options']
     );
-    
+
     // Test connection
     $pdo->query('SELECT 1');
     echo "Database connection successful!\n";
-    
+
     // Show database version
     $version = $pdo->query('SELECT VERSION()')->fetchColumn();
     echo "Database version: " . $version . "\n";
-    
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage() . "\n");
 }

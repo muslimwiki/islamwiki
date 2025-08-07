@@ -1,15 +1,19 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Skin Middleware
- * 
+ *
  * Updates skin data dynamically for each request based on the current user.
- * 
- * @package IslamWiki\Http\Middleware
- * @version 0.0.29
- * @license AGPL-3.0-only
+ *
+ * @category  IslamWiki
+ * @package   Http\Middleware
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.29
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Middleware;
 
@@ -18,65 +22,97 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Skins\SkinManager;
 
+/**
+ * SkinMiddleware - Middleware for dynamic skin management
+ *
+ * @category  IslamWiki
+ * @package   Http\Middleware
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.29
+ */
 class SkinMiddleware
 {
     /**
      * @var NizamApplication The application instance
      */
-    private NizamApplication $app;
-    
+    private NizamApplication $_app;
+
     /**
      * Constructor
+     *
+     * @param NizamApplication $app The application instance
      */
     public function __construct(NizamApplication $app)
     {
-        $this->app = $app;
+        $this->_app = $app;
     }
-    
+
     /**
      * Handle the request and update skin data
+     *
+     * @param Request $request The incoming request
+     * @param callable $next The next middleware in the stack
+     *
+     * @return Response
      */
     public function handle(Request $request, callable $next): Response
     {
         error_log("SkinMiddleware::handle - Starting skin middleware execution");
         error_log("SkinMiddleware::handle - Request URI: " . $request->getUri()->getPath());
-        
+        error_log("SkinMiddleware::handle - Middleware stack executing SkinMiddleware");
+
         // Skip skin middleware for authentication routes to prevent session interference
         $authRoutes = ['/login', '/register', '/forgot-password', '/logout'];
         $currentPath = $request->getUri()->getPath();
-        
+
         if (in_array($currentPath, $authRoutes)) {
             error_log("SkinMiddleware::handle - Skipping skin middleware for auth route: " . $currentPath);
             return $next($request);
         }
-        
+
         // Update skin data for the current user
         $this->updateSkinDataForCurrentUser($request);
-        
+
+        // Update user authentication state
+        error_log("SkinMiddleware::handle - About to call updateUserAuthenticationState");
+        try {
+            $this->updateUserAuthenticationState($request);
+            error_log("SkinMiddleware::handle - Completed updateUserAuthenticationState successfully");
+        } catch (\Throwable $e) {
+            error_log("SkinMiddleware::handle - Error in updateUserAuthenticationState: " . $e->getMessage());
+            error_log("SkinMiddleware::handle - Error trace: " . $e->getTraceAsString());
+        }
+
         error_log("SkinMiddleware::handle - Skin middleware execution completed");
-        
+
         // Continue with the request
         $response = $next($request);
-        
+
         error_log("SkinMiddleware::handle - Response status: " . $response->getStatusCode());
-        
+
         return $response;
     }
-    
+
     /**
      * Update skin data for the current user
+     *
+     * @param Request $request The incoming request
+     *
+     * @return void
      */
     private function updateSkinDataForCurrentUser(Request $request): void
     {
         error_log("SkinMiddleware::updateSkinDataForCurrentUser - Starting");
-        
+
         try {
-            $container = $this->app->getContainer();
+            $container = $this->_app->getContainer();
             $skinManager = $container->get('skin.manager');
             $viewRenderer = $container->get('view');
-            
+
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Got container services");
-            
+
             // Check for URL parameter skin override
             $urlSkinOverride = $request->getQueryParam('skin');
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Query params: " . json_encode($request->getQueryParams()));
@@ -84,148 +120,112 @@ class SkinMiddleware
             if ($urlSkinOverride) {
                 $urlSkinOverride = strtolower(trim($urlSkinOverride));
                 error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override detected: " . $urlSkinOverride);
-                
+
                 // Validate the skin exists
-                $availableSkins = $skinManager->getAvailableSkinNames();
-                $validSkin = false;
-                foreach ($availableSkins as $skinName) {
-                    if (strtolower($skinName) === $urlSkinOverride) {
-                        $validSkin = true;
-                        $urlSkinOverride = $skinName; // Use the correct case
-                        break;
-                    }
-                }
-                
-                if ($validSkin) {
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Using URL override skin: " . $urlSkinOverride);
-                    $activeSkin = $skinManager->getSkin($urlSkinOverride);
-                    
-                    // Set the active skin layout path in the view renderer
-                    if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
-                        $layoutPath = $activeSkin->getLayoutPath();
-                        if ($layoutPath && is_dir(dirname($layoutPath))) {
-                            $viewRenderer->setActiveSkinLayoutPath(dirname($layoutPath));
-                        }
-                    }
-                    
-                    // Update the view globals with URL override skin data
-                    $viewRenderer->addGlobals([
-                        'skin_css' => $activeSkin->getCssContent(),
-                        'skin_js' => $activeSkin->getJsContent(),
-                        'skin_name' => $activeSkin->getName(),
-                        'skin_version' => $activeSkin->getVersion(),
-                        'skin_config' => $activeSkin->getConfig(),
-                        'active_skin' => $activeSkin->getName(),
-                        'skin_layout_path' => $activeSkin->getLayoutPath(),
-                    ]);
-                    
-                    // Also update the container with the skin data
-                    $skinDataArray = [
-                        'css' => $activeSkin->getCssContent(),
-                        'js' => $activeSkin->getJsContent(),
-                        'name' => $activeSkin->getName(),
-                        'version' => $activeSkin->getVersion(),
-                        'config' => $activeSkin->getConfig() ?? [],
-                    ];
-                    $container->instance('skin.data', $skinDataArray);
-                    
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Applied URL override skin: " . $activeSkin->getName());
-                    // RETURN IMMEDIATELY to prevent fallback logic from running
-                    return;
+                if ($skinManager->skinExists($urlSkinOverride)) {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Valid skin override: " . $urlSkinOverride);
+                    $skinManager->setActiveSkin($urlSkinOverride);
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Set active skin to: " . $urlSkinOverride);
                 } else {
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Invalid URL skin override: " . $urlSkinOverride);
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Invalid skin override: " . $urlSkinOverride);
                 }
             }
-            
-            // Get the active skin for the current user
-            $activeSkin = null;
-            $activeSkinName = '';
-            
-            // Safely check session state without interfering with authentication
-            try {
-                $session = $container->get('session');
-                
-                if ($session && method_exists($session, 'isLoggedIn') && $session->isLoggedIn()) {
-                    $userId = $session->getUserId();
-                    if ($userId) {
-                        $activeSkin = $skinManager->getActiveSkinForUser($userId);
-                        $activeSkinName = $skinManager->getActiveSkinNameForUser($userId);
-                    }
-                }
-            } catch (\Throwable $sessionError) {
-                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Session error (non-critical): " . $sessionError->getMessage());
-            }
-            
-            // Fallback to default skin if no user-specific skin found
-            if (!$activeSkin) {
-                $activeSkin = $skinManager->getActiveSkin();
-                $activeSkinName = $skinManager->getActiveSkinName();
-            }
-            
-            // Set the active skin layout path in the view renderer
-            if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
-                $layoutPath = $activeSkin->getLayoutPath();
-                if ($layoutPath && is_dir(dirname($layoutPath))) {
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - About to set skin layout path: " . dirname($layoutPath));
-                    $viewRenderer->setActiveSkinLayoutPath(dirname($layoutPath));
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Set skin layout path: " . dirname($layoutPath));
-                } else {
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Layout path not found or invalid: " . $layoutPath);
+
+            // Get current user's skin preference
+            $session = $container->get('session');
+            $user = $session->getUser();
+
+            if ($user) {
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - User found: " . $user['id']);
+                $userSkin = $user['skin'] ?? null;
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - User skin preference: " . ($userSkin ?? 'null'));
+
+                if ($userSkin && $skinManager->skinExists($userSkin)) {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Setting user skin: " . $userSkin);
+                    $skinManager->setActiveSkin($userSkin);
                 }
             } else {
-                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Active skin or getLayoutPath method not available");
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - No user found");
             }
-            
-            // Prepare skin data
-            $skinData = [
-                'css' => $activeSkin ? $activeSkin->getCssContent() : '',
-                'js' => $activeSkin ? $activeSkin->getJsContent() : '',
-                'name' => $activeSkin ? $activeSkin->getName() : 'default',
-                'version' => $activeSkin ? $activeSkin->getVersion() : '0.0.29',
-                'config' => $activeSkin ? ($activeSkin->getConfig() ?? []) : [],
-            ];
-            
-            // Check if skin has custom layout
-            $skinLayoutPath = null;
-            if ($activeSkin && method_exists($activeSkin, 'getLayoutPath')) {
-                $layoutPath = $activeSkin->getLayoutPath();
-                if ($layoutPath && file_exists($layoutPath)) {
-                    $skinLayoutPath = $activeSkinName . '/templates/layout.twig';
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin has custom layout: " . $skinLayoutPath);
-                }
+
+            // Get active skin data
+            $activeSkin = $skinManager->getActiveSkin();
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Active skin: " . ($activeSkin ? $activeSkin->getName() : 'null'));
+
+            // Update view renderer with skin data
+            if ($viewRenderer instanceof \IslamWiki\Core\View\TwigRenderer && $activeSkin) {
+                $skinData = [
+                    'name' => $activeSkin->getName(),
+                    'css' => $activeSkin->getCssContent(),
+                    'js' => $activeSkin->getJsContent(),
+                    'css_url' => '/skins/' . $activeSkin->getName() . '/css/' . strtolower($activeSkin->getName()) . '.css',
+                    'js_url' => '/skins/' . $activeSkin->getName() . '/js/' . strtolower($activeSkin->getName()) . '.js',
+                    'version' => $activeSkin->getVersion(),
+                    'config' => $activeSkin->getConfig()
+                ];
+
+                $viewRenderer->addGlobals([
+                    'skin_css' => $skinData['css'],
+                    'skin_js' => $skinData['js'],
+                    'skin_css_url' => $skinData['css_url'],
+                    'skin_js_url' => $skinData['js_url'],
+                    'active_skin' => $skinData['name'],
+                    'skin_version' => $skinData['version'],
+                    'skin_config' => $skinData['config']
+                ]);
+
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Updated view renderer with skin data");
             }
-            
-            // Update the view globals with current user's skin data
-            $viewRenderer->addGlobals([
-                'skin_css' => $skinData['css'],
-                'skin_js' => $skinData['js'],
-                'skin_name' => $skinData['name'],
-                'skin_version' => $skinData['version'],
-                'skin_config' => $skinData['config'],
-                'active_skin' => $activeSkinName,
-                'skin_layout_path' => $skinLayoutPath,
-            ]);
-            
-            // error_log("SkinMiddleware::updateSkinDataForCurrentUser - Added skin data to view globals");
-            // error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin CSS length: " . strlen($skinData['css']));
-            
+
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Completed successfully");
+
         } catch (\Throwable $e) {
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error: " . $e->getMessage());
-            
-            // Fallback to default skin data
-            try {
-                $viewRenderer = $this->app->getContainer()->get('view');
-                $viewRenderer->addGlobals([
-                    'skin_css' => '',
-                    'skin_js' => '',
-                    'skin_name' => 'default',
-                    'skin_version' => '0.0.29',
-                    'skin_config' => [],
-                    'active_skin' => 'Bismillah', // Updated to match LocalSettings
-                ]);
-            } catch (\Throwable $fallbackError) {
-                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Fallback error: " . $fallbackError->getMessage());
-            }
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error trace: " . $e->getTraceAsString());
         }
     }
-} 
+
+    /**
+     * Update user authentication state
+     *
+     * @param Request $request The incoming request
+     *
+     * @return void
+     */
+    private function updateUserAuthenticationState(Request $request): void
+    {
+        error_log("SkinMiddleware::updateUserAuthenticationState - Starting");
+
+        try {
+            $container = $this->_app->getContainer();
+            $session = $container->get('session');
+            $viewRenderer = $container->get('view');
+
+            // Get current user
+            $user = $session->getUser();
+            $isLoggedIn = $user !== null;
+
+            error_log("SkinMiddleware::updateUserAuthenticationState - User logged in: " . ($isLoggedIn ? 'yes' : 'no'));
+
+            // Update view renderer with user authentication state
+            if ($viewRenderer instanceof \IslamWiki\Core\View\TwigRenderer) {
+                $viewRenderer->addGlobals([
+                    'user' => $user,
+                    'is_logged_in' => $isLoggedIn,
+                    'user_id' => $user['id'] ?? null,
+                    'username' => $user['username'] ?? null,
+                    'user_email' => $user['email'] ?? null,
+                    'user_role' => $user['role'] ?? 'guest'
+                ]);
+
+                error_log("SkinMiddleware::updateUserAuthenticationState - Updated view renderer with user state");
+            }
+
+            error_log("SkinMiddleware::updateUserAuthenticationState - Completed successfully");
+
+        } catch (\Throwable $e) {
+            error_log("SkinMiddleware::updateUserAuthenticationState - Error: " . $e->getMessage());
+            error_log("SkinMiddleware::updateUserAuthenticationState - Error trace: " . $e->getTraceAsString());
+        }
+    }
+}

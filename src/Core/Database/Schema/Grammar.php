@@ -25,7 +25,7 @@ namespace IslamWiki\Core\Database\Schema;
 
 /**
  * Database Schema Grammar
- * 
+ *
  * Handles SQL generation for schema operations.
  */
 class Grammar
@@ -53,13 +53,13 @@ class Grammar
     {
         $sql = "CREATE TABLE {$blueprint->getTable()} (";
         $sql .= implode(', ', $columns);
-        
+
         if (!empty($commands)) {
             $sql .= ', ' . implode(', ', $commands);
         }
-        
+
         $sql .= ')';
-        
+
         return $sql;
     }
 
@@ -94,7 +94,7 @@ class Grammar
     {
         $sql = "ALTER TABLE {$blueprint->getTable()} ADD ";
         $sql .= implode(', ADD ', $columns);
-        
+
         return $sql;
     }
 
@@ -105,7 +105,7 @@ class Grammar
     {
         $sql = "ALTER TABLE {$blueprint->getTable()} DROP COLUMN ";
         $sql .= implode(', DROP COLUMN ', $columns);
-        
+
         return $sql;
     }
 
@@ -116,7 +116,7 @@ class Grammar
     {
         $sql = "ALTER TABLE {$blueprint->getTable()} MODIFY ";
         $sql .= implode(', MODIFY ', $columns);
-        
+
         return $sql;
     }
 
@@ -136,7 +136,7 @@ class Grammar
         $sql = "ALTER TABLE {$blueprint->getTable()} ADD INDEX {$index} (";
         $sql .= implode(', ', $columns);
         $sql .= ')';
-        
+
         return $sql;
     }
 
@@ -158,15 +158,15 @@ class Grammar
         $sql .= ") REFERENCES {$on} (";
         $sql .= implode(', ', $onColumns);
         $sql .= ')';
-        
+
         if ($onDelete) {
             $sql .= " ON DELETE {$onDelete}";
         }
-        
+
         if ($onUpdate) {
             $sql .= " ON UPDATE {$onUpdate}";
         }
-        
+
         return $sql;
     }
 
@@ -177,4 +177,4 @@ class Grammar
     {
         return "ALTER TABLE {$blueprint->getTable()} DROP FOREIGN KEY {$name}";
     }
-} 
+}

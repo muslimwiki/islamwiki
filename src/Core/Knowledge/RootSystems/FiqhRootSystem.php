@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\RootSystems;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Fiqh Root System
- * 
+ *
  * Extracts principles from Islamic jurisprudence texts.
  * TODO: Implement comprehensive Fiqh analysis
  */
@@ -17,7 +18,7 @@ class FiqhRootSystem implements RootSystemInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new Fiqh root system.
      */
@@ -26,7 +27,7 @@ class FiqhRootSystem implements RootSystemInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Extract principles from Fiqh text.
      */
@@ -41,7 +42,7 @@ class FiqhRootSystem implements RootSystemInterface
             ]
         ];
     }
-    
+
     /**
      * Get root system type.
      */
@@ -49,7 +50,7 @@ class FiqhRootSystem implements RootSystemInterface
     {
         return 'fiqh';
     }
-    
+
     /**
      * Validate text for Fiqh analysis.
      */
@@ -58,4 +59,4 @@ class FiqhRootSystem implements RootSystemInterface
         // TODO: Implement proper Fiqh validation
         return true;
     }
-} 
+}

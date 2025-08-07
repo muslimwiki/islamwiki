@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -34,7 +35,7 @@ return function(Connection $connection) {
                 $table->text('verification_notes')->nullable(); // Verification notes
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->index(['verification_status', 'is_active']);
                 $table->index('school_of_thought');
                 $table->index('specialization');
@@ -54,7 +55,7 @@ return function(Connection $connection) {
                 $table->string('source', 255)->nullable(); // Source URL
                 $table->boolean('is_verified')->default(false); // Is credential verified
                 $table->timestamps();
-                
+
                 $table->index(['scholar_id', 'credential_type']);
                 $table->index('is_verified');
             });
@@ -73,7 +74,7 @@ return function(Connection $connection) {
                 $table->string('source', 255)->nullable(); // Source URL
                 $table->boolean('is_verified')->default(false); // Is work verified
                 $table->timestamps();
-                
+
                 $table->index(['scholar_id', 'work_type']);
                 $table->index('language');
                 $table->index('is_verified');
@@ -90,7 +91,7 @@ return function(Connection $connection) {
                 $table->text('notes')->nullable(); // Notes about relationship
                 $table->boolean('is_verified')->default(false); // Is relationship verified
                 $table->timestamps();
-                
+
                 $table->unique(['scholar_id', 'student_id']);
                 $table->index('relationship_type');
                 $table->index('is_verified');
@@ -107,7 +108,7 @@ return function(Connection $connection) {
                 $table->text('notes')->nullable(); // Notes about relationship
                 $table->boolean('is_verified')->default(false); // Is relationship verified
                 $table->timestamps();
-                
+
                 $table->unique(['scholar_id', 'teacher_id']);
                 $table->index('relationship_type');
                 $table->index('is_verified');
@@ -129,7 +130,7 @@ return function(Connection $connection) {
                 $table->text('verification_notes')->nullable(); // Verification notes
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->index(['scholar_id', 'verification_status']);
                 $table->index('language');
                 $table->index('is_active');
@@ -146,7 +147,7 @@ return function(Connection $connection) {
                 $table->string('source', 255)->nullable(); // Source URL
                 $table->boolean('is_verified')->default(false); // Is endorsement verified
                 $table->timestamps();
-                
+
                 $table->unique(['endorser_id', 'endorsed_id']);
                 $table->index('endorsement_type');
                 $table->index('is_verified');
@@ -164,7 +165,7 @@ return function(Connection $connection) {
                 $table->timestamp('reviewed_at')->nullable(); // When reviewed
                 $table->text('review_notes')->nullable(); // Review notes
                 $table->timestamps();
-                
+
                 $table->index(['scholar_id', 'status']);
                 $table->index('requested_by');
                 $table->index('reviewed_by');
@@ -178,7 +179,7 @@ return function(Connection $connection) {
                 $table->text('description')->nullable(); // Description
                 $table->unsignedBigInteger('parent_id')->nullable(); // Parent category
                 $table->timestamps();
-                
+
                 $table->index('parent_id');
             });
 
@@ -188,7 +189,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('scholar_id');
                 $table->unsignedBigInteger('category_id');
                 $table->timestamps();
-                
+
                 $table->unique(['scholar_id', 'category_id']);
                 $table->index('scholar_id');
                 $table->index('category_id');
@@ -201,7 +202,7 @@ return function(Connection $connection) {
                 $table->string('arabic_keyword', 100)->nullable(); // Arabic keyword
                 $table->text('description')->nullable(); // Description
                 $table->timestamps();
-                
+
                 $table->unique('keyword');
             });
 
@@ -211,7 +212,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('scholar_id');
                 $table->unsignedBigInteger('keyword_id');
                 $table->timestamps();
-                
+
                 $table->unique(['scholar_id', 'keyword_id']);
                 $table->index('scholar_id');
                 $table->index('keyword_id');
@@ -234,4 +235,4 @@ return function(Connection $connection) {
             $this->schema()->dropIfExists('scholars');
         }
     };
-}; 
+};

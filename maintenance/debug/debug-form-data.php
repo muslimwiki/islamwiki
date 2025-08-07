@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Debug Form Data
- * 
+ *
  * This script shows what form data is being received by the application.
  */
 
@@ -63,4 +64,4 @@ echo $verboseLog . "\n";
 echo "\n4. Response preview (first 500 chars):\n";
 echo substr($response, 0, 500) . "...\n";
 
-echo "\n=== Debug Complete ===\n"; 
+echo "\n=== Debug Complete ===\n";

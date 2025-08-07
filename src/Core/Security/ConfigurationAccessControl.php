@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Configuration Access Control
- * 
+ *
  * Advanced role-based access control system for configuration management
  * with granular permissions, approval workflows, and audit logging.
- * 
+ *
  * @package IslamWiki\Core\Security
  * @version 0.0.21
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Security;
 
@@ -225,7 +226,7 @@ class ConfigurationAccessControl
     {
         // Check if this configuration requires approval
         $requiresApproval = $this->isApprovalRequired($category, $key);
-        
+
         if ($requiresApproval) {
             return $this->createApprovalRequest($category, $key, $newValue);
         }
@@ -239,7 +240,7 @@ class ConfigurationAccessControl
     public function getUserPermissions(): array
     {
         $userPermissions = [];
-        
+
         foreach ($this->userRoles as $role) {
             if (isset($this->permissions[$role])) {
                 $userPermissions = array_merge($userPermissions, $this->permissions[$role]);
@@ -464,4 +465,4 @@ class ConfigurationAccessControl
             return false;
         }
     }
-} 
+}

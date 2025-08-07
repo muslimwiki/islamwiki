@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -19,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use IslamWiki\Core\Application;
@@ -26,7 +28,7 @@ use IslamWiki\Models\Search;
 
 /**
  * Test Search Integration
- * 
+ *
  * This script tests the comprehensive search functionality including:
  * - Search database schema
  * - Search model operations
@@ -52,7 +54,7 @@ try {
 
     $tables = [
         'search_statistics',
-        'search_suggestions', 
+        'search_suggestions',
         'search_cache',
         'search_analytics'
     ];
@@ -62,10 +64,10 @@ try {
             $stmt = $db->prepare("SHOW TABLES LIKE ?");
             $stmt->execute([$table]);
             $exists = $stmt->fetch();
-            
+
             if ($exists) {
                 echo "✅ Table '$table' exists\n";
-                
+
                 // Check table structure
                 $stmt = $db->prepare("DESCRIBE $table");
                 $stmt->execute();
@@ -95,7 +97,7 @@ try {
         ['type' => 'page', 'title' => 'Test Page', 'url' => '/test'],
         ['type' => 'quran', 'title' => 'Test Verse', 'url' => '/quran/1/1']
     ];
-    
+
     $searchModel->cacheResults('test query', 'all', $testResults, 2);
     echo "✅ Search caching test completed\n";
 
@@ -124,7 +126,7 @@ try {
 
     $today = date('Y-m-d');
     $analytics = $searchModel->getAnalytics($today);
-    
+
     if (!empty($analytics)) {
         echo "✅ Analytics retrieved for today\n";
         echo "   📊 Total searches: " . ($analytics['total_searches'] ?? 0) . "\n";
@@ -139,7 +141,7 @@ try {
     echo "-----------------------------------\n";
 
     $stats = $searchModel->getStatisticsSummary();
-    
+
     if (!empty($stats)) {
         echo "✅ Statistics summary retrieved\n";
         echo "   📅 Today: " . ($stats['today']['total_searches'] ?? 0) . " searches\n";
@@ -154,7 +156,7 @@ try {
     echo "------------------------------------\n";
 
     $performance = $searchModel->getPerformanceMetrics();
-    
+
     if (!empty($performance)) {
         echo "✅ Performance metrics retrieved\n";
         echo "   ⏱️  Avg search time: " . $performance['avg_search_time_ms'] . "ms\n";
@@ -189,7 +191,7 @@ try {
             $stmt = $db->prepare("SHOW INDEX FROM $table WHERE Key_name = ?");
             $stmt->execute([$indexName]);
             $index = $stmt->fetch();
-            
+
             if ($index) {
                 echo "✅ Full-text index '$indexName' exists on table '$table'\n";
             } else {
@@ -220,15 +222,15 @@ try {
     echo "---------------------------\n";
 
     $startTime = microtime(true);
-    
+
     // Simulate search operations
     for ($i = 0; $i < 10; $i++) {
         $searchModel->logSearch("performance test $i", 'all', rand(1, 20), rand(50, 200));
     }
-    
+
     $endTime = microtime(true);
     $duration = ($endTime - $startTime) * 1000; // Convert to milliseconds
-    
+
     echo "✅ Performance test completed\n";
     echo "   ⏱️  Duration: " . round($duration, 2) . "ms for 10 operations\n";
     echo "   📊 Average: " . round($duration / 10, 2) . "ms per operation\n";
@@ -245,11 +247,10 @@ try {
     echo "✅ Full-text search indexes configured\n";
     echo "✅ API endpoints defined\n";
     echo "✅ Performance within acceptable limits\n";
-    
-    echo "\n🚀 IslamWiki v0.0.17 Search System is ready!\n";
 
+    echo "\n🚀 IslamWiki v0.0.17 Search System is ready!\n";
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "📋 Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

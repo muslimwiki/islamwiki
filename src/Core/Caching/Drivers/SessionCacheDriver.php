@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Caching\Drivers;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Session Cache Driver
- * 
+ *
  * Uses PHP sessions for user-specific caching.
  */
 class SessionCacheDriver implements CacheDriverInterface
@@ -20,14 +21,14 @@ class SessionCacheDriver implements CacheDriverInterface
         'writes' => 0,
         'deletes' => 0,
     ];
-    
+
     /**
      * Create a new session cache driver.
      */
     public function __construct(ShahidLogger $logger)
     {
         $this->logger = $logger;
-        
+
         // Only start session if not already active and not in CLI
         if (session_status() === PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
             try {
@@ -40,12 +41,12 @@ class SessionCacheDriver implements CacheDriverInterface
                 return;
             }
         }
-        
+
         if (!isset($_SESSION['rihlah_cache'])) {
             $_SESSION['rihlah_cache'] = [];
         }
     }
-    
+
     /**
      * Get a value from session cache.
      */
@@ -57,9 +58,9 @@ class SessionCacheDriver implements CacheDriverInterface
                 $this->logger->debug('Session cache miss', ['key' => $key]);
                 return null;
             }
-            
+
             $cacheData = $_SESSION['rihlah_cache'][$key];
-            
+
             // Check if expired
             if (isset($cacheData['expires']) && time() > $cacheData['expires']) {
                 $this->delete($key);
@@ -67,11 +68,10 @@ class SessionCacheDriver implements CacheDriverInterface
                 $this->logger->debug('Session cache miss - expired', ['key' => $key]);
                 return null;
             }
-            
+
             $this->stats['hits']++;
             $this->logger->debug('Session cache hit', ['key' => $key]);
             return $cacheData['value'];
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache get failed', [
                 'key' => $key,
@@ -80,7 +80,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return null;
         }
     }
-    
+
     /**
      * Set a value in session cache.
      */
@@ -92,15 +92,14 @@ class SessionCacheDriver implements CacheDriverInterface
                 'expires' => time() + $ttl,
                 'created' => time(),
             ];
-            
+
             $this->stats['writes']++;
             $this->logger->debug('Session cache set', [
                 'key' => $key,
                 'ttl' => $ttl,
             ]);
-            
+
             return true;
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache set failed', [
                 'key' => $key,
@@ -109,7 +108,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return false;
         }
     }
-    
+
     /**
      * Delete a value from session cache.
      */
@@ -121,9 +120,8 @@ class SessionCacheDriver implements CacheDriverInterface
                 $this->stats['deletes']++;
                 $this->logger->debug('Session cache delete', ['key' => $key]);
             }
-            
+
             return true;
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache delete failed', [
                 'key' => $key,
@@ -132,7 +130,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return false;
         }
     }
-    
+
     /**
      * Clear all session cache.
      */
@@ -140,10 +138,9 @@ class SessionCacheDriver implements CacheDriverInterface
     {
         try {
             $_SESSION['rihlah_cache'] = [];
-            
+
             $this->logger->info('Session cache cleared');
             return true;
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache clear failed', [
                 'error' => $e->getMessage(),
@@ -151,7 +148,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return false;
         }
     }
-    
+
     /**
      * Check if a key exists in session cache.
      */
@@ -161,16 +158,15 @@ class SessionCacheDriver implements CacheDriverInterface
             if (!isset($_SESSION['rihlah_cache'][$key])) {
                 return false;
             }
-            
+
             $cacheData = $_SESSION['rihlah_cache'][$key];
-            
+
             if (isset($cacheData['expires']) && time() > $cacheData['expires']) {
                 $this->delete($key);
                 return false;
             }
-            
+
             return true;
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache has check failed', [
                 'key' => $key,
@@ -179,7 +175,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return false;
         }
     }
-    
+
     /**
      * Get session cache statistics.
      */
@@ -188,19 +184,18 @@ class SessionCacheDriver implements CacheDriverInterface
         try {
             $totalEntries = count($_SESSION['rihlah_cache'] ?? []);
             $expiredEntries = 0;
-            
+
             foreach ($_SESSION['rihlah_cache'] ?? [] as $key => $cacheData) {
                 if (isset($cacheData['expires']) && time() > $cacheData['expires']) {
                     $expiredEntries++;
                 }
             }
-            
+
             return array_merge($this->stats, [
                 'total_entries' => $totalEntries,
                 'expired_entries' => $expiredEntries,
                 'session_id' => session_id(),
             ]);
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to get session cache stats', [
                 'error' => $e->getMessage(),
@@ -208,7 +203,7 @@ class SessionCacheDriver implements CacheDriverInterface
             return $this->stats;
         }
     }
-    
+
     /**
      * Clean up expired session cache entries.
      */
@@ -216,18 +211,17 @@ class SessionCacheDriver implements CacheDriverInterface
     {
         try {
             $deleted = 0;
-            
+
             foreach ($_SESSION['rihlah_cache'] ?? [] as $key => $cacheData) {
                 if (isset($cacheData['expires']) && time() > $cacheData['expires']) {
                     unset($_SESSION['rihlah_cache'][$key]);
                     $deleted++;
                 }
             }
-            
+
             $this->logger->info('Session cache cleanup completed', ['deleted' => $deleted]);
-            
+
             return $deleted;
-            
         } catch (\Exception $e) {
             $this->logger->error('Session cache cleanup failed', [
                 'error' => $e->getMessage(),
@@ -235,4 +229,4 @@ class SessionCacheDriver implements CacheDriverInterface
             return 0;
         }
     }
-} 
+}

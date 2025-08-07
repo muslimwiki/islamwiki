@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Browser Access
- * 
+ *
  * This script tests the website with browser-like headers to ensure
  * it works correctly in a real browser environment.
  */
@@ -50,7 +51,7 @@ $pages = [
 
 foreach ($pages as $page => $description) {
     $page_content = shell_exec("curl -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Upgrade-Insecure-Requests: 1' -s -I https://local.islam.wiki/$page 2>/dev/null");
-    
+
     if (strpos($page_content, '200 OK') !== false) {
         echo "<p style='color: green;'>✅ $description ($page): OK</p>\n";
     } else {
@@ -62,4 +63,3 @@ foreach ($pages as $page => $description) {
 echo "<h2>🎯 Summary</h2>\n";
 echo "<p><strong>Important Note:</strong> When testing web applications, always test through a real browser or with proper browser headers. The compression headers can cause issues if not configured correctly.</p>\n";
 echo "<p><strong>Recommendation:</strong> Test the site in a real browser at <a href='https://local.islam.wiki' target='_blank'>https://local.islam.wiki</a></p>\n";
-?> 

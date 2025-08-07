@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Islamic Content Recommender
- * 
+ *
  * Advanced content recommendation system with intelligent matching,
  * personalized recommendations, and Islamic content focus.
- * 
+ *
  * @package IslamWiki\Core\Islamic
  * @version 0.0.22
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Islamic;
 
@@ -88,15 +89,15 @@ class IslamicContentRecommender
             $userPreferences = $this->getUserPreferences($userId);
             $userHistory = $this->getUserHistory($userId);
             $userLevel = $this->getUserLevel($userId);
-            
+
             // Build recommendation query
             $recommendations = $this->buildRecommendations($userPreferences, $userHistory, $userLevel, $limit);
-            
+
             $this->logger->info('Personalized recommendations generated', [
                 'user_id' => $userId,
                 'count' => count($recommendations)
             ]);
-            
+
             return $recommendations;
         } catch (\Exception $e) {
             $this->logger->error('Personalized recommendations failed: ' . $e->getMessage());
@@ -114,14 +115,14 @@ class IslamicContentRecommender
             if (!$content) {
                 return [];
             }
-            
+
             $relatedContent = $this->findRelatedContent($content, $limit);
-            
+
             $this->logger->info('Related content found', [
                 'content_id' => $contentId,
                 'count' => count($relatedContent)
             ]);
-            
+
             return $relatedContent;
         } catch (\Exception $e) {
             $this->logger->error('Related content lookup failed: ' . $e->getMessage());
@@ -137,21 +138,21 @@ class IslamicContentRecommender
         try {
             $events = $this->getIslamicEventsForDate($date);
             $recommendations = [];
-            
+
             foreach ($events as $event) {
                 $eventContent = $this->getContentByEvent($event, $limit / count($events));
                 $recommendations = array_merge($recommendations, $eventContent);
             }
-            
+
             // Remove duplicates and limit results
             $recommendations = array_slice(array_unique($recommendations, SORT_REGULAR), 0, $limit);
-            
+
             $this->logger->info('Event-based recommendations generated', [
                 'date' => $date,
                 'events' => count($events),
                 'recommendations' => count($recommendations)
             ]);
-            
+
             return $recommendations;
         } catch (\Exception $e) {
             $this->logger->error('Event-based recommendations failed: ' . $e->getMessage());
@@ -166,20 +167,20 @@ class IslamicContentRecommender
     {
         try {
             $recommendations = [];
-            
+
             foreach ($searchTerms as $term) {
                 $termContent = $this->searchContent($term, $limit / count($searchTerms));
                 $recommendations = array_merge($recommendations, $termContent);
             }
-            
+
             // Remove duplicates and limit results
             $recommendations = array_slice(array_unique($recommendations, SORT_REGULAR), 0, $limit);
-            
+
             $this->logger->info('Search-based recommendations generated', [
                 'search_terms' => $searchTerms,
                 'recommendations' => count($recommendations)
             ]);
-            
+
             return $recommendations;
         } catch (\Exception $e) {
             $this->logger->error('Search-based recommendations failed: ' . $e->getMessage());
@@ -210,11 +211,11 @@ class IslamicContentRecommender
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             $this->logger->info('Trending content retrieved', [
                 'count' => count($trendingContent)
             ]);
-            
+
             return $trendingContent;
         } catch (\Exception $e) {
             $this->logger->error('Trending content retrieval failed: ' . $e->getMessage());
@@ -235,12 +236,12 @@ class IslamicContentRecommender
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             $this->logger->info('Category content retrieved', [
                 'category' => $category,
                 'count' => count($content)
             ]);
-            
+
             return $content;
         } catch (\Exception $e) {
             $this->logger->error('Category content retrieval failed: ' . $e->getMessage());
@@ -257,7 +258,7 @@ class IslamicContentRecommender
             $preferences = $this->db->table('user_preferences')
                 ->where('user_id', $userId)
                 ->first();
-            
+
             return $preferences ? json_decode($preferences['preferences'], true) : [];
         } catch (\Exception $e) {
             $this->logger->error('User preferences retrieval failed: ' . $e->getMessage());
@@ -292,14 +293,14 @@ class IslamicContentRecommender
             $user = $this->db->table('users')
                 ->where('id', $userId)
                 ->first();
-            
+
             if (!$user) {
                 return 'beginner';
             }
-            
+
             // Calculate user level based on activity and engagement
             $activityScore = $this->calculateActivityScore($userId);
-            
+
             if ($activityScore > 100) {
                 return 'advanced';
             } elseif ($activityScore > 50) {
@@ -320,31 +321,31 @@ class IslamicContentRecommender
     {
         try {
             $score = 0;
-            
+
             // Content views
             $views = $this->db->table('user_content_history')
                 ->where('user_id', $userId)
                 ->count();
             $score += $views;
-            
+
             // Comments
             $comments = $this->db->table('user_comments')
                 ->where('user_id', $userId)
                 ->count();
             $score += $comments * 2;
-            
+
             // Likes
             $likes = $this->db->table('user_likes')
                 ->where('user_id', $userId)
                 ->count();
             $score += $likes;
-            
+
             // Shares
             $shares = $this->db->table('user_shares')
                 ->where('user_id', $userId)
                 ->count();
             $score += $shares * 3;
-            
+
             return $score;
         } catch (\Exception $e) {
             $this->logger->error('Activity score calculation failed: ' . $e->getMessage());
@@ -359,7 +360,7 @@ class IslamicContentRecommender
     {
         try {
             $recommendations = [];
-            
+
             // Get content based on user preferences
             if (!empty($preferences['categories'])) {
                 foreach ($preferences['categories'] as $category) {
@@ -367,25 +368,25 @@ class IslamicContentRecommender
                     $recommendations = array_merge($recommendations, $categoryContent);
                 }
             }
-            
+
             // Get content based on user history
             if (!empty($history)) {
                 $historyCategories = array_column($history, 'category');
                 $historyCategories = array_count_values($historyCategories);
                 arsort($historyCategories);
-                
+
                 foreach (array_keys(array_slice($historyCategories, 0, 3)) as $category) {
                     $categoryContent = $this->getContentByCategory($category, $limit / 3);
                     $recommendations = array_merge($recommendations, $categoryContent);
                 }
             }
-            
+
             // Filter by user level
             $recommendations = $this->filterByLevel($recommendations, $level);
-            
+
             // Remove duplicates and limit results
             $recommendations = array_slice(array_unique($recommendations, SORT_REGULAR), 0, $limit);
-            
+
             return $recommendations;
         } catch (\Exception $e) {
             $this->logger->error('Recommendation building failed: ' . $e->getMessage());
@@ -400,7 +401,7 @@ class IslamicContentRecommender
     {
         return array_filter($content, function ($item) use ($level) {
             $tags = json_decode($item['tags'] ?? '[]', true);
-            
+
             if ($level === 'beginner') {
                 return in_array('beginner', $tags);
             } elseif ($level === 'intermediate') {
@@ -434,7 +435,7 @@ class IslamicContentRecommender
         try {
             $category = $content['category'];
             $tags = json_decode($content['tags'] ?? '[]', true);
-            
+
             $relatedContent = $this->db->table('islamic_content')
                 ->where('category', $category)
                 ->where('id', '!=', $content['id'])
@@ -443,7 +444,7 @@ class IslamicContentRecommender
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             return $relatedContent;
         } catch (\Exception $e) {
             $this->logger->error('Related content search failed: ' . $e->getMessage());
@@ -459,7 +460,7 @@ class IslamicContentRecommender
         try {
             $calendar = new AdvancedIslamicCalendar($this->logger);
             $dateParts = explode('-', $date);
-            
+
             return $calendar->getIslamicEvents(
                 (int) $dateParts[0],
                 (int) $dateParts[1],
@@ -478,7 +479,7 @@ class IslamicContentRecommender
     {
         try {
             $eventName = $event['name'];
-            
+
             return $this->db->table('islamic_content')
                 ->where('title', 'LIKE', "%{$eventName}%")
                 ->orWhere('content', 'LIKE', "%{$eventName}%")
@@ -533,4 +534,4 @@ class IslamicContentRecommender
             return [];
         }
     }
-} 
+}

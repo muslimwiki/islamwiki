@@ -1,4 +1,5 @@
 <?php
+
 // Simple login test
 echo "Testing login with admin user...\n";
 
@@ -26,25 +27,23 @@ if ($user) {
     echo "✅ User found: " . $user['username'] . "\n";
     echo "User ID: " . $user['id'] . "\n";
     echo "Is Admin: " . ($user['is_admin'] ? 'Yes' : 'No') . "\n";
-    
+
     // Verify password
     if (password_verify($password, $user['password'])) {
         echo "✅ Password is correct!\n";
-        
+
         // Set session data
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['is_admin'] = $user['is_admin'];
         $_SESSION['is_logged_in'] = true;
-        
+
         echo "✅ Session data set!\n";
         echo "Session ID: " . session_id() . "\n";
         echo "Session data: " . print_r($_SESSION, true) . "\n";
-        
     } else {
         echo "❌ Password is incorrect!\n";
     }
 } else {
     echo "❌ User not found!\n";
 }
-?> 

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug User Settings
- * 
+ *
  * Debug script to check user settings in the database.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.29
  * @license AGPL-3.0-only
@@ -27,18 +28,18 @@ echo "=== Debug User Settings ===\n\n";
 if ($session->isLoggedIn()) {
     $userId = $session->getUserId();
     echo "User logged in - ID: $userId\n\n";
-    
+
     // Check user settings in database
     $stmt = $db->prepare("SELECT settings FROM user_settings WHERE user_id = ?");
     $stmt->execute([$userId]);
     $result = $stmt->fetch();
-    
+
     if ($result) {
         echo "User settings found:\n";
         $settings = json_decode($result['settings'], true);
         echo "Raw settings: " . $result['settings'] . "\n";
         echo "Decoded settings: " . print_r($settings, true) . "\n";
-        
+
         if (isset($settings['skin'])) {
             echo "Skin setting: " . $settings['skin'] . "\n";
         } else {
@@ -47,7 +48,6 @@ if ($session->isLoggedIn()) {
     } else {
         echo "No user settings found for user ID: $userId\n";
     }
-    
 } else {
     echo "No user logged in\n";
 }
@@ -69,4 +69,4 @@ if ($results) {
     echo "No user settings found in database\n";
 }
 
-echo "=== Debug Complete ===\n"; 
+echo "=== Debug Complete ===\n";

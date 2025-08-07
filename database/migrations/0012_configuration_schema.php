@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Migration: Configuration System Schema
- * 
+ *
  * This migration creates the database schema for the enhanced configuration system
  * including configuration storage, categories, audit logging, and backup functionality.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.20
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 
@@ -33,7 +34,7 @@ class Migration_0012_ConfigurationSchema extends Migration
             $table->boolean('is_required')->default(false)->comment('Whether this configuration is required');
             $table->text('validation_rules')->nullable()->comment('JSON validation rules for this configuration');
             $table->timestamps();
-            
+
             $table->unique(['category', 'key_name'], 'unique_config');
             $table->index('category');
             $table->index('key_name');
@@ -49,7 +50,7 @@ class Migration_0012_ConfigurationSchema extends Migration
             $table->integer('sort_order')->default(0)->comment('Sort order for display');
             $table->boolean('is_active')->default(true)->comment('Whether this category is active');
             $table->timestamps();
-            
+
             $table->index('sort_order');
             $table->index('is_active');
         });
@@ -66,7 +67,7 @@ class Migration_0012_ConfigurationSchema extends Migration
             $table->string('ip_address', 45)->nullable()->comment('IP address of the user');
             $table->text('user_agent')->nullable()->comment('User agent string');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index(['category', 'key_name']);
             $table->index('created_at');
@@ -81,14 +82,14 @@ class Migration_0012_ConfigurationSchema extends Migration
             $table->unsignedBigInteger('created_by')->nullable()->comment('User who created the backup');
             $table->text('description')->nullable()->comment('Description of the backup');
             $table->timestamps();
-            
+
             $table->index('created_at');
             $table->index('created_by');
         });
 
         // Insert default configuration categories
         $this->insertDefaultCategories();
-        
+
         // Insert default configuration values
         $this->insertDefaultConfiguration();
     }
@@ -390,6 +391,6 @@ class Migration_0012_ConfigurationSchema extends Migration
     }
 };
 
-return function($connection) {
+return function ($connection) {
     return new Migration_0012_ConfigurationSchema($connection);
 };

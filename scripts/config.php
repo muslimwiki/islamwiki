@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 /**
  * Configuration Management CLI Tool
- * 
+ *
  * Command-line interface for managing IslamWiki configuration.
- * 
+ *
  * Usage:
  *   php scripts/config.php list [category]
  *   php scripts/config.php get <key>
@@ -76,49 +76,48 @@ try {
         case 'list':
             handleList($configManager, $args, $options);
             break;
-            
+
         case 'get':
             handleGet($configManager, $args, $options);
             break;
-            
+
         case 'set':
             handleSet($configManager, $args, $options);
             break;
-            
+
         case 'validate':
             handleValidate($configManager, $args, $options);
             break;
-            
+
         case 'export':
             handleExport($configManager, $args, $options);
             break;
-            
+
         case 'import':
             handleImport($configManager, $args, $options);
             break;
-            
+
         case 'backup':
             handleBackup($configManager, $args, $options);
             break;
-            
+
         case 'restore':
             handleRestore($configManager, $args, $options);
             break;
-            
+
         case 'backups':
             handleBackups($configManager, $args, $options);
             break;
-            
+
         case 'audit':
             handleAudit($configManager, $args, $options);
             break;
-            
+
         case 'help':
         default:
             showHelp();
             break;
     }
-    
 } catch (Exception $e) {
     echo "✗ Error: " . $e->getMessage() . "\n";
     exit(1);
@@ -132,13 +131,13 @@ echo "\nDone!\n";
 function handleList(ConfigurationManager $configManager, array $args, array $options): void
 {
     $category = $args[0] ?? null;
-    
+
     if ($category) {
         // List configuration for specific category
         $config = $configManager->getCategory($category);
         echo "Configuration for category '{$category}':\n";
         echo str_repeat('-', 50) . "\n";
-        
+
         foreach ($config as $key => $value) {
             $type = $configManager->getValue("{$category}.{$key}.type", 'string');
             echo "  {$key}: " . formatValue($value, $type) . "\n";
@@ -148,7 +147,7 @@ function handleList(ConfigurationManager $configManager, array $args, array $opt
         $categories = $configManager->getCategories();
         echo "Available configuration categories:\n";
         echo str_repeat('-', 50) . "\n";
-        
+
         foreach ($categories as $category) {
             $count = count($configManager->getCategory($category['name']));
             echo "  {$category['name']}: {$count} settings\n";
@@ -164,15 +163,15 @@ function handleGet(ConfigurationManager $configManager, array $args, array $opti
     if (empty($args[0])) {
         throw new Exception("Key is required. Usage: php scripts/config.php get <key>");
     }
-    
+
     $key = $args[0];
     $value = $configManager->getValue($key);
-    
+
     if ($value === null) {
         echo "✗ Configuration key '{$key}' not found.\n";
         return;
     }
-    
+
     echo "Configuration value for '{$key}':\n";
     echo str_repeat('-', 50) . "\n";
     echo formatValue($value, gettype($value)) . "\n";
@@ -186,22 +185,22 @@ function handleSet(ConfigurationManager $configManager, array $args, array $opti
     if (empty($args[0]) || !isset($args[1])) {
         throw new Exception("Key and value are required. Usage: php scripts/config.php set <key> <value>");
     }
-    
+
     $key = $args[0];
     $value = $args[1];
-    
+
     // Handle boolean values
     if (in_array(strtolower($value), ['true', 'false'])) {
         $value = strtolower($value) === 'true';
     }
-    
+
     // Handle numeric values
     if (is_numeric($value)) {
         $value = strpos($value, '.') !== false ? (float)$value : (int)$value;
     }
-    
+
     $success = $configManager->setValue($key, $value);
-    
+
     if ($success) {
         echo "✓ Configuration key '{$key}' set to: " . formatValue($value, gettype($value)) . "\n";
     } else {
@@ -216,9 +215,9 @@ function handleValidate(ConfigurationManager $configManager, array $args, array 
 {
     echo "Validating configuration...\n";
     echo str_repeat('-', 50) . "\n";
-    
+
     $errors = $configManager->validateConfiguration();
-    
+
     if (empty($errors)) {
         echo "✓ All configuration values are valid.\n";
     } else {
@@ -235,12 +234,12 @@ function handleValidate(ConfigurationManager $configManager, array $args, array 
 function handleExport(ConfigurationManager $configManager, array $args, array $options): void
 {
     $filename = $options['file'] ?? 'islamwiki_config_' . date('Y-m-d_H-i-s') . '.json';
-    
+
     echo "Exporting configuration to '{$filename}'...\n";
-    
+
     $config = $configManager->exportConfiguration();
     $json = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    
+
     if (file_put_contents($filename, $json)) {
         echo "✓ Configuration exported successfully to '{$filename}'.\n";
     } else {
@@ -256,24 +255,24 @@ function handleImport(ConfigurationManager $configManager, array $args, array $o
     if (empty($options['file'])) {
         throw new Exception("File is required. Usage: php scripts/config.php import --file=filename");
     }
-    
+
     $filename = $options['file'];
-    
+
     if (!file_exists($filename)) {
         throw new Exception("File '{$filename}' not found.");
     }
-    
+
     echo "Importing configuration from '{$filename}'...\n";
-    
+
     $json = file_get_contents($filename);
     $config = json_decode($json, true);
-    
+
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Invalid JSON file: " . json_last_error_msg());
     }
-    
+
     $success = $configManager->importConfiguration($config);
-    
+
     if ($success) {
         echo "✓ Configuration imported successfully from '{$filename}'.\n";
     } else {
@@ -288,11 +287,11 @@ function handleBackup(ConfigurationManager $configManager, array $args, array $o
 {
     $name = $options['name'] ?? 'CLI_Backup_' . date('Y-m-d_H-i-s');
     $description = $options['description'] ?? 'Configuration backup created via CLI';
-    
+
     echo "Creating configuration backup '{$name}'...\n";
-    
+
     $success = $configManager->createBackup($name, null, $description);
-    
+
     if ($success) {
         echo "✓ Configuration backup '{$name}' created successfully.\n";
     } else {
@@ -308,13 +307,13 @@ function handleRestore(ConfigurationManager $configManager, array $args, array $
     if (empty($args[0])) {
         throw new Exception("Backup ID is required. Usage: php scripts/config.php restore <backup_id>");
     }
-    
+
     $backupId = (int)$args[0];
-    
+
     echo "Restoring configuration from backup ID {$backupId}...\n";
-    
+
     $success = $configManager->restoreBackup($backupId);
-    
+
     if ($success) {
         echo "✓ Configuration restored successfully from backup ID {$backupId}.\n";
     } else {
@@ -329,14 +328,14 @@ function handleBackups(ConfigurationManager $configManager, array $args, array $
 {
     echo "Available configuration backups:\n";
     echo str_repeat('-', 50) . "\n";
-    
+
     $backups = $configManager->getBackups();
-    
+
     if (empty($backups)) {
         echo "No backups found.\n";
         return;
     }
-    
+
     foreach ($backups as $backup) {
         $date = date('Y-m-d H:i:s', strtotime($backup['created_at']));
         echo "  ID: {$backup['id']} | Name: {$backup['backup_name']} | Date: {$date}\n";
@@ -354,17 +353,17 @@ function handleAudit(ConfigurationManager $configManager, array $args, array $op
 {
     $limit = (int)($options['limit'] ?? 100);
     $offset = (int)($options['offset'] ?? 0);
-    
+
     echo "Configuration audit log (limit: {$limit}, offset: {$offset}):\n";
     echo str_repeat('-', 50) . "\n";
-    
+
     $auditLog = $configManager->getAuditLog($limit, $offset);
-    
+
     if (empty($auditLog)) {
         echo "No audit log entries found.\n";
         return;
     }
-    
+
     foreach ($auditLog as $entry) {
         $date = date('Y-m-d H:i:s', strtotime($entry['created_at']));
         $changeType = strtoupper($entry['change_type']);
@@ -417,7 +416,7 @@ function formatValue($value, string $type): string
     if ($value === null) {
         return 'null';
     }
-    
+
     switch ($type) {
         case 'boolean':
             return $value ? 'true' : 'false';
@@ -427,4 +426,4 @@ function formatValue($value, string $type): string
         default:
             return (string)$value;
     }
-} 
+}

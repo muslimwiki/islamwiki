@@ -39,15 +39,15 @@ if ($user) {
     echo "  Password: " . ($user->getAttribute('password') ? 'SET' : 'NOT SET') . "\n";
     echo "  Password length: " . strlen($user->getAttribute('password') ?: '') . "\n";
     echo "  Password hash: " . substr($user->getAttribute('password') ?: '', 0, 20) . "...\n";
-    
+
     // Test password verification
     $testPassword = 'admin123';
     $isValid = $user->verifyPassword($testPassword);
     echo "  Password '{$testPassword}' verification: " . ($isValid ? 'VALID' : 'INVALID') . "\n";
-    
+
     // Test direct password_verify
     $directValid = password_verify($testPassword, $user->getAttribute('password') ?: '');
     echo "  Direct password_verify: " . ($directValid ? 'VALID' : 'INVALID') . "\n";
 } else {
     echo "User not found\n";
-} 
+}

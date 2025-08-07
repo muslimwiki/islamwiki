@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -34,9 +35,9 @@ return function(Connection $connection) {
                 ADD COLUMN moderated_at TIMESTAMP NULL,
                 ADD COLUMN moderation_notes TEXT NULL
             ";
-            
+
             $this->connection->statement($sql);
-            
+
             // Add indexes
             $indexes = [
                 "CREATE INDEX pages_islamic_category_index ON pages (islamic_category)",
@@ -47,7 +48,7 @@ return function(Connection $connection) {
                 "CREATE INDEX pages_verified_by_index ON pages (verified_by)",
                 "CREATE INDEX pages_moderated_by_index ON pages (moderated_by)"
             ];
-            
+
             foreach ($indexes as $indexSql) {
                 try {
                     $this->connection->statement($indexSql);
@@ -70,7 +71,7 @@ return function(Connection $connection) {
                 "DROP INDEX IF EXISTS pages_verified_by_index ON pages",
                 "DROP INDEX IF EXISTS pages_moderated_by_index ON pages"
             ];
-            
+
             foreach ($indexes as $indexSql) {
                 try {
                     $this->connection->statement($indexSql);
@@ -79,7 +80,7 @@ return function(Connection $connection) {
                     error_log("Index drop warning: " . $e->getMessage());
                 }
             }
-            
+
             // Drop columns
             $sql = "
                 ALTER TABLE pages 
@@ -102,8 +103,8 @@ return function(Connection $connection) {
                 DROP COLUMN IF EXISTS moderated_at,
                 DROP COLUMN IF EXISTS moderation_notes
             ";
-            
+
             $this->connection->statement($sql);
         }
     };
-}; 
+};

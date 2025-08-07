@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Request;
@@ -32,7 +33,7 @@ use Exception;
 
 /**
  * Iqra Search Controller
- * 
+ *
  * Advanced search controller using the Iqra search engine with:
  * - Enhanced relevance scoring
  * - Islamic content optimization
@@ -69,7 +70,7 @@ class IqraSearchController extends Controller
 
         if (!empty($query)) {
             $startTime = microtime(true);
-            
+
             $searchOptions = [
                 'type' => $type,
                 'page' => $page,
@@ -79,11 +80,11 @@ class IqraSearchController extends Controller
             ];
 
             $searchResult = $this->searchEngine->search($query, $searchOptions);
-            
+
             $results = $searchResult['results'];
             $totalResults = $searchResult['total'];
             $searchTime = microtime(true) - $startTime;
-            
+
             $searchStats = $this->getSearchStatistics($query);
         }
 
@@ -139,7 +140,7 @@ class IqraSearchController extends Controller
 
         try {
             $startTime = microtime(true);
-            
+
             $searchOptions = [
                 'type' => $type,
                 'page' => $page,
@@ -150,7 +151,7 @@ class IqraSearchController extends Controller
 
             $searchResult = $this->searchEngine->search($query, $searchOptions);
             $searchTime = microtime(true) - $startTime;
-            
+
             $searchStats = $this->getSearchStatistics($query);
 
             $response = [
@@ -184,7 +185,7 @@ class IqraSearchController extends Controller
     public function apiSuggestions(Request $request): Response
     {
         $query = $request->getQueryParams()['q'] ?? '';
-        
+
         if (empty($query) || strlen($query) < 2) {
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'suggestions' => []
@@ -193,7 +194,7 @@ class IqraSearchController extends Controller
 
         try {
             $suggestions = $this->searchEngine->getSuggestions($query);
-            
+
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'suggestions' => $suggestions,
                 'query' => $query,
@@ -213,7 +214,7 @@ class IqraSearchController extends Controller
     public function apiAnalytics(Request $request): Response
     {
         $query = $request->getQueryParams()['q'] ?? '';
-        
+
         if (empty($query)) {
             return new Response(400, ['Content-Type' => 'application/json'], json_encode([
                 'error' => 'Query parameter is required',
@@ -223,7 +224,7 @@ class IqraSearchController extends Controller
 
         try {
             $analytics = $this->getSearchAnalytics($query);
-            
+
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'analytics' => $analytics,
                 'query' => $query
@@ -260,7 +261,7 @@ class IqraSearchController extends Controller
     protected function getContentTypeCount(string $query, string $type): int
     {
         $words = $this->searchEngine->tokenizeQuery($query);
-        
+
         switch ($type) {
             case 'pages':
                 return $this->searchEngine->getPageCount($words);
@@ -286,8 +287,4 @@ class IqraSearchController extends Controller
     {
         return $this->searchEngine->getSearchAnalytics($query);
     }
-
-
-
-
-} 
+}

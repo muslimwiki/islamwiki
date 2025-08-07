@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
@@ -7,6 +8,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Skins\SkinManager;
 use Psr\Log\LoggerInterface;
+
 use function error_log;
 
 class HomeController extends Controller
@@ -15,7 +17,7 @@ class HomeController extends Controller
      * @var LoggerInterface Logger instance
      */
     private $logger;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -27,17 +29,17 @@ class HomeController extends Controller
         \IslamWiki\Core\Container\AsasContainer $container
     ) {
         // Constructor completed successfully
-        
+
         try {
             parent::__construct($db, $container);
-            
+
             // Get logger from container
             $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
         } catch (\Throwable $e) {
             $this->logger = null;
         }
     }
-    
+
     /**
      * Show the application home page.
      *
@@ -47,7 +49,6 @@ class HomeController extends Controller
     public function index(Request $request): Response
     {
         try {
-            
             // Log the request
             $logData = [
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
@@ -56,21 +57,24 @@ class HomeController extends Controller
                 'request_uri' => $request->getUri()->getPath(),
                 'method' => $request->getMethod(),
             ];
-            
+
             // error_log('HomeController: Log data: ' . print_r($logData, true));
-            
+
             if ($this->logger) {
                 $this->logger->info('Home page accessed', $logData);
             } else {
                 // error_log('HomeController: Logger not available');
             }
-            
+
             // Fetch recent pages from database
             $recentPages = [];
             try {
-                $recentPages = $this->db->select(
-                    'SELECT id, title, slug, content, created_at FROM pages ORDER BY created_at DESC LIMIT 5'
-                );
+                            $recentPages = $this->db->select(
+                'SELECT id, title, slug, content, created_at 
+                 FROM pages 
+                 ORDER BY created_at DESC 
+                 LIMIT 5'
+            );
                 // error_log('HomeController: Fetched ' . count($recentPages) . ' recent pages');
             } catch (\Exception $e) {
                 // error_log('HomeController: Error fetching pages: ' . $e->getMessage());
@@ -104,12 +108,11 @@ class HomeController extends Controller
                     'Comprehensive error handling and logging'
                 ]
             ];
-            
+
             // error_log('HomeController@index: Rendering Twig template');
             $response = $this->view('pages/home', $data);
             // error_log('HomeController@index: Response generated successfully');
             return $response;
-            
         } catch (\Throwable $e) {
             // error_log('HomeController@index: Exception: ' . $e->getMessage());
             // error_log('HomeController@index: Stack trace: ' . $e->getTraceAsString());
@@ -128,7 +131,7 @@ class HomeController extends Controller
                     'trace' => $e->getTraceAsString(),
                 ]);
             }
-            
+
             return new Response(
                 status: 500,
                 headers: ['Content-Type' => 'text/plain'],

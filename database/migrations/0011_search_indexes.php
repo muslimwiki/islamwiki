@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -19,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 use IslamWiki\Core\Database\Migrations\Migration;
 
 class CreateSearchIndexes extends Migration
@@ -29,7 +31,7 @@ class CreateSearchIndexes extends Migration
     public function up(): void
     {
         // Create search statistics table
-        $this->schema()->create('search_statistics', function($table) {
+        $this->schema()->create('search_statistics', function ($table) {
             $table->id();
             $table->string('query', 255);
             $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'prayer']);
@@ -39,14 +41,14 @@ class CreateSearchIndexes extends Migration
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->timestamps();
-            
+
             $table->index('query');
             $table->index('search_type');
             $table->index('created_at');
         });
 
         // Create search suggestions table
-        $this->schema()->create('search_suggestions', function($table) {
+        $this->schema()->create('search_suggestions', function ($table) {
             $table->id();
             $table->string('query', 255);
             $table->enum('suggestion_type', ['page', 'quran', 'hadith', 'calendar', 'prayer']);
@@ -55,7 +57,7 @@ class CreateSearchIndexes extends Migration
             $table->integer('click_count')->default(0);
             $table->decimal('relevance_score', 5, 4)->default(0.0000);
             $table->timestamps();
-            
+
             $table->index('query');
             $table->index('suggestion_type');
             $table->index('relevance_score');
@@ -63,7 +65,7 @@ class CreateSearchIndexes extends Migration
         });
 
         // Create search cache table for performance
-        $this->schema()->create('search_cache', function($table) {
+        $this->schema()->create('search_cache', function ($table) {
             $table->id();
             $table->string('query_hash', 64);
             $table->text('query_params');
@@ -72,7 +74,7 @@ class CreateSearchIndexes extends Migration
             $table->timestamp('expires_at');
             $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'prayer']);
             $table->timestamps();
-            
+
             $table->index('query_hash');
             $table->index('search_type');
             $table->index('expires_at');
@@ -80,7 +82,7 @@ class CreateSearchIndexes extends Migration
         });
 
         // Create search analytics table
-        $this->schema()->create('search_analytics', function($table) {
+        $this->schema()->create('search_analytics', function ($table) {
             $table->id();
             $table->date('date');
             $table->integer('total_searches')->default(0);
@@ -90,7 +92,7 @@ class CreateSearchIndexes extends Migration
             $table->json('most_popular_queries')->nullable();
             $table->json('search_type_distribution')->nullable();
             $table->timestamps();
-            
+
             $table->index('date');
             $table->unique('date');
         });
@@ -122,28 +124,28 @@ class CreateSearchIndexes extends Migration
             ['quran', 'Yasin', '/quran/chapter/36', 0.93],
             ['quran', 'Al-Kahf', '/quran/chapter/18', 0.92],
             ['quran', 'Ar-Rahman', '/quran/chapter/55', 0.91],
-            
+
             // Hadith suggestions
             ['hadith', 'Sahih Bukhari', '/hadith/collection/1', 0.95],
             ['hadith', 'Sahih Muslim', '/hadith/collection/2', 0.94],
             ['hadith', 'Abu Dawud', '/hadith/collection/3', 0.93],
             ['hadith', 'Tirmidhi', '/hadith/collection/4', 0.92],
             ['hadith', 'Nasai', '/hadith/collection/5', 0.91],
-            
+
             // Calendar suggestions
             ['calendar', 'Ramadan', '/calendar/search?q=Ramadan', 0.95],
             ['calendar', 'Eid al-Fitr', '/calendar/search?q=Eid al-Fitr', 0.94],
             ['calendar', 'Eid al-Adha', '/calendar/search?q=Eid al-Adha', 0.93],
             ['calendar', 'Mawlid', '/calendar/search?q=Mawlid', 0.92],
             ['calendar', 'Laylat al-Qadr', '/calendar/search?q=Laylat al-Qadr', 0.91],
-            
+
             // Prayer suggestions
             ['prayer', 'Mecca', '/prayer/search?q=Mecca', 0.95],
             ['prayer', 'Medina', '/prayer/search?q=Medina', 0.94],
             ['prayer', 'Jerusalem', '/prayer/search?q=Jerusalem', 0.93],
             ['prayer', 'Istanbul', '/prayer/search?q=Istanbul', 0.92],
             ['prayer', 'Cairo', '/prayer/search?q=Cairo', 0.91],
-            
+
             // Page suggestions
             ['page', 'Islam', '/Islam', 0.95],
             ['page', 'Quran', '/Quran', 0.94],
@@ -164,6 +166,6 @@ class CreateSearchIndexes extends Migration
     }
 };
 
-return function($connection) {
+return function ($connection) {
     return new CreateSearchIndexes($connection);
 };

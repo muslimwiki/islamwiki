@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Simple test to check if login works
@@ -65,4 +66,3 @@ if ($httpCode == 200) {
 }
 
 echo "<br><br><a href='https://local.islam.wiki/login' target='_blank'>Open Login Page in New Tab</a>";
-?> 

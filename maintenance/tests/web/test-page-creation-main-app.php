@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Page Creation with Main App Session Config
- * 
+ *
  * This script uses the exact same session configuration as the main application.
  */
 
@@ -51,7 +52,7 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['is_admin'] = $user['is_admin'];
-    
+
     echo "   ✅ Login successful\n";
     echo "   User ID: {$user['id']}\n";
     echo "   Username: {$user['username']}\n";
@@ -75,25 +76,25 @@ try {
         'http_only' => true,
         'same_site' => 'Lax',
     ];
-    
+
     $sessionManager = new \IslamWiki\Core\Session\SessionManager($config);
-    
+
     echo "   SessionManager created successfully\n";
     echo "   SessionManager::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
     echo "   SessionManager::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
     echo "   SessionManager::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
     echo "   SessionManager::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
-    
+
     // Simulate the PageController authentication check
     echo "\n3. Simulating PageController authentication check...\n";
-    
+
     if ($sessionManager->isLoggedIn()) {
         echo "   ✅ User is authenticated (SessionManager)\n";
-        
+
         // Check if user can create pages (basic check)
         $canCreatePages = true; // All authenticated users can create pages
         echo "   Can create pages: " . ($canCreatePages ? 'Yes' : 'No') . "\n";
-        
+
         if ($canCreatePages) {
             echo "   ✅ User has permission to create pages\n";
             echo "   ✅ Page creation should be accessible\n";
@@ -104,7 +105,6 @@ try {
         echo "   ❌ User is not authenticated (SessionManager)\n";
         echo "   ❌ Page creation should redirect to login\n";
     }
-    
 } catch (Exception $e) {
     echo "   ❌ Error: " . $e->getMessage() . "\n";
 }
@@ -144,4 +144,4 @@ echo "\nSession Information:\n";
 echo "Session Name: " . session_name() . "\n";
 echo "Session ID: " . session_id() . "\n";
 echo "Session Save Path: " . session_save_path() . "\n";
-echo "Session Data: " . json_encode($_SESSION) . "\n"; 
+echo "Session Data: " . json_encode($_SESSION) . "\n";

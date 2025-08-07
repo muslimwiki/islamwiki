@@ -11,23 +11,23 @@ try {
     // Create application instance
     $app = new NizamApplication(__DIR__ . '/..');
     $container = $app->getContainer();
-    
+
     // Get skin manager
     $skinManager = $container->get('skin.manager');
-    
+
     // Get current active skin
     $activeSkin = $skinManager->getActiveSkin();
     $activeSkinName = $skinManager->getActiveSkinName();
-    
+
     // Get all available skins
     $availableSkins = $skinManager->getSkins();
-    
+
     // Get skin data from container
     $skinData = null;
     if ($container->has('skin.data')) {
         $skinData = $container->get('skin.data');
     }
-    
+
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -162,7 +162,7 @@ try {
                 if (isset($_GET['skin'])) {
                     $newSkin = $_GET['skin'];
                     $result = $skinManager->setActiveSkin($newSkin);
-                    
+
                     if ($result) {
                         echo '<div class="current-skin">✅ Successfully switched to: ' . htmlspecialchars($newSkin) . '</div>';
                         // Refresh the page to show the new skin
@@ -177,7 +177,7 @@ try {
             <div class="section">
                 <h2>📁 Available Skins</h2>
                 <div class="skin-list">
-                    <?php foreach ($availableSkins as $name => $skin): ?>
+                    <?php foreach ($availableSkins as $name => $skin) : ?>
                         <div class="skin-card <?php echo ($name === $activeSkinName) ? 'active' : ''; ?>">
                             <h3><?php echo htmlspecialchars($skin->getName()); ?></h3>
                             <p><strong>Key:</strong> <?php echo htmlspecialchars($name); ?></p>
@@ -195,9 +195,9 @@ try {
                 <h2>📦 Container Data</h2>
                 <div class="debug-info">
                     <strong>Skin Data from Container:</strong><br>
-                    <?php if ($skinData): ?>
+                    <?php if ($skinData) : ?>
                         <pre><?php echo htmlspecialchars(json_encode($skinData, JSON_PRETTY_PRINT)); ?></pre>
-                    <?php else: ?>
+                    <?php else : ?>
                         <p>No skin data available in container</p>
                     <?php endif; ?>
                 </div>
@@ -214,7 +214,8 @@ try {
                         'skin.data' => $container->has('skin.data')
                     ];
                     foreach ($bindings as $binding => $exists) {
-                        echo "- {$binding}: " . ($exists ? 'Bound' : 'Not bound') . "<br>";
+                        $temp_8db6a459 = ($exists ? 'Bound' : 'Not bound') . "<br>";
+                        echo "- {$binding}: " . $temp_8db6a459;
                     }
                     ?>
                 </div>
@@ -223,10 +224,10 @@ try {
             <div class="section">
                 <h2>🎨 Current Skin CSS Preview</h2>
                 <div class="debug-info">
-                    <?php if ($activeSkin && $activeSkin->getCssContent()): ?>
+                    <?php if ($activeSkin && $activeSkin->getCssContent()) : ?>
                         <strong>CSS Content (first 500 characters):</strong><br>
                         <pre><?php echo htmlspecialchars(substr($activeSkin->getCssContent(), 0, 500)) . '...'; ?></pre>
-                    <?php else: ?>
+                    <?php else : ?>
                         <p>No CSS content available</p>
                     <?php endif; ?>
                 </div>
@@ -235,9 +236,8 @@ try {
     </body>
     </html>
     <?php
-    
 } catch (Exception $e) {
     echo '<h1>Error</h1>';
     echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
     echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
-} 
+}

@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Debug Server Variables
- * 
+ *
  * This script shows what server variables are available when the request is made.
  */
 
@@ -10,7 +11,7 @@ echo "<h1>🔍 Debug Server Variables</h1>";
 echo "<h2>Key Server Variables</h2>";
 $keyVars = [
     'HTTP_HOST',
-    'SERVER_NAME', 
+    'SERVER_NAME',
     'SERVER_ADDR',
     'REQUEST_URI',
     'REQUEST_METHOD',
@@ -32,4 +33,3 @@ foreach ($_SERVER as $key => $value) {
     echo "$key: $value\n";
 }
 echo "</pre>";
-?> 

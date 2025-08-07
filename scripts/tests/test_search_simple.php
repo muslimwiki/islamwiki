@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -19,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 /**
@@ -32,7 +34,7 @@ try {
     // Test 1: Check if SearchController exists
     echo "📋 Test 1: Checking SearchController\n";
     echo "-----------------------------------\n";
-    
+
     if (class_exists('IslamWiki\Http\Controllers\SearchController')) {
         echo "✅ SearchController class exists\n";
     } else {
@@ -42,7 +44,7 @@ try {
     // Test 2: Check if Search model exists
     echo "\n📋 Test 2: Checking Search Model\n";
     echo "--------------------------------\n";
-    
+
     if (class_exists('IslamWiki\Models\Search')) {
         echo "✅ Search model class exists\n";
     } else {
@@ -52,7 +54,7 @@ try {
     // Test 3: Check if search template exists
     echo "\n📋 Test 3: Checking Search Template\n";
     echo "----------------------------------\n";
-    
+
     $templatePath = __DIR__ . '/../../resources/views/search/index.twig';
     if (file_exists($templatePath)) {
         echo "✅ Search template exists: $templatePath\n";
@@ -64,7 +66,7 @@ try {
     // Test 4: Check if search routes are defined
     echo "\n📋 Test 4: Checking Search Routes\n";
     echo "--------------------------------\n";
-    
+
     $routesFile = __DIR__ . '/../../routes/web.php';
     if (file_exists($routesFile)) {
         $routesContent = file_get_contents($routesFile);
@@ -80,7 +82,7 @@ try {
     // Test 5: Check if search migration exists
     echo "\n📋 Test 5: Checking Search Migration\n";
     echo "-----------------------------------\n";
-    
+
     $migrationPath = __DIR__ . '/../../database/migrations/0011_search_indexes.php';
     if (file_exists($migrationPath)) {
         echo "✅ Search migration exists: $migrationPath\n";
@@ -92,7 +94,7 @@ try {
     // Test 6: Check if search test exists
     echo "\n📋 Test 6: Checking Search Test\n";
     echo "-------------------------------\n";
-    
+
     $testPath = __DIR__ . '/test_search_integration.php';
     if (file_exists($testPath)) {
         echo "✅ Search integration test exists: $testPath\n";
@@ -104,13 +106,13 @@ try {
     // Test 7: Check VERSION file
     echo "\n📋 Test 7: Checking Version\n";
     echo "---------------------------\n";
-    
+
     $versionFile = __DIR__ . '/../../VERSION';
     if (file_exists($versionFile)) {
         $version = trim(file_get_contents($versionFile));
         echo "✅ Version file exists\n";
         echo "📋 Current version: $version\n";
-        
+
         if ($version === '0.0.17') {
             echo "✅ Version is correct for search features\n";
         } else {
@@ -123,7 +125,7 @@ try {
     // Test 8: Check CHANGELOG
     echo "\n📋 Test 8: Checking Changelog\n";
     echo "-----------------------------\n";
-    
+
     $changelogFile = __DIR__ . '/../../CHANGELOG.md';
     if (file_exists($changelogFile)) {
         $changelogContent = file_get_contents($changelogFile);
@@ -147,11 +149,10 @@ try {
     echo "✅ Search Test: " . (file_exists($testPath) ? 'OK' : 'MISSING') . "\n";
     echo "✅ Version: " . (file_exists($versionFile) ? 'OK' : 'MISSING') . "\n";
     echo "✅ Changelog: " . (file_exists($changelogFile) ? 'OK' : 'MISSING') . "\n";
-    
-    echo "\n🚀 IslamWiki v0.0.17 Search System Files Verified!\n";
 
+    echo "\n🚀 IslamWiki v0.0.17 Search System Files Verified!\n";
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "📋 Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

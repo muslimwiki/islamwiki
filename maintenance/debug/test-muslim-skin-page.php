@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test page for Muslim skin
- * 
+ *
  * This page demonstrates the Muslim skin working correctly.
  */
 

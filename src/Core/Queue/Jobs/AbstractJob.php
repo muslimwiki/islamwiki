@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Jobs;
@@ -159,4 +160,4 @@ abstract class AbstractJob implements JobInterface
      * This method must be implemented by concrete job classes.
      */
     abstract public function handle(): mixed;
-} 
+}

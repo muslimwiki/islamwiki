@@ -1,4 +1,5 @@
 <?php
+
 // Simple test to check BlueSkin loading
 echo "<h1>BlueSkin Test</h1>";
 
@@ -29,7 +30,7 @@ $localSettingsPath = __DIR__ . '/../LocalSettings.php';
 if (file_exists($localSettingsPath)) {
     // Try to load without Dotenv
     $content = file_get_contents($localSettingsPath);
-    
+
     // Extract $wgValidSkins manually
     if (preg_match('/\$wgValidSkins\s*=\s*\[(.*?)\];/s', $content, $matches)) {
         echo "Found \$wgValidSkins in LocalSettings.php<br>";
@@ -51,4 +52,3 @@ if (is_dir($skinsDir)) {
         echo "- $skinName<br>";
     }
 }
-?> 

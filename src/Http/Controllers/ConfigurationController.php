@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Configuration Controller
- * 
+ *
  * Web and API controller for configuration management including
  * viewing, editing, validation, backup, and restore functionality.
- * 
+ *
  * @package IslamWiki\Http\Controllers
  * @version 0.0.20
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
@@ -50,7 +51,7 @@ class ConfigurationController extends Controller
         try {
             $categories = $this->configManager->getCategories();
             $validation = $this->configManager->validateConfiguration();
-            
+
             return $this->view('configuration/index', [
                 'categories' => $categories,
                 'validation' => $validation,
@@ -69,7 +70,7 @@ class ConfigurationController extends Controller
     {
         try {
             $templates = $this->getConfigurationTemplates();
-            
+
             return $this->view('configuration/builder', [
                 'templates' => $templates,
                 'title' => 'Configuration Builder'
@@ -87,14 +88,14 @@ class ConfigurationController extends Controller
     {
         try {
             $categories = $this->configManager->getCategories();
-            
+
             if (!isset($categories[$category])) {
                 return $this->errorResponse('Configuration category not found', 404);
             }
-            
+
             $configurations = $this->configManager->getCategory($category);
             $categoryInfo = $categories[$category];
-            
+
             return $this->view('configuration/show', [
                 'category' => $categoryInfo,
                 'configurations' => $configurations,
@@ -113,18 +114,18 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['key']) || !isset($data['value'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Missing required fields: key and value'
                 ], 400);
             }
-            
+
             $key = $data['key'];
             $value = $data['value'];
             $userId = $this->getCurrentUserId();
-            
+
             if ($this->configManager->setValue($key, $value, $userId)) {
                 return $this->jsonResponse([
                     'success' => true,
@@ -152,9 +153,9 @@ class ConfigurationController extends Controller
     {
         try {
             $configuration = $this->configManager->exportConfiguration();
-            
+
             $filename = 'islamwiki-config-' . date('Y-m-d-H-i-s') . '.json';
-            
+
             return new Response(
                 200,
                 [
@@ -176,14 +177,14 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['configuration']) || !is_array($data['configuration'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Invalid configuration data'
                 ], 400);
             }
-            
+
             if ($this->configManager->importConfiguration($data)) {
                 return $this->jsonResponse([
                     'success' => true,
@@ -211,7 +212,7 @@ class ConfigurationController extends Controller
     {
         try {
             $validation = $this->configManager->validateConfiguration();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'validation' => $validation
@@ -232,11 +233,11 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             $backupName = $data['backup_name'] ?? 'backup-' . date('Y-m-d-H-i-s');
             $description = $data['description'] ?? null;
             $userId = $this->getCurrentUserId();
-            
+
             if ($this->configManager->createBackup($backupName, $userId, $description)) {
                 return $this->jsonResponse([
                     'success' => true,
@@ -265,16 +266,16 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['backup_id'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Backup ID is required'
                 ], 400);
             }
-            
+
             $backupId = (int) $data['backup_id'];
-            
+
             if ($this->configManager->restoreBackup($backupId)) {
                 return $this->jsonResponse([
                     'success' => true,
@@ -303,9 +304,9 @@ class ConfigurationController extends Controller
         try {
             $limit = (int) ($request->getQueryParams()['limit'] ?? 100);
             $offset = (int) ($request->getQueryParams()['offset'] ?? 0);
-            
+
             $auditLog = $this->configManager->getAuditLog($limit, $offset);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'audit_log' => $auditLog
@@ -326,7 +327,7 @@ class ConfigurationController extends Controller
     {
         try {
             $backups = $this->configManager->getBackups();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'backups' => $backups
@@ -348,14 +349,14 @@ class ConfigurationController extends Controller
         try {
             $categories = $this->configManager->getCategories();
             $allConfig = [];
-            
+
             foreach ($categories as $category => $categoryInfo) {
                 $allConfig[$category] = [
                     'info' => $categoryInfo,
                     'configurations' => $this->configManager->getCategory($category)
                 ];
             }
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'configuration' => $allConfig
@@ -376,16 +377,16 @@ class ConfigurationController extends Controller
     {
         try {
             $categories = $this->configManager->getCategories();
-            
+
             if (!isset($categories[$category])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Configuration category not found'
                 ], 404);
             }
-            
+
             $configurations = $this->configManager->getCategory($category);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'category' => $categories[$category],
@@ -407,17 +408,17 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['value'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Value is required'
                 ], 400);
             }
-            
+
             $value = $data['value'];
             $userId = $this->getCurrentUserId();
-            
+
             if ($this->configManager->setValue($key, $value, $userId)) {
                 return $this->jsonResponse([
                     'success' => true,
@@ -445,7 +446,7 @@ class ConfigurationController extends Controller
     {
         try {
             $templates = $this->getConfigurationTemplates();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $templates,
@@ -467,16 +468,16 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['name']) || !isset($data['category'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Template name and category are required'
                 ], 400);
             }
-            
+
             $templateId = $this->createConfigurationTemplate($data);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => ['template_id' => $templateId],
@@ -498,16 +499,16 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['template_id'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Template ID is required'
                 ], 400);
             }
-            
+
             $applied = $this->applyConfigurationTemplate($data['template_id']);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => ['applied' => $applied],
@@ -529,16 +530,16 @@ class ConfigurationController extends Controller
     {
         try {
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['operations']) || !is_array($data['operations'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Operations array is required'
                 ], 400);
             }
-            
+
             $results = $this->performBulkOperations($data['operations']);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $results,
@@ -560,7 +561,7 @@ class ConfigurationController extends Controller
     {
         try {
             $analytics = $this->getConfigurationAnalytics();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $analytics,
@@ -583,9 +584,9 @@ class ConfigurationController extends Controller
         try {
             $data = $request->getParsedBody();
             $validationMode = $data['mode'] ?? 'full';
-            
+
             $validation = $this->performAdvancedValidation($validationMode);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $validation,
@@ -607,7 +608,7 @@ class ConfigurationController extends Controller
     {
         try {
             $dependencies = $this->getConfigurationDependencies($key);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $dependencies,
@@ -631,9 +632,9 @@ class ConfigurationController extends Controller
             $data = $request->getParsedBody();
             $query = $data['query'] ?? '';
             $category = $data['category'] ?? null;
-            
+
             $suggestions = $this->getConfigurationSuggestions($query, $category);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $suggestions,
@@ -655,7 +656,7 @@ class ConfigurationController extends Controller
     {
         try {
             $metrics = $this->getConfigurationPerformanceMetrics();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $metrics,
@@ -731,7 +732,7 @@ class ConfigurationController extends Controller
     private function performBulkOperations(array $operations): array
     {
         $results = [];
-        
+
         foreach ($operations as $operation) {
             try {
                 switch ($operation['action']) {
@@ -743,7 +744,7 @@ class ConfigurationController extends Controller
                             'success' => $success
                         ];
                         break;
-                        
+
                     case 'delete':
                         // Implement delete operation
                         $results[] = [
@@ -752,7 +753,7 @@ class ConfigurationController extends Controller
                             'success' => true
                         ];
                         break;
-                        
+
                     default:
                         $results[] = [
                             'action' => $operation['action'],
@@ -770,7 +771,7 @@ class ConfigurationController extends Controller
                 ];
             }
         }
-        
+
         return $results;
     }
 
@@ -780,7 +781,7 @@ class ConfigurationController extends Controller
     private function getConfigurationAnalytics(): array
     {
         $auditLog = $this->configManager->getAuditLog(1000, 0);
-        
+
         $analytics = [
             'total_changes' => count($auditLog),
             'changes_by_category' => [],
@@ -789,13 +790,13 @@ class ConfigurationController extends Controller
             'most_changed_keys' => [],
             'validation_status' => $this->configManager->validateConfiguration()
         ];
-        
+
         // Calculate changes by category
         foreach ($auditLog as $entry) {
             $category = $entry['category'];
             $analytics['changes_by_category'][$category] = ($analytics['changes_by_category'][$category] ?? 0) + 1;
         }
-        
+
         return $analytics;
     }
 
@@ -805,7 +806,7 @@ class ConfigurationController extends Controller
     private function performAdvancedValidation(string $mode): array
     {
         $validation = $this->configManager->validateConfiguration();
-        
+
         $advancedValidation = [
             'basic_validation' => $validation,
             'dependency_check' => $this->checkConfigurationDependencies(),
@@ -813,11 +814,11 @@ class ConfigurationController extends Controller
             'security_check' => $this->checkConfigurationSecurity(),
             'consistency_check' => $this->checkConfigurationConsistency()
         ];
-        
+
         if ($mode === 'full') {
             $advancedValidation['comprehensive_check'] = $this->performComprehensiveCheck();
         }
-        
+
         return $advancedValidation;
     }
 
@@ -847,20 +848,20 @@ class ConfigurationController extends Controller
     private function getConfigurationSuggestions(string $query, ?string $category): array
     {
         $suggestions = [];
-        
+
         if (empty($query)) {
             return $suggestions;
         }
-        
+
         $categories = $this->configManager->getCategories();
-        
+
         foreach ($categories as $cat) {
             if ($category && $cat['name'] !== $category) {
                 continue;
             }
-            
+
             $configs = $this->configManager->getCategory($cat['name']);
-            
+
             foreach ($configs as $key => $value) {
                 if (stripos($key, $query) !== false || stripos($cat['display_name'], $query) !== false) {
                     $suggestions[] = [
@@ -872,7 +873,7 @@ class ConfigurationController extends Controller
                 }
             }
         }
-        
+
         return array_slice($suggestions, 0, 10);
     }
 
@@ -884,7 +885,7 @@ class ConfigurationController extends Controller
         $startTime = microtime(true);
         $this->configManager->loadConfiguration();
         $loadTime = (microtime(true) - $startTime) * 1000;
-        
+
         return [
             'load_time_ms' => round($loadTime, 2),
             'cache_hit_rate' => 0.95,
@@ -996,7 +997,7 @@ class ConfigurationController extends Controller
     {
         $renderer = $this->container->get('view');
         $content = $renderer->render($template, $data);
-        
+
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
@@ -1023,4 +1024,4 @@ class ConfigurationController extends Controller
             "<h1>Error {$status}</h1><p>{$message}</p>"
         );
     }
-} 
+}

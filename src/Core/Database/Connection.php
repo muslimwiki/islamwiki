@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Database;
@@ -96,11 +97,11 @@ class Connection
         $port = $config['port'] ?? '';
 
         $dsn = "{$driver}:host={$host}";
-        
+
         if ($port !== '') {
             $dsn .= ";port={$port}";
         }
-        
+
         $dsn .= ";dbname={$database};charset={$charset}";
 
         return $dsn;
@@ -261,7 +262,7 @@ class Connection
                 $bindings[$key] = (int) $value;
             }
         }
-        
+
         return $bindings;
     }
 

@@ -29,7 +29,7 @@ use IslamWiki\Core\Database\Migrations\Migrator;
 
 /**
  * Database Service Provider
- * 
+ *
  * Handles database connection and migration services.
  */
 class DatabaseServiceProvider
@@ -47,7 +47,7 @@ class DatabaseServiceProvider
             $username = $_ENV['DB_USERNAME'] ?? 'root';
             $password = $_ENV['DB_PASSWORD'] ?? '';
             $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
-            
+
             $config = [
                 'host' => $host,
                 'port' => $port,
@@ -57,7 +57,7 @@ class DatabaseServiceProvider
                 'charset' => $charset,
                 'driver' => 'mysql'
             ];
-            
+
             return new Connection($config);
         });
 
@@ -73,4 +73,4 @@ class DatabaseServiceProvider
             return $container->get('db');
         });
     }
-} 
+}

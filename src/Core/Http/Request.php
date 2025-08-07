@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Http;
@@ -111,31 +112,31 @@ class Request implements ServerRequestInterface
         $_COOKIE = $_COOKIE ?? [];
         $_FILES = $_FILES ?? [];
         $_SERVER = $_SERVER ?? [];
-        
+
         // Get request method, default to GET if not set
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        
+
         // Get URI from globals
         $uri = self::getUriFromGlobals();
-        
+
         // Get headers
         $headers = function_exists('getallheaders') ? getallheaders() : [];
-        
+
         // Create request body stream
         $body = new Stream('php://input', 'r+');
-        
+
         // Get protocol version
-        $protocol = isset($_SERVER['SERVER_PROTOCOL']) 
-            ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) 
+        $protocol = isset($_SERVER['SERVER_PROTOCOL'])
+            ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL'])
             : '1.1';
 
         // Create the request
         $request = new self(
-            $method, 
-            $uri, 
-            is_array($headers) ? $headers : [], 
-            $body, 
-            $protocol, 
+            $method,
+            $uri,
+            is_array($headers) ? $headers : [],
+            $body,
+            $protocol,
             $_SERVER
         );
 
@@ -182,11 +183,11 @@ class Request implements ServerRequestInterface
                 $port = (int) end($hostParts);
             }
         }
-        
+
         if ($port === null && !empty($_SERVER['SERVER_PORT'])) {
             $port = (int) $_SERVER['SERVER_PORT'];
         }
-        
+
         // Only set port if it's not the default for the scheme
         if ($port !== null && $port !== ($isHttps ? 443 : 80)) {
             $uri = $uri->withPort($port);
@@ -195,7 +196,7 @@ class Request implements ServerRequestInterface
         // Path and query
         $requestUri = !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
         $requestUriParts = explode('?', $requestUri, 2);
-        
+
         // Ensure path is not empty and starts with /
         $path = $requestUriParts[0];
         if (empty($path)) {
@@ -203,9 +204,9 @@ class Request implements ServerRequestInterface
         } elseif ($path[0] !== '/') {
             $path = '/' . $path;
         }
-        
+
         $uri = $uri->withPath($path);
-        
+
         // Set query string if available
         if (isset($requestUriParts[1])) {
             $uri = $uri->withQuery($requestUriParts[1]);
@@ -244,8 +245,10 @@ class Request implements ServerRequestInterface
      */
     protected static function createUploadedFileFromSpec(array $file): UploadedFile
     {
-        if (!isset($file['tmp_name']) || !isset($file['name']) || !isset($file['type']) || 
-            !isset($file['size']) || !isset($file['error'])) {
+        if (
+            !isset($file['tmp_name']) || !isset($file['name']) || !isset($file['type']) ||
+            !isset($file['size']) || !isset($file['error'])
+        ) {
             throw new \InvalidArgumentException('The file must be an array with keys tmp_name, name, type, size, and error');
         }
 
@@ -264,7 +267,7 @@ class Request implements ServerRequestInterface
     protected function filterHeaders(array $headers): array
     {
         $result = [];
-        
+
         foreach ($headers as $name => $value) {
             $name = strtolower($name);
             if (is_array($value)) {
@@ -273,7 +276,7 @@ class Request implements ServerRequestInterface
                 $result[$name] = [strval($value)];
             }
         }
-        
+
         return $result;
     }
 
@@ -310,22 +313,22 @@ class Request implements ServerRequestInterface
         if (!is_string($name) || $name === '') {
             throw new \InvalidArgumentException('Header name must be a non-empty string');
         }
-        
+
         $name = strtolower($name);
-        
+
         // Debug: Log the header being accessed
         if (!isset($this->headers[$name])) {
             // error_log(sprintf('Header not found: %s', $name));
             return [];
         }
-        
+
         // Ensure we return an array of strings
         $headerValues = $this->headers[$name];
         if (!is_array($headerValues)) {
             // error_log(sprintf('Header value is not an array: %s', print_r($headerValues, true)));
             return [];
         }
-        
+
         return array_map('strval', $headerValues);
     }
 
@@ -333,13 +336,13 @@ class Request implements ServerRequestInterface
     {
         try {
             $headerValues = $this->getHeader($name);
-            
+
             // Debug: Log the header values
             // error_log(sprintf('Header values for %s: %s', $name, print_r($headerValues, true)));
-            
+
             // Ensure all values are strings before imploding
             $headerValues = array_map('strval', $headerValues);
-            
+
             return implode(', ', $headerValues);
         } catch (\Throwable $e) {
             // error_log(sprintf('Error in getHeaderLine(%s): %s', $name, $e->getMessage()));
@@ -366,18 +369,18 @@ class Request implements ServerRequestInterface
             $this->getHeader($name),
             is_array($value) ? $value : [$value]
         );
-        
+
         return $new;
     }
 
     public function withoutHeader($name): self
     {
         $normalized = strtolower($name);
-        
+
         if (!isset($this->headers[$normalized])) {
             return $this;
         }
-        
+
         $new = clone $this;
         unset($new->headers[$normalized]);
         return $new;
@@ -409,11 +412,11 @@ class Request implements ServerRequestInterface
 
         $target = $this->uri->getPath();
         $query = $this->uri->getQuery();
-        
+
         if ($query !== '') {
             $target .= '?' . $query;
         }
-        
+
         return $target ?: '/';
     }
 
@@ -436,11 +439,11 @@ class Request implements ServerRequestInterface
     public function withMethod($method): self
     {
         $method = strtoupper($method);
-        
+
         if (!is_string($method) || $method === '') {
             throw new \InvalidArgumentException('Method must be a non-empty string');
         }
-        
+
         $new = clone $this;
         $new->method = $method;
         return $new;
@@ -570,7 +573,7 @@ class Request implements ServerRequestInterface
     {
         return $this->queryParams[$name] ?? $default;
     }
-    
+
     /**
      * Get a POST parameter.
      */
@@ -582,7 +585,7 @@ class Request implements ServerRequestInterface
         }
         return $default;
     }
-    
+
     /**
      * Create a Request instance from a PSR-7 ServerRequest.
      */
@@ -596,14 +599,14 @@ class Request implements ServerRequestInterface
             $psrRequest->getProtocolVersion(),
             $psrRequest->getServerParams()
         );
-        
+
         // Copy additional properties
         $request->cookieParams = $psrRequest->getCookieParams();
         $request->queryParams = $psrRequest->getQueryParams();
         $request->parsedBody = $psrRequest->getParsedBody();
         $request->uploadedFiles = $psrRequest->getUploadedFiles();
         $request->attributes = $psrRequest->getAttributes();
-        
+
         return $request;
     }
 }

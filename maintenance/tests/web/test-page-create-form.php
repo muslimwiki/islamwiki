@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test page creation form without authentication
  */

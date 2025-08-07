@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\API\Formatters;
@@ -9,14 +10,14 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * HTML Response Formatter
- * 
+ *
  * Formats API responses as HTML.
  * TODO: Implement HTML formatting logic
  */
 class HtmlResponseFormatter implements ResponseFormatterInterface
 {
     private StreamFactoryInterface $streamFactory;
-    
+
     /**
      * Create a new HTML response formatter.
      */
@@ -24,7 +25,7 @@ class HtmlResponseFormatter implements ResponseFormatterInterface
     {
         $this->streamFactory = $streamFactory ?? new \GuzzleHttp\Psr7\StreamFactory();
     }
-    
+
     /**
      * Format data as HTML response.
      */
@@ -32,16 +33,16 @@ class HtmlResponseFormatter implements ResponseFormatterInterface
     {
         // TODO: Implement HTML formatting
         $htmlData = '<!DOCTYPE html><html><head><title>API Response</title></head><body><h1>HTML format not yet implemented</h1></body></html>';
-        
+
         $stream = $this->streamFactory->createStream($htmlData);
-        
+
         return new \GuzzleHttp\Psr7\Response(
             $statusCode,
             ['Content-Type' => 'text/html'],
             $stream
         );
     }
-    
+
     /**
      * Get supported content type.
      */
@@ -49,4 +50,4 @@ class HtmlResponseFormatter implements ResponseFormatterInterface
     {
         return 'text/html';
     }
-} 
+}

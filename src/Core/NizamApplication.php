@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -17,7 +17,16 @@ declare(strict_types=1);
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @category  Core
+ * @package   IslamWiki
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core;
 
@@ -41,15 +50,20 @@ use IslamWiki\Core\Configuration\TadbirConfiguration;
 
 /**
  * NizamApplication (نظام) - Main Application System
- * 
+ *
  * Nizam means "System" or "Order" in Arabic. This is the main application
  * framework that orchestrates all Islamic-named systems and provides the
  * foundation for the entire IslamWiki application.
- * 
+ *
  * This class combines the functionality of the original Application.php and Nizam.php
  * into a single, comprehensive application system.
- * 
- * @package IslamWiki\Core
+ *
+ * @category  Core
+ * @package   IslamWiki\Core
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1
  */
 class NizamApplication
 {
@@ -71,32 +85,32 @@ class NizamApplication
     /**
      * The routing system.
      */
-    private SabilRouting $sabilRouter;
+    private SabilRouting $_sabilRouter;
 
     /**
      * The application logger.
      */
-    private ShahidLogger $logger;
+    private ShahidLogger $_logger;
 
     /**
      * The security and authentication system.
      */
-    private AmanSecurity $auth;
+    private AmanSecurity $_auth;
 
     /**
      * The session management system.
      */
-    private WisalSession $session;
+    private WisalSession $_session;
 
     /**
      * The caching system.
      */
-    private RihlahCaching $cache;
+    private RihlahCaching $_cache;
 
     /**
      * The job queue system.
      */
-    private SabrQueue $queue;
+    private SabrQueue $_queue;
 
     /**
      * The knowledge management system.
@@ -199,7 +213,7 @@ class NizamApplication
 
         // Initialize error handling
         $this->initializeErrorHandling();
-        
+
         // Register ControllerFactory
         $db = $this->container->get('db');
         $logger = $this->container->get('logger');
@@ -213,43 +227,47 @@ class NizamApplication
     private function initializeSystems(): void
     {
         // Initialize SabilRouting (Routing)
-        $this->sabilRouter = new SabilRouting($this->container);
+        $this->_sabilRouter = new SabilRouting($this->container);
+
+        // Add SkinMiddleware to the router
+        $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($this);
+        $this->_sabilRouter->addMiddleware([$skinMiddleware, 'handle']);
 
         // Initialize Shahid (Logging)
-        $this->logger = new ShahidLogger($this->basePath('storage/logs'));
+        $this->_logger = new ShahidLogger($this->basePath('storage/logs'));
 
         // Initialize Mizan (Database)
-        $this->database = new MizanDatabase($this->logger, []);
+        $this->database = new MizanDatabase($this->_logger, []);
 
         // Initialize Connection (Database)
         $this->connection = new Connection([]);
 
         // Initialize Wisal (Session)
-        $this->session = new WisalSession([]);
+        $this->_session = new WisalSession([]);
 
         // Initialize Aman (Security)
-        $this->auth = new AmanSecurity($this->session, $this->connection);
+        $this->_auth = new AmanSecurity($this->_session, $this->connection);
 
         // Initialize Rihlah (Caching)
-        $this->cache = new RihlahCaching($this->container, $this->logger, $this->connection);
+        $this->_cache = new RihlahCaching($this->container, $this->_logger, $this->connection);
 
         // Initialize Sabr (Queue)
-        $this->queue = new SabrQueue($this->container, $this->logger, $this->connection);
+        $this->_queue = new SabrQueue($this->container, $this->_logger, $this->connection);
 
         // Initialize Usul (Knowledge)
-        $this->knowledge = new UsulKnowledge($this->container, $this->logger, $this->connection);
+        $this->knowledge = new UsulKnowledge($this->container, $this->_logger, $this->connection);
 
         // Initialize Iqra (Search)
         $this->search = new IqraSearch($this->connection);
 
         // Initialize Bayan (Formatter)
-        $this->formatter = new BayanFormatter($this->connection, $this->logger);
+        $this->formatter = new BayanFormatter($this->connection, $this->_logger);
 
         // Initialize Siraj (API) - temporarily disabled due to GuzzleHttp StreamFactory issue
         // $this->api = new SirajAPI($this->container, $this->logger, $this->session);
 
         // Initialize Tadbir (Configuration)
-        $this->config = new TadbirConfiguration($this->logger);
+        $this->config = new TadbirConfiguration($this->_logger);
     }
 
     /**
@@ -425,7 +443,7 @@ class NizamApplication
      */
     protected function handleRouterException(\Exception $e, Request $request): Response
     {
-        $this->logger->error('Router exception: ' . $e->getMessage(), [
+        $this->_logger->error('Router exception: ' . $e->getMessage(), [
             'exception' => $e,
             'request' => $request->getUri()
         ]);
@@ -473,7 +491,7 @@ class NizamApplication
      */
     public function getSabilRouter(): SabilRouting
     {
-        return $this->sabilRouter;
+        return $this->_sabilRouter;
     }
 
     /**
@@ -481,7 +499,7 @@ class NizamApplication
      */
     public function getAuth(): AmanSecurity
     {
-        return $this->auth;
+        return $this->_auth;
     }
 
     /**
@@ -489,7 +507,7 @@ class NizamApplication
      */
     public function getSession(): WisalSession
     {
-        return $this->session;
+        return $this->_session;
     }
 
     /**
@@ -497,7 +515,7 @@ class NizamApplication
      */
     public function getCache(): RihlahCaching
     {
-        return $this->cache;
+        return $this->_cache;
     }
 
     /**
@@ -505,7 +523,7 @@ class NizamApplication
      */
     public function getQueue(): SabrQueue
     {
-        return $this->queue;
+        return $this->_queue;
     }
 
     /**
@@ -561,7 +579,7 @@ class NizamApplication
      */
     public function getLogger(): ShahidLogger
     {
-        return $this->logger;
+        return $this->_logger;
     }
 
     /**
@@ -569,48 +587,48 @@ class NizamApplication
      */
     public function boot(): void
     {
-        // Boot all systems
-        if ($this->auth) {
-            $this->auth->boot();
+        // Boot all systems that have boot methods
+        if (isset($this->_auth) && $this->_auth && method_exists($this->_auth, 'boot')) {
+            $this->_auth->boot();
         }
 
-        if ($this->session) {
-            $this->session->boot();
+        if (isset($this->_session) && $this->_session && method_exists($this->_session, 'boot')) {
+            $this->_session->boot();
         }
 
-        if ($this->cache) {
-            $this->cache->boot();
+        if (isset($this->_cache) && $this->_cache && method_exists($this->_cache, 'boot')) {
+            $this->_cache->boot();
         }
 
-        if ($this->queue) {
-            $this->queue->boot();
+        if (isset($this->_queue) && $this->_queue && method_exists($this->_queue, 'boot')) {
+            $this->_queue->boot();
         }
 
-        if ($this->knowledge) {
+        if (isset($this->knowledge) && $this->knowledge && method_exists($this->knowledge, 'boot')) {
             $this->knowledge->boot();
         }
 
-        if ($this->search) {
+        if (isset($this->search) && $this->search && method_exists($this->search, 'boot')) {
             $this->search->boot();
         }
 
-        if ($this->formatter) {
+        if (isset($this->formatter) && $this->formatter && method_exists($this->formatter, 'boot')) {
             $this->formatter->boot();
         }
 
-        if ($this->api) {
+        if (isset($this->api) && $this->api && method_exists($this->api, 'boot')) {
             $this->api->boot();
         }
 
-        if ($this->database) {
+        if (isset($this->database) && $this->database && method_exists($this->database, 'boot')) {
             $this->database->boot();
         }
 
-        if ($this->config) {
+        if (isset($this->config) && $this->config && method_exists($this->config, 'boot')) {
             $this->config->boot();
         }
 
-        $this->logger->info('NizamApplication booted successfully');
+        $this->_logger->info('NizamApplication booted successfully');
     }
 
     /**
@@ -619,23 +637,23 @@ class NizamApplication
     public function shutdown(): void
     {
         // Shutdown all systems gracefully
-        if ($this->queue) {
-            $this->queue->shutdown();
+        if ($this->_queue) {
+            $this->_queue->shutdown();
         }
 
-        if ($this->cache) {
-            $this->cache->shutdown();
+        if ($this->_cache) {
+            $this->_cache->shutdown();
         }
 
-        if ($this->session) {
-            $this->session->shutdown();
+        if ($this->_session) {
+            $this->_session->shutdown();
         }
 
         if ($this->database) {
             $this->database->shutdown();
         }
 
-        $this->logger->info('NizamApplication shutdown completed');
+        $this->_logger->info('NizamApplication shutdown completed');
     }
 
     /**
@@ -648,10 +666,10 @@ class NizamApplication
             'peak_memory' => memory_get_peak_usage(true),
             'uptime' => microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true),
             'systems' => [
-                'auth' => $this->auth ? 'active' : 'inactive',
-                'session' => $this->session ? 'active' : 'inactive',
-                'cache' => $this->cache ? 'active' : 'inactive',
-                'queue' => $this->queue ? 'active' : 'inactive',
+                'auth' => $this->_auth ? 'active' : 'inactive',
+                'session' => $this->_session ? 'active' : 'inactive',
+                'cache' => $this->_cache ? 'active' : 'inactive',
+                'queue' => $this->_queue ? 'active' : 'inactive',
                 'knowledge' => $this->knowledge ? 'active' : 'inactive',
                 'search' => $this->search ? 'active' : 'inactive',
                 'formatter' => $this->formatter ? 'active' : 'inactive',
@@ -661,4 +679,4 @@ class NizamApplication
             ]
         ];
     }
-} 
+}

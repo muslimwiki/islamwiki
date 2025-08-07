@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🔍 Final Login Test with CSRF Token Fix\n";
@@ -21,7 +22,8 @@ curl_close($ch);
 preg_match('/name="_token" value="([^"]+)"/', $loginPage, $matches);
 $csrfToken = $matches[1] ?? 'no-token-found';
 
-echo "- CSRF Token found: " . ($csrfToken !== 'no-token-found' ? '✅ Yes' : '❌ No') . "\n";
+        $temp_9e3ab138 = ($csrfToken !== 'no-token-found' ? '✅ Yes' : '❌ No') . "\n";
+        echo "- CSRF Token found: " . $temp_9e3ab138;
 echo "- CSRF Token length: " . strlen($csrfToken) . " characters\n";
 echo "- CSRF Token starts with: " . substr($csrfToken, 0, 10) . "...\n";
 
@@ -55,8 +57,10 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Login HTTP code: $httpCode\n";
-echo "- Response contains redirect: " . (strpos($response, 'Location:') !== false ? '✅ Yes' : '❌ No') . "\n";
-echo "- Response redirects to dashboard: " . (strpos($response, 'Location: /dashboard') !== false ? '✅ Yes' : '❌ No') . "\n";
+        $temp_75c032c4 = (strpos($response, 'Location:') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Response contains redirect: " . $temp_75c032c4;
+        $temp_b88baccb = (strpos($response, 'Location: /dashboard') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Response redirects to dashboard: " . $temp_b88baccb;
 
 if (strpos($response, 'Location: /dashboard') !== false) {
     echo "✅ Login successful!\n";
@@ -80,9 +84,12 @@ $dashboardHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Dashboard HTTP code: $dashboardHttpCode\n";
-echo "- Dashboard accessible: " . ($dashboardHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
-echo "- Dashboard title found: " . (strpos($dashboardResponse, 'Dashboard - IslamWiki') !== false ? '✅ Yes' : '❌ No') . "\n";
-echo "- User menu shows admin: " . (strpos($dashboardResponse, 'User menu for admin') !== false ? '✅ Yes' : '❌ No') . "\n";
+        $temp_6a2ac77f = ($dashboardHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Dashboard accessible: " . $temp_6a2ac77f;
+        $temp_3d1cb2c4 = (strpos($dashboardResponse, 'Dashboard - IslamWiki') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Dashboard title found: " . $temp_3d1cb2c4;
+        $temp_eb3a508e = (strpos($dashboardResponse, 'User menu for admin') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- User menu shows admin: " . $temp_eb3a508e;
 
 // Test 4: Access settings page
 echo "\n4️⃣ Testing Settings Page Access:\n";
@@ -99,9 +106,12 @@ $settingsHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Settings HTTP code: $settingsHttpCode\n";
-echo "- Settings accessible: " . ($settingsHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
-echo "- Settings title found: " . (strpos($settingsResponse, 'Settings - IslamWiki') !== false ? '✅ Yes' : '❌ No') . "\n";
-echo "- Skin selection found: " . (strpos($settingsResponse, 'skin-card') !== false ? '✅ Yes' : '❌ No') . "\n";
+        $temp_4639927b = ($settingsHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Settings accessible: " . $temp_4639927b;
+        $temp_592d5f4d = (strpos($settingsResponse, 'Settings - IslamWiki') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Settings title found: " . $temp_592d5f4d;
+        $temp_a6d276ce = (strpos($settingsResponse, 'skin-card') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Skin selection found: " . $temp_a6d276ce;
 
 // Test 5: Test skin switching
 echo "\n5️⃣ Testing Skin Switching:\n";
@@ -121,7 +131,8 @@ $switchHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Switch to Bismillah HTTP code: $switchHttpCode\n";
-echo "- Switch successful: " . ($switchHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        $temp_7426858c = ($switchHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Switch successful: " . $temp_7426858c;
 
 // Verify the switch
 $ch = curl_init();
@@ -133,7 +144,8 @@ curl_setopt($ch, CURLOPT_COOKIEFILE, 'final_cookies.txt');
 $verifyResponse = curl_exec($ch);
 curl_close($ch);
 
-echo "- Bismillah skin active: " . (strpos($verifyResponse, 'skin-card active" data-skin="Bismillah"') !== false ? '✅ Yes' : '❌ No') . "\n";
+        $temp_fbeb4d21 = (strpos($verifyResponse, 'skin-card active" data-skin="Bismillah"') !== false ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Bismillah skin active: " . $temp_fbeb4d21;
 
 // Test 6: Test logout
 echo "\n6️⃣ Testing Logout:\n";
@@ -150,7 +162,8 @@ $logoutHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Logout HTTP code: $logoutHttpCode\n";
-echo "- Logout successful: " . ($logoutHttpCode === 302 || $logoutHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        $temp_295c4fd7 = ($logoutHttpCode === 302 || $logoutHttpCode === 200 ? '✅ Yes' : '❌ No') . "\n";
+        echo "- Logout successful: " . $temp_295c4fd7;
 
 // Clean up
 unlink('final_cookies.txt');
@@ -164,4 +177,4 @@ echo "- ✅ Settings page access is working\n";
 echo "- ✅ Skin switching is working\n";
 echo "- ✅ Logout is working\n";
 echo "- 💡 Login credentials: admin / password\n";
-echo "- 💡 The login issue has been resolved!\n"; 
+echo "- 💡 The login issue has been resolved!\n";

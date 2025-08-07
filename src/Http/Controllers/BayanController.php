@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Controller
- * 
+ *
  * Handles HTTP requests for the Bayan knowledge graph system.
  */
 class BayanController
@@ -87,7 +87,7 @@ class BayanController
     {
         try {
             $node = $this->bayanManager->getNodeManager()->findById($id);
-            
+
             if (!$node) {
                 return new Response(404, ['Content-Type' => 'text/html'], 'Node not found');
             }
@@ -164,7 +164,7 @@ class BayanController
 
         try {
             $data = $request->getParsedBody();
-            
+
             $requiredFields = ['type', 'title', 'content'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
@@ -175,7 +175,7 @@ class BayanController
             }
 
             $nodeId = $this->bayanManager->createNode($data);
-            
+
             if ($nodeId) {
                 $this->logger->info('Created Bayan node via API', [
                     'node_id' => $nodeId,
@@ -211,7 +211,7 @@ class BayanController
     {
         try {
             $data = $request->getParsedBody();
-            
+
             $requiredFields = ['source_id', 'target_id', 'type'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
@@ -228,7 +228,7 @@ class BayanController
                 $data['type'],
                 $attributes
             );
-            
+
             if ($edgeId) {
                 $this->logger->info('Created Bayan relationship via API', [
                     'edge_id' => $edgeId,
@@ -324,7 +324,7 @@ class BayanController
         // This is a simplified view renderer
         // In a real implementation, you would use a proper template engine
         $templatePath = dirname(__DIR__, 2) . '/resources/views/' . $template;
-        
+
         if (!file_exists($templatePath)) {
             return '<h1>Bayan Knowledge Graph</h1><p>Template not found: ' . htmlspecialchars($template) . '</p>';
         }
@@ -334,4 +334,4 @@ class BayanController
         include $templatePath;
         return ob_get_clean();
     }
-} 
+}

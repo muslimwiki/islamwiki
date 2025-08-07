@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers\Auth;
@@ -13,7 +14,7 @@ use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Islamic Authentication Controller
- * 
+ *
  * Enhanced authentication controller with Islamic community features:
  * - Scholar verification during registration
  * - Islamic role assignment
@@ -433,7 +434,7 @@ class IslamicAuthController extends AuthController
         try {
             $islamicDb = $this->container->get('islamic_database_manager');
             $scholarConnection = $islamicDb->getScholarConnection();
-            
+
             return $scholarConnection->select(
                 'SELECT * FROM scholar_verification_requests WHERE status = ? ORDER BY created_at DESC',
                 ['pending']
@@ -443,4 +444,4 @@ class IslamicAuthController extends AuthController
             return [];
         }
     }
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Jobs;
@@ -49,7 +50,7 @@ class NotificationJob extends AbstractJob
             // In a real application, you would use a proper database connection
             // For now, we'll simulate storing the notification
             $notificationId = uniqid('notif_', true);
-            
+
             // Log the notification
             error_log("Notification created: {$notificationId} for user {$this->userId}");
 
@@ -113,4 +114,4 @@ class NotificationJob extends AbstractJob
     {
         return $this->data;
     }
-} 
+}

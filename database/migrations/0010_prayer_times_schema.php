@@ -2,11 +2,11 @@
 
 /**
  * Prayer Times Schema Migration
- * 
+ *
  * This migration creates the comprehensive prayer times database schema
  * for the IslamWiki application, including prayer time calculations,
  * user locations, notifications, and preferences.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.16
  * @license AGPL-3.0
@@ -24,7 +24,7 @@ class CreatePrayerTimesSchema extends Migration
     public function up(): void
     {
         // Note: prayer_times table already created in Islamic Calendar migration
-        
+
         // User locations table
         $this->schema()->create('user_locations', function (Blueprint $table) {
             $table->id();
@@ -38,11 +38,11 @@ class CreatePrayerTimesSchema extends Migration
             $table->boolean('is_default')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->index(['user_id', 'is_default']);
         });
-        
+
         // Prayer time notifications table
         $this->schema()->create('prayer_notifications', function (Blueprint $table) {
             $table->id();
@@ -54,12 +54,12 @@ class CreatePrayerTimesSchema extends Migration
             $table->string('notification_type', 50)->default('web');
             $table->string('sound_file', 255)->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('location_id')->references('id')->on('user_locations')->onDelete('cascade');
             $table->unique(['user_id', 'location_id', 'prayer']);
         });
-        
+
         // Prayer time preferences table
         $this->schema()->create('prayer_preferences', function (Blueprint $table) {
             $table->id();
@@ -74,11 +74,11 @@ class CreatePrayerTimesSchema extends Migration
             $table->boolean('show_dua')->default(true);
             $table->boolean('show_qibla')->default(true);
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unique('user_id');
         });
-        
+
         // Prayer time history table
         $this->schema()->create('prayer_history', function (Blueprint $table) {
             $table->id();
@@ -91,12 +91,12 @@ class CreatePrayerTimesSchema extends Migration
             $table->enum('status', ['scheduled', 'completed', 'missed', 'delayed'])->default('scheduled');
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('location_id')->references('id')->on('user_locations')->onDelete('cascade');
             $table->index(['user_id', 'date', 'prayer']);
         });
-        
+
         // Qibla direction table
         $this->schema()->create('qibla_directions', function (Blueprint $table) {
             $table->id();
@@ -106,10 +106,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->decimal('qibla_direction', 8, 4);
             $table->decimal('qibla_distance', 10, 2);
             $table->timestamps();
-            
+
             $table->index(['latitude', 'longitude']);
         });
-        
+
         // Prayer time widgets table
         $this->schema()->create('prayer_widgets', function (Blueprint $table) {
             $table->id();
@@ -129,10 +129,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('view_count')->default(0);
             $table->timestamps();
-            
+
             $table->index(['widget_key', 'is_active']);
         });
-        
+
         // Prayer time API cache table
         $this->schema()->create('prayer_api_cache', function (Blueprint $table) {
             $table->id();
@@ -140,10 +140,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->text('response_data');
             $table->timestamp('expires_at');
             $table->timestamps();
-            
+
             $table->index(['cache_key', 'expires_at']);
         });
-        
+
         // Prayer time statistics table
         $this->schema()->create('prayer_statistics', function (Blueprint $table) {
             $table->id();
@@ -154,10 +154,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->integer('api_calls');
             $table->decimal('average_response_time', 8, 4);
             $table->timestamps();
-            
+
             $table->index('date');
         });
-        
+
         // Prayer time errors table
         $this->schema()->create('prayer_errors', function (Blueprint $table) {
             $table->id();
@@ -167,10 +167,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->string('location', 255)->nullable();
             $table->timestamp('occurred_at');
             $table->timestamps();
-            
+
             $table->index(['error_type', 'occurred_at']);
         });
-        
+
         // Prayer time integration table
         $this->schema()->create('prayer_wiki_links', function (Blueprint $table) {
             $table->id();
@@ -181,12 +181,12 @@ class CreatePrayerTimesSchema extends Migration
             $table->string('widget_type', 50)->default('daily');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
             $table->index(['page_id', 'is_active']);
         });
     }
-    
+
     /**
      * Reverse the migration
      */
@@ -206,6 +206,6 @@ class CreatePrayerTimesSchema extends Migration
     }
 };
 
-return function($connection) {
+return function ($connection) {
     return new CreatePrayerTimesSchema($connection);
 };

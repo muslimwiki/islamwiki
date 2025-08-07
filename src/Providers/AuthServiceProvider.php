@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * AuthServiceProvider
- * 
+ *
  * Registers authentication services with the container.
- * 
+ *
  * @package IslamWiki\Providers
  * @version 0.0.45
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
@@ -29,13 +30,13 @@ class AuthServiceProvider
             $db = $container->get('db');
             return new AmanSecurity($session, $db);
         });
-        
+
         // Register Aman as a singleton with its class name
         $container->singleton(AmanSecurity::class, function (AsasContainer $container) {
             return $container->get('auth');
         });
     }
-    
+
     /**
      * Boot the service provider.
      */
@@ -44,4 +45,4 @@ class AuthServiceProvider
         // Any boot-time initialization can go here
         // For now, we don't need any boot-time setup
     }
-} 
+}

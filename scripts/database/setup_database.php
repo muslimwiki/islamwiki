@@ -28,7 +28,7 @@ use IslamWiki\Core\Database\Migrations\Migrator;
 
 /**
  * Database Setup Script
- * 
+ *
  * This script helps set up the database for IslamWiki.
  * It will create the database if it doesn't exist and run migrations.
  */
@@ -63,22 +63,21 @@ class DatabaseSetup
         try {
             // Test connection without database
             $this->testConnection();
-            
+
             // Create database if it doesn't exist
             $this->createDatabase();
-            
+
             // Connect to the specific database
             $connection = $this->connectToDatabase();
-            
+
             // Run migrations
             $this->runMigrations($connection);
-            
+
             // Create sample data
             $this->createSampleData($connection);
-            
+
             echo "\n✅ Database setup completed successfully!\n";
             echo "You can now access IslamWiki at: https://local.islam.wiki\n";
-            
         } catch (Exception $e) {
             echo "\n❌ Error: " . $e->getMessage() . "\n";
             echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -92,7 +91,7 @@ class DatabaseSetup
     private function testConnection(): void
     {
         echo "🔍 Testing database connection...\n";
-        
+
         try {
             $pdo = new PDO(
                 "mysql:host={$this->host};port={$this->port};charset={$this->charset}",
@@ -103,9 +102,8 @@ class DatabaseSetup
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ]
             );
-            
+
             echo "✅ Database connection successful\n";
-            
         } catch (PDOException $e) {
             throw new Exception("Failed to connect to database: " . $e->getMessage());
         }
@@ -117,7 +115,7 @@ class DatabaseSetup
     private function createDatabase(): void
     {
         echo "📦 Creating database '{$this->database}' if it doesn't exist...\n";
-        
+
         try {
             $pdo = new PDO(
                 "mysql:host={$this->host};port={$this->port};charset={$this->charset}",
@@ -127,11 +125,10 @@ class DatabaseSetup
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 ]
             );
-            
+
             $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$this->database}` CHARACTER SET {$this->charset} COLLATE {$this->charset}_unicode_ci");
-            
+
             echo "✅ Database '{$this->database}' is ready\n";
-            
         } catch (PDOException $e) {
             throw new Exception("Failed to create database: " . $e->getMessage());
         }
@@ -143,7 +140,7 @@ class DatabaseSetup
     private function connectToDatabase(): Connection
     {
         echo "🔌 Connecting to database '{$this->database}'...\n";
-        
+
         try {
             $connection = new Connection([
                 'driver' => 'mysql',
@@ -158,10 +155,9 @@ class DatabaseSetup
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ],
             ]);
-            
+
             echo "✅ Connected to database successfully\n";
             return $connection;
-            
         } catch (Exception $e) {
             throw new Exception("Failed to connect to database '{$this->database}': " . $e->getMessage());
         }
@@ -173,11 +169,11 @@ class DatabaseSetup
     private function dropExistingTables(Connection $connection): void
     {
         echo "🗑️  Dropping existing tables...\n";
-        
+
         try {
             $tables = [
                 'page_categories',
-                'user_watchlist', 
+                'user_watchlist',
                 'page_revisions',
                 'pages',
                 'categories',
@@ -185,13 +181,12 @@ class DatabaseSetup
                 'users',
                 'migrations'
             ];
-            
+
             foreach ($tables as $table) {
                 $connection->getPdo()->exec("DROP TABLE IF EXISTS `{$table}`");
             }
-            
+
             echo "✅ Existing tables dropped\n";
-            
         } catch (Exception $e) {
             echo "⚠️  Warning: Failed to drop existing tables: " . $e->getMessage() . "\n";
         }
@@ -203,18 +198,17 @@ class DatabaseSetup
     private function runMigrations(Connection $connection): void
     {
         echo "🔄 Running database migrations...\n";
-        
+
         try {
             // Drop existing tables first
             $this->dropExistingTables($connection);
-            
+
             $migrationPath = __DIR__ . '/../database/migrations';
             $migrator = new Migrator($connection, $migrationPath);
-            
+
             $migrator->run();
-            
+
             echo "✅ Migrations completed successfully\n";
-            
         } catch (Exception $e) {
             throw new Exception("Failed to run migrations: " . $e->getMessage());
         }
@@ -226,16 +220,15 @@ class DatabaseSetup
     private function createSampleData(Connection $connection): void
     {
         echo "📝 Creating sample data...\n";
-        
+
         try {
             // Create sample user
             $this->createSampleUser($connection);
-            
+
             // Create sample pages
             $this->createSamplePages($connection);
-            
+
             echo "✅ Sample data created successfully\n";
-            
         } catch (Exception $e) {
             echo "⚠️  Warning: Failed to create sample data: " . $e->getMessage() . "\n";
         }
@@ -247,10 +240,10 @@ class DatabaseSetup
     private function createSampleUser(Connection $connection): void
     {
         $password = password_hash('admin123', PASSWORD_DEFAULT);
-        
+
         $sql = "INSERT IGNORE INTO users (username, email, password, display_name, is_admin, created_at, updated_at) 
                 VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
-        
+
         $connection->getPdo()->prepare($sql)->execute([
             'admin',
             'admin@islamwiki.local',
@@ -258,7 +251,7 @@ class DatabaseSetup
             'Administrator',
             1
         ]);
-        
+
         echo "  ✅ Created sample admin user (admin/admin123)\n";
     }
 
@@ -281,11 +274,11 @@ class DatabaseSetup
                 'content_format' => 'markdown'
             ]
         ];
-        
+
         foreach ($pages as $page) {
             $sql = "INSERT IGNORE INTO pages (title, slug, content, content_format, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, NOW(), NOW())";
-            
+
             $connection->getPdo()->prepare($sql)->execute([
                 $page['title'],
                 $page['slug'],
@@ -293,7 +286,7 @@ class DatabaseSetup
                 $page['content_format']
             ]);
         }
-        
+
         echo "  ✅ Created sample pages\n";
     }
 }
@@ -306,4 +299,4 @@ $dotenv->load();
 if (php_sapi_name() === 'cli') {
     $setup = new DatabaseSetup();
     $setup->run();
-} 
+}

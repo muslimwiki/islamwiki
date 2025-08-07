@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
@@ -13,7 +14,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Islamic Content Controller
- * 
+ *
  * Enhanced content controller with Islamic-specific features:
  * - Islamic content creation and editing
  * - Scholar verification workflow
@@ -44,7 +45,7 @@ class IslamicContentController extends PageController
             $category = $_GET['category'] ?? '';
             $page = max(1, (int)($_GET['page'] ?? 1));
             $perPage = 12;
-            
+
             // Build query
             $query = $this->db->table('islamic_pages')
                 ->select([
@@ -55,32 +56,32 @@ class IslamicContentController extends PageController
                 ])
                 ->where('moderation_status', 'approved')
                 ->where('verification_status', 'verified');
-            
+
             // Apply search filter
             if (!empty($search)) {
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
                       ->orWhere('arabic_title', 'LIKE', "%{$search}%")
                       ->orWhere('content', 'LIKE', "%{$search}%")
                       ->orWhere('arabic_content', 'LIKE', "%{$search}%");
                 });
             }
-            
+
             // Apply category filter
             if (!empty($category)) {
                 $query->where('islamic_category', $category);
             }
-            
+
             // Get total count for pagination
             $totalContent = $query->count();
             $totalPages = ceil($totalContent / $perPage);
-            
+
             // Get paginated results
             $content = $query->orderBy('created_at', 'desc')
                             ->offset(($page - 1) * $perPage)
                             ->limit($perPage)
                             ->get();
-            
+
             // Enhance content data
             foreach ($content as &$item) {
                 $item['excerpt'] = $this->generateExcerpt($item['content']);
@@ -88,16 +89,16 @@ class IslamicContentController extends PageController
                 $item['author'] = $this->getAuthorInfo($item['author_id']);
                 $item['tags'] = json_decode($item['islamic_tags'] ?? '[]', true);
             }
-            
+
             // Get category statistics
             $categories = $this->getCategoryStats();
-            
+
             // Get featured content
             $featuredContent = $this->getFeaturedContent();
-            
+
             // Get recent articles
             $recentArticles = $this->getRecentArticles(5);
-            
+
             return $this->view('content/index', [
                 'content' => $content,
                 'categories' => $categories,
@@ -289,7 +290,7 @@ class IslamicContentController extends PageController
         $page->setAttribute('islamic_category', $islamicCategory);
         $page->setAttribute('islamic_template', $islamicTemplate);
         $page->setAttribute('islamic_tags', json_encode($islamicTags));
-        
+
         // Update moderation status if user has permission
         if ($user->hasIslamicPermission('moderate_comments')) {
             $page->setAttribute('moderation_status', $moderationStatus);
@@ -517,10 +518,10 @@ class IslamicContentController extends PageController
     /**
      * Get Islamic permissions for user.
      */
-        protected function getIslamicPermissionsForUser(IslamicUser $user): array
+    protected function getIslamicPermissionsForUser(IslamicUser $user): array
     {
         $permissions = [];
-        
+
         if ($user->isAdmin()) {
             $permissions = ['read', 'edit', 'delete', 'moderate', 'verify'];
         } elseif ($user->isScholar()) {
@@ -528,7 +529,7 @@ class IslamicContentController extends PageController
         } else {
             $permissions = ['read', 'edit'];
         }
-        
+
         return $permissions;
     }
 
@@ -539,12 +540,12 @@ class IslamicContentController extends PageController
     {
         // Remove HTML tags and get plain text
         $plainText = strip_tags($content);
-        
+
         // Truncate to specified length
         if (strlen($plainText) > $length) {
             $plainText = substr($plainText, 0, $length) . '...';
         }
-        
+
         return $plainText;
     }
 
@@ -556,7 +557,7 @@ class IslamicContentController extends PageController
         // Average reading speed: 200 words per minute
         $wordCount = str_word_count(strip_tags($content));
         $readTime = ceil($wordCount / 200);
-        
+
         return max(1, $readTime);
     }
 
@@ -570,7 +571,7 @@ class IslamicContentController extends PageController
                 ->select(['id', 'username', 'display_name'])
                 ->where('id', $authorId)
                 ->first();
-            
+
             return $author;
         } catch (\Exception $e) {
             return null;
@@ -592,14 +593,14 @@ class IslamicContentController extends PageController
                 ->where('verification_status', 'verified')
                 ->groupBy('islamic_category')
                 ->get();
-            
+
             $categories = [];
             foreach ($stats as $stat) {
                 $categories[$stat['islamic_category']] = [
                     'count' => $stat['count']
                 ];
             }
-            
+
             return $categories;
         } catch (\Exception $e) {
             return [];
@@ -648,4 +649,4 @@ class IslamicContentController extends PageController
             return [];
         }
     }
-} 
+}

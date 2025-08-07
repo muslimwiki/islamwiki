@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test script to simulate a real web request and test skin middleware
  */
@@ -32,7 +33,7 @@ $webRoutesPath = BASE_PATH . '/routes/web.php';
 if (file_exists($webRoutesPath)) {
     // Store the router in a local variable for use in the routes file
     $router = $router;
-    
+
     // Load routes
     require $webRoutesPath;
     echo "Routes loaded successfully\n";
@@ -54,34 +55,34 @@ try {
     $response = $router->handle($psrRequest);
     echo "Router handle executed successfully\n";
     echo "Response status: " . $response->getStatusCode() . "\n";
-    
+
     // Get the response body
     $body = $response->getBody()->getContents();
-    
+
     echo "Response body length: " . strlen($body) . "\n";
     echo "Response body preview: " . substr($body, 0, 500) . "...\n";
-    
+
     // Check if skin_css is in the response
     if (strpos($body, 'skin_css') !== false) {
         echo "skin_css variable found in response\n";
     } else {
         echo "skin_css variable NOT found in response\n";
     }
-    
+
     // Check for GreenSkin CSS
     if (strpos($body, 'GreenSkin') !== false) {
         echo "GreenSkin CSS found in response\n";
     } else {
         echo "GreenSkin CSS NOT found in response\n";
     }
-    
+
     // Check for Bismillah CSS
     if (strpos($body, 'Bismillah') !== false) {
         echo "Bismillah CSS found in response\n";
     } else {
         echo "Bismillah CSS NOT found in response\n";
     }
-    
+
     // Show a snippet of the CSS content
     $cssStart = strpos($body, '/*');
     if ($cssStart !== false) {
@@ -91,10 +92,9 @@ try {
             echo "CSS Comment: " . $cssComment . "\n";
         }
     }
-    
 } catch (\Exception $e) {
     echo "Router handle error: " . $e->getMessage() . "\n";
     echo "Stack trace: " . $e->getTraceAsString() . "\n";
 }
 
-echo "=== Test Complete ===\n"; 
+echo "=== Test Complete ===\n";

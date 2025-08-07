@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Container\AsasContainer;
 
 /**
  * Islamic Database Service Provider
- * 
+ *
  * Registers and configures the Islamic database manager with separate
  * connections for Quran, Hadith, Wiki, and Scholar databases.
  */
@@ -23,7 +24,7 @@ class IslamicDatabaseServiceProvider
         $container->singleton(IslamicDatabaseManager::class, function (Container $container) {
             $config = $container->get('config');
             $dbConfig = $config->get('database.connections', []);
-            
+
             // Extract Islamic database configurations
             $islamicConfigs = [
                 'quran' => $dbConfig['quran'] ?? [],
@@ -31,7 +32,7 @@ class IslamicDatabaseServiceProvider
                 'wiki' => $dbConfig['wiki'] ?? [],
                 'scholar' => $dbConfig['scholar'] ?? [],
             ];
-            
+
             return new IslamicDatabaseManager($islamicConfigs);
         });
 
@@ -66,7 +67,7 @@ class IslamicDatabaseServiceProvider
         try {
             $manager = $container->get(IslamicDatabaseManager::class);
             $results = $manager->testConnections();
-            
+
             // Log connection status
             foreach ($results as $type => $result) {
                 if ($result['status'] === 'connected') {
@@ -79,4 +80,4 @@ class IslamicDatabaseServiceProvider
             error_log("[IslamicDatabase] Error testing connections: " . $e->getMessage());
         }
     }
-} 
+}

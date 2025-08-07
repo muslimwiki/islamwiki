@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🔍 Complete Login and Skin Switching Test\n";
@@ -29,7 +30,8 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Login HTTP Code: $httpCode\n";
-echo "- Login Response: " . (strpos($response, '302') !== false ? 'Redirect (Success)' : 'No Redirect') . "\n";
+        $temp_7ac22b8a = (strpos($response, '302') !== false ? 'Redirect (Success)' : 'No Redirect') . "\n";
+        echo "- Login Response: " . $temp_7ac22b8a;
 
 if (strpos($response, 'Location: /dashboard') !== false) {
     echo "✅ Login successful - redirected to dashboard\n";
@@ -52,7 +54,8 @@ $dashboardHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Dashboard HTTP Code: $dashboardHttpCode\n";
-echo "- Dashboard Access: " . ($dashboardHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        $temp_312d77aa = ($dashboardHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        echo "- Dashboard Access: " . $temp_312d77aa;
 
 if (strpos($dashboardResponse, 'Dashboard - IslamWiki') !== false) {
     echo "✅ Dashboard accessible\n";
@@ -75,7 +78,8 @@ $settingsHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Settings HTTP Code: $settingsHttpCode\n";
-echo "- Settings Access: " . ($settingsHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        $temp_559f3398 = ($settingsHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        echo "- Settings Access: " . $temp_559f3398;
 
 if (strpos($settingsResponse, 'Settings - IslamWiki') !== false) {
     echo "✅ Settings page accessible\n";
@@ -89,7 +93,7 @@ echo "==================================\n";
 
 if (strpos($settingsResponse, 'skin-card active') !== false) {
     echo "✅ Active skin detected\n";
-    
+
     // Check which skin is active
     if (strpos($settingsResponse, 'data-skin="Bismillah"') !== false && strpos($settingsResponse, 'skin-card active" data-skin="Bismillah"') !== false) {
         echo "✅ Current skin: Bismillah\n";
@@ -120,7 +124,8 @@ $switchHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Switch to Bismillah HTTP Code: $switchHttpCode\n";
-echo "- Switch to Bismillah: " . ($switchHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        $temp_a0cbb150 = ($switchHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        echo "- Switch to Bismillah: " . $temp_a0cbb150;
 
 // Verify the switch
 $ch = curl_init();
@@ -152,7 +157,8 @@ $switchHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Switch to Muslim HTTP Code: $switchHttpCode\n";
-echo "- Switch to Muslim: " . ($switchHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        $temp_a0cbb150 = ($switchHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        echo "- Switch to Muslim: " . $temp_a0cbb150;
 
 // Verify the switch back
 $ch = curl_init();
@@ -185,7 +191,8 @@ $logoutHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Logout HTTP Code: $logoutHttpCode\n";
-echo "- Logout: " . ($logoutHttpCode === 302 || $logoutHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        $temp_fdf1b9e3 = ($logoutHttpCode === 302 || $logoutHttpCode === 200 ? 'Success' : 'Failed') . "\n";
+        echo "- Logout: " . $temp_fdf1b9e3;
 
 // Clean up
 unlink('test_cookies.txt');
@@ -198,4 +205,4 @@ echo "- ✅ Settings page access is working\n";
 echo "- ✅ Skin switching is working\n";
 echo "- ✅ Logout is working\n";
 echo "- 💡 Login credentials: admin / password\n";
-echo "- 💡 You can now use the web interface successfully\n"; 
+echo "- 💡 You can now use the web interface successfully\n";

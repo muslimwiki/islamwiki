@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Database;
@@ -9,11 +10,11 @@ use PDOException;
 
 /**
  * Mizan (ميزان) - Database System
- * 
+ *
  * Mizan means "Balance" or "Scale" in Arabic. This system provides
  * database connection management, data integrity, and balanced data
  * operations for the IslamWiki application.
- * 
+ *
  * @package IslamWiki\Core\Database
  */
 class MizanDatabase
@@ -97,7 +98,6 @@ class MizanDatabase
                 'host' => $this->config['host'] ?? 'localhost',
                 'database' => $this->config['database'] ?? 'islamwiki'
             ]);
-
         } catch (PDOException $e) {
             $this->statistics['errors']++;
             $this->logger->error('Mizan database connection failed', [
@@ -131,7 +131,7 @@ class MizanDatabase
             $this->statistics['queries']++;
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $this->logger->debug('Mizan database query executed', [
                 'system' => 'Mizan',
                 'sql' => $sql,
@@ -139,7 +139,6 @@ class MizanDatabase
             ]);
 
             return $stmt;
-
         } catch (PDOException $e) {
             $this->statistics['errors']++;
             $this->logger->error('Mizan database query failed', [
@@ -262,7 +261,7 @@ class MizanDatabase
         try {
             $version = $this->connection->query('SELECT VERSION() as version')->fetch();
             $databases = $this->connection->query('SHOW DATABASES')->fetchAll();
-            
+
             return [
                 'version' => $version['version'] ?? 'Unknown',
                 'databases' => array_column($databases, 'Database'),
@@ -289,4 +288,4 @@ class MizanDatabase
             'system' => 'Mizan'
         ]);
     }
-} 
+}

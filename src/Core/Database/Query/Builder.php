@@ -1,7 +1,6 @@
 <?php
+
 declare(strict_types=1);
-
-
 
 namespace IslamWiki\Core\Database\Query;
 
@@ -61,7 +60,7 @@ class Builder
             'value' => $value,
             'boolean' => $boolean
         ];
-        
+
         $this->addBinding($value, 'where');
         return $this;
     }
@@ -100,7 +99,7 @@ class Builder
 
         $sql = $this->toSql();
         $bindings = $this->getBindings();
-        
+
         return $this->connection->select($sql, $bindings);
     }
 
@@ -120,10 +119,10 @@ class Builder
         if (empty($values)) {
             return true;
         }
-        
+
         $sql = $this->grammar->compileInsert($this, $values);
         $bindings = $this->cleanBindings($values);
-        
+
         $this->connection->insert($sql, $bindings);
         return true;
     }
@@ -133,10 +132,10 @@ class Builder
         if (empty($values)) {
             return 0;
         }
-        
+
         $sql = $this->grammar->compileInsert($this, $values);
         $bindings = $this->cleanBindings($values);
-        
+
         $id = $this->connection->insert($sql, $bindings);
         return (int) $id;
     }
@@ -147,7 +146,7 @@ class Builder
         $bindings = $this->cleanBindings(
             array_merge($values, $this->getBindings())
         );
-        
+
         return $this->connection->update($sql, $bindings);
     }
 
@@ -156,10 +155,10 @@ class Builder
         if (!is_null($id)) {
             $this->where('id', '=', $id);
         }
-        
+
         $sql = $this->grammar->compileDelete($this);
         $bindings = $this->cleanBindings($this->getBindings());
-        
+
         return $this->connection->delete($sql, $bindings);
     }
 
@@ -209,11 +208,11 @@ class Builder
     {
         $sql = "SELECT MAX(" . $this->grammar->wrap($column) . ") as aggregate FROM " . $this->grammar->wrapTable($this->from);
         $result = $this->connection->select($sql, $this->getBindings());
-        
+
         if (empty($result) || !isset($result[0]['aggregate'])) {
             return null;
         }
-        
+
         return $result[0]['aggregate'];
     }
 
@@ -224,15 +223,15 @@ class Builder
         } else {
             $results = $this->get([$column, $key]);
         }
-        
+
         if (empty($results)) {
             return [];
         }
-        
+
         if ($key === null) {
             return array_column($results, $column);
         }
-        
+
         return array_column($results, $column, $key);
     }
 }

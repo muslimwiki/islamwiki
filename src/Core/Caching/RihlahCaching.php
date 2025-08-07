@@ -1,17 +1,18 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Rihlah (رحلة) - Caching System
- * 
+ *
  * Comprehensive caching system for IslamWiki performance optimization.
  * Rihlah means "journey" in Arabic, representing the system that manages
  * the journey of data through various cache layers for optimal performance.
- * 
+ *
  * @package IslamWiki\Core\Caching
  * @version 0.0.40
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Caching;
 
@@ -21,7 +22,7 @@ use IslamWiki\Core\Database\Connection;
 
 /**
  * Rihlah Caching System
- * 
+ *
  * Handles comprehensive caching for performance optimization including:
  * - Memory caching (APCu, Redis)
  * - File-based caching
@@ -43,7 +44,7 @@ class RihlahCaching
         'writes' => 0,
         'deletes' => 0,
     ];
-    
+
     /**
      * Create a new Rihlah caching system.
      */
@@ -54,7 +55,7 @@ class RihlahCaching
         $this->db = $db;
         $this->initializeDrivers();
     }
-    
+
     /**
      * Initialize cache drivers.
      */
@@ -66,7 +67,7 @@ class RihlahCaching
         } else {
             $this->drivers['memory'] = new \IslamWiki\Core\Caching\Drivers\FileCacheDriver($this->logger, 'cache/memory');
         }
-        
+
         // Initialize Redis cache driver (if available)
         if (extension_loaded('redis')) {
             try {
@@ -78,21 +79,21 @@ class RihlahCaching
                 ]);
             }
         }
-        
+
         // Initialize file cache driver
         $this->drivers['file'] = new \IslamWiki\Core\Caching\Drivers\FileCacheDriver($this->logger, 'cache/files');
-        
+
         // Initialize database cache driver
         $this->drivers['database'] = new \IslamWiki\Core\Caching\Drivers\DatabaseCacheDriver($this->logger, $this->db);
-        
+
         // Initialize session cache driver
         $this->drivers['session'] = new \IslamWiki\Core\Caching\Drivers\SessionCacheDriver($this->logger);
-        
+
         $this->logger->info('Rihlah cache drivers initialized', [
             'drivers' => array_keys($this->drivers),
         ]);
     }
-    
+
     /**
      * Get a value from cache.
      */
@@ -102,9 +103,9 @@ class RihlahCaching
             if (!isset($this->drivers[$driver])) {
                 throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
             }
-            
+
             $value = $this->drivers[$driver]->get($key);
-            
+
             if ($value !== null) {
                 $this->stats['hits']++;
                 $this->logger->debug('Cache hit', [
@@ -118,9 +119,8 @@ class RihlahCaching
                     'driver' => $driver,
                 ]);
             }
-            
+
             return $value;
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache get failed', [
                 'key' => $key,
@@ -130,7 +130,7 @@ class RihlahCaching
             return null;
         }
     }
-    
+
     /**
      * Set a value in cache.
      */
@@ -140,9 +140,9 @@ class RihlahCaching
             if (!isset($this->drivers[$driver])) {
                 throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
             }
-            
+
             $success = $this->drivers[$driver]->set($key, $value, $ttl);
-            
+
             if ($success) {
                 $this->stats['writes']++;
                 $this->logger->debug('Cache set', [
@@ -151,9 +151,8 @@ class RihlahCaching
                     'ttl' => $ttl,
                 ]);
             }
-            
+
             return $success;
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache set failed', [
                 'key' => $key,
@@ -163,7 +162,7 @@ class RihlahCaching
             return false;
         }
     }
-    
+
     /**
      * Delete a value from cache.
      */
@@ -173,9 +172,9 @@ class RihlahCaching
             if (!isset($this->drivers[$driver])) {
                 throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
             }
-            
+
             $success = $this->drivers[$driver]->delete($key);
-            
+
             if ($success) {
                 $this->stats['deletes']++;
                 $this->logger->debug('Cache delete', [
@@ -183,9 +182,8 @@ class RihlahCaching
                     'driver' => $driver,
                 ]);
             }
-            
+
             return $success;
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache delete failed', [
                 'key' => $key,
@@ -195,7 +193,7 @@ class RihlahCaching
             return false;
         }
     }
-    
+
     /**
      * Clear all cache for a driver.
      */
@@ -205,17 +203,16 @@ class RihlahCaching
             if (!isset($this->drivers[$driver])) {
                 throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
             }
-            
+
             $success = $this->drivers[$driver]->clear();
-            
+
             if ($success) {
                 $this->logger->info('Cache cleared', [
                     'driver' => $driver,
                 ]);
             }
-            
+
             return $success;
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache clear failed', [
                 'driver' => $driver,
@@ -224,7 +221,7 @@ class RihlahCaching
             return false;
         }
     }
-    
+
     /**
      * Check if a key exists in cache.
      */
@@ -234,9 +231,8 @@ class RihlahCaching
             if (!isset($this->drivers[$driver])) {
                 throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
             }
-            
+
             return $this->drivers[$driver]->has($key);
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache has check failed', [
                 'key' => $key,
@@ -246,7 +242,7 @@ class RihlahCaching
             return false;
         }
     }
-    
+
     /**
      * Get cache statistics.
      */
@@ -256,30 +252,30 @@ class RihlahCaching
         foreach ($this->drivers as $name => $driver) {
             $driverStats[$name] = $driver->getStats();
         }
-        
+
         return [
             'global' => $this->stats,
             'drivers' => $driverStats,
         ];
     }
-    
+
     /**
      * Cache a function result.
      */
     public function remember(string $key, callable $callback, int $ttl = 3600, string $driver = 'memory')
     {
         $value = $this->get($key, $driver);
-        
+
         if ($value !== null) {
             return $value;
         }
-        
+
         $value = $callback();
         $this->set($key, $value, $ttl, $driver);
-        
+
         return $value;
     }
-    
+
     /**
      * Cache database query results.
      */
@@ -287,7 +283,7 @@ class RihlahCaching
     {
         return $this->remember($key, $query, $ttl, 'database');
     }
-    
+
     /**
      * Cache API responses.
      */
@@ -295,7 +291,7 @@ class RihlahCaching
     {
         return $this->remember($key, $apiCall, $ttl, 'memory');
     }
-    
+
     /**
      * Cache template rendering.
      */
@@ -303,7 +299,7 @@ class RihlahCaching
     {
         return $this->remember($key, $template, $ttl, 'file');
     }
-    
+
     /**
      * Get cache driver.
      */
@@ -311,7 +307,7 @@ class RihlahCaching
     {
         return $this->drivers[$driver] ?? null;
     }
-    
+
     /**
      * Get all available drivers.
      */
@@ -319,7 +315,7 @@ class RihlahCaching
     {
         return array_keys($this->drivers);
     }
-    
+
     /**
      * Warm up cache with common data.
      */
@@ -327,25 +323,24 @@ class RihlahCaching
     {
         try {
             $this->logger->info('Starting cache warm-up');
-            
+
             // Warm up common queries
             $this->warmUpQueries();
-            
+
             // Warm up API responses
             $this->warmUpApiResponses();
-            
+
             // Warm up templates
             $this->warmUpTemplates();
-            
+
             $this->logger->info('Cache warm-up completed');
-            
         } catch (\Exception $e) {
             $this->logger->error('Cache warm-up failed', [
                 'error' => $e->getMessage(),
             ]);
         }
     }
-    
+
     /**
      * Warm up common database queries.
      */
@@ -356,33 +351,33 @@ class RihlahCaching
             'user_count' => 'SELECT COUNT(*) as total_users FROM users',
             'recent_pages' => 'SELECT * FROM pages ORDER BY created_at DESC LIMIT 10',
         ];
-        
+
         foreach ($commonQueries as $key => $query) {
-            $this->rememberQuery("warmup:{$key}", function() use ($query) {
+            $this->rememberQuery("warmup:{$key}", function () use ($query) {
                 return $this->db->select($query);
             }, 3600);
         }
     }
-    
+
     /**
      * Warm up API responses.
      */
     private function warmUpApiResponses(): void
     {
         // Cache common API responses
-        $this->rememberApiResponse('api:quran:verses', function() {
+        $this->rememberApiResponse('api:quran:verses', function () {
             return ['status' => 'cached', 'data' => []];
         }, 1800);
     }
-    
+
     /**
      * Warm up templates.
      */
     private function warmUpTemplates(): void
     {
         // Cache common template fragments
-        $this->rememberTemplate('template:header', function() {
+        $this->rememberTemplate('template:header', function () {
             return '<header>Header content</header>';
         }, 7200);
     }
-} 
+}

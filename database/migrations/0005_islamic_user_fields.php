@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -40,9 +41,9 @@ return function(Connection $connection) {
                 ADD COLUMN islamic_works JSON NULL,
                 ADD COLUMN islamic_contributions JSON NULL
             ";
-            
+
             $this->connection->statement($sql);
-            
+
             // Add indexes
             $indexes = [
                 "CREATE INDEX users_islamic_role_is_active_index ON users (islamic_role, is_active)",
@@ -52,7 +53,7 @@ return function(Connection $connection) {
                 "CREATE INDEX users_madhab_index ON users (madhab)",
                 "CREATE INDEX users_specialization_index ON users (specialization)"
             ];
-            
+
             foreach ($indexes as $indexSql) {
                 try {
                     $this->connection->statement($indexSql);
@@ -74,7 +75,7 @@ return function(Connection $connection) {
                 "DROP INDEX IF EXISTS users_madhab_index ON users",
                 "DROP INDEX IF EXISTS users_specialization_index ON users"
             ];
-            
+
             foreach ($indexes as $indexSql) {
                 try {
                     $this->connection->statement($indexSql);
@@ -83,7 +84,7 @@ return function(Connection $connection) {
                     error_log("Index drop warning: " . $e->getMessage());
                 }
             }
-            
+
             // Drop columns
             $sql = "
                 ALTER TABLE users 
@@ -112,8 +113,8 @@ return function(Connection $connection) {
                 DROP COLUMN IF EXISTS islamic_works,
                 DROP COLUMN IF EXISTS islamic_contributions
             ";
-            
+
             $this->connection->statement($sql);
         }
     };
-}; 
+};

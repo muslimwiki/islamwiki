@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Interfaces;
@@ -89,4 +90,4 @@ interface JobInterface
      * Set the job priority.
      */
     public function setPriority(int $priority): void;
-} 
+}

@@ -29,7 +29,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Knowledge Graph Manager
- * 
+ *
  * Manages the Islamic knowledge graph system for connecting concepts,
  * verses, hadith, scholars, and other Islamic knowledge entities.
  */
@@ -67,7 +67,7 @@ class BayanFormatter
     {
         $this->connection = $connection;
         $this->logger = $logger;
-        
+
         $this->nodeManager = new NodeManager($connection, $logger);
         $this->edgeManager = new EdgeManager($connection, $logger);
         $this->queryManager = new QueryManager($connection, $logger);
@@ -219,4 +219,4 @@ class BayanFormatter
     {
         return $this->queryManager;
     }
-} 
+}

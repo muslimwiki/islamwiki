@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Reset Migration State
- * 
+ *
  * This script clears the migration log to reset the migration state.
  * Usage: php scripts/reset_migration_state.php
  */
@@ -58,23 +58,23 @@ try {
     // Check if migrations table exists
     $sql = "SHOW TABLES LIKE 'migrations'";
     $result = $connection->select($sql);
-    
+
     if (empty($result)) {
         echo "⚠️  Migrations table does not exist. Nothing to reset.\n";
     } else {
         echo "🗑️  Clearing migration log...\n";
-        
+
         $deleteSql = "DELETE FROM migrations";
         $connection->statement($deleteSql);
-        
+
         echo "✅ Migration log cleared\n";
     }
-    
+
     // Show current migration status
     echo "\nCurrent Migration Status:\n";
     $sql = "SELECT * FROM migrations ORDER BY batch, id";
     $migrations = $connection->select($sql);
-    
+
     if (empty($migrations)) {
         echo "  No migrations logged\n";
     } else {
@@ -82,11 +82,10 @@ try {
             echo "  {$migration['migration']}: ✓ Ran (Batch {$migration['batch']})\n";
         }
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

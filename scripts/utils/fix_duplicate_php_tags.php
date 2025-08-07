@@ -1,36 +1,39 @@
 <?php
-declare(strict_types=1);
+
 /**
  * Script to fix duplicate PHP opening tags in files
  */
 
+declare(strict_types=1);
+
 // Function to process files
-function processFiles($path) {
+function processFiles($path)
+{
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     $filesProcessed = 0;
     $filesFixed = 0;
-    
+
     foreach ($iterator as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
             $filePath = $file->getRealPath();
-            
+
             // Skip files in vendor directory
             if (strpos($filePath, '/vendor/') !== false) {
                 continue;
             }
-            
+
             $filesProcessed++;
-            
+
             // Read file content
             $content = file_get_contents($filePath);
-            
+
             // Fix duplicate PHP opening tags
             $newContent = preg_replace('/<\?php\s+<\?php\s+/', '<?php\n', $content);
-            
+
             // Write back to file if content changed
             if ($newContent !== $content) {
                 file_put_contents($filePath, $newContent);
@@ -39,7 +42,7 @@ function processFiles($path) {
             }
         }
     }
-    
+
     return [$filesProcessed, $filesFixed];
 }
 

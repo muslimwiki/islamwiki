@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Iqra Web Interface
  */
@@ -118,12 +119,12 @@ try {
     if (!empty($_GET['q'])) {
         echo "<div class='test-section info'>
             <h2>🔍 Search Results for: " . htmlspecialchars($_GET['q']) . "</h2>";
-        
+
         try {
             $request = new Request();
             $request = $request->withQueryParams(['q' => $_GET['q']]);
             $response = $controller->index($request);
-            
+
             echo "<div class='result success'>
                 <p><strong>✅ Search completed!</strong></p>
                 <p><strong>Status:</strong> " . $response->getStatusCode() . "</p>
@@ -134,7 +135,7 @@ try {
                 <p><strong>❌ Search Error:</strong> " . $e->getMessage() . "</p>
             </div>";
         }
-        
+
         echo "</div>";
     }
 
@@ -152,7 +153,6 @@ try {
         <p><strong>Next steps:</strong> The Iqra search engine is ready to use!</p>
         <p><strong>Visit:</strong> <a href='/iqra-search'>/iqra-search</a> for the full interface.</p>
     </div>";
-
 } catch (Exception $e) {
     echo "<div class='test-section error'>
         <h2>❌ Error</h2>
@@ -164,4 +164,4 @@ try {
 
 echo "</div>
 </body>
-</html>"; 
+</html>";

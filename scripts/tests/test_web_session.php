@@ -36,17 +36,17 @@ try {
         'password' => $_ENV['DB_PASS'] ?? '',
     ]);
     echo "✅ Database connection established\n";
-    
+
     // 2. Setup container and session
     $container = new \IslamWiki\Core\Container();
-    $container->singleton('session', function() {
+    $container->singleton('session', function () {
         return new \IslamWiki\Core\Session\SessionManager();
     });
-    
+
     $session = $container->get('session');
     $session->start();
     echo "✅ Session started\n";
-    
+
     // 3. Find admin user
     $user = \IslamWiki\Models\User::findByUsername('admin', $db);
     if (!$user) {
@@ -54,7 +54,7 @@ try {
         exit(1);
     }
     echo "✅ Admin user found: " . $user->getAttribute('username') . "\n";
-    
+
     // 4. Simulate login (like AuthController does)
     echo "\n🔐 Simulating Login...\n";
     $session->login(
@@ -62,19 +62,19 @@ try {
         $user->getAttribute('username'),
         $user->isAdmin()
     );
-    
+
     echo "   📊 Session isLoggedIn: " . ($session->isLoggedIn() ? 'true' : 'false') . "\n";
     echo "   📊 User ID in session: " . $session->getUserId() . "\n";
     echo "   👤 Username in session: " . $session->getUsername() . "\n";
-    
+
     // 5. Simulate dashboard access (like DashboardController does)
     echo "\n📊 Simulating Dashboard Access...\n";
     $dashboardUser = null;
-    
+
     if ($session->isLoggedIn()) {
         $userId = $session->getUserId();
         echo "   📊 User ID from session: $userId\n";
-        
+
         $dashboardUser = \IslamWiki\Models\User::find($userId, $db);
         if ($dashboardUser) {
             echo "   ✅ User found from session ID\n";
@@ -87,7 +87,7 @@ try {
     } else {
         echo "   ❌ User not logged in\n";
     }
-    
+
     // 6. Test template data
     echo "\n📝 Testing Template Data...\n";
     $templateData = [
@@ -95,17 +95,16 @@ try {
         'message' => 'Welcome to your IslamWiki dashboard',
         'user' => $dashboardUser,
     ];
-    
+
     echo "   📊 Template data prepared\n";
     echo "   👤 User object: " . ($templateData['user'] ? 'present' : 'null') . "\n";
     if ($templateData['user']) {
         echo "   👤 Username for template: " . $templateData['user']->getAttribute('username') . "\n";
     }
-    
+
     echo "\n🎉 Web session flow test complete!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "📊 Stack trace: " . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

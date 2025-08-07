@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -19,6 +18,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -58,7 +59,7 @@ try {
     // 2. Test Container and Services
     echo "2. Testing Container and Services...\n";
     $container = new Container();
-    
+
     // Register logger
     $logger = new Logger(
         __DIR__ . '/../storage/logs',
@@ -67,136 +68,136 @@ try {
         5   // Keep 5 files
     );
     $container->bind(\Psr\Log\LoggerInterface::class, $logger);
-    
+
     // Register database
     $container->bind(Connection::class, $db);
-    
+
     // Register session manager
     $sessionManager = new SessionManager();
     $container->bind(SessionManager::class, $sessionManager);
-    
+
     // Register app configuration
     $container->bind('app.debug', true);
     $container->bind('app.env', 'testing');
-    
+
     echo "✅ Container and services configured\n\n";
 
     // 3. Test Security Middleware
     echo "3. Testing Security Middleware...\n";
     $securityMiddleware = new SecurityMiddleware($logger);
-    
+
     // Test normal request
     $normalRequest = new Request('GET', '/test', [], null, '1.1', []);
     $normalResponse = new Response(200, ['Content-Type' => 'text/plain'], 'OK');
-    
-    $result = $securityMiddleware->handle($normalRequest, function($request) use ($normalResponse) {
+
+    $result = $securityMiddleware->handle($normalRequest, function ($request) use ($normalResponse) {
         return $normalResponse;
     });
-    
+
     echo "✅ Security middleware processed normal request\n";
-    
+
     // Test suspicious request (should be blocked)
     $suspiciousRequest = new Request('GET', '/test?q=union+select', [], null, '1.1', []);
-    
+
     try {
-        $securityMiddleware->handle($suspiciousRequest, function($request) {
+        $securityMiddleware->handle($suspiciousRequest, function ($request) {
             return new Response(200, [], 'OK');
         });
         echo "❌ Security middleware should have blocked suspicious request\n";
     } catch (HttpException $e) {
         echo "✅ Security middleware blocked suspicious request: " . $e->getMessage() . "\n";
     }
-    
+
     echo "\n";
 
     // 4. Test Error Handling Middleware
     echo "4. Testing Error Handling Middleware...\n";
     $errorMiddleware = new ErrorHandlingMiddleware($logger, true, 'testing');
-    
+
     // Test successful request
-    $successResult = $errorMiddleware->handle($normalRequest, function($request) {
+    $successResult = $errorMiddleware->handle($normalRequest, function ($request) {
         return new Response(200, ['Content-Type' => 'text/plain'], 'Success');
     });
-    
+
     echo "✅ Error handling middleware processed successful request\n";
-    
+
     // Test exception handling
-    $exceptionResult = $errorMiddleware->handle($normalRequest, function($request) {
+    $exceptionResult = $errorMiddleware->handle($normalRequest, function ($request) {
         throw new \RuntimeException('Test exception');
     });
-    
+
     if ($exceptionResult->getStatusCode() === 500) {
         echo "✅ Error handling middleware caught exception and returned 500\n";
     } else {
         echo "❌ Error handling middleware should have returned 500\n";
     }
-    
+
     echo "\n";
 
     // 5. Test CSRF Middleware
     echo "5. Testing CSRF Middleware...\n";
     $csrfMiddleware = new CsrfMiddleware($sessionManager);
-    
+
     // Test GET request (should pass)
     $getRequest = new Request('GET', '/test', [], null, '1.1', []);
-    $csrfResult = $csrfMiddleware->handle($getRequest, function($request) {
+    $csrfResult = $csrfMiddleware->handle($getRequest, function ($request) {
         return new Response(200, [], 'OK');
     });
-    
+
     echo "✅ CSRF middleware allowed GET request\n";
-    
+
     // Test POST request without token (should be blocked)
     $postRequest = new Request('POST', '/test', [], null, '1.1', []);
     $postRequest = $postRequest->withParsedBody(['data' => 'test']);
-    
+
     try {
-        $csrfMiddleware->handle($postRequest, function($request) {
+        $csrfMiddleware->handle($postRequest, function ($request) {
             return new Response(200, [], 'OK');
         });
         echo "❌ CSRF middleware should have blocked POST without token\n";
     } catch (HttpException $e) {
         echo "✅ CSRF middleware blocked POST without token\n";
     }
-    
+
     echo "\n";
 
     // 6. Test Middleware Stack
     echo "6. Testing Middleware Stack...\n";
     $middlewareStack = new MiddlewareStack($logger);
-    
+
     // Add middleware in order
     $middlewareStack
         ->add($errorMiddleware)
         ->add($securityMiddleware)
         ->add($csrfMiddleware);
-    
+
     echo "✅ Middleware stack created with " . $middlewareStack->count() . " middleware\n";
-    
+
     // Test middleware stack execution
-    $stackResult = $middlewareStack->execute($normalRequest, function($request) {
+    $stackResult = $middlewareStack->execute($normalRequest, function ($request) {
         return new Response(200, ['Content-Type' => 'text/plain'], 'Stack OK');
     });
-    
+
     if ($stackResult->getStatusCode() === 200) {
         echo "✅ Middleware stack executed successfully\n";
     } else {
         echo "❌ Middleware stack execution failed\n";
     }
-    
+
     echo "\n";
 
     // 7. Test Enhanced Logging
     echo "7. Testing Enhanced Logging...\n";
-    
+
     $logger->info('Test info message', ['test' => 'data']);
     $logger->warning('Test warning message', ['warning' => 'test']);
     $logger->error('Test error message', ['error' => 'test']);
     $logger->security('Test security event', ['event' => 'test']);
     $logger->userAction('Test user action', ['action' => 'test']);
     $logger->performance('Test operation', 0.123, ['operation' => 'test']);
-    
+
     echo "✅ Enhanced logging methods tested\n";
-    
+
     // Test exception logging
     try {
         throw new \RuntimeException('Test exception for logging');
@@ -204,7 +205,7 @@ try {
         $logger->exception($e, ['context' => 'test']);
         echo "✅ Exception logging tested\n";
     }
-    
+
     echo "\n";
 
     // 8. Test Log File Creation
@@ -214,7 +215,7 @@ try {
         __DIR__ . '/../logs/error.log',
         __DIR__ . '/../logs/php_errors.log'
     ];
-    
+
     foreach ($logFiles as $logFile) {
         if (file_exists($logFile)) {
             $size = filesize($logFile);
@@ -223,13 +224,13 @@ try {
             echo "❌ Log file missing: " . basename($logFile) . "\n";
         }
     }
-    
+
     echo "\n";
 
     // 9. Test Security Headers
     echo "9. Testing Security Headers...\n";
     $testResponse = new Response(200, ['Content-Type' => 'text/plain'], 'Test');
-    
+
     // Simulate adding security headers
     $securityHeaders = [
         'X-Content-Type-Options' => 'nosniff',
@@ -238,23 +239,23 @@ try {
         'Referrer-Policy' => 'strict-origin-when-cross-origin',
         'Content-Security-Policy' => "default-src 'self'",
     ];
-    
+
     foreach ($securityHeaders as $header => $value) {
         $testResponse = $testResponse->withHeader($header, $value);
     }
-    
+
     $headers = $testResponse->getHeaders();
     $expectedHeaders = array_keys($securityHeaders);
     $actualHeaders = array_keys($headers);
-    
+
     $missingHeaders = array_diff($expectedHeaders, $actualHeaders);
-    
+
     if (empty($missingHeaders)) {
         echo "✅ All security headers present\n";
     } else {
         echo "❌ Missing security headers: " . implode(', ', $missingHeaders) . "\n";
     }
-    
+
     echo "\n";
 
     // 10. Summary
@@ -269,11 +270,10 @@ try {
     echo "✅ Enhanced logging operational\n";
     echo "✅ Log files created\n";
     echo "✅ Security headers configured\n";
-    
+
     echo "\n🎉 All security and error handling tests completed successfully!\n";
-    
 } catch (\Throwable $e) {
     echo "❌ Test failed: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

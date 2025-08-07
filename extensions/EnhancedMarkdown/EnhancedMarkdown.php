@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Extensions\EnhancedMarkdown;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Enhanced Markdown Extension
- * 
+ *
  * Provides enhanced Markdown support with Islamic content syntax,
  * Arabic text handling, and pre-built templates for Islamic content.
  */
@@ -297,12 +298,12 @@ class EnhancedMarkdown extends Extension
         // Detect Arabic text blocks and wrap them in RTL containers
         $content = preg_replace_callback(
             '/([\u0600-\u06FF\s]+)/u',
-            function($matches) {
+            function ($matches) {
                 $arabicText = trim($matches[1]);
                 if (empty($arabicText)) {
                     return $matches[0];
                 }
-                
+
                 return sprintf(
                     '<span class="arabic-text" dir="rtl" lang="ar">%s</span>',
                     htmlspecialchars($arabicText, ENT_QUOTES, 'UTF-8')
@@ -378,7 +379,7 @@ class EnhancedMarkdown extends Extension
         }
 
         $templatePath = $this->getExtensionPath() . '/templates/' . $this->templates[$templateName];
-        
+
         if (!file_exists($templatePath)) {
             return null;
         }
@@ -397,20 +398,20 @@ class EnhancedMarkdown extends Extension
         // Validate Quran verse references
         $content = preg_replace_callback(
             '/{{quran:(\d+):(\d+)}}/',
-            function($matches) {
+            function ($matches) {
                 $surah = (int) $matches[1];
                 $ayah = (int) $matches[2];
-                
+
                 // Validate surah number (1-114)
                 if ($surah < 1 || $surah > 114) {
                     return sprintf('<!-- Invalid surah number: %d -->', $surah);
                 }
-                
+
                 // Validate ayah number (basic check)
                 if ($ayah < 1) {
                     return sprintf('<!-- Invalid ayah number: %d -->', $ayah);
                 }
-                
+
                 return $matches[0];
             },
             $content
@@ -501,4 +502,4 @@ class EnhancedMarkdown extends Extension
     {
         return $this->templates;
     }
-} 
+}

@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Web Test
- * 
+ *
  * Simulates the actual web request to test the settings page.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -41,48 +42,47 @@ echo "=============================\n";
 
 try {
     $settingsController = new \IslamWiki\Http\Controllers\SettingsController($db, $container);
-    
+
     // Use reflection to access the private index method
     $reflection = new ReflectionClass($settingsController);
     $method = $reflection->getMethod('index');
     $method->setAccessible(true);
-    
+
     $response = $method->invoke($settingsController);
-    
+
     echo "✅ SettingsController executed successfully\n";
     echo "Response status: " . $response->getStatusCode() . "\n";
-    
+
     // Get the response body
     $body = $response->getBody();
     echo "Response length: " . strlen($body) . " characters\n";
-    
+
     // Check for specific content
     if (strpos($body, 'skin-card') !== false) {
         echo "✅ Response contains skin cards\n";
     } else {
         echo "❌ Response does not contain skin cards\n";
     }
-    
+
     if (strpos($body, 'Bismillah') !== false) {
         echo "✅ Response contains Bismillah skin\n";
     } else {
         echo "❌ Response does not contain Bismillah skin\n";
     }
-    
+
     if (strpos($body, 'Muslim') !== false) {
         echo "✅ Response contains Muslim skin\n";
     } else {
         echo "❌ Response does not contain Muslim skin\n";
     }
-    
+
     // Show a snippet of the response
     echo "\n📋 Response Preview (first 500 chars):\n";
     echo "=====================================\n";
     echo substr($body, 0, 500) . "...\n";
-    
 } catch (\Exception $e) {
     echo "❌ SettingsController error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
 }
 
-echo "\n✅ Web test completed!\n"; 
+echo "\n✅ Web test completed!\n";

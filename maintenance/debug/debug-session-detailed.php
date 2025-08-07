@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🔍 Detailed Session Debug\n";
@@ -65,7 +66,8 @@ echo "\n";
 
 // Check cookies
 echo "🍪 Cookies:\n";
-echo "- Session Cookie: " . (isset($_COOKIE['islamwiki_session']) ? $_COOKIE['islamwiki_session'] : 'Not set') . "\n";
+        $temp_a2fee4fa = (isset($_COOKIE['islamwiki_session']) ? $_COOKIE['islamwiki_session'] : 'Not set') . "\n";
+        echo "- Session Cookie: " . $temp_a2fee4fa;
 echo "- All Cookies: " . print_r($_COOKIE, true) . "\n";
 echo "\n";
 
@@ -96,4 +98,4 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     echo "- No active session\n";
 }
 
-echo "\n✅ Detailed session debugging completed\n"; 
+echo "\n✅ Detailed session debugging completed\n";

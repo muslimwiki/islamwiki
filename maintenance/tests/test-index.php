@@ -1,4 +1,5 @@
 <?php
+
 // Test index.php functionality
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -27,25 +28,24 @@ try {
 try {
     $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
     echo "✓ NizamApplication created\n";
-    
+
     $container = $app->getContainer();
     echo "✓ Container created\n";
-    
+
     $router = new \IslamWiki\Core\Routing\SabilRouting($container);
     echo "✓ Router created\n";
-    
+
     // Make router global
     global $router;
-    
+
     // Load routes
     echo "✓ About to load routes...\n";
     require_once __DIR__ . '/../routes/web.php';
     echo "✓ Routes loaded\n";
-    
+
     echo "✓ Index.php functionality test completed!\n";
-    
 } catch (Exception $e) {
     echo "✗ Index.php functionality test failed: " . $e->getMessage() . "\n";
     echo "Stack trace: " . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

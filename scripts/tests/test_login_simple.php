@@ -50,7 +50,7 @@ try {
     // Create container
     $container = new Container();
     $container->singleton('db', $connection);
-    
+
     // Create session manager
     $sessionManager = new \IslamWiki\Core\Session\SessionManager();
     $sessionManager->start();
@@ -62,26 +62,26 @@ try {
     // Test user lookup
     echo "👤 Testing user lookup...\n";
     $user = User::findByUsername('admin', $connection);
-    
+
     if (!$user) {
         echo "❌ Admin user not found\n";
         exit(1);
     }
-    
+
     echo "✅ Admin user found: " . $user->getAttribute('username') . "\n";
-    
+
     // Test password verification
     echo "\n🔑 Testing password verification...\n";
     $password = 'password';
     $isValid = $user->verifyPassword($password);
-    
+
     echo "Password verification result: " . ($isValid ? '✅ SUCCESS' : '❌ FAILED') . "\n";
-    
+
     if (!$isValid) {
         echo "❌ Password verification failed\n";
         exit(1);
     }
-    
+
     // Test session login
     echo "\n🔐 Testing session login...\n";
     $sessionManager->login(
@@ -89,24 +89,23 @@ try {
         $user->getAttribute('username'),
         $user->isAdmin()
     );
-    
+
     echo "✅ Session login successful\n";
     echo "User ID: " . $sessionManager->getUserId() . "\n";
     echo "Username: " . $sessionManager->getUsername() . "\n";
     echo "Is Admin: " . ($sessionManager->isAdmin() ? 'Yes' : 'No') . "\n";
     echo "Is Logged In: " . ($sessionManager->isLoggedIn() ? 'Yes' : 'No') . "\n";
-    
+
     // Test logout
     echo "\n🚪 Testing logout...\n";
     $sessionManager->logout();
-    
+
     echo "✅ Logout successful\n";
     echo "Is Logged In: " . ($sessionManager->isLoggedIn() ? 'Yes' : 'No') . "\n";
-    
+
     echo "\n✅ All login tests passed!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use IslamWiki\Core\Container\AsasContainer;
@@ -40,4 +41,4 @@ echo "- Set test value\n";
 $value = $session->get('test_key');
 echo "- Retrieved value: " . ($value ?? 'null') . "\n";
 
-echo "\n✅ Simple session test completed\n"; 
+echo "\n✅ Simple session test completed\n";

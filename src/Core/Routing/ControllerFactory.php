@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Routing;
@@ -16,17 +17,17 @@ class ControllerFactory
      * @var Connection Database connection
      */
     private $db;
-    
+
     /**
      * @var LoggerInterface Logger instance
      */
     private $logger;
-    
+
     /**
      * @var Asas The dependency injection container
      */
     private $container;
-    
+
     /**
      * Create a new ControllerFactory instance.
      *
@@ -40,7 +41,7 @@ class ControllerFactory
         $this->logger = $logger;
         $this->container = $container;
     }
-    
+
     /**
      * Create a controller instance.
      *
@@ -53,13 +54,13 @@ class ControllerFactory
         if (!class_exists($controllerClass)) {
             throw new \RuntimeException("Controller class {$controllerClass} does not exist");
         }
-        
+
         try {
             // Try to resolve the controller from the container first
             if ($this->container->has($controllerClass)) {
                 return $this->container->get($controllerClass);
             }
-            
+
             // Otherwise, create a new instance with dependencies
             // Base Controller expects: (Connection $db, Container $container)
             return new $controllerClass($this->db, $this->container);
@@ -68,7 +69,7 @@ class ControllerFactory
             throw new \RuntimeException("Failed to create controller: " . $e->getMessage(), 0, $e);
         }
     }
-    
+
     /**
      * Get the database connection.
      *
@@ -78,7 +79,7 @@ class ControllerFactory
     {
         return $this->db;
     }
-    
+
     /**
      * Get the logger instance.
      *
@@ -88,7 +89,7 @@ class ControllerFactory
     {
         return $this->logger;
     }
-    
+
     /**
      * Get the container instance.
      *

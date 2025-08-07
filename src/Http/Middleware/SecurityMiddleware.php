@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
@@ -29,7 +30,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Security Middleware
- * 
+ *
  * Provides comprehensive security features including:
  * - Security headers
  * - Input validation and sanitization
@@ -43,12 +44,12 @@ class SecurityMiddleware
      * @var LoggerInterface Logger instance
      */
     private LoggerInterface $logger;
-    
+
     /**
      * @var array Rate limiting storage (in production, use Redis)
      */
     private static array $rateLimitStore = [];
-    
+
     /**
      * @var array Security headers configuration
      */
@@ -61,7 +62,7 @@ class SecurityMiddleware
         'Permissions-Policy' => 'geolocation=(), microphone=(), camera=()',
         'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
     ];
-    
+
     /**
      * @var array Rate limiting configuration
      */
@@ -70,7 +71,7 @@ class SecurityMiddleware
         'requests_per_hour' => 1000,
         'burst_limit' => 10,
     ];
-    
+
     /**
      * Create a new security middleware instance.
      */
@@ -78,7 +79,7 @@ class SecurityMiddleware
     {
         $this->logger = $logger;
     }
-    
+
     /**
      * Handle the incoming request.
      */
@@ -86,25 +87,24 @@ class SecurityMiddleware
     {
         error_log('SecurityMiddleware: Starting security check');
         $startTime = microtime(true);
-        
+
         try {
             // 1. Rate limiting check
             $this->checkRateLimit($request);
-            
+
             // 2. Input validation and sanitization
             $this->validateAndSanitizeInput($request);
-            
+
             // 3. Process the request
             $response = $next($request);
-            
+
             // 4. Add security headers
             $this->addSecurityHeaders($response);
-            
+
             // 5. Log security event
             $this->logSecurityEvent($request, $response, microtime(true) - $startTime);
-            
+
             return $response;
-            
         } catch (HttpException $e) {
             $this->logger->warning('Security middleware blocked request', [
                 'ip' => $this->getClientIp($request),
@@ -112,18 +112,18 @@ class SecurityMiddleware
                 'uri' => $request->getUri()->getPath(),
                 'error' => $e->getMessage(),
             ]);
-            
+
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('Security middleware error', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            
+
             throw new HttpException(500, 'Internal server error');
         }
     }
-    
+
     /**
      * Check rate limiting for the request.
      */
@@ -131,7 +131,7 @@ class SecurityMiddleware
     {
         $clientIp = $this->getClientIp($request);
         $currentTime = time();
-        
+
         // Initialize rate limit data for this IP
         if (!isset(self::$rateLimitStore[$clientIp])) {
             self::$rateLimitStore[$clientIp] = [
@@ -139,35 +139,35 @@ class SecurityMiddleware
                 'burst_requests' => [],
             ];
         }
-        
+
         $rateData = &self::$rateLimitStore[$clientIp];
-        
+
         // Clean old requests
         $rateData['requests'] = array_filter(
             $rateData['requests'],
             fn($time) => $time > $currentTime - 60
         );
-        
+
         $rateData['burst_requests'] = array_filter(
             $rateData['burst_requests'],
             fn($time) => $time > $currentTime - 1
         );
-        
+
         // Check burst limit (requests per second)
         if (count($rateData['burst_requests']) >= $this->rateLimitConfig['burst_limit']) {
             throw new HttpException(429, 'Too many requests (burst limit exceeded)');
         }
-        
+
         // Check minute limit
         if (count($rateData['requests']) >= $this->rateLimitConfig['requests_per_minute']) {
             throw new HttpException(429, 'Too many requests (rate limit exceeded)');
         }
-        
+
         // Add current request
         $rateData['requests'][] = $currentTime;
         $rateData['burst_requests'][] = $currentTime;
     }
-    
+
     /**
      * Validate and sanitize input data.
      */
@@ -180,7 +180,7 @@ class SecurityMiddleware
                 $getParams[$key] = $this->sanitizeInput($value);
             }
         }
-        
+
         // Validate and sanitize POST parameters
         $postParams = $request->getParsedBody();
         if (is_array($postParams)) {
@@ -190,11 +190,11 @@ class SecurityMiddleware
                 }
             }
         }
-        
+
         // Check for suspicious patterns
         $this->detectSuspiciousPatterns($request);
     }
-    
+
     /**
      * Sanitize input string.
      */
@@ -202,16 +202,16 @@ class SecurityMiddleware
     {
         // Remove null bytes
         $input = str_replace("\0", '', $input);
-        
+
         // Normalize line endings
         $input = str_replace(["\r\n", "\r"], "\n", $input);
-        
+
         // Remove control characters except newlines and tabs
         $input = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $input);
-        
+
         return $input;
     }
-    
+
     /**
      * Detect suspicious patterns in the request.
      */
@@ -220,10 +220,10 @@ class SecurityMiddleware
         $uri = $request->getUri()->getPath();
         $userAgent = $request->getHeaderLine('User-Agent');
         $queryString = $request->getUri()->getQuery();
-        
+
         error_log('SecurityMiddleware: Checking URI: ' . $uri);
         error_log('SecurityMiddleware: Checking query: ' . $queryString);
-        
+
         // Check for SQL injection patterns
         $sqlPatterns = [
             '/union\s*select/i',
@@ -236,7 +236,7 @@ class SecurityMiddleware
             '/exec\s*\(/i',
             '/eval\s*\(/i',
         ];
-        
+
         foreach ($sqlPatterns as $pattern) {
             if (preg_match($pattern, $uri) || preg_match($pattern, $userAgent) || preg_match($pattern, $queryString)) {
                 error_log('SecurityMiddleware: Suspicious pattern detected: ' . $pattern);
@@ -246,11 +246,11 @@ class SecurityMiddleware
                     'user_agent' => $userAgent,
                     'pattern' => $pattern,
                 ]);
-                
+
                 throw new HttpException(403, 'Suspicious request detected');
             }
         }
-        
+
         // Check for XSS patterns
         $xssPatterns = [
             '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/i',
@@ -259,7 +259,7 @@ class SecurityMiddleware
             '/onload\s*=/i',
             '/onerror\s*=/i',
         ];
-        
+
         foreach ($xssPatterns as $pattern) {
             if (preg_match($pattern, $uri)) {
                 $this->logger->warning('Potential XSS attempt detected', [
@@ -267,22 +267,22 @@ class SecurityMiddleware
                     'uri' => $uri,
                     'pattern' => $pattern,
                 ]);
-                
+
                 throw new HttpException(403, 'Suspicious request detected');
             }
         }
-        
+
         // Check for directory traversal
         if (strpos($uri, '..') !== false || strpos($uri, '//') !== false) {
             $this->logger->warning('Potential directory traversal attempt detected', [
                 'ip' => $this->getClientIp($request),
                 'uri' => $uri,
             ]);
-            
+
             throw new HttpException(403, 'Suspicious request detected');
         }
     }
-    
+
     /**
      * Add security headers to the response.
      */
@@ -291,7 +291,7 @@ class SecurityMiddleware
         foreach ($this->securityHeaders as $header => $value) {
             $response = $response->withHeader($header, $value);
         }
-        
+
         // Add cache control headers for sensitive pages
         $path = parse_url($response->getHeaderLine('Location') ?: '', PHP_URL_PATH);
         if (strpos($path, '/admin') === 0 || strpos($path, '/profile') === 0) {
@@ -299,7 +299,7 @@ class SecurityMiddleware
             $response = $response->withHeader('Pragma', 'no-cache');
         }
     }
-    
+
     /**
      * Log security event.
      */
@@ -314,7 +314,7 @@ class SecurityMiddleware
             'user_agent' => $request->getHeaderLine('User-Agent'),
         ]);
     }
-    
+
     /**
      * Get client IP address.
      */
@@ -326,12 +326,12 @@ class SecurityMiddleware
             $ips = explode(',', $forwardedFor);
             return trim($ips[0]);
         }
-        
+
         $realIp = $request->getHeaderLine('X-Real-IP');
         if ($realIp) {
             return $realIp;
         }
-        
+
         return $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
     }
-} 
+}

@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Node Manager
- * 
+ *
  * Manages knowledge graph nodes representing Islamic concepts,
  * verses, hadith, scholars, and other entities.
  */
@@ -68,9 +68,9 @@ class NodeManager
 
             $sql = "INSERT INTO bayan_nodes (type, title, content, metadata, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, NOW(), NOW())";
-            
+
             $metadata = isset($data['metadata']) ? json_encode($data['metadata']) : '{}';
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 $data['type'],
@@ -80,7 +80,7 @@ class NodeManager
             ]);
 
             $nodeId = $this->connection->lastInsertId();
-            
+
             $this->logger->info('Created Bayan node', [
                 'node_id' => $nodeId,
                 'type' => $data['type'],
@@ -106,13 +106,13 @@ class NodeManager
             $sql = "SELECT * FROM bayan_nodes WHERE id = ? AND deleted_at IS NULL";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$id]);
-            
+
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
+
             if ($result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
             }
-            
+
             return $result ?: null;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan node by ID', [
@@ -144,23 +144,23 @@ class NodeManager
                         $params[] = $value['value'];
                     }
                 }
-                
+
                 if (!empty($conditions)) {
                     $sql .= " AND " . implode(" AND ", $conditions);
                 }
             }
 
             $sql .= " ORDER BY created_at DESC";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan nodes by type', [
@@ -246,7 +246,7 @@ class NodeManager
             $sql = "SELECT COUNT(*) FROM bayan_nodes WHERE deleted_at IS NULL";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            
+
             return (int) $stmt->fetchColumn();
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan node count', [
@@ -267,17 +267,17 @@ class NodeManager
                     WHERE deleted_at IS NULL 
                     GROUP BY type 
                     ORDER BY count DESC";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $counts = [];
-            
+
             foreach ($results as $result) {
                 $counts[$result['type']] = (int) $result['count'];
             }
-            
+
             return $counts;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan node type counts', [
@@ -314,13 +314,13 @@ class NodeManager
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to search Bayan nodes', [
@@ -331,4 +331,4 @@ class NodeManager
             return [];
         }
     }
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 // Test script to verify skin configuration logic
 echo "<h1>Skin Configuration Test</h1>";
 
@@ -31,7 +32,7 @@ if (!isset($wgValidSkins)) {
     echo "wgValidSkins is not set, using dynamic discovery<br>";
     $skinsDir = __DIR__ . '/../skins';
     $availableSkins = [];
-    
+
     if (is_dir($skinsDir)) {
         $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
         foreach ($skinDirs as $skinDir) {
@@ -39,7 +40,7 @@ if (!isset($wgValidSkins)) {
             $availableSkins[$skinName] = $skinName;
         }
     }
-    
+
     echo "Dynamic discovery found: " . implode(', ', array_keys($availableSkins)) . "<br>";
 } else {
     echo "wgValidSkins is set, using LocalSettings configuration<br>";
@@ -47,4 +48,3 @@ if (!isset($wgValidSkins)) {
 
 echo "<h2>3. Final result</h2>";
 echo "Final available skins: " . implode(', ', array_keys($availableSkins)) . "<br>";
-?> 

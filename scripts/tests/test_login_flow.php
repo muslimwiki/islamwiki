@@ -65,13 +65,13 @@ echo "\n3. Testing Password Verification...\n";
 try {
     $correctPassword = $user->verifyPassword('password');
     $wrongPassword = $user->verifyPassword('wrongpassword');
-    
+
     if ($correctPassword) {
         echo "   ✅ Correct password accepted\n";
     } else {
         echo "   ❌ Correct password rejected\n";
     }
-    
+
     if (!$wrongPassword) {
         echo "   ✅ Wrong password correctly rejected\n";
     } else {
@@ -86,20 +86,20 @@ try {
 echo "\n4. Testing Session Management...\n";
 try {
     $container = new \IslamWiki\Core\Container();
-    $container->singleton('session', function() {
+    $container->singleton('session', function () {
         return new \IslamWiki\Core\Session\SessionManager();
     });
-    
+
     $session = $container->get('session');
     $session->start();
-    
+
     // Test login
     $session->login(
         $user->getAttribute('id'),
         $user->getAttribute('username'),
         $user->isAdmin()
     );
-    
+
     if ($session->isLoggedIn()) {
         echo "   ✅ User logged in successfully\n";
         echo "   📊 User ID in session: " . $session->getUserId() . "\n";
@@ -108,16 +108,15 @@ try {
     } else {
         echo "   ❌ Login failed\n";
     }
-    
+
     // Test logout
     $session->logout();
-    
+
     if (!$session->isLoggedIn()) {
         echo "   ✅ User logged out successfully\n";
     } else {
         echo "   ❌ Logout failed\n";
     }
-    
 } catch (Exception $e) {
     echo "   ❌ Session management failed: " . $e->getMessage() . "\n";
     exit(1);
@@ -129,7 +128,7 @@ try {
     $csrfToken = $session->getCsrfToken();
     if (!empty($csrfToken)) {
         echo "   ✅ CSRF token generated: " . substr($csrfToken, 0, 10) . "...\n";
-        
+
         if ($session->verifyCsrfToken($csrfToken)) {
             echo "   ✅ CSRF token verification successful\n";
         } else {
@@ -150,4 +149,4 @@ echo "   - User lookup: ✅\n";
 echo "   - Password verification: ✅\n";
 echo "   - Session management: ✅\n";
 echo "   - CSRF protection: ✅\n";
-echo "\n🚀 Ready for web testing!\n"; 
+echo "\n🚀 Ready for web testing!\n";

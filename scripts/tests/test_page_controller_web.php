@@ -32,25 +32,25 @@ try {
     // Create container
     $container = new Container();
     $container->bind('db', $connection);
-    
+
     // Create logger
     $logger = new \IslamWiki\Core\Logging\Logger(__DIR__ . '/../logs');
-    $container->bind(\Psr\Log\LoggerInterface::class, function() use ($logger) {
+    $container->bind(\Psr\Log\LoggerInterface::class, function () use ($logger) {
         return $logger;
     });
-    
+
     // Create session manager
     $session = new \IslamWiki\Core\Session\SessionManager();
-    $container->bind('session', function() use ($session) {
+    $container->bind('session', function () use ($session) {
         return $session;
     });
-    
+
     // Create view renderer (Twig)
     $viewRenderer = new \IslamWiki\Core\View\TwigRenderer(__DIR__ . '/../resources/views');
-    $container->bind('view', function() use ($viewRenderer) {
+    $container->bind('view', function () use ($viewRenderer) {
         return $viewRenderer;
     });
-    
+
     echo "✅ Container, logger, session, and view renderer created\n";
 
     // Test PageController instantiation
@@ -68,7 +68,6 @@ try {
     echo "✅ PageController@show executed successfully\n";
     echo "  - Status: " . $response->getStatusCode() . "\n";
     echo "  - Content length: " . strlen($response->getBody()) . " characters\n";
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -76,4 +75,4 @@ try {
 }
 
 echo "\n✅ PageController web functionality test completed successfully!\n";
-echo "\nDone!\n"; 
+echo "\nDone!\n";

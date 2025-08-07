@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * User Skin Class
- * 
+ *
  * Handles user-defined skins from JSON configuration files.
- * 
+ *
  * @package IslamWiki\Skins
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Skins;
 
@@ -19,7 +20,7 @@ class UserSkin extends Skin
      * @var array The skin configuration from JSON
      */
     private array $jsonConfig;
-    
+
     /**
      * Constructor
      */
@@ -29,7 +30,7 @@ class UserSkin extends Skin
         $this->setSkinPath($skinPath);
         $this->initializeSkin();
     }
-    
+
     /**
      * Initialize the skin with values from JSON config
      */
@@ -41,7 +42,7 @@ class UserSkin extends Skin
         $this->description = $this->jsonConfig['description'] ?? 'User-defined skin';
         $this->config = $this->jsonConfig['config'] ?? [];
     }
-    
+
     /**
      * Get the CSS content for this skin
      */
@@ -50,10 +51,10 @@ class UserSkin extends Skin
         if ($this->hasCustomCss()) {
             return file_get_contents($this->getCssPath());
         }
-        
+
         return $this->getDefaultCss();
     }
-    
+
     /**
      * Get the JavaScript content for this skin
      */
@@ -62,10 +63,10 @@ class UserSkin extends Skin
         if ($this->hasCustomJs()) {
             return file_get_contents($this->getJsPath());
         }
-        
+
         return $this->getDefaultJs();
     }
-    
+
     /**
      * Get the CSS file path for this skin
      */
@@ -74,12 +75,12 @@ class UserSkin extends Skin
         if ($this->skinPath === null) {
             return '';
         }
-        
+
         $skinName = strtolower($this->getName());
         $cssFile = $this->jsonConfig['assets']['css'] ?? 'css/' . $skinName . '.css';
         return $this->skinPath . '/' . $cssFile;
     }
-    
+
     /**
      * Get the JavaScript file path for this skin
      */
@@ -88,12 +89,12 @@ class UserSkin extends Skin
         if ($this->skinPath === null) {
             return '';
         }
-        
+
         $skinName = strtolower($this->getName());
         $jsFile = $this->jsonConfig['assets']['js'] ?? 'js/' . $skinName . '.js';
         return $this->skinPath . '/' . $jsFile;
     }
-    
+
     /**
      * Get the layout template path for this skin
      */
@@ -102,11 +103,11 @@ class UserSkin extends Skin
         if ($this->skinPath === null) {
             return '';
         }
-        
+
         $layoutFile = $this->jsonConfig['assets']['layout'] ?? 'templates/layout.twig';
         return $this->skinPath . '/' . $layoutFile;
     }
-    
+
     /**
      * Get the default CSS for this skin
      */
@@ -153,7 +154,7 @@ body {
 }
 CSS;
     }
-    
+
     /**
      * Get the default JavaScript for this skin
      */
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 JS;
     }
-    
+
     /**
      * Get additional skin metadata from JSON config
      */
@@ -177,7 +178,7 @@ JS;
     {
         return $this->jsonConfig;
     }
-    
+
     /**
      * Get skin features
      */
@@ -185,7 +186,7 @@ JS;
     {
         return $this->jsonConfig['features'] ?? [];
     }
-    
+
     /**
      * Get skin dependencies
      */
@@ -193,7 +194,7 @@ JS;
     {
         return $this->jsonConfig['dependencies'] ?? [];
     }
-    
+
     /**
      * Check if skin has a specific feature
      */
@@ -201,4 +202,4 @@ JS;
     {
         return in_array($feature, $this->getFeatures());
     }
-} 
+}

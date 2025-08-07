@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug Dropdown Test
- * 
+ *
  * Simple test page to verify the user dropdown menu functionality
- * 
+ *
  * @package IslamWiki
  * @version 0.0.44
  * @license AGPL-3.0-only

@@ -1,8 +1,16 @@
 <?php
+
 /**
  * Debug Skin CSS Loading
- * 
+ *
  * Tests if the skin CSS is being loaded properly by the SkinServiceProvider
+ *
+ * @category  Debug
+ * @package   IslamWiki
+ * @author    IslamWiki Development Team
+ * @license   MIT
+ * @link      https://islam.wiki
+ * @since     0.0.1
  */
 
 // Load the autoloader
@@ -46,7 +54,7 @@ echo "<h2>3. Checking Active Skin</h2>";
 try {
     $activeSkinName = $skinManager->getActiveSkinName();
     echo "<p>Active skin name: " . $activeSkinName . "</p>";
-    
+
     $activeSkin = $skinManager->getActiveSkin();
     if ($activeSkin) {
         echo "<p>✅ Active skin loaded: " . $activeSkin->getName() . "</p>";
@@ -64,7 +72,8 @@ try {
     echo "<p>Skin CSS length: " . strlen($skinCss) . " characters</p>";
     if (strlen($skinCss) > 0) {
         echo "<p>✅ Skin CSS loaded successfully</p>";
-        echo "<p>First 200 characters: " . htmlspecialchars(substr($skinCss, 0, 200)) . "...</p>";
+        $firstChars = htmlspecialchars(substr($skinCss, 0, 200));
+        echo "<p>First 200 characters: " . $firstChars . "...</p>";
     } else {
         echo "<p>❌ Skin CSS is empty</p>";
     }
@@ -86,11 +95,13 @@ echo "<h2>6. Checking View Globals</h2>";
 try {
     $viewRenderer = $container->get('view');
     $globals = $viewRenderer->getGlobals();
-    echo "<p>View globals keys: " . implode(', ', array_keys($globals)) . "</p>";
-    
+    $globalKeys = implode(', ', array_keys($globals));
+    echo "<p>View globals keys: " . $globalKeys . "</p>";
+
     if (isset($globals['skin_css'])) {
         echo "<p>✅ skin_css found in view globals</p>";
-        echo "<p>skin_css length: " . strlen($globals['skin_css']) . " characters</p>";
+        $temp_f5092071 = strlen($globals['skin_css']) . " characters</p>";
+        echo "<p>skin_css length: " . $temp_f5092071;
     } else {
         echo "<p>❌ skin_css not found in view globals</p>";
     }
@@ -99,4 +110,3 @@ try {
 }
 
 echo "<h2>Debug Complete</h2>";
-?> 

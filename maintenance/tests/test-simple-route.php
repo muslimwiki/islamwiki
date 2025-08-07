@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../LocalSettings.php';
 
@@ -15,11 +16,10 @@ $request = Request::capture();
 
 // Test simple route
 $router = $app->getContainer()->get('router');
-$router->get('/test-simple-route', function($request) {
+$router->get('/test-simple-route', function ($request) {
     return new Response(200, ['Content-Type' => 'text/html'], '<h1>Simple route test works!</h1>');
 });
 
 // Handle request
 $response = $router->handle($request);
 $response->send();
-?> 

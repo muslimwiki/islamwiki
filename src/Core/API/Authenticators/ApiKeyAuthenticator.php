@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\API\Authenticators;
@@ -9,14 +10,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * API Key Authenticator
- * 
+ *
  * Authenticates API requests using API key authentication.
  * TODO: Implement API key validation logic
  */
 class ApiKeyAuthenticator implements AuthenticatorInterface
 {
     private AsasContainer $container;
-    
+
     /**
      * Create a new API key authenticator.
      */
@@ -24,7 +25,7 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
     {
         $this->container = $container;
     }
-    
+
     /**
      * Authenticate request using API key.
      */
@@ -34,7 +35,7 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
         // For now, return false to require implementation
         return false;
     }
-    
+
     /**
      * Get authentication method name.
      */
@@ -42,4 +43,4 @@ class ApiKeyAuthenticator implements AuthenticatorInterface
     {
         return 'api_key';
     }
-} 
+}

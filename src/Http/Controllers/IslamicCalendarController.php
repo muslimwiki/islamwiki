@@ -9,7 +9,7 @@ use App\Core\View\TwigRenderer;
 
 /**
  * Islamic Calendar Controller
- * 
+ *
  * Handles Islamic calendar web and API endpoints including:
  * - Calendar display and navigation
  * - Event management (CRUD operations)
@@ -37,7 +37,7 @@ class IslamicCalendarController extends Controller
             $stats = $this->calendar->getStatistics();
             $upcomingEvents = $this->calendar->getUpcomingEvents(5);
             $categories = $this->calendar->getCategories();
-            
+
             $data = [
                 'stats' => $stats,
                 'upcoming_events' => $upcomingEvents,
@@ -45,10 +45,9 @@ class IslamicCalendarController extends Controller
                 'current_year' => date('Y'),
                 'current_month' => date('n')
             ];
-            
+
             $html = $this->renderer->render('calendar/index.twig', $data);
             return new Response($html, 200, ['Content-Type' => 'text/html']);
-            
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading Islamic calendar');
         }
@@ -62,10 +61,10 @@ class IslamicCalendarController extends Controller
         try {
             $year = $year ?? date('Y');
             $month = $month ?? date('n');
-            
+
             $events = $this->calendar->getMonthEvents($year, $month);
             $categories = $this->calendar->getCategories();
-            
+
             $data = [
                 'year' => $year,
                 'month' => $month,
@@ -75,10 +74,9 @@ class IslamicCalendarController extends Controller
                 'prev_month' => $this->getPreviousMonth($year, $month),
                 'next_month' => $this->getNextMonth($year, $month)
             ];
-            
+
             $html = $this->renderer->render('calendar/month.twig', $data);
             return new Response($html, 200, ['Content-Type' => 'text/html']);
-            
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading monthly calendar');
         }
@@ -91,19 +89,18 @@ class IslamicCalendarController extends Controller
     {
         try {
             $event = $this->calendar->getEvent($id);
-            
+
             if (!$event) {
                 return new Response('Event not found', 404);
             }
-            
+
             $data = [
                 'event' => $event,
                 'related_events' => $this->getRelatedEvents($event)
             ];
-            
+
             $html = $this->renderer->render('calendar/event.twig', $data);
             return new Response($html, 200, ['Content-Type' => 'text/html']);
-            
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading event');
         }
@@ -117,9 +114,9 @@ class IslamicCalendarController extends Controller
         try {
             $year = $year ?? date('Y');
             $month = $month ?? date('n');
-            
+
             $events = $this->calendar->getMonthEvents($year, $month);
-            
+
             $data = [
                 'year' => $year,
                 'month' => $month,
@@ -127,10 +124,9 @@ class IslamicCalendarController extends Controller
                 'month_name' => $this->getMonthName($month),
                 'is_widget' => true
             ];
-            
+
             $html = $this->renderer->render('calendar/widget.twig', $data);
             return new Response($html, 200, ['Content-Type' => 'text/html']);
-            
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading calendar widget');
         }
@@ -145,24 +141,27 @@ class IslamicCalendarController extends Controller
             $query = $request->getQueryParam('q', '');
             $category = $request->getQueryParam('category', '');
             $year = $request->getQueryParam('year', '');
-            
+
             $filters = [];
-            if ($category) $filters['category'] = $category;
-            if ($year) $filters['year'] = $year;
-            
+            if ($category) {
+                $filters['category'] = $category;
+            }
+            if ($year) {
+                $filters['year'] = $year;
+            }
+
             $events = $query ? $this->calendar->searchEvents($query, $filters) : [];
             $categories = $this->calendar->getCategories();
-            
+
             $data = [
                 'query' => $query,
                 'events' => $events,
                 'categories' => $categories,
                 'filters' => $filters
             ];
-            
+
             $html = $this->renderer->render('calendar/search.twig', $data);
             return new Response($html, 200, ['Content-Type' => 'text/html']);
-            
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error searching events');
         }
@@ -182,15 +181,14 @@ class IslamicCalendarController extends Controller
                 'category' => $request->getQueryParam('category'),
                 'limit' => $request->getQueryParam('limit', 50)
             ];
-            
+
             $events = $this->calendar->getEvents($filters);
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $events]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error retrieving events');
         }
@@ -203,7 +201,7 @@ class IslamicCalendarController extends Controller
     {
         try {
             $event = $this->calendar->getEvent($id);
-            
+
             if (!$event) {
                 return new Response(
                     json_encode(['success' => false, 'error' => 'Event not found']),
@@ -211,13 +209,12 @@ class IslamicCalendarController extends Controller
                     ['Content-Type' => 'application/json']
                 );
             }
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $event]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error retrieving event');
         }
@@ -230,13 +227,12 @@ class IslamicCalendarController extends Controller
     {
         try {
             $hijriDate = $this->calendar->gregorianToHijri($date);
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $hijriDate]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error converting date');
         }
@@ -250,7 +246,7 @@ class IslamicCalendarController extends Controller
         try {
             $date = $date ?? date('Y-m-d');
             $prayerTimes = $this->calendar->getPrayerTimes($date);
-            
+
             if (!$prayerTimes) {
                 return new Response(
                     json_encode(['success' => false, 'error' => 'Prayer times not found']),
@@ -258,13 +254,12 @@ class IslamicCalendarController extends Controller
                     ['Content-Type' => 'application/json']
                 );
             }
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $prayerTimes]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error retrieving prayer times');
         }
@@ -277,13 +272,12 @@ class IslamicCalendarController extends Controller
     {
         try {
             $stats = $this->calendar->getStatistics();
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $stats]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error retrieving statistics');
         }
@@ -297,13 +291,12 @@ class IslamicCalendarController extends Controller
         try {
             $limit = $request->getQueryParam('limit', 10);
             $events = $this->calendar->getUpcomingEvents($limit);
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $events]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error retrieving upcoming events');
         }
@@ -319,20 +312,25 @@ class IslamicCalendarController extends Controller
             $category = $request->getQueryParam('category', '');
             $year = $request->getQueryParam('year', '');
             $limit = $request->getQueryParam('limit', 20);
-            
+
             $filters = [];
-            if ($category) $filters['category'] = $category;
-            if ($year) $filters['year'] = $year;
-            if ($limit) $filters['limit'] = $limit;
-            
+            if ($category) {
+                $filters['category'] = $category;
+            }
+            if ($year) {
+                $filters['year'] = $year;
+            }
+            if ($limit) {
+                $filters['limit'] = $limit;
+            }
+
             $events = $this->calendar->searchEvents($query, $filters);
-            
+
             return new Response(
                 json_encode(['success' => true, 'data' => $events]),
                 200,
                 ['Content-Type' => 'application/json']
             );
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error searching events');
         }
@@ -345,7 +343,7 @@ class IslamicCalendarController extends Controller
     {
         try {
             $data = json_decode($request->getBody(), true);
-            
+
             // Validate required fields
             $required = ['title', 'description', 'hijri_date', 'gregorian_date', 'category_id'];
             foreach ($required as $field) {
@@ -357,9 +355,9 @@ class IslamicCalendarController extends Controller
                     );
                 }
             }
-            
+
             $eventId = $this->calendar->createEvent($data);
-            
+
             if ($eventId) {
                 $event = $this->calendar->getEvent($eventId);
                 return new Response(
@@ -374,7 +372,6 @@ class IslamicCalendarController extends Controller
                     ['Content-Type' => 'application/json']
                 );
             }
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error creating event');
         }
@@ -387,9 +384,9 @@ class IslamicCalendarController extends Controller
     {
         try {
             $data = json_decode($request->getBody(), true);
-            
+
             $success = $this->calendar->updateEvent($id, $data);
-            
+
             if ($success) {
                 $event = $this->calendar->getEvent($id);
                 return new Response(
@@ -404,7 +401,6 @@ class IslamicCalendarController extends Controller
                     ['Content-Type' => 'application/json']
                 );
             }
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error updating event');
         }
@@ -417,7 +413,7 @@ class IslamicCalendarController extends Controller
     {
         try {
             $success = $this->calendar->deleteEvent($id);
-            
+
             if ($success) {
                 return new Response(
                     json_encode(['success' => true, 'message' => 'Event deleted successfully']),
@@ -431,7 +427,6 @@ class IslamicCalendarController extends Controller
                     ['Content-Type' => 'application/json']
                 );
             }
-            
         } catch (\Exception $e) {
             return $this->handleApiError($e, 'Error deleting event');
         }
@@ -446,7 +441,7 @@ class IslamicCalendarController extends Controller
             5 => 'Jumada al-Awwal', 6 => 'Jumada al-Thani', 7 => 'Rajab', 8 => 'Sha\'ban',
             9 => 'Ramadan', 10 => 'Shawwal', 11 => 'Dhu al-Qadah', 12 => 'Dhu al-Hijjah'
         ];
-        
+
         return $months[$month] ?? 'Unknown';
     }
 
@@ -474,7 +469,7 @@ class IslamicCalendarController extends Controller
             'month' => date('n', strtotime($event['hijri_date'])),
             'limit' => 5
         ];
-        
+
         return $this->calendar->getEvents($filters);
     }
 
@@ -493,4 +488,4 @@ class IslamicCalendarController extends Controller
             ['Content-Type' => 'application/json']
         );
     }
-} 
+}

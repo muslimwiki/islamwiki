@@ -1,8 +1,6 @@
-<?
+<?php
+
 declare(strict_types=1);
-php\np
-
-
 
 namespace IslamWiki\Http\Controllers;
 

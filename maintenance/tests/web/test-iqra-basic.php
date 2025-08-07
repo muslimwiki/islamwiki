@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Basic Iqra Search Engine Test
  * Tests the search engine without the full application framework
@@ -118,7 +119,7 @@ try {
                 <p><strong>Search type:</strong> {$searchResult['type']}</p>
                 <p><strong>Query:</strong> {$searchResult['query']}</p>
             </div>";
-            
+
             if (!empty($searchResult['results'])) {
                 echo "<h3>Sample Results:</h3>";
                 foreach (array_slice($searchResult['results'], 0, 3) as $result) {
@@ -154,7 +155,6 @@ try {
             </ul>
             <p><strong>Next steps:</strong> Visit <a href='/iqra-search'>/iqra-search</a> to use the full Iqra search interface.</p>
         </div>";
-
     } catch (Exception $e) {
         echo "<div class='test-section error'>
             <h2>❌ Database Connection Error</h2>
@@ -162,7 +162,6 @@ try {
             <p>Please check your database configuration.</p>
         </div>";
     }
-
 } catch (Exception $e) {
     echo "<div class='test-section error'>
         <h2>❌ Error</h2>
@@ -175,4 +174,4 @@ try {
 
 echo "</div>
 </body>
-</html>"; 
+</html>";

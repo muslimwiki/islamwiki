@@ -30,13 +30,13 @@ try {
     // Create container
     $container = new Container();
     $container->bind('db', $connection);
-    
+
     // Create logger
     $logger = new \IslamWiki\Core\Logging\Logger(__DIR__ . '/../logs');
-    $container->bind(\Psr\Log\LoggerInterface::class, function() use ($logger) {
+    $container->bind(\Psr\Log\LoggerInterface::class, function () use ($logger) {
         return $logger;
     });
-    
+
     echo "✅ Container and logger created\n";
 
     // Test PageController instantiation
@@ -50,11 +50,10 @@ try {
     } else {
         echo "❌ Page 'welcome' not found\n";
     }
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

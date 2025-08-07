@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -18,6 +18,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
@@ -268,10 +270,12 @@ class SearchController extends Controller
     protected function searchCalendar(string $query, int $offset, int $limit): array
     {
         $sql = "SELECT e.*, c.name as category_name,
-                       MATCH(e.title, e.title_arabic, e.description, e.description_arabic) AGAINST(? IN BOOLEAN MODE) as relevance
+                       MATCH(e.title, e.title_arabic, e.description, e.description_arabic) 
+                       AGAINST(? IN BOOLEAN MODE) as relevance
                 FROM islamic_events e
                 LEFT JOIN event_categories c ON e.category_id = c.id
-                WHERE MATCH(e.title, e.title_arabic, e.description, e.description_arabic) AGAINST(? IN BOOLEAN MODE)
+                WHERE MATCH(e.title, e.title_arabic, e.description, e.description_arabic) 
+                      AGAINST(? IN BOOLEAN MODE)
                 ORDER BY relevance DESC, e.gregorian_date ASC
                 LIMIT ? OFFSET ?";
 
@@ -342,7 +346,7 @@ class SearchController extends Controller
     protected function searchAll(string $query, int $offset, int $limit): array
     {
         $allResults = [];
-        
+
         // Search each type
         $pages = $this->searchPages($query, 0, $limit);
         $quran = $this->searchQuran($query, 0, $limit);
@@ -352,7 +356,7 @@ class SearchController extends Controller
 
         // Combine and sort by relevance
         $allResults = array_merge($pages, $quran, $hadith, $calendar, $prayer);
-        usort($allResults, function($a, $b) {
+        usort($allResults, function ($a, $b) {
             return $b['relevance'] <=> $a['relevance'];
         });
 
@@ -387,7 +391,8 @@ class SearchController extends Controller
                 $count = $stmt->fetchColumn();
                 break;
             case 'calendar':
-                $sql = "SELECT COUNT(*) FROM islamic_events WHERE MATCH(title, title_arabic, description, description_arabic) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM islamic_events 
+                        WHERE MATCH(title, title_arabic, description, description_arabic) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
@@ -434,11 +439,11 @@ class SearchController extends Controller
     {
         // Remove HTML tags
         $content = strip_tags($content);
-        
+
         // Find the position of the first search term
         $words = explode(' ', strtolower($query));
         $position = -1;
-        
+
         foreach ($words as $word) {
             $pos = stripos($content, $word);
             if ($pos !== false && ($position === -1 || $pos < $position)) {
@@ -477,14 +482,14 @@ class SearchController extends Controller
     public function apiSuggestions(Request $request): Response
     {
         $query = $request->getQueryParams()['q'] ?? '';
-        
+
         if (empty($query) || strlen($query) < 2) {
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([]));
         }
 
         try {
             $suggestions = $this->getSearchSuggestions($query);
-            
+
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'suggestions' => $suggestions
             ]));
@@ -501,14 +506,14 @@ class SearchController extends Controller
     protected function getSearchSuggestions(string $query): array
     {
         $suggestions = [];
-        
+
         // Get page title suggestions
         $sql = "SELECT title, slug FROM pages 
                 WHERE title LIKE ? OR slug LIKE ? 
                 ORDER BY updated_at DESC LIMIT 5";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%", "%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'page',
@@ -525,7 +530,7 @@ class SearchController extends Controller
                 ORDER BY v.surah_number ASC, v.verse_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'quran',
@@ -542,7 +547,7 @@ class SearchController extends Controller
                 ORDER BY h.collection_id ASC, h.hadith_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%"]);
-        
+
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'hadith',
@@ -553,4 +558,4 @@ class SearchController extends Controller
 
         return $suggestions;
     }
-} 
+}

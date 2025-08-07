@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
@@ -53,8 +54,8 @@ class TestController
         restore_error_handler();
         restore_exception_handler();
 
-        $html = "<h1>Debug Information</h1><pre>" . 
-                htmlspecialchars(print_r($debugInfo, true)) . 
+        $html = "<h1>Debug Information</h1><pre>" .
+                htmlspecialchars(print_r($debugInfo, true)) .
                 "</pre>";
 
         return new Response(200, ['Content-Type' => 'text/html'], $html);

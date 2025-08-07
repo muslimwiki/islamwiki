@@ -136,10 +136,10 @@ MARKDOWN;
         'namespace' => 'main',
         'is_locked' => false
     ]);
-    
+
     $saved = $testPage->save();
     echo "  " . ($saved ? "✅" : "❌") . " Test page created successfully\n";
-    
+
     if ($saved) {
         echo "  📊 Test page details:\n";
         echo "    - ID: {$testPage->getAttribute('id')}\n";
@@ -150,28 +150,28 @@ MARKDOWN;
 
     // Test the content rendering
     echo "\n🔍 Testing content rendering...\n";
-    
+
     // Create a mock PageController to test rendering
     $container = new \IslamWiki\Core\Container();
     $container->bind('db', $connection);
-    
+
     $logger = new \IslamWiki\Core\Logging\Logger(__DIR__ . '/../logs');
-    $container->bind(\Psr\Log\LoggerInterface::class, function() use ($logger) {
+    $container->bind(\Psr\Log\LoggerInterface::class, function () use ($logger) {
         return $logger;
     });
-    
+
     $pageController = new \IslamWiki\Http\Controllers\PageController($connection, $container);
-    
+
     // Test the parseWikiText method
     $reflection = new ReflectionClass($pageController);
     $method = $reflection->getMethod('parseWikiText');
     $method->setAccessible(true);
-    
+
     $renderedContent = $method->invoke($pageController, $testContent);
-    
+
     echo "  ✅ Content rendering completed\n";
     echo "  📊 Rendered content length: " . strlen($renderedContent) . " characters\n";
-    
+
     // Check for specific HTML elements
     $checks = [
         'Headers' => ['<h1>', '<h2>', '<h3>'],
@@ -184,7 +184,7 @@ MARKDOWN;
         'Links' => ['<a href='],
         'Horizontal rules' => ['<hr>']
     ];
-    
+
     echo "\n📋 Rendering checks:\n";
     foreach ($checks as $feature => $elements) {
         $found = false;
@@ -196,7 +196,6 @@ MARKDOWN;
         }
         echo "  " . ($found ? "✅" : "❌") . " {$feature}\n";
     }
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -205,4 +204,4 @@ MARKDOWN;
 
 echo "\n✅ Enhanced content rendering test completed successfully!\n";
 echo "\nYou can now visit: https://local.islam.wiki/content-rendering-test-v2\n";
-echo "\nDone!\n"; 
+echo "\nDone!\n";

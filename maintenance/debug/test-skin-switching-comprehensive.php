@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -24,7 +25,7 @@ try {
     if ($settings) {
         echo "✅ User settings found for user ID 1\n";
         echo "📄 Settings: " . json_encode($settings) . "\n";
-        
+
         // Parse the settings JSON
         $settingsData = json_decode($settings->settings, true);
         if ($settingsData && isset($settingsData['skin'])) {
@@ -59,23 +60,23 @@ echo "\n3. Testing skin manager directly...\n";
 try {
     // Create application first
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
-    
+
     // Create container
     $container = $app->getContainer();
-    $container->singleton(\IslamWiki\Core\Database\Connection::class, function() use ($db) {
+    $container->singleton(\IslamWiki\Core\Database\Connection::class, function () use ($db) {
         return $db;
     });
-    
+
     // Create skin manager
     $skinManager = new \IslamWiki\Skins\SkinManager($app, $container);
-    
+
     // Test getting active skin for user
     $activeSkin = $skinManager->getActiveSkinForUser(1);
     if ($activeSkin) {
         echo "✅ Active skin for user 1: " . $activeSkin->getName() . "\n";
         echo "📄 Skin version: " . $activeSkin->getVersion() . "\n";
         echo "📄 Skin CSS length: " . strlen($activeSkin->getCssContent()) . "\n";
-        
+
         // Check if skin has layout
         if (method_exists($activeSkin, 'getLayoutPath')) {
             $layoutPath = $activeSkin->getLayoutPath();
@@ -91,11 +92,10 @@ try {
     } else {
         echo "❌ No active skin found for user 1\n";
     }
-    
+
     // Test getting active skin name
     $activeSkinName = $skinManager->getActiveSkinNameForUser(1);
     echo "📄 Active skin name for user 1: " . $activeSkinName . "\n";
-    
 } catch (Exception $e) {
     echo "❌ Error testing skin manager: " . $e->getMessage() . "\n";
     echo "📄 Stack trace: " . $e->getTraceAsString() . "\n";
@@ -106,11 +106,11 @@ echo "\n4. Testing session and authentication...\n";
 try {
     // Create session manager
     $session = new \IslamWiki\Core\Session\Wisal();
-    
+
     // Check if user is logged in
     $isLoggedIn = $session->isLoggedIn();
     echo "📄 Is user logged in: " . ($isLoggedIn ? 'Yes' : 'No') . "\n";
-    
+
     if ($isLoggedIn) {
         $userId = $session->getUserId();
         $username = $session->getUsername();
@@ -119,7 +119,6 @@ try {
     } else {
         echo "❌ User is not logged in\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error testing session: " . $e->getMessage() . "\n";
 }
@@ -135,48 +134,47 @@ try {
         [],
         '1.1'
     );
-    
+
     // Create application
     $app = new \IslamWiki\Core\Application();
-    
+
     // Create container with services
     $container = $app->getContainer();
-    $container->singleton(\IslamWiki\Core\Database\Connection::class, function() use ($db) {
+    $container->singleton(\IslamWiki\Core\Database\Connection::class, function () use ($db) {
         return $db;
     });
-    
+
     // Create skin manager
     $skinManager = new \IslamWiki\Skins\SkinManager($app, $container);
-    $container->singleton('skin.manager', function() use ($skinManager) {
+    $container->singleton('skin.manager', function () use ($skinManager) {
         return $skinManager;
     });
-    
+
     // Create view renderer
     $viewRenderer = new \IslamWiki\Core\View\TwigRenderer(__DIR__ . '/../resources/views');
-    $container->singleton('view', function() use ($viewRenderer) {
+    $container->singleton('view', function () use ($viewRenderer) {
         return $viewRenderer;
     });
-    
+
     // Create session
     $session = new \IslamWiki\Core\Session\Wisal();
-    $container->singleton('session', function() use ($session) {
+    $container->singleton('session', function () use ($session) {
         return $session;
     });
-    
+
     // Test skin middleware
     $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($app);
-    
+
     // Simulate middleware execution
-    $response = $skinMiddleware->handle($request, function($req) {
+    $response = $skinMiddleware->handle($request, function ($req) {
         return new \IslamWiki\Core\Http\Response(200, [], 'Test response');
     });
-    
+
     echo "✅ Skin middleware executed successfully\n";
     echo "📄 Response status: " . $response->getStatusCode() . "\n";
-    
 } catch (Exception $e) {
     echo "❌ Error testing application flow: " . $e->getMessage() . "\n";
     echo "📄 Stack trace: " . $e->getTraceAsString() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

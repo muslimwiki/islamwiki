@@ -1,17 +1,18 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Static Data Manager
- * 
+ *
  * Manages global static data and skin-specific components.
  * Provides a centralized way to handle navigation, content areas,
  * footers, and other static elements across different skins.
- * 
+ *
  * @package IslamWiki\Core\Skin
  * @version 0.0.44
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Skin;
 
@@ -24,22 +25,22 @@ class StaticDataManager
      * @var NizamApplication The application instance
      */
     private NizamApplication $app;
-    
+
     /**
      * @var SkinManager The skin manager instance
      */
     private SkinManager $skinManager;
-    
+
     /**
      * @var array Global static data
      */
     private array $globalData = [];
-    
+
     /**
      * @var array Skin-specific component data
      */
     private array $skinComponents = [];
-    
+
     /**
      * Constructor
      */
@@ -50,7 +51,7 @@ class StaticDataManager
         $this->loadGlobalData();
         $this->loadSkinComponents();
     }
-    
+
     /**
      * Load global static data that applies to all skins
      */
@@ -165,7 +166,7 @@ class StaticDataManager
             ],
         ];
     }
-    
+
     /**
      * Load skin-specific component data
      */
@@ -173,14 +174,14 @@ class StaticDataManager
     {
         $activeSkin = $this->skinManager->getActiveSkin();
         $skinName = $activeSkin ? $activeSkin->getName() : 'Bismillah';
-        
+
         // Check if skin has component templates
         $skinsPath = dirname(__DIR__, 3) . '/skins';
         $skinComponentsPath = "{$skinsPath}/{$skinName}/components";
         $hasComponents = is_dir($skinComponentsPath);
-        
+
         $this->skinComponents = [];
-        
+
         // Only add components if the skin has component templates
         if ($hasComponents) {
             $this->skinComponents = [
@@ -248,7 +249,7 @@ class StaticDataManager
             ];
         }
     }
-    
+
     /**
      * Get skin-specific logo
      */
@@ -259,27 +260,27 @@ class StaticDataManager
             'Muslim' => '📖',
             'default' => '🏠',
         ];
-        
+
         return $logos[$skinName] ?? $logos['default'];
     }
-    
+
     /**
      * Get all static data for a specific context
      */
     public function getStaticData(string $context = 'default'): array
     {
         $data = $this->globalData;
-        
+
         // Add skin-specific components
         $data['components'] = $this->skinComponents;
-        
+
         // Add context-specific data
         $data['context'] = $context;
         $data['active_skin'] = $this->skinManager->getActiveSkinName();
-        
+
         return $data;
     }
-    
+
     /**
      * Get a specific component data
      */
@@ -287,7 +288,7 @@ class StaticDataManager
     {
         return $this->skinComponents[$componentName] ?? null;
     }
-    
+
     /**
      * Get navigation data
      */
@@ -295,7 +296,7 @@ class StaticDataManager
     {
         return $this->globalData['navigation'][$type] ?? [];
     }
-    
+
     /**
      * Get footer data
      */
@@ -303,7 +304,7 @@ class StaticDataManager
     {
         return $this->globalData['footer'];
     }
-    
+
     /**
      * Get site information
      */
@@ -311,7 +312,7 @@ class StaticDataManager
     {
         return $this->globalData['site'];
     }
-    
+
     /**
      * Get feature configuration
      */
@@ -319,7 +320,7 @@ class StaticDataManager
     {
         return $this->globalData['features'][$feature] ?? [];
     }
-    
+
     /**
      * Check if a feature is enabled
      */
@@ -328,7 +329,7 @@ class StaticDataManager
         $config = $this->getFeatureConfig($feature);
         return $config['enabled'] ?? false;
     }
-    
+
     /**
      * Get social media links
      */
@@ -336,7 +337,7 @@ class StaticDataManager
     {
         return $this->globalData['social'];
     }
-    
+
     /**
      * Update global data (for dynamic content)
      */
@@ -344,7 +345,7 @@ class StaticDataManager
     {
         $this->globalData[$key] = $value;
     }
-    
+
     /**
      * Update component data
      */
@@ -357,7 +358,7 @@ class StaticDataManager
             );
         }
     }
-    
+
     /**
      * Reload skin components (when skin changes)
      */
@@ -365,4 +366,4 @@ class StaticDataManager
     {
         $this->loadSkinComponents();
     }
-} 
+}

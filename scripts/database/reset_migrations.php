@@ -43,18 +43,18 @@ try {
         'password' => $_ENV['DB_PASSWORD'] ?? '',
         'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
     ]);
-    
+
     echo "✅ Database connection successful\n";
-    
+
     $pdo = $connection->getPdo();
-    
+
     // Drop all existing tables
     echo "🗑️  Dropping existing tables...\n";
-    
+
     // Get all tables in the database
     $stmt = $pdo->query("SHOW TABLES");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
+
     if (empty($tables)) {
         echo "  No tables found to drop\n";
     } else {
@@ -63,14 +63,13 @@ try {
             echo "  Dropped table: {$table}\n";
         }
     }
-    
+
     echo "✅ All tables dropped\n";
-    
+
     echo "\n🎉 Migration state reset completed!\n";
     echo "You can now run 'php scripts/setup_database.php' to set up the database properly.\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

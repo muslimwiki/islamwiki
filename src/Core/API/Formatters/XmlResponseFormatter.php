@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\API\Formatters;
@@ -9,14 +10,14 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * XML Response Formatter
- * 
+ *
  * Formats API responses as XML.
  * TODO: Implement XML formatting logic
  */
 class XmlResponseFormatter implements ResponseFormatterInterface
 {
     private StreamFactoryInterface $streamFactory;
-    
+
     /**
      * Create a new XML response formatter.
      */
@@ -24,7 +25,7 @@ class XmlResponseFormatter implements ResponseFormatterInterface
     {
         $this->streamFactory = $streamFactory ?? new \GuzzleHttp\Psr7\StreamFactory();
     }
-    
+
     /**
      * Format data as XML response.
      */
@@ -32,16 +33,16 @@ class XmlResponseFormatter implements ResponseFormatterInterface
     {
         // TODO: Implement XML formatting
         $xmlData = '<?xml version="1.0" encoding="UTF-8"?><response><error>XML format not yet implemented</error></response>';
-        
+
         $stream = $this->streamFactory->createStream($xmlData);
-        
+
         return new \GuzzleHttp\Psr7\Response(
             $statusCode,
             ['Content-Type' => 'application/xml'],
             $stream
         );
     }
-    
+
     /**
      * Get supported content type.
      */
@@ -49,4 +50,4 @@ class XmlResponseFormatter implements ResponseFormatterInterface
     {
         return 'application/xml';
     }
-} 
+}

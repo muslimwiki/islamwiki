@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Interfaces;
@@ -70,4 +71,4 @@ interface QueueDriverInterface
      * Disconnect from the queue storage.
      */
     public function disconnect(): void;
-} 
+}

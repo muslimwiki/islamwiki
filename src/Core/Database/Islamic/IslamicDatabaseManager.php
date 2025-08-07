@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Database\Islamic;
@@ -8,7 +9,7 @@ use RuntimeException;
 
 /**
  * Islamic Database Manager
- * 
+ *
  * Manages separate database connections for different Islamic content types:
  * - Quran Database: For Quran verses and translations
  * - Hadith Database: For Hadith collections and chains
@@ -85,7 +86,7 @@ class IslamicDatabaseManager
     protected function createConnection(string $type): Connection
     {
         $config = $this->getConfig($type);
-        
+
         if (!$config) {
             throw new RuntimeException("Database configuration for '{$type}' not found");
         }
@@ -126,9 +127,9 @@ class IslamicDatabaseManager
     public function testConnections(): array
     {
         $results = [];
-        
+
         $types = ['quran', 'hadith', 'wiki', 'scholar'];
-        
+
         foreach ($types as $type) {
             try {
                 $connection = $this->getConnection($type);
@@ -145,7 +146,7 @@ class IslamicDatabaseManager
                 ];
             }
         }
-        
+
         return $results;
     }
 
@@ -155,26 +156,26 @@ class IslamicDatabaseManager
     public function getDatabaseStats(): array
     {
         $stats = [];
-        
+
         $types = ['quran', 'hadith', 'wiki', 'scholar'];
-        
+
         foreach ($types as $type) {
             try {
                 $connection = $this->getConnection($type);
                 $pdo = $connection->getPdo();
-                
+
                 // Get table count
                 $tableCount = $pdo->query("SHOW TABLES")->rowCount();
-                
+
                 // Get total rows across all tables
                 $totalRows = 0;
                 $tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
-                
+
                 foreach ($tables as $table) {
                     $result = $pdo->query("SELECT COUNT(*) FROM `{$table}`");
                     $totalRows += (int) $result->fetchColumn();
                 }
-                
+
                 $stats[$type] = [
                     'tables' => $tableCount,
                     'total_rows' => $totalRows,
@@ -186,7 +187,7 @@ class IslamicDatabaseManager
                 ];
             }
         }
-        
+
         return $stats;
     }
 
@@ -202,10 +203,10 @@ class IslamicDatabaseManager
                  FROM information_schema.tables 
                  WHERE table_schema = '{$database}'"
             );
-            
+
             return (float) $result->fetchColumn();
         } catch (\Exception $e) {
             return 0.0;
         }
     }
-} 
+}

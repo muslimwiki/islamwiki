@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Debug script to test LoggerInterface registration
  */
@@ -25,12 +26,14 @@ $app = new \IslamWiki\Core\Application(BASE_PATH);
 $container = $app->getContainer();
 
 // Test if LoggerInterface is available
-echo "LoggerInterface available: " . ($container->has(\Psr\Log\LoggerInterface::class) ? 'Yes' : 'No') . "\n";
+        $temp_e832ca29 = ($container->has(\Psr\Log\LoggerInterface::class) ? 'Yes' : 'No') . "\n";
+        echo "LoggerInterface available: " . $temp_e832ca29;
 
 if ($container->has(\Psr\Log\LoggerInterface::class)) {
     $logger = $container->get(\Psr\Log\LoggerInterface::class);
     echo "Logger class: " . get_class($logger) . "\n";
-    echo "Logger implements LoggerInterface: " . (($logger instanceof \Psr\Log\LoggerInterface) ? 'Yes' : 'No') . "\n";
+        $temp_0cf29ce5 = (($logger instanceof \Psr\Log\LoggerInterface) ? 'Yes' : 'No') . "\n";
+        echo "Logger implements LoggerInterface: " . $temp_0cf29ce5;
 } else {
     echo "LoggerInterface not found in container\n";
 }
@@ -44,7 +47,8 @@ $middlewareStackProperty = $reflection->getProperty('middlewareStack');
 $middlewareStackProperty->setAccessible(true);
 $middlewareStack = $middlewareStackProperty->getValue($router);
 
-echo "Middleware Stack: " . ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        $temp_4157577c = ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        echo "Middleware Stack: " . $temp_4157577c;
 
 if ($middlewareStack) {
     echo "Middleware Count: " . $middlewareStack->count() . "\n";
@@ -55,4 +59,4 @@ if ($middlewareStack) {
     }
 }
 
-echo "=== Test Complete ===\n"; 
+echo "=== Test Complete ===\n";

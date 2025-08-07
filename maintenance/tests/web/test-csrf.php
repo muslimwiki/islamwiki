@@ -69,4 +69,4 @@ echo "</pre>";
 echo "<h2>Cookies</h2>";
 echo "<pre>";
 print_r($_COOKIE);
-echo "</pre>"; 
+echo "</pre>";

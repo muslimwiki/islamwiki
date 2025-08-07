@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Edge Manager
- * 
+ *
  * Manages relationships (edges) between knowledge graph nodes,
  * representing connections between Islamic concepts, verses, hadith, etc.
  */
@@ -81,9 +81,9 @@ class EdgeManager
 
             $sql = "INSERT INTO bayan_edges (source_id, target_id, type, attributes, created_at) 
                     VALUES (?, ?, ?, ?, NOW())";
-            
+
             $attributesJson = json_encode($attributes);
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 $sourceId,
@@ -93,7 +93,7 @@ class EdgeManager
             ]);
 
             $edgeId = $this->connection->lastInsertId();
-            
+
             $this->logger->info('Created Bayan relationship', [
                 'edge_id' => $edgeId,
                 'source_id' => $sourceId,
@@ -129,13 +129,13 @@ class EdgeManager
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['attributes'] = json_decode($result['attributes'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan relationships by nodes', [
@@ -170,16 +170,16 @@ class EdgeManager
             }
 
             $sql .= " ORDER BY created_at DESC";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['attributes'] = json_decode($result['attributes'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan relationships by node', [
@@ -200,13 +200,13 @@ class EdgeManager
             $sql = "SELECT * FROM bayan_edges WHERE type = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT ?";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$type, $limit]);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['attributes'] = json_decode($result['attributes'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan relationships by type', [
@@ -225,7 +225,7 @@ class EdgeManager
         try {
             $sql = "UPDATE bayan_edges SET attributes = ?, updated_at = NOW() WHERE id = ? AND deleted_at IS NULL";
             $attributesJson = json_encode($attributes);
-            
+
             $stmt = $this->connection->prepare($sql);
             $result = $stmt->execute([$attributesJson, $id]);
 
@@ -280,7 +280,7 @@ class EdgeManager
             $sql = "SELECT COUNT(*) FROM bayan_edges WHERE deleted_at IS NULL";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            
+
             return (int) $stmt->fetchColumn();
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan relationship count', [
@@ -301,17 +301,17 @@ class EdgeManager
                     WHERE deleted_at IS NULL 
                     GROUP BY type 
                     ORDER BY count DESC";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $counts = [];
-            
+
             foreach ($results as $result) {
                 $counts[$result['type']] = (int) $result['count'];
             }
-            
+
             return $counts;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan relationship type counts', [
@@ -331,16 +331,16 @@ class EdgeManager
                     WHERE deleted_at IS NULL 
                     AND ((source_id = ? AND target_id = ?) OR (source_id = ? AND target_id = ?))
                     ORDER BY created_at DESC";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$node1Id, $node2Id, $node2Id, $node1Id]);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['attributes'] = json_decode($result['attributes'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find bidirectional Bayan relationships', [
@@ -351,4 +351,4 @@ class EdgeManager
             return [];
         }
     }
-} 
+}

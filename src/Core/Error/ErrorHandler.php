@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Error;
@@ -23,39 +24,39 @@ class ErrorHandler
     {
         // Set debug mode
         self::$debug = $debug;
-        
+
         // Ensure error reporting is set to maximum
         error_reporting(E_ALL);
-        
+
         // Enable display errors in development
         ini_set('display_errors', '1');
-        
+
         // Enable error logging
         ini_set('log_errors', '1');
-        
+
         // Set a default error log location if not already set
         $logDir = __DIR__ . '/../../../logs';
         if (!is_dir($logDir)) {
             @mkdir($logDir, 0755, true);
         }
-        
+
         $logFile = $logDir . '/error.log';
         if (!file_exists($logFile)) {
             @file_put_contents($logFile, '');
             @chmod($logFile, 0666);
         }
-        
+
         ini_set('error_log', $logFile);
-        
+
         // Set error handler
         set_error_handler([self::class, 'handleError']);
-        
+
         // Set exception handler
         set_exception_handler([self::class, 'handleException']);
-        
+
         // Set shutdown function to catch fatal errors
         register_shutdown_function([self::class, 'handleShutdown']);
-        
+
         // Log initialization
         error_log('Error handler initialized. Debug mode: ' . ($debug ? 'ON' : 'OFF'));
     }
@@ -122,7 +123,7 @@ class ErrorHandler
         $response->send();
         exit(1);
     }
-    
+
     /**
      * Log detailed server state for 500 errors
      */
@@ -169,7 +170,7 @@ class ErrorHandler
     public static function handleShutdown(): void
     {
         $error = error_get_last();
-        
+
         if ($error !== null && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR], true)) {
             $message = sprintf(
                 'FATAL %s: %s in %s on line %d',
@@ -180,25 +181,25 @@ class ErrorHandler
             );
 
             $exception = new \ErrorException(
-                $error['message'], 
-                0, 
-                $error['type'], 
-                $error['file'], 
+                $error['message'],
+                0,
+                $error['type'],
+                $error['file'],
                 $error['line']
             );
 
             // Log the fatal error with full context
             self::logError($message, 'FATAL', $exception);
-            
+
             // Log server state for fatal errors
             self::logServerState($exception);
 
             if (self::$debug) {
                 $exception = new \ErrorException(
-                    $error['message'], 
-                    0, 
-                    $error['type'], 
-                    $error['file'], 
+                    $error['message'],
+                    0,
+                    $error['type'],
+                    $error['file'],
                     $error['line']
                 );
                 $response = self::createErrorResponse($exception);
@@ -222,33 +223,33 @@ class ErrorHandler
         // Ensure error logging is enabled
         ini_set('log_errors', '1');
         ini_set('error_log', __DIR__ . '/../../../logs/error.log');
-        
+
         // Log the error for debugging
         error_log('===== START ERROR HANDLER =====');
         error_log('Error class: ' . get_class($e));
-        
+
         // Safely get message with null check
         $message = $e->getMessage();
         $message = is_string($message) ? $message : 'No message';
         error_log('Error message: ' . $message);
-        
+
         error_log('Error code: ' . $e->getCode());
         error_log('Error file: ' . $e->getFile() . ':' . $e->getLine());
         error_log('Error trace: ' . $e->getTraceAsString());
-        
+
         // Check if we should show debug information
         // First check if we're in a development environment
                 $isDev = (function_exists('getenv') && getenv('APP_ENV') === 'development') ||
                  (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') ||
                  (getenv('APP_ENV') === 'development') ||
                 (php_sapi_name() === 'cli');
-                
+
         // Then check if debug is explicitly enabled
         $debugEnabled = (function_exists('getenv') && getenv('APP_DEBUG') === 'true') ||
                        (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true');
-        
+
         $showDebug = self::$debug || $isDev || $debugEnabled;
-        
+
         // If we have a custom error template, use it
         $customTemplate = __DIR__ . '/../../../resources/views/errors/500.php';
         if (file_exists($customTemplate) && is_readable($customTemplate)) {
@@ -276,7 +277,7 @@ class ErrorHandler
                 <div class="container">
                     <h1>500 - Internal Server Error</h1>
                     <div class="error">' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</div>';
-            
+
             if ($showDebug) {
                 $html .= '
                     <h2>Debug Information</h2>
@@ -287,7 +288,7 @@ class ErrorHandler
                     <h3>Stack Trace</h3>
                     <pre>' . htmlspecialchars($e->getTraceAsString(), ENT_QUOTES, 'UTF-8') . '</pre>';
             }
-            
+
             $html .= '
                     <p>Please try again later or contact support if the problem persists.</p>
                 </div>
@@ -319,12 +320,12 @@ class ErrorHandler
         $errorMessage = $e->getMessage() ?: 'Unknown error';
         $errorFile = $e->getFile() ?: 'Unknown file';
         $errorLine = $e->getLine() ?: 0;
-        
+
         // Sanitize output
         $errorType = htmlspecialchars((string)$errorType, ENT_QUOTES, 'UTF-8');
         $errorMessage = htmlspecialchars((string)$errorMessage, ENT_QUOTES, 'UTF-8');
         $errorFile = htmlspecialchars((string)$errorFile, ENT_QUOTES, 'UTF-8');
-        
+
         // Get stack trace as string and sanitize
         $errorTrace = '';
         try {
@@ -333,7 +334,7 @@ class ErrorHandler
         } catch (\Throwable $traceError) {
             $errorTrace = 'Unable to get stack trace: ' . htmlspecialchars($traceError->getMessage(), ENT_QUOTES, 'UTF-8');
         }
-        
+
         // Get the source code around the error
         $source = '';
         if (!empty($e->getFile()) && $e->getLine() > 0) {
@@ -343,7 +344,7 @@ class ErrorHandler
                 $source = 'Unable to load source code: ' . htmlspecialchars($sourceError->getMessage(), ENT_QUOTES, 'UTF-8');
             }
         }
-        
+
         // Get server and request information
         $serverInfo = self::getServerInfo();
         $requestInfo = self::getRequestInfo();
@@ -379,7 +380,7 @@ class ErrorHandler
         $source = file($file);
         $start = max(0, $line - $linesAround - 1);
         $end = min(count($source), $line + $linesAround);
-        
+
         $result = '';
         for ($i = $start; $i < $end; $i++) {
             $lineNumber = $i + 1;
@@ -392,7 +393,7 @@ class ErrorHandler
                 $lineContent
             );
         }
-        
+
         return $result;
     }
 
@@ -442,7 +443,7 @@ class ErrorHandler
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
         $bytes /= (1 << (10 * $pow));
-        
+
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 

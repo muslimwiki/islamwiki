@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Routing\SabilRouting;
@@ -26,10 +27,10 @@ $router->get('/about', 'IslamWiki\Http\Controllers\PageController@about');
 // Authentication Routes
 $router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
 $router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
-    
+
 $router->get('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
 $router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
-    
+
 $router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
 
 // Password Reset Routes
@@ -44,7 +45,7 @@ $router->post('/reset-password', 'IslamWiki\Http\Controllers\Auth\AuthController
 // $router->post('/profile/change-password', 'IslamWiki\Http\Controllers\Auth\AuthController@changePassword');
 
 // Debug session route (must be before variable routes)
-$router->get('/debug-session', function($request) use ($router) {
+$router->get('/debug-session', function ($request) use ($router) {
     try {
         $container = $router->getContainer();
         $session = $container->get('session');
@@ -91,11 +92,11 @@ $router->get('/settings/skins', 'IslamWiki\Http\Controllers\SettingsController@g
 $router->get('/settings/skin/{name}', 'IslamWiki\Http\Controllers\SettingsController@getSkinInfo');
 
 // Test endpoint for debugging
-$router->post('/test-skin-update', function($request) {
+$router->post('/test-skin-update', function ($request) {
     $body = $request->getBody()->getContents();
     $contentType = $request->getHeaderLine('Content-Type');
     $parsedBody = $request->getParsedBody();
-    
+
     $response = [
         'body' => $body,
         'contentType' => $contentType,
@@ -103,7 +104,7 @@ $router->post('/test-skin-update', function($request) {
         'post' => $_POST,
         'isJson' => strpos($contentType, 'application/json') !== false
     ];
-    
+
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'application/json'], json_encode($response));
 });
 
@@ -113,7 +114,7 @@ $router->get('/test/error', 'IslamWiki\Http\Controllers\TestController@testError
 $router->get('/test/debug', 'IslamWiki\Http\Controllers\TestController@testDebug');
 
 // Test closure route for router debugging
-$router->get('/test-closure', function($request) {
+$router->get('/test-closure', function ($request) {
     error_log('Test closure route called');
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Test closure route works!');
 });
@@ -282,7 +283,7 @@ $router->post('/bayan/relationship', 'IslamWiki\Http\Controllers\BayanController
 $router->get('/bayan/statistics', 'IslamWiki\Http\Controllers\BayanController@statistics');
 $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPaths');
 
-$router->get('/test-router-alive', function($request) {
+$router->get('/test-router-alive', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
 });
 
@@ -290,7 +291,7 @@ $router->get('/test-router-alive', function($request) {
 $router->get('/test-asset', 'IslamWiki\Http\Controllers\AssetController@test');
 
 // Simple test route without AssetController
-$router->get('/test-simple', function($request) {
+$router->get('/test-simple', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Simple test route working!');
 });
 

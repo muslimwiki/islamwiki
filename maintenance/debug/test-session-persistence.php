@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🧪 Testing Session Persistence Across Requests\n";
@@ -88,4 +89,4 @@ echo "- Username: " . ($session3->getUsername() ?? 'null') . "\n";
 // Check session data
 echo "- Session Data: " . print_r($_SESSION, true) . "\n";
 
-echo "\n✅ Session persistence test completed\n"; 
+echo "\n✅ Session persistence test completed\n";

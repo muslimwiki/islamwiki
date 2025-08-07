@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Debug script to test middleware execution
  */
@@ -33,7 +34,8 @@ $middlewareStackProperty = $reflection->getProperty('middlewareStack');
 $middlewareStackProperty->setAccessible(true);
 $middlewareStack = $middlewareStackProperty->getValue($router);
 
-echo "Middleware Stack: " . ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        $temp_4157577c = ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        echo "Middleware Stack: " . $temp_4157577c;
 
 if ($middlewareStack) {
     echo "Middleware Count: " . $middlewareStack->count() . "\n";
@@ -54,7 +56,7 @@ echo "Skin Middleware created: " . get_class($skinMiddleware) . "\n";
 
 // Test the middleware handle method
 try {
-    $response = $skinMiddleware->handle($request, function($req) {
+    $response = $skinMiddleware->handle($request, function ($req) {
         return new \IslamWiki\Core\Http\Response(200, [], 'Test response');
     });
     echo "Skin Middleware executed successfully\n";
@@ -62,4 +64,4 @@ try {
     echo "Skin Middleware error: " . $e->getMessage() . "\n";
 }
 
-echo "=== Test Complete ===\n"; 
+echo "=== Test Complete ===\n";

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -26,12 +27,12 @@ try {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_setopt($ch, CURLOPT_USERAGENT, 'IslamWiki-Debug/1.0');
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
-    
+
     if ($error) {
         echo "❌ cURL error: " . $error . "\n";
     } else {
@@ -55,15 +56,15 @@ try {
     if (file_exists($logFile)) {
         $logs = file_get_contents($logFile);
         $lines = explode("\n", $logs);
-        
+
         echo "📄 Total log lines: " . count($lines) . "\n";
-        
-        $middlewareLogs = array_filter($lines, function($line) {
-            return strpos($line, 'SkinMiddleware') !== false || 
+
+        $middlewareLogs = array_filter($lines, function ($line) {
+            return strpos($line, 'SkinMiddleware') !== false ||
                    strpos($line, 'MiddlewareStack') !== false ||
                    strpos($line, 'IslamRouter') !== false;
         });
-        
+
         if (!empty($middlewareLogs)) {
             echo "✅ Found middleware-related logs:\n";
             foreach ($middlewareLogs as $log) {
@@ -73,7 +74,7 @@ try {
             }
         } else {
             echo "❌ No middleware logs found\n";
-            
+
             // Show all logs for debugging
             echo "📄 All logs:\n";
             foreach ($lines as $line) {
@@ -89,4 +90,4 @@ try {
     echo "❌ Error checking logs: " . $e->getMessage() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

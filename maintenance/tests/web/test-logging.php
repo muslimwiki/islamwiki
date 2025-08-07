@@ -1,4 +1,5 @@
 <?php
+
 // Set error reporting to maximum
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -17,20 +18,20 @@ foreach ($testLogs as $logFile) {
     if (!is_dir($logDir)) {
         mkdir($logDir, 0755, true);
     }
-    
+
     // Set error log
     ini_set('log_errors', '1');
     ini_set('error_log', $logFile);
-    
+
     // Test logging
     $testMessage = "[TEST] Testing error logging to: $logFile - " . date('Y-m-d H:i:s') . "\n";
     error_log($testMessage);
-    
+
     // Check if log was written
     $logExists = file_exists($logFile);
     $logWritable = is_writable($logFile);
     $logContent = $logExists ? file_get_contents($logFile) : '';
-    
+
     echo "<h3>Test: $logFile</h3>";
     echo "<pre>";
     echo "File exists: " . ($logExists ? 'Yes' : 'No') . "\n";
@@ -79,4 +80,3 @@ if (file_exists($scriptDirTestFile)) {
     echo "File content: " . htmlspecialchars(file_get_contents($scriptDirTestFile)) . "\n";
 }
 echo "</pre>";
-?>

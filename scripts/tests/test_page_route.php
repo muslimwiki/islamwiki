@@ -15,25 +15,24 @@ try {
     // Create application
     $app = new Application(__DIR__ . '/..');
     echo "✅ Application created\n";
-    
+
     // Create a mock request for /welcome
             $uri = new Uri('https://local.islam.wiki/welcome');
     $request = new Request('GET', $uri);
     echo "✅ Request created\n";
-    
+
     // Get the router
     $router = $app->getRouter();
     echo "✅ Router obtained\n";
-    
+
     // Try to match the route
     $route = $router->match($request);
     echo "✅ Route matched: " . ($route ? 'Yes' : 'No') . "\n";
-    
+
     if ($route) {
         echo "  - Handler: " . $route->getHandler() . "\n";
         echo "  - Parameters: " . json_encode($route->getParameters()) . "\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -41,4 +40,4 @@ try {
 }
 
 echo "\n✅ Page route test completed successfully!\n";
-echo "\nDone!\n"; 
+echo "\nDone!\n";

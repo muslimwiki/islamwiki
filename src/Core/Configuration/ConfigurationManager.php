@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Enhanced Configuration Manager
- * 
+ *
  * Advanced configuration management system with categories, validation,
  * audit logging, backup functionality, and extension integration.
- * 
+ *
  * @package IslamWiki\Core\Configuration
  * @version 0.0.20
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Configuration;
 
@@ -69,10 +70,10 @@ class ConfigurationManager
         try {
             // Load categories
             $this->loadCategories();
-            
+
             // Load configuration values
             $this->loadConfigurationValues();
-            
+
             $this->logger->info('Configuration loaded successfully');
         } catch (\Exception $e) {
             $this->logger->error('Failed to load configuration: ' . $e->getMessage());
@@ -88,12 +89,12 @@ class ConfigurationManager
     {
         $category = $this->getCategoryFromKey($key);
         $keyName = $this->getKeyNameFromKey($key);
-        
+
         if (isset($this->configCache[$category][$keyName])) {
             $config = $this->configCache[$category][$keyName];
             return $this->castValue($config['value'], $config['type']);
         }
-        
+
         return $default;
     }
 
@@ -105,19 +106,19 @@ class ConfigurationManager
         try {
             $category = $this->getCategoryFromKey($key);
             $keyName = $this->getKeyNameFromKey($key);
-            
+
             // Get current value for audit
             $oldValue = $this->getValue($key);
-            
+
             // Validate the new value
             if (!$this->validateValue($category, $keyName, $value)) {
                 return false;
             }
-            
+
             // Update the configuration
             $type = $this->getConfigurationType($category, $keyName);
             $serializedValue = $this->serializeValue($value, $type);
-            
+
             $this->db->table('configuration')
                 ->where('category', $category)
                 ->where('key_name', $keyName)
@@ -125,13 +126,13 @@ class ConfigurationManager
                     'value' => $serializedValue,
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
-            
+
             // Update cache
             $this->configCache[$category][$keyName]['value'] = $serializedValue;
-            
+
             // Log the change
             $this->logConfigurationChange($category, $keyName, $oldValue, $value, $userId);
-            
+
             $this->logger->info("Configuration updated: {$key} = " . json_encode($value));
             return true;
         } catch (\Exception $e) {
@@ -148,7 +149,7 @@ class ConfigurationManager
         if (!isset($this->configCache[$category])) {
             return [];
         }
-        
+
         $result = [];
         foreach ($this->configCache[$category] as $key => $config) {
             $result[$key] = [
@@ -160,7 +161,7 @@ class ConfigurationManager
                 'validation_rules' => $config['validation_rules']
             ];
         }
-        
+
         return $result;
     }
 
@@ -179,21 +180,21 @@ class ConfigurationManager
     {
         $errors = [];
         $warnings = [];
-        
+
         foreach ($this->configCache as $category => $configs) {
             foreach ($configs as $key => $config) {
                 $validationResult = $this->validateConfigurationItem($category, $key, $config);
-                
+
                 if (!empty($validationResult['errors'])) {
                     $errors = array_merge($errors, $validationResult['errors']);
                 }
-                
+
                 if (!empty($validationResult['warnings'])) {
                     $warnings = array_merge($warnings, $validationResult['warnings']);
                 }
             }
         }
-        
+
         return [
             'errors' => $errors,
             'warnings' => $warnings,
@@ -212,11 +213,11 @@ class ConfigurationManager
             'categories' => [],
             'configuration' => []
         ];
-        
+
         foreach ($this->categoriesCache as $category) {
             $export['categories'][] = $category;
         }
-        
+
         foreach ($this->configCache as $category => $configs) {
             foreach ($configs as $key => $config) {
                 $export['configuration'][] = [
@@ -231,7 +232,7 @@ class ConfigurationManager
                 ];
             }
         }
-        
+
         return $export;
     }
 
@@ -245,27 +246,27 @@ class ConfigurationManager
             if (!isset($config['configuration']) || !is_array($config['configuration'])) {
                 throw new \InvalidArgumentException('Invalid configuration import format');
             }
-            
+
             $imported = 0;
             $errors = [];
-            
+
             foreach ($config['configuration'] as $item) {
                 if (!isset($item['category'], $item['key_name'], $item['value'])) {
                     $errors[] = "Invalid configuration item: missing required fields";
                     continue;
                 }
-                
+
                 if ($this->setValue($item['category'] . '.' . $item['key_name'], $item['value'])) {
                     $imported++;
                 } else {
                     $errors[] = "Failed to import configuration: {$item['category']}.{$item['key_name']}";
                 }
             }
-            
+
             if (!empty($errors)) {
                 $this->logger->warning('Configuration import completed with errors: ' . implode(', ', $errors));
             }
-            
+
             $this->logger->info("Configuration import completed: {$imported} items imported");
             return true;
         } catch (\Exception $e) {
@@ -281,7 +282,7 @@ class ConfigurationManager
     {
         try {
             $configurationData = $this->exportConfiguration();
-            
+
             $this->db->table('configuration_backups')->insert([
                 'backup_name' => $backupName,
                 'configuration_data' => json_encode($configurationData),
@@ -289,7 +290,7 @@ class ConfigurationManager
                 'description' => $description,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
+
             $this->logger->info("Configuration backup created: {$backupName}");
             return true;
         } catch (\Exception $e) {
@@ -307,17 +308,17 @@ class ConfigurationManager
             $backup = $this->db->table('configuration_backups')
                 ->where('id', $backupId)
                 ->first();
-            
+
             if (!$backup) {
                 throw new \InvalidArgumentException('Backup not found');
             }
-            
+
             $configurationData = json_decode($backup['configuration_data'], true);
-            
+
             if (!$configurationData) {
                 throw new \InvalidArgumentException('Invalid backup data');
             }
-            
+
             return $this->importConfiguration($configurationData);
         } catch (\Exception $e) {
             $this->logger->error("Failed to restore configuration backup: " . $e->getMessage());
@@ -356,7 +357,7 @@ class ConfigurationManager
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
-        
+
         foreach ($categories as $category) {
             $this->categoriesCache[$category['name']] = $category;
         }
@@ -368,7 +369,7 @@ class ConfigurationManager
     private function loadConfigurationValues(): void
     {
         $configs = $this->db->table('configuration')->get();
-        
+
         foreach ($configs as $config) {
             $this->configCache[$config['category']][$config['key_name']] = $config;
         }
@@ -400,7 +401,7 @@ class ConfigurationManager
         if ($value === null) {
             return null;
         }
-        
+
         return match ($type) {
             'integer' => (int) $value,
             'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
@@ -437,16 +438,16 @@ class ConfigurationManager
         if (!isset($this->configCache[$category][$keyName])) {
             return false;
         }
-        
+
         $config = $this->configCache[$category][$keyName];
         $validationRules = json_decode($config['validation_rules'], true) ?? [];
-        
+
         foreach ($validationRules as $rule) {
             if (!$this->validateRule($rule, $value)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -458,7 +459,7 @@ class ConfigurationManager
         if (str_starts_with($rule, 'required')) {
             return !empty($value);
         }
-        
+
         if (str_starts_with($rule, 'min:')) {
             $min = (int) substr($rule, 4);
             // For numeric values, check the actual value, not string length
@@ -467,7 +468,7 @@ class ConfigurationManager
             }
             return strlen((string) $value) >= $min;
         }
-        
+
         if (str_starts_with($rule, 'max:')) {
             $max = (int) substr($rule, 4);
             // For numeric values, check the actual value, not string length
@@ -476,20 +477,20 @@ class ConfigurationManager
             }
             return strlen((string) $value) <= $max;
         }
-        
+
         if (str_starts_with($rule, 'in:')) {
             $allowed = explode(',', substr($rule, 3));
             return in_array($value, $allowed);
         }
-        
+
         if ($rule === 'integer') {
             return is_numeric($value) && (int) $value == $value;
         }
-        
+
         if ($rule === 'boolean') {
             return is_bool($value) || in_array($value, ['true', 'false', '0', '1', 0, 1]);
         }
-        
+
         return true;
     }
 
@@ -500,12 +501,12 @@ class ConfigurationManager
     {
         $errors = [];
         $warnings = [];
-        
+
         // Check required fields
         if ($config['is_required'] && empty($config['value'])) {
             $errors[] = "Required configuration missing: {$category}.{$key}";
         }
-        
+
         // Validate value if present
         if (!empty($config['value'])) {
             $validationRules = json_decode($config['validation_rules'], true) ?? [];
@@ -515,7 +516,7 @@ class ConfigurationManager
                 }
             }
         }
-        
+
         return [
             'errors' => $errors,
             'warnings' => $warnings
@@ -529,7 +530,7 @@ class ConfigurationManager
     {
         try {
             $request = $this->container->get('request') ?? null;
-            
+
             $this->db->table('configuration_audit')->insert([
                 'user_id' => $userId,
                 'category' => $category,
@@ -545,4 +546,4 @@ class ConfigurationManager
             $this->logger->error('Failed to log configuration change: ' . $e->getMessage());
         }
     }
-} 
+}

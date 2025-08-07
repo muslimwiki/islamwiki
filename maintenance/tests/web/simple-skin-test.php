@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -41,37 +42,35 @@ try {
         $dbConfig['password']
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
     // Get current user settings
     $stmt = $pdo->prepare("SELECT settings FROM user_settings WHERE user_id = ?");
     $stmt->execute([$userId]);
     $result = $stmt->fetch();
-    
+
     if ($result) {
         $settings = json_decode($result['settings'], true);
         echo "<p>📋 Current settings: " . json_encode($settings) . "</p>";
-        
+
         $activeSkin = $settings['skin'] ?? 'bismillah';
         echo "<p>🎨 Active skin: <strong>$activeSkin</strong></p>";
     } else {
         echo "<p>❌ No user settings found</p>";
         $activeSkin = 'bismillah';
     }
-    
+
     // Test different skin names
     $testSkins = ['bismillah', 'Bismillah', 'blueskin', 'BlueSkin', 'greenskin', 'GreenSkin'];
-    
+
     echo "<h2>Testing Skin Name Matching</h2>";
     foreach ($testSkins as $skinName) {
         $isActive = strtolower($skinName) === strtolower($activeSkin);
         $status = $isActive ? "✅ ACTIVE" : "❌ INACTIVE";
         echo "<p>$status - '$skinName' (activeSkin: '$activeSkin')</p>";
     }
-    
 } catch (Exception $e) {
     echo "<p>❌ Database error: " . $e->getMessage() . "</p>";
 }
 
 echo "<hr>";
 echo "<p><a href='/settings'>Go to Settings</a></p>";
-?> 

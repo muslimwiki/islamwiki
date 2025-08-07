@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Page Creation Form
- * 
+ *
  * This script tests the page creation form functionality.
  */
 
@@ -37,26 +38,25 @@ echo "   HTTP Status Code: $httpCode\n";
 
 if ($httpCode === 200) {
     echo "   ✅ Page creation form accessible\n";
-    
+
     // Check if the form contains expected elements
     if (strpos($response, 'name="title"') !== false) {
         echo "   ✅ Form contains title field\n";
     } else {
         echo "   ❌ Form missing title field\n";
     }
-    
+
     if (strpos($response, 'name="content"') !== false) {
         echo "   ✅ Form contains content field\n";
     } else {
         echo "   ❌ Form missing content field\n";
     }
-    
+
     if (strpos($response, 'method="POST"') !== false) {
         echo "   ✅ Form uses POST method\n";
     } else {
         echo "   ❌ Form not using POST method\n";
     }
-    
 } else {
     echo "   ❌ Page creation form not accessible\n";
 }
@@ -130,12 +130,12 @@ if ($page) {
     echo "   📊 Page Title: {$page['title']}\n";
     echo "   📊 Page Slug: {$page['slug']}\n";
     echo "   📊 Content Length: " . strlen($page['content']) . " characters\n";
-    
+
     // Check if revision was created
     $stmt = $pdo->prepare("SELECT * FROM page_history WHERE page_id = ?");
     $stmt->execute([$page['id']]);
     $revision = $stmt->fetch();
-    
+
     if ($revision) {
         echo "   ✅ Page revision created\n";
         echo "   📊 Revision ID: {$revision['id']}\n";
@@ -146,4 +146,4 @@ if ($page) {
     echo "   ❌ Page not found in database\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -25,7 +26,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('juz_end')->nullable(); // Juz number
                 $table->text('description')->nullable(); // Brief description
                 $table->timestamps();
-                
+
                 $table->index(['number', 'revelation_type']);
             });
 
@@ -43,7 +44,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('ruku_number')->nullable(); // Ruku number
                 $table->unsignedInteger('sajda_number')->nullable(); // Sajda number (if applicable)
                 $table->timestamps();
-                
+
                 $table->unique(['surah_number', 'verse_number']);
                 $table->index(['juz_number', 'hizb_number']);
                 $table->index('page_number');
@@ -60,7 +61,7 @@ return function(Connection $connection) {
                 $table->boolean('is_official')->default(false); // Official translation
                 $table->boolean('is_active')->default(true); // Active translation
                 $table->timestamps();
-                
+
                 $table->index(['language', 'is_active']);
             });
 
@@ -71,7 +72,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('translation_id');
                 $table->text('translation_text'); // Translated text
                 $table->timestamps();
-                
+
                 $table->unique(['verse_id', 'translation_id']);
                 $table->index('verse_id');
                 $table->index('translation_id');
@@ -96,7 +97,7 @@ return function(Connection $connection) {
                 $table->unsignedInteger('start_position'); // Start position in verse
                 $table->unsignedInteger('end_position'); // End position in verse
                 $table->timestamps();
-                
+
                 $table->index(['verse_id', 'start_position']);
                 $table->index('tajweed_rule_id');
             });
@@ -121,7 +122,7 @@ return function(Connection $connection) {
                 $table->string('audio_url', 500); // Audio file URL
                 $table->unsignedInteger('duration')->nullable(); // Duration in seconds
                 $table->timestamps();
-                
+
                 $table->unique(['verse_id', 'recitation_id']);
                 $table->index('verse_id');
                 $table->index('recitation_id');
@@ -146,7 +147,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('tafsir_source_id');
                 $table->text('tafsir_text'); // Tafsir text
                 $table->timestamps();
-                
+
                 $table->unique(['verse_id', 'tafsir_source_id']);
                 $table->index('verse_id');
                 $table->index('tafsir_source_id');
@@ -160,7 +161,7 @@ return function(Connection $connection) {
                 $table->text('description')->nullable(); // Description
                 $table->unsignedBigInteger('parent_id')->nullable(); // Parent topic
                 $table->timestamps();
-                
+
                 $table->index('parent_id');
             });
 
@@ -170,7 +171,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('verse_id');
                 $table->unsignedBigInteger('topic_id');
                 $table->timestamps();
-                
+
                 $table->unique(['verse_id', 'topic_id']);
                 $table->index('verse_id');
                 $table->index('topic_id');
@@ -193,4 +194,4 @@ return function(Connection $connection) {
             $this->schema()->dropIfExists('surahs');
         }
     };
-}; 
+};

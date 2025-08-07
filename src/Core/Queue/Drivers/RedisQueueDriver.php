@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Drivers;
@@ -88,9 +89,9 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $key = "queue:{$job->getQueue()}:jobs";
             $score = $data['available_at'];
-            
+
             $result = $this->redis->zadd($key, $score, json_encode($data));
-            
+
             if ($result) {
                 $this->stats['total_jobs']++;
                 $this->logger->info('Job pushed to Redis queue', [
@@ -122,17 +123,17 @@ class RedisQueueDriver implements QueueDriverInterface
 
             // Get jobs from all queues
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $now = time();
-                
+
                 // Get jobs that are available now
                 $jobs = $this->redis->zrangebyscore($key, 0, $now, ['limit' => [0, 1]]);
-                
+
                 if (!empty($jobs)) {
                     $jobData = json_decode($jobs[0], true);
-                    
+
                     if ($jobData['failed'] || $jobData['attempts'] >= $jobData['max_attempts']) {
                         // Remove failed job
                         $this->redis->zrem($key, $jobs[0]);
@@ -141,7 +142,7 @@ class RedisQueueDriver implements QueueDriverInterface
 
                     // Remove from queue
                     $this->redis->zrem($key, $jobs[0]);
-                    
+
                     // Create job instance
                     $jobClass = $jobData['class'];
                     if (!class_exists($jobClass)) {
@@ -150,7 +151,7 @@ class RedisQueueDriver implements QueueDriverInterface
 
                     $job = new $jobClass($jobData['data'], $jobData['queue']);
                     $job->setPriority($jobData['priority'] ?? 0);
-                    
+
                     $this->stats['processing_jobs']++;
                     return $job;
                 }
@@ -177,7 +178,7 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $key = "queue:{$queue}:jobs";
             $now = time();
-            
+
             // Count jobs that are available now and not failed
             $jobs = $this->redis->zrangebyscore($key, 0, $now);
             $count = 0;
@@ -208,7 +209,7 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $key = "queue:{$queue}:jobs";
             $count = $this->redis->zcard($key);
-            
+
             if ($count > 0) {
                 $this->redis->del($key);
             }
@@ -233,11 +234,11 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $failed = [];
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $jobs = $this->redis->zrange($key, 0, -1);
-                
+
                 foreach ($jobs as $jobJson) {
                     $jobData = json_decode($jobJson, true);
                     if ($jobData['failed']) {
@@ -265,11 +266,11 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $count = 0;
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $jobs = $this->redis->zrange($key, 0, -1);
-                
+
                 foreach ($jobs as $jobJson) {
                     $jobData = json_decode($jobJson, true);
                     if ($jobData['failed']) {
@@ -299,23 +300,23 @@ class RedisQueueDriver implements QueueDriverInterface
 
             $count = 0;
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $jobs = $this->redis->zrange($key, 0, -1);
-                
+
                 foreach ($jobs as $jobJson) {
                     $jobData = json_decode($jobJson, true);
                     if ($jobData['failed'] && $jobData['attempts'] < $maxRetries) {
                         // Remove old job
                         $this->redis->zrem($key, $jobJson);
-                        
+
                         // Reset job state
                         $jobData['failed'] = false;
                         $jobData['attempts'] = 0;
                         $jobData['failure_reason'] = null;
                         $jobData['available_at'] = time();
-                        
+
                         // Add back to queue
                         $this->redis->zadd($key, $jobData['available_at'], json_encode($jobData));
                         $count++;
@@ -342,25 +343,25 @@ class RedisQueueDriver implements QueueDriverInterface
             }
 
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $jobs = $this->redis->zrange($key, 0, -1);
-                
+
                 foreach ($jobs as $jobJson) {
                     $jobData = json_decode($jobJson, true);
                     if ($jobData['id'] === $job->getId()) {
                         // Remove old job
                         $this->redis->zrem($key, $jobJson);
-                        
+
                         // Update job state
                         $jobData['failed'] = true;
                         $jobData['failure_reason'] = $job->getFailureReason();
                         $jobData['attempts'] = $job->getAttempts() + 1;
-                        
+
                         // Add back to queue
                         $this->redis->zadd($key, $jobData['available_at'], json_encode($jobData));
-                        
+
                         $this->stats['failed_jobs']++;
                         $this->stats['processing_jobs']--;
                         return true;
@@ -391,11 +392,11 @@ class RedisQueueDriver implements QueueDriverInterface
             $total = 0;
             $failed = 0;
             $queues = ['default', 'emails', 'notifications', 'reports', 'cleanup'];
-            
+
             foreach ($queues as $queue) {
                 $key = "queue:{$queue}:jobs";
                 $jobs = $this->redis->zrange($key, 0, -1);
-                
+
                 foreach ($jobs as $jobJson) {
                     $jobData = json_decode($jobJson, true);
                     $total++;
@@ -442,4 +443,4 @@ class RedisQueueDriver implements QueueDriverInterface
             $this->redis = null;
         }
     }
-} 
+}

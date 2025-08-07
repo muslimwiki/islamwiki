@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Base Skin Class
- * 
+ *
  * Provides the foundation for all skins in IslamWiki.
- * 
+ *
  * @package IslamWiki\Skins
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Skins;
 
@@ -19,32 +20,32 @@ abstract class Skin
      * @var string The name of the skin
      */
     protected string $name;
-    
+
     /**
      * @var string The version of the skin
      */
     protected string $version;
-    
+
     /**
      * @var string The author of the skin
      */
     protected string $author;
-    
+
     /**
      * @var string The description of the skin
      */
     protected string $description;
-    
+
     /**
      * @var array The skin configuration
      */
     protected array $config;
-    
+
     /**
      * @var string|null The skin directory path
      */
     protected ?string $skinPath = null;
-    
+
     /**
      * Constructor
      */
@@ -52,12 +53,12 @@ abstract class Skin
     {
         $this->initializeSkin();
     }
-    
+
     /**
      * Initialize the skin with default values
      */
     abstract protected function initializeSkin(): void;
-    
+
     /**
      * Get the skin name
      */
@@ -65,7 +66,7 @@ abstract class Skin
     {
         return $this->name;
     }
-    
+
     /**
      * Get the skin version
      */
@@ -73,7 +74,7 @@ abstract class Skin
     {
         return $this->version;
     }
-    
+
     /**
      * Get the skin author
      */
@@ -81,7 +82,7 @@ abstract class Skin
     {
         return $this->author;
     }
-    
+
     /**
      * Get the skin description
      */
@@ -89,7 +90,7 @@ abstract class Skin
     {
         return $this->description;
     }
-    
+
     /**
      * Get the skin configuration
      */
@@ -97,7 +98,7 @@ abstract class Skin
     {
         return $this->config;
     }
-    
+
     /**
      * Get the skin path
      */
@@ -105,7 +106,7 @@ abstract class Skin
     {
         return $this->skinPath;
     }
-    
+
     /**
      * Set the skin path
      */
@@ -113,7 +114,7 @@ abstract class Skin
     {
         $this->skinPath = $path;
     }
-    
+
     /**
      * Get the CSS file path for this skin
      */
@@ -125,7 +126,7 @@ abstract class Skin
         $skinName = strtolower($this->getName());
         return $this->skinPath . '/css/' . $skinName . '.css';
     }
-    
+
     /**
      * Get the JavaScript file path for this skin
      */
@@ -137,7 +138,7 @@ abstract class Skin
         $skinName = strtolower($this->getName());
         return $this->skinPath . '/js/' . $skinName . '.js';
     }
-    
+
     /**
      * Get the layout template path for this skin
      */
@@ -148,7 +149,7 @@ abstract class Skin
         }
         return $this->skinPath . '/templates/layout.twig';
     }
-    
+
     /**
      * Check if the skin has a custom CSS file
      */
@@ -157,7 +158,7 @@ abstract class Skin
         $cssPath = $this->getCssPath();
         return !empty($cssPath) && file_exists($cssPath);
     }
-    
+
     /**
      * Check if the skin has a custom JavaScript file
      */
@@ -166,7 +167,7 @@ abstract class Skin
         $jsPath = $this->getJsPath();
         return !empty($jsPath) && file_exists($jsPath);
     }
-    
+
     /**
      * Check if the skin has a custom layout template
      */
@@ -175,7 +176,7 @@ abstract class Skin
         $layoutPath = $this->getLayoutPath();
         return !empty($layoutPath) && file_exists($layoutPath);
     }
-    
+
     /**
      * Get the CSS content for this skin
      */
@@ -184,10 +185,10 @@ abstract class Skin
         if ($this->hasCustomCss()) {
             return file_get_contents($this->getCssPath());
         }
-        
+
         return $this->getDefaultCss();
     }
-    
+
     /**
      * Get the JavaScript content for this skin
      */
@@ -196,20 +197,20 @@ abstract class Skin
         if ($this->hasCustomJs()) {
             return file_get_contents($this->getJsPath());
         }
-        
+
         return $this->getDefaultJs();
     }
-    
+
     /**
      * Get the default CSS for this skin
      */
     abstract protected function getDefaultCss(): string;
-    
+
     /**
      * Get the default JavaScript for this skin
      */
     abstract protected function getDefaultJs(): string;
-    
+
     /**
      * Get the skin metadata as an array
      */
@@ -223,7 +224,7 @@ abstract class Skin
             'config' => $this->config,
         ];
     }
-    
+
     /**
      * Validate the skin configuration
      */
@@ -231,4 +232,4 @@ abstract class Skin
     {
         return !empty($this->name) && !empty($this->version);
     }
-} 
+}

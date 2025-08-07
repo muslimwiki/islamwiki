@@ -1,4 +1,5 @@
 <?php
+
 // Test application startup
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -18,16 +19,15 @@ try {
 try {
     $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
     echo "✓ NizamApplication created\n";
-    
+
     $container = $app->getContainer();
     echo "✓ Container created\n";
-    
+
     echo "✓ Application startup successful!\n";
-    
 } catch (Exception $e) {
     echo "✗ Application startup failed: " . $e->getMessage() . "\n";
     echo "Stack trace: " . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "✓ Application startup test completed!\n"; 
+echo "✓ Application startup test completed!\n";

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Profile Login Test
- * 
+ *
  * Tests the profile page with authentication.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.34
  * @license AGPL-3.0-only
@@ -74,4 +75,3 @@ echo "<ul>\n";
 echo "<li><strong>Public Profile</strong>: <a href='https://local.islam.wiki/user/admin' target='_blank'>https://local.islam.wiki/user/admin</a></li>\n";
 echo "<li><strong>Private Profile</strong>: <a href='https://local.islam.wiki/profile' target='_blank'>https://local.islam.wiki/profile</a> (requires login)</li>\n";
 echo "</ul>\n";
-?> 

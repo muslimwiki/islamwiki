@@ -44,37 +44,36 @@ try {
 
     // Find admin user
     $user = User::findByUsername('admin', $connection);
-    
+
     if (!$user) {
         echo "❌ Admin user not found\n";
         exit(1);
     }
-    
+
     echo "✅ Admin user found\n";
     echo "ID: " . $user->getAttribute('id') . "\n";
     echo "Username: " . $user->getAttribute('username') . "\n";
     echo "Email: " . $user->getAttribute('email') . "\n";
     echo "Is Admin: " . ($user->isAdmin() ? 'Yes' : 'No') . "\n";
     echo "Is Active: " . ($user->isActive() ? 'Yes' : 'No') . "\n";
-    
+
     // Test password verification
     echo "\n🔑 Testing password verification...\n";
-    
+
     $testPassword = 'password';
     $result = $user->verifyPassword($testPassword);
-    
+
     echo "Password 'password' verification result: " . ($result ? '✅ SUCCESS' : '❌ FAILED') . "\n";
-    
+
     // Test wrong password
     $wrongPassword = 'wrongpassword';
     $wrongResult = $user->verifyPassword($wrongPassword);
-    
+
     echo "Password 'wrongpassword' verification result: " . ($wrongResult ? '❌ SHOULD FAIL' : '✅ CORRECTLY FAILED') . "\n";
-    
+
     echo "\n✅ Password verification test completed\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

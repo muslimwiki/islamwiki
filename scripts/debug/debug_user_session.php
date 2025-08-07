@@ -51,7 +51,7 @@ try {
         echo "   📧 Email: " . $user->getAttribute('email') . "\n";
         echo "   👑 Is Admin: " . ($user->isAdmin() ? 'Yes' : 'No') . "\n";
         echo "   ✅ Is Active: " . ($user->isActive() ? 'Yes' : 'No') . "\n";
-        
+
         // Test all attributes
         echo "\n   🔍 All User Attributes:\n";
         $attributes = [
@@ -81,33 +81,33 @@ try {
 echo "\n3. Testing Session Management...\n";
 try {
     $container = new \IslamWiki\Core\Container();
-    $container->singleton('session', function() {
+    $container->singleton('session', function () {
         return new \IslamWiki\Core\Session\SessionManager();
     });
-    
+
     $session = $container->get('session');
     $session->start();
-    
+
     echo "   📊 Session started\n";
     echo "   📊 Session isLoggedIn before login: " . ($session->isLoggedIn() ? 'true' : 'false') . "\n";
-    
+
     // Test login
     $session->login(
         $user->getAttribute('id'),
         $user->getAttribute('username'),
         $user->isAdmin()
     );
-    
+
     echo "   📊 Session isLoggedIn after login: " . ($session->isLoggedIn() ? 'true' : 'false') . "\n";
     echo "   📊 User ID in session: " . $session->getUserId() . "\n";
     echo "   👤 Username in session: " . $session->getUsername() . "\n";
     echo "   👑 Is Admin in session: " . ($session->isAdmin() ? 'Yes' : 'No') . "\n";
-    
+
     // Test user lookup from session
     echo "\n   🔍 Testing User Lookup from Session...\n";
     $userId = $session->getUserId();
     echo "   📊 User ID from session: $userId\n";
-    
+
     $sessionUser = \IslamWiki\Models\User::find($userId, $db);
     if ($sessionUser) {
         echo "   ✅ User found from session ID\n";
@@ -116,11 +116,10 @@ try {
     } else {
         echo "   ❌ User not found from session ID\n";
     }
-    
 } catch (Exception $e) {
     echo "   ❌ Session management failed: " . $e->getMessage() . "\n";
     echo "   📊 Stack trace: " . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\n🎉 Debug complete!\n"; 
+echo "\n🎉 Debug complete!\n";

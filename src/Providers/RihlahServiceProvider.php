@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -10,7 +11,7 @@ use IslamWiki\Core\Database\Connection;
 
 /**
  * Rihlah Service Provider
- * 
+ *
  * Registers the Rihlah caching system with the application container.
  * Rihlah (رحلة) means "journey" in Arabic, representing the system that manages
  * the journey of data through various cache layers for optimal performance.
@@ -100,4 +101,4 @@ class RihlahServiceProvider
             error_log('Rihlah caching system initialized (logger not available)');
         }
     }
-} 
+}

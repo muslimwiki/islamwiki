@@ -27,7 +27,7 @@ echo "<h1>🔍 Session Debug</h1>";
 
 // Setup container and session
 $container = new \IslamWiki\Core\Container();
-$container->singleton('session', function() {
+$container->singleton('session', function () {
     return new \IslamWiki\Core\Session\SessionManager();
 });
 
@@ -58,4 +58,4 @@ echo "</pre>";
 echo "<h2>Headers</h2>";
 echo "<pre>";
 print_r(getallheaders());
-echo "</pre>"; 
+echo "</pre>";

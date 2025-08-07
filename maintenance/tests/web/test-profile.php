@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test page to verify profile page functionality
  */

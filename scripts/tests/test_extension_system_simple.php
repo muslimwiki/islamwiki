@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Simple Extension System Test
- * 
+ *
  * This script tests if the extension system classes are available and can be loaded.
  */
 
@@ -54,4 +55,4 @@ try {
     echo "❌ ExtensionServiceProvider registration failed: " . $e->getMessage() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

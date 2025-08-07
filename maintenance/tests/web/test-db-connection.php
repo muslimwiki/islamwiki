@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database Connection Test
  */
@@ -17,46 +18,45 @@ use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Search\IqraSearchEngine;
 
 try {
-    
     // Test database connection
     echo "<h2>Testing Database Connection</h2>";
-    
+
     $dbConfig = [
         'host' => 'localhost',
         'database' => 'islamwiki',
         'username' => 'islamwiki',
         'password' => 'islamwiki123'
     ];
-    
+
     $db = new Connection($dbConfig);
     echo "✅ Database connection successful<br>";
-    
+
     // Test basic query
     $stmt = $db->prepare("SELECT COUNT(*) as count FROM pages");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     echo "✅ Pages count: " . $result['count'] . "<br>";
-    
+
     // Test search engine
     echo "<h2>Testing Iqra Search Engine</h2>";
-    
+
     $searchEngine = new IqraSearchEngine($db);
     echo "✅ Search engine created successfully<br>";
-    
+
     // Test search
     $query = "test";
     echo "Testing search for: '{$query}'<br>";
-    
+
     $results = $searchEngine->search($query, [
         'type' => 'pages',
         'limit' => 5,
         'page' => 1
     ]);
-    
+
     echo "✅ Search completed successfully<br>";
     echo "Total results: " . $results['total'] . "<br>";
     echo "Results returned: " . count($results['results']) . "<br>";
-    
+
     if (!empty($results['results'])) {
         echo "<h3>Search Results:</h3>";
         foreach ($results['results'] as $result) {
@@ -72,21 +72,20 @@ try {
     } else {
         echo "<p>No results found for '{$query}'</p>";
     }
-    
+
     // Test analytics
     echo "<h2>Testing Search Analytics</h2>";
-    
+
     $analytics = $searchEngine->getSearchAnalytics($query);
     echo "✅ Analytics generated successfully<br>";
     echo "<pre>" . json_encode($analytics, JSON_PRETTY_PRINT) . "</pre>";
-    
+
     echo "<h2>✅ All Tests Passed!</h2>";
     echo "<p>The database connection and Iqra search engine are working correctly.</p>";
-    
 } catch (Exception $e) {
     echo "<h2>❌ Error</h2>";
     echo "<p><strong>Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
     echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . "</p>";
     echo "<p><strong>Line:</strong> " . htmlspecialchars($e->getLine()) . "</p>";
     echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
-} 
+}

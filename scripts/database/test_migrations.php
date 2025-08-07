@@ -30,7 +30,7 @@ try {
     // Create connection
     $connection = new Connection($config);
     echo "✅ Database connection successful\n";
-    
+
     // Manually create migrations table
     echo "Creating migrations table...\n";
     $sql = "CREATE TABLE IF NOT EXISTS migrations (
@@ -40,10 +40,10 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )";
-    
+
     $connection->statement($sql);
     echo "✅ Migrations table created\n";
-    
+
     // Test if table exists
     $result = $connection->select("SHOW TABLES LIKE 'migrations'");
     if (count($result) > 0) {
@@ -51,13 +51,12 @@ try {
     } else {
         echo "❌ Migrations table does not exist\n";
     }
-    
+
     // Test max query
     $result = $connection->select("SELECT MAX(batch) as max_batch FROM migrations");
     $maxBatch = $result[0]['max_batch'] ?? 0;
     echo "✅ Max batch: $maxBatch\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
-} 
+}

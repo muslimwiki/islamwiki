@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+
 /**
  * This file is part of IslamWiki.
  *
@@ -18,6 +18,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Models;
 
@@ -67,13 +69,13 @@ class Search
     {
         try {
             $queryHash = hash('sha256', $query . $searchType);
-            
+
             $stmt = $this->db->prepare("
                 SELECT results_data, results_count, cache_hits
                 FROM search_cache 
                 WHERE query_hash = ? AND search_type = ? AND expires_at > NOW()
             ");
-            
+
             $stmt->execute([$queryHash, $searchType]);
             $result = $stmt->fetch();
 
@@ -126,7 +128,7 @@ class Search
                 SET cache_hits = cache_hits + 1 
                 WHERE query_hash = ? AND search_type = ?
             ");
-            
+
             $stmt->execute([$queryHash, $searchType]);
         } catch (Exception $e) {
             error_log("Failed to update cache hits: " . $e->getMessage());
@@ -148,7 +150,7 @@ class Search
             ");
 
             $stmt->execute(["%$query%", $limit]);
-            
+
             $suggestions = [];
             while ($row = $stmt->fetch()) {
                 $suggestions[] = [
@@ -177,7 +179,7 @@ class Search
                 SET click_count = click_count + 1 
                 WHERE suggestion_text = ? AND suggestion_url = ?
             ");
-            
+
             $stmt->execute([$suggestionText, $suggestionUrl]);
         } catch (Exception $e) {
             error_log("Failed to update suggestion click: " . $e->getMessage());
@@ -193,7 +195,7 @@ class Search
             $stmt = $this->db->prepare("
                 SELECT * FROM search_analytics WHERE date = ?
             ");
-            
+
             $stmt->execute([$date]);
             $result = $stmt->fetch();
 
@@ -230,7 +232,7 @@ class Search
                 FROM search_statistics 
                 WHERE DATE(created_at) = ?
             ");
-            
+
             $stmt->execute([$date]);
             $stats = $stmt->fetch();
 
@@ -243,7 +245,7 @@ class Search
                 ORDER BY count DESC 
                 LIMIT 10
             ");
-            
+
             $stmt->execute([$date]);
             $popularQueries = [];
             while ($row = $stmt->fetch()) {
@@ -260,7 +262,7 @@ class Search
                 WHERE DATE(created_at) = ?
                 GROUP BY search_type
             ");
-            
+
             $stmt->execute([$date]);
             $typeDistribution = [];
             while ($row = $stmt->fetch()) {
@@ -317,7 +319,7 @@ class Search
                 FROM search_statistics 
                 WHERE created_at >= ?
             ");
-            
+
             $stmt->execute([$weekStart]);
             $weekStats = $stmt->fetch();
 
@@ -329,7 +331,7 @@ class Search
                 FROM search_statistics 
                 WHERE created_at >= ?
             ");
-            
+
             $stmt->execute([$monthStart]);
             $monthStats = $stmt->fetch();
 
@@ -359,7 +361,7 @@ class Search
             $stmt = $this->db->prepare("
                 DELETE FROM search_cache WHERE expires_at < NOW()
             ");
-            
+
             $stmt->execute();
             return $stmt->rowCount();
         } catch (Exception $e) {
@@ -380,7 +382,7 @@ class Search
                 FROM search_statistics 
                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
             ");
-            
+
             $stmt->execute();
             $avgTime = $stmt->fetchColumn();
 
@@ -392,7 +394,7 @@ class Search
                 FROM search_cache 
                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
             ");
-            
+
             $stmt->execute();
             $cacheStats = $stmt->fetch();
 
@@ -412,4 +414,4 @@ class Search
             return [];
         }
     }
-} 
+}

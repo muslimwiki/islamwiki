@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Jobs;
@@ -36,10 +37,10 @@ class ReportJob extends AbstractJob
     {
         try {
             $report = $this->generateReport();
-            
+
             // Store the report
             $reportId = $this->storeReport($report);
-            
+
             // Send notification if requested
             if (isset($this->parameters['notify_user_id'])) {
                 $this->sendReportNotification($reportId, $this->parameters['notify_user_id']);
@@ -188,4 +189,4 @@ class ReportJob extends AbstractJob
     {
         return $this->parameters;
     }
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Simple test script to verify skin loading
  */
@@ -48,4 +49,4 @@ $layoutPath = $skinPath . '/templates/layout.twig';
 echo "Layout path: $layoutPath\n";
 echo "Layout file exists: " . (file_exists($layoutPath) ? 'YES' : 'NO') . "\n";
 
-echo "</pre>\n"; 
+echo "</pre>\n";

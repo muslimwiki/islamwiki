@@ -23,14 +23,16 @@ declare(strict_types=1);
 
 // Helper function to get environment variables with defaults
 if (!function_exists('env')) {
-    function env($key, $default = null) {
+    function env($key, $default = null)
+    {
         return $_ENV[$key] ?? $default;
     }
 }
 
 // Helper function for database path
 if (!function_exists('database_path')) {
-    function database_path($path = '') {
+    function database_path($path = '')
+    {
         return __DIR__ . '/../database/' . $path;
     }
 }
@@ -206,4 +208,4 @@ return [
             'database' => env('REDIS_HADITH_DB', 2),
         ],
     ],
-]; 
+];

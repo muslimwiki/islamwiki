@@ -1,12 +1,13 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Test Islamic Database Implementation
- * 
+ *
  * This script tests the Islamic database manager and separate connections
  * for Quran, Hadith, Wiki, and Scholar databases.
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -33,7 +34,7 @@ try {
 
     echo "1. Testing Database Connections...\n";
     $results = $manager->testConnections();
-    
+
     foreach ($results as $type => $result) {
         if ($result['status'] === 'connected') {
             echo "   ✅ {$type}: Connected to {$result['database']} ({$result['driver']})\n";
@@ -44,7 +45,7 @@ try {
 
     echo "\n2. Testing Database Statistics...\n";
     $stats = $manager->getDatabaseStats();
-    
+
     foreach ($stats as $type => $stat) {
         if (isset($stat['error'])) {
             echo "   ❌ {$type}: Error - {$stat['error']}\n";
@@ -54,7 +55,7 @@ try {
     }
 
     echo "\n3. Testing Individual Connections...\n";
-    
+
     // Test Quran connection
     try {
         $quranConnection = $manager->getQuranConnection();
@@ -92,11 +93,11 @@ try {
     }
 
     echo "\n4. Testing Connection Management...\n";
-    
+
     // Test getting all connections
     $connections = $manager->getConnections();
     echo "   📊 Active connections: " . count($connections) . "\n";
-    
+
     // Test disconnecting all
     $manager->disconnectAll();
     echo "   ✅ All connections disconnected\n";
@@ -106,10 +107,9 @@ try {
     echo "✅ Separate Connections: Implemented\n";
     echo "✅ Connection Management: Working\n";
     echo "✅ Database Statistics: Available\n";
-
 } catch (Exception $e) {
     echo "\n❌ Test Failed: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

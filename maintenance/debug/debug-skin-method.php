@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug Skin Method
- * 
+ *
  * Debug script to test the getActiveSkinNameForUser method directly.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.29
  * @license AGPL-3.0-only
@@ -55,4 +56,4 @@ foreach ($results as $row) {
     echo "\n";
 }
 
-echo "=== Debug Complete ===\n"; 
+echo "=== Debug Complete ===\n";

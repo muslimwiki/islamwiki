@@ -1,4 +1,5 @@
 <?php
+
 // Simple test that bypasses all complex application logic
 header('Content-Type: text/html');
 echo '<!DOCTYPE html>';
@@ -11,4 +12,3 @@ echo '<p>Script Name: ' . $_SERVER['SCRIPT_NAME'] . '</p>';
 echo '</body>';
 echo '</html>';
 exit;
-?> 

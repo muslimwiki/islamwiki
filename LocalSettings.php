@@ -23,10 +23,10 @@ declare(strict_types=1);
 
 /**
  * LocalSettings.php - Main Configuration File
- * 
+ *
  * This file contains the main configuration settings for IslamWiki.
  * It follows MediaWiki-inspired structure while incorporating modern PHP practices.
- * 
+ *
  * Version: 0.0.34
  * Date: 2025-08-02
  */
@@ -45,7 +45,8 @@ if (file_exists(__DIR__ . '/.env')) {
 
 // Helper function to get environment variables with defaults
 if (!function_exists('env')) {
-    function env($key, $default = null) {
+    function env($key, $default = null)
+    {
         try {
             return $_ENV[$key] ?? $default;
         } catch (Exception $e) {
@@ -121,7 +122,7 @@ $wgWikiDBport = env('WIKI_DB_PORT', $wgDBport);
 /**
  * Available skins - similar to MediaWiki's $wgValidSkinNames
  * Add skins here to make them available for selection
- * 
+ *
  * NOTE: Muslim skin temporarily disabled to focus on Bismillah skin development
  */
 $wgValidSkins = [
@@ -131,12 +132,12 @@ $wgValidSkins = [
 
 /**
  * Active skin configuration
- * 
+ *
  * Set the active skin for the site. Available options:
  * - 'Bismillah': Default Islamic-themed skin with traditional design and beautiful gradients
- * 
+ *
  * NOTE: Muslim skin temporarily disabled to focus on Bismillah skin development
- * 
+ *
  * To change skins dynamically, use $skinManager->setActiveSkin('SkinName') instead.
  */
 $wgActiveSkin = 'Bismillah';
@@ -310,7 +311,7 @@ $wgShowSQLErrors = env('SHOW_SQL_ERRORS', false);
  */
 $wgEnableExtensions = [
     'QuranExtension',
-    'HadithExtension', 
+    'HadithExtension',
     'PrayerTimesExtension',
     'IslamicCalendarExtension',
     'ScholarVerificationExtension',
@@ -409,4 +410,4 @@ if ($wgDebug) {
 /**
  * Configuration loading complete
  * All settings are now available for use throughout the application
- */ 
+ */

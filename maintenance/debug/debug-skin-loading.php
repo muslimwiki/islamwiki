@@ -1,4 +1,5 @@
 <?php
+
 // Debug script to check skin loading
 require_once __DIR__ . '/../src/Core/NizamApplication.php';
 require_once __DIR__ . '/../src/Core/Container.php';
@@ -27,11 +28,11 @@ echo "<h2>2. Skin Manager Test</h2>";
 try {
     $app = new \IslamWiki\Core\Application();
     $container = $app->getContainer();
-    
+
     if ($container->has('skin.manager')) {
         $skinManager = $container->get('skin.manager');
         $loadedSkins = $skinManager->getSkins();
-        
+
         echo "Loaded skins from SkinManager: ";
         if (!empty($loadedSkins)) {
             echo implode(', ', array_keys($loadedSkins));
@@ -39,20 +40,19 @@ try {
             echo "No skins loaded";
         }
         echo "<br>";
-        
+
         // Check each skin from LocalSettings
         echo "<h3>3. Checking each skin from LocalSettings</h3>";
         foreach ($wgValidSkins as $skinKey => $skinName) {
             $lowerSkinName = strtolower($skinName);
             echo "Checking '$skinName' (lowercase: '$lowerSkinName'): ";
-            
+
             if (isset($loadedSkins[$lowerSkinName])) {
                 echo "✅ Found in SkinManager<br>";
             } else {
                 echo "❌ Not found in SkinManager<br>";
             }
         }
-        
     } else {
         echo "❌ Skin manager not available in container<br>";
     }
@@ -76,4 +76,3 @@ if (!isset($wgValidSkins)) {
 } else {
     echo "wgValidSkins is set, using LocalSettings configuration<br>";
 }
-?> 

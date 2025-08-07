@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Base Extension Class
- * 
+ *
  * All extensions should extend this class to integrate with the IslamWiki system.
  * Provides common functionality for extension loading, configuration, and hooks.
  */
@@ -76,10 +77,10 @@ abstract class Extension
     {
         $extensionPath = $this->getExtensionPath();
         $configFile = $extensionPath . '/extension.json';
-        
+
         if (file_exists($configFile)) {
             $config = json_decode(file_get_contents($configFile), true);
-            
+
             $this->name = $config['name'] ?? '';
             $this->version = $config['version'] ?? '1.0.0';
             $this->description = $config['description'] ?? '';
@@ -124,13 +125,13 @@ abstract class Extension
     protected function loadResources(): void
     {
         $extensionPath = $this->getExtensionPath();
-        
+
         // Load CSS files
         $cssPath = $extensionPath . '/modules/css';
         if (is_dir($cssPath)) {
             $this->loadCssFiles($cssPath);
         }
-        
+
         // Load JS files
         $jsPath = $extensionPath . '/modules/js';
         if (is_dir($jsPath)) {
@@ -302,4 +303,4 @@ abstract class Extension
             'config' => $this->config,
         ];
     }
-} 
+}

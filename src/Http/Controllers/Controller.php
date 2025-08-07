@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
@@ -57,7 +58,7 @@ abstract class Controller
             // Use the 'view' alias that was set up in ViewServiceProvider
             $this->view = $this->container->get('view');
         }
-        
+
         return $this->view;
     }
 
@@ -76,10 +77,10 @@ abstract class Controller
         try {
             // Ensure the view has the correct file extension
             $template = str_ends_with($view, '.twig') ? $view : "{$view}.twig";
-            
+
             // Debug: Log the template being requested
             error_log("Attempting to render template: " . $template);
-            
+
             // Automatically include user data in all views
             if (!isset($data['user'])) {
                 try {
@@ -90,22 +91,21 @@ abstract class Controller
                     $data['user'] = null;
                 }
             }
-            
+
             // Render the template using TwigRenderer with skin support
             $content = $this->getView()->renderWithSkin($template, $data);
-            
+
             // Create and return the response
             $response = new Response();
             $response->getBody()->write($content);
-            
+
             $response = $response->withHeader('Content-Type', 'text/html');
-            
+
             foreach ($headers as $name => $value) {
                 $response = $response->withHeader($name, $value);
             }
-            
+
             return $response->withStatus($status);
-            
         } catch (\Throwable $e) {
             // Log the error with more context
             $errorMessage = sprintf(
@@ -116,14 +116,14 @@ abstract class Controller
                 $e->getLine(),
                 $e->getTraceAsString()
             );
-            
+
             error_log($errorMessage);
-            
+
             // Return a detailed error response for debugging
             $response = new Response();
             $response->getBody()->write('<h1>Error Rendering View</h1>');
             $response->getBody()->write('<pre>' . htmlspecialchars($errorMessage) . '</pre>');
-            
+
             return $response->withStatus(500);
         }
     }

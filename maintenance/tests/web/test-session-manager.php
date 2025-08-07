@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test SessionManager Authentication
- * 
+ *
  * This script tests what the SessionManager sees for authentication.
  */
 
@@ -40,7 +41,7 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['is_admin'] = $user['is_admin'];
-    
+
     echo "   ✅ Login successful\n";
     echo "   User ID: {$user['id']}\n";
     echo "   Username: {$user['username']}\n";
@@ -63,43 +64,45 @@ try {
         'http_only' => true,
         'same_site' => 'Lax',
     ];
-    
+
     $sessionManager = new \IslamWiki\Core\Session\SessionManager($config);
-    
+
     echo "   SessionManager created successfully\n";
     echo "   SessionManager::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
     echo "   SessionManager::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
     echo "   SessionManager::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
     echo "   SessionManager::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
-    
+
     // Test AuthManager with SessionManager
     echo "\n3. Testing AuthManager with SessionManager...\n";
-    
+
     // Create a mock Connection class for testing
-    class MockConnection {
+    class MockConnection
+    {
         private $pdo;
-        
-        public function __construct($pdo) {
+
+        public function __construct($pdo)
+        {
             $this->pdo = $pdo;
         }
-        
-        public function select(string $query, array $params = []): array {
+
+        public function select(string $query, array $params = []): array
+        {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
             return $stmt->fetchAll();
         }
     }
-    
+
     $connection = new MockConnection($pdo);
     $authManager = new \IslamWiki\Core\Auth\AuthManager($sessionManager, $connection);
-    
+
     echo "   AuthManager created successfully\n";
     echo "   AuthManager::check(): " . ($authManager->check() ? 'true' : 'false') . "\n";
     echo "   AuthManager::id(): " . ($authManager->id() ?? 'null') . "\n";
     echo "   AuthManager::username(): " . ($authManager->username() ?? 'null') . "\n";
     echo "   AuthManager::isAdmin(): " . ($authManager->isAdmin() ? 'true' : 'false') . "\n";
     echo "   AuthManager::can('create_pages'): " . ($authManager->can('create_pages') ? 'true' : 'false') . "\n";
-    
 } catch (Exception $e) {
     echo "   ❌ Error: " . $e->getMessage() . "\n";
 }
@@ -108,4 +111,4 @@ echo "\n=== Test Complete ===\n";
 echo "\nSession Information:\n";
 echo "Session Name: " . session_name() . "\n";
 echo "Session ID: " . session_id() . "\n";
-echo "Session Data: " . json_encode($_SESSION) . "\n"; 
+echo "Session Data: " . json_encode($_SESSION) . "\n";

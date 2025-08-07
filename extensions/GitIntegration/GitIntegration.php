@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Extensions\GitIntegration;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Git Integration Extension
- * 
+ *
  * Provides Git repository integration for automatic version control,
  * backup, and scholarly review workflows.
  */
@@ -41,7 +42,7 @@ class GitIntegration extends Extension
     {
         $this->loadConfiguration();
         $this->registerHooks();
-        
+
         if ($this->enabled) {
             $this->initializeRepository();
         }
@@ -53,7 +54,7 @@ class GitIntegration extends Extension
     private function loadConfiguration(): void
     {
         $config = $this->getConfig();
-        
+
         $this->enabled = $config['enabled'] ?? false;
         $this->repositoryPath = $config['repositoryPath'] ?? 'storage/git/content';
         $this->remoteUrl = $config['remoteUrl'] ?? '';
@@ -89,7 +90,7 @@ class GitIntegration extends Extension
     private function initializeRepository(): void
     {
         $fullPath = $this->getRepositoryFullPath();
-        
+
         // Create repository directory if it doesn't exist
         if (!is_dir($fullPath)) {
             mkdir($fullPath, 0755, true);
@@ -98,7 +99,7 @@ class GitIntegration extends Extension
         // Initialize Git repository if it doesn't exist
         if (!is_dir($fullPath . '/.git')) {
             $this->runGitCommand('init', $fullPath);
-            
+
             // Set up initial commit
             $this->runGitCommand('add .', $fullPath);
             $this->runGitCommand('commit -m "Initial commit"', $fullPath);
@@ -353,7 +354,7 @@ class GitIntegration extends Extension
     {
         $title = $articleData['title'] ?? 'untitled';
         $slug = $articleData['slug'] ?? $this->slugify($title);
-        
+
         return $slug . '.md';
     }
 
@@ -370,7 +371,7 @@ class GitIntegration extends Extension
         $content .= "\n\n---\n";
         $content .= "Last modified: " . date('Y-m-d H:i:s') . "\n";
         $content .= "Author: " . ($articleData['author'] ?? 'Unknown') . "\n";
-        
+
         return $content;
     }
 
@@ -385,13 +386,13 @@ class GitIntegration extends Extension
     {
         $config = $this->getConfig();
         $template = $config['commitMessageTemplate'] ?? 'Wiki update: {title} by {user}';
-        
+
         $message = str_replace(
             ['{title}', '{user}'],
             [$articleData['title'] ?? 'Untitled', $userData['username'] ?? 'Unknown'],
             $template
         );
-        
+
         return $message;
     }
 
@@ -442,13 +443,13 @@ class GitIntegration extends Extension
     {
         $output = [];
         $returnCode = 0;
-        
+
         exec($command, $output, $returnCode);
-        
+
         if ($returnCode !== 0) {
             throw new \Exception("Command failed: {$command}. Output: " . implode("\n", $output));
         }
-        
+
         return implode("\n", $output);
     }
 
@@ -508,7 +509,7 @@ class GitIntegration extends Extension
     private function parseLastCommit(string $commitInfo): array
     {
         $parts = explode('|', $commitInfo);
-        
+
         return [
             'hash' => $parts[0] ?? '',
             'author' => $parts[1] ?? '',
@@ -526,4 +527,4 @@ class GitIntegration extends Extension
     {
         return $this->enabled;
     }
-} 
+}

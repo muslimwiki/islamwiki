@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Autoloader
  */
@@ -37,4 +38,4 @@ try {
     echo "✅ IqraSearchEngine class instantiated successfully<br>";
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "<br>";
-} 
+}

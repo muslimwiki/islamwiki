@@ -2,10 +2,10 @@
 
 /**
  * PrayerTimeController
- * 
+ *
  * This controller handles prayer time requests, user locations,
  * notifications, and preferences for the IslamWiki application.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.16
  * @license AGPL-3.0
@@ -21,13 +21,13 @@ use Models\User;
 class PrayerTimeController extends Controller
 {
     protected $prayerTime;
-    
+
     public function __construct()
     {
         parent::__construct();
         $this->prayerTime = new PrayerTime();
     }
-    
+
     /**
      * Prayer times index page
      */
@@ -38,7 +38,7 @@ class PrayerTimeController extends Controller
             $preferences = $this->prayerTime->getUserPreferences($userId);
             $locations = $this->prayerTime->getUserLocations($userId);
             $statistics = $this->prayerTime->getStatistics();
-            
+
             $defaultLocation = null;
             foreach ($locations as $location) {
                 if ($location['is_default']) {
@@ -46,7 +46,7 @@ class PrayerTimeController extends Controller
                     break;
                 }
             }
-            
+
             // Get today's prayer times for default location
             $todayPrayerTimes = null;
             if ($defaultLocation) {
@@ -61,12 +61,12 @@ class PrayerTimeController extends Controller
                     $preferences['minutes_offset']
                 );
             }
-            
+
             $nextPrayer = null;
             if ($todayPrayerTimes) {
                 $nextPrayer = $this->prayerTime->getNextPrayer($todayPrayerTimes['prayer_times']);
             }
-            
+
             return $this->view('prayer/index', [
                 'title' => 'Prayer Times',
                 'preferences' => $preferences,
@@ -79,12 +79,11 @@ class PrayerTimeController extends Controller
                 'asrJuristicMethods' => $this->prayerTime->getAsrJuristicMethods(),
                 'prayerNames' => $this->prayerTime->getPrayerNames($preferences['language'])
             ]);
-            
         } catch (\Exception $e) {
             return $this->renderError('Error loading prayer times', $e->getMessage());
         }
     }
-    
+
     /**
      * Prayer times for specific date and location
      */
@@ -94,7 +93,7 @@ class PrayerTimeController extends Controller
             $userId = $this->getUserId($request);
             $date = $date ?? date('Y-m-d');
             $preferences = $this->prayerTime->getUserPreferences($userId);
-            
+
             // Get location
             $location = null;
             if ($locationId) {
@@ -115,11 +114,11 @@ class PrayerTimeController extends Controller
                     }
                 }
             }
-            
+
             if (!$location) {
                 return $this->renderError('Location not found', 'Please add a location to view prayer times.');
             }
-            
+
             // Get prayer times
             $prayerTimes = $this->prayerTime->getPrayerTimes(
                 $date,
@@ -131,16 +130,16 @@ class PrayerTimeController extends Controller
                 $preferences['adjust_high_lats'],
                 $preferences['minutes_offset']
             );
-            
+
             // Calculate Qibla direction
             $qiblaDirection = $this->prayerTime->calculateQiblaDirection(
                 $location['latitude'],
                 $location['longitude']
             );
-            
+
             // Get next prayer
             $nextPrayer = $this->prayerTime->getNextPrayer($prayerTimes['prayer_times']);
-            
+
             return $this->view('prayer/show', [
                 'title' => "Prayer Times - {$date}",
                 'date' => $date,
@@ -151,12 +150,11 @@ class PrayerTimeController extends Controller
                 'preferences' => $preferences,
                 'prayerNames' => $this->prayerTime->getPrayerNames($preferences['language'])
             ]);
-            
         } catch (\Exception $e) {
             return $this->renderError('Error loading prayer times', $e->getMessage());
         }
     }
-    
+
     /**
      * Prayer times search page
      */
@@ -167,19 +165,18 @@ class PrayerTimeController extends Controller
             $preferences = $this->prayerTime->getUserPreferences($userId);
             $calculationMethods = $this->prayerTime->getCalculationMethods();
             $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
-            
+
             return $this->view('prayer/search', [
                 'title' => 'Search Prayer Times',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
-            
         } catch (\Exception $e) {
             return $this->renderError('Error loading search page', $e->getMessage());
         }
     }
-    
+
     /**
      * Prayer time widget
      */
@@ -189,18 +186,18 @@ class PrayerTimeController extends Controller
             if (!$widgetKey) {
                 return new Response('Widget key required', 400);
             }
-            
+
             // Get widget configuration
             $query = new \Core\Database\Query\Builder($this->connection);
             $widget = $query->table('prayer_widgets')
                 ->where('widget_key', $widgetKey)
                 ->where('is_active', true)
                 ->first();
-            
+
             if (!$widget) {
                 return new Response('Widget not found', 404);
             }
-            
+
             // Get prayer times
             $prayerTimes = $this->prayerTime->getPrayerTimes(
                 date('Y-m-d'),
@@ -212,23 +209,22 @@ class PrayerTimeController extends Controller
                 true,
                 0
             );
-            
+
             // Update view count
             $query->table('prayer_widgets')
                 ->where('widget_key', $widgetKey)
                 ->update(['view_count' => $widget['view_count'] + 1]);
-            
+
             return $this->view('prayer/widget', [
                 'widget' => $widget,
                 'prayerTimes' => $prayerTimes,
                 'prayerNames' => $this->prayerTime->getPrayerNames($widget['language'])
             ]);
-            
         } catch (\Exception $e) {
             return new Response('Error loading widget', 500);
         }
     }
-    
+
     /**
      * User locations management
      */
@@ -237,17 +233,16 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $locations = $this->prayerTime->getUserLocations($userId);
-            
+
             return $this->view('prayer/locations', [
                 'title' => 'My Locations',
                 'locations' => $locations
             ]);
-            
         } catch (\Exception $e) {
             return $this->renderError('Error loading locations', $e->getMessage());
         }
     }
-    
+
     /**
      * User preferences page
      */
@@ -258,19 +253,18 @@ class PrayerTimeController extends Controller
             $preferences = $this->prayerTime->getUserPreferences($userId);
             $calculationMethods = $this->prayerTime->getCalculationMethods();
             $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
-            
+
             return $this->view('prayer/preferences', [
                 'title' => 'Prayer Preferences',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
-            
         } catch (\Exception $e) {
             return $this->renderError('Error loading preferences', $e->getMessage());
         }
     }
-    
+
     /**
      * API: Get prayer times
      */
@@ -285,13 +279,13 @@ class PrayerTimeController extends Controller
             $asrJuristic = $request->getQueryParam('asr_juristic', 'Standard');
             $adjustHighLats = $request->getQueryParam('adjust_high_lats', true);
             $minutesOffset = $request->getQueryParam('minutes_offset', 0);
-            
+
             if (!$latitude || !$longitude) {
                 return new Response(json_encode([
                     'error' => 'Latitude and longitude are required'
                 ]), 400, ['Content-Type' => 'application/json']);
             }
-            
+
             $startTime = microtime(true);
             $prayerTimes = $this->prayerTime->getPrayerTimes(
                 $date,
@@ -304,23 +298,22 @@ class PrayerTimeController extends Controller
                 $minutesOffset
             );
             $responseTime = (microtime(true) - $startTime) * 1000;
-            
+
             // Update statistics
             $this->prayerTime->updateStatistics('api', $responseTime);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $prayerTimes,
                 'response_time' => round($responseTime, 2)
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get user locations
      */
@@ -329,19 +322,18 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $locations = $this->prayerTime->getUserLocations($userId);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $locations
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Add user location
      */
@@ -350,7 +342,7 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $data = json_decode($request->getBody(), true);
-            
+
             $required = ['name', 'city', 'country', 'latitude', 'longitude', 'timezone'];
             foreach ($required as $field) {
                 if (!isset($data[$field])) {
@@ -359,21 +351,20 @@ class PrayerTimeController extends Controller
                     ]), 400, ['Content-Type' => 'application/json']);
                 }
             }
-            
+
             $locationId = $this->prayerTime->addUserLocation($userId, $data);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => ['id' => $locationId]
             ]), 201, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get user preferences
      */
@@ -382,19 +373,18 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $preferences = $this->prayerTime->getUserPreferences($userId);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $preferences
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Update user preferences
      */
@@ -403,21 +393,20 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $data = json_decode($request->getBody(), true);
-            
+
             $this->prayerTime->updateUserPreferences($userId, $data);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'message' => 'Preferences updated successfully'
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Calculate Qibla direction
      */
@@ -426,15 +415,15 @@ class PrayerTimeController extends Controller
         try {
             $latitude = $request->getQueryParam('latitude');
             $longitude = $request->getQueryParam('longitude');
-            
+
             if (!$latitude || !$longitude) {
                 return new Response(json_encode([
                     'error' => 'Latitude and longitude are required'
                 ]), 400, ['Content-Type' => 'application/json']);
             }
-            
+
             $qiblaDirection = $this->prayerTime->calculateQiblaDirection($latitude, $longitude);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => [
@@ -443,14 +432,13 @@ class PrayerTimeController extends Controller
                     'longitude' => $longitude
                 ]
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get next prayer
      */
@@ -464,13 +452,13 @@ class PrayerTimeController extends Controller
             $asrJuristic = $request->getQueryParam('asr_juristic', 'Standard');
             $adjustHighLats = $request->getQueryParam('adjust_high_lats', true);
             $minutesOffset = $request->getQueryParam('minutes_offset', 0);
-            
+
             if (!$latitude || !$longitude) {
                 return new Response(json_encode([
                     'error' => 'Latitude and longitude are required'
                 ]), 400, ['Content-Type' => 'application/json']);
             }
-            
+
             $prayerTimes = $this->prayerTime->getPrayerTimes(
                 date('Y-m-d'),
                 $latitude,
@@ -481,21 +469,20 @@ class PrayerTimeController extends Controller
                 $adjustHighLats,
                 $minutesOffset
             );
-            
+
             $nextPrayer = $this->prayerTime->getNextPrayer($prayerTimes['prayer_times']);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $nextPrayer
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get prayer statistics
      */
@@ -503,19 +490,18 @@ class PrayerTimeController extends Controller
     {
         try {
             $statistics = $this->prayerTime->getStatistics();
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $statistics
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get calculation methods
      */
@@ -524,7 +510,7 @@ class PrayerTimeController extends Controller
         try {
             $methods = $this->prayerTime->getCalculationMethods();
             $asrMethods = $this->prayerTime->getAsrJuristicMethods();
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => [
@@ -532,14 +518,13 @@ class PrayerTimeController extends Controller
                     'asr_juristic_methods' => $asrMethods
                 ]
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * API: Get prayer names
      */
@@ -548,19 +533,18 @@ class PrayerTimeController extends Controller
         try {
             $language = $request->getQueryParam('language', 'en');
             $prayerNames = $this->prayerTime->getPrayerNames($language);
-            
+
             return new Response(json_encode([
                 'success' => true,
                 'data' => $prayerNames
             ]), 200, ['Content-Type' => 'application/json']);
-            
         } catch (\Exception $e) {
             return new Response(json_encode([
                 'error' => $e->getMessage()
             ]), 500, ['Content-Type' => 'application/json']);
         }
     }
-    
+
     /**
      * Get user ID from request
      */
@@ -570,4 +554,4 @@ class PrayerTimeController extends Controller
         // For now, return a default user ID
         return 1;
     }
-} 
+}

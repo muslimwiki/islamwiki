@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Community Controller
- * 
+ *
  * Comprehensive community management controller for user contributions,
  * discussions, moderation, and community features.
- * 
+ *
  * @package IslamWiki\Http\Controllers
  * @version 0.0.23
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
@@ -82,24 +83,24 @@ class CommunityController extends Controller
             $sort = $_GET['sort'] ?? 'recent';
             $page = max(1, (int)($_GET['page'] ?? 1));
             $perPage = 20;
-            
+
             // Build query
             $query = $this->db->table('users')
                 ->select([
-                    'id', 'username', 'display_name', 'bio', 'created_at', 
+                    'id', 'username', 'display_name', 'bio', 'created_at',
                     'last_login_at', 'is_active', 'is_admin'
                 ])
                 ->where('is_active', true);
-            
+
             // Apply search filter
             if (!empty($search)) {
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('username', 'LIKE', "%{$search}%")
                       ->orWhere('display_name', 'LIKE', "%{$search}%")
                       ->orWhere('bio', 'LIKE', "%{$search}%");
                 });
             }
-            
+
             // Apply sorting
             switch ($sort) {
                 case 'contributions':
@@ -115,23 +116,23 @@ class CommunityController extends Controller
                     $query->orderBy('last_login_at', 'desc');
                     break;
             }
-            
+
             // Get total count for pagination
             $totalUsers = $query->count();
             $totalPages = ceil($totalUsers / $perPage);
-            
+
             // Get paginated results
             $users = $query->offset(($page - 1) * $perPage)
                           ->limit($perPage)
                           ->get();
-            
+
             // Enhance user data with additional information
             foreach ($users as &$user) {
                 $user['contributions'] = $this->getUserContributionsCount($user['id']);
                 $user['is_online'] = $this->isUserOnline($user['id']);
                 $user['last_active'] = $this->getUserLastActivity($user['id']);
             }
-            
+
             // Build pagination data
             $pagination = [
                 'current_page' => $page,
@@ -140,7 +141,7 @@ class CommunityController extends Controller
                 'per_page' => $perPage,
                 'pages' => range(max(1, $page - 2), min($totalPages, $page + 2))
             ];
-            
+
             return $this->view('community/users', [
                 'users' => $users,
                 'pagination' => $pagination,
@@ -161,7 +162,7 @@ class CommunityController extends Controller
     {
         try {
             $activities = $this->communityManager->getCommunityActivity();
-            
+
             return $this->view('community/activity', [
                 'activities' => $activities,
                 'title' => 'Community Activity'
@@ -184,7 +185,7 @@ class CommunityController extends Controller
         try {
             $discussion = $this->communityManager->getDiscussion($id);
             $replies = $this->communityManager->getDiscussionReplies($id);
-            
+
             return $this->view('community/show-discussion', [
                 'discussion' => $discussion,
                 'replies' => $replies,
@@ -204,23 +205,23 @@ class CommunityController extends Controller
         try {
             $data = $request->getParsedBody();
             $userId = $this->getCurrentUserId();
-            
+
             if (!$userId) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'You must be logged in to reply'
                 ], 401);
             }
-            
+
             if (empty($data['content'])) {
                 return $this->jsonResponse([
                     'success' => false,
                     'message' => 'Reply content is required'
                 ], 400);
             }
-            
+
             $replyId = $this->communityManager->addDiscussionReply($id, $userId, $data['content']);
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'message' => 'Reply added successfully',
@@ -270,7 +271,7 @@ class CommunityController extends Controller
             }
 
             $data = $request->getParsedBody();
-            
+
             $contributionData = [
                 'type' => $data['type'] ?? '',
                 'title' => $data['title'] ?? '',
@@ -453,7 +454,7 @@ class CommunityController extends Controller
             }
 
             $data = $request->getParsedBody();
-            
+
             $discussionData = [
                 'title' => $data['title'] ?? '',
                 'content' => $data['content'] ?? '',
@@ -592,21 +593,21 @@ class CommunityController extends Controller
     {
         try {
             $stats = [];
-            
+
             $stats['pending_count'] = $this->db->table('user_contributions')
                 ->where('status', 'pending')
                 ->count();
-            
+
             $stats['approved_today'] = $this->db->table('user_contributions')
                 ->where('status', 'approved')
                 ->where('approved_at', '>=', date('Y-m-d'))
                 ->count();
-            
+
             $stats['rejected_today'] = $this->db->table('user_contributions')
                 ->where('status', 'rejected')
                 ->where('rejected_at', '>=', date('Y-m-d'))
                 ->count();
-            
+
             return $stats;
         } catch (\Exception $e) {
             $this->logger->error('Moderation stats retrieval failed: ' . $e->getMessage());
@@ -636,25 +637,25 @@ class CommunityController extends Controller
     {
         try {
             $stats = [];
-            
+
             $stats['total_contributions'] = $this->db->table('user_contributions')
                 ->where('user_id', $userId)
                 ->count();
-            
+
             $stats['approved_contributions'] = $this->db->table('user_contributions')
                 ->where('user_id', $userId)
                 ->where('status', 'approved')
                 ->count();
-            
+
             $stats['pending_contributions'] = $this->db->table('user_contributions')
                 ->where('user_id', $userId)
                 ->where('status', 'pending')
                 ->count();
-            
+
             $stats['discussions_created'] = $this->db->table('community_discussions')
                 ->where('user_id', $userId)
                 ->count();
-            
+
             return $stats;
         } catch (\Exception $e) {
             $this->logger->error('User stats retrieval failed: ' . $e->getMessage());
@@ -704,7 +705,7 @@ class CommunityController extends Controller
     {
         $renderer = $this->container->get('view');
         $content = $renderer->render($template, $data);
-        
+
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
@@ -748,11 +749,11 @@ class CommunityController extends Controller
                 ->select('last_activity')
                 ->where('user_id', $userId)
                 ->first();
-            
+
             if (!$lastActivity) {
                 return false;
             }
-            
+
             // Consider user online if last activity was within 15 minutes
             $lastActivityTime = strtotime($lastActivity['last_activity']);
             return (time() - $lastActivityTime) < 900; // 15 minutes
@@ -771,7 +772,7 @@ class CommunityController extends Controller
                 ->select('last_activity')
                 ->where('user_id', $userId)
                 ->first();
-            
+
             return $lastActivity ? $lastActivity['last_activity'] : null;
         } catch (\Exception $e) {
             return null;
@@ -786,4 +787,4 @@ class CommunityController extends Controller
             "<h1>Error {$status}</h1><p>{$message}</p>"
         );
     }
-} 
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="IslamWiki">
+    <description>PHP CodeSniffer rules for IslamWiki project</description>
+
+    <!-- Include PSR-12 standard -->
+    <rule ref="PSR12">
+        <!-- Disable some overly strict rules for debug files -->
+        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+        <exclude name="PSR12.Functions.ReturnTypeDeclaration"/>
+    </rule>
+
+    <!-- Custom rules for this project -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="140"/>
+        </properties>
+    </rule>
+
+    <!-- Exclude vendor directory -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/cache/*</exclude-pattern>
+    <exclude-pattern>*/logs/*</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+
+    <!-- Include all PHP files -->
+    <file>.</file>
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="p"/>
+    <arg value="s"/>
+</ruleset>

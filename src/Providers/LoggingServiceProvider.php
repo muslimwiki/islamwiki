@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -9,7 +10,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Logging Service Provider
- * 
+ *
  * This service provider sets up the logging system for the application.
  * It configures and registers the logger instance with the container.
  */
@@ -33,13 +34,13 @@ class LoggingServiceProvider
                 // If settings binding doesn't exist, use defaults
                 // error_log('LoggingServiceProvider: No settings binding found, using defaults');
             }
-            
+
             // Ensure logs directory exists
             $logDir = $config['log_path'] ?? __DIR__ . '/../../storage/logs';
             if (!is_dir($logDir)) {
                 mkdir($logDir, 0755, true);
             }
-            
+
             // Create Shahid witness system instance
             $logger = new ShahidLogger(
                 $logDir,
@@ -47,19 +48,19 @@ class LoggingServiceProvider
                 $config['max_file_size'] ?? 10, // MB
                 $config['max_files'] ?? 5
             );
-            
+
             // error_log('LoggingServiceProvider: Shahid logger created successfully');
             return $logger;
         });
-        
+
         // Alias for convenience
         $container->bind('logger', function (ContainerInterface $c) {
             return $c->get(LoggerInterface::class);
         });
-        
+
         // error_log('LoggingServiceProvider: register() completed');
     }
-    
+
     /**
      * Boot the logging service provider.
      *
@@ -70,14 +71,14 @@ class LoggingServiceProvider
     {
         // Register error handler
         $this->registerErrorHandler($container);
-        
+
         // Register shutdown handler for fatal errors
         $this->registerShutdownHandler($container);
-        
+
         // Register exception handler
         $this->registerExceptionHandler($container);
     }
-    
+
     /**
      * Register the error handler.
      */
@@ -91,12 +92,12 @@ class LoggingServiceProvider
             array $errcontext = []
         ) use ($container) {
             $log = $container->get(LoggerInterface::class);
-            
+
             // Skip if error reporting is disabled
             if (!(error_reporting() & $errno)) {
                 return false;
             }
-            
+
             // Map error level to PSR log level
             $level = match (true) {
                 ($errno & E_USER_ERROR) === E_USER_ERROR => \Psr\Log\LogLevel::ERROR,
@@ -105,7 +106,7 @@ class LoggingServiceProvider
                 ($errno & E_USER_DEPRECATED) === E_USER_DEPRECATED => \Psr\Log\LogLevel::NOTICE,
                 default => \Psr\Log\LogLevel::ERROR,
             };
-            
+
             // Log the error
             $log->log($level, sprintf(
                 '%s in %s on line %d',
@@ -118,12 +119,12 @@ class LoggingServiceProvider
                 'line' => $errline,
                 'context' => $errcontext,
             ]);
-            
+
             // Don't execute PHP's internal error handler
             return true;
         });
     }
-    
+
     /**
      * Register the shutdown handler.
      */
@@ -131,10 +132,10 @@ class LoggingServiceProvider
     {
         register_shutdown_function(function () use ($container) {
             $error = error_get_last();
-            
+
             if ($error !== null && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR], true)) {
                 $log = $container->get(LoggerInterface::class);
-                
+
                 $log->critical(
                     sprintf(
                         'Fatal error: %s in %s on line %d',
@@ -151,7 +152,7 @@ class LoggingServiceProvider
             }
         });
     }
-    
+
     /**
      * Register the exception handler.
      */
@@ -174,7 +175,7 @@ class LoggingServiceProvider
                     'trace' => $e->getTraceAsString(),
                 ]
             );
-            
+
             // Display a generic error message in production
             // For now, always show errors in development
             if (false) {
@@ -182,7 +183,7 @@ class LoggingServiceProvider
                 echo 'An error occurred. Please try again later.';
                 exit(1);
             }
-            
+
             // Re-throw the exception to let the default error handler handle it in development
             throw $e;
         });

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Iqra Route Directly
  */
@@ -49,11 +50,11 @@ try {
 
     // Test controller methods
     echo "<h2>Testing Controller Methods</h2>";
-    
+
     // Test index method
     $request = new Request();
     $request = $request->withQueryParams(['q' => 'allah']);
-    
+
     try {
         $response = $controller->index($request);
         echo "✅ Index method works: Status " . $response->getStatusCode() . "<br>";
@@ -88,9 +89,8 @@ try {
     echo "<h2>✅ All Controller Methods Tested</h2>";
     echo "<p>The IqraSearchController is working correctly!</p>";
     echo "<p><strong>Next step:</strong> The routing issue is likely in the main application setup.</p>";
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "<br>";
     echo "File: " . $e->getFile() . "<br>";
     echo "Line: " . $e->getLine() . "<br>";
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🔍 Debug Login Form Test\n";
@@ -55,8 +56,10 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Form submission HTTP code: $httpCode\n";
-echo "- Response contains error: " . (strpos($response, 'error') !== false ? 'Yes' : 'No') . "\n";
-echo "- Response contains redirect: " . (strpos($response, 'Location:') !== false ? 'Yes' : 'No') . "\n";
+        $temp_8ac53db7 = (strpos($response, 'error') !== false ? 'Yes' : 'No') . "\n";
+        echo "- Response contains error: " . $temp_8ac53db7;
+        $temp_bd41959a = (strpos($response, 'Location:') !== false ? 'Yes' : 'No') . "\n";
+        echo "- Response contains redirect: " . $temp_bd41959a;
 
 // Test 3: Get CSRF token and test proper submission
 echo "\n3️⃣ Testing Form Submission with CSRF Token:\n";
@@ -76,7 +79,8 @@ curl_close($ch);
 preg_match('/name="_token" value="([^"]+)"/', $loginPage, $matches);
 $csrfToken = $matches[1] ?? 'no-token-found';
 
-echo "- CSRF Token found: " . ($csrfToken !== 'no-token-found' ? 'Yes' : 'No') . "\n";
+        $temp_aa4213c9 = ($csrfToken !== 'no-token-found' ? 'Yes' : 'No') . "\n";
+        echo "- CSRF Token found: " . $temp_aa4213c9;
 echo "- CSRF Token: " . substr($csrfToken, 0, 10) . "...\n";
 
 // Submit form with proper CSRF token
@@ -101,7 +105,8 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Form submission with CSRF HTTP code: $httpCode\n";
-echo "- Response contains redirect: " . (strpos($response, 'Location:') !== false ? 'Yes' : 'No') . "\n";
+        $temp_bd41959a = (strpos($response, 'Location:') !== false ? 'Yes' : 'No') . "\n";
+        echo "- Response contains redirect: " . $temp_bd41959a;
 
 if (strpos($response, 'Location: /dashboard') !== false) {
     echo "✅ Login successful with CSRF token!\n";
@@ -144,4 +149,4 @@ echo "- ✅ Form submission works without JavaScript\n";
 echo "- ✅ CSRF token handling is working\n";
 echo "- ✅ Login process is functional\n";
 echo "- 💡 The form works without JavaScript - it's a standard HTML form\n";
-echo "- 💡 JavaScript is not required for login to work\n"; 
+echo "- 💡 JavaScript is not required for login to work\n";

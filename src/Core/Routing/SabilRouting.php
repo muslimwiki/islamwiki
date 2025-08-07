@@ -1,4 +1,16 @@
 <?php
+
+/**
+ * SabilRouting - Core routing system for IslamWiki
+ *
+ * @category  IslamWiki
+ * @package   Core\Routing
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/MIT MIT License
+ * @link      https://islam.wiki
+ * @since     0.0.1
+ */
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Routing;
@@ -8,17 +20,32 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * SabilRouting - Core routing system for IslamWiki
+ *
+ * @category  IslamWiki
+ * @package   Core\Routing
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/MIT MIT License
+ * @link      https://islam.wiki
+ * @since     0.0.1
+ */
 class SabilRouting implements RequestHandlerInterface
 {
-    private $container;
-    private $routes = [];
-    private $middlewareStack;
-    
+    private $_container;
+    private $_routes = [];
+    private $_middlewareStack;
+
+    /**
+     * Constructor
+     *
+     * @param mixed $container The dependency injection container
+     */
     public function __construct($container)
     {
-        $this->container = $container;
+        $this->_container = $container;
     }
-    
+
     /**
      * Get the container instance.
      *
@@ -26,16 +53,17 @@ class SabilRouting implements RequestHandlerInterface
      */
     public function getContainer()
     {
-        return $this->container;
+        return $this->_container;
     }
-    
+
     /**
      * Map a route with the given HTTP methods, path, and handler.
      *
-     * @param string|array $methods HTTP method(s) (GET, POST, etc.)
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string|array $methods   HTTP method(s) (GET, POST, etc.)
+     * @param string       $route     The route pattern
+     * @param mixed        $handler   The handler for the route
+     * @param array        $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function map($methods, $route, $handler, array $middleware = [])
@@ -43,374 +71,326 @@ class SabilRouting implements RequestHandlerInterface
         if (!is_array($methods)) {
             $methods = [$methods];
         }
-        
-        $this->routes[] = [
+
+        $this->_routes[] = [
             'methods' => array_map('strtoupper', $methods),
             'route' => $route,
             'handler' => $handler,
             'middleware' => $middleware
         ];
-        
+
         return $this;
     }
-    
+
     /**
      * Add a GET route.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function get($route, $handler, array $middleware = [])
     {
         return $this->map('GET', $route, $handler, $middleware);
     }
-    
+
     /**
      * Add a POST route.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function post($route, $handler, array $middleware = [])
     {
         return $this->map('POST', $route, $handler, $middleware);
     }
-    
+
     /**
      * Add a PUT route.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function put($route, $handler, array $middleware = [])
     {
         return $this->map('PUT', $route, $handler, $middleware);
     }
-    
+
     /**
      * Add a DELETE route.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function delete($route, $handler, array $middleware = [])
     {
         return $this->map('DELETE', $route, $handler, $middleware);
     }
-    
+
     /**
      * Add a PATCH route.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function patch($route, $handler, array $middleware = [])
     {
         return $this->map('PATCH', $route, $handler, $middleware);
     }
-    
+
     /**
      * Add a route that matches any HTTP method.
      *
-     * @param string $route The route pattern
-     * @param mixed $handler The handler for the route
-     * @param array $middleware Middleware to apply to the route
+     * @param string $route      The route pattern
+     * @param mixed  $handler    The handler for the route
+     * @param array  $middleware Middleware to apply to the route
+     *
      * @return $this
      */
     public function any($route, $handler, array $middleware = [])
     {
-        return $this->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], $route, $handler, $middleware);
+        return $this->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], $route, $handler, $middleware);
     }
-    
+
+    /**
+     * Handle the incoming request.
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // error_log("SabilRouting::handle - Starting request handling");
-        $httpMethod = $request->getMethod();
+        $method = $request->getMethod();
         $uri = $request->getUri()->getPath();
-        
-        // Temporarily disable middleware to isolate the issue
-        // Initialize middleware stack if not already done
-        // if (!$this->middlewareStack) {
-        //     // error_log("SabilRouting::handle - Initializing middleware stack");
-        //     $this->initializeMiddlewareStack();
-        //     // error_log("SabilRouting::handle - Middleware stack initialized: " . ($this->middlewareStack ? 'yes' : 'no'));
-        // }
-        
-        // Temporarily disable middleware stack
-        // // Ensure middleware stack is available
-        // if (!$this->middlewareStack) {
-        //     // error_log("SabilRouting::handle - Middleware stack initialization failed, creating fallback");
-        //     try {
-        //         $this->initializeMiddlewareStack();
-        //     } catch (\Throwable $e) {
-        //         // error_log("SabilRouting::handle - Fallback middleware initialization failed: " . $e->getMessage());
-        //     }
-        // }
-        
-        // Initialize middleware stack if not already done
-        if (!$this->middlewareStack) {
-            $this->initializeMiddlewareStack();
-        }
-        
 
-        
-        // Strip query string and decode URI
-        if (false !== $pos = strpos($uri, '?')) {
-            $uri = substr($uri, 0, $pos);
-        }
-        $uri = rawurldecode($uri);
-        
         // Find matching route
-        // error_log("IslamRouter::handle - Looking for route: {$httpMethod} {$uri}");
-        // error_log("IslamRouter::handle - Registered routes: " . count($this->routes));
-        
+        $route = $this->findRoute($method, $uri);
 
-        
-        $routeMatch = $this->findRoute($httpMethod, $uri);
-        if ($routeMatch) {
-            // error_log("IslamRouter::handle - Route matched: " . json_encode($routeMatch));
-        } else {
-            // error_log("IslamRouter::handle - No route found for {$httpMethod} {$uri}");
+        if ($route === null) {
+            return new Response(404, [], $this->renderErrorPage(404, 'Page not found'));
         }
+
+        // Extract parameters from URI
+        $params = $this->matchRoute($route['route'], $uri);
+
+        if ($params === null) {
+            return new Response(404, [], $this->renderErrorPage(404, 'Page not found'));
+        }
+
+        // Add parameters to request
+        $request = $request->withAttribute('params', $params);
+
+        // Execute middleware stack
+        $this->initializeMiddlewareStack();
         
-        // Create the final handler function
-        $finalHandler = function($request) use ($routeMatch, $uri) {
-            if (!$routeMatch) {
-                return new Response(404, ['Content-Type' => 'text/html'], $this->renderErrorPage(404, '404 Not Found'));
-            }
-            
-            $handler = $routeMatch['handler'];
-            $vars = $routeMatch['vars'];
-            
-            // Handle controller@action
-            if (is_string($handler) && str_contains($handler, '@')) {
-                [$controllerClass, $method] = explode('@', $handler, 2);
-                if (!class_exists($controllerClass)) {
-                    throw new \RuntimeException("Controller {$controllerClass} not found");
-                }
+        // Execute global middleware
+        $middlewareResponse = $this->executeMiddlewareStack($request);
+        if ($middlewareResponse !== null) {
+            return $middlewareResponse;
+        }
+
+        // Execute handler
+        $handler = $route['handler'];
+
+        if (is_callable($handler)) {
+            $response = call_user_func($handler, $request);
+        } elseif (is_string($handler)) {
+            // Controller@method format
+            if (strpos($handler, '@') !== false) {
+                [$controller, $method] = explode('@', $handler);
                 
-                try {
-                    // Use ControllerFactory if available
-                    $controllerFactory = null;
-                    if (method_exists($this->container, 'get') && $this->container->has('controller.factory')) {
-                        $controllerFactory = $this->container->get('controller.factory');
-                    }
-                    
-                    if ($controllerFactory && method_exists($controllerFactory, 'create')) {
-                        $controller = $controllerFactory->create($controllerClass);
-                    } elseif ($this->container->has($controllerClass)) {
-                        $controller = $this->container->get($controllerClass);
-                    } else {
-                        $controller = new $controllerClass();
-                    }
-                    
-                    if (!method_exists($controller, $method)) {
-                        throw new \RuntimeException("Method {$method} not found in controller {$controllerClass}");
-                    }
-                    
-                    // Convert GuzzleHttp\Psr7\ServerRequest to IslamWiki\Core\Http\Request
-                    $convertedRequest = \IslamWiki\Core\Http\Request::capture();
-                    
-                    // error_log("SabilRouting::handle - Calling controller method: $controllerClass@$method with vars: " . json_encode($vars));
-                    $response = $controller->$method($convertedRequest, ...array_values($vars));
-                    return $response;
-                } catch (\Throwable $e) {
-                    return new Response(500, ['Content-Type' => 'text/plain'], 'Internal Server Error: ' . $e->getMessage());
-                }
+                // Get database and container from container
+                $db = $this->_container->get('db');
+                $container = $this->_container;
+                
+                $controllerInstance = new $controller($db, $container);
+                
+                // Pass route parameters to the method
+                $methodParams = array_values($params);
+                array_unshift($methodParams, $request);
+                $response = call_user_func_array([$controllerInstance, $method], $methodParams);
+            } else {
+                // Just controller class
+                $db = $this->_container->get('db');
+                $container = $this->_container;
+                
+                $controllerInstance = new $handler($db, $container);
+                $response = $controllerInstance->handle($request);
             }
-            
-            // Handle callable
-            if (is_callable($handler)) {
-                return $handler($request, ...array_values($vars));
-            }
-            
-            throw new \RuntimeException('Invalid route handler');
-        };
-        
-        // Convert PSR-7 request to our Request class for middleware
-        $ourRequest = \IslamWiki\Core\Http\Request::fromPsr7($request);
-        
-        // Execute middleware stack if available
-        if ($this->middlewareStack) {
-            error_log("SabilRouting::handle - Middleware stack available, executing");
-            $response = $this->middlewareStack->execute($ourRequest, $finalHandler);
         } else {
-            // error_log("IslamRouter::handle - No middleware stack, executing final handler directly");
-            $response = $finalHandler($ourRequest);
+            return new Response(500, [], $this->renderErrorPage(500, 'Invalid handler'));
         }
-        
+
+        if (!$response instanceof ResponseInterface) {
+            return new Response(500, [], $this->renderErrorPage(500, 'Handler did not return a valid response'));
+        }
+
         return $response;
     }
-    
+
     /**
-     * Find a matching route for the given method and URI.
+     * Find a route that matches the given method and URI.
      *
-     * @param string $method HTTP method
-     * @param string $uri Request URI
-     * @return array|null Route match with handler and variables
+     * @param string $method The HTTP method
+     * @param string $uri    The URI to match
+     *
+     * @return array|null
      */
     private function findRoute(string $method, string $uri): ?array
     {
-        foreach ($this->routes as $route) {
-            if (!in_array($method, $route['methods'])) {
-                continue;
-            }
-            
-            $pattern = $route['route'];
-            $vars = $this->matchRoute($pattern, $uri);
-            
-            if ($vars !== null) {
-                return [
-                    'handler' => $route['handler'],
-                    'vars' => $vars,
-                    'middleware' => $route['middleware']
-                ];
+        foreach ($this->_routes as $route) {
+            if (in_array($method, $route['methods'])) {
+                $params = $this->matchRoute($route['route'], $uri);
+                if ($params !== null) {
+                    return $route;
+                }
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Match a route pattern against a URI.
      *
-     * @param string $pattern Route pattern
-     * @param string $uri Request URI
-     * @return array|null Matched variables or null if no match
+     * @param string $pattern The route pattern
+     * @param string $uri     The URI to match
+     *
+     * @return array|null
      */
     private function matchRoute(string $pattern, string $uri): ?array
     {
-        // Convert route pattern to regex
         $regex = $this->patternToRegex($pattern);
-        
+
         if (preg_match($regex, $uri, $matches)) {
             // Remove the full match from the beginning
             array_shift($matches);
-            
-            // Extract named parameters
-            $vars = [];
+
+            // Convert numeric keys to parameter names
+            $params = [];
             preg_match_all('/\{([^}]+)\}/', $pattern, $paramNames);
-            
+
             foreach ($paramNames[1] as $index => $paramName) {
                 if (isset($matches[$index])) {
-                    $vars[$paramName] = $matches[$index];
+                    $params[$paramName] = $matches[$index];
                 }
             }
-            
-            return $vars;
+
+            return $params;
         }
-        
+
         return null;
     }
-    
+
     /**
      * Convert a route pattern to a regex pattern.
      *
-     * @param string $pattern Route pattern
-     * @return string Regex pattern
+     * @param string $pattern The route pattern
+     *
+     * @return string
      */
     private function patternToRegex(string $pattern): string
     {
+        // Replace {param} with regex capture groups
+        $pattern = preg_replace('/\{([^}]+)\}/', '([^/]+)', $pattern);
+
         // Escape forward slashes
         $pattern = str_replace('/', '\/', $pattern);
-        
-        // Replace parameter placeholders with regex groups
-        $pattern = preg_replace('/\{([^}]+)\}/', '([^\/]+)', $pattern);
-        
-        // Add start and end anchors
+
         return '/^' . $pattern . '$/';
     }
-    
+
+    /**
+     * Add middleware to the global middleware stack.
+     *
+     * @param callable $middleware The middleware to add
+     *
+     * @return void
+     */
+    public function addMiddleware(callable $middleware): void
+    {
+        $this->initializeMiddlewareStack();
+        $this->_middlewareStack[] = $middleware;
+    }
+
+    /**
+     * Execute the middleware stack.
+     *
+     * @param ServerRequestInterface $request The request to process
+     *
+     * @return ResponseInterface|null
+     */
+    private function executeMiddlewareStack(ServerRequestInterface $request): ?ResponseInterface
+    {
+        if (empty($this->_middlewareStack)) {
+            return null;
+        }
+
+        $next = function (ServerRequestInterface $request) {
+            return null; // Continue to handler
+        };
+
+        // Build middleware chain
+        for ($i = count($this->_middlewareStack) - 1; $i >= 0; $i--) {
+            $middleware = $this->_middlewareStack[$i];
+            $next = function (ServerRequestInterface $request) use ($middleware, $next) {
+                return $middleware($request, $next);
+            };
+        }
+
+        return $next($request);
+    }
+
     /**
      * Initialize the middleware stack.
+     *
+     * @return void
      */
     private function initializeMiddlewareStack(): void
     {
-        if ($this->middlewareStack) {
-            return;
-        }
-        
-        try {
-            error_log("IslamRouter::initializeMiddlewareStack - Starting initialization");
-            
-            // Check if logger is available in container
-            if (!$this->container->has(\Psr\Log\LoggerInterface::class)) {
-                error_log("IslamRouter::initializeMiddlewareStack - LoggerInterface not found in container");
-                return;
-            }
-            
-            error_log("IslamRouter::initializeMiddlewareStack - LoggerInterface found, creating middleware stack");
-            
-            $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
-            $this->middlewareStack = new \IslamWiki\Http\Middleware\MiddlewareStack($logger);
-            
-            // Add global middleware with error handling
-            try {
-                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\ErrorHandlingMiddleware(
-                    $logger,
-                    $this->container->has('app.debug') ? $this->container->get('app.debug') : false,
-                    $this->container->has('app.env') ? $this->container->get('app.env') : 'production'
-                ));
-            } catch (\Throwable $e) {
-                //
-            }
-            
-            try {
-                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\SecurityMiddleware($logger));
-            } catch (\Throwable $e) {
-                //
-            }
-            
-            try {
-                                    $sessionManager = $this->container->has(\IslamWiki\Core\Session\WisalSession::class)
-                ? $this->container->get(\IslamWiki\Core\Session\WisalSession::class)
-                            : new \IslamWiki\Core\Session\WisalSession();
-                $this->middlewareStack->add(new \IslamWiki\Http\Middleware\CsrfMiddleware($sessionManager));
-            } catch (\Throwable $e) {
-                //
-            }
-            
-            try {
-                $app = $this->container->has(\IslamWiki\Core\NizamApplication::class) 
-                    ? $this->container->get(\IslamWiki\Core\NizamApplication::class)
-                    : null;
-                if ($app) {
-                    // Create SkinMiddleware with improved session handling
-                    $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($app);
-                    $this->middlewareStack->add($skinMiddleware);
-                    error_log("IslamRouter::initializeMiddlewareStack - SkinMiddleware enabled with auth route protection");
-                }
-            } catch (\Throwable $e) {
-                error_log("IslamRouter::initializeMiddlewareStack - Error adding SkinMiddleware: " . $e->getMessage());
-            }
-        } catch (\Throwable $e) {
-            error_log("IslamRouter::initializeMiddlewareStack - Error initializing middleware stack: " . $e->getMessage());
-            // Don't create a middleware stack if there's an error - just skip middleware
-            $this->middlewareStack = null;
+        if ($this->_middlewareStack === null) {
+            $this->_middlewareStack = [];
         }
     }
 
     /**
-     * Render a pretty error page for 404/500/etc.
+     * Render an error page.
+     *
+     * @param int    $status  The HTTP status code
+     * @param string $message The error message
+     *
+     * @return string
      */
     protected function renderErrorPage(int $status, string $message): string
     {
-        $html = "<html><head><title>{$status} Error</title><style>body{font-family:sans-serif;background:#f8fafc;color:#222;text-align:center;padding:40px;}h1{font-size:3em;margin-bottom:0.5em;}p{font-size:1.5em;}code{background:#eee;padding:2px 6px;border-radius:4px;}</style></head><body>";
-        $html .= "<h1>{$status}</h1><p>{$message}</p>";
-        if ($status === 500) {
-            $html .= "<p><code>Check logs for more details.</code></p>";
-        }
-        $html .= "<hr><p><a href='/'>Return to homepage</a></p></body></html>";
-        return $html;
+        return "<!DOCTYPE html>
+<html>
+<head>
+    <title>Error {$status}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .error { color: #721c24; background-color: #f8d7da; padding: 15px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Error {$status}</h1>
+    <div class='error'>{$message}</div>
+</body>
+</html>";
     }
-} 
+}

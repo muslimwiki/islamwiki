@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🔍 Debug JavaScript Form Validation Test\n";
@@ -53,7 +54,8 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Empty form HTTP code: $httpCode\n";
-echo "- Empty form response: " . (strpos($response, 'error') !== false ? 'Contains error' : 'No error') . "\n";
+        $temp_ce01271f = (strpos($response, 'error') !== false ? 'Contains error' : 'No error') . "\n";
+        echo "- Empty form response: " . $temp_ce01271f;
 
 // Test 3: Simulate partial form submission (should be blocked by JS)
 echo "\n3️⃣ Testing Partial Form Submission (Should be blocked):\n";
@@ -79,7 +81,8 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Partial form HTTP code: $httpCode\n";
-echo "- Partial form response: " . (strpos($response, 'error') !== false ? 'Contains error' : 'No error') . "\n";
+        $temp_ce01271f = (strpos($response, 'error') !== false ? 'Contains error' : 'No error') . "\n";
+        echo "- Partial form response: " . $temp_ce01271f;
 
 // Test 4: Test with valid data (should work)
 echo "\n4️⃣ Testing Valid Form Submission (Should work):\n";
@@ -105,7 +108,8 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 echo "- Valid form HTTP code: $httpCode\n";
-echo "- Valid form response: " . (strpos($response, 'Location: /dashboard') !== false ? 'Redirects to dashboard' : 'No redirect') . "\n";
+        $temp_f3f13cec = (strpos($response, 'Location: /dashboard') !== false ? 'Redirects to dashboard' : 'No redirect') . "\n";
+        echo "- Valid form response: " . $temp_f3f13cec;
 
 echo "\n✅ JavaScript validation test completed!\n";
 echo "\n📋 Summary:\n";
@@ -116,4 +120,4 @@ echo "- ✅ Partial form submission is blocked\n";
 echo "- ✅ Valid form submission works\n";
 echo "- 💡 The issue is likely that users are trying to submit empty forms\n";
 echo "- 💡 JavaScript prevents submission until all required fields are filled\n";
-echo "- 💡 This is actually good UX - it prevents invalid submissions\n"; 
+echo "- 💡 This is actually good UX - it prevents invalid submissions\n";

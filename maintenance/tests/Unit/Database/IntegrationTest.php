@@ -31,7 +31,7 @@ use IslamWiki\Models\Revision;
 
 /**
  * Database Integration Test
- * 
+ *
  * This test verifies that the database integration is working properly.
  * It tests:
  * - Database connection
@@ -369,4 +369,4 @@ class DatabaseIntegrationTest
 if (php_sapi_name() === 'cli') {
     $test = new DatabaseIntegrationTest();
     $test->runTests();
-} 
+}

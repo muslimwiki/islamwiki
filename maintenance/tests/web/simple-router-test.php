@@ -1,4 +1,5 @@
 <?php
+
 // Simple router test
 require __DIR__ . '/../vendor/autoload.php';
 

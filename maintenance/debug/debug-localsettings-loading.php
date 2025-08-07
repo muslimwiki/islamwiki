@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Debug script to check LocalSettings loading
  */
@@ -15,10 +16,10 @@ if (file_exists($localSettingsPath)) {
     // Clear any existing globals
     unset($GLOBALS['wgValidSkins']);
     unset($GLOBALS['wgActiveSkin']);
-    
+
     // Load LocalSettings
     require_once $localSettingsPath;
-    
+
     global $wgValidSkins, $wgActiveSkin;
     echo "<p>wgValidSkins: " . var_export($wgValidSkins, true) . "</p>";
     echo "<p>wgActiveSkin: " . var_export($wgActiveSkin, true) . "</p>";
@@ -52,7 +53,8 @@ foreach ($possiblePaths as $path) {
 echo "<h2>3. File Modification Time</h2>";
 if (file_exists($localSettingsPath)) {
     $mtime = filemtime($localSettingsPath);
-    echo "<p>LocalSettings.php last modified: " . date('Y-m-d H:i:s', $mtime) . "</p>";
+        $temp_599db532 = date('Y-m-d H:i:s', $mtime) . "</p>";
+        echo "<p>LocalSettings.php last modified: " . $temp_599db532;
     echo "<p>Current time: " . date('Y-m-d H:i:s') . "</p>";
 }
 
@@ -66,4 +68,4 @@ if (file_exists($localSettingsPath)) {
     } else {
         echo "<p class='error'>Could not find wgValidSkins definition in file</p>";
     }
-} 
+}

@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Service Provider
- * 
+ *
  * Registers the Bayan knowledge graph system with the application container.
  */
 class BayanServiceProvider
@@ -86,4 +86,4 @@ class BayanServiceProvider
         $logger = $container->get(LoggerInterface::class);
         $logger->info('Bayan knowledge graph system initialized');
     }
-} 
+}

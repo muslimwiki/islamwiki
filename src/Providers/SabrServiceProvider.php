@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Sabr Service Provider
@@ -10,6 +9,8 @@ declare(strict_types=1);
  * @version 0.0.42
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
@@ -117,7 +118,6 @@ class SabrServiceProvider
 
             // Schedule cleanup jobs if needed
             $this->scheduleCleanupJobs($container);
-
         } catch (\Exception $e) {
             if ($logger) {
                 $logger->error('Failed to boot Sabr queue system', [
@@ -147,7 +147,6 @@ class SabrServiceProvider
             if ($logger) {
                 $logger->info('Cleanup jobs scheduled successfully');
             }
-
         } catch (\Exception $e) {
             if ($logger) {
                 $logger->error('Failed to schedule cleanup jobs', [
@@ -158,4 +157,4 @@ class SabrServiceProvider
             }
         }
     }
-} 
+}

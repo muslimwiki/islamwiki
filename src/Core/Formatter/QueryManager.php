@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Bayan Query Manager
- * 
+ *
  * Handles complex graph queries, traversals, and search operations
  * for the Islamic knowledge graph system.
  */
@@ -72,7 +72,7 @@ class QueryManager
                     AND e.deleted_at IS NULL
                     AND n.deleted_at IS NULL
                     AND n.id != ?";
-            
+
             $params = [$nodeId, $nodeId, $nodeId, $nodeId];
 
             if ($relationshipType) {
@@ -85,14 +85,14 @@ class QueryManager
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
                 $result['relationship_attributes'] = json_decode($result['relationship_attributes'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get related Bayan nodes', [
@@ -113,26 +113,26 @@ class QueryManager
             $paths = [];
             $visited = [];
             $queue = [[$sourceId]];
-            
+
             while (!empty($queue) && count($paths) < 10) { // Limit to 10 paths
                 $currentPath = array_shift($queue);
                 $currentNode = end($currentPath);
-                
+
                 if ($currentNode === $targetId) {
                     $paths[] = $this->enrichPath($currentPath);
                     continue;
                 }
-                
+
                 if (count($currentPath) >= $maxDepth) {
                     continue;
                 }
-                
+
                 $pathKey = implode('-', $currentPath);
                 if (isset($visited[$pathKey])) {
                     continue;
                 }
                 $visited[$pathKey] = true;
-                
+
                 // Get neighbors
                 $neighbors = $this->getNeighbors($currentNode);
                 foreach ($neighbors as $neighbor) {
@@ -142,7 +142,7 @@ class QueryManager
                     }
                 }
             }
-            
+
             return $paths;
         } catch (\Exception $e) {
             $this->logger->error('Failed to find Bayan paths', [
@@ -167,7 +167,7 @@ class QueryManager
                     FROM bayan_nodes n
                     LEFT JOIN bayan_edges e ON (e.source_id = n.id OR e.target_id = n.id) AND e.deleted_at IS NULL
                     WHERE n.deleted_at IS NULL";
-            
+
             $params = [];
             $conditions = [];
 
@@ -198,14 +198,14 @@ class QueryManager
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
                 $result['relationship_types'] = $result['relationship_types'] ? explode(',', $result['relationship_types']) : [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to search Bayan graph', [
@@ -231,16 +231,16 @@ class QueryManager
                     HAVING relationship_count > 0
                     ORDER BY relationship_count DESC
                     LIMIT ?";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$limit]);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan hub nodes', [
@@ -281,46 +281,46 @@ class QueryManager
     {
         try {
             $metrics = [];
-            
+
             // Total nodes and edges
             $sql = "SELECT 
                         (SELECT COUNT(*) FROM bayan_nodes WHERE deleted_at IS NULL) as total_nodes,
                         (SELECT COUNT(*) FROM bayan_edges WHERE deleted_at IS NULL) as total_edges";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
             $basic = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
+
             $metrics['total_nodes'] = (int) $basic['total_nodes'];
             $metrics['total_edges'] = (int) $basic['total_edges'];
-            
+
             // Average degree
             if ($metrics['total_nodes'] > 0) {
                 $metrics['average_degree'] = round(2 * $metrics['total_edges'] / $metrics['total_nodes'], 2);
             } else {
                 $metrics['average_degree'] = 0;
             }
-            
+
             // Node type distribution
             $sql = "SELECT type, COUNT(*) as count 
                     FROM bayan_nodes 
                     WHERE deleted_at IS NULL 
                     GROUP BY type";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
             $metrics['node_types'] = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-            
+
             // Edge type distribution
             $sql = "SELECT type, COUNT(*) as count 
                     FROM bayan_edges 
                     WHERE deleted_at IS NULL 
                     GROUP BY type";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
             $metrics['edge_types'] = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-            
+
             return $metrics;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan graph metrics', [
@@ -343,10 +343,10 @@ class QueryManager
                     AND e.deleted_at IS NULL
                     AND n.deleted_at IS NULL
                     AND n.id != ?";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$nodeId, $nodeId, $nodeId]);
-            
+
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan neighbors', [
@@ -364,27 +364,27 @@ class QueryManager
     {
         try {
             $enrichedPath = [];
-            
+
             for ($i = 0; $i < count($path) - 1; $i++) {
                 $currentNode = $path[$i];
                 $nextNode = $path[$i + 1];
-                
+
                 // Get node details
                 $nodeManager = new NodeManager($this->connection, $this->logger);
                 $currentNodeData = $nodeManager->findById($currentNode);
                 $nextNodeData = $nodeManager->findById($nextNode);
-                
+
                 // Get relationship details
                 $edgeManager = new EdgeManager($this->connection, $this->logger);
                 $relationships = $edgeManager->findByNodes($currentNode, $nextNode);
-                
+
                 $enrichedPath[] = [
                     'from_node' => $currentNodeData,
                     'to_node' => $nextNodeData,
                     'relationships' => $relationships
                 ];
             }
-            
+
             return $enrichedPath;
         } catch (\Exception $e) {
             $this->logger->error('Failed to enrich Bayan path', [
@@ -412,16 +412,16 @@ class QueryManager
                     HAVING betweenness_score > 0
                     ORDER BY betweenness_score DESC
                     LIMIT ?";
-            
+
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([$limit]);
-            
+
             $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
+
             foreach ($results as &$result) {
                 $result['metadata'] = json_decode($result['metadata'], true) ?: [];
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             $this->logger->error('Failed to get Bayan nodes by betweenness', [
@@ -430,4 +430,4 @@ class QueryManager
             return [];
         }
     }
-} 
+}

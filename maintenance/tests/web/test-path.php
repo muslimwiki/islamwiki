@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Path Resolution
  */
@@ -21,4 +22,4 @@ echo "Real path: $realPath<br>";
 // Test with absolute path
 $absolutePath = '/var/www/html/local.islam.wiki/src/Core/Database/Connection.php';
 echo "Absolute path: $absolutePath<br>";
-echo "Absolute path exists: " . (file_exists($absolutePath) ? 'YES' : 'NO') . "<br>"; 
+echo "Absolute path exists: " . (file_exists($absolutePath) ? 'YES' : 'NO') . "<br>";

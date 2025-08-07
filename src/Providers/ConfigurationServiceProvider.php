@@ -28,10 +28,10 @@ use IslamWiki\Core\Container\AsasContainer;
 
 /**
  * ConfigurationServiceProvider - Configuration System Integration
- * 
+ *
  * Integrates the hybrid configuration system with the application's service container.
  * Provides configuration services to the application.
- * 
+ *
  * Version: 0.0.18
  * Date: 2025-07-30
  */
@@ -39,7 +39,7 @@ class ConfigurationServiceProvider
 {
     /**
      * Register configuration services
-     * 
+     *
      * @param AsasContainer $container The dependency injection container
      * @return void
      */
@@ -56,7 +56,7 @@ class ConfigurationServiceProvider
 
     /**
      * Register configuration helper functions
-     * 
+     *
      * @return void
      */
     private function registerConfigurationHelpers(): void
@@ -67,17 +67,17 @@ class ConfigurationServiceProvider
 
     /**
      * Register configuration validation
-     * 
+     *
      * @return void
      */
     private function registerConfigurationValidation(AsasContainer $container): void
     {
         // Get configuration manager instance
         $configManager = $container->get(ConfigurationManager::class);
-        
+
         // Validate configuration on startup
         $validation = $configManager->validateConfiguration();
-        
+
         if (!empty($validation)) {
             $this->handleConfigurationErrors($validation);
         }
@@ -85,7 +85,7 @@ class ConfigurationServiceProvider
 
     /**
      * Handle configuration errors
-     * 
+     *
      * @param array $errors Configuration errors
      * @return void
      */
@@ -95,10 +95,10 @@ class ConfigurationServiceProvider
             $errorMessage = is_array($error) ? json_encode($error) : (string) $error;
             // error_log("Configuration Error: {$errorMessage}");
         }
-        
+
         // In development mode, throw an exception
         if (\config('wgDebug', false)) {
-            $errorMessages = array_map(function($error) {
+            $errorMessages = array_map(function ($error) {
                 return is_array($error) ? json_encode($error) : (string) $error;
             }, $errors);
             throw new \RuntimeException(
@@ -109,7 +109,7 @@ class ConfigurationServiceProvider
 
     /**
      * Handle configuration warnings
-     * 
+     *
      * @param array $warnings Configuration warnings
      * @return void
      */
@@ -122,7 +122,7 @@ class ConfigurationServiceProvider
 
     /**
      * Boot configuration services
-     * 
+     *
      * @param AsasContainer $container The dependency injection container
      * @return void
      */
@@ -135,26 +135,26 @@ class ConfigurationServiceProvider
             // Ignore configuration validation errors during boot
             // This allows the application to start even if configuration tables don't exist yet
         }
-        
+
         // Set up environment-specific configuration
         $this->setupEnvironmentConfiguration();
-        
+
         // Set up Islamic-specific configuration
         $this->setupIslamicConfiguration();
-        
+
         // Set up performance configuration
         $this->setupPerformanceConfiguration();
     }
 
     /**
      * Set up environment-specific configuration
-     * 
+     *
      * @return void
      */
     private function setupEnvironmentConfiguration(): void
     {
         $environment = \config('APP_ENV', 'production');
-        
+
         switch ($environment) {
             case 'development':
                 // Development-specific settings
@@ -163,13 +163,13 @@ class ConfigurationServiceProvider
                     ini_set('display_errors', '1');
                 }
                 break;
-                
+
             case 'testing':
                 // Testing-specific settings
                 \config('wgDebug', true);
                 \config('wgShowExceptionDetails', true);
                 break;
-                
+
             case 'production':
             default:
                 // Production-specific settings
@@ -182,7 +182,7 @@ class ConfigurationServiceProvider
 
     /**
      * Set up Islamic-specific configuration
-     * 
+     *
      * @return void
      */
     private function setupIslamicConfiguration(): void
@@ -193,14 +193,14 @@ class ConfigurationServiceProvider
             // Register templates with the view system
             $this->registerIslamicTemplates($templates);
         }
-        
+
         // Set up Islamic API endpoints
         $endpoints = \config('wgIslamicAPIEndpoints', []);
         if (!empty($endpoints)) {
             // Register API endpoints
             $this->registerIslamicAPIEndpoints($endpoints);
         }
-        
+
         // Set up Islamic search settings
         $searchSettings = \config('wgIslamicSearchSettings', []);
         if (!empty($searchSettings)) {
@@ -211,30 +211,30 @@ class ConfigurationServiceProvider
 
     /**
      * Set up performance configuration
-     * 
+     *
      * @return void
      */
     private function setupPerformanceConfiguration(): void
     {
         $performanceSettings = \config('wgIslamicPerformanceSettings', []);
-        
+
         // Enable caching if configured
         if ($performanceSettings['enable_quran_caching'] ?? true) {
             $this->enableQuranCaching();
         }
-        
+
         if ($performanceSettings['enable_hadith_caching'] ?? true) {
             $this->enableHadithCaching();
         }
-        
+
         if ($performanceSettings['enable_prayer_times_caching'] ?? true) {
             $this->enablePrayerTimesCaching();
         }
-        
+
         if ($performanceSettings['enable_calendar_caching'] ?? true) {
             $this->enableCalendarCaching();
         }
-        
+
         if ($performanceSettings['enable_search_caching'] ?? true) {
             $this->enableSearchCaching();
         }
@@ -242,7 +242,7 @@ class ConfigurationServiceProvider
 
     /**
      * Register Islamic templates
-     * 
+     *
      * @param array $templates Template configurations
      * @return void
      */
@@ -257,7 +257,7 @@ class ConfigurationServiceProvider
 
     /**
      * Register Islamic API endpoints
-     * 
+     *
      * @param array $endpoints API endpoint configurations
      * @return void
      */
@@ -272,7 +272,7 @@ class ConfigurationServiceProvider
 
     /**
      * Configure Islamic search
-     * 
+     *
      * @param array $settings Search settings
      * @return void
      */
@@ -289,66 +289,66 @@ class ConfigurationServiceProvider
 
     /**
      * Enable Quran caching
-     * 
+     *
      * @return void
      */
     private function enableQuranCaching(): void
     {
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['quran_cache_ttl'] ?? 86400;
-        
+
         // error_log("Quran caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
      * Enable Hadith caching
-     * 
+     *
      * @return void
      */
     private function enableHadithCaching(): void
     {
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['hadith_cache_ttl'] ?? 86400;
-        
+
         // error_log("Hadith caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
      * Enable Prayer Times caching
-     * 
+     *
      * @return void
      */
     private function enablePrayerTimesCaching(): void
     {
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['prayer_times_cache_ttl'] ?? 1800;
-        
+
         // error_log("Prayer times caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
      * Enable Calendar caching
-     * 
+     *
      * @return void
      */
     private function enableCalendarCaching(): void
     {
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['calendar_cache_ttl'] ?? 7200;
-        
+
         // error_log("Islamic calendar caching enabled with TTL: {$ttl} seconds");
     }
 
     /**
      * Enable Search caching
-     * 
+     *
      * @return void
      */
     private function enableSearchCaching(): void
     {
         $cacheSettings = \config('wgIslamicCacheSettings', []);
         $ttl = $cacheSettings['search_cache_ttl'] ?? 3600;
-        
+
         // error_log("Search caching enabled with TTL: {$ttl} seconds");
     }
-} 
+}

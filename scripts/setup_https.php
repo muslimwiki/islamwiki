@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of IslamWiki.
  *
@@ -22,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * HTTPS Setup Script for IslamWiki
- * 
+ *
  * This script helps configure HTTPS for your IslamWiki installation.
  * Run this script after setting up SSL certificates.
  */
@@ -46,7 +47,7 @@ echo "📋 Checking current configuration...\n";
 if (file_exists($envFile)) {
     echo "✅ .env file found\n";
     $envContent = file_get_contents($envFile);
-    
+
     // Check if APP_URL is already set to HTTPS
     if (strpos($envContent, 'APP_URL=https://') !== false) {
         echo "✅ APP_URL is already configured for HTTPS\n";
@@ -58,7 +59,7 @@ if (file_exists($envFile)) {
 } else {
     echo "⚠️  No .env file found\n";
     echo "   Creating .env file with HTTPS configuration...\n";
-    
+
     $envContent = "# IslamWiki Environment Configuration\n";
     $envContent .= "# This file contains environment-specific configuration for IslamWiki\n\n";
     $envContent .= "# Application Configuration\n";
@@ -81,7 +82,7 @@ if (file_exists($envFile)) {
     $envContent .= "APP_KEY=" . base64_encode(random_bytes(32)) . "\n";
     $envContent .= "SESSION_SECRET=" . bin2hex(random_bytes(32)) . "\n";
     $envContent .= "UPGRADE_KEY=" . bin2hex(random_bytes(32)) . "\n";
-    
+
     file_put_contents($envFile, $envContent);
     echo "✅ .env file created with HTTPS configuration\n";
 }
@@ -90,13 +91,13 @@ if (file_exists($envFile)) {
 $htaccessFile = $basePath . '/public/.htaccess';
 if (file_exists($htaccessFile)) {
     $htaccessContent = file_get_contents($htaccessFile);
-    
+
     if (strpos($htaccessContent, 'RewriteCond %{HTTPS} off') !== false) {
         echo "✅ .htaccess file is configured to force HTTPS\n";
     } else {
         echo "⚠️  .htaccess file needs HTTPS redirect configuration\n";
     }
-    
+
     if (strpos($htaccessContent, 'Strict-Transport-Security') !== false) {
         echo "✅ Security headers are configured in .htaccess\n";
     } else {
@@ -174,10 +175,10 @@ if ($response === false) {
 } else {
     $headers = $http_response_header ?? [];
     $statusLine = $headers[0] ?? '';
-    
+
     if (strpos($statusLine, '301') !== false || strpos($statusLine, '302') !== false) {
         echo "✅ HTTP to HTTPS redirect is working\n";
-        
+
         // Check if redirect goes to HTTPS
         foreach ($headers as $header) {
             if (strpos($header, 'Location:') === 0) {
@@ -209,4 +210,4 @@ echo "- If using Nginx, configure SSL and redirect rules\n";
 echo "- Update your DNS to point local.islam.wiki to your server\n";
 echo "- Consider using Let's Encrypt for free SSL certificates\n";
 
-echo "\n✅ HTTPS setup script completed!\n"; 
+echo "\n✅ HTTPS setup script completed!\n";

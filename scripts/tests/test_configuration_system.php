@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 /**
  * Test Configuration System - Version 0.0.18
- * 
+ *
  * Tests the hybrid configuration system with LocalSettings.php and IslamSettings.php
- * 
+ *
  * Usage: php scripts/tests/test_configuration_system.php
  */
 
@@ -120,14 +120,14 @@ try {
     echo "Test 11: Testing configuration validation...\n";
     $validation = ConfigurationManager::validateConfiguration();
     echo "✅ Configuration Valid: " . ($validation['valid'] ? 'Yes' : 'No') . "\n";
-    
+
     if (!empty($validation['errors'])) {
         echo "❌ Configuration Errors:\n";
         foreach ($validation['errors'] as $error) {
             echo "  - {$error}\n";
         }
     }
-    
+
     if (!empty($validation['warnings'])) {
         echo "⚠️  Configuration Warnings:\n";
         foreach ($validation['warnings'] as $warning) {
@@ -148,42 +148,42 @@ try {
         $testValue = config('wgSitename', 'Test Site');
         echo "✅ config() helper function works: {$testValue}\n";
     }
-    
+
     if (function_exists('db_config')) {
         $dbConfig = db_config();
         echo "✅ db_config() helper function works\n";
     }
-    
+
     if (function_exists('islamic_db_config')) {
         $islamicDbConfig = islamic_db_config();
         echo "✅ islamic_db_config() helper function works\n";
     }
-    
+
     if (function_exists('islamic_feature_config')) {
         $islamicFeatureConfig = islamic_feature_config();
         echo "✅ islamic_feature_config() helper function works\n";
     }
-    
+
     if (function_exists('search_config')) {
         $searchConfig = search_config();
         echo "✅ search_config() helper function works\n";
     }
-    
+
     if (function_exists('cache_config')) {
         $cacheConfig = cache_config();
         echo "✅ cache_config() helper function works\n";
     }
-    
+
     if (function_exists('logging_config')) {
         $loggingConfig = logging_config();
         echo "✅ logging_config() helper function works\n";
     }
-    
+
     if (function_exists('extension_config')) {
         $extensionConfig = extension_config();
         echo "✅ extension_config() helper function works\n";
     }
-    
+
     if (function_exists('islamic_config')) {
         $islamicConfig = islamic_config();
         echo "✅ islamic_config() helper function works\n";
@@ -196,7 +196,7 @@ try {
     ConfigurationManager::set('wgSitename', 'Override Test');
     $overrideValue = ConfigurationManager::get('wgSitename', 'Default');
     ConfigurationManager::set('wgSitename', $originalValue); // Restore original
-    
+
     if ($overrideValue === 'Override Test') {
         echo "✅ Configuration override functionality works\n";
     } else {
@@ -208,7 +208,7 @@ try {
     echo "Test 15: Testing access to all configuration...\n";
     $allConfig = ConfigurationManager::all();
     echo "✅ Total configuration keys: " . count($allConfig) . "\n";
-    
+
     // Show some key configuration values
     $keyConfigs = [
         'wgSitename' => 'Site Name',
@@ -219,7 +219,7 @@ try {
         'wgEnableIslamicCalendar' => 'Islamic Calendar Enabled',
         'wgEnableScholarVerification' => 'Scholar Verification Enabled',
     ];
-    
+
     foreach ($keyConfigs as $key => $description) {
         $value = ConfigurationManager::get($key, 'Not Set');
         echo "  - {$description}: " . (is_bool($value) ? ($value ? 'Yes' : 'No') : $value) . "\n";
@@ -230,9 +230,8 @@ try {
     echo "Configuration System Test Complete\n";
     echo "All tests passed successfully!\n";
     echo "==========================================\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

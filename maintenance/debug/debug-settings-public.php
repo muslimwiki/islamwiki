@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Public Settings Debug Page
- * 
+ *
  * A temporary public version of the settings page for testing skin display.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -18,21 +19,21 @@ function discoverAvailableSkins(): array
 {
     $skinsDir = __DIR__ . '/../skins';
     $availableSkins = [];
-    
+
     if (!is_dir($skinsDir)) {
         return $availableSkins;
     }
-    
+
     $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
-    
+
     foreach ($skinDirs as $skinDir) {
         $skinName = basename($skinDir);
         $skinConfigFile = $skinDir . '/skin.json';
-        
+
         if (file_exists($skinConfigFile)) {
             try {
                 $config = json_decode(file_get_contents($skinConfigFile), true);
-                
+
                 if ($config && isset($config['name'])) {
                     $availableSkins[strtolower($skinName)] = [
                         'name' => $config['name'],
@@ -50,7 +51,7 @@ function discoverAvailableSkins(): array
             }
         }
     }
-    
+
     return $availableSkins;
 }
 
@@ -58,16 +59,40 @@ function simulateSkinManager(): array
 {
     return [
         'bismillah' => new class {
-            public function getName(): string { return 'Bismillah'; }
-            public function getVersion(): string { return '0.0.28'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.'; }
+            public function getName(): string
+            {
+                return 'Bismillah';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.28';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.';
+            }
         },
         'muslim' => new class {
-            public function getName(): string { return 'Muslim'; }
-            public function getVersion(): string { return '0.0.1'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.'; }
+            public function getName(): string
+            {
+                return 'Muslim';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.1';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.';
+            }
         }
     ];
 }
@@ -75,15 +100,15 @@ function simulateSkinManager(): array
 function processSkinOptions(array $availableSkins, array $loadedSkins, string $userActiveSkin = 'bismillah'): array
 {
     $skinOptions = [];
-    
+
     foreach ($availableSkins as $skinKey => $skinData) {
         $lowerSkinName = strtolower($skinData['name']);
-        
+
         if (isset($loadedSkins[$lowerSkinName])) {
             $skin = $loadedSkins[$lowerSkinName];
-            
+
             $isActive = $lowerSkinName === strtolower($userActiveSkin);
-            
+
             $skinOptions[$skinData['name']] = [
                 'name' => $skin->getName(),
                 'version' => $skin->getVersion(),
@@ -97,7 +122,7 @@ function processSkinOptions(array $availableSkins, array $loadedSkins, string $u
             ];
         }
     }
-    
+
     return $skinOptions;
 }
 
@@ -195,7 +220,7 @@ if (!file_exists($templatePath)) {
                         <p class="section-description">Choose the visual theme for your IslamWiki experience. New skins are automatically discovered and available for selection.</p>
                         
                         <div class="skin-grid">
-                            <?php foreach ($templateData['skinOptions'] as $skinName => $skin): ?>
+                            <?php foreach ($templateData['skinOptions'] as $skinName => $skin) : ?>
                             <div class="skin-card <?= $skin['active'] ? 'active' : '' ?>" data-skin="<?= htmlspecialchars($skinName) ?>">
                                 <div class="skin-info">
                                     <h3 class="skin-name"><?= htmlspecialchars($skin['name']) ?></h3>
@@ -205,21 +230,21 @@ if (!file_exists($templatePath)) {
                                         <span class="skin-author">by <?= htmlspecialchars($skin['author']) ?></span>
                                     </div>
                                     
-                                    <?php if (!empty($skin['features'])): ?>
+                                    <?php if (!empty($skin['features'])) : ?>
                                     <div class="skin-features">
                                         <span class="features-label">Features:</span>
-                                        <?php foreach ($skin['features'] as $feature): ?>
+                                        <?php foreach ($skin['features'] as $feature) : ?>
                                         <span class="feature-tag"><?= htmlspecialchars($feature) ?></span>
                                         <?php endforeach; ?>
                                     </div>
                                     <?php endif; ?>
                                     
                                     <div class="skin-actions">
-                                        <?php if ($skin['active']): ?>
+                                        <?php if ($skin['active']) : ?>
                                             <button class="skin-select-btn" disabled>
                                                 ✓ Active
                                             </button>
-                                        <?php else: ?>
+                                        <?php else : ?>
                                             <button class="skin-select-btn" data-skin="<?= htmlspecialchars($skinName) ?>">
                                                 Select Skin
                                             </button>

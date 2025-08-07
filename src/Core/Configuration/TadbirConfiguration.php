@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Configuration;
@@ -12,11 +13,11 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Tadbir (تدبير) - Configuration Management System
- * 
+ *
  * Tadbir means "Management" or "Planning" in Arabic. This system provides
  * comprehensive configuration management, settings organization, and planning
  * capabilities for the IslamWiki application.
- * 
+ *
  * @package IslamWiki\Core\Configuration
  */
 class TadbirConfiguration
@@ -407,12 +408,12 @@ class TadbirConfiguration
             $this->statistics['saves']++;
             $content = "<?php\nreturn " . var_export($this->config, true) . ";\n";
             file_put_contents($file, $content);
-            
+
             $this->logger->info('Tadbir configuration saved', [
                 'system' => 'Tadbir',
                 'file' => $file
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             $this->statistics['errors']++;
@@ -453,4 +454,4 @@ class TadbirConfiguration
             'system' => 'Tadbir'
         ]);
     }
-} 
+}

@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions\Hooks;
 
 /**
  * Hook Manager
- * 
+ *
  * Manages hooks for the extension system, allowing extensions to
  * register callbacks that are executed at specific points in the application.
  */
@@ -205,4 +206,4 @@ class HookManager
 
         return $stats;
     }
-} 
+}

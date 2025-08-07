@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Bayan Knowledge Graph Migration
- * 
+ *
  * Creates the database tables for the Bayan knowledge graph system
  * that connects Islamic concepts, verses, hadith, scholars, and other entities.
  */
@@ -188,4 +188,4 @@ return [
 
         echo "Bayan knowledge graph tables dropped successfully.\n";
     }
-]; 
+];

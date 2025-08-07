@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -10,7 +11,7 @@ use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Siraj Service Provider
- * 
+ *
  * Registers the Siraj API management system with the application container.
  * Siraj (سراج) means "lamp" or "light" in Arabic, representing the system
  * that illuminates and guides API interactions.
@@ -69,4 +70,4 @@ class SirajServiceProvider
             error_log('Siraj API management system initialized (logger not available)');
         }
     }
-} 
+}

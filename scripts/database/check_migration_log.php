@@ -43,37 +43,36 @@ try {
         'password' => $_ENV['DB_PASSWORD'] ?? '',
         'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
     ]);
-    
+
     echo "✅ Database connection successful\n";
-    
+
     $pdo = $connection->getPdo();
-    
+
     // Check if migrations table exists
     $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = ? AND table_name = ?");
     $stmt->execute([$_ENV['DB_DATABASE'] ?? 'islamwiki', 'migrations']);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($result['count'] > 0) {
         echo "✅ Migrations table exists\n";
-        
+
         // Check migration records
         $stmt = $pdo->prepare("SELECT * FROM migrations ORDER BY batch, migration");
         $stmt->execute();
         $migrations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         echo "Migration records found: " . count($migrations) . "\n";
-        
+
         foreach ($migrations as $migration) {
             echo "  - {$migration['migration']} (batch {$migration['batch']}) at {$migration['created_at']}\n";
         }
     } else {
         echo "❌ Migrations table does not exist\n";
     }
-    
+
     echo "\n🎉 Migration log check completed!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

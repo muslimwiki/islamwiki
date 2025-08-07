@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../LocalSettings.php';
 
@@ -14,11 +15,10 @@ $request = Request::capture();
 
 // Test homepage route
 $router = $app->getContainer()->get('router');
-$router->get('/test-homepage', function($request) {
+$router->get('/test-homepage', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '<h1>Homepage test works!</h1>');
 });
 
 // Handle request
 $response = $router->handle($request);
 $response->send();
-?> 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test page to verify enhanced dashboard functionality
  */
@@ -287,7 +288,7 @@ $watchlist = [
                     <p class="card-subtitle">Your latest contributions and edits</p>
                 </div>
                 <div class="activity-list">
-                    <?php foreach ($recentActivity as $activity): ?>
+                    <?php foreach ($recentActivity as $activity) : ?>
                     <div class="activity-item">
                         <div class="activity-icon">
                             <?php echo $activity['type'] == 'edit' ? '✏️' : '📄'; ?>
@@ -302,9 +303,9 @@ $watchlist = [
                             </div>
                         </div>
                         <div class="activity-badge">
-                            <?php if ($activity['type'] == 'edit'): ?>
+                            <?php if ($activity['type'] == 'edit') : ?>
                                 <span class="badge badge-edit">Edit</span>
-                            <?php else: ?>
+                            <?php else : ?>
                                 <span class="badge badge-create">Create</span>
                             <?php endif; ?>
                         </div>
@@ -327,7 +328,7 @@ $watchlist = [
                     <p class="card-subtitle">Pages you're following for updates</p>
                 </div>
                 <div class="watchlist-grid">
-                    <?php foreach ($watchlist as $page): ?>
+                    <?php foreach ($watchlist as $page) : ?>
                     <div class="watchlist-item">
                         <div class="watchlist-icon">📖</div>
                         <div class="watchlist-content">

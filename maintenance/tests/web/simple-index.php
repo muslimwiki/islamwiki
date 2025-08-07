@@ -1,4 +1,5 @@
 <?php
+
 // Simple homepage workaround
 echo "<h1>Welcome to IslamWiki</h1>";
 echo "<p>This is a temporary homepage. The main application is being fixed.</p>";

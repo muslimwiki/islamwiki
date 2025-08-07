@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Log Migration as Completed
- * 
+ *
  * This script manually logs a migration as completed when the tables
  * already exist but the migration wasn't properly logged.
  * Usage: php scripts/log_migration.php
@@ -59,10 +59,10 @@ try {
     // Check if migrations table exists
     $sql = "SHOW TABLES LIKE 'migrations'";
     $result = $connection->select($sql);
-    
+
     if (empty($result)) {
         echo "❌ Migrations table does not exist. Creating it...\n";
-        
+
         $createSql = "CREATE TABLE migrations (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             migration VARCHAR(255) NOT NULL,
@@ -70,7 +70,7 @@ try {
             created_at TIMESTAMP NULL,
             updated_at TIMESTAMP NULL
         )";
-        
+
         $connection->statement($createSql);
         echo "✅ Migrations table created\n";
     } else {
@@ -80,33 +80,32 @@ try {
     // Check if migration is already logged
     $sql = "SELECT * FROM migrations WHERE migration = ?";
     $result = $connection->select($sql, ['0001_initial_schema']);
-    
+
     if (!empty($result)) {
         echo "⚠️  Migration 0001_initial_schema is already logged\n";
         echo "Batch: " . $result[0]['batch'] . "\n";
         echo "Created: " . $result[0]['created_at'] . "\n";
     } else {
         echo "📝 Logging migration 0001_initial_schema as completed...\n";
-        
+
         $insertSql = "INSERT INTO migrations (migration, batch, created_at, updated_at) VALUES (?, ?, NOW(), NOW())";
         $connection->statement($insertSql, ['0001_initial_schema', 1]);
-        
+
         echo "✅ Migration logged successfully\n";
     }
-    
+
     // Show current migration status
     echo "\nCurrent Migration Status:\n";
     $sql = "SELECT * FROM migrations ORDER BY batch, id";
     $migrations = $connection->select($sql);
-    
+
     foreach ($migrations as $migration) {
         echo "  {$migration['migration']}: ✓ Ran (Batch {$migration['batch']})\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

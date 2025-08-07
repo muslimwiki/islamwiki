@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Template Test
- * 
+ *
  * Tests the template rendering process specifically.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 // Enable detailed error reporting
 error_reporting(E_ALL);
@@ -48,21 +49,20 @@ echo "\n📊 Test 2: Simple Template Test\n";
 echo "===============================\n";
 try {
     $view = $container->get('view');
-    
+
     // Test with a very simple template
     $simpleData = ['title' => 'Test Page'];
     $result = $view->render('settings/index', $simpleData);
-    
+
     echo "✅ Simple template rendered successfully\n";
     echo "Result length: " . strlen($result) . " characters\n";
-    
+
     if (strlen($result) > 0) {
         echo "✅ Template rendering works\n";
         echo "First 200 chars: " . substr($result, 0, 200) . "...\n";
     } else {
         echo "❌ Template rendered but result is empty\n";
     }
-    
 } catch (\Exception $e) {
     echo "❌ Template rendering error: " . $e->getMessage() . "\n";
     echo "Error type: " . get_class($e) . "\n";
@@ -76,22 +76,22 @@ echo "\n📊 Test 3: Settings Template with Data\n";
 echo "=======================================\n";
 try {
     $view = $container->get('view');
-    
+
     // Generate the same data that SettingsController uses
     $availableSkins = [];
     $skinsDir = __DIR__ . '/../skins';
-    
+
     if (is_dir($skinsDir)) {
         $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
-        
+
         foreach ($skinDirs as $skinDir) {
             $skinName = basename($skinDir);
             $skinConfigFile = $skinDir . '/skin.json';
-            
+
             if (file_exists($skinConfigFile)) {
                 try {
                     $config = json_decode(file_get_contents($skinConfigFile), true);
-                    
+
                     if ($config && isset($config['name'])) {
                         $availableSkins[strtolower($skinName)] = [
                             'name' => $config['name'],
@@ -110,32 +110,56 @@ try {
             }
         }
     }
-    
+
     // Simulate skin manager
     $loadedSkins = [
         'bismillah' => new class {
-            public function getName(): string { return 'Bismillah'; }
-            public function getVersion(): string { return '0.0.28'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.'; }
+            public function getName(): string
+            {
+                return 'Bismillah';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.28';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.';
+            }
         },
         'muslim' => new class {
-            public function getName(): string { return 'Muslim'; }
-            public function getVersion(): string { return '0.0.1'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.'; }
+            public function getName(): string
+            {
+                return 'Muslim';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.1';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.';
+            }
         }
     ];
-    
+
     $skinOptions = [];
     foreach ($availableSkins as $skinKey => $skinData) {
         $lowerSkinName = strtolower($skinData['name']);
-        
+
         if (isset($loadedSkins[$lowerSkinName])) {
             $skin = $loadedSkins[$lowerSkinName];
-            
+
             $isActive = $lowerSkinName === 'bismillah'; // Default to bismillah
-            
+
             $skinOptions[$skinData['name']] = [
                 'name' => $skin->getName(),
                 'version' => $skin->getVersion(),
@@ -149,7 +173,7 @@ try {
             ];
         }
     }
-    
+
     $templateData = [
         'title' => 'Settings - IslamWiki',
         'user' => null,
@@ -158,16 +182,16 @@ try {
         'availableSkins' => $availableSkins,
         'userSettings' => []
     ];
-    
+
     echo "✅ Template data generated:\n";
     echo "  - Skin options: " . count($templateData['skinOptions']) . "\n";
     echo "  - Available skins: " . count($templateData['availableSkins']) . "\n";
-    
+
     $result = $view->render('settings/index', $templateData);
-    
+
     echo "✅ Settings template rendered successfully\n";
     echo "Result length: " . strlen($result) . " characters\n";
-    
+
     if (strlen($result) > 0) {
         echo "✅ Settings template rendering works\n";
         if (strpos($result, 'skin-card') !== false) {
@@ -178,7 +202,6 @@ try {
     } else {
         echo "❌ Settings template rendered but result is empty\n";
     }
-    
 } catch (\Exception $e) {
     echo "❌ Settings template error: " . $e->getMessage() . "\n";
     echo "Error type: " . get_class($e) . "\n";
@@ -187,4 +210,4 @@ try {
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
 }
 
-echo "\n✅ Template test completed!\n"; 
+echo "\n✅ Template test completed!\n";

@@ -29,7 +29,7 @@ use IslamWiki\Core\Session\WisalSession;
 
 /**
  * CSRF Protection Middleware
- * 
+ *
  * Protects forms from cross-site request forgery attacks.
  */
 class CsrfMiddleware
@@ -38,7 +38,7 @@ class CsrfMiddleware
      * @var Wisal Session manager instance
      */
     private Wisal $session;
-    
+
     /**
      * @var array Routes that should be excluded from CSRF protection
      */
@@ -49,7 +49,7 @@ class CsrfMiddleware
         '/register',
         '/logout',
     ];
-    
+
     /**
      * Create a new CSRF middleware instance.
      */
@@ -57,7 +57,7 @@ class CsrfMiddleware
     {
         $this->session = $session;
     }
-    
+
     /**
      * Handle the incoming request.
      */
@@ -65,17 +65,17 @@ class CsrfMiddleware
     {
         // TEMPORARILY DISABLE ALL CSRF CHECKS FOR DEBUGGING
         return $next($request);
-        
+
         // Skip CSRF check for excluded routes
         if ($this->shouldSkipCsrfCheck($request)) {
             error_log("CSRF: Skipping check for path: " . $request->getUri()->getPath());
             return $next($request);
         }
-        
+
         // Only check CSRF for POST, PUT, PATCH, DELETE requests
         if (in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             $token = $this->getTokenFromRequest($request);
-            
+
             // Temporarily disable CSRF check for debugging
             if (false && (!$token || !$this->session->verifyCsrfToken($token))) {
                 error_log("CSRF: Token validation failed for path: " . $request->getUri()->getPath());
@@ -86,10 +86,10 @@ class CsrfMiddleware
                 );
             }
         }
-        
+
         return $next($request);
     }
-    
+
     /**
      * Check if CSRF check should be skipped for this request.
      */
@@ -97,7 +97,7 @@ class CsrfMiddleware
     {
         $path = $request->getUri()->getPath();
         error_log("CSRF: Checking path: " . $path);
-        
+
         foreach ($this->excludedRoutes as $excludedRoute) {
             error_log("CSRF: Comparing with excluded route: " . $excludedRoute);
             if (str_starts_with($path, $excludedRoute)) {
@@ -105,11 +105,11 @@ class CsrfMiddleware
                 return true;
             }
         }
-        
+
         error_log("CSRF: Path " . $path . " does not match any excluded routes");
         return false;
     }
-    
+
     /**
      * Get CSRF token from the request.
      */
@@ -120,22 +120,22 @@ class CsrfMiddleware
         if ($token) {
             return $token;
         }
-        
+
         // Check for token in headers
         $token = $request->getHeader('X-CSRF-TOKEN');
         if ($token) {
             return $token;
         }
-        
+
         // Check for token in X-XSRF-TOKEN header (Laravel style)
         $token = $request->getHeader('X-XSRF-TOKEN');
         if ($token) {
             return urldecode($token);
         }
-        
+
         return null;
     }
-    
+
     /**
      * Render CSRF error page.
      */
@@ -165,4 +165,4 @@ class CsrfMiddleware
 </body>
 </html>';
     }
-} 
+}

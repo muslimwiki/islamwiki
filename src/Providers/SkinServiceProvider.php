@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Skin Service Provider
- * 
+ *
  * Registers and manages skin-related services and view helpers.
- * 
+ *
  * @package IslamWiki\Providers
  * @version 0.0.29
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
@@ -28,18 +29,18 @@ class SkinServiceProvider
             $app = $container->get('app');
             return new \IslamWiki\Skins\SkinManager($app);
         });
-        
+
         // Register the active skin (will be resolved dynamically)
         $container->singleton('skin.active', function () use ($container) {
             return $this->getActiveSkinForCurrentUser($container);
         });
-        
+
         // Add skin data to the view context (will be resolved dynamically)
         $container->singleton('skin.data', function () use ($container) {
             return $this->getSkinDataForCurrentUser($container);
         });
     }
-    
+
     /**
      * Get the active skin for the current user
      */
@@ -48,12 +49,12 @@ class SkinServiceProvider
         try {
             $session = $container->get('session');
             $skinManager = $container->get('skin.manager');
-            
+
             if ($session->isLoggedIn()) {
                 $userId = $session->getUserId();
                 return $skinManager->getActiveSkinForUser($userId);
             }
-            
+
             // Fallback to global skin for non-logged-in users
             return $skinManager->getActiveSkin();
         } catch (\Throwable $e) {
@@ -61,7 +62,7 @@ class SkinServiceProvider
             return $skinManager->getActiveSkin();
         }
     }
-    
+
     /**
      * Get skin data for the current user
      */
@@ -69,7 +70,7 @@ class SkinServiceProvider
     {
         try {
             $activeSkin = $this->getActiveSkinForCurrentUser($container);
-            
+
             if ($activeSkin === null) {
                 return [
                     'css' => '',
@@ -78,7 +79,7 @@ class SkinServiceProvider
                     'version' => '0.0.29',
                 ];
             }
-            
+
             return [
                 'css' => $activeSkin->getCssContent(),
                 'js' => $activeSkin->getJsContent(),
@@ -96,7 +97,7 @@ class SkinServiceProvider
             ];
         }
     }
-    
+
     /**
      * Boot the skin service provider
      */
@@ -104,7 +105,7 @@ class SkinServiceProvider
     {
         // Get the view renderer
         $viewRenderer = $container->get('view');
-        
+
         // Add empty skin variables - will be populated by SkinMiddleware
         $viewRenderer->addGlobals([
             'skin_css' => '',
@@ -114,11 +115,11 @@ class SkinServiceProvider
             'skin_config' => [],
             'active_skin' => 'Bismillah', // Updated to match LocalSettings
         ]);
-        
+
         // Register view helpers for skin functionality
         $this->registerViewHelpers();
     }
-    
+
     /**
      * Register view helpers for skin functionality
      */
@@ -133,16 +134,16 @@ class SkinServiceProvider
             {
                 $app = Application::getInstance();
                 $activeSkin = $app->getContainer()->get('skin.active');
-                
+
                 if ($activeSkin) {
                     $skinPath = $activeSkin->getSkinPath();
                     return '/skins/' . basename($skinPath) . '/' . ltrim($path, '/');
                 }
-                
+
                 return $path;
             }
         }
-        
+
         // Helper function to check if skin has custom layout
         if (!function_exists('skin_has_custom_layout')) {
             function skin_has_custom_layout(): bool
@@ -152,7 +153,7 @@ class SkinServiceProvider
                 return $skinManager->hasActiveSkinCustomLayout();
             }
         }
-        
+
         // Helper function to get skin layout path
         if (!function_exists('skin_layout_path')) {
             function skin_layout_path(): string
@@ -162,7 +163,7 @@ class SkinServiceProvider
                 return $skinManager->getActiveSkinLayoutPath();
             }
         }
-        
+
         // Helper function to get available skins
         if (!function_exists('available_skins')) {
             function available_skins(): array
@@ -172,7 +173,7 @@ class SkinServiceProvider
                 return $skinManager->getAvailableSkinNames();
             }
         }
-        
+
         // Helper function to get skin metadata
         if (!function_exists('skin_metadata')) {
             function skin_metadata(): array
@@ -184,7 +185,7 @@ class SkinServiceProvider
         }
         */
     }
-    
+
     /**
      * Get the skin manager instance
      */
@@ -192,7 +193,7 @@ class SkinServiceProvider
     {
         return $this->skinManager;
     }
-    
+
     /**
      * Set the active skin
      */
@@ -200,7 +201,7 @@ class SkinServiceProvider
     {
         return $this->skinManager->setActiveSkin($name);
     }
-    
+
     /**
      * Get the active skin name
      */
@@ -208,18 +209,18 @@ class SkinServiceProvider
     {
         try {
             $session = $this->app->getContainer()->get('session');
-            
+
             if ($session->isLoggedIn()) {
                 $userId = $session->getUserId();
                 return $this->skinManager->getActiveSkinNameForUser($userId);
             }
-            
+
             return $this->skinManager->getActiveSkinName();
         } catch (\Throwable $e) {
             return $this->skinManager->getActiveSkinName();
         }
     }
-    
+
     /**
      * Get available skins
      */
@@ -227,4 +228,4 @@ class SkinServiceProvider
     {
         return $this->skinManager->getAvailableSkinNames();
     }
-} 
+}

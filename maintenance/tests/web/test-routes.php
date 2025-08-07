@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Routes
  */
@@ -47,9 +48,8 @@ try {
     echo "<h2>✅ All components working!</h2>";
     echo "<p>The Iqra search engine components are working correctly.</p>";
     echo "<p>If the web interface is not working, it might be a routing issue.</p>";
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "<br>";
     echo "File: " . $e->getFile() . "<br>";
     echo "Line: " . $e->getLine() . "<br>";
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
@@ -15,19 +16,19 @@ $container = new Container();
 $router = new IslamRouter($container);
 
 // Add test routes
-$router->get('/test-simple', function($request) {
+$router->get('/test-simple', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Simple route works!');
 });
 
-$router->get('/test-param/{id}', function($request, $id) {
+$router->get('/test-param/{id}', function ($request, $id) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], "Param route works! ID: $id");
 });
 
-$router->post('/test-post', function($request) {
+$router->post('/test-post', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'POST route works!');
 });
 
-$router->get('/test-404', function($request) {
+$router->get('/test-404', function ($request) {
     return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], '404 Test Page');
 });
 
@@ -85,4 +86,4 @@ echo "✓ HTTP method validation\n";
 echo "✓ 404 error handling\n";
 echo "✓ Method not allowed handling\n";
 echo "✓ Closure handlers\n";
-echo "✓ Response generation\n"; 
+echo "✓ Response generation\n";

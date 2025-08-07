@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Core\Database\Migrations;
 
 use IslamWiki\Core\Database\Connection;

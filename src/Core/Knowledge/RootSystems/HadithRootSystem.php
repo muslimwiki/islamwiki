@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\RootSystems;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Hadith Root System
- * 
+ *
  * Extracts principles from Hadith using chain analysis and content analysis.
  * TODO: Implement comprehensive Hadith analysis
  */
@@ -17,7 +18,7 @@ class HadithRootSystem implements RootSystemInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new Hadith root system.
      */
@@ -26,7 +27,7 @@ class HadithRootSystem implements RootSystemInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Extract principles from Hadith text.
      */
@@ -41,7 +42,7 @@ class HadithRootSystem implements RootSystemInterface
             ]
         ];
     }
-    
+
     /**
      * Get root system type.
      */
@@ -49,7 +50,7 @@ class HadithRootSystem implements RootSystemInterface
     {
         return 'hadith';
     }
-    
+
     /**
      * Validate text for Hadith analysis.
      */
@@ -58,4 +59,4 @@ class HadithRootSystem implements RootSystemInterface
         // TODO: Implement proper Hadith validation
         return true;
     }
-} 
+}

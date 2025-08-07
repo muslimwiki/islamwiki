@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -23,7 +24,7 @@ if (file_exists($zamzamPath)) {
     echo "✅ ZamZam.js file exists\n";
     $fileSize = filesize($zamzamPath);
     echo "📄 File size: " . number_format($fileSize) . " bytes\n";
-    
+
     // Check if file contains expected content
     $content = file_get_contents($zamzamPath);
     if (strpos($content, 'ZamZam') !== false) {
@@ -44,12 +45,12 @@ try {
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
-    
+
     if ($error) {
         echo "❌ cURL error: " . $error . "\n";
     } else {
@@ -79,40 +80,40 @@ try {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_setopt($ch, CURLOPT_USERAGENT, 'IslamWiki-Debug/1.0');
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
-    
+
     if ($error) {
         echo "❌ cURL error: " . $error . "\n";
     } else {
         echo "📄 HTTP Status Code: " . $httpCode . "\n";
         if ($httpCode === 200) {
             echo "✅ Homepage is accessible\n";
-            
+
             // Check for ZamZam.js script tag
             if (strpos($response, 'zamzam.js') !== false) {
                 echo "✅ ZamZam.js script tag found in homepage\n";
             } else {
                 echo "❌ ZamZam.js script tag not found in homepage\n";
             }
-            
+
             // Check for dropdown HTML
             if (strpos($response, 'user-dropdown') !== false) {
                 echo "✅ User dropdown HTML found\n";
             } else {
                 echo "❌ User dropdown HTML not found\n";
             }
-            
+
             // Check for ZamZam directives
             if (strpos($response, 'z-data') !== false) {
                 echo "✅ ZamZam directives found\n";
             } else {
                 echo "❌ ZamZam directives not found\n";
             }
-            
+
             // Check for user menu
             if (strpos($response, 'user-menu') !== false) {
                 echo "✅ User menu found\n";
@@ -142,4 +143,4 @@ echo "1. Open https://local.islam.wiki/ in your browser\n";
 echo "2. Open Developer Tools (F12)\n";
 echo "3. Check the Console tab for JavaScript errors\n";
 echo "4. Check the Network tab to see if zamzam.js is loading\n";
-echo "5. Try clicking on the user dropdown to see if it works\n"; 
+echo "5. Try clicking on the user dropdown to see if it works\n";

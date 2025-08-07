@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Http;
@@ -94,7 +95,7 @@ class Stream implements StreamInterface
         $result = $this->stream;
         unset($this->stream);
         $this->metadata = [];
-        
+
         return $result;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Simple IslamWiki Application Entry Point
  */
@@ -41,10 +42,10 @@ $request = \IslamWiki\Core\Http\Request::capture();
 // Handle the request
 try {
     $response = $router->handle($request);
-    
+
     // Send response
     http_response_code($response->getStatusCode());
-    
+
     // Set headers
     foreach ($response->getHeaders() as $name => $values) {
         if (is_array($values)) {
@@ -55,10 +56,9 @@ try {
             header("$name: $values");
         }
     }
-    
+
     // Output content
     echo $response->getBody();
-    
 } catch (\Exception $e) {
     // Handle errors
     http_response_code(500);
@@ -68,4 +68,3 @@ try {
         echo '<pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
     }
 }
-?> 

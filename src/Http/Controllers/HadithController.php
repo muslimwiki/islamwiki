@@ -8,10 +8,10 @@ use IslamWiki\Core\Http\Response;
 
 /**
  * HadithController
- * 
+ *
  * Handles Hadith-related requests and operations for Phase 4 Islamic features integration.
  * Provides API endpoints and web interfaces for Hadith functionality.
- * 
+ *
  * @package IslamWiki\Http\Controllers
  * @version 0.0.14
  * @since Phase 4
@@ -28,7 +28,7 @@ class HadithController extends Controller
 
     /**
      * Display Hadith search page
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -60,7 +60,7 @@ class HadithController extends Controller
 
     /**
      * Display specific Hadith page
-     * 
+     *
      * @param Request $request
      * @param int $collectionId Collection ID
      * @param int $hadithNumber Hadith number
@@ -69,14 +69,14 @@ class HadithController extends Controller
     public function hadithPage(Request $request, $collectionId, $hadithNumber)
     {
         $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
-        
+
         if (!$hadithData) {
             return $this->notFound('Hadith not found');
         }
 
         // Get chain of narrators
         $chain = $this->hadith->getChain($hadithData['id']);
-        
+
         // Get commentary if available
         $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
 
@@ -94,7 +94,7 @@ class HadithController extends Controller
 
     /**
      * Display collection page
-     * 
+     *
      * @param Request $request
      * @param int $collectionId Collection ID
      * @return Response
@@ -120,7 +120,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadiths
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -150,7 +150,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get specific Hadith
-     * 
+     *
      * @param Request $request
      * @param int $id Hadith ID
      * @return Response
@@ -181,7 +181,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to search Hadiths
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -217,7 +217,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadith by reference
-     * 
+     *
      * @param Request $request
      * @param int $collectionId Collection ID
      * @param int $hadithNumber Hadith number
@@ -250,7 +250,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadith chain
-     * 
+     *
      * @param Request $request
      * @param int $hadithId Hadith ID
      * @return Response
@@ -274,7 +274,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadith commentary
-     * 
+     *
      * @param Request $request
      * @param int $hadithId Hadith ID
      * @return Response
@@ -306,7 +306,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadith collections
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -329,7 +329,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadith statistics
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -351,7 +351,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get random Hadith
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -381,7 +381,7 @@ class HadithController extends Controller
 
     /**
      * API endpoint to get Hadiths by authenticity
-     * 
+     *
      * @param Request $request
      * @param string $authenticityLevel Authenticity level
      * @return Response
@@ -407,7 +407,7 @@ class HadithController extends Controller
 
     /**
      * Widget endpoint for embedding Hadiths
-     * 
+     *
      * @param Request $request
      * @param int $collectionId Collection ID
      * @param int $hadithNumber Hadith number
@@ -416,7 +416,7 @@ class HadithController extends Controller
     public function widget(Request $request, $collectionId, $hadithNumber)
     {
         $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
-        
+
         if (!$hadithData) {
             return $this->notFound('Hadith not found');
         }
@@ -433,7 +433,7 @@ class HadithController extends Controller
 
     /**
      * Generate Hadith reference for wiki pages
-     * 
+     *
      * @param Request $request
      * @param int $pageId Wiki page ID
      * @return Response
@@ -457,7 +457,7 @@ class HadithController extends Controller
 
     /**
      * Display Hadith index page
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -479,7 +479,7 @@ class HadithController extends Controller
 
     /**
      * Handle 404 errors
-     * 
+     *
      * @param string $message Error message
      * @return Response
      */
@@ -491,4 +491,4 @@ class HadithController extends Controller
             ['Content-Type' => 'application/json']
         );
     }
-} 
+}

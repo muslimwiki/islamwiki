@@ -2,7 +2,7 @@
 
 /**
  * Migration: Islamic Calendar Tables
- * 
+ *
  * Creates tables for Islamic calendar functionality including:
  * - Islamic events and holidays
  * - Event categories
@@ -18,7 +18,7 @@ class IslamicCalendarMigration extends Migration
     public function up(): void
     {
         // Event categories table
-        $this->schema()->create('event_categories', function($table) {
+        $this->schema()->create('event_categories', function ($table) {
             $table->id();
             $table->string('name', 100)->notNull();
             $table->string('name_arabic', 100)->nullable();
@@ -27,13 +27,13 @@ class IslamicCalendarMigration extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
-            
+
             $table->index('name');
             $table->index('is_active');
         });
 
         // Islamic events table
-        $this->schema()->create('islamic_events', function($table) {
+        $this->schema()->create('islamic_events', function ($table) {
             $table->id();
             $table->string('title', 255)->notNull();
             $table->string('title_arabic', 255)->nullable();
@@ -47,7 +47,7 @@ class IslamicCalendarMigration extends Migration
             $table->string('location', 255)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('category_id')->references('id')->on('event_categories')->onDelete('set null');
             $table->index('hijri_date');
             $table->index('gregorian_date');
@@ -57,7 +57,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Prayer times table
-        $this->schema()->create('prayer_times', function($table) {
+        $this->schema()->create('prayer_times', function ($table) {
             $table->id();
             $table->date('date')->notNull();
             $table->time('fajr')->nullable();
@@ -71,14 +71,14 @@ class IslamicCalendarMigration extends Migration
             $table->decimal('longitude', 11, 8)->nullable();
             $table->string('calculation_method', 50)->default('MWL'); // MWL, ISNA, etc.
             $table->timestamps();
-            
+
             $table->unique('date');
             $table->index('date');
             $table->index('location');
         });
 
         // Hijri date conversions table (for caching)
-        $this->schema()->create('hijri_dates', function($table) {
+        $this->schema()->create('hijri_dates', function ($table) {
             $table->id();
             $table->date('gregorian_date')->notNull();
             $table->integer('hijri_year')->notNull();
@@ -88,7 +88,7 @@ class IslamicCalendarMigration extends Migration
             $table->string('hijri_month_name', 50)->nullable();
             $table->string('hijri_month_name_arabic', 50)->nullable();
             $table->timestamps();
-            
+
             $table->unique('gregorian_date');
             $table->index('hijri_date_formatted');
             $table->index('hijri_year');
@@ -96,14 +96,14 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar integration tables
-        $this->schema()->create('calendar_wiki_links', function($table) {
+        $this->schema()->create('calendar_wiki_links', function ($table) {
             $table->id();
             $table->unsignedBigInteger('event_id')->notNull();
             $table->unsignedBigInteger('page_id')->notNull();
             $table->string('link_type', 50)->default('reference'); // reference, mention, etc.
             $table->text('context')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('event_id')->references('id')->on('islamic_events')->onDelete('cascade');
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
             $table->unique(['event_id', 'page_id']);
@@ -111,7 +111,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar search cache
-        $this->schema()->create('calendar_search_cache', function($table) {
+        $this->schema()->create('calendar_search_cache', function ($table) {
             $table->id();
             $table->string('query_hash', 64)->notNull();
             $table->text('query_params')->notNull(); // JSON
@@ -119,13 +119,13 @@ class IslamicCalendarMigration extends Migration
             $table->integer('result_count')->notNull();
             $table->timestamp('expires_at')->notNull();
             $table->timestamps();
-            
+
             $table->unique('query_hash');
             $table->index('expires_at');
         });
 
         // Calendar event statistics
-        $this->schema()->create('calendar_event_stats', function($table) {
+        $this->schema()->create('calendar_event_stats', function ($table) {
             $table->id();
             $table->unsignedBigInteger('event_id')->notNull();
             $table->integer('views')->default(0);
@@ -134,14 +134,14 @@ class IslamicCalendarMigration extends Migration
             $table->integer('shares')->default(0);
             $table->date('date')->notNull();
             $table->timestamps();
-            
+
             $table->foreign('event_id')->references('id')->on('islamic_events')->onDelete('cascade');
             $table->unique(['event_id', 'date']);
             $table->index('date');
         });
 
         // User calendar interactions
-        $this->schema()->create('calendar_user_bookmarks', function($table) {
+        $this->schema()->create('calendar_user_bookmarks', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -149,7 +149,7 @@ class IslamicCalendarMigration extends Migration
             $table->boolean('is_reminder')->default(false);
             $table->timestamp('reminder_at')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('islamic_events')->onDelete('cascade');
             $table->unique(['user_id', 'event_id']);
@@ -157,7 +157,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar event comments
-        $this->schema()->create('calendar_event_comments', function($table) {
+        $this->schema()->create('calendar_event_comments', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -166,7 +166,7 @@ class IslamicCalendarMigration extends Migration
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('islamic_events')->onDelete('cascade');
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
@@ -175,7 +175,7 @@ class IslamicCalendarMigration extends Migration
         });
 
         // Calendar reminders
-        $this->schema()->create('calendar_reminders', function($table) {
+        $this->schema()->create('calendar_reminders', function ($table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->notNull();
             $table->unsignedBigInteger('event_id')->notNull();
@@ -185,7 +185,7 @@ class IslamicCalendarMigration extends Migration
             $table->timestamp('sent_at')->nullable();
             $table->text('message')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('islamic_events')->onDelete('cascade');
             $table->index('reminder_at');
@@ -277,6 +277,6 @@ class IslamicCalendarMigration extends Migration
     }
 };
 
-return function($connection) {
+return function ($connection) {
     return new IslamicCalendarMigration($connection);
-}; 
+};

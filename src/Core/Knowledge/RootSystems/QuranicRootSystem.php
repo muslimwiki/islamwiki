@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\RootSystems;
@@ -9,14 +10,14 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * Quranic Root System
- * 
+ *
  * Extracts principles from Qur'anic verses using Arabic root analysis.
  */
 class QuranicRootSystem implements RootSystemInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new Qur'anic root system.
      */
@@ -25,7 +26,7 @@ class QuranicRootSystem implements RootSystemInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Extract principles from Qur'anic text.
      */
@@ -35,30 +36,29 @@ class QuranicRootSystem implements RootSystemInterface
             $this->logger->info('Extracting Qur\'anic principles', [
                 'text_length' => strlen($text),
             ]);
-            
+
             $principles = [];
-            
+
             // Extract Arabic roots (3-letter patterns)
             $roots = $this->extractArabicRoots($text);
-            
+
             foreach ($roots as $root) {
                 $principle = $this->analyzeRoot($root);
                 if ($principle) {
                     $principles[] = $principle;
                 }
             }
-            
+
             // Extract thematic principles
             $thematicPrinciples = $this->extractThematicPrinciples($text);
             $principles = array_merge($principles, $thematicPrinciples);
-            
+
             $this->logger->info('Qur\'anic principles extracted', [
                 'principles_count' => count($principles),
                 'roots_found' => count($roots),
             ]);
-            
+
             return $principles;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to extract Qur\'anic principles', [
                 'error' => $e->getMessage(),
@@ -66,18 +66,18 @@ class QuranicRootSystem implements RootSystemInterface
             return [];
         }
     }
-    
+
     /**
      * Extract Arabic roots from text.
      */
     private function extractArabicRoots(string $text): array
     {
         $roots = [];
-        
+
         // Simple pattern matching for Arabic 3-letter roots
         // This is a basic implementation - could be enhanced with proper Arabic morphology
         preg_match_all('/[\u0600-\u06FF]{3,}/u', $text, $matches);
-        
+
         foreach ($matches[0] as $match) {
             if (strlen($match) >= 3) {
                 $root = substr($match, 0, 3);
@@ -86,10 +86,10 @@ class QuranicRootSystem implements RootSystemInterface
                 }
             }
         }
-        
+
         return array_unique($roots);
     }
-    
+
     /**
      * Check if a string is a valid Arabic root.
      */
@@ -98,7 +98,7 @@ class QuranicRootSystem implements RootSystemInterface
         // Basic validation - could be enhanced with proper Arabic grammar rules
         return strlen($root) === 3 && preg_match('/^[\u0600-\u06FF]{3}$/u', $root);
     }
-    
+
     /**
      * Analyze a root and extract its principle.
      */
@@ -109,7 +109,7 @@ class QuranicRootSystem implements RootSystemInterface
             'SELECT * FROM usul_quranic_roots WHERE root = ?',
             [$root]
         );
-        
+
         if (!empty($principle)) {
             return [
                 'type' => 'root',
@@ -119,7 +119,7 @@ class QuranicRootSystem implements RootSystemInterface
                 'confidence' => 0.8,
             ];
         }
-        
+
         // Fallback to basic analysis
         return [
             'type' => 'root',
@@ -129,14 +129,14 @@ class QuranicRootSystem implements RootSystemInterface
             'confidence' => 0.3,
         ];
     }
-    
+
     /**
      * Extract thematic principles from text.
      */
     private function extractThematicPrinciples(string $text): array
     {
         $principles = [];
-        
+
         // Define common Qur'anic themes
         $themes = [
             'tawhid' => ['توحيد', 'الله', 'رب', 'إله'],
@@ -144,7 +144,7 @@ class QuranicRootSystem implements RootSystemInterface
             'ihsan' => ['إحسان', 'خير', 'بر'],
             'taqwa' => ['تقوى', 'خشية', 'خوف'],
         ];
-        
+
         foreach ($themes as $theme => $keywords) {
             foreach ($keywords as $keyword) {
                 if (strpos($text, $keyword) !== false) {
@@ -158,10 +158,10 @@ class QuranicRootSystem implements RootSystemInterface
                 }
             }
         }
-        
+
         return $principles;
     }
-    
+
     /**
      * Get principle for a theme.
      */
@@ -173,10 +173,10 @@ class QuranicRootSystem implements RootSystemInterface
             'ihsan' => 'Excellence and doing good',
             'taqwa' => 'God-consciousness and piety',
         ];
-        
+
         return $principles[$theme] ?? 'Islamic principle';
     }
-    
+
     /**
      * Get root system type.
      */
@@ -184,7 +184,7 @@ class QuranicRootSystem implements RootSystemInterface
     {
         return 'quranic';
     }
-    
+
     /**
      * Validate text for Qur'anic analysis.
      */
@@ -193,4 +193,4 @@ class QuranicRootSystem implements RootSystemInterface
         // Check if text contains Arabic characters
         return preg_match('/[\u0600-\u06FF]/u', $text) === 1;
     }
-} 
+}

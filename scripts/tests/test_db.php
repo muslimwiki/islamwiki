@@ -43,16 +43,16 @@ try {
         'password' => $_ENV['DB_PASSWORD'] ?? '',
         'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
     ]);
-    
+
     echo "✅ Database connection successful\n";
-    
+
     // Test creating a simple table
     echo "Creating test table...\n";
     $pdo = $connection->getPdo();
-    
+
     // Drop test table if it exists
     $pdo->exec("DROP TABLE IF EXISTS test_table");
-    
+
     // Create a simple test table
     $sql = "CREATE TABLE test_table (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -60,29 +60,28 @@ try {
         created_at TIMESTAMP NULL,
         PRIMARY KEY (id)
     )";
-    
+
     $pdo->exec($sql);
     echo "✅ Test table created successfully\n";
-    
+
     // Insert test data
     $stmt = $pdo->prepare("INSERT INTO test_table (name, created_at) VALUES (?, NOW())");
     $stmt->execute(['Test Entry']);
     echo "✅ Test data inserted successfully\n";
-    
+
     // Query test data
     $stmt = $pdo->prepare("SELECT * FROM test_table");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     echo "✅ Test query successful: " . $result['name'] . "\n";
-    
+
     // Clean up
     $pdo->exec("DROP TABLE test_table");
     echo "✅ Test table cleaned up\n";
-    
+
     echo "\n🎉 Database test completed successfully!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

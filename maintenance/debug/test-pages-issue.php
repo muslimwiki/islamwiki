@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -25,12 +26,12 @@ try {
         echo "❌ Pages table does not exist!\n";
     } else {
         echo "✅ Pages table exists\n";
-        
+
         // Check if there are any pages
         $result = $db->query("SELECT COUNT(*) as count FROM pages");
         $count = $result->fetch();
         echo "📊 Total pages in database: " . $count->count . "\n";
-        
+
         if ($count->count > 0) {
             // Show some sample pages
             $result = $db->query("SELECT id, title, slug, namespace FROM pages LIMIT 5");
@@ -58,23 +59,23 @@ try {
         [],
         '1.1'
     );
-    
+
     // Create container
     $container = new \IslamWiki\Core\Container\AsasContainer();
-    $container->singleton(\IslamWiki\Core\Database\Connection::class, function() use ($db) {
+    $container->singleton(\IslamWiki\Core\Database\Connection::class, function () use ($db) {
         return $db;
     });
-    
+
     // Create PageController
     $pageController = new \IslamWiki\Http\Controllers\PageController($db, $container);
-    
+
     // Call index method
     $response = $pageController->index($request);
-    
+
     echo "✅ PageController index method executed successfully\n";
     echo "📄 Response status: " . $response->getStatusCode() . "\n";
     echo "📄 Response headers: " . json_encode($response->getHeaders()) . "\n";
-    
+
     // Check if response body contains expected content
     $body = $response->getBody();
     if (strpos($body, 'pages') !== false || strpos($body, 'Browse') !== false) {
@@ -83,7 +84,6 @@ try {
         echo "⚠️  Response may not contain expected content\n";
         echo "📄 Response body preview: " . substr($body, 0, 200) . "...\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error testing PageController: " . $e->getMessage() . "\n";
     echo "📄 Stack trace: " . $e->getTraceAsString() . "\n";
@@ -99,12 +99,12 @@ try {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_setopt($ch, CURLOPT_USERAGENT, 'IslamWiki-Debug/1.0');
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
     curl_close($ch);
-    
+
     if ($error) {
         echo "❌ cURL error: " . $error . "\n";
     } else {
@@ -126,4 +126,4 @@ try {
     echo "❌ Error testing web route: " . $e->getMessage() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

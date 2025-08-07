@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -10,7 +11,7 @@ use IslamWiki\Core\Database\Connection;
 
 /**
  * Usul Service Provider
- * 
+ *
  * Registers the Usul knowledge system with the application container.
  * Usul (أصول) means "principles" or "roots" in Arabic, especially in Islamic
  * jurisprudence (uṣūl al-fiqh), representing the foundational principles of Islamic knowledge.
@@ -83,4 +84,4 @@ class UsulServiceProvider
             error_log('Usul knowledge system initialized (logger not available)');
         }
     }
-} 
+}

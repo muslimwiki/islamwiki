@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\Classifications;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * ScholarClassification
- * 
+ *
  * Classifies Islamic scholars by era, school, and specialization
  * TODO: Implement comprehensive functionality
  */
@@ -17,7 +18,7 @@ class ScholarClassification implements ClassificationInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new ScholarClassification instance.
      */
@@ -26,7 +27,7 @@ class ScholarClassification implements ClassificationInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Get related concepts for a term.
      */
@@ -41,7 +42,7 @@ class ScholarClassification implements ClassificationInterface
             ]
         ];
     }
-    
+
     /**
      * Get classification type.
      */
@@ -49,7 +50,7 @@ class ScholarClassification implements ClassificationInterface
     {
         return strtolower(str_replace('Classification', '', 'ScholarClassification'));
     }
-    
+
     /**
      * Classify a term into categories.
      */
@@ -61,7 +62,7 @@ class ScholarClassification implements ClassificationInterface
             'categories' => [],
         ];
     }
-    
+
     /**
      * Search the ontology.
      */
@@ -73,6 +74,4 @@ class ScholarClassification implements ClassificationInterface
             'results' => [],
         ];
     }
-    
-
 }

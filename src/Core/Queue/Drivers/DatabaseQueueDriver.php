@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Drivers;
@@ -143,18 +144,18 @@ class DatabaseQueueDriver implements QueueDriverInterface
             // Create job instance
             $payload = json_decode($row['payload'], true);
             $jobClass = $payload['class'];
-            
+
             if (!class_exists($jobClass)) {
                 throw new \Exception("Job class {$jobClass} not found");
             }
 
             $job = new $jobClass($payload['data'], $row['queue']);
-            
+
             // Set job properties
             $job->setPriority($payload['priority'] ?? 0);
-            
+
             $this->stats['processing_jobs']++;
-            
+
             return $job;
         } catch (\Exception $e) {
             $this->logger->error('Failed to pop job from database queue', [
@@ -365,4 +366,4 @@ class DatabaseQueueDriver implements QueueDriverInterface
     {
         // Database connection is managed by the Connection class
     }
-} 
+}

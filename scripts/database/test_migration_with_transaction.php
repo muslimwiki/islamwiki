@@ -44,20 +44,20 @@ try {
         'password' => $_ENV['DB_PASSWORD'] ?? '',
         'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
     ]);
-    
+
     echo "✅ Database connection successful\n";
-    
+
     // Create migrator
     $migrationPath = __DIR__ . '/../database/migrations';
     $migrator = new Migrator($connection, $migrationPath);
-    
+
     echo "✅ Migrator created\n";
-    
+
     // Check if tables exist before
     echo "\nTables before migration:\n";
     $pdo = $connection->getPdo();
     $tables = ['users', 'pages', 'page_revisions', 'categories', 'page_categories', 'media_files', 'user_watchlist'];
-    
+
     foreach ($tables as $table) {
         $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = ? AND table_name = ?");
         $stmt->execute([$_ENV['DB_DATABASE'] ?? 'islamwiki', $table]);
@@ -65,20 +65,20 @@ try {
         $exists = $result['count'] > 0 ? '✓ Exists' : '✗ Missing';
         echo "  {$table}: {$exists}\n";
     }
-    
+
     // Try to run the migration with transaction handling like the migrator does
     echo "\nRunning migration with transaction...\n";
-    
+
     $migration = $migrator->resolve('0001_initial_schema');
     echo "✅ Migration resolved\n";
-    
+
     $connection->beginTransaction();
-    
+
     try {
         echo "Executing migration...\n";
         $migration->up();
         echo "✅ Migration executed\n";
-        
+
         // Check if tables exist after migration but before commit
         echo "\nTables after migration (before commit):\n";
         foreach ($tables as $table) {
@@ -88,11 +88,11 @@ try {
             $exists = $result['count'] > 0 ? '✓ Exists' : '✗ Missing';
             echo "  {$table}: {$exists}\n";
         }
-        
+
         echo "Committing transaction...\n";
         $connection->commit();
         echo "✅ Transaction committed\n";
-        
+
         // Check if tables exist after commit
         echo "\nTables after commit:\n";
         foreach ($tables as $table) {
@@ -102,7 +102,6 @@ try {
             $exists = $result['count'] > 0 ? '✓ Exists' : '✗ Missing';
             echo "  {$table}: {$exists}\n";
         }
-        
     } catch (Exception $e) {
         echo "❌ Error during migration: " . $e->getMessage() . "\n";
         echo "Rolling back transaction...\n";
@@ -110,11 +109,10 @@ try {
         echo "✅ Transaction rolled back\n";
         throw $e;
     }
-    
+
     echo "\n🎉 Migration with transaction test completed!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

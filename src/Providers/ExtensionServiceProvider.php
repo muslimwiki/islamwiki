@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Providers;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Extension Service Provider
- * 
+ *
  * Registers and bootstraps the extension system.
  */
 class ExtensionServiceProvider
@@ -39,4 +40,4 @@ class ExtensionServiceProvider
         // Extensions will be loaded when the ExtensionManager is first accessed
         error_log('ExtensionServiceProvider: Service provider booted successfully');
     }
-} 
+}

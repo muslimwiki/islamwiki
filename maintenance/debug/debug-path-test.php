@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Path Test
- * 
+ *
  * Tests the path calculations used by ViewServiceProvider.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -38,10 +39,12 @@ echo "📊 Template File Check:\n";
 echo "=======================\n";
 $settingsTemplate = $templatePath . '/settings/index.twig';
 echo "Settings template path: $settingsTemplate\n";
-echo "Settings template exists: " . (file_exists($settingsTemplate) ? 'Yes' : 'No') . "\n";
+        $temp_22a0ba6d = (file_exists($settingsTemplate) ? 'Yes' : 'No') . "\n";
+        echo "Settings template exists: " . $temp_22a0ba6d;
 
 if (file_exists($settingsTemplate)) {
-    echo "Settings template readable: " . (is_readable($settingsTemplate) ? 'Yes' : 'No') . "\n";
+        $temp_486ba8dc = (is_readable($settingsTemplate) ? 'Yes' : 'No') . "\n";
+        echo "Settings template readable: " . $temp_486ba8dc;
     echo "Settings template size: " . filesize($settingsTemplate) . " bytes\n";
 } else {
     echo "❌ Settings template not found!\n";
@@ -58,7 +61,8 @@ $correctSettingsTemplate = $correctTemplatePath . '/settings/index.twig';
 echo "Correct base path: $correctBasePath\n";
 echo "Correct template path: $correctTemplatePath\n";
 echo "Correct settings template: $correctSettingsTemplate\n";
-echo "Correct settings template exists: " . (file_exists($correctSettingsTemplate) ? 'Yes' : 'No') . "\n";
+        $temp_1b70077c = (file_exists($correctSettingsTemplate) ? 'Yes' : 'No') . "\n";
+        echo "Correct settings template exists: " . $temp_1b70077c;
 
 echo "\n📊 Directory Listing:\n";
 echo "====================\n";
@@ -76,4 +80,4 @@ if (is_dir($templatePath)) {
     echo "❌ Template directory not found!\n";
 }
 
-echo "\n✅ Path test completed!\n"; 
+echo "\n✅ Path test completed!\n";

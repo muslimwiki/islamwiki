@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Settings Data
- * 
+ *
  * Tests what data is being passed to the settings template.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -34,51 +35,51 @@ echo "============================================\n";
 
 try {
     $settingsController = new \IslamWiki\Http\Controllers\SettingsController($db, $container);
-    
+
     // Use reflection to access the private discoverAvailableSkins method
     $reflection = new ReflectionClass($settingsController);
     $discoverMethod = $reflection->getMethod('discoverAvailableSkins');
     $discoverMethod->setAccessible(true);
-    
+
     echo "✅ SettingsController created\n";
-    
+
     // Test skin discovery
     echo "\n🔄 Testing skin discovery...\n";
     $availableSkins = $discoverMethod->invoke($settingsController);
-    
+
     echo "✅ Skin discovery completed\n";
     echo "Available skins: " . count($availableSkins) . "\n";
-    
+
     foreach ($availableSkins as $key => $skinData) {
         echo "  - {$skinData['name']} (v{$skinData['version']}) by {$skinData['author']}\n";
         echo "    Directory: {$skinData['directory']}\n";
         echo "    Features: " . implode(', ', $skinData['features']) . "\n";
     }
-    
+
     // Test skin manager
     echo "\n🔄 Testing skin manager...\n";
     $skinManager = $container->get('skin.manager');
     $loadedSkins = $skinManager->getSkins();
-    
+
     echo "✅ Skin manager loaded\n";
     echo "Loaded skins: " . count($loadedSkins) . "\n";
-    
+
     foreach ($loadedSkins as $key => $skin) {
         echo "  - $key: {$skin->getName()} (v{$skin->getVersion()})\n";
     }
-    
+
     // Test skin options generation
     echo "\n🔄 Testing skin options generation...\n";
-    
+
     $skinOptions = [];
     foreach ($availableSkins as $skinKey => $skinData) {
         $lowerSkinName = strtolower($skinData['name']);
-        
+
         if (isset($loadedSkins[$lowerSkinName])) {
             $skin = $loadedSkins[$lowerSkinName];
-            
+
             $isActive = $lowerSkinName === 'bismillah'; // Default to bismillah
-            
+
             $skinOptions[$skinData['name']] = [
                 'name' => $skin->getName(),
                 'version' => $skin->getVersion(),
@@ -92,19 +93,19 @@ try {
             ];
         }
     }
-    
+
     echo "✅ Skin options generated\n";
     echo "Skin options: " . count($skinOptions) . "\n";
-    
+
     foreach ($skinOptions as $skinName => $skinData) {
         echo "  - {$skinData['name']} (v{$skinData['version']}) by {$skinData['author']}\n";
         echo "    Active: " . ($skinData['active'] ? 'Yes' : 'No') . "\n";
         echo "    Features: " . implode(', ', $skinData['features']) . "\n";
     }
-    
+
     // Test template data
     echo "\n🔄 Testing template data...\n";
-    
+
     $templateData = [
         'title' => 'Settings - IslamWiki',
         'user' => null,
@@ -113,29 +114,29 @@ try {
         'availableSkins' => $availableSkins,
         'userSettings' => []
     ];
-    
+
     echo "✅ Template data generated\n";
     echo "Template data keys: " . implode(', ', array_keys($templateData)) . "\n";
     echo "Skin options count: " . count($templateData['skinOptions']) . "\n";
     echo "Available skins count: " . count($templateData['availableSkins']) . "\n";
-    
+
     // Test template rendering with this data
     echo "\n🔄 Testing template rendering...\n";
-    
+
     $view = $container->get('view');
     $result = $view->render('settings/index.twig', $templateData);
-    
+
     echo "✅ Template rendered successfully\n";
     echo "Result length: " . strlen($result) . " characters\n";
-    
+
     // Check for skin cards in the result
     if (strpos($result, 'skin-card') !== false) {
         echo "✅ Response contains skin cards\n";
-        
+
         // Count skin cards
         $skinCardCount = substr_count($result, 'skin-card');
         echo "Skin card count: $skinCardCount\n";
-        
+
         // Show the skin grid section
         $skinGridStart = strpos($result, '<div class="skin-grid">');
         if ($skinGridStart !== false) {
@@ -149,7 +150,7 @@ try {
         }
     } else {
         echo "❌ Response does not contain skin cards\n";
-        
+
         // Show what's around the skin-grid div
         $skinGridPos = strpos($result, 'skin-grid');
         if ($skinGridPos !== false) {
@@ -159,7 +160,6 @@ try {
             echo $context . "\n";
         }
     }
-    
 } catch (\Exception $e) {
     echo "❌ Settings data error: " . $e->getMessage() . "\n";
     echo "Error type: " . get_class($e) . "\n";
@@ -168,4 +168,4 @@ try {
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
 }
 
-echo "\n✅ Settings data test completed!\n"; 
+echo "\n✅ Settings data test completed!\n";

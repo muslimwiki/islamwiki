@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -25,7 +26,7 @@ return function(Connection $connection) {
                 $table->string('reliability_level', 20); // Sahih, Hasan, Da'if, etc.
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->index(['reliability_level', 'is_active']);
             });
 
@@ -46,7 +47,7 @@ return function(Connection $connection) {
                 $table->boolean('is_sahabi')->default(false); // Is companion of Prophet
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->index(['reliability_level', 'is_active']);
                 $table->index('is_sahabi');
             });
@@ -66,7 +67,7 @@ return function(Connection $connection) {
                 $table->boolean('is_mutawatir')->default(false); // Is mutawatir (mass transmitted)
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->unique(['collection_id', 'hadith_number']);
                 $table->index(['grade', 'is_active']);
                 $table->index('category');
@@ -81,7 +82,7 @@ return function(Connection $connection) {
                 $table->string('chain_type', 20)->default('primary'); // Primary, secondary, etc.
                 $table->text('notes')->nullable(); // Notes about this narrator in chain
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'narrator_id', 'chain_order']);
                 $table->index(['hadith_id', 'chain_order']);
                 $table->index('narrator_id');
@@ -95,7 +96,7 @@ return function(Connection $connection) {
                 $table->text('description')->nullable(); // Description
                 $table->unsignedBigInteger('parent_id')->nullable(); // Parent topic
                 $table->timestamps();
-                
+
                 $table->index('parent_id');
             });
 
@@ -105,7 +106,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('hadith_id');
                 $table->unsignedBigInteger('topic_id');
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'topic_id']);
                 $table->index('hadith_id');
                 $table->index('topic_id');
@@ -122,7 +123,7 @@ return function(Connection $connection) {
                 $table->boolean('is_official')->default(false); // Official translation
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'language', 'translator']);
                 $table->index(['language', 'is_active']);
             });
@@ -138,7 +139,7 @@ return function(Connection $connection) {
                 $table->string('source', 255)->nullable(); // Source URL
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                
+
                 $table->index(['hadith_id', 'language']);
                 $table->index('commentator');
             });
@@ -152,7 +153,7 @@ return function(Connection $connection) {
                 $table->text('explanation')->nullable(); // Explanation of ruling
                 $table->string('source', 255)->nullable(); // Source URL
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'scholar']);
                 $table->index('ruling');
             });
@@ -165,7 +166,7 @@ return function(Connection $connection) {
                 $table->string('reference_type', 50); // Similar, related, contradicting, etc.
                 $table->text('notes')->nullable(); // Notes about the reference
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'referenced_hadith_id']);
                 $table->index('reference_type');
             });
@@ -177,7 +178,7 @@ return function(Connection $connection) {
                 $table->string('arabic_keyword', 100)->nullable(); // Arabic keyword
                 $table->text('description')->nullable(); // Description
                 $table->timestamps();
-                
+
                 $table->unique('keyword');
             });
 
@@ -187,7 +188,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('hadith_id');
                 $table->unsignedBigInteger('keyword_id');
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'keyword_id']);
                 $table->index('hadith_id');
                 $table->index('keyword_id');
@@ -210,4 +211,4 @@ return function(Connection $connection) {
             $this->schema()->dropIfExists('hadith_collections');
         }
     };
-}; 
+};

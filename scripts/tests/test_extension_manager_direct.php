@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Direct ExtensionManager Test
- * 
+ *
  * This script tests the ExtensionManager class directly.
  */
 
@@ -56,9 +57,8 @@ try {
     }
 
     echo "\n=== All Tests Passed! ===\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

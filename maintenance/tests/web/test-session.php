@@ -61,4 +61,4 @@ echo "<p><strong>Test Value:</strong> " . $session->get('test_value') . "</p>";
 echo "<p><strong>Session Data:</strong></p>";
 echo "<pre>";
 print_r($_SESSION);
-echo "</pre>"; 
+echo "</pre>";

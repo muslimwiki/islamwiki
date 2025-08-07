@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Initialize application
@@ -40,7 +41,7 @@ echo "</form>";
 
 if ($_POST['action'] ?? false) {
     echo "<h2>Action Result</h2>";
-    
+
     switch ($_POST['action']) {
         case 'login':
             $session->login(1, 'testuser', false);
@@ -55,7 +56,7 @@ if ($_POST['action'] ?? false) {
             echo "<p>✅ Test value set</p>";
             break;
     }
-    
+
     echo "<p>Is Logged In: " . ($session->isLoggedIn() ? 'Yes' : 'No') . "</p>";
     echo "<p>User ID: " . ($session->getUserId() ?? 'null') . "</p>";
     echo "<p>Username: " . ($session->getUsername() ?? 'null') . "</p>";
@@ -64,4 +65,4 @@ if ($_POST['action'] ?? false) {
 echo "<h2>Navigation Test</h2>";
 echo "<p><a href='test-session-web.php'>Refresh this page</a></p>";
 echo "<p><a href='/'>Go to Home</a></p>";
-echo "<p><a href='/dashboard'>Go to Dashboard</a></p>"; 
+echo "<p><a href='/dashboard'>Go to Dashboard</a></p>";

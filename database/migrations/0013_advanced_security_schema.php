@@ -1,17 +1,18 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Migration: Advanced Security Schema
- * 
+ *
  * This migration creates the database schema for advanced security features
  * including configuration encryption, access control, approval workflows,
  * and security audit logging.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.21
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 
@@ -29,7 +30,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $table->string('role', 50)->comment('Role name (admin, config_manager, security_admin, viewer)');
             $table->boolean('is_active')->default(true)->comment('Whether this role is active');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('role');
             $table->index('is_active');
@@ -49,7 +50,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $table->timestamp('approved_at')->nullable()->comment('When the change was approved');
             $table->timestamp('rejected_at')->nullable()->comment('When the change was rejected');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index(['category', 'key_name']);
             $table->index('status');
@@ -67,7 +68,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $table->text('user_agent')->nullable()->comment('User agent string');
             $table->json('details')->nullable()->comment('Additional details about the action');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index(['category', 'key_name']);
             $table->index('action');
@@ -84,7 +85,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $table->timestamp('created_at')->comment('When the key was created');
             $table->timestamp('expires_at')->nullable()->comment('When the key expires');
             $table->timestamps();
-            
+
             $table->index('key_id');
             $table->index('is_active');
             $table->index('expires_at');
@@ -101,7 +102,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $table->json('details')->nullable()->comment('Additional details about the action');
             $table->enum('severity', ['low', 'medium', 'high', 'critical'])->default('medium')->comment('Severity level');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('action');
             $table->index('severity');
@@ -120,10 +121,10 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
 
         // Insert default user roles
         $this->insertDefaultUserRoles();
-        
+
         // Insert default encryption key
         $this->insertDefaultEncryptionKey();
-        
+
         // Update sensitive configuration to require approval
         $this->updateSensitiveConfiguration();
     }
@@ -138,7 +139,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
         $this->schema()->drop('configuration_security_log');
         $this->schema()->drop('configuration_approvals');
         $this->schema()->drop('user_roles');
-        
+
         // Note: Column dropping would need to be handled separately
         // as the schema builder doesn't have dropColumn method
     }
@@ -168,7 +169,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
     {
         $keyId = bin2hex(random_bytes(16));
         $keyData = base64_encode(random_bytes(32));
-        
+
         $this->insert('encryption_keys', [
             'key_id' => $keyId,
             'key_data' => $keyData,
@@ -197,7 +198,7 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
             $parts = explode('.', $configKey);
             $category = $parts[0];
             $keyName = $parts[1];
-            
+
             $this->db->table('configuration')
                 ->where('category', $category)
                 ->where('key_name', $keyName)
@@ -209,6 +210,6 @@ class Migration_0013_AdvancedSecuritySchema extends Migration
     }
 };
 
-return function($connection) {
+return function ($connection) {
     return new Migration_0013_AdvancedSecuritySchema($connection);
 };

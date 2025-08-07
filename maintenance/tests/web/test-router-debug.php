@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
@@ -13,15 +14,15 @@ $container = new Container();
 $router = new IslamRouter($container);
 
 // Add some test routes
-$router->get('/test-route', function($request) {
+$router->get('/test-route', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Test route works!');
 });
 
-$router->get('/test-param/{id}', function($request, $id) {
+$router->get('/test-param/{id}', function ($request, $id) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], "Test param route works! ID: $id");
 });
 
-$router->get('/test-404', function($request) {
+$router->get('/test-404', function ($request) {
     return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], '404 Test Page');
 });
 
@@ -55,4 +56,4 @@ try {
     echo "Test 3 failed: " . $e->getMessage() . "\n";
 }
 
-echo "Router debug test completed.\n"; 
+echo "Router debug test completed.\n";

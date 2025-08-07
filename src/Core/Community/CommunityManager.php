@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Community Manager
- * 
+ *
  * Comprehensive community management system with user contributions,
  * moderation tools, reputation system, and community features.
- * 
+ *
  * @package IslamWiki\Core\Community
  * @version 0.0.23
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Community;
 
@@ -46,7 +47,7 @@ class CommunityManager
         try {
             // Validate contribution data
             $this->validateContribution($contributionData);
-            
+
             // Create contribution record
             $contributionId = $this->db->table('user_contributions')->insert([
                 'user_id' => $userId,
@@ -58,16 +59,16 @@ class CommunityManager
                 'status' => 'pending',
                 'submitted_at' => date('Y-m-d H:i:s')
             ]);
-            
+
             // Log contribution submission
             $this->logContributionActivity($userId, 'submitted', $contributionId);
-            
+
             $this->logger->info('User contribution submitted', [
                 'user_id' => $userId,
                 'contribution_id' => $contributionId,
                 'type' => $contributionData['type']
             ]);
-            
+
             return [
                 'success' => true,
                 'contribution_id' => $contributionId,
@@ -90,21 +91,21 @@ class CommunityManager
         try {
             $query = $this->db->table('user_contributions')
                 ->where('user_id', $userId);
-            
+
             if ($status) {
                 $query->where('status', $status);
             }
-            
+
             $contributions = $query->orderBy('submitted_at', 'desc')
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             $this->logger->info('User contributions retrieved', [
                 'user_id' => $userId,
                 'count' => count($contributions)
             ]);
-            
+
             return $contributions;
         } catch (\Exception $e) {
             $this->logger->error('User contributions retrieval failed: ' . $e->getMessage());
@@ -124,11 +125,11 @@ class CommunityManager
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             $this->logger->info('Pending contributions retrieved', [
                 'count' => count($contributions)
             ]);
-            
+
             return $contributions;
         } catch (\Exception $e) {
             $this->logger->error('Pending contributions retrieval failed: ' . $e->getMessage());
@@ -146,14 +147,14 @@ class CommunityManager
                 ->where('id', $contributionId)
                 ->where('status', 'pending')
                 ->first();
-            
+
             if (!$contribution) {
                 return [
                     'success' => false,
                     'message' => 'Contribution not found or already processed'
                 ];
             }
-            
+
             // Update contribution status
             $this->db->table('user_contributions')
                 ->where('id', $contributionId)
@@ -163,19 +164,19 @@ class CommunityManager
                     'approved_at' => date('Y-m-d H:i:s'),
                     'moderation_notes' => $notes
                 ]);
-            
+
             // Add reputation points to user
             $this->addReputationPoints($contribution['user_id'], 10, 'contribution_approved');
-            
+
             // Log moderation activity
             $this->logModerationActivity($moderatorId, 'approved', $contributionId);
-            
+
             $this->logger->info('Contribution approved', [
                 'contribution_id' => $contributionId,
                 'moderator_id' => $moderatorId,
                 'user_id' => $contribution['user_id']
             ]);
-            
+
             return [
                 'success' => true,
                 'message' => 'Contribution approved successfully'
@@ -199,14 +200,14 @@ class CommunityManager
                 ->where('id', $contributionId)
                 ->where('status', 'pending')
                 ->first();
-            
+
             if (!$contribution) {
                 return [
                     'success' => false,
                     'message' => 'Contribution not found or already processed'
                 ];
             }
-            
+
             // Update contribution status
             $this->db->table('user_contributions')
                 ->where('id', $contributionId)
@@ -216,16 +217,16 @@ class CommunityManager
                     'rejected_at' => date('Y-m-d H:i:s'),
                     'rejection_reason' => $reason
                 ]);
-            
+
             // Log moderation activity
             $this->logModerationActivity($moderatorId, 'rejected', $contributionId);
-            
+
             $this->logger->info('Contribution rejected', [
                 'contribution_id' => $contributionId,
                 'moderator_id' => $moderatorId,
                 'reason' => $reason
             ]);
-            
+
             return [
                 'success' => true,
                 'message' => 'Contribution rejected successfully'
@@ -248,7 +249,7 @@ class CommunityManager
             $reputation = $this->db->table('user_reputation')
                 ->where('user_id', $userId)
                 ->first();
-            
+
             if (!$reputation) {
                 // Create reputation record if it doesn't exist
                 $this->db->table('user_reputation')->insert([
@@ -257,14 +258,14 @@ class CommunityManager
                     'level' => 'newcomer',
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-                
+
                 $reputation = [
                     'user_id' => $userId,
                     'points' => 0,
                     'level' => 'newcomer'
                 ];
             }
-            
+
             // Get reputation history
             $history = $this->db->table('reputation_history')
                 ->where('user_id', $userId)
@@ -272,7 +273,7 @@ class CommunityManager
                 ->limit(10)
                 ->get()
                 ->toArray();
-            
+
             return [
                 'reputation' => $reputation,
                 'history' => $history
@@ -293,13 +294,13 @@ class CommunityManager
             $reputation = $this->db->table('user_reputation')
                 ->where('user_id', $userId)
                 ->first();
-            
+
             $currentPoints = $reputation ? $reputation['points'] : 0;
             $newPoints = $currentPoints + $points;
-            
+
             // Determine new level
             $newLevel = $this->calculateReputationLevel($newPoints);
-            
+
             // Update reputation
             if ($reputation) {
                 $this->db->table('user_reputation')
@@ -317,7 +318,7 @@ class CommunityManager
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
             }
-            
+
             // Log reputation change
             $this->db->table('reputation_history')->insert([
                 'user_id' => $userId,
@@ -325,7 +326,7 @@ class CommunityManager
                 'reason' => $reason,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
+
             $this->logger->info('Reputation points added', [
                 'user_id' => $userId,
                 'points' => $points,
@@ -342,11 +343,21 @@ class CommunityManager
      */
     private function calculateReputationLevel(int $points): string
     {
-        if ($points >= 1000) return 'expert';
-        if ($points >= 500) return 'veteran';
-        if ($points >= 200) return 'contributor';
-        if ($points >= 50) return 'member';
-        if ($points >= 10) return 'active';
+        if ($points >= 1000) {
+            return 'expert';
+        }
+        if ($points >= 500) {
+            return 'veteran';
+        }
+        if ($points >= 200) {
+            return 'contributor';
+        }
+        if ($points >= 50) {
+            return 'member';
+        }
+        if ($points >= 10) {
+            return 'active';
+        }
         return 'newcomer';
     }
 
@@ -357,28 +368,28 @@ class CommunityManager
     {
         try {
             $stats = [];
-            
+
             // Total users
             $stats['total_users'] = $this->db->table('users')->count();
-            
+
             // Active users (last 30 days)
             $stats['active_users'] = $this->db->table('user_activity')
                 ->where('last_activity', '>=', date('Y-m-d H:i:s', strtotime('-30 days')))
                 ->count();
-            
+
             // Total contributions
             $stats['total_contributions'] = $this->db->table('user_contributions')->count();
-            
+
             // Pending contributions
             $stats['pending_contributions'] = $this->db->table('user_contributions')
                 ->where('status', 'pending')
                 ->count();
-            
+
             // Approved contributions
             $stats['approved_contributions'] = $this->db->table('user_contributions')
                 ->where('status', 'approved')
                 ->count();
-            
+
             // Top contributors
             $stats['top_contributors'] = $this->db->table('user_contributions')
                 ->select([
@@ -391,14 +402,14 @@ class CommunityManager
                 ->limit(10)
                 ->get()
                 ->toArray();
-            
+
             // Recent activity
             $stats['recent_activity'] = $this->db->table('community_activity')
                 ->orderBy('created_at', 'desc')
                 ->limit(20)
                 ->get()
                 ->toArray();
-            
+
             return $stats;
         } catch (\Exception $e) {
             $this->logger->error('Community stats retrieval failed: ' . $e->getMessage());
@@ -418,11 +429,11 @@ class CommunityManager
                 ->limit($limit)
                 ->get()
                 ->toArray();
-            
+
             $this->logger->info('Community discussions retrieved', [
                 'count' => count($discussions)
             ]);
-            
+
             return $discussions;
         } catch (\Exception $e) {
             $this->logger->error('Community discussions retrieval failed: ' . $e->getMessage());
@@ -438,7 +449,7 @@ class CommunityManager
         try {
             // Validate discussion data
             $this->validateDiscussion($discussionData);
-            
+
             // Create discussion
             $discussionId = $this->db->table('community_discussions')->insert([
                 'user_id' => $userId,
@@ -449,15 +460,15 @@ class CommunityManager
                 'is_active' => true,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
+
             // Log discussion creation
             $this->logCommunityActivity($userId, 'created_discussion', $discussionId);
-            
+
             $this->logger->info('Community discussion created', [
                 'user_id' => $userId,
                 'discussion_id' => $discussionId
             ]);
-            
+
             return [
                 'success' => true,
                 'discussion_id' => $discussionId,
@@ -480,15 +491,15 @@ class CommunityManager
         if (empty($data['title']) || strlen($data['title']) < 5) {
             throw new \Exception('Title must be at least 5 characters long');
         }
-        
+
         if (empty($data['content']) || strlen($data['content']) < 20) {
             throw new \Exception('Content must be at least 20 characters long');
         }
-        
+
         if (empty($data['type']) || !in_array($data['type'], ['article', 'hadith', 'quran', 'scholar', 'event'])) {
             throw new \Exception('Invalid contribution type');
         }
-        
+
         if (empty($data['category'])) {
             throw new \Exception('Category is required');
         }
@@ -502,11 +513,11 @@ class CommunityManager
         if (empty($data['title']) || strlen($data['title']) < 5) {
             throw new \Exception('Title must be at least 5 characters long');
         }
-        
+
         if (empty($data['content']) || strlen($data['content']) < 20) {
             throw new \Exception('Content must be at least 20 characters long');
         }
-        
+
         if (empty($data['category'])) {
             throw new \Exception('Category is required');
         }
@@ -565,4 +576,4 @@ class CommunityManager
             $this->logger->error('Community activity logging failed: ' . $e->getMessage());
         }
     }
-} 
+}

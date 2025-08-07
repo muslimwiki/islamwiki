@@ -252,7 +252,7 @@
             <strong>In</strong> <?= $errorFile ?? 'unknown file' ?> <strong>on line</strong> <?= $errorLine ?? '0' ?>
         </div>
         
-        <?php if (!empty($source)): ?>
+        <?php if (!empty($source)) : ?>
         <div class="section">
             <div class="section-header" onclick="toggleSection('source-code')">
                 Source Code
@@ -278,7 +278,7 @@
             </div>
             <div class="section-content" id="server-info">
                 <table>
-                    <?php foreach ($serverInfo as $key => $value): ?>
+                    <?php foreach ($serverInfo as $key => $value) : ?>
                     <tr>
                         <th><?= htmlspecialchars($key, ENT_QUOTES, 'UTF-8') ?></th>
                         <td><?= htmlspecialchars($value, ENT_QUOTES, 'UTF-8') ?></td>
@@ -294,7 +294,7 @@
             </div>
             <div class="section-content" id="request-info">
                 <table>
-                    <?php foreach ($requestInfo as $key => $value): ?>
+                    <?php foreach ($requestInfo as $key => $value) : ?>
                     <tr>
                         <th><?= htmlspecialchars($key, ENT_QUOTES, 'UTF-8') ?></th>
                         <td><?= htmlspecialchars($value, ENT_QUOTES, 'UTF-8') ?></td>

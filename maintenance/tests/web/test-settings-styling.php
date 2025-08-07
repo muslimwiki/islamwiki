@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test page to verify settings styling with Bismillah skin
  */

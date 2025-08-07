@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Jobs;
@@ -106,4 +107,4 @@ class EmailJob extends AbstractJob
     {
         return $this->options;
     }
-} 
+}

@@ -29,7 +29,7 @@ use IslamWiki\Core\Session\WisalSession;
 
 /**
  * Authentication Middleware
- * 
+ *
  * Protects routes that require authentication.
  */
 class AuthenticationMiddleware
@@ -38,7 +38,7 @@ class AuthenticationMiddleware
      * @var Wisal Session manager instance
      */
     private Wisal $session;
-    
+
     /**
      * Create a new authentication middleware instance.
      */
@@ -46,7 +46,7 @@ class AuthenticationMiddleware
     {
         $this->session = $session;
     }
-    
+
     /**
      * Handle the incoming request.
      */
@@ -62,8 +62,8 @@ class AuthenticationMiddleware
                 body: ''
             );
         }
-        
+
         // User is authenticated, continue to next middleware/controller
         return $next($request);
     }
-} 
+}

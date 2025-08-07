@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\SchemaLayers;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * ContentSchemaLayer
- * 
+ *
  * Defines content structure and organization
  * TODO: Implement comprehensive functionality
  */
@@ -17,7 +18,7 @@ class ContentSchemaLayer implements SchemaLayerInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new ContentSchemaLayer instance.
      */
@@ -26,7 +27,7 @@ class ContentSchemaLayer implements SchemaLayerInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Get related concepts for a term.
      */
@@ -41,7 +42,7 @@ class ContentSchemaLayer implements SchemaLayerInterface
             ]
         ];
     }
-    
+
     /**
      * Get schema layer type.
      */

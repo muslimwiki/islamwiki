@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Models;
@@ -9,7 +10,7 @@ use DateTime;
 
 /**
  * Islamic User Model
- * 
+ *
  * Enhanced user model with Islamic community features including:
  * - Scholar verification system
  * - Islamic credentials and qualifications
@@ -140,7 +141,7 @@ class IslamicUser extends User
     public function __construct(Connection $connection, array $attributes = [])
     {
         parent::__construct($connection, $attributes);
-        
+
         // Merge Islamic fillable attributes
         $this->fillable = array_merge($this->fillable, $this->islamicFillable);
         $this->hidden = array_merge($this->hidden, $this->islamicHidden);
@@ -175,7 +176,7 @@ class IslamicUser extends User
     {
         $role = $this->getIslamicRole();
         $permissions = $this->islamicRoles[$role] ?? [];
-        
+
         return in_array($permission, $permissions);
     }
 
@@ -370,25 +371,25 @@ class IslamicUser extends User
     public function getFullIslamicName(): string
     {
         $parts = [];
-        
+
         if ($kunyah = $this->getKunyah()) {
             $parts[] = $kunyah;
         }
-        
+
         if ($arabicName = $this->getArabicName()) {
             $parts[] = $arabicName;
         } elseif ($displayName = $this->getDisplayName()) {
             $parts[] = $displayName;
         }
-        
+
         if ($laqab = $this->getLaqab()) {
             $parts[] = $laqab;
         }
-        
+
         if ($nasab = $this->getNasab()) {
             $parts[] = $nasab;
         }
-        
+
         return implode(' ', $parts) ?: $this->getDisplayName();
     }
 
@@ -429,7 +430,7 @@ class IslamicUser extends User
             // Get scholar database connection
             $islamicDb = $this->container->get(IslamicDatabaseManager::class);
             $scholarConnection = $islamicDb->getScholarConnection();
-            
+
             // Create verification request
             $requestData = [
                 'scholar_id' => $this->getAttribute('scholar_id'),
@@ -440,7 +441,7 @@ class IslamicUser extends User
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
-            
+
             $scholarConnection->insert(
                 'INSERT INTO scholar_verification_requests (scholar_id, requested_by, request_type, request_details, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
                 [
@@ -453,11 +454,11 @@ class IslamicUser extends User
                     $requestData['updated_at'],
                 ]
             );
-            
+
             // Update user verification status
             $this->setAttribute('verification_status', 'pending');
             $this->save();
-            
+
             return true;
         } catch (\Exception $e) {
             error_log("Scholar verification request failed: " . $e->getMessage());
@@ -474,20 +475,20 @@ class IslamicUser extends User
             // Get scholar database connection
             $islamicDb = $this->container->get(IslamicDatabaseManager::class);
             $scholarConnection = $islamicDb->getScholarConnection();
-            
+
             // Update scholar verification status
             $scholarConnection->update(
                 'UPDATE scholars SET verification_status = ?, verified_by = ?, verified_at = ? WHERE id = ?',
                 ['verified', $approvedBy, now(), $this->getAttribute('scholar_id')]
             );
-            
+
             // Update user verification status
             $this->setAttribute('verification_status', 'verified');
             $this->setAttribute('verified_by', $approvedBy);
             $this->setAttribute('verified_at', now());
             $this->setAttribute('is_verified_scholar', true);
             $this->save();
-            
+
             return true;
         } catch (\Exception $e) {
             error_log("Scholar verification approval failed: " . $e->getMessage());
@@ -504,24 +505,24 @@ class IslamicUser extends User
             // Get scholar database connection
             $islamicDb = $this->container->get(IslamicDatabaseManager::class);
             $scholarConnection = $islamicDb->getScholarConnection();
-            
+
             // Update scholar verification status
             $scholarConnection->update(
                 'UPDATE scholars SET verification_status = ?, verified_by = ?, verified_at = ?, verification_notes = ? WHERE id = ?',
                 ['rejected', $rejectedBy, now(), $reason, $this->getAttribute('scholar_id')]
             );
-            
+
             // Update user verification status
             $this->setAttribute('verification_status', 'rejected');
             $this->setAttribute('verified_by', $rejectedBy);
             $this->setAttribute('verified_at', now());
             $this->setAttribute('verification_notes', $reason);
             $this->save();
-            
+
             return true;
         } catch (\Exception $e) {
             error_log("Scholar verification rejection failed: " . $e->getMessage());
             return false;
         }
     }
-} 
+}

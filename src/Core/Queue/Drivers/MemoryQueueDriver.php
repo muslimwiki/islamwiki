@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Drivers;
@@ -66,20 +67,20 @@ class MemoryQueueDriver implements QueueDriverInterface
     {
         try {
             // Sort by priority and creation time
-            usort($this->jobs, function($a, $b) {
+            usort($this->jobs, function ($a, $b) {
                 $jobA = $a['job'];
                 $jobB = $b['job'];
-                
+
                 if ($jobA->getPriority() !== $jobB->getPriority()) {
                     return $jobB->getPriority() - $jobA->getPriority();
                 }
-                
+
                 return $a['created_at'] - $b['created_at'];
             });
 
             foreach ($this->jobs as $key => $jobData) {
                 $job = $jobData['job'];
-                
+
                 if ($job->hasFailed() || $job->getAttempts() >= $job->getMaxAttempts()) {
                     continue;
                 }
@@ -91,7 +92,7 @@ class MemoryQueueDriver implements QueueDriverInterface
                 // Remove from queue and return
                 unset($this->jobs[$key]);
                 $this->jobs = array_values($this->jobs); // Re-index array
-                
+
                 $this->stats['processing_jobs']++;
                 return $job;
             }
@@ -134,7 +135,7 @@ class MemoryQueueDriver implements QueueDriverInterface
             }
         }
         $this->jobs = array_values($this->jobs); // Re-index array
-        
+
         $this->logger->info('Cleared memory queue', ['queue' => $queue, 'count' => $count]);
         return $count;
     }
@@ -176,7 +177,7 @@ class MemoryQueueDriver implements QueueDriverInterface
             }
         }
         $this->jobs = array_values($this->jobs); // Re-index array
-        
+
         $this->logger->info('Cleared failed jobs from memory queue', ['count' => $count]);
         return $count;
     }
@@ -195,7 +196,7 @@ class MemoryQueueDriver implements QueueDriverInterface
                 $count++;
             }
         }
-        
+
         $this->logger->info('Retried failed jobs from memory queue', ['count' => $count]);
         return $count;
     }
@@ -260,4 +261,4 @@ class MemoryQueueDriver implements QueueDriverInterface
         $this->jobs = [];
         $this->failedJobs = [];
     }
-} 
+}

@@ -1,17 +1,18 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Usul (أصول) - Knowledge System
- * 
+ *
  * Comprehensive knowledge engine, ontology, and data modeling system for IslamWiki.
  * Usul means "principles" or "roots" in Arabic, especially in Islamic jurisprudence
  * (uṣūl al-fiqh), representing the foundational principles of Islamic knowledge.
- * 
+ *
  * @package IslamWiki\Core\Knowledge
  * @version 0.0.40
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge;
 
@@ -21,7 +22,7 @@ use IslamWiki\Core\Database\Connection;
 
 /**
  * Usul Knowledge System
- * 
+ *
  * Handles knowledge engine, ontology, and data modeling including:
  * - Qur'anic root systems
  * - Hadith classifications
@@ -38,7 +39,7 @@ class UsulKnowledge
     private array $classifications = [];
     private array $rootSystems = [];
     private array $schemaLayers = [];
-    
+
     /**
      * Create a new Usul knowledge system.
      */
@@ -49,7 +50,7 @@ class UsulKnowledge
         $this->db = $db;
         $this->initializeKnowledgeSystems();
     }
-    
+
     /**
      * Initialize knowledge systems.
      */
@@ -61,21 +62,21 @@ class UsulKnowledge
             'hadith' => new \IslamWiki\Core\Knowledge\RootSystems\HadithRootSystem($this->db, $this->logger),
             'fiqh' => new \IslamWiki\Core\Knowledge\RootSystems\FiqhRootSystem($this->db, $this->logger),
         ];
-        
+
         // Initialize classifications
         $this->classifications = [
             'hadith' => new \IslamWiki\Core\Knowledge\Classifications\HadithClassification($this->db, $this->logger),
             'scholars' => new \IslamWiki\Core\Knowledge\Classifications\ScholarClassification($this->db, $this->logger),
             'topics' => new \IslamWiki\Core\Knowledge\Classifications\TopicClassification($this->db, $this->logger),
         ];
-        
+
         // Initialize ontologies
         $this->ontologies = [
             'islamic_concepts' => new \IslamWiki\Core\Knowledge\Ontologies\IslamicConceptsOntology($this->db, $this->logger),
             'quranic_verses' => new \IslamWiki\Core\Knowledge\Ontologies\QuranicVersesOntology($this->db, $this->logger),
             'hadith_chain' => new \IslamWiki\Core\Knowledge\Ontologies\HadithChainOntology($this->db, $this->logger),
         ];
-        
+
         // Initialize schema layers
         $this->schemaLayers = [
             'content' => new \IslamWiki\Core\Knowledge\SchemaLayers\ContentSchemaLayer($this->db, $this->logger),
@@ -83,7 +84,7 @@ class UsulKnowledge
             'metadata' => new \IslamWiki\Core\Knowledge\SchemaLayers\MetadataSchemaLayer($this->db, $this->logger),
         ];
     }
-    
+
     /**
      * Extract principles from a text (like Qur'anic verses).
      */
@@ -94,21 +95,20 @@ class UsulKnowledge
                 'type' => $type,
                 'text_length' => strlen($text),
             ]);
-            
+
             if (!isset($this->rootSystems[$type])) {
                 throw new \InvalidArgumentException("Unknown root system type: {$type}");
             }
-            
+
             $rootSystem = $this->rootSystems[$type];
             $principles = $rootSystem->extractPrinciples($text);
-            
+
             $this->logger->info('Principles extracted successfully', [
                 'type' => $type,
                 'principles_count' => count($principles),
             ]);
-            
+
             return $principles;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to extract principles', [
                 'type' => $type,
@@ -117,7 +117,7 @@ class UsulKnowledge
             return [];
         }
     }
-    
+
     /**
      * Get related concepts for a given term.
      */
@@ -128,21 +128,20 @@ class UsulKnowledge
                 'term' => $term,
                 'classification' => $classification,
             ]);
-            
+
             if (!isset($this->classifications[$classification])) {
                 throw new \InvalidArgumentException("Unknown classification: {$classification}");
             }
-            
+
             $classifier = $this->classifications[$classification];
             $concepts = $classifier->getRelatedConcepts($term);
-            
+
             $this->logger->info('Related concepts retrieved', [
                 'term' => $term,
                 'concepts_count' => count($concepts),
             ]);
-            
+
             return $concepts;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to get related concepts', [
                 'term' => $term,
@@ -152,7 +151,7 @@ class UsulKnowledge
             return [];
         }
     }
-    
+
     /**
      * Build category tree for a given domain.
      */
@@ -163,26 +162,25 @@ class UsulKnowledge
                 'domain' => $domain,
                 'depth' => $depth,
             ]);
-            
+
             $tree = [];
-            
+
             // Get root categories
             $rootCategories = $this->db->select(
                 'SELECT * FROM usul_categories WHERE domain = ? AND parent_id IS NULL ORDER BY name',
                 [$domain]
             );
-            
+
             foreach ($rootCategories as $category) {
                 $tree[] = $this->buildCategoryNode($category, $depth);
             }
-            
+
             $this->logger->info('Category tree built successfully', [
                 'domain' => $domain,
                 'root_categories' => count($rootCategories),
             ]);
-            
+
             return $tree;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to build category tree', [
                 'domain' => $domain,
@@ -191,7 +189,7 @@ class UsulKnowledge
             return [];
         }
     }
-    
+
     /**
      * Build a category node recursively.
      */
@@ -203,21 +201,21 @@ class UsulKnowledge
             'description' => $category['description'],
             'children' => [],
         ];
-        
+
         if ($depth > 0) {
             $children = $this->db->select(
                 'SELECT * FROM usul_categories WHERE parent_id = ? ORDER BY name',
                 [$category['id']]
             );
-            
+
             foreach ($children as $child) {
                 $node['children'][] = $this->buildCategoryNode($child, $depth - 1);
             }
         }
-        
+
         return $node;
     }
-    
+
     /**
      * Create a new ontology.
      */
@@ -228,22 +226,21 @@ class UsulKnowledge
                 'name' => $name,
                 'config' => $config,
             ]);
-            
+
             // Validate ontology configuration
             $this->validateOntologyConfig($config);
-            
+
             // Create ontology in database
             $this->db->insert(
                 'INSERT INTO usul_ontologies (name, config, created_at) VALUES (?, ?, ?)',
                 [$name, json_encode($config), date('Y-m-d H:i:s')]
             );
-            
+
             $this->logger->info('Ontology created successfully', [
                 'name' => $name,
             ]);
-            
+
             return true;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to create ontology', [
                 'name' => $name,
@@ -252,7 +249,7 @@ class UsulKnowledge
             return false;
         }
     }
-    
+
     /**
      * Validate ontology configuration.
      */
@@ -265,7 +262,7 @@ class UsulKnowledge
             }
         }
     }
-    
+
     /**
      * Get schema layer for a given type.
      */
@@ -273,7 +270,7 @@ class UsulKnowledge
     {
         return $this->schemaLayers[$type] ?? null;
     }
-    
+
     /**
      * Get root system for a given type.
      */
@@ -281,7 +278,7 @@ class UsulKnowledge
     {
         return $this->rootSystems[$type] ?? null;
     }
-    
+
     /**
      * Get classification for a given type.
      */
@@ -289,7 +286,7 @@ class UsulKnowledge
     {
         return $this->classifications[$type] ?? null;
     }
-    
+
     /**
      * Get ontology for a given type.
      */
@@ -297,7 +294,7 @@ class UsulKnowledge
     {
         return $this->ontologies[$type] ?? null;
     }
-    
+
     /**
      * Search knowledge base.
      */
@@ -308,27 +305,26 @@ class UsulKnowledge
                 'query' => $query,
                 'options' => $options,
             ]);
-            
+
             $results = [];
-            
+
             // Search in different knowledge systems
             foreach ($this->ontologies as $type => $ontology) {
                 $ontologyResults = $ontology->search($query, $options);
                 $results[$type] = $ontologyResults;
             }
-            
+
             foreach ($this->classifications as $type => $classification) {
                 $classificationResults = $classification->search($query, $options);
                 $results[$type] = $classificationResults;
             }
-            
+
             $this->logger->info('Knowledge base search completed', [
                 'query' => $query,
                 'results_count' => count($results),
             ]);
-            
+
             return $results;
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to search knowledge base', [
                 'query' => $query,
@@ -337,4 +333,4 @@ class UsulKnowledge
             return [];
         }
     }
-} 
+}

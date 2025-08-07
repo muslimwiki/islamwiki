@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Security Controller
- * 
+ *
  * Advanced security management controller for encryption, access control,
  * audit logging, and security monitoring.
- * 
+ *
  * @package IslamWiki\Http\Controllers
  * @version 0.0.21
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
@@ -153,7 +154,7 @@ class SecurityController extends Controller
             }
 
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['approval_id'])) {
                 return $this->jsonResponse([
                     'success' => false,
@@ -197,7 +198,7 @@ class SecurityController extends Controller
             }
 
             $data = $request->getParsedBody();
-            
+
             if (!isset($data['approval_id'])) {
                 return $this->jsonResponse([
                     'success' => false,
@@ -449,7 +450,7 @@ class SecurityController extends Controller
     {
         $renderer = $this->container->get('view');
         $content = $renderer->render($template, $data);
-        
+
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
@@ -476,4 +477,4 @@ class SecurityController extends Controller
             "<h1>Error {$status}</h1><p>{$message}</p>"
         );
     }
-} 
+}

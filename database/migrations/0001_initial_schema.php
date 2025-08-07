@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -44,7 +45,7 @@ return function(Connection $connection) {
                 $table->boolean('is_locked')->default(false);
                 $table->integer('view_count')->default(0);
                 $table->timestamps();
-                
+
                 $table->index(['namespace', 'slug']);
             });
 
@@ -61,7 +62,7 @@ return function(Connection $connection) {
                 $table->string('ip_address', 45)->nullable();
                 $table->string('user_agent')->nullable();
                 $table->timestamps();
-                
+
                 $table->index(['page_id', 'created_at']);
             });
 
@@ -71,7 +72,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('user_id');
                 $table->unsignedBigInteger('page_id');
                 $table->timestamps();
-                
+
                 $table->unique(['user_id', 'page_id']);
             });
 
@@ -90,7 +91,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('page_id');
                 $table->unsignedBigInteger('category_id');
                 $table->timestamps();
-                
+
                 $table->unique(['page_id', 'category_id']);
             });
 
@@ -107,7 +108,7 @@ return function(Connection $connection) {
                 $table->string('alt_text')->nullable();
                 $table->text('description')->nullable();
                 $table->timestamps();
-                
+
                 $table->index('filename');
             });
         }

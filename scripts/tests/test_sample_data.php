@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Test Sample Data Creation
- * 
+ *
  * This script tests the sample data creation functionality.
  * Usage: php scripts/test_sample_data.php
  */
@@ -57,14 +57,14 @@ try {
 
     // Test sample data creation
     echo "📝 Creating sample data...\n";
-    
+
     // Create sample user
     echo "  Creating sample user...\n";
     $password = password_hash('admin123', PASSWORD_DEFAULT);
-    
+
     $sql = "INSERT IGNORE INTO users (username, email, password, display_name, is_admin, created_at, updated_at) 
             VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
-    
+
     $connection->statement($sql, [
         'admin',
         'admin@islamwiki.local',
@@ -72,9 +72,9 @@ try {
         'Administrator',
         1
     ]);
-    
+
     echo "  ✅ Created sample admin user (admin/admin123)\n";
-    
+
     // Create sample pages
     echo "  Creating sample pages...\n";
     $pages = [
@@ -131,11 +131,11 @@ This is an open-source project. Contributions are welcome!
             'namespace' => 'main'
         ]
     ];
-    
+
     foreach ($pages as $page) {
         $sql = "INSERT IGNORE INTO pages (title, slug, content, content_format, namespace, created_at, updated_at) 
                 VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
-        
+
         $connection->statement($sql, [
             $page['title'],
             $page['slug'],
@@ -143,16 +143,15 @@ This is an open-source project. Contributions are welcome!
             $page['content_format'],
             $page['namespace']
         ]);
-        
+
         echo "  ✅ Created page: {$page['title']}\n";
     }
-    
+
     echo "✅ Sample data created successfully\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Debug script to test router handle method
  */
@@ -33,7 +34,8 @@ $middlewareStackProperty = $reflection->getProperty('middlewareStack');
 $middlewareStackProperty->setAccessible(true);
 $middlewareStack = $middlewareStackProperty->getValue($router);
 
-echo "Middleware Stack before handle: " . ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        $temp_4157577c = ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        echo "Middleware Stack before handle: " . $temp_4157577c;
 
 // Create a PSR-7 request
 $psrRequest = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
@@ -49,7 +51,8 @@ try {
 
 // Check if middleware stack is initialized after handle
 $middlewareStack = $middlewareStackProperty->getValue($router);
-echo "Middleware Stack after handle: " . ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        $temp_4157577c = ($middlewareStack ? get_class($middlewareStack) : 'null') . "\n";
+        echo "Middleware Stack after handle: " . $temp_4157577c;
 
 if ($middlewareStack) {
     echo "Middleware Count: " . $middlewareStack->count() . "\n";
@@ -60,4 +63,4 @@ if ($middlewareStack) {
     }
 }
 
-echo "=== Test Complete ===\n"; 
+echo "=== Test Complete ===\n";

@@ -74,7 +74,7 @@
             <p><strong>Timestamp:</strong> <?php echo date('Y-m-d H:i:s'); ?></p>
         </div>
 
-        <?php if (getenv('APP_DEBUG') === 'true'): ?>
+        <?php if (getenv('APP_DEBUG') === 'true') : ?>
             <div class="debug-info">
                 <h2>Debug Information:</h2>
                 <p><strong>Error Time:</strong> <?php echo date('Y-m-d H:i:s'); ?></p>
@@ -82,7 +82,7 @@
                 <p><strong>Server Software:</strong> <?php echo htmlspecialchars($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'); ?></p>
                 <p><strong>Server Name:</strong> <?php echo htmlspecialchars($_SERVER['SERVER_NAME'] ?? 'Unknown'); ?></p>
                 
-                <?php if (isset($exception) && $exception instanceof Throwable): ?>
+                <?php if (isset($exception) && $exception instanceof Throwable) : ?>
                     <h3>Exception Details:</h3>
                     <p><strong>Message:</strong> <?php echo htmlspecialchars($exception->getMessage()); ?></p>
                     <p><strong>File:</strong> <?php echo htmlspecialchars($exception->getFile()); ?>:<?php echo $exception->getLine(); ?></p>
@@ -91,7 +91,7 @@
                 <?php endif; ?>
                 
                 <h3>Server Environment:</h3>
-                <pre><?php 
+                <pre><?php
                 $serverVars = $_SERVER;
                 // Filter out sensitive information
                 $sensitiveKeys = ['PASSWORD', 'PWD', 'SECRET', 'KEY', 'TOKEN', 'AUTH'];
@@ -103,10 +103,10 @@
                         }
                     }
                 }
-                echo htmlspecialchars(print_r($serverVars, true)); 
+                echo htmlspecialchars(print_r($serverVars, true));
                 ?></pre>
             </div>
-        <?php else: ?>
+        <?php else : ?>
             <div class="suggestion">
                 <h3>Suggestions:</h3>
                 <ul>

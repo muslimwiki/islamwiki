@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -11,10 +12,10 @@ try {
     // Create application instance
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
     $container = $app->getContainer();
-    
+
     // Get view renderer
     $viewRenderer = $container->get('view');
-    
+
     // Test direct template rendering
     echo "📄 Testing direct template rendering...\n";
     try {
@@ -26,7 +27,7 @@ try {
     } catch (Exception $e) {
         echo "❌ Direct template rendering failed: " . $e->getMessage() . "\n";
     }
-    
+
     // Test with skin rendering
     echo "\n📄 Testing with skin rendering...\n";
     try {
@@ -38,10 +39,9 @@ try {
     } catch (Exception $e) {
         echo "❌ Skin template rendering failed: " . $e->getMessage() . "\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "📄 Stack trace: " . $e->getTraceAsString() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Simple Login Test
- * 
+ *
  * Test the login functionality directly.
  */
 
@@ -36,16 +37,16 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['is_admin'] = $user['is_admin'];
-    
+
     echo "✅ Login successful!\n";
     echo "User ID: {$user['id']}\n";
     echo "Username: {$user['username']}\n";
     echo "Is Admin: " . ($user['is_admin'] ? 'Yes' : 'No') . "\n";
     echo "Session ID: " . session_id() . "\n";
-    
+
     // Test page creation access
     echo "\nTesting page creation access...\n";
-    
+
     // Simulate the authentication check
     if (isset($_SESSION['user_id'])) {
         echo "✅ User is authenticated\n";
@@ -53,7 +54,6 @@ if ($user && password_verify($password, $user['password'])) {
     } else {
         echo "❌ User is not authenticated\n";
     }
-    
 } else {
     echo "❌ Login failed\n";
     if (!$user) {
@@ -61,4 +61,4 @@ if ($user && password_verify($password, $user['password'])) {
     } else {
         echo "Invalid password\n";
     }
-} 
+}

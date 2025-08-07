@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Test Authentication System
- * 
+ *
  * This script tests the authentication system functionality.
  * Usage: php scripts/test_auth.php
  */
@@ -58,7 +58,7 @@ try {
 
     // Test user lookup
     echo "\n🔍 Testing user lookup...\n";
-    
+
     $user = User::findByUsername('admin', $connection);
     if ($user) {
         echo "  ✅ Found user: {$user->getAttribute('username')} ({$user->getAttribute('email')})\n";
@@ -77,10 +77,12 @@ try {
         $testPassword = 'admin123';
         $isValid = $user->verifyPassword($testPassword);
         echo "  " . ($isValid ? "✅" : "❌") . " Password '{$testPassword}' is " . ($isValid ? "valid" : "invalid") . "\n";
-        
+
         $testPassword2 = 'wrongpassword';
         $isValid2 = $user->verifyPassword($testPassword2);
-        echo "  " . ($isValid2 ? "❌" : "✅") . " Password '{$testPassword2}' is " . ($isValid2 ? "valid" : "invalid") . " (expected invalid)\n";
+        $status = ($isValid2 ? "❌" : "✅");
+        $validity = ($isValid2 ? "valid" : "invalid");
+        echo "  {$status} Password '{$testPassword2}' is {$validity} (expected invalid)\n";
     }
 
     // Test user creation
@@ -93,17 +95,17 @@ try {
         'is_admin' => false,
         'is_active' => true
     ]);
-    
+
     $saved = $testUser->save();
     echo "  " . ($saved ? "✅" : "❌") . " Test user created successfully\n";
-    
+
     if ($saved) {
         echo "  📊 Test user details:\n";
         echo "    - Username: {$testUser->getAttribute('username')}\n";
         echo "    - Email: {$testUser->getAttribute('email')}\n";
         echo "    - Display Name: {$testUser->getDisplayName()}\n";
         echo "    - Is Admin: " . ($testUser->isAdmin() ? 'Yes' : 'No') . "\n";
-        
+
         // Test password verification for new user
         $isValid = $testUser->verifyPassword('testpass123');
         echo "    - Password valid: " . ($isValid ? 'Yes' : 'No') . "\n";
@@ -119,11 +121,10 @@ try {
     }
 
     echo "\n✅ Authentication system test completed successfully!\n";
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

@@ -1,10 +1,11 @@
 <?php
+
 /**
  * IslamWiki Main Application Entry Point - Debug Version
- * 
+ *
  * This file handles all application routes including authentication,
  * dashboard, profile, settings, and the homepage.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.34
  * @license AGPL-3.0-only
@@ -66,7 +67,7 @@ try {
     echo "<p>Initializing application...</p>";
     $app = new \IslamWiki\Core\Application(BASE_PATH);
     echo "<p>✅ Application created</p>";
-    
+
     $container = $app->getContainer();
     echo "<p>✅ Container retrieved</p>";
 
@@ -95,15 +96,42 @@ try {
     // Create a simple logger (since we don't have a proper logger yet)
     echo "<p>Creating logger...</p>";
     $logger = new class implements \Psr\Log\LoggerInterface {
-        public function emergency($message, array $context = []) { error_log("EMERGENCY: $message"); }
-        public function alert($message, array $context = []) { error_log("ALERT: $message"); }
-        public function critical($message, array $context = []) { error_log("CRITICAL: $message"); }
-        public function error($message, array $context = []) { error_log("ERROR: $message"); }
-        public function warning($message, array $context = []) { error_log("WARNING: $message"); }
-        public function notice($message, array $context = []) { error_log("NOTICE: $message"); }
-        public function info($message, array $context = []) { error_log("INFO: $message"); }
-        public function debug($message, array $context = []) { error_log("DEBUG: $message"); }
-        public function log($level, $message, array $context = []) { error_log("LOG[$level]: $message"); }
+        public function emergency($message, array $context = [])
+        {
+            error_log("EMERGENCY: $message");
+        }
+        public function alert($message, array $context = [])
+        {
+            error_log("ALERT: $message");
+        }
+        public function critical($message, array $context = [])
+        {
+            error_log("CRITICAL: $message");
+        }
+        public function error($message, array $context = [])
+        {
+            error_log("ERROR: $message");
+        }
+        public function warning($message, array $context = [])
+        {
+            error_log("WARNING: $message");
+        }
+        public function notice($message, array $context = [])
+        {
+            error_log("NOTICE: $message");
+        }
+        public function info($message, array $context = [])
+        {
+            error_log("INFO: $message");
+        }
+        public function debug($message, array $context = [])
+        {
+            error_log("DEBUG: $message");
+        }
+        public function log($level, $message, array $context = [])
+        {
+            error_log("LOG[$level]: $message");
+        }
     };
 
     // Register logger in container
@@ -148,10 +176,10 @@ try {
     $response = $router->handle($request);
     echo "<p>✅ Request handled</p>";
     echo "<p>Response Status: " . $response->getStatusCode() . "</p>";
-    
+
     // Send response
     http_response_code($response->getStatusCode());
-    
+
     // Set headers
     foreach ($response->getHeaders() as $name => $values) {
         if (is_array($values)) {
@@ -162,10 +190,9 @@ try {
             header("$name: $values");
         }
     }
-    
+
     // Output content
     echo $response->getBody();
-    
 } catch (\Exception $e) {
     // Handle errors
     echo "<h1>❌ Application Error</h1>";
@@ -174,7 +201,6 @@ try {
     echo "<p>Line: " . $e->getLine() . "</p>";
     echo "<h2>Stack Trace:</h2>";
     echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
-    
+
     http_response_code(500);
 }
-?> 

@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Container;
 if (!interface_exists('Psr\Container\ContainerInterface')) {
     // Use a separate file to define the interface to avoid namespace issues
     $psrContainerFile = __DIR__ . '/../../vendor/psr/container/src/ContainerInterface.php';
-    
+
     if (file_exists($psrContainerFile)) {
         require_once $psrContainerFile;
     } else {
@@ -16,7 +16,7 @@ if (!interface_exists('Psr\Container\ContainerInterface')) {
             public function get($id);
             public function has($id);
         }
-        
+
         class_alias('IslamWiki\Core\PsrContainerInterface', 'Psr\Container\ContainerInterface');
     }
 }
@@ -28,7 +28,7 @@ use ReflectionParameter;
 
 /**
  * AsasContainer (أساس) - Foundation Container
- * 
+ *
  * Dependency injection container for IslamWiki.
  * Asas means "foundation" or "base" in Arabic, representing the
  * foundational layer that holds and manages all application services.
@@ -102,16 +102,16 @@ class AsasContainer implements ContainerInterface
     {
         try {
             $result = $this->resolve($id);
-            
+
             // Call any resolving callbacks
             $this->fireResolvingCallbacks($id, $result);
-            
+
             return $result;
         } catch (\Exception $e) {
             if ($this->has($id)) {
                 throw $e;
             }
-            
+
             throw new \InvalidArgumentException("No binding found for [{$id}].");
         }
     }
@@ -121,7 +121,7 @@ class AsasContainer implements ContainerInterface
      */
     public function has(string $id): bool
     {
-        return isset($this->bindings[$id]) || 
+        return isset($this->bindings[$id]) ||
                isset($this->instances[$id]) ||
                isset($this->aliases[$id]);
     }
@@ -183,8 +183,8 @@ class AsasContainer implements ContainerInterface
      */
     protected function isShared(string $abstract): bool
     {
-        return isset($this->instances[$abstract]) || 
-               (isset($this->bindings[$abstract]['shared']) && 
+        return isset($this->instances[$abstract]) ||
+               (isset($this->bindings[$abstract]['shared']) &&
                 $this->bindings[$abstract]['shared'] === true);
     }
 
@@ -223,7 +223,7 @@ class AsasContainer implements ContainerInterface
         // If there are no constructors, that means there are no dependencies
         // and we can just resolve the instances of the objects right away.
         if (is_null($constructor)) {
-            return new $concrete;
+            return new $concrete();
         }
 
         $dependencies = $constructor->getParameters();
@@ -232,7 +232,8 @@ class AsasContainer implements ContainerInterface
         // dependency instances and then use the reflection instances to make a
         // new instance of this class, injecting the created dependencies in.
         $instances = $this->resolveDependencies(
-            $dependencies, $parameters
+            $dependencies,
+            $parameters
         );
 
         return $reflector->newInstanceArgs($instances);
@@ -270,7 +271,8 @@ class AsasContainer implements ContainerInterface
     protected function hasParameterOverride(ReflectionParameter $dependency): bool
     {
         return array_key_exists(
-            $dependency->name, $this->getLastParameterOverride()
+            $dependency->name,
+            $this->getLastParameterOverride()
         );
     }
 
@@ -321,7 +323,7 @@ class AsasContainer implements ContainerInterface
     {
         return $this->resolve($abstract, $parameters);
     }
-    
+
     /**
      * Register a new resolving callback for a type.
      *
@@ -343,7 +345,7 @@ class AsasContainer implements ContainerInterface
             $this->resolvingCallbacks[$this->getAlias($abstract)][] = $callback;
         }
     }
-    
+
     /**
      * Fire all of the resolving callbacks.
      *
@@ -354,16 +356,16 @@ class AsasContainer implements ContainerInterface
     protected function fireResolvingCallbacks($abstract, $object)
     {
         $this->fireCallbackArray(
-            $object, 
+            $object,
             $this->getCallbacksForType($abstract, $object, $this->resolvingCallbacks)
         );
-        
+
         $this->fireCallbackArray(
-            $object, 
+            $object,
             $this->getCallbacksForType('*', $object, $this->resolvingCallbacks)
         );
     }
-    
+
     /**
      * Get all callbacks for a given type.
      *
@@ -375,16 +377,16 @@ class AsasContainer implements ContainerInterface
     protected function getCallbacksForType($abstract, $object, array $callbacks)
     {
         $results = [];
-        
+
         foreach ($callbacks as $type => $typeCallbacks) {
             if ($type === $abstract || $type === get_class($object)) {
                 $results = array_merge($results, $typeCallbacks);
             }
         }
-        
+
         return $results;
     }
-    
+
     /**
      * Fire an array of callbacks with an object.
      *
@@ -398,4 +400,4 @@ class AsasContainer implements ContainerInterface
             $callback($object, $this);
         }
     }
-} 
+}

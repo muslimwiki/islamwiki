@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Class Loading
  */
@@ -45,7 +46,8 @@ try {
 
 // List all files in the src directory
 echo "<h2>Files in src directory:</h2>";
-function listFiles($dir, $indent = '') {
+function listFiles($dir, $indent = '')
+{
     $files = scandir($dir);
     foreach ($files as $file) {
         if ($file != '.' && $file != '..') {
@@ -60,4 +62,4 @@ function listFiles($dir, $indent = '') {
     }
 }
 
-listFiles(__DIR__ . '/../src'); 
+listFiles(__DIR__ . '/../src');

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Check Pages Script
- * 
+ *
  * Lists all pages in the database
- * 
+ *
  * @package IslamWiki
  * @version 0.0.34
  * @license AGPL-3.0-only
@@ -21,26 +22,26 @@ use IslamWiki\Core\Database\Connection;
 try {
     // Initialize database connection
     $db = new Connection();
-    
+
     // Check if pages table exists
     $stmt = $db->prepare("SHOW TABLES LIKE 'pages'");
     $stmt->execute();
     $tableExists = $stmt->fetch();
-    
+
     if (!$tableExists) {
         echo "❌ Pages table does not exist!\n";
         exit(1);
     }
-    
+
     // Get all pages
     $stmt = $db->prepare("SELECT id, title, slug, namespace, created_at FROM pages ORDER BY created_at DESC");
     $stmt->execute();
     $pages = $stmt->fetchAll();
-    
+
     if (empty($pages)) {
         echo "📝 No pages found in database\n";
         echo "Let's create some basic pages...\n";
-        
+
         // Create basic pages
         $basicPages = [
             [
@@ -64,38 +65,35 @@ try {
                 'content' => "# Contributing to IslamWiki\n\nThank you for your interest in contributing to IslamWiki!\n\n## How to Contribute\n\n### 1. Creating Pages\n- Use clear, descriptive titles\n- Follow Islamic scholarly standards\n- Include proper citations\n- Write in accessible language\n\n### 2. Editing Existing Pages\n- Improve accuracy and clarity\n- Add missing information\n- Fix grammatical errors\n- Update outdated content\n\n### 3. Content Guidelines\n- Ensure accuracy and authenticity\n- Use reliable sources\n- Respect different scholarly opinions\n- Maintain respectful tone\n\n## Quality Standards\n\n- **Accuracy**: Verify information from reliable sources\n- **Completeness**: Provide comprehensive coverage\n- **Clarity**: Write in clear, accessible language\n- **Respect**: Honor Islamic traditions and scholarship\n\n## Getting Help\n\n- Check existing documentation\n- Ask questions in discussions\n- Review similar pages for examples\n\n*Your contributions help build a better resource for everyone.*"
             ]
         ];
-        
+
         $stmt = $db->prepare("
             INSERT INTO pages (title, slug, content, content_format, namespace, created_at, updated_at) 
             VALUES (?, ?, ?, 'markdown', '', NOW(), NOW())
         ");
-        
+
         foreach ($basicPages as $page) {
             $result = $stmt->execute([
                 $page['title'],
                 $page['slug'],
                 $page['content']
             ]);
-            
+
             if ($result) {
                 echo "✅ Created page: {$page['title']}\n";
             } else {
                 echo "❌ Failed to create page: {$page['title']}\n";
             }
         }
-        
+
         echo "\n🎉 Basic pages created successfully!\n";
-        
     } else {
         echo "📚 Found " . count($pages) . " pages in database:\n\n";
-        
+
         foreach ($pages as $page) {
             echo "- {$page->title} (/{$page->slug})\n";
         }
     }
-    
 } catch (Exception $e) {
     echo "❌ Error checking pages: " . $e->getMessage() . "\n";
     exit(1);
 }
-?> 

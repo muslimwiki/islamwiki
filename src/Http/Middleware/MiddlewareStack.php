@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
@@ -28,7 +29,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Middleware Stack
- * 
+ *
  * Manages the execution order of middleware components.
  * Middleware is executed in the order they are added.
  */
@@ -38,12 +39,12 @@ class MiddlewareStack
      * @var array Array of middleware instances
      */
     private array $middleware = [];
-    
+
     /**
      * @var LoggerInterface Logger instance
      */
     private LoggerInterface $logger;
-    
+
     /**
      * Create a new middleware stack instance.
      */
@@ -51,7 +52,7 @@ class MiddlewareStack
     {
         $this->logger = $logger;
     }
-    
+
     /**
      * Add middleware to the stack.
      */
@@ -60,7 +61,7 @@ class MiddlewareStack
         $this->middleware[] = $middleware;
         return $this;
     }
-    
+
     /**
      * Add multiple middleware to the stack.
      */
@@ -71,7 +72,7 @@ class MiddlewareStack
         }
         return $this;
     }
-    
+
     /**
      * Execute the middleware stack.
      */
@@ -81,20 +82,20 @@ class MiddlewareStack
             'middleware_count' => count($this->middleware),
             'uri' => $request->getUri()->getPath(),
         ]);
-        
+
         // error_log("MiddlewareStack::execute - Starting with " . count($this->middleware) . " middleware");
-        
+
         // Create the middleware chain
         $chain = $this->buildChain($handler);
-        
+
         // Execute the chain
         $response = $chain($request);
-        
+
         // error_log("MiddlewareStack::execute - Completed, response status: " . $response->getStatusCode());
-        
+
         return $response;
     }
-    
+
     /**
      * Build the middleware chain.
      */
@@ -102,16 +103,16 @@ class MiddlewareStack
     {
         // Start with the final handler
         $chain = $handler;
-        
+
         // Add middleware in reverse order (last added is executed first)
         for ($i = count($this->middleware) - 1; $i >= 0; $i--) {
             $middleware = $this->middleware[$i];
             $chain = $this->wrapMiddleware($middleware, $chain);
         }
-        
+
         return $chain;
     }
-    
+
     /**
      * Wrap middleware with error handling.
      */
@@ -123,33 +124,32 @@ class MiddlewareStack
                     'middleware_class' => get_class($middleware),
                     'uri' => $request->getUri()->getPath(),
                 ]);
-                
+
                 // error_log("MiddlewareStack::wrapMiddleware - Executing " . get_class($middleware));
-                
+
                 if (is_callable($middleware)) {
                     return $middleware($request, $next);
                 }
-                
+
                 if (method_exists($middleware, 'handle')) {
                     return $middleware->handle($request, $next);
                 }
-                
+
                 throw new \RuntimeException('Invalid middleware: ' . get_class($middleware));
-                
             } catch (\Throwable $e) {
                 $this->logger->error('Middleware execution failed', [
                     'middleware_class' => get_class($middleware),
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
-                
+
                 // error_log("MiddlewareStack::wrapMiddleware - Error in " . get_class($middleware) . ": " . $e->getMessage());
-                
+
                 throw $e;
             }
         };
     }
-    
+
     /**
      * Get the number of middleware in the stack.
      */
@@ -157,7 +157,7 @@ class MiddlewareStack
     {
         return count($this->middleware);
     }
-    
+
     /**
      * Clear all middleware from the stack.
      */
@@ -166,7 +166,7 @@ class MiddlewareStack
         $this->middleware = [];
         return $this;
     }
-    
+
     /**
      * Get all middleware in the stack.
      */
@@ -174,4 +174,4 @@ class MiddlewareStack
     {
         return $this->middleware;
     }
-} 
+}

@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Configuration Web Test for Version 0.0.28
- * 
+ *
  * Tests the configuration web interface and API endpoints.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 // Define ROOT_PATH constant
 define('ROOT_PATH', __DIR__ . '/../../');
@@ -45,7 +46,7 @@ try {
     $request = new Request('GET', '/api/configuration');
     $response = $app->handle($request);
     echo "✅ Configuration API response status: " . $response->getStatusCode() . "\n";
-    
+
     if ($response->getStatusCode() === 200) {
         $content = $response->getBody();
         $data = json_decode($content, true);
@@ -64,7 +65,7 @@ try {
     $request = new Request('GET', '/api/configuration/core');
     $response = $app->handle($request);
     echo "✅ Core configuration API response status: " . $response->getStatusCode() . "\n";
-    
+
     if ($response->getStatusCode() === 200) {
         $content = $response->getBody();
         $data = json_decode($content, true);
@@ -85,7 +86,7 @@ try {
     ], json_encode(['mode' => 'comprehensive']));
     $response = $app->handle($request);
     echo "✅ Validation API response status: " . $response->getStatusCode() . "\n";
-    
+
     if ($response->getStatusCode() === 200) {
         $content = $response->getBody();
         $data = json_decode($content, true);
@@ -107,7 +108,7 @@ try {
     $request = new Request('GET', '/api/configuration/analytics');
     $response = $app->handle($request);
     echo "✅ Analytics API response status: " . $response->getStatusCode() . "\n";
-    
+
     if ($response->getStatusCode() === 200) {
         $content = $response->getBody();
         $data = json_decode($content, true);
@@ -124,9 +125,8 @@ try {
     echo "==========================================\n";
     echo "✅ Configuration Web Tests Complete!\n";
     echo "==========================================\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

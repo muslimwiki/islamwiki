@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Simple Database Migration Runner
- * 
+ *
  * Run this script to execute database migrations without the Application class.
  * Usage: php scripts/simple_migrate.php
  */
@@ -65,7 +65,7 @@ try {
     echo "\nMigration Status:\n";
     $migrations = $migrator->getMigrationFiles();
     $ran = $migrator->getRanMigrations();
-    
+
     foreach ($migrations as $migration) {
         $status = in_array($migration, $ran) ? '✓ Ran' : '✗ Pending';
         echo "  {$migration}: {$status}\n";
@@ -79,11 +79,10 @@ try {
     } else {
         echo "\n✅ No pending migrations to run.\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

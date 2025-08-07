@@ -1,208 +1,192 @@
 # IslamWiki
 
-**Version:** 0.0.52  
-**Release Date:** 2025-08-06  
-**Status:** Active Development
+A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-A comprehensive Islamic knowledge base and resource center built with modern web technologies.
+## 🚀 Latest Updates (v0.0.45)
 
-## 🚀 Features
+### ✅ Authentication System Fixed
+- **Login Now Works**: Users can successfully log in with admin/password credentials
+- **Session Persistence**: User sessions now persist correctly across page refreshes
+- **Navigation Dropdown**: User dropdown menu appears properly after login
+- **CSS Positioning**: Fixed dropdown z-index to appear above all navigation elements
 
-### Core Features
-- **Islamic Content Management**: Complete Quran, Hadith, and Islamic sciences database
-- **Advanced Search Engine**: Iqra search with intelligent filtering and relevance
-- **User Authentication**: Secure login, registration, and profile management
-- **Community Features**: User profiles, contributions, and community interaction
-- **Islamic Calendar**: Advanced Islamic calendar with prayer times
-- **Modern Islamic Design**: Beautiful, modern interface with Islamic theme and animations
-- **Responsive Design**: Mobile-friendly interface with modern UI/UX
+### 🔧 Technical Improvements
+- Fixed critical session management issues preventing user login
+- Resolved session data loss during login process
+- Added proper session initialization in application bootstrap
+- Fixed unnecessary session regeneration that was clearing user data
+- Enhanced user dropdown CSS positioning with proper z-index
+- Improved debug logging for authentication troubleshooting
 
-### Technical Features
-- **Modern Architecture**: MVC pattern with dependency injection
-- **REST API**: Complete API for frontend integration
-- **Database Migration**: Automated schema management
-- **Caching System**: Performance optimization with intelligent caching
-- **Security**: CSRF protection, input validation, and secure sessions
-- **Logging**: PSR-3 compliant logging system
-- **Error Handling**: Comprehensive error management and debugging
+## 🌟 Features
 
-### Skin System
-- **Dynamic Skin Discovery**: Automatic discovery of skins from `/skins/` directory
-- **Multi-Skin Support**: Full support for multiple skins (Bismillah, Muslim)
-- **User-Specific Preferences**: Individual user skin settings stored in database
-- **Settings Interface**: Comprehensive settings page with skin selection
-- **Case-Insensitive Access**: Support for both `Muslim` and `muslim` naming
-- **Skin Information**: Detailed metadata and feature information display
-- **Responsive Design**: Mobile-friendly layouts for all skins
-- **Accessibility**: Skip links, keyboard navigation, focus management
-- **Authentication Safe**: Skin middleware doesn't interfere with login process
-- **Content Rendering**: Proper content display in main body area for all skins
-- **CSS Framework Integration**: Seamless integration with Safa CSS framework
-- **URL Parameter Override**: Quick skin switching via URL parameters (`?skin=bismillah`, `?skin=muslim`)
-- **Temporary Skin Testing**: Non-persistent skin switching for development and testing
-- **Validation & Fallback**: Only accepts valid skin names, falls back to user preference
-- **Modern Islamic Theme**: Beautiful blue gradient design with glass morphism effects
-- **Advanced Animations**: Smooth transitions, hover effects, and loading animations
-- **Professional Typography**: Inter font family with proper hierarchy
+### 📚 Islamic Content
+- **Quran Integration**: Complete Quran text with search and navigation
+- **Hadith Database**: Comprehensive hadith collection with authentication
+- **Islamic Sciences**: Academic content and research tools
+- **Prayer Times**: Real-time prayer time calculations
+- **Islamic Calendar**: Advanced Islamic calendar functionality
 
-### Development Features
-- **Dependency Injection**: Container-based service management
-- **Service Providers**: Modular service registration
-- **Configuration Management**: Environment-based settings
-- **Comprehensive Testing**: Automated test suites and debugging tools
-- **Documentation**: Extensive documentation and guides
+### 👥 User Management
+- **Authentication**: Secure login and registration system
+- **User Profiles**: Personal profile management
+- **Settings**: User preferences and skin customization
+- **Community**: User interaction and collaboration
+
+### 🎨 Modern Design
+- **Bismillah Skin**: Beautiful modern Islamic theme
+- **Responsive Design**: Works perfectly on all devices
+- **Islamic Typography**: Professional Arabic and English fonts
+- **Smooth Animations**: Modern transitions and effects
+
+### 🔍 Advanced Search
+- **Iqra Search Engine**: Intelligent Islamic content search
+- **Multi-language Support**: Arabic and English search
+- **Advanced Filtering**: Content type and category filtering
+- **Search Suggestions**: Smart search recommendations
 
 ## 🛠️ Technology Stack
 
-- **Backend**: PHP 8.1+ with custom framework
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Database**: MySQL with migration system
-- **Templating**: Twig template engine
-- **CSS Framework**: Safa CSS (custom Islamic framework)
-- **JavaScript**: ZamZam.js (lightweight framework)
-- **Logging**: PSR-3 compliant Shahid logger
-- **Container**: AsasContainer dependency injection container
+- **Backend**: PHP 8.1+ with custom Islamic-named framework
+- **Database**: MySQL with Islamic content schema
+- **Frontend**: Modern CSS with Islamic design principles
+- **JavaScript**: Custom ZamZam.js framework
+- **Templating**: Twig with Islamic theme system
+- **Security**: CSRF protection and secure session management
 
-## 📦 Installation
+## 🚀 Quick Start
 
 ### Prerequisites
 - PHP 8.1 or higher
 - MySQL 5.7 or higher
 - Apache/Nginx web server
-- Composer (for dependency management)
+- Composer for dependency management
 
-### Quick Start
-1. Clone the repository
-2. Install dependencies: `composer install`
-3. Configure database in `LocalSettings.php`
-4. Run migrations: `php scripts/database/run_migrations.php`
-5. Set up virtual host pointing to `public/` directory
-6. Access the application at your configured domain
+### Installation
 
-### Development Setup
-```bash
-# Clone repository
-git clone https://github.com/your-username/islamwiki.git
-cd islamwiki
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/islamwiki/islamwiki.git
+   cd islamwiki
+   ```
 
-# Install dependencies
-composer install
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-# Configure environment
-cp LocalSettings.php.example LocalSettings.php
-# Edit LocalSettings.php with your database credentials
+3. **Configure database**
+   ```bash
+   cp LocalSettings.example.php LocalSettings.php
+   # Edit LocalSettings.php with your database credentials
+   ```
 
-# Run migrations
-php scripts/database/run_migrations.php
+4. **Run database migrations**
+   ```bash
+   php scripts/database/setup_database.php
+   ```
 
-# Start development server
-php -S localhost:8000 -t public/
-```
+5. **Create admin user**
+   ```bash
+   php scripts/database/create_sample_data.php
+   ```
+
+6. **Set up web server**
+   - Point document root to `public/` directory
+   - Ensure `storage/` directory is writable
+
+### Default Login
+- **Username**: `admin`
+- **Password**: `password`
 
 ## 🎨 Skins
 
-### Available Skins
-- **Bismillah**: Default Islamic-themed skin with traditional design and beautiful gradients
-- **Muslim**: Modern skin inspired by Citizen MediaWiki with Islamic aesthetics and proper content rendering
+IslamWiki supports multiple skins with Islamic design principles:
 
-### Skin Management
-- **Dynamic Discovery**: New skins automatically appear in settings
-- **User Preferences**: Individual skin preferences stored per user
-- **Settings API**: RESTful endpoints for skin management
-- **Skin Information**: Detailed metadata, features, and dependencies
-- **Validation**: Comprehensive skin validation and error handling
+### Bismillah Skin (Default)
+- Modern gradient design
+- Professional typography
+- Smooth animations
+- Responsive layout
 
-### Skin Features
-- Responsive design for all devices
-- Islamic typography and color schemes
-- Accessibility features (WCAG compliant)
-- Dark theme support
-- Customizable layouts and components
-- Animation and gradient support
-- Glass morphism effects
+### Muslim Skin
+- MediaWiki-inspired design
+- Traditional Islamic elements
+- Clean and functional layout
 
-## 🔧 Configuration
+## 🔧 Development
 
-### Environment Variables
-- `APP_DEBUG`: Enable/disable debug mode
-- `DB_HOST`: Database host
-- `DB_NAME`: Database name
-- `DB_USER`: Database username
-- `DB_PASS`: Database password
-- `ACTIVE_SKIN`: Default active skin
+### Project Structure
+```
+islamwiki/
+├── src/                    # Core application code
+│   ├── Core/              # Framework core components
+│   ├── Http/              # HTTP layer (controllers, middleware)
+│   ├── Models/            # Data models
+│   └── Providers/         # Service providers
+├── resources/             # Views and assets
+├── skins/                # Skin system
+├── storage/              # Application storage
+├── docs/                 # Documentation
+└── public/               # Web server document root
+```
 
-### LocalSettings.php
-Main configuration file for:
-- Database settings
-- Available skins
-- Application settings
-- Security configurations
+### Key Components
 
-## 📚 Documentation
+#### Islamic-Named Framework
+- **NizamApplication**: Main application class (نظام - System)
+- **AsasContainer**: Dependency injection container (أساس - Foundation)
+- **SabilRouting**: Routing system (سبيل - Path)
+- **AmanSecurity**: Authentication system (أمان - Security)
+- **WisalSession**: Session management (وصال - Connection)
 
-### User Guides
-- [Getting Started](docs/guides/getting-started.md)
-- [User Manual](docs/guides/user-manual.md)
-- [Contributing Guidelines](docs/guides/contributing.md)
+#### Content Management
+- **IqraSearch**: Search engine (إقرأ - Read)
+- **BayanFormatter**: Content formatting (بيان - Explanation)
+- **RihlahCaching**: Caching system (رحلة - Journey)
+- **SabrQueue**: Queue management (صبر - Patience)
 
-### Developer Documentation
+## 📖 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
 - [Architecture Overview](docs/architecture/overview.md)
-- [API Reference](docs/api/reference.md)
-- [Skin Development](docs/skins/README.md)
-- [Database Schema](docs/database/schema.md)
-
-### Release Notes
-- [Current Release](docs/releases/RELEASE-0.0.45.md)
-- [All Releases](docs/releases/)
-
-## 🧪 Testing
-
-### Automated Tests
-- Unit tests for core functionality
-- Integration tests for API endpoints
-- Skin compatibility tests
-- Performance benchmarks
-
-### Manual Testing
-- Debug scripts in `debug/` directory
-- Test pages for skin verification
-- Settings pages for configuration testing
+- [Development Guide](docs/developer/)
+- [API Documentation](docs/api/)
+- [Skin Development](docs/skins/)
+- [Deployment Guide](docs/deployment/)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](docs/guides/contributing.md) for details.
+We welcome contributions from the Islamic community! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-### Development Workflow
+### Development Setup
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
 
-### Code Standards
-- Follow PSR-12 coding standards
-- Write comprehensive documentation
-- Include tests for new features
-- Maintain backward compatibility
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
 - Islamic scholars and researchers for content guidance
-- Open source community for tools and libraries
-- Contributors and maintainers
+- Open source community for technical inspiration
+- Contributors and maintainers for their dedication
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/your-username/islamwiki/issues)
-- **Documentation**: [Project Wiki](https://github.com/your-username/islamwiki/wiki)
-- **Community**: [Discussions](https://github.com/your-username/islamwiki/discussions)
+- **Documentation**: [docs/](docs/)
+- **Issues**: [GitHub Issues](https://github.com/islamwiki/islamwiki/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/islamwiki/islamwiki/discussions)
 
 ---
 
-**IslamWiki** - Empowering Islamic knowledge through technology.
+**Bismillah** - In the name of Allah, the Most Gracious, the Most Merciful
+
+*Building Islamic knowledge for the digital age.*
 
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions;
@@ -8,7 +9,7 @@ use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Extension Manager
- * 
+ *
  * Manages the loading, initialization, and lifecycle of extensions.
  * Provides a centralized way to discover, load, and manage extensions.
  */
@@ -46,7 +47,7 @@ class ExtensionManager
     {
         $this->container = $container;
         $this->hookManager = $container->get(HookManager::class);
-        
+
         // Get the application instance to get the base path
         // If the application is not bound, use a default path
         try {
@@ -64,7 +65,7 @@ class ExtensionManager
     public function loadExtensions(): void
     {
         $enabledExtensions = $this->getEnabledExtensions();
-        
+
         foreach ($enabledExtensions as $extensionName) {
             $this->loadExtension($extensionName);
         }
@@ -123,7 +124,7 @@ class ExtensionManager
 
             // Create extension instance
             $extension = new $className($this->container);
-            
+
             // Initialize the extension
             $extension->initialize();
 
@@ -133,7 +134,6 @@ class ExtensionManager
 
             error_log("Extension loaded successfully: {$extensionName}");
             return true;
-
         } catch (\Exception $e) {
             error_log("Error loading extension {$extensionName}: " . $e->getMessage());
             return false;
@@ -154,11 +154,11 @@ class ExtensionManager
         }
 
         $directories = glob($this->extensionsPath . '/*', GLOB_ONLYDIR);
-        
+
         foreach ($directories as $directory) {
             $extensionName = basename($directory);
             $configFile = $directory . '/extension.json';
-            
+
             if (file_exists($configFile)) {
                 $extensions[] = $extensionName;
             }
@@ -308,4 +308,4 @@ class ExtensionManager
     {
         return $this->container;
     }
-} 
+}

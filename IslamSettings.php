@@ -23,13 +23,13 @@ declare(strict_types=1);
 
 /**
  * IslamSettings.php - Islamic-Specific Configuration Override
- * 
+ *
  * This file contains Islamic-specific configuration settings that override
  * the main LocalSettings.php configuration. This allows for Islamic-specific
  * customization without modifying the main configuration file.
- * 
+ *
  * This file is OPTIONAL and will only be loaded if it exists.
- * 
+ *
  * Version: 0.0.18
  * Date: 2025-07-30
  */
@@ -402,4 +402,4 @@ $wgSearchExtensionSettings = array_merge($wgSearchExtensionSettings ?? [], [
  * Islamic settings override complete
  * All Islamic-specific settings are now available and will override
  * the corresponding settings from LocalSettings.php
- */ 
+ */

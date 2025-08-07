@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Sabr (صبر) - Queue System
@@ -12,6 +11,8 @@ declare(strict_types=1);
  * @version 0.0.42
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue;
 
@@ -88,7 +89,7 @@ class SabrQueue
         try {
             $driverInstance = $this->getDriver($driver);
             $result = $driverInstance->push($job);
-            
+
             if ($result) {
                 $this->stats['jobs_queued']++;
                 $this->logger->info('Job pushed to queue', [
@@ -98,7 +99,7 @@ class SabrQueue
                     'queue' => $job->getQueue()
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             $this->logger->error('Failed to push job to queue', [
@@ -121,10 +122,10 @@ class SabrQueue
 
         try {
             $driverInstance = $this->getDriver($driver);
-            
+
             for ($i = 0; $i < $maxJobs; $i++) {
                 $job = $driverInstance->pop();
-                
+
                 if (!$job) {
                     break; // No more jobs
                 }
@@ -133,7 +134,7 @@ class SabrQueue
                     $this->processJob($job);
                     $processed++;
                     $this->stats['jobs_processed']++;
-                    
+
                     $this->logger->info('Job processed successfully', [
                         'job_id' => $job->getId(),
                         'job_type' => get_class($job),
@@ -142,7 +143,7 @@ class SabrQueue
                 } catch (\Exception $e) {
                     $failed++;
                     $this->stats['jobs_failed']++;
-                    
+
                     $this->logger->error('Job processing failed', [
                         'job_id' => $job->getId(),
                         'job_type' => get_class($job),
@@ -177,12 +178,12 @@ class SabrQueue
     private function processJob(JobInterface $job): void
     {
         $startTime = microtime(true);
-        
+
         // Execute the job
         $result = $job->handle();
-        
+
         $processingTime = microtime(true) - $startTime;
-        
+
         $this->logger->info('Job executed', [
             'job_id' => $job->getId(),
             'job_type' => get_class($job),
@@ -218,7 +219,7 @@ class SabrQueue
         if (!isset($this->drivers[$driver])) {
             throw new \InvalidArgumentException("Queue driver '{$driver}' not found");
         }
-        
+
         return $this->drivers[$driver];
     }
 
@@ -266,12 +267,12 @@ class SabrQueue
         try {
             $driverInstance = $this->getDriver($driver);
             $count = $driverInstance->clearFailed();
-            
+
             $this->logger->info('Failed jobs cleared', [
                 'count' => $count,
                 'driver' => $driver
             ]);
-            
+
             return $count;
         } catch (\Exception $e) {
             $this->logger->error('Failed to clear failed jobs', [
@@ -290,13 +291,13 @@ class SabrQueue
         try {
             $driverInstance = $this->getDriver($driver);
             $count = $driverInstance->retryFailed($maxRetries);
-            
+
             $this->logger->info('Failed jobs retried', [
                 'count' => $count,
                 'driver' => $driver,
                 'max_retries' => $maxRetries
             ]);
-            
+
             return $count;
         } catch (\Exception $e) {
             $this->logger->error('Failed to retry failed jobs', [
@@ -322,4 +323,4 @@ class SabrQueue
     {
         return isset($this->drivers[$driver]);
     }
-} 
+}

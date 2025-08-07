@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Logging;
@@ -9,7 +10,7 @@ use Psr\Log\LogLevel;
 
 /**
  * Shahid (شاهد) - Witness System
- * 
+ *
  * Comprehensive logging system for IslamWiki.
  * Shahid means "witness" or "testimony" in Arabic, representing the
  * system that bears witness to all application events and activities.
@@ -73,12 +74,12 @@ class ShahidLogger implements LoggerInterface
         $this->minLevel = $minLevel;
         $this->maxFileSize = $maxFileSize * 1024 * 1024; // Convert MB to bytes
         $this->maxFiles = $maxFiles;
-        
+
         // Ensure log directory exists
         if (!is_dir($this->logDir)) {
             mkdir($this->logDir, 0755, true);
         }
-        
+
         $this->logFile = $this->getLogFilePath();
     }
 
@@ -104,7 +105,7 @@ class ShahidLogger implements LoggerInterface
         $context['pid'] = getmypid();
         $context['memory_usage'] = memory_get_usage();
         $context['peak_memory'] = memory_get_peak_usage();
-        
+
         // Add request information if available
         if (isset($_SERVER['REQUEST_URI'])) {
             $context['request_uri'] = $_SERVER['REQUEST_URI'];
@@ -114,7 +115,7 @@ class ShahidLogger implements LoggerInterface
 
         // Interpolate the message
         $interpolatedMessage = $this->interpolate($message, $context);
-        
+
         // Format the log entry
         $logEntry = sprintf(
             "[%s] %s: %s %s\n",
@@ -255,7 +256,7 @@ class ShahidLogger implements LoggerInterface
         $context['exception_file'] = $e->getFile();
         $context['exception_line'] = $e->getLine();
         $context['exception_trace'] = $e->getTraceAsString();
-        
+
         $this->log($level, "Exception: {$e->getMessage()}", $context);
     }
 
@@ -285,12 +286,12 @@ class ShahidLogger implements LoggerInterface
             $ips = explode(',', $forwardedFor);
             return trim($ips[0]);
         }
-        
+
         $realIp = $request->getHeaderLine('X-Real-IP');
         if ($realIp) {
             return $realIp;
         }
-        
+
         return $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
     }
 
@@ -335,14 +336,14 @@ class ShahidLogger implements LoggerInterface
     private function rotateLogs(): void
     {
         $logFile = $this->getLogFilePath();
-        
+
         // If current log file doesn't exist, no need to rotate
         if (!file_exists($logFile)) {
             return;
         }
-        
+
         $basePath = $this->logDir . '/application-';
-        
+
         // Rotate existing files
         for ($i = $this->maxFiles - 1; $i >= 0; --$i) {
             $rotateFile = $basePath . date('Y-m-d') . '-' . $i . '.log';
@@ -355,7 +356,7 @@ class ShahidLogger implements LoggerInterface
                 }
             }
         }
-        
+
         // Rotate the current log file
         rename($logFile, $basePath . date('Y-m-d') . '-0.log');
     }

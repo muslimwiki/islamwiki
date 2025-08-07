@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Test Skin Integration
- * 
+ *
  * This script tests that the skin system is properly integrated with the application.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.28
  * @license AGPL-3.0-only
@@ -136,18 +137,17 @@ TWIG;
     // Write test template
     $testTemplatePath = __DIR__ . '/../resources/views/test_skin.twig';
     file_put_contents($testTemplatePath, $testTemplate);
-    
+
     // Render the template
     $rendered = $viewRenderer->render('test_skin.twig');
-    
+
     echo "✓ Template rendered successfully\n";
     echo "  - Output length: " . strlen($rendered) . " characters\n";
     echo "  - Contains skin_css: " . (strpos($rendered, 'skin_css') !== false ? 'Yes' : 'No') . "\n";
     echo "  - Contains skin_js: " . (strpos($rendered, 'skin_js') !== false ? 'Yes' : 'No') . "\n";
-    
+
     // Clean up test template
     unlink($testTemplatePath);
-    
 } catch (Exception $e) {
     echo "✗ Failed to render template: " . $e->getMessage() . "\n";
 }
@@ -167,14 +167,14 @@ echo "\n10. Testing skin switching...\n";
 try {
     $originalSkin = $skinManager->getActiveSkinName();
     echo "  - Original active skin: " . $originalSkin . "\n";
-    
+
     // Try to switch to BlueSkin if it exists
     $availableSkins = $skinManager->getAvailableSkins();
     if (isset($availableSkins['blueskin'])) {
         $skinManager->setActiveSkin('blueskin');
         $newSkin = $skinManager->getActiveSkinName();
         echo "  - Switched to: " . $newSkin . "\n";
-        
+
         // Switch back
         $skinManager->setActiveSkin($originalSkin);
         echo "  - Switched back to: " . $skinManager->getActiveSkinName() . "\n";
@@ -190,4 +190,4 @@ echo "\nSummary:\n";
 echo "- Skin system is properly integrated with the application\n";
 echo "- Skin variables are available in templates\n";
 echo "- Skin switching works correctly\n";
-echo "- All styling now comes from the active skin\n"; 
+echo "- All styling now comes from the active skin\n";

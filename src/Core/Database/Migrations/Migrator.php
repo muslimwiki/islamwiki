@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Core\Database\Migrations;
 
 use IslamWiki\Core\Database\Connection;
@@ -44,7 +42,7 @@ class Migrator
         $this->connection = $connection;
         $this->schema = $connection->getSchemaBuilder();
         $this->migrationPath = rtrim($migrationPath, '/');
-        
+
         $this->ensureMigrationsTableExists();
     }
 
@@ -73,7 +71,7 @@ class Migrator
         $ran = [];
         $batch = $this->getNextBatchNumber();
         $migrations = $this->getPendingMigrations();
-        
+
         error_log("[Migrator] Batch: $batch");
         error_log("[Migrator] Pending migrations: " . json_encode($migrations));
 
@@ -93,15 +91,15 @@ class Migrator
     {
         $this->currentMigrationFile = $migration;
         $migration = $this->resolve($migration);
-        
+
         $this->connection->beginTransaction();
-        
+
         try {
             $migration->up();
-            
+
             // Log migration within the same transaction
             $this->logMigration($migration, $batch);
-            
+
             $this->connection->commit();
         } catch (Exception $e) {
             $this->connection->rollBack();
@@ -131,9 +129,9 @@ class Migrator
     protected function rollbackMigration(string $migration): void
     {
         $migration = $this->resolve($migration);
-        
+
         $this->connection->beginTransaction();
-        
+
         try {
             $migration->down();
             $this->deleteMigration($migration);
@@ -150,7 +148,7 @@ class Migrator
     public function getMigrationFiles(): array
     {
         $files = [];
-        
+
         if (!is_dir($this->migrationPath)) {
             return $files;
         }
@@ -166,7 +164,7 @@ class Migrator
         }
 
         sort($files);
-        
+
         return $files;
     }
 
@@ -177,7 +175,7 @@ class Migrator
     {
         $ran = $this->getRanMigrations();
         $files = $this->getMigrationFiles();
-        
+
         return array_diff($files, $ran);
     }
 
@@ -198,7 +196,7 @@ class Migrator
     public function getLastBatchMigrations(): array
     {
         $batch = $this->getLastBatchNumber();
-        
+
         return $this->connection->table($this->migrationTable)
             ->where('batch', '=', $batch)
             ->orderBy('migration', 'desc')
@@ -231,7 +229,7 @@ class Migrator
     {
         // Get the migration name from the file name, not the class name
         $migrationName = $this->getMigrationName($this->currentMigrationFile);
-        
+
         $this->connection->table($this->migrationTable)->insert([
             'migration' => $migrationName,
             'batch' => $batch,
@@ -245,7 +243,7 @@ class Migrator
     protected function deleteMigration(string $migration): void
     {
         $migrationName = $this->getMigrationName($migration);
-        
+
         $this->connection->table($this->migrationTable)
             ->where('migration', '=', $migrationName)
             ->delete();
@@ -257,24 +255,24 @@ class Migrator
     public function resolve(string $migration): Migration
     {
         $file = $this->migrationPath . '/' . $migration . '.php';
-        
+
         if (!file_exists($file)) {
             throw new Exception("Migration file not found: {$file}");
         }
-        
+
         // Get the migration class factory function
         $migrationFactory = require $file;
-        
+
         // Create the migration instance with the connection
         $migrationClass = $migrationFactory($this->connection);
-        
+
         if (!$migrationClass instanceof Migration) {
             throw new Exception("Migration {$migration} must be an instance of " . Migration::class);
         }
-        
+
         // Set the connection on the migration instance
         $migrationClass->setConnection($this->connection->getName());
-        
+
         return $migrationClass;
     }
 

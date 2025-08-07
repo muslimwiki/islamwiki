@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug User Dropdown Test
- * 
+ *
  * Test page to verify the user dropdown functionality with a mock user
- * 
+ *
  * @package IslamWiki
  * @version 0.0.44
  * @license AGPL-3.0-only
@@ -59,4 +60,3 @@ $html = $view->render('debug/user-dropdown-test.twig', [
 ]);
 
 echo $html;
-?> 

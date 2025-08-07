@@ -1,17 +1,18 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Migration: Advanced Islamic Features
- * 
+ *
  * This migration creates the database schema for advanced Islamic features
  * including Islamic content management, user preferences, recommendation
  * system, and enhanced Islamic calendar features.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.22
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 
@@ -41,7 +42,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->integer('share_count')->default(0)->comment('Number of shares');
             $table->integer('comment_count')->default(0)->comment('Number of comments');
             $table->timestamps();
-            
+
             $table->index('category');
             $table->index('is_published');
             $table->index('is_featured');
@@ -60,7 +61,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->boolean('notifications_enabled')->default(true)->comment('Whether notifications are enabled');
             $table->json('notification_settings')->nullable()->comment('Notification settings JSON');
             $table->timestamps();
-            
+
             $table->unique('user_id');
             $table->index('language');
             $table->index('prayer_method');
@@ -76,7 +77,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->boolean('completed')->default(false)->comment('Whether content was fully viewed');
             $table->timestamp('viewed_at')->comment('When content was viewed');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('content_id');
             $table->index('category');
@@ -95,7 +96,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->integer('reply_count')->default(0)->comment('Number of replies');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('Parent comment ID');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('content_id');
             $table->index('is_approved');
@@ -109,7 +110,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->unsignedBigInteger('content_id')->comment('Content ID');
             $table->enum('type', ['like', 'dislike'])->default('like')->comment('Like type');
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'content_id']);
             $table->index('content_id');
             $table->index('type');
@@ -123,7 +124,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->string('platform', 50)->nullable()->comment('Sharing platform');
             $table->text('comment')->nullable()->comment('Share comment');
             $table->timestamps();
-            
+
             $table->index('user_id');
             $table->index('content_id');
             $table->index('platform');
@@ -141,7 +142,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->boolean('is_public_holiday')->default(false)->comment('Whether it is a public holiday');
             $table->json('custom_dates')->nullable()->comment('Custom dates for the event');
             $table->timestamps();
-            
+
             $table->index(['hijri_month', 'hijri_day']);
             $table->index('type');
             $table->index('is_public_holiday');
@@ -158,7 +159,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->json('qibla_direction')->comment('Qibla direction JSON');
             $table->json('lunar_phase')->comment('Lunar phase JSON');
             $table->timestamps();
-            
+
             $table->unique(['latitude', 'longitude', 'date', 'method']);
             $table->index('date');
             $table->index('method');
@@ -176,7 +177,7 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->integer('sort_order')->default(0)->comment('Sort order');
             $table->boolean('is_active')->default(true)->comment('Whether category is active');
             $table->timestamps();
-            
+
             $table->index('sort_order');
             $table->index('is_active');
         });
@@ -192,17 +193,17 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $table->integer('usage_count')->default(0)->comment('Number of times tag is used');
             $table->boolean('is_active')->default(true)->comment('Whether tag is active');
             $table->timestamps();
-            
+
             $table->index('usage_count');
             $table->index('is_active');
         });
 
         // Insert default Islamic content categories
         $this->insertDefaultCategories();
-        
+
         // Insert default Islamic content tags
         $this->insertDefaultTags();
-        
+
         // Insert major Islamic events
         $this->insertIslamicEvents();
     }
@@ -599,4 +600,4 @@ class Migration_0014_AdvancedIslamicFeatures extends Migration
             $this->insert('islamic_events', $event);
         }
     }
-} 
+}

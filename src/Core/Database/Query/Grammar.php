@@ -1,7 +1,6 @@
 <?php
+
 declare(strict_types=1);
-
-
 
 namespace IslamWiki\Core\Database\Query;
 
@@ -39,7 +38,7 @@ class Grammar
         }
 
         $sql = [];
-        
+
         foreach ($this->selectComponents as $component) {
             if (isset($query->$component)) {
                 $method = 'compile' . ucfirst($component);
@@ -92,14 +91,14 @@ class Grammar
     protected function compileWheresToArray(Builder $query): string
     {
         $sql = [];
-        
+
         foreach ($query->wheres as $where) {
             $method = 'where' . ucfirst($where['type']);
             if (method_exists($this, $method)) {
                 $sql[] = $where['boolean'] . ' ' . $this->$method($query, $where);
             }
         }
-        
+
         return ltrim(implode(' ', $sql), 'and ');
     }
 
@@ -151,7 +150,7 @@ class Grammar
     protected function compileOrdersToArray(Builder $query, array $orders): array
     {
         return array_map(function ($order) {
-            return !isset($order['sql']) 
+            return !isset($order['sql'])
                 ? $this->wrap($order['column']) . ' ' . $order['direction']
                 : $order['sql'];
         }, $orders);
@@ -179,7 +178,7 @@ class Grammar
     public function compileInsert(Builder $query, array $values): string
     {
         $table = $this->wrapTable($query->from);
-        
+
         if (empty($values)) {
             return "insert into {$table} default values";
         }
@@ -191,13 +190,13 @@ class Grammar
 
         $columns = $this->columnize(array_keys(reset($values)));
         $parameters = [];
-        
+
         foreach ($values as $record) {
             $parameters[] = '(' . $this->parameterize($record) . ')';
         }
-        
+
         $parameters = implode(', ', $parameters);
-        
+
         return "insert into {$table} ({$columns}) values {$parameters}";
     }
 
@@ -208,14 +207,14 @@ class Grammar
     {
         $table = $this->wrapTable($query->from);
         $columns = [];
-        
+
         foreach ($values as $key => $value) {
             $columns[] = $this->wrap($key) . ' = ' . $this->parameter($value);
         }
-        
+
         $columns = implode(', ', $columns);
         $where = $this->compileWheres($query);
-        
+
         return trim("update {$table} set {$columns} {$where}");
     }
 
@@ -226,7 +225,7 @@ class Grammar
     {
         $table = $this->wrapTable($query->from);
         $where = $this->compileWheres($query);
-        
+
         return trim("delete from {$table} {$where}");
     }
 
@@ -238,7 +237,7 @@ class Grammar
         if ($this->isExpression($table)) {
             return $this->getValue($table);
         }
-        
+
         return $this->wrap($this->tablePrefix . $table, true);
     }
 
@@ -264,11 +263,11 @@ class Grammar
     protected function wrapAliasedValue(string $value, bool $prefixAlias = false): string
     {
         $segments = preg_split('/\s+as\s+/i', $value);
-        
+
         if ($prefixAlias) {
             $segments[1] = $this->tablePrefix . $segments[1];
         }
-        
+
         return $this->wrap($segments[0]) . ' as ' . $this->wrapValue($segments[1]);
     }
 
@@ -288,7 +287,7 @@ class Grammar
         if ($value === '*' || $value === null) {
             return $value ?? '';
         }
-        
+
         return '`' . str_replace('`', '``', $value) . '`';
     }
 

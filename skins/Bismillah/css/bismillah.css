@@ -293,6 +293,7 @@ body {
     visibility: hidden;
     transform: translateY(-10px);
     transition: var(--bismillah-transition);
+    z-index: 9999;
 }
 
 .user-dropdown-menu[z-show="true"] {

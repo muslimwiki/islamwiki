@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Debug script for skin discovery
  */
@@ -41,7 +42,7 @@ if (is_dir($muslimDir)) {
     $configFile = $muslimDir . '/skin.json';
     echo "<p>Config file: $configFile</p>";
     echo "<p>Config exists: " . (file_exists($configFile) ? 'Yes' : 'No') . "</p>";
-    
+
     if (file_exists($configFile)) {
         $config = json_decode(file_get_contents($configFile), true);
         echo "<p>Config content:</p>";
@@ -63,4 +64,4 @@ if (!empty($validSkins)) {
     }
 } else {
     echo "<p>No valid skins defined, would use dynamic discovery</p>";
-} 
+}

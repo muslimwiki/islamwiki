@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Simple Authentication Test
- * 
+ *
  * Tests basic authentication functionality.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../../src/helpers.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -28,9 +29,9 @@ try {
     // Initialize container
     echo "Test 1: Initializing Container...\n";
     $container = new Container();
-    
+
     // Manually register required services
-    $container->singleton(Connection::class, function() {
+    $container->singleton(Connection::class, function () {
         return new Connection([
             'host' => 'localhost',
             'database' => 'islamwiki',
@@ -40,8 +41,8 @@ try {
             'collation' => 'utf8mb4_unicode_ci',
         ]);
     });
-    
-    $container->singleton(Logger::class, function() {
+
+    $container->singleton(Logger::class, function () {
         return new Logger(
             __DIR__ . '/../../storage/logs',
             \Psr\Log\LogLevel::DEBUG,
@@ -49,7 +50,7 @@ try {
             5   // max files
         );
     });
-    
+
     echo "✅ Container initialized successfully\n\n";
 
     // Test 2: Check database connection
@@ -61,7 +62,7 @@ try {
     echo "Test 3: Checking users table...\n";
     $users = $db->table('users')->get();
     echo "✅ Found " . count($users) . " users in database\n";
-    
+
     if (count($users) > 0) {
         echo "✅ Sample users:\n";
         foreach (array_slice($users, 0, 3) as $user) {
@@ -75,7 +76,7 @@ try {
     // Test 4: Check if admin user exists
     echo "Test 4: Checking for admin user...\n";
     $adminUser = $db->table('users')->where('username', 'admin')->first();
-    
+
     if ($adminUser) {
         echo "✅ Admin user found:\n";
         echo "  - Username: {$adminUser['username']}\n";
@@ -85,7 +86,7 @@ try {
     } else {
         echo "❌ Admin user not found\n";
         echo "Creating admin user...\n";
-        
+
         $adminId = $db->table('users')->insert([
             'username' => 'admin',
             'email' => 'admin@islamwiki.local',
@@ -96,7 +97,7 @@ try {
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
-        
+
         if ($adminId) {
             echo "✅ Admin user created successfully (ID: {$adminId})\n";
             echo "  - Username: admin\n";
@@ -121,9 +122,8 @@ try {
     echo "==========================================\n";
     echo "✅ Authentication Test Complete!\n";
     echo "==========================================\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

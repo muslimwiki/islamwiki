@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Create Basic Pages Script
- * 
+ *
  * Creates the basic pages that should exist on IslamWiki
- * 
+ *
  * @package IslamWiki
  * @version 0.0.34
  * @license AGPL-3.0-only
@@ -21,7 +22,7 @@ use IslamWiki\Core\Database\Connection;
 try {
     // Initialize database connection
     $db = new Connection();
-    
+
     // Basic pages to create
     $basicPages = [
         [
@@ -50,30 +51,30 @@ try {
             'content' => "# Islamic History\n\nExplore the rich history of Islam from the time of Prophet Muhammad ﷺ to the present day.\n\n## Early Islamic Period\n\n### The Prophet Muhammad ﷺ\n- Birth and early life in Mecca\n- Revelation and prophethood\n- Migration to Medina (Hijra)\n- Conquest of Mecca\n- Final years and passing\n\n### The Rightly Guided Caliphs (Khulafa al-Rashidun)\n- Abu Bakr al-Siddiq (632-634 CE)\n- Umar ibn al-Khattab (634-644 CE)\n- Uthman ibn Affan (644-656 CE)\n- Ali ibn Abi Talib (656-661 CE)\n\n## Islamic Empires\n\n### Umayyad Caliphate (661-750 CE)\n- Expansion and conquests\n- Administrative reforms\n- Cultural achievements\n\n### Abbasid Caliphate (750-1258 CE)\n- Golden Age of Islam\n- Scientific and cultural achievements\n- Translation movement\n- House of Wisdom\n\n### Ottoman Empire (1299-1922 CE)\n- Rise and expansion\n- Administrative system\n- Cultural contributions\n- Decline and fall\n\n## Modern Period\n\n- Colonial period\n- Independence movements\n- Contemporary challenges\n- Revival and renewal\n\n*History is the teacher of life.*"
         ]
     ];
-    
+
     $stmt = $db->prepare("
         INSERT INTO pages (title, slug, content, content_format, namespace, created_at, updated_at) 
         VALUES (?, ?, ?, 'markdown', '', NOW(), NOW())
     ");
-    
+
     $createdCount = 0;
     foreach ($basicPages as $page) {
         // Check if page already exists
         $checkStmt = $db->prepare("SELECT id FROM pages WHERE slug = ?");
         $checkStmt->execute([$page['slug']]);
         $existing = $checkStmt->fetch();
-        
+
         if ($existing) {
             echo "⏭️  Page already exists: {$page['title']}\n";
             continue;
         }
-        
+
         $result = $stmt->execute([
             $page['title'],
             $page['slug'],
             $page['content']
         ]);
-        
+
         if ($result) {
             echo "✅ Created page: {$page['title']}\n";
             $createdCount++;
@@ -81,15 +82,13 @@ try {
             echo "❌ Failed to create page: {$page['title']}\n";
         }
     }
-    
+
     if ($createdCount > 0) {
         echo "\n🎉 Successfully created {$createdCount} basic pages!\n";
     } else {
         echo "\n📝 All basic pages already exist!\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error creating basic pages: " . $e->getMessage() . "\n";
     exit(1);
 }
-?> 

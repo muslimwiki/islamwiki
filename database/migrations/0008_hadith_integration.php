@@ -2,13 +2,13 @@
 
 /**
  * Hadith Integration Migration
- * 
+ *
  * Adds tables for Hadith integration features including:
  * - Hadith-wiki linking
  * - Search cache
  * - User interactions
  * - Statistics tracking
- * 
+ *
  * @package IslamWiki\Database\Migrations
  * @version 0.0.14
  * @since Phase 4
@@ -20,8 +20,8 @@ use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Connection;
 
-return function(Connection $connection) {
-    return new class($connection) extends Migration
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
         public function up(): void
         {
@@ -36,7 +36,7 @@ return function(Connection $connection) {
                 $table->text('context')->nullable(); // Context of the link
                 $table->string('section', 100)->nullable(); // Section of the wiki page
                 $table->timestamps();
-                
+
                 $table->index(['hadith_id', 'wiki_page_id']);
                 $table->index('link_type');
             });
@@ -50,7 +50,7 @@ return function(Connection $connection) {
                 $table->integer('result_count')->default(0);
                 $table->timestamp('expires_at');
                 $table->timestamps();
-                
+
                 $table->unique('query_hash');
                 $table->index('expires_at');
             });
@@ -66,7 +66,7 @@ return function(Connection $connection) {
                 $table->integer('comments')->default(0);
                 $table->timestamp('last_viewed')->nullable();
                 $table->timestamps();
-                
+
                 $table->index('hadith_id');
                 $table->index('views');
                 $table->index('last_viewed');
@@ -80,7 +80,7 @@ return function(Connection $connection) {
                 $table->text('notes')->nullable();
                 $table->string('tags', 255)->nullable(); // Comma-separated tags
                 $table->timestamps();
-                
+
                 $table->unique(['user_id', 'hadith_id']);
                 $table->index('user_id');
                 $table->index('hadith_id');
@@ -95,7 +95,7 @@ return function(Connection $connection) {
                 $table->text('context')->nullable(); // Surrounding text context
                 $table->integer('position')->default(0); // Position in the page
                 $table->timestamps();
-                
+
                 $table->index(['page_id', 'hadith_id']);
                 $table->index('reference_format');
             });
@@ -111,7 +111,7 @@ return function(Connection $connection) {
                 $table->string('study_type', 50)->default('reading'); // reading, memorization, analysis
                 $table->text('notes')->nullable();
                 $table->timestamps();
-                
+
                 $table->index(['user_id', 'hadith_id']);
                 $table->index('started_at');
             });
@@ -127,7 +127,7 @@ return function(Connection $connection) {
                 $table->boolean('is_approved')->default(false);
                 $table->unsignedBigInteger('parent_id')->nullable(); // For threaded comments
                 $table->timestamps();
-                
+
                 $table->index(['hadith_id', 'user_id']);
                 $table->index('comment_type');
                 $table->index('is_approved');
@@ -142,7 +142,7 @@ return function(Connection $connection) {
                 $table->string('color', 7)->default('#3B82F6'); // Hex color code
                 $table->integer('usage_count')->default(0);
                 $table->timestamps();
-                
+
                 $table->unique('slug');
                 $table->index('name');
                 $table->index('usage_count');
@@ -155,7 +155,7 @@ return function(Connection $connection) {
                 $table->unsignedBigInteger('tag_id');
                 $table->unsignedBigInteger('assigned_by')->nullable(); // User who assigned the tag
                 $table->timestamps();
-                
+
                 $table->unique(['hadith_id', 'tag_id']);
                 $table->index('hadith_id');
                 $table->index('tag_id');
@@ -171,7 +171,7 @@ return function(Connection $connection) {
                 $table->string('verification_source', 255)->nullable();
                 $table->timestamp('verified_at');
                 $table->timestamps();
-                
+
                 $table->index(['hadith_id', 'authenticity_level']);
                 $table->index('verified_by');
             });
@@ -186,7 +186,7 @@ return function(Connection $connection) {
                 $table->text('verification_notes')->nullable();
                 $table->timestamp('verified_at')->nullable();
                 $table->timestamps();
-                
+
                 $table->index(['hadith_id', 'narrator_id']);
                 $table->index('verification_status');
             });
@@ -212,4 +212,4 @@ return function(Connection $connection) {
             echo "✅ Hadith integration tables dropped successfully\n";
         }
     };
-}; 
+};

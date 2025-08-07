@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Models;
 
 use IslamWiki\Core\Database\Query\Builder;
@@ -148,11 +146,11 @@ class Page
     {
         $instance = new static($connection);
         $data = $instance->newQuery()->where('id', '=', $id)->first();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new static($connection, (array) $data);
     }
 
@@ -166,11 +164,11 @@ class Page
             ->where('slug', '=', $slug)
             ->orderBy('id', 'desc')
             ->first();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new static($connection, (array) $data);
     }
 
@@ -180,13 +178,13 @@ class Page
     public function save(): bool
     {
         $attributes = $this->getDirty();
-        
+
         if ($this->exists()) {
             $this->performUpdate($attributes);
         } else {
             $this->performInsert($attributes);
         }
-        
+
         return true;
     }
 
@@ -196,12 +194,12 @@ class Page
     protected function performInsert(array $attributes): void
     {
         $now = new DateTime();
-        
+
         $attributes['created_at'] = $now;
         $attributes['updated_at'] = $now;
-        
+
         $id = $this->newQuery()->insertGetId($attributes);
-        
+
         $this->setAttribute('id', $id);
     }
 
@@ -211,7 +209,7 @@ class Page
     protected function performUpdate(array $attributes): void
     {
         $attributes['updated_at'] = new DateTime();
-        
+
         $this->newQuery()
             ->where('id', '=', $this->getAttribute('id'))
             ->update($attributes);
@@ -231,15 +229,15 @@ class Page
     public function getDirty(): array
     {
         $dirty = [];
-        
+
         foreach ($this->attributes as $key => $value) {
             if ($key === 'id') {
                 continue;
             }
-            
+
             $dirty[$key] = $value;
         }
-        
+
         return $dirty;
     }
 
@@ -256,9 +254,9 @@ class Page
             'content_format' => $this->getAttribute('content_format', 'markdown'),
             'comment' => $comment,
         ]);
-        
+
         $revision->save();
-        
+
         return $revision;
     }
 
@@ -270,12 +268,12 @@ class Page
         if (!$this->exists()) {
             return [];
         }
-        
+
         $revisions = $this->connection->table('page_revisions')
             ->where('page_id', '=', $this->getAttribute('id'))
             ->orderBy('id', 'desc')
             ->get();
-        
+
         return array_map(function ($data) {
             return new Revision($this->connection, (array) $data);
         }, $revisions);

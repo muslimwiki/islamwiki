@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\API\Authenticators;
@@ -9,13 +10,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Session Authenticator
- * 
+ *
  * Authenticates API requests using session-based authentication.
  */
 class SessionAuthenticator implements AuthenticatorInterface
 {
     private WisalSession $session;
-    
+
     /**
      * Create a new session authenticator.
      */
@@ -23,7 +24,7 @@ class SessionAuthenticator implements AuthenticatorInterface
     {
         $this->session = $session;
     }
-    
+
     /**
      * Authenticate request using session.
      */
@@ -32,7 +33,7 @@ class SessionAuthenticator implements AuthenticatorInterface
         // Check if user is logged in via session
         return $this->session->isLoggedIn();
     }
-    
+
     /**
      * Get authentication method name.
      */
@@ -40,7 +41,7 @@ class SessionAuthenticator implements AuthenticatorInterface
     {
         return 'session';
     }
-    
+
     /**
      * Get current user from session.
      */
@@ -49,11 +50,11 @@ class SessionAuthenticator implements AuthenticatorInterface
         if (!$this->session->isLoggedIn()) {
             return null;
         }
-        
+
         return [
             'id' => $this->session->getUserId(),
             'username' => $this->session->getUsername(),
             'is_admin' => $this->session->isAdmin(),
         ];
     }
-} 
+}

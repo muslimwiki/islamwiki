@@ -1,20 +1,19 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Page Controller
- * 
+ *
  * This controller handles all operations related to wiki pages including:
  * - Viewing pages and their history
  * - Creating, editing, and deleting pages
  * - Managing page revisions and rollbacks
  * - Handling page permissions and locks
  * - Processing wiki text and formatting
- * 
+ *
  * @package IslamWiki\Http\Controllers
  */
 
-
+declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
@@ -32,7 +31,7 @@ class PageController extends Controller
      * @var LoggerInterface Logger instance
      */
     private $logger;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -73,7 +72,7 @@ class PageController extends Controller
      *
      * @param Request $request The HTTP request
      * @return Response
-     * 
+     *
      * @throws \Exception If there's an error retrieving pages
      */
     public function index(Request $request): Response
@@ -82,20 +81,22 @@ class PageController extends Controller
             'query' => $request->getQueryParams(),
             'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
         ]);
-        
+
         try {
             // Get sort parameters
-            $sort = in_array(strtolower($request->getQueryParam('sort', 'title')), 
-                           ['title', 'updated_at', 'view_count']) 
-                   ? strtolower($request->getQueryParam('sort', 'title')) 
+            $sort = in_array(
+                strtolower($request->getQueryParam('sort', 'title')),
+                ['title', 'updated_at', 'view_count']
+            )
+                   ? strtolower($request->getQueryParam('sort', 'title'))
                    : 'title';
-            
+
             $order = strtolower($request->getQueryParam('order', 'asc')) === 'desc' ? 'desc' : 'asc';
-            
+
             // Get filter parameters
             $namespace = $request->getQueryParam('namespace');
             $search = $request->getQueryParam('q');
-            
+
             // Build the base query - simplified for now
             $pages = $this->db->table('pages')
                 ->select([
@@ -109,7 +110,7 @@ class PageController extends Controller
                 ])
                 ->orderBy($sort, $order)
                 ->get();
-            
+
             // Apply filters if provided
             if ($namespace) {
                 $pages = $this->db->table('pages')
@@ -140,13 +141,13 @@ class PageController extends Controller
                     ->orderBy($sort, $order)
                     ->get();
             }
-            
+
             // Add revision count and author info (simplified)
             foreach ($pages as &$page) {
                 $page['revision_count'] = 1; // Default for now
                 $page['author_name'] = 'Unknown'; // Default for now
             }
-            
+
             // Log successful page list retrieval
             $this->logger->info('Page list retrieved successfully', [
                 'count' => count($pages),
@@ -181,7 +182,7 @@ class PageController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'query' => $request->getQueryParams(),
             ]);
-            
+
             throw $e; // Re-throw to be handled by the global error handler
         }
     }
@@ -215,16 +216,16 @@ class PageController extends Controller
             'method' => $request->getMethod(),
             'is_ajax' => $request->isXmlHttpRequest(),
         ]);
-        
+
         try {
             // Try to find the page by the exact slug first
             $page = Page::findBySlug($slug, $this->db);
-            
+
             // If not found, try with 'Main' namespace
             if (!$page) {
                 $this->logger->debug('Page not found, trying with Main namespace', ['slug' => $slug]);
                 $page = Page::findBySlug("Main:{$slug}", $this->db);
-                
+
                 if ($page) {
                     $this->logger->info('Redirecting to main namespace page', [
                         'original_slug' => $slug,
@@ -232,18 +233,18 @@ class PageController extends Controller
                     ]);
                     return $this->redirect($page->getUrl(), 301); // 301 for permanent redirect
                 }
-                
+
                 // Check if user has permission to create pages
                 $canCreate = $this->canCreatePage($request);
                 $this->logger->info('Page not found', [
                     'slug' => $slug,
                     'user_can_create' => $canCreate,
                 ]);
-                
+
                 if ($canCreate) {
                     return $this->redirect("/edit?title=" . urlencode($slug), 302);
                 }
-                
+
                 throw new HttpException(404, 'The requested page was not found.');
             }
 
@@ -251,7 +252,7 @@ class PageController extends Controller
             if ($page->isLocked()) {
                 $user = $this->user($request);
                 $isAdmin = $user ? $this->isAdmin($request) : false;
-                
+
                 if (!$isAdmin) {
                     $this->logger->warning('Attempt to access locked page', [
                         'page_id' => $page->getAttribute('id'),
@@ -260,7 +261,7 @@ class PageController extends Controller
                         'is_authenticated' => $user !== null,
                         'is_admin' => false,
                     ]);
-                    
+
                     return $this->view('errors.403', [
                         'message' => 'This page is currently locked and cannot be viewed.',
                         'title' => 'Access Denied',
@@ -268,7 +269,7 @@ class PageController extends Controller
                         'can_request_access' => $user !== null,
                     ], 403);
                 }
-                
+
                 $this->logger->info('Admin viewing locked page', [
                     'page_id' => $page->getAttribute('id'),
                     'admin_id' => $user['id'],
@@ -279,25 +280,25 @@ class PageController extends Controller
             $user = $this->user($request);
             $isAdmin = $user ? $this->isAdmin($request) : false;
             $userId = $user ? $user['id'] : null;
-            
+
             // Skip view count increment for certain conditions
-            $skipViewCount = $request->isXmlHttpRequest() || 
+            $skipViewCount = $request->isXmlHttpRequest() ||
                             $request->hasHeader('X-PJAX') ||
                             $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
-            
+
             // Track page view if not skipped
             $viewCountUpdated = false;
             if (!$skipViewCount) {
                 try {
                     $this->db->beginTransaction();
-                    
+
                     // Get current view count and increment it
                     $currentPage = $this->db->table('pages')
                         ->where('id', '=', $page->getAttribute('id'))
                         ->first(['view_count']);
-                    
+
                     $newViewCount = ($currentPage['view_count'] ?? 0) + 1;
-                    
+
                     $result = $this->db->table('pages')
                         ->where('id', '=', $page->getAttribute('id'))
                         ->update([
@@ -305,10 +306,10 @@ class PageController extends Controller
                             'last_viewed_at' => date('Y-m-d H:i:s'),
                             'last_viewed_by' => $userId,
                         ]);
-                    
+
                     $this->db->commit();
                     $viewCountUpdated = (bool)$result;
-                    
+
                     // Log the page view for analytics
                     if ($viewCountUpdated) {
                         $this->logPageView($page, $request);
@@ -327,10 +328,10 @@ class PageController extends Controller
             // Get page revisions
             $revisions = $page->revisions();
             $latestRevision = $revisions[0] ?? null;
-            
+
             // Parse wiki text content
             $content = $this->parseWikiText($page->getAttribute('content'));
-            
+
             // Log successful page view
             $this->logger->info('Page displayed successfully', [
                 'page_id' => $page->getAttribute('id'),
@@ -348,18 +349,17 @@ class PageController extends Controller
                 'canDelete' => $this->canDeletePage($page, $request),
                 'canLock' => $this->isAdmin($request),
             ]);
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to display page', [
                 'slug' => $slug,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            
+
             if ($e instanceof HttpException) {
                 throw $e;
             }
-            
+
             throw new HttpException(500, 'An error occurred while loading the page. Please try again later.');
         }
     }
@@ -384,14 +384,14 @@ class PageController extends Controller
             'method' => $request->getMethod(),
             'uri' => $request->getUri()->getPath(),
         ]);
-        
+
         try {
             // Use new AmanSecurity for authentication
             $auth = new \IslamWiki\Core\Auth\AmanSecurity(
                 $this->container->get('session'),
                 $this->db
             );
-            
+
             // TEMPORARILY DISABLED AUTHENTICATION FOR TESTING
             // TODO: Re-enable authentication when session sharing is fixed
             /*
@@ -400,7 +400,7 @@ class PageController extends Controller
                 $this->logger->notice('Unauthenticated user attempted to access page creation form');
                 return $this->redirect('/login?redirect=' . urlencode($request->getUri()->getPath() . '?' . $request->getUri()->getQuery()));
             }
-            
+
             // Check if user has permission to create pages
             if (!$auth->can('create_pages')) {
                 $this->logger->warning('User does not have permission to create pages', [
@@ -409,41 +409,41 @@ class PageController extends Controller
                 throw new HttpException(403, 'You do not have permission to create pages.');
             }
             */
-            
+
             // Get title and namespace from query parameters
             $title = trim($request->getQueryParam('title', ''));
             $namespace = trim($request->getQueryParam('namespace', ''));
-            
+
             // If title is provided but namespace isn't, try to extract it
             if ($title && !$namespace && strpos($title, ':') !== false) {
                 list($namespace, $title) = explode(':', $title, 2);
                 $title = trim($title);
                 $namespace = trim($namespace);
             }
-            
+
             // Check if the page already exists
             if ($title) {
                 $slug = $this->generateSlug($namespace, $title);
                 $existingPage = Page::findBySlug($slug, $this->db);
-                
+
                 if ($existingPage) {
                     $this->logger->info('Attempted to create existing page, redirecting to edit', [
                         'slug' => $slug,
                         'existing_page_id' => $existingPage->getAttribute('id'),
                     ]);
-                    
+
                     return $this->redirect($existingPage->getEditUrl())
                         ->with('info', 'This page already exists. You are now editing the existing page.');
                 }
             }
-            
+
             // Log successful form access
             $this->logger->debug('Page creation form displayed', [
                 'title' => $title,
                 'namespace' => $namespace,
                 'user_id' => $this->user($request)['id'],
             ]);
-            
+
             return $this->view('pages/edit', [
                 'title' => $title,
                 'namespace' => $namespace,
@@ -454,17 +454,15 @@ class PageController extends Controller
                 'canLock' => $this->isAdmin($request),
                 'auth' => $auth,
             ]);
-            
         } catch (HttpException $e) {
             throw $e; // Re-throw HTTP exceptions
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to display page creation form', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'query_params' => $request->getQueryParams(),
             ]);
-            
+
             throw new HttpException(500, 'An error occurred while loading the page creation form. Please try again later.');
         }
     }
@@ -492,7 +490,7 @@ class PageController extends Controller
             'method' => $request->getMethod(),
             'uri' => $request->getUri()->getPath(),
         ]);
-        
+
         try {
             // TEMPORARILY DISABLED CSRF VERIFICATION FOR TESTING
             // TODO: Re-enable CSRF verification when form includes proper tokens
@@ -504,13 +502,13 @@ class PageController extends Controller
                 throw new HttpException(403, 'Invalid CSRF token.');
             }
             */
-            
+
             // Use new AmanSecurity for authentication
             $auth = new \IslamWiki\Core\Auth\AmanSecurity(
                 $this->container->get('session'),
                 $this->db
             );
-            
+
             // TEMPORARILY DISABLED AUTHENTICATION FOR TESTING
             // TODO: Re-enable authentication when session sharing is fixed
             /*
@@ -519,7 +517,7 @@ class PageController extends Controller
                 $this->logger->warning('Unauthenticated user attempted to create a page');
                 throw new HttpException(403, 'You must be logged in to create pages.');
             }
-            
+
             // Check permissions
             if (!$auth->can('create_pages')) {
                 $this->logger->warning('User does not have permission to create pages', [
@@ -527,13 +525,13 @@ class PageController extends Controller
                 ]);
                 throw new HttpException(403, 'You do not have permission to create pages.');
             }
-            
+
             $user = $auth->user();
             */
-            
+
             // Use a default user for testing
             $user = ['id' => 1, 'username' => 'testuser'];
-            
+
             // Get and validate input
             $data = $request->getParsedBody();
             $title = trim($data['title'] ?? '');
@@ -542,14 +540,14 @@ class PageController extends Controller
             $comment = trim($data['comment'] ?? 'Created page');
             $isMinorEdit = isset($data['is_minor_edit']);
             $watchPage = isset($data['watch']);
-            
+
             $this->logger->info('PageController::store - Form data received', [
                 'title' => $title,
                 'namespace' => $namespace,
                 'content_length' => strlen($content),
                 'comment' => $comment,
             ]);
-            
+
             // Validate required fields
             $errors = [];
             if (empty($title)) {
@@ -558,34 +556,34 @@ class PageController extends Controller
             if (empty($content)) {
                 $errors['content'] = 'Page content cannot be empty';
             }
-            
+
             $this->logger->info('PageController::store - Validation completed', [
                 'errors_count' => count($errors),
                 'errors' => $errors,
             ]);
-            
+
             // Validate title format (allow most characters except dangerous ones)
             if (!preg_match('/^[^<>\[\]|{}_\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+$/u', $title)) {
                 $errors['title'] = 'Invalid characters in page title';
             }
-            
+
             // Validate namespace (allow empty namespace)
             if (!empty($namespace) && !preg_match('/^[a-zA-Z0-9_-]+$/', $namespace)) {
                 $errors['namespace'] = 'Invalid namespace format';
             }
-            
+
             $this->logger->info('PageController::store - Advanced validation completed', [
                 'errors_count' => count($errors),
                 'errors' => $errors,
             ]);
-            
+
             // If there are validation errors, return to the form
             if (!empty($errors)) {
                 $this->logger->info('PageController::store - Validation failed', [
                     'user_id' => $user['id'],
                     'errors' => $errors,
                 ]);
-                
+
                 return $this->view('pages/edit', [
                     'title' => $title,
                     'namespace' => $namespace,
@@ -595,18 +593,18 @@ class PageController extends Controller
                     'old' => $data,
                 ]);
             }
-            
+
             // Generate slug and check for existing page
             $slug = $this->generateSlug($namespace, $title);
             $existingPage = Page::findBySlug($slug, $this->db);
-            
+
             if ($existingPage) {
                 $this->logger->info('Attempted to create existing page', [
                     'user_id' => $user['id'],
                     'existing_page_id' => $existingPage->getAttribute('id'),
                     'slug' => $slug,
                 ]);
-                
+
                 return $this->redirect($existingPage->getEditUrl())
                     ->with('info', 'This page already exists. You are now editing the existing page.');
             }
@@ -619,13 +617,13 @@ class PageController extends Controller
                     'slug' => $slug,
                     'namespace' => $namespace,
                 ]);
-                
+
                 // Create the page directly in database
                 $stmt = $this->db->getPdo()->prepare("
                     INSERT INTO pages (title, slug, content, namespace, content_format, created_by, updated_by, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
-                
+
                 $now = date('Y-m-d H:i:s');
                 $stmt->execute([
                     $title,
@@ -638,21 +636,21 @@ class PageController extends Controller
                     $now,
                     $now
                 ]);
-                
+
                 $pageId = $this->db->getPdo()->lastInsertId();
-                
+
                 $this->logger->info('PageController::store - Page inserted successfully', [
                     'page_id' => $pageId,
                     'title' => $title,
                     'slug' => $slug,
                 ]);
-                
+
                 // Create the initial revision
                 $stmt = $this->db->getPdo()->prepare("
                     INSERT INTO page_history (page_id, user_id, content, comment, created_at) 
                     VALUES (?, ?, ?, ?, ?)
                 ");
-                
+
                 $stmt->execute([
                     $pageId,
                     $user['id'],
@@ -660,7 +658,7 @@ class PageController extends Controller
                     $data['comment'] ?? 'Created page',
                     $now
                 ]);
-                
+
                 // Create a mock page object for the redirect
                 $page = new Page($this->db, [
                     'id' => $pageId,
@@ -670,7 +668,6 @@ class PageController extends Controller
                     'content' => $data['content'] ?? '',
                     'content_format' => $data['content_format'] ?? 'markdown',
                 ]);
-                
             } catch (Exception $e) {
                 $this->logger->error('Failed to create page directly', [
                     'error' => $e->getMessage(),
@@ -690,10 +687,8 @@ class PageController extends Controller
 
             return $this->redirect($page->getUrl())
                 ->with('success', 'Page created successfully.');
-            
         } catch (HttpException $e) {
             throw $e; // Re-throw HTTP exceptions
-            
         } catch (\Exception $e) {
             $this->logger->error('Failed to create page', [
                 'error' => $e->getMessage(),
@@ -702,7 +697,7 @@ class PageController extends Controller
                 'title' => $title,
                 'namespace' => $namespace,
             ]);
-            
+
             throw new HttpException(500, 'An error occurred while creating the page. Please try again.');
         }
     }
@@ -713,11 +708,11 @@ class PageController extends Controller
     public function edit(Request $request, string $slug): Response
     {
         $page = Page::findBySlug($slug, $this->db);
-        
+
         if (!$page) {
             $this->abort(404, 'Page not found');
         }
-        
+
         // Check if page is locked and user has permission to edit
         if ($page->isLocked() && !$this->isAdmin($request)) {
             $this->abort(403, 'This page is locked and cannot be edited');
@@ -728,7 +723,7 @@ class PageController extends Controller
             $this->container->get('session'),
             $this->db
         );
-        
+
         return $this->view('pages/edit', [
             'page' => $page,
             'title' => $page->getAttribute('title'),
@@ -753,19 +748,19 @@ class PageController extends Controller
         if (!$page) {
             $this->abort(404, 'Page not found');
         }
-        
+
         // Check if page is locked and user has permission to edit
         if ($page->isLocked() && !$this->isAdmin($request)) {
             $this->abort(403, 'This page is locked and cannot be edited');
         }
 
         $data = $request->getParsedBody();
-        
+
         // Update page content
         $page->setAttribute('content', $data['content'] ?? '');
         $page->setAttribute('content_format', $data['content_format'] ?? 'markdown');
         $page->save();
-        
+
         // Create a new revision
         $revision = $page->createRevision(
             $user['id'],
@@ -782,13 +777,13 @@ class PageController extends Controller
     public function history(Request $request, string $slug): Response
     {
         $page = Page::findBySlug($slug, $this->db);
-        
+
         if (!$page) {
             $this->abort(404, 'Page not found');
         }
 
         $revisions = $page->revisions();
-        
+
         return $this->view('pages/history', [
             'page' => $page,
             'revisions' => $revisions,
@@ -801,11 +796,11 @@ class PageController extends Controller
     public function showRevision(Request $request, string $slug, int $revisionId): Response
     {
         $page = Page::findBySlug($slug, $this->db);
-        
+
         if (!$page) {
             $this->abort(404, 'Page not found');
         }
-        
+
         $revision = null;
         foreach ($page->revisions() as $rev) {
             if ($rev->getAttribute('id') == $revisionId) {
@@ -813,7 +808,7 @@ class PageController extends Controller
                 break;
             }
         }
-        
+
         if (!$revision) {
             $this->abort(404, 'Revision not found');
         }
@@ -839,12 +834,12 @@ class PageController extends Controller
         if (!$page) {
             $this->abort(404, 'Page not found');
         }
-        
+
         // Check if page is locked and user has permission to edit
         if ($page->isLocked() && !$this->isAdmin($request)) {
             $this->abort(403, 'This page is locked and cannot be edited');
         }
-        
+
         // Find the revision to revert to
         $targetRevision = null;
         foreach ($page->revisions() as $revision) {
@@ -853,15 +848,15 @@ class PageController extends Controller
                 break;
             }
         }
-        
+
         if (!$targetRevision) {
             $this->abort(404, 'Revision not found');
         }
-        
+
         // Update page content to the target revision
         $page->setAttribute('content', $targetRevision->getAttribute('content'));
         $page->save();
-        
+
         // Create a new revision for the revert
         $revision = $page->createRevision(
             $user['id'],
@@ -918,27 +913,27 @@ class PageController extends Controller
     protected function generateSlug(string $namespace, string $title): string
     {
         $slug = $title;
-        
+
         // Convert to lowercase
         $slug = mb_strtolower($slug, 'UTF-8');
-        
+
         // Replace spaces with hyphens
         $slug = str_replace(' ', '-', $slug);
-        
+
         // Remove all characters except letters, numbers, and hyphens
         $slug = preg_replace('/[^\p{L}\p{N}\-]+/u', '', $slug);
-        
+
         // Replace multiple hyphens with a single one
         $slug = preg_replace('/-+/', '-', $slug);
-        
+
         // Trim hyphens from the beginning and end
         $slug = trim($slug, '-');
-        
+
         // Add namespace prefix if provided
         if (!empty($namespace)) {
             $slug = $namespace . ':' . $slug;
         }
-        
+
         return $slug;
     }
 
@@ -963,7 +958,7 @@ class PageController extends Controller
         try {
             $user = $this->user($request);
             $serverParams = $request->getServerParams();
-            
+
             $this->db->table('page_views')->insert([
                 'page_id' => $page->getAttribute('id'),
                 'user_id' => $user ? $user['id'] : null,
@@ -979,12 +974,11 @@ class PageController extends Controller
                     'accept_language' => $request->getHeaderLine('Accept-Language'),
                 ]),
             ]);
-            
+
             // Update the page's last_viewed_at timestamp
             $this->db->table('pages')
                 ->where('id', $page->getAttribute('id'))
                 ->update(['last_viewed_at' => date('Y-m-d H:i:s')]);
-                
         } catch (\Exception $e) {
             // Log the error but don't interrupt the page view
             $this->logger->error('Failed to log page view', [
@@ -994,7 +988,7 @@ class PageController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Check if the current user is an administrator.
      *
@@ -1008,12 +1002,12 @@ class PageController extends Controller
     protected function isAdmin(Request $request): bool
     {
         $user = $this->user($request);
-        
+
         // For now, check if the user is authenticated and has an 'is_admin' flag set to true
         // In a real application, you would check against a proper role/permission system
         return $user && !empty($user['is_admin']) && $user['is_admin'] === true;
     }
-    
+
     /**
      * Check if the current user has permission to edit the specified page.
      *
@@ -1028,32 +1022,32 @@ class PageController extends Controller
     protected function canEditPage(Page $page, Request $request): bool
     {
         $user = $this->user($request);
-        
+
         // If user is not authenticated, they can't edit
         if (!$user) {
             return false;
         }
-        
+
         // Admins can edit any page
         if ($this->isAdmin($request)) {
             return true;
         }
-        
+
         // Page creator can edit their own pages
         $latestRevision = $page->revisions()[0] ?? null;
         if ($latestRevision && $latestRevision->getAttribute('user_id') == $user['id']) {
             return true;
         }
-        
+
         // Check if the page is locked
         if ($page->isLocked()) {
             return false;
         }
-        
+
         // Default to allowing edit for authenticated users (can be restricted further)
         return true;
     }
-    
+
     /**
      * Check if the current user has permission to delete the specified page.
      *
@@ -1069,7 +1063,7 @@ class PageController extends Controller
         // Only admins can delete pages
         return $this->isAdmin($request);
     }
-    
+
     /**
      * Check if the current user has permission to create pages.
      *
@@ -1087,12 +1081,12 @@ class PageController extends Controller
         if (!$user) {
             return false;
         }
-        
+
         // For now, any authenticated user can create pages
         // In the future, this can be extended to check specific permissions
         return true;
     }
-    
+
     /**
      * Parse wiki text into HTML with markdown support and code highlighting.
      *
@@ -1103,34 +1097,34 @@ class PageController extends Controller
     {
         // First, escape any existing HTML to prevent XSS
         $text = htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        
+
         // Process code blocks first (before other markdown)
         $text = $this->parseCodeBlocks($text);
-        
+
         // Process headers
         $text = $this->parseHeaders($text);
-        
+
         // Process emphasis (bold and italic)
         $text = $this->parseEmphasis($text);
-        
+
         // Process links
         $text = $this->parseLinks($text);
-        
+
         // Process lists
         $text = $this->parseLists($text);
-        
+
         // Process blockquotes
         $text = $this->parseBlockquotes($text);
-        
+
         // Process horizontal rules
         $text = $this->parseHorizontalRules($text);
-        
+
         // Convert line breaks to <br> tags
         $text = nl2br($text);
-        
+
         return $text;
     }
-    
+
     /**
      * Parse code blocks with syntax highlighting.
      */
@@ -1139,10 +1133,10 @@ class PageController extends Controller
         // Match code blocks with language specification
         $text = preg_replace_callback(
             '/```(\w+)?\n(.*?)\n```/s',
-            function($matches) {
+            function ($matches) {
                 $language = $matches[1] ?? 'text';
                 $code = htmlspecialchars($matches[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                
+
                 return sprintf(
                     '<pre class="code-block language-%s"><code class="language-%s">%s</code></pre>',
                     $language,
@@ -1152,13 +1146,13 @@ class PageController extends Controller
             },
             $text
         );
-        
+
         // Match inline code
         $text = preg_replace('/`([^`]+)`/', '<code>$1</code>', $text);
-        
+
         return $text;
     }
-    
+
     /**
      * Parse markdown headers.
      */
@@ -1168,10 +1162,10 @@ class PageController extends Controller
         $text = preg_replace('/^### (.*$)/m', '<h3>$1</h3>', $text);
         $text = preg_replace('/^## (.*$)/m', '<h2>$1</h2>', $text);
         $text = preg_replace('/^# (.*$)/m', '<h1>$1</h1>', $text);
-        
+
         return $text;
     }
-    
+
     /**
      * Parse emphasis (bold and italic).
      */
@@ -1179,13 +1173,13 @@ class PageController extends Controller
     {
         // Bold text
         $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
-        
+
         // Italic text
         $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
-        
+
         return $text;
     }
-    
+
     /**
      * Parse links.
      */
@@ -1197,17 +1191,17 @@ class PageController extends Controller
             '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
             $text
         );
-        
+
         // Auto-link URLs
         $text = preg_replace(
             '/(https?:\/\/[^\s]+)/',
             '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
             $text
         );
-        
+
         return $text;
     }
-    
+
     /**
      * Parse lists (ordered and unordered).
      */
@@ -1216,7 +1210,7 @@ class PageController extends Controller
         // Unordered lists
         $text = preg_replace_callback(
             '/(^[ \t]*[-*+][ \t]+.*(?:\n[ \t]*[-*+][ \t]+.*)*)/m',
-            function($matches) {
+            function ($matches) {
                 $items = preg_split('/\n/', $matches[1]);
                 $html = '<ul>';
                 foreach ($items as $item) {
@@ -1229,11 +1223,11 @@ class PageController extends Controller
             },
             $text
         );
-        
+
         // Ordered lists
         $text = preg_replace_callback(
             '/(^[ \t]*\d+\.[ \t]+.*(?:\n[ \t]*\d+\.[ \t]+.*)*)/m',
-            function($matches) {
+            function ($matches) {
                 $items = preg_split('/\n/', $matches[1]);
                 $html = '<ol>';
                 foreach ($items as $item) {
@@ -1246,10 +1240,10 @@ class PageController extends Controller
             },
             $text
         );
-        
+
         return $text;
     }
-    
+
     /**
      * Parse blockquotes.
      */
@@ -1258,7 +1252,7 @@ class PageController extends Controller
         // Process blockquotes after other markdown but before line breaks
         $text = preg_replace_callback(
             '/(^[ \t]*>[ \t]+.*(?:\n[ \t]*>[ \t]+.*)*)/m',
-            function($matches) {
+            function ($matches) {
                 $lines = preg_split('/\n/', $matches[1]);
                 $html = '<blockquote>';
                 foreach ($lines as $line) {
@@ -1271,10 +1265,10 @@ class PageController extends Controller
             },
             $text
         );
-        
+
         return $text;
     }
-    
+
     /**
      * Parse horizontal rules.
      */

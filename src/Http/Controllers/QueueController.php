@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
@@ -56,7 +57,7 @@ class QueueController extends Controller
     {
         try {
             $stats = $this->queue->getStats();
-            
+
             return $this->jsonResponse([
                 'success' => true,
                 'data' => $stats
@@ -268,4 +269,4 @@ class QueueController extends Controller
             ], 500);
         }
     }
-} 
+}

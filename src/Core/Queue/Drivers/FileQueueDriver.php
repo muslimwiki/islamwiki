@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Queue\Drivers;
@@ -66,7 +67,7 @@ class FileQueueDriver implements QueueDriverInterface
             ];
 
             $result = file_put_contents($filename, json_encode($data));
-            
+
             if ($result !== false) {
                 $this->stats['total_jobs']++;
                 $this->logger->info('Job pushed to file queue', [
@@ -93,26 +94,26 @@ class FileQueueDriver implements QueueDriverInterface
     {
         try {
             $files = glob($this->storagePath . '/*.job');
-            
+
             if (empty($files)) {
                 return null;
             }
 
             // Sort by priority and creation time
-            usort($files, function($a, $b) {
+            usort($files, function ($a, $b) {
                 $dataA = json_decode(file_get_contents($a), true);
                 $dataB = json_decode(file_get_contents($b), true);
-                
+
                 if ($dataA['priority'] !== $dataB['priority']) {
                     return $dataB['priority'] - $dataA['priority'];
                 }
-                
+
                 return $dataA['created_at'] - $dataB['created_at'];
             });
 
             foreach ($files as $file) {
                 $data = json_decode(file_get_contents($file), true);
-                
+
                 if ($data['failed'] || $data['attempts'] >= $data['max_attempts']) {
                     continue;
                 }
@@ -145,14 +146,14 @@ class FileQueueDriver implements QueueDriverInterface
     private function createJobFromData(array $data): JobInterface
     {
         $jobClass = $data['class'];
-        
+
         if (!class_exists($jobClass)) {
             throw new \Exception("Job class {$jobClass} not found");
         }
 
         $job = new $jobClass($data['data'], $data['queue']);
         $job->setPriority($data['priority'] ?? 0);
-        
+
         return $job;
     }
 
@@ -270,7 +271,7 @@ class FileQueueDriver implements QueueDriverInterface
                     $data['attempts'] = 0;
                     $data['failure_reason'] = null;
                     $data['available_at'] = time();
-                    
+
                     if (file_put_contents($file, json_encode($data))) {
                         $count++;
                     }
@@ -292,14 +293,14 @@ class FileQueueDriver implements QueueDriverInterface
     {
         try {
             $files = glob($this->storagePath . '/*.job');
-            
+
             foreach ($files as $file) {
                 $data = json_decode(file_get_contents($file), true);
                 if ($data['id'] === $job->getId()) {
                     $data['failed'] = true;
                     $data['failure_reason'] = $job->getFailureReason();
                     $data['attempts'] = $job->getAttempts() + 1;
-                    
+
                     if (file_put_contents($file, json_encode($data))) {
                         $this->stats['failed_jobs']++;
                         $this->stats['processing_jobs']--;
@@ -373,4 +374,4 @@ class FileQueueDriver implements QueueDriverInterface
     {
         // No connection to close for file-based storage
     }
-} 
+}

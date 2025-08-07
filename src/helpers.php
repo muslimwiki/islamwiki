@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Helper functions for IslamWiki
- * 
+ *
  * This file contains utility functions that are used throughout the application.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.29
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 // Define ROOT_PATH if not already defined
 if (!defined('ROOT_PATH')) {
@@ -32,11 +33,11 @@ if (!function_exists('env')) {
     function env(string $key, $default = null)
     {
         $value = $_ENV[$key] ?? $_SERVER[$key] ?? null;
-        
+
         if ($value === null) {
             return $default;
         }
-        
+
         switch (strtolower($value)) {
             case 'true':
             case '(true)':
@@ -51,7 +52,7 @@ if (!function_exists('env')) {
             case '(null)':
                 return null;
         }
-        
+
         return $value;
     }
 }
@@ -144,7 +145,7 @@ if (!function_exists('asset')) {
     {
         $baseUrl = rtrim(env('APP_URL', 'https://local.islam.wiki'), '/');
         $assetPath = ltrim($path, '/');
-        
+
         // Use the new secure asset serving system (not public folder)
         return "{$baseUrl}/assets/{$assetPath}";
     }
@@ -162,13 +163,13 @@ if (!function_exists('url')) {
     {
         $baseUrl = rtrim(env('APP_URL', 'https://local.islam.wiki'), '/');
         $path = ltrim($path, '/');
-        
+
         $url = "{$baseUrl}/{$path}";
-        
+
         if (!empty($parameters)) {
             $url .= '?' . http_build_query($parameters);
         }
-        
+
         return $url;
     }
 }

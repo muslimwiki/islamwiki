@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug Dropdown Console Test
- * 
+ *
  * Simple test page to check for JavaScript errors and debug dropdown functionality
- * 
+ *
  * @package IslamWiki
  * @version 0.0.44
  * @license AGPL-3.0-only
@@ -59,4 +60,3 @@ $html = $view->render('debug/dropdown-console-test.twig', [
 ]);
 
 echo $html;
-?> 

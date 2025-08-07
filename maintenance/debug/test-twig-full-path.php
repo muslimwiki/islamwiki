@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment
@@ -11,10 +12,10 @@ try {
     // Create application instance
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
     $container = $app->getContainer();
-    
+
     // Get view renderer
     $viewRenderer = $container->get('view');
-    
+
     // Try to render with different template names
     $templates = [
         'pages/home',
@@ -24,7 +25,7 @@ try {
         'index',
         'index.twig'
     ];
-    
+
     foreach ($templates as $template) {
         try {
             echo "📄 Trying template: " . $template . "\n";
@@ -36,7 +37,7 @@ try {
             echo "❌ Template rendering failed: " . $e->getMessage() . "\n";
         }
     }
-    
+
     // Try to list available templates
     echo "\n📄 Checking available templates:\n";
     $templateDir = '/var/www/html/local.islam.wiki/resources/views';
@@ -46,10 +47,9 @@ try {
         $relativePath = str_replace('.twig', '', $relativePath);
         echo "  - " . $relativePath . "\n";
     }
-    
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "📄 Stack trace: " . $e->getTraceAsString() . "\n";
 }
 
-echo "\n=== Test Complete ===\n"; 
+echo "\n=== Test Complete ===\n";

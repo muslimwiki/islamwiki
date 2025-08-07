@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "🧪 Deep Session Investigation\n";
@@ -11,7 +12,7 @@ try {
     echo "- Session Name: " . session_name() . "\n";
     echo "- Session ID: " . session_id() . "\n";
     echo "- Session Data: " . print_r($_SESSION, true) . "\n";
-    
+
     // Test 2: Check session configuration
     echo "\n📊 Test 2: Session Configuration\n";
     echo "- session.use_strict_mode: " . ini_get('session.use_strict_mode') . "\n";
@@ -24,33 +25,34 @@ try {
     echo "- session.gc_maxlifetime: " . ini_get('session.gc_maxlifetime') . "\n";
     echo "- session.cookie_lifetime: " . ini_get('session.cookie_lifetime') . "\n";
     echo "- session.save_path: " . ini_get('session.save_path') . "\n";
-    
+
     // Test 3: Check if session is being started multiple times
     echo "\n📊 Test 3: Multiple Session Starts\n";
-    
+
     // Initialize application
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
     $container = $app->getContainer();
-    
+
     echo "- Before getting session from container:\n";
     echo "  - Session Status: " . session_status() . "\n";
     echo "  - Session Name: " . session_name() . "\n";
     echo "  - Session ID: " . session_id() . "\n";
-    
+
     // Get session from container
     $session = $container->get('session');
-    
+
     echo "- After getting session from container:\n";
     echo "  - Session Status: " . session_status() . "\n";
     echo "  - Session Name: " . session_name() . "\n";
     echo "  - Session ID: " . session_id() . "\n";
-    
+
     // Test 4: Check session name consistency
     echo "\n📊 Test 4: Session Name Consistency\n";
     echo "- Expected session name: islamwiki_session\n";
     echo "- Actual session name: " . session_name() . "\n";
-    echo "- Session name matches: " . (session_name() === 'islamwiki_session' ? 'Yes' : 'No') . "\n";
-    
+        $temp_b4c10998 = (session_name() === 'islamwiki_session' ? 'Yes' : 'No') . "\n";
+        echo "- Session name matches: " . $temp_b4c10998;
+
     // Test 5: Check if session is properly configured
     echo "\n📊 Test 5: Session Configuration Check\n";
     if (session_status() === PHP_SESSION_ACTIVE) {
@@ -62,7 +64,7 @@ try {
         echo "- Session is not active\n";
         echo "- Session status: " . session_status() . "\n";
     }
-    
+
     // Test 6: Check if session save path is correct
     echo "\n📊 Test 6: Session Save Path\n";
     $expectedPath = __DIR__ . '/../storage/sessions';
@@ -71,11 +73,11 @@ try {
     echo "- Actual save path: " . $actualPath . "\n";
     echo "- Path matches: " . ($actualPath === $expectedPath ? 'Yes' : 'No') . "\n";
     echo "- Expected path exists: " . (is_dir($expectedPath) ? 'Yes' : 'No') . "\n";
-    echo "- Expected path writable: " . (is_writable($expectedPath) ? 'Yes' : 'No') . "\n";
-    
+        $temp_84bd96ce = (is_writable($expectedPath) ? 'Yes' : 'No') . "\n";
+        echo "- Expected path writable: " . $temp_84bd96ce;
+
     echo "\n✅ Deep session investigation completed\n";
-    
 } catch (\Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace: " . $e->getTraceAsString() . "\n";
-} 
+}

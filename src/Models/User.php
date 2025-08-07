@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Models;
 
 use IslamWiki\Core\Database\Connection;
@@ -99,7 +97,7 @@ class User
         if ($key === 'password' && !str_starts_with($value, '$2y$')) {
             $value = $this->hashPassword($value);
         }
-        
+
         $this->attributes[$key] = $this->castAttribute($key, $value);
         return $this;
     }
@@ -192,11 +190,11 @@ class User
     {
         $instance = new static($connection);
         $data = $instance->newQuery()->where('id', '=', $id)->first();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new static($connection, (array) $data);
     }
 
@@ -209,11 +207,11 @@ class User
         $data = $instance->newQuery()
             ->where('username', '=', $username)
             ->first();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new static($connection, (array) $data);
     }
 
@@ -226,11 +224,11 @@ class User
         $data = $instance->newQuery()
             ->where('email', '=', $email)
             ->first();
-        
+
         if (!$data) {
             return null;
         }
-        
+
         return new static($connection, (array) $data);
     }
 
@@ -240,13 +238,13 @@ class User
     public function save(): bool
     {
         $attributes = $this->getDirty();
-        
+
         if ($this->exists()) {
             $this->performUpdate($attributes);
         } else {
             $this->performInsert($attributes);
         }
-        
+
         return true;
     }
 
@@ -256,12 +254,12 @@ class User
     protected function performInsert(array $attributes): void
     {
         $now = new DateTime();
-        
+
         $attributes['created_at'] = $now;
         $attributes['updated_at'] = $now;
-        
+
         $id = $this->newQuery()->insertGetId($attributes);
-        
+
         $this->setAttribute('id', $id);
     }
 
@@ -271,7 +269,7 @@ class User
     protected function performUpdate(array $attributes): void
     {
         $attributes['updated_at'] = new DateTime();
-        
+
         $this->newQuery()
             ->where('id', '=', $this->getAttribute('id'))
             ->update($attributes);
@@ -291,15 +289,15 @@ class User
     public function getDirty(): array
     {
         $dirty = [];
-        
+
         foreach ($this->attributes as $key => $value) {
             if ($key === 'id') {
                 continue;
             }
-            
+
             $dirty[$key] = $value;
         }
-        
+
         return $dirty;
     }
 
@@ -361,18 +359,18 @@ class User
         if (!$this->exists()) {
             return [];
         }
-        
+
         $query = $this->connection->table('page_revisions')
             ->where('user_id', '=', $this->getAttribute('id'))
             ->orderBy('created_at', 'desc')
             ->limit($limit);
-        
+
         $revisions = [];
-        
+
         foreach ($query->get() as $data) {
             $revisions[] = new Revision($this->connection, (array) $data);
         }
-        
+
         return $revisions;
     }
 
@@ -382,13 +380,13 @@ class User
     public function toArray(): array
     {
         $array = [];
-        
+
         foreach ($this->attributes as $key => $value) {
             // Skip hidden attributes
             if (in_array($key, $this->hidden)) {
                 continue;
             }
-            
+
             // Handle datetime casting
             if ($value instanceof DateTime) {
                 $array[$key] = $value->format('Y-m-d H:i:s');
@@ -396,7 +394,7 @@ class User
                 $array[$key] = $value;
             }
         }
-        
+
         return $array;
     }
 

@@ -1,33 +1,36 @@
 <?php
-declare(strict_types=1);
+
 /**
  * Script to fix remaining PHP tag and license header issues
  */
 
+declare(strict_types=1);
+
 // Function to process files
-function processFiles($path) {
+function processFiles($path)
+{
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     $filesProcessed = 0;
     $filesFixed = 0;
-    
+
     foreach ($iterator as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
             $filePath = $file->getRealPath();
-            
+
             // Skip files in vendor directory
             if (strpos($filePath, '/vendor/') !== false) {
                 continue;
             }
-            
+
             $filesProcessed++;
-            
+
             // Read file content
             $content = file_get_contents($filePath);
-            
+
             // Check if there's a PHP tag after the license header
             $pattern = '/<\?php\/\*\*[\s\S]*?\*\/\s*<\?php\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;/';
             $replacement = '<?php\n/**
@@ -50,9 +53,9 @@ function processFiles($path) {
  */
 
 ';
-            
+
             $newContent = preg_replace($pattern, $replacement, $content, -1, $count);
-            
+
             // If no replacement was done, try a different pattern
             if ($count === 0) {
                 $pattern2 = '/<\?php\/\*\*[\s\S]*?\*\/\s*<\?php\s*\n/';
@@ -78,7 +81,7 @@ function processFiles($path) {
 ';
                 $newContent = preg_replace($pattern2, $replacement2, $content, -1, $count);
             }
-            
+
             // Write back to file if content changed
             if ($count > 0) {
                 file_put_contents($filePath, $newContent);
@@ -87,7 +90,7 @@ function processFiles($path) {
             }
         }
     }
-    
+
     return [$filesProcessed, $filesFixed];
 }
 

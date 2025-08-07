@@ -227,18 +227,18 @@
 
         <div class="error-summary">
             <h2>Error Summary</h2>
-            <?php if (isset($exception) && $exception instanceof Throwable): ?>
+            <?php if (isset($exception) && $exception instanceof Throwable) : ?>
                 <p><strong>Error:</strong> <?php echo htmlspecialchars($exception->getMessage() ?: 'Unknown error occurred'); ?></p>
                 <p><strong>Type:</strong> <?php echo get_class($exception); ?></p>
                 <p><strong>File:</strong> <?php echo htmlspecialchars($exception->getFile()); ?>:<?php echo $exception->getLine(); ?></p>
                 <p><strong>Time:</strong> <?php echo date('Y-m-d H:i:s'); ?></p>
-            <?php else: ?>
+            <?php else : ?>
                 <p><strong>Error:</strong> An unknown error occurred</p>
                 <p><strong>Time:</strong> <?php echo date('Y-m-d H:i:s'); ?></p>
             <?php endif; ?>
         </div>
 
-        <?php if (getenv('APP_DEBUG') === 'true'): ?>
+        <?php if (getenv('APP_DEBUG') === 'true') : ?>
             <div class="error-details">
                 <h2>Error Details</h2>
                 
@@ -259,18 +259,18 @@
                     <div><?php echo phpversion(); ?></div>
                 </div>
 
-                <?php 
+                <?php
                 // Get the error file content if possible
                 $file = $exception->getFile();
                 $line = $exception->getLine();
                 $contextLines = 5;
-                
+
                 if ($file && is_readable($file)) {
                     $fileContent = file($file);
                     $startLine = max(0, $line - $contextLines - 1);
                     $endLine = min(count($fileContent), $line + $contextLines);
                     $snippet = array_slice($fileContent, $startLine, $endLine - $startLine, true);
-                    
+
                     if (!empty($snippet)) {
                         echo '<div class="code-snippet">';
                         echo '<div class="code-header">' . htmlspecialchars($file) . ' (Lines ' . ($startLine + 1) . '-' . $endLine . ')</div>';
@@ -286,11 +286,11 @@
                 ?>
 
                 <h3>Stack Trace</h3>
-                <pre><?php 
+                <pre><?php
                 $trace = $exception->getTraceAsString();
                 // Make file paths more readable
                 $trace = preg_replace('/#\d+ /', "\n", $trace);
-                echo htmlspecialchars($trace); 
+                echo htmlspecialchars($trace);
                 ?></pre>
 
                 <button type="button" class="toggle-details" onclick="toggleDebugInfo()">Toggle Debug Information</button>
@@ -305,7 +305,7 @@
                         </div>
                         
                         <div id="server-params" class="debug-content active">
-                            <pre><?php 
+                            <pre><?php
                             $serverVars = $_SERVER;
                             // Filter out sensitive information
                             $sensitiveKeys = ['PASSWORD', 'PWD', 'SECRET', 'KEY', 'TOKEN', 'AUTH', 'COOKIE'];
@@ -317,13 +317,13 @@
                                     }
                                 }
                             }
-                            echo htmlspecialchars(print_r($serverVars, true)); 
+                            echo htmlspecialchars(print_r($serverVars, true));
                             ?></pre>
                         </div>
                         
                         <div id="session" class="debug-content">
-                            <?php if (!empty($_SESSION)): ?>
-                                <pre><?php 
+                            <?php if (!empty($_SESSION)) : ?>
+                                <pre><?php
                                 $sessionData = $_SESSION;
                                 // Filter out sensitive session data
                                 $sensitiveSessionKeys = ['password', 'token', 'secret', 'key', 'auth'];
@@ -335,15 +335,15 @@
                                         }
                                     }
                                 }
-                                echo htmlspecialchars(print_r($sessionData, true)); 
+                                echo htmlspecialchars(print_r($sessionData, true));
                                 ?></pre>
-                            <?php else: ?>
+                            <?php else : ?>
                                 <p>No session data available.</p>
                             <?php endif; ?>
                         </div>
                         
                         <div id="request" class="debug-content">
-                            <pre><?php 
+                            <pre><?php
                             $requestData = $_REQUEST;
                             // Filter out sensitive request data
                             $sensitiveRequestKeys = ['password', 'pwd', 'pass', 'passwd', 'passphrase', 'secret', 'token', 'key', 'auth'];
@@ -355,13 +355,13 @@
                                     }
                                 }
                             }
-                            echo htmlspecialchars(print_r($requestData, true)); 
+                            echo htmlspecialchars(print_r($requestData, true));
                             ?></pre>
                         </div>
                     </div>
                 </div>
             </div>
-        <?php else: ?>
+        <?php else : ?>
             <div class="suggestion-box">
                 <h3>What you can do:</h3>
                 <ul>

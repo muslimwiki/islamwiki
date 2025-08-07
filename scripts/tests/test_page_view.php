@@ -29,7 +29,7 @@ try {
 
     // Test Page model
     echo "\n🔍 Testing Page model...\n";
-    
+
     $page = Page::findBySlug('welcome', $connection);
     if ($page) {
         echo "  ✅ Found page: {$page->getAttribute('title')}\n";
@@ -54,10 +54,10 @@ try {
         'namespace' => 'main',
         'is_locked' => false
     ]);
-    
+
     $saved = $testPage->save();
     echo "  " . ($saved ? "✅" : "❌") . " Test page created successfully\n";
-    
+
     if ($saved) {
         echo "  📊 Test page details:\n";
         echo "    - ID: {$testPage->getAttribute('id')}\n";
@@ -69,11 +69,10 @@ try {
     echo "\n📋 Testing page listing...\n";
     $pages = $connection->select('SELECT id, title, slug, created_at FROM pages ORDER BY created_at DESC LIMIT 5');
     echo "  ✅ Found " . count($pages) . " pages\n";
-    
+
     foreach ($pages as $pageData) {
         echo "    - {$pageData['title']} ({$pageData['slug']})\n";
     }
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -81,4 +80,4 @@ try {
 }
 
 echo "\n✅ Page functionality test completed successfully!\n";
-echo "\nDone!\n"; 
+echo "\nDone!\n";

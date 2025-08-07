@@ -1,4 +1,5 @@
 <?php
+
 // Test path comparison
 echo "<h1>Path Comparison Test</h1>";
 
@@ -26,4 +27,3 @@ if (file_exists($controllerPath)) {
         echo "<p>❌ Error loading from controller path: " . $e->getMessage() . "</p>";
     }
 }
-?> 

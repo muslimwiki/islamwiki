@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Settings Skins Display
- * 
+ *
  * Tests the skin discovery and display functionality without authentication.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -18,27 +19,27 @@ function testSkinDiscovery(): array
 {
     $skinsDir = __DIR__ . '/../skins';
     $availableSkins = [];
-    
+
     if (!is_dir($skinsDir)) {
         echo "❌ Skins directory not found: $skinsDir\n";
         return $availableSkins;
     }
-    
+
     echo "✅ Skins directory found: $skinsDir\n";
-    
+
     $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
     echo "📁 Found " . count($skinDirs) . " skin directories:\n";
-    
+
     foreach ($skinDirs as $skinDir) {
         $skinName = basename($skinDir);
         $skinConfigFile = $skinDir . '/skin.json';
-        
+
         echo "  - $skinName: ";
-        
+
         if (file_exists($skinConfigFile)) {
             try {
                 $config = json_decode(file_get_contents($skinConfigFile), true);
-                
+
                 if ($config && isset($config['name'])) {
                     $availableSkins[strtolower($skinName)] = [
                         'name' => $config['name'],
@@ -61,7 +62,7 @@ function testSkinDiscovery(): array
             echo "❌ Config file not found\n";
         }
     }
-    
+
     return $availableSkins;
 }
 
@@ -70,16 +71,40 @@ function simulateSkinManager(): array
     // Simulate the skin manager's loaded skins with proper objects
     return [
         'bismillah' => new class {
-            public function getName(): string { return 'Bismillah'; }
-            public function getVersion(): string { return '0.0.28'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.'; }
+            public function getName(): string
+            {
+                return 'Bismillah';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.28';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'The default skin for IslamWiki with modern Islamic design and beautiful gradients.';
+            }
         },
         'muslim' => new class {
-            public function getName(): string { return 'Muslim'; }
-            public function getVersion(): string { return '0.0.1'; }
-            public function getAuthor(): string { return 'IslamWiki Team'; }
-            public function getDescription(): string { return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.'; }
+            public function getName(): string
+            {
+                return 'Muslim';
+            }
+            public function getVersion(): string
+            {
+                return '0.0.1';
+            }
+            public function getAuthor(): string
+            {
+                return 'IslamWiki Team';
+            }
+            public function getDescription(): string
+            {
+                return 'A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.';
+            }
         }
     ];
 }
@@ -87,18 +112,18 @@ function simulateSkinManager(): array
 function processSkinOptions(array $availableSkins, array $loadedSkins, string $userActiveSkin = 'bismillah'): array
 {
     $skinOptions = [];
-    
+
     echo "\n🔄 Processing skin options:\n";
-    
+
     foreach ($availableSkins as $skinKey => $skinData) {
         $lowerSkinName = strtolower($skinData['name']);
         echo "  - Processing {$skinData['name']} (lowercase: $lowerSkinName): ";
-        
+
         if (isset($loadedSkins[$lowerSkinName])) {
             $skin = $loadedSkins[$lowerSkinName];
-            
+
             $isActive = $lowerSkinName === strtolower($userActiveSkin);
-            
+
             $skinOptions[$skinData['name']] = [
                 'name' => $skin->getName(),
                 'version' => $skin->getVersion(),
@@ -110,13 +135,14 @@ function processSkinOptions(array $availableSkins, array $loadedSkins, string $u
                 'features' => $skinData['features'] ?? [],
                 'config' => $skinData['config'] ?? []
             ];
-            
-            echo "✅ Added to options (active: " . ($isActive ? 'yes' : 'no') . ")\n";
+
+            $temp_3304dfc7 = ($isActive ? 'yes' : 'no') . ")\n";
+            echo "✅ Added to options (active: " . $temp_3304dfc7;
         } else {
             echo "❌ Not found in loaded skins\n";
         }
     }
-    
+
     return $skinOptions;
 }
 
@@ -139,7 +165,7 @@ if (empty($skinOptions)) {
     echo "❌ No skin options generated\n";
 } else {
     echo "✅ Generated " . count($skinOptions) . " skin options:\n\n";
-    
+
     foreach ($skinOptions as $skinName => $skinData) {
         echo "🎨 {$skinData['name']} (v{$skinData['version']})\n";
         echo "   Author: {$skinData['author']}\n";
@@ -147,11 +173,11 @@ if (empty($skinOptions)) {
         echo "   Directory: {$skinData['directory']}\n";
         echo "   Active: " . ($skinData['active'] ? 'Yes' : 'No') . "\n";
         echo "   CSS Key: {$skinData['css_key']}\n";
-        
+
         if (!empty($skinData['features'])) {
             echo "   Features: " . implode(', ', $skinData['features']) . "\n";
         }
-        
+
         echo "\n";
     }
 }
@@ -180,4 +206,4 @@ foreach ($templateData as $key => $value) {
     }
 }
 
-echo "\n✅ Template data test completed!\n"; 
+echo "\n✅ Template data test completed!\n";

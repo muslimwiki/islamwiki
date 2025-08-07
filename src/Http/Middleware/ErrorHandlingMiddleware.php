@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * This file is part of IslamWiki.
@@ -20,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
@@ -30,7 +31,7 @@ use Throwable;
 
 /**
  * Error Handling Middleware
- * 
+ *
  * Provides comprehensive error handling including:
  * - Exception catching and logging
  * - Debug information in development
@@ -43,17 +44,17 @@ class ErrorHandlingMiddleware
      * @var LoggerInterface Logger instance
      */
     private LoggerInterface $logger;
-    
+
     /**
      * @var bool Debug mode flag
      */
     private bool $debug;
-    
+
     /**
      * @var string Application environment
      */
     private string $environment;
-    
+
     /**
      * Create a new error handling middleware instance.
      */
@@ -63,35 +64,33 @@ class ErrorHandlingMiddleware
         $this->debug = $debug;
         $this->environment = $environment;
     }
-    
+
     /**
      * Handle the incoming request.
      */
     public function handle(Request $request, callable $next): Response
     {
         $startTime = microtime(true);
-        
+
         try {
             // Process the request
             $response = $next($request);
-            
+
             // Log successful request
             $this->logRequest($request, $response, microtime(true) - $startTime);
-            
+
             return $response;
-            
         } catch (HttpException $e) {
             // Handle HTTP exceptions (4xx, 5xx)
             $this->logHttpException($request, $e);
             return $this->createHttpErrorResponse($e);
-            
         } catch (Throwable $e) {
             // Handle all other exceptions
             $this->logException($request, $e);
             return $this->createExceptionResponse($e);
         }
     }
-    
+
     /**
      * Log successful request.
      */
@@ -107,7 +106,7 @@ class ErrorHandlingMiddleware
             'peak_memory' => $this->formatBytes(memory_get_peak_usage()),
         ]);
     }
-    
+
     /**
      * Log HTTP exception.
      */
@@ -123,7 +122,7 @@ class ErrorHandlingMiddleware
             'referer' => $request->getHeaderLine('Referer'),
         ]);
     }
-    
+
     /**
      * Log general exception.
      */
@@ -143,7 +142,7 @@ class ErrorHandlingMiddleware
             'server_info' => $this->getServerInfo(),
         ]);
     }
-    
+
     /**
      * Create HTTP error response.
      */
@@ -151,17 +150,17 @@ class ErrorHandlingMiddleware
     {
         $statusCode = $e->getStatusCode();
         $message = $e->getMessage();
-        
+
         // Create user-friendly error page
         $html = $this->renderErrorPage($statusCode, $message, $this->debug ? $e : null);
-        
+
         return new Response(
             status: $statusCode,
             headers: ['Content-Type' => 'text/html; charset=utf-8'],
             body: $html
         );
     }
-    
+
     /**
      * Create exception response.
      */
@@ -169,29 +168,29 @@ class ErrorHandlingMiddleware
     {
         $statusCode = 500;
         $message = $this->debug ? $e->getMessage() : 'An internal server error occurred.';
-        
+
         // Create error page
         $html = $this->renderErrorPage($statusCode, $message, $this->debug ? $e : null);
-        
+
         return new Response(
             status: $statusCode,
             headers: ['Content-Type' => 'text/html; charset=utf-8'],
             body: $html
         );
     }
-    
+
     /**
      * Render error page.
      */
     private function renderErrorPage(int $statusCode, string $message, ?Throwable $exception = null): string
     {
         $title = $this->getErrorTitle($statusCode);
-        
+
         $debugInfo = '';
         if ($this->debug && $exception) {
             $debugInfo = $this->renderDebugInfo($exception);
         }
-        
+
         return '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -281,13 +280,13 @@ class ErrorHandlingMiddleware
 </body>
 </html>';
     }
-    
+
     /**
      * Get error title based on status code.
      */
     private function getErrorTitle(int $statusCode): string
     {
-        return match($statusCode) {
+        return match ($statusCode) {
             400 => 'Bad Request',
             401 => 'Unauthorized',
             403 => 'Forbidden',
@@ -301,7 +300,7 @@ class ErrorHandlingMiddleware
             default => 'Error',
         };
     }
-    
+
     /**
      * Render debug information.
      */
@@ -309,7 +308,7 @@ class ErrorHandlingMiddleware
     {
         $trace = $e->getTraceAsString();
         $serverInfo = $this->getServerInfo();
-        
+
         return '<div class="debug-info">
             <h3>Debug Information</h3>
             <p><strong>Exception:</strong> ' . htmlspecialchars(get_class($e)) . '</p>
@@ -324,7 +323,7 @@ class ErrorHandlingMiddleware
             <pre>' . htmlspecialchars($trace) . '</pre>
         </div>';
     }
-    
+
     /**
      * Get server information.
      */
@@ -339,7 +338,7 @@ class ErrorHandlingMiddleware
             'post_max_size' => ini_get('post_max_size'),
         ];
     }
-    
+
     /**
      * Get client IP address.
      */
@@ -350,26 +349,26 @@ class ErrorHandlingMiddleware
             $ips = explode(',', $forwardedFor);
             return trim($ips[0]);
         }
-        
+
         $realIp = $request->getHeaderLine('X-Real-IP');
         if ($realIp) {
             return $realIp;
         }
-        
+
         return $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown';
     }
-    
+
     /**
      * Format bytes to human readable format.
      */
     private function formatBytes(int $bytes, int $precision = 2): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, $precision) . ' ' . $units[$i];
     }
-} 
+}

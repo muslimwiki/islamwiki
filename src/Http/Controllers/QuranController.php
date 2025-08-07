@@ -8,10 +8,10 @@ use IslamWiki\Core\Http\Response;
 
 /**
  * QuranController
- * 
+ *
  * Handles Quran-related requests and operations for Phase 4 Islamic features integration.
  * Provides API endpoints and web interfaces for Quran functionality.
- * 
+ *
  * @package IslamWiki\Http\Controllers
  * @version 0.0.13
  * @since Phase 4
@@ -28,7 +28,7 @@ class QuranController extends Controller
 
     /**
      * Display Quran search page
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -55,7 +55,7 @@ class QuranController extends Controller
 
     /**
      * Display specific verse page
-     * 
+     *
      * @param Request $request
      * @param int $chapter Chapter number
      * @param int $verse Verse number
@@ -64,14 +64,14 @@ class QuranController extends Controller
     public function versePage(Request $request, $chapter, $verse)
     {
         $verseData = $this->quranVerse->getByReference($chapter, $verse);
-        
+
         if (!$verseData) {
             return $this->notFound('Verse not found');
         }
 
         // Get tafsir if available
         $tafsir = $this->quranVerse->getTafsir($verseData['id'], 'en');
-        
+
         // Get recitation if available
         $recitation = $this->quranVerse->getRecitation($verseData['id']);
 
@@ -89,7 +89,7 @@ class QuranController extends Controller
 
     /**
      * Display chapter page
-     * 
+     *
      * @param Request $request
      * @param int $chapter Chapter number
      * @return Response
@@ -97,7 +97,7 @@ class QuranController extends Controller
     public function chapterPage(Request $request, $chapter)
     {
         $verses = $this->quranVerse->getChapter($chapter);
-        
+
         if (empty($verses)) {
             return $this->notFound('Chapter not found');
         }
@@ -113,7 +113,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get verses
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -144,7 +144,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get specific verse
-     * 
+     *
      * @param Request $request
      * @param int $id Verse ID
      * @return Response
@@ -175,7 +175,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to search verses
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -211,7 +211,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get verse by reference
-     * 
+     *
      * @param Request $request
      * @param int $chapter Chapter number
      * @param int $verse Verse number
@@ -244,7 +244,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get tafsir
-     * 
+     *
      * @param Request $request
      * @param int $verseId Verse ID
      * @return Response
@@ -276,7 +276,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get recitation
-     * 
+     *
      * @param Request $request
      * @param int $verseId Verse ID
      * @return Response
@@ -308,7 +308,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get statistics
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -330,7 +330,7 @@ class QuranController extends Controller
 
     /**
      * API endpoint to get random verse
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -360,7 +360,7 @@ class QuranController extends Controller
 
     /**
      * Widget endpoint for embedding Quran verses
-     * 
+     *
      * @param Request $request
      * @param int $chapter Chapter number
      * @param int $verse Verse number
@@ -369,7 +369,7 @@ class QuranController extends Controller
     public function widget(Request $request, $chapter, $verse)
     {
         $verseData = $this->quranVerse->getByReference($chapter, $verse);
-        
+
         if (!$verseData) {
             return $this->notFound('Verse not found');
         }
@@ -386,7 +386,7 @@ class QuranController extends Controller
 
     /**
      * Generate Quran reference for wiki pages
-     * 
+     *
      * @param Request $request
      * @param int $pageId Wiki page ID
      * @return Response
@@ -410,7 +410,7 @@ class QuranController extends Controller
 
     /**
      * Display Quran index page
-     * 
+     *
      * @param Request $request
      * @return Response
      */
@@ -430,7 +430,7 @@ class QuranController extends Controller
 
     /**
      * Handle 404 errors
-     * 
+     *
      * @param string $message Error message
      * @return Response
      */
@@ -442,4 +442,4 @@ class QuranController extends Controller
             ['Content-Type' => 'application/json']
         );
     }
-} 
+}

@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug Session State
- * 
+ *
  * Checks the actual session state and authentication status.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -33,7 +34,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     } else {
         echo "Session contains " . count($_SESSION) . " keys:\n";
         foreach ($_SESSION as $key => $value) {
-            echo "  - $key: " . (is_string($value) ? $value : gettype($value)) . "\n";
+            $temp_d55faf34 = (is_string($value) ? $value : gettype($value)) . "\n";
+            echo "  - $key: " . $temp_d55faf34;
         }
     }
 } else {
@@ -70,19 +72,20 @@ try {
         'http_only' => getenv('SESSION_HTTP_ONLY') !== 'false',
         'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
     ];
-    
+
     echo "Session config:\n";
     foreach ($config as $key => $value) {
-        echo "  - $key: " . (is_bool($value) ? ($value ? 'true' : 'false') : $value) . "\n";
+        $temp_652d084b = (is_bool($value) ? ($value ? 'true' : 'false') : $value) . "\n";
+        echo "  - $key: " . $temp_652d084b;
     }
-    
+
     $session = new \IslamWiki\Core\Session\Wisal($config);
     echo "\n✅ Session manager created successfully\n";
-    
+
     // Start session
     $session->start();
     echo "✅ Session started\n";
-    
+
     // Check authentication
     echo "🔐 Authentication Check:\n";
     echo "=======================\n";
@@ -90,7 +93,7 @@ try {
     echo "User ID: " . ($session->getUserId() ?? 'null') . "\n";
     echo "Username: " . ($session->getUsername() ?? 'null') . "\n";
     echo "Is admin: " . ($session->isAdmin() ? 'Yes' : 'No') . "\n";
-    
+
     // Check session data after manager
     echo "\n📋 Session Data After Manager:\n";
     echo "==============================\n";
@@ -99,10 +102,10 @@ try {
     } else {
         echo "Session contains " . count($_SESSION) . " keys:\n";
         foreach ($_SESSION as $key => $value) {
-            echo "  - $key: " . (is_string($value) ? $value : gettype($value)) . "\n";
+            $temp_d55faf34 = (is_string($value) ? $value : gettype($value)) . "\n";
+            echo "  - $key: " . $temp_d55faf34;
         }
     }
-    
 } catch (\Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
@@ -125,10 +128,10 @@ try {
         'collation' => 'utf8mb4_unicode_ci',
         'prefix' => '',
     ];
-    
+
     $db = new \IslamWiki\Core\Database\Connection($dbConfig);
     echo "✅ Database connection successful\n";
-    
+
     // Check if admin user exists
     $adminUser = $db->first("SELECT * FROM users WHERE username = 'admin'");
     if ($adminUser) {
@@ -140,9 +143,8 @@ try {
     } else {
         echo "❌ Admin user not found in database\n";
     }
-    
 } catch (\Exception $e) {
     echo "❌ Database error: " . $e->getMessage() . "\n";
 }
 
-echo "\n✅ Session state debug completed!\n"; 
+echo "\n✅ Session state debug completed!\n";

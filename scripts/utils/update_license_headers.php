@@ -1,8 +1,10 @@
 <?php
-declare(strict_types=1);
+
 /**
  * Script to update PHP file headers to include AGPL-3.0 license information
  */
+
+declare(strict_types=1);
 
 $licenseHeader = <<<EOT
 <?php
@@ -28,49 +30,50 @@ $licenseHeader = <<<EOT
 EOT;
 
 // Function to process files
-function processFiles($path) {
+function processFiles($path)
+{
     global $licenseHeader;
-    
+
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     $filesProcessed = 0;
     $filesUpdated = 0;
-    
+
     foreach ($iterator as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
             $filePath = $file->getRealPath();
-            
+
             // Skip files in vendor directory
             if (strpos($filePath, '/vendor/') !== false) {
                 continue;
             }
-            
+
             $filesProcessed++;
-            
+
             // Read file content
             $content = file_get_contents($filePath);
-            
+
             // Check if file already has the complete AGPL header
             if (strpos($content, 'GNU Affero General Public License') !== false) {
                 echo "Skipping (already has AGPL notice): $filePath\n";
                 continue;
             }
-            
+
             // Remove existing header if it exists
             $pattern = '/<\?php\s*\/\*\*[\s\S]*?\*\/\s*/';
             $newContent = preg_replace($pattern, '', $content, 1, $count);
-            
+
             if ($count === 0) {
                 // No existing header found, remove just the opening PHP tag if it exists
                 $newContent = preg_replace('/^<\?php\s*/', '', $content, 1);
             }
-            
+
             // Add the new header
             $newContent = "<?php\n" . $licenseHeader . $newContent;
-            
+
             // Write back to file if content changed
             if ($newContent !== $content) {
                 file_put_contents($filePath, $newContent);
@@ -79,7 +82,7 @@ function processFiles($path) {
             }
         }
     }
-    
+
     return [$filesProcessed, $filesUpdated];
 }
 

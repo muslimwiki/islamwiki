@@ -41,4 +41,4 @@ if (is_object($result)) {
     echo "  Object properties: " . implode(', ', get_object_vars($result)) . "\n";
 } elseif (is_array($result)) {
     echo "  Array keys: " . implode(', ', array_keys($result)) . "\n";
-} 
+}

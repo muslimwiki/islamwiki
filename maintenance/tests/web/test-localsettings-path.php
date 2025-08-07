@@ -1,4 +1,5 @@
 <?php
+
 // Test LocalSettings.php path resolution
 echo "<h1>LocalSettings.php Path Test</h1>";
 
@@ -14,9 +15,9 @@ echo "<p>File exists: " . (file_exists($localSettingsPath) ? 'true' : 'false') .
 if (file_exists($localSettingsPath)) {
     require_once $localSettingsPath;
     echo "<p>✅ LocalSettings.php loaded successfully</p>";
-    
+
     global $wgValidSkins;
     echo "<p>wgValidSkins: " . var_export($wgValidSkins, true) . "</p>";
 } else {
     echo "<p>❌ LocalSettings.php not found</p>";
-} 
+}

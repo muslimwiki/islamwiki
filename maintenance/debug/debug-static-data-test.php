@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug Static Data Test
- * 
+ *
  * Test page to verify the new static data system works correctly
- * 
+ *
  * @package IslamWiki
  * @version 0.0.44
  * @license AGPL-3.0-only

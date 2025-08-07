@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-
-
 namespace IslamWiki\Core\Database\Schema;
 
 use Closure;
@@ -41,15 +39,15 @@ class Blueprint
         $this->addImpliedCommands();
         $this->addFluentCommands();
         error_log("[Blueprint] After adding commands: " . count($this->commands) . " commands");
-        
+
         $statements = [];
-        
+
         // Handle create table command
         if ($this->creating()) {
             error_log("[Blueprint] Creating table, compiling columns and commands");
             $columns = [];
             $commands = [];
-            
+
             // Compile columns (remove duplicates)
             $seenColumns = [];
             foreach ($this->columns as $column) {
@@ -59,7 +57,7 @@ class Blueprint
                     $seenColumns[$columnKey] = true;
                 }
             }
-            
+
             // Compile commands (indexes, etc.) - filter out empty commands and duplicates
             $seenCommands = [];
             foreach ($this->commands as $command) {
@@ -72,47 +70,47 @@ class Blueprint
                     }
                 }
             }
-            
+
             $sql = $grammar->compileCreateTable($this, $columns, $commands);
             error_log("[Blueprint] Generated CREATE TABLE SQL: $sql");
             $statements[] = $sql;
         }
-        
+
         error_log("[Blueprint] Returning " . count($statements) . " statements");
         return $statements;
     }
-    
+
     protected function compileColumn($column): string
     {
         // Handle special column types
         $type = $this->getSqlType($column->type);
-        
+
         $sql = $column->name . ' ' . $type;
-        
+
         // Handle enum parameters
         if ($type === 'ENUM' && isset($column->allowed)) {
             $enumValues = array_map([$this, 'quote'], $column->allowed);
             $sql .= '(' . implode(', ', $enumValues) . ')';
-        } else        if (isset($column->length)) {
+        } elseif (isset($column->length)) {
             $sql .= '(' . $column->length . ')';
         } elseif (isset($column->precision) && isset($column->scale)) {
             $sql .= '(' . $column->precision . ',' . $column->scale . ')';
         }
-        
+
         if (isset($column->unsigned) && $column->unsigned) {
             $sql .= ' UNSIGNED';
         }
-        
+
         if (isset($column->autoIncrement) && $column->autoIncrement) {
             $sql .= ' AUTO_INCREMENT';
         }
-        
+
         if (isset($column->nullable) && $column->nullable) {
             $sql .= ' NULL';
         } else {
             $sql .= ' NOT NULL';
         }
-        
+
         if (isset($column->default) && $column->default !== null && $column->default !== '') {
             $defaultValue = $column->default;
             if (is_bool($defaultValue)) {
@@ -120,14 +118,14 @@ class Blueprint
             }
             $sql .= ' DEFAULT ' . $this->quote($defaultValue);
         }
-        
+
         if (isset($column->primary) && $column->primary) {
             $sql .= ' PRIMARY KEY';
         }
-        
+
         return $sql;
     }
-    
+
     protected function getSqlType(string $type): string
     {
         $typeMap = [
@@ -144,10 +142,10 @@ class Blueprint
             'time' => 'TIME',
             'decimal' => 'DECIMAL',
         ];
-        
+
         return $typeMap[$type] ?? strtoupper($type);
     }
-    
+
     protected function compileCommand($command): string
     {
         switch ($command->name) {
@@ -161,7 +159,7 @@ class Blueprint
                 return '';
         }
     }
-    
+
     protected function quote($value): string
     {
         if (is_string($value)) {
@@ -186,7 +184,7 @@ class Blueprint
             if (isset($processedColumns[$columnKey])) {
                 continue; // Skip already processed columns
             }
-            
+
             foreach (['primary', 'unique', 'index'] as $index) {
                 if ($column->$index ?? false) {
                     $this->$index($column->name);
@@ -252,13 +250,13 @@ class Blueprint
     protected function createIndexName(string $type, array $columns): string
     {
         $index = strtolower($this->prefix . $this->table . '_' . implode('_', $columns) . '_' . $type);
-        
+
         // If the index name is too long, use a hash instead
         if (strlen($index) > 64) {
             $hash = substr(md5(implode('_', $columns)), 0, 8);
             $index = strtolower($this->prefix . $this->table . '_' . $hash . '_' . $type);
         }
-        
+
         return $index;
     }
 
@@ -291,7 +289,8 @@ class Blueprint
     protected function addColumn(string $type, string $name, array $parameters = []): Fluent
     {
         $this->columns[] = $column = new Fluent(array_merge(
-            compact('type', 'name'), $parameters
+            compact('type', 'name'),
+            $parameters
         ));
         return $column;
     }

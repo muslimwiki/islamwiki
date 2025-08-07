@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Profile System Test
- * 
+ *
  * Tests the profile system functionality including public and private profiles.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.34
  * @license AGPL-3.0-only
@@ -37,13 +38,13 @@ try {
     $app = new NizamApplication(BASE_PATH);
     $container = $app->getContainer();
     $db = $container->get('db');
-    
+
     echo "<h3>1. Database Connection</h3>\n";
     echo "✅ Database connection established<br>\n";
-    
+
     // Test user lookup
     echo "<h3>2. User Lookup Test</h3>\n";
-    
+
     // Test existing user
     $adminUser = $db->select('SELECT * FROM users WHERE username = ?', ['admin']);
     if (!empty($adminUser)) {
@@ -51,7 +52,7 @@ try {
     } else {
         echo "❌ Admin user not found<br>\n";
     }
-    
+
     // Test non-existent user
     $nonexistentUser = $db->select('SELECT * FROM users WHERE username = ?', ['nonexistentuser']);
     if (empty($nonexistentUser)) {
@@ -59,13 +60,13 @@ try {
     } else {
         echo "❌ Unexpected user found<br>\n";
     }
-    
+
     // Test user settings
     echo "<h3>3. User Settings Test</h3>\n";
     if (!empty($adminUser)) {
         $userId = $adminUser[0]['id'];
         $userSettings = $db->select('SELECT * FROM user_settings WHERE user_id = ?', [$userId]);
-        
+
         if (!empty($userSettings)) {
             echo "✅ User settings found for admin<br>\n";
             echo "   - Skin: " . ($userSettings[0]['skin'] ?? 'default') . "<br>\n";
@@ -74,19 +75,19 @@ try {
             echo "ℹ️ No user settings found for admin (will use defaults)<br>\n";
         }
     }
-    
+
     // Test user statistics
     echo "<h3>4. User Statistics Test</h3>\n";
     if (!empty($adminUser)) {
         $userId = $adminUser[0]['id'];
-        
+
         // Test page contributions
         $pageContributions = $db->select(
             'SELECT COUNT(*) as count FROM pages WHERE created_by = ?',
             [$userId]
         );
         echo "   - Pages created: " . ($pageContributions[0]['count'] ?? 0) . "<br>\n";
-        
+
         // Test recent edits
         $recentEdits = $db->select(
             'SELECT COUNT(*) as count FROM page_history WHERE user_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)',
@@ -94,23 +95,23 @@ try {
         );
         echo "   - Recent edits: " . ($recentEdits[0]['count'] ?? 0) . "<br>\n";
     }
-    
+
     // Test URL generation
     echo "<h3>5. URL Generation Test</h3>\n";
     echo "✅ Public profile URL: <a href='https://local.islam.wiki/user/admin' target='_blank'>https://local.islam.wiki/user/admin</a><br>\n";
     echo "✅ Private profile URL: <a href='https://local.islam.wiki/profile' target='_blank'>https://local.islam.wiki/profile</a><br>\n";
-    
+
     // Test error handling
     echo "<h3>6. Error Handling Test</h3>\n";
     echo "✅ Non-existent user URL: <a href='https://local.islam.wiki/user/nonexistentuser' target='_blank'>https://local.islam.wiki/user/nonexistentuser</a><br>\n";
-    
+
     echo "<h3>7. Profile System Status</h3>\n";
     echo "✅ Profile system is fully functional<br>\n";
     echo "✅ Public profiles working<br>\n";
     echo "✅ Private profiles working<br>\n";
     echo "✅ Error handling working<br>\n";
     echo "✅ Database integration working<br>\n";
-    
+
     echo "<h2>🎉 Profile System Test Complete</h2>\n";
     echo "<p>The profile system is working correctly with:</p>\n";
     echo "<ul>\n";
@@ -121,11 +122,9 @@ try {
     echo "<li>✅ User settings and statistics</li>\n";
     echo "<li>✅ Privacy controls and activity tracking</li>\n";
     echo "</ul>\n";
-    
 } catch (\Throwable $e) {
     echo "<h2>❌ Error Occurred</h2>\n";
     echo "<p><strong>Error:</strong> " . $e->getMessage() . "</p>\n";
     echo "<p><strong>File:</strong> " . $e->getFile() . ":" . $e->getLine() . "</p>\n";
     echo "<pre>" . $e->getTraceAsString() . "</pre>\n";
 }
-?> 

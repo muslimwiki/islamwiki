@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Generate placeholder classes for Usul knowledge system
  */
@@ -23,7 +24,7 @@ $placeholders = [
         'interface' => 'ClassificationInterface',
         'description' => 'Classifies Islamic topics and themes'
     ],
-    
+
     // Ontologies
     'src/Core/Knowledge/Ontologies/IslamicConceptsOntology.php' => [
         'namespace' => 'IslamWiki\Core\Knowledge\Ontologies',
@@ -43,7 +44,7 @@ $placeholders = [
         'interface' => 'OntologyInterface',
         'description' => 'Models Hadith chains and narrators'
     ],
-    
+
     // Schema Layers
     'src/Core/Knowledge/SchemaLayers/ContentSchemaLayer.php' => [
         'namespace' => 'IslamWiki\Core\Knowledge\SchemaLayers',
@@ -70,7 +71,7 @@ foreach ($placeholders as $file => $config) {
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);
     }
-    
+
     $content = "<?php
 declare(strict_types=1);
 
@@ -209,9 +210,9 @@ class {$config['class']} implements {$config['interface']}
     }
 }
 ";
-    
+
     file_put_contents($file, $content);
     echo "Generated: {$file}\n";
 }
 
-echo "All placeholder classes generated successfully!\n"; 
+echo "All placeholder classes generated successfully!\n";

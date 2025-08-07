@@ -66,4 +66,4 @@ echo "</pre>";
 $csrfToken = $session->getCsrfToken();
 echo "<h2>CSRF Token Test</h2>";
 echo "<p><strong>CSRF Token:</strong> $csrfToken</p>";
-echo "<p><strong>Token Valid:</strong> " . ($session->verifyCsrfToken($csrfToken) ? 'Yes' : 'No') . "</p>"; 
+echo "<p><strong>Token Valid:</strong> " . ($session->verifyCsrfToken($csrfToken) ? 'Yes' : 'No') . "</p>";

@@ -1,16 +1,17 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Configuration System Test for Version 0.0.28
- * 
+ *
  * Tests the enhanced configuration system with database integration,
  * validation, backup functionality, and API endpoints.
- * 
+ *
  * @package IslamWiki
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../../src/helpers.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -30,9 +31,9 @@ try {
     // Initialize container
     echo "Test 1: Initializing Container...\n";
     $container = new Container();
-    
+
     // Manually register required services
-    $container->singleton(Connection::class, function() {
+    $container->singleton(Connection::class, function () {
         return new Connection([
             'host' => 'localhost',
             'database' => 'islamwiki',
@@ -42,8 +43,8 @@ try {
             'collation' => 'utf8mb4_unicode_ci',
         ]);
     });
-    
-    $container->singleton(Logger::class, function() {
+
+    $container->singleton(Logger::class, function () {
         return new Logger(
             __DIR__ . '/../../storage/logs',
             \Psr\Log\LogLevel::DEBUG,
@@ -51,7 +52,7 @@ try {
             5   // max files
         );
     });
-    
+
     echo "✅ Container initialized successfully\n\n";
 
     // Test 2: Initialize Configuration Manager
@@ -72,7 +73,7 @@ try {
     echo "Test 4: Testing configuration values...\n";
     $coreConfig = $configManager->getCategory('core');
     echo "✅ Core configuration has " . count($coreConfig) . " settings\n";
-    
+
     // Test a few specific values
     $siteName = $configManager->getValue('core.site_name', 'Default Site');
     $dbServer = $configManager->getValue('database.server', 'localhost');
@@ -83,14 +84,14 @@ try {
     echo "Test 5: Testing configuration validation...\n";
     $validation = $configManager->validateConfiguration();
     echo "✅ Configuration Valid: " . ($validation['valid'] ? 'Yes' : 'No') . "\n";
-    
+
     if (!empty($validation['errors'])) {
         echo "❌ Configuration Errors:\n";
         foreach ($validation['errors'] as $error) {
             echo "  - {$error}\n";
         }
     }
-    
+
     if (!empty($validation['warnings'])) {
         echo "⚠️  Configuration Warnings:\n";
         foreach ($validation['warnings'] as $warning) {
@@ -125,7 +126,7 @@ try {
     $testValue = 'test_value_' . time();
     $updateResult = $configManager->setValue('core.site_name', $testValue);
     echo "✅ Configuration update: " . ($updateResult ? 'Success' : 'Failed') . "\n";
-    
+
     // Verify the update
     $retrievedValue = $configManager->getValue('core.site_name');
     echo "✅ Retrieved value: {$retrievedValue}\n\n";
@@ -133,9 +134,8 @@ try {
     echo "==========================================\n";
     echo "✅ All Configuration Tests Passed!\n";
     echo "==========================================\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
-} 
+}

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Debug Navigation Test
- * 
+ *
  * Test page to simulate page navigation and test user dropdown flash fix
- * 
+ *
  * @package IslamWiki
  * @version 0.0.44
  * @license AGPL-3.0-only
@@ -59,4 +60,3 @@ $html = $view->render('debug/navigation-test.twig', [
 ]);
 
 echo $html;
-?> 

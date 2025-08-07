@@ -1,20 +1,28 @@
 <?php
-file_put_contents(__DIR__ . '/../storage/logs/debug.log', "\n[" . date('Y-m-d H:i:s') . "] Entered index.php\n", FILE_APPEND);
+
+/**
+ * IslamWiki Main Application Entry Point
+ *
+ * This file handles all application routes including authentication,
+ * dashboard, profile, settings, and the homepage.
+ *
+ * @category  Application
+ * @package   IslamWiki
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.34
+ */
+
+file_put_contents(
+    __DIR__ . '/../storage/logs/debug.log',
+    "\n[" . date('Y-m-d H:i:s') . "] Entered index.php\n",
+    FILE_APPEND
+);
 
 // Temporarily redirect error_log to a file to prevent output before headers
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/../storage/logs/error.log');
-
-/**
- * IslamWiki Main Application Entry Point
- * 
- * This file handles all application routes including authentication,
- * dashboard, profile, settings, and the homepage.
- * 
- * @package IslamWiki
- * @version 0.0.34
- * @license AGPL-3.0-only
- */
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
@@ -67,7 +75,12 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 
 // Initialize Application (which creates its own container)
+error_log("MAIN ENTRY POINT: index.php is being executed");
 $app = new \IslamWiki\Core\NizamApplication(BASE_PATH);
+
+// Boot the application to start all systems including session
+$app->boot();
+
 $container = $app->getContainer();
 
 // Get services from the application
@@ -77,7 +90,11 @@ $logger = $container->get('logger');
 $view = $container->get('view');
 
 // Initialize and register controller factory
-$controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $container);
+$controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory(
+    $db,
+    $logger,
+    $container
+);
 $container->instance('controller.factory', $controllerFactory);
 
 // Initialize router
@@ -98,10 +115,10 @@ $request = Request::capture();
 // error_log("index.php: Request method: " . $request->getMethod());
 try {
     $response = $router->handle($request);
-    
+
     // Send response
     http_response_code($response->getStatusCode());
-    
+
     // Set headers
     foreach ($response->getHeaders() as $name => $values) {
         if (is_array($values)) {
@@ -112,10 +129,9 @@ try {
             header("$name: $values");
         }
     }
-    
+
     // Output content
     echo $response->getBody();
-    
 } catch (\Exception $e) {
     // Handle errors
     http_response_code(500);
@@ -125,6 +141,3 @@ try {
         echo '<pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
     }
 }
-?>
-
-

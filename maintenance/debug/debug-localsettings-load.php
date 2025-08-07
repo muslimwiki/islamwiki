@@ -1,15 +1,16 @@
 <?php
-declare(strict_types=1);
 
 /**
  * Debug LocalSettings Loading
- * 
+ *
  * Tests if LocalSettings.php is being properly loaded and if $wgValidSkins is accessible.
- * 
+ *
  * @package IslamWiki\Debug
  * @version 0.0.28
  * @license AGPL-3.0-only
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -22,21 +23,22 @@ echo "=====================================\n";
 
 $localSettingsPath = __DIR__ . '/../LocalSettings.php';
 echo "LocalSettings path: $localSettingsPath\n";
-echo "LocalSettings exists: " . (file_exists($localSettingsPath) ? 'Yes' : 'No') . "\n";
+        $temp_e073cf52 = (file_exists($localSettingsPath) ? 'Yes' : 'No') . "\n";
+        echo "LocalSettings exists: " . $temp_e073cf52;
 
 if (file_exists($localSettingsPath)) {
     // Load LocalSettings to check $wgValidSkins
     require_once $localSettingsPath;
-    
+
     global $wgValidSkins;
     echo "wgValidSkins: " . (isset($wgValidSkins) ? 'Yes' : 'No') . "\n";
-    
+
     if (isset($wgValidSkins)) {
         echo "Valid skins:\n";
         foreach ($wgValidSkins as $key => $value) {
             echo "  - $key => $value\n";
         }
-        
+
         if (isset($wgValidSkins['Muslim'])) {
             echo "✅ Muslim skin is in wgValidSkins\n";
         } else {
@@ -56,18 +58,18 @@ echo "==============================\n";
 try {
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
     echo "✅ Application created\n";
-    
+
     // Check if LocalSettings was loaded by the application
     global $wgValidSkins;
-    echo "wgValidSkins after app creation: " . (isset($wgValidSkins) ? 'Yes' : 'No') . "\n";
-    
+        $temp_96bd82c7 = (isset($wgValidSkins) ? 'Yes' : 'No') . "\n";
+        echo "wgValidSkins after app creation: " . $temp_96bd82c7;
+
     if (isset($wgValidSkins)) {
         echo "Valid skins after app creation:\n";
         foreach ($wgValidSkins as $key => $value) {
             echo "  - $key => $value\n";
         }
     }
-    
 } catch (\Exception $e) {
     echo "❌ Application error: " . $e->getMessage() . "\n";
 }
@@ -79,32 +81,32 @@ echo "===============================\n";
 try {
     $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
     $container = $app->getContainer();
-    
+
     echo "✅ Application and container created\n";
-    
+
     $skinManager = $container->get('skin.manager');
     echo "✅ SkinManager created\n";
-    
+
     // Check debug info
     $debugInfo = $skinManager->debugSkins();
     echo "Debug info:\n";
     echo "  - Loaded skins: " . implode(', ', $debugInfo['loaded_skins']) . "\n";
-    echo "  - Valid skins from LocalSettings: " . implode(', ', $debugInfo['valid_skins_from_localsettings']) . "\n";
+        $temp_56ed25ff = implode(', ', $debugInfo['valid_skins_from_localsettings']) . "\n";
+        echo "  - Valid skins from LocalSettings: " . $temp_56ed25ff;
     echo "  - Active skin: {$debugInfo['active_skin']}\n";
-    
+
     // Check if Muslim is in the loaded skins
     if (in_array('Muslim', $debugInfo['loaded_skins'])) {
         echo "✅ Muslim skin is loaded by SkinManager\n";
     } else {
         echo "❌ Muslim skin is NOT loaded by SkinManager\n";
     }
-    
+
     if (in_array('muslim', $debugInfo['loaded_skins'])) {
         echo "✅ Muslim skin (lowercase) is loaded by SkinManager\n";
     } else {
         echo "❌ Muslim skin (lowercase) is NOT loaded by SkinManager\n";
     }
-    
 } catch (\Exception $e) {
     echo "❌ SkinManager error: " . $e->getMessage() . "\n";
 }
@@ -120,13 +122,14 @@ echo "Skins path exists: " . (is_dir($skinsPath) ? 'Yes' : 'No') . "\n";
 if (is_dir($skinsPath)) {
     $skinDirs = glob($skinsPath . '/*', GLOB_ONLYDIR);
     echo "Skin directories found: " . count($skinDirs) . "\n";
-    
+
     foreach ($skinDirs as $skinDir) {
         $skinName = basename($skinDir);
         $skinConfigFile = $skinDir . '/skin.json';
-        
-        echo "  - $skinName: " . (file_exists($skinConfigFile) ? 'Has config' : 'No config') . "\n";
+
+        $temp_e4702ba2 = (file_exists($skinConfigFile) ? 'Has config' : 'No config') . "\n";
+        echo "  - $skinName: " . $temp_e4702ba2;
     }
 }
 
-echo "\n✅ LocalSettings loading test completed!\n"; 
+echo "\n✅ LocalSettings loading test completed!\n";

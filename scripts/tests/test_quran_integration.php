@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Test Script for Phase 4 Quran Integration
- * 
+ *
  * This script tests the Quran integration functionality including:
  * - QuranVerse model functionality
  * - QuranController API endpoints
  * - Database connectivity
  * - Search functionality
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.13
  * @since Phase 4
@@ -29,7 +30,7 @@ try {
 
     // Test QuranVerse model
     echo "\n📖 Testing QuranVerse Model:\n";
-    
+
     // Create Islamic database configurations
     $islamicConfigs = [
         'quran' => [
@@ -69,10 +70,10 @@ try {
             'collation' => 'utf8mb4_unicode_ci',
         ]
     ];
-    
+
     // Create IslamicDatabaseManager with configurations
     $islamicDbManager = new \IslamWiki\Core\Database\Islamic\IslamicDatabaseManager($islamicConfigs);
-    
+
     // Create QuranVerse model with database manager
     $quranVerse = new QuranVerse($islamicDbManager);
     echo "✅ QuranVerse model instantiated\n";
@@ -124,7 +125,7 @@ try {
 
     // Test API endpoints (simulated)
     echo "\n🔌 Testing API Endpoints:\n";
-    
+
     // Simulate API calls
     $testEndpoints = [
         '/api/quran/verses',
@@ -189,12 +190,12 @@ try {
     // Performance test
     echo "\n⚡ Performance Test:\n";
     $startTime = microtime(true);
-    
+
     try {
         $quranVerse->getStatistics();
         $endTime = microtime(true);
         $duration = ($endTime - $startTime) * 1000; // Convert to milliseconds
-        
+
         if ($duration < 100) {
             echo "✅ Performance test passed: {$duration}ms (under 100ms threshold)\n";
         } else {
@@ -214,14 +215,13 @@ try {
     echo "✅ Templates: Ready\n";
     echo "✅ Migration: Ready\n";
     echo "✅ Database: Connected\n";
-    
+
     echo "\n🎉 Phase 4 Quran Integration Test Completed Successfully!\n";
     echo "The Quran integration system is ready for use.\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with exception: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\n✨ All tests completed!\n"; 
+echo "\n✨ All tests completed!\n";

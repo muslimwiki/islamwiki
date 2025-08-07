@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Test Authentication with Main App Configuration
- * 
+ *
  * This test uses the same session configuration as the main application.
  */
 
@@ -30,7 +31,7 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    
+
     if (empty($username) || empty($password)) {
         $error = 'Please provide both username and password';
     } else {
@@ -38,13 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND is_active = 1");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
-        
+
         if ($user && password_verify($password, $user['password'])) {
             // Login successful - use the same session keys as the main app
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['is_admin'] = $user['is_admin'];
-            
+
             $success = "Login successful! Welcome, {$user['username']}";
         } else {
             $error = 'Invalid username or password';
@@ -201,11 +202,11 @@ if ($isLoggedIn) {
     <div class="container">
         <h1 class="title">Main App Auth Test - IslamWiki</h1>
         
-        <?php if ($error): ?>
+        <?php if ($error) : ?>
             <div class="error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
-        <?php if ($success): ?>
+        <?php if ($success) : ?>
             <div class="success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
         
@@ -218,7 +219,7 @@ if ($isLoggedIn) {
             <p><strong>Session Data:</strong> <?= htmlspecialchars(json_encode($_SESSION)) ?></p>
         </div>
         
-        <?php if ($isLoggedIn && $currentUser): ?>
+        <?php if ($isLoggedIn && $currentUser) : ?>
             <div class="user-info">
                 <h3>✅ Logged In (Main App Session)</h3>
                 <p><strong>User ID:</strong> <?= $currentUser['id'] ?></p>
@@ -237,7 +238,7 @@ if ($isLoggedIn) {
             
             <a href="?logout=1" class="btn btn-secondary">Logout</a>
             
-        <?php else: ?>
+        <?php else : ?>
             <div class="test-credentials">
                 <h4>🧪 Test Credentials:</h4>
                 <p><strong>Username:</strong> testuser</p>

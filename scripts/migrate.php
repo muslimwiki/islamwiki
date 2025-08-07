@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 /**
  * Database Migration Runner
- * 
+ *
  * Run this script to execute database migrations.
  * Usage: php scripts/migrate.php [--fresh] [--rollback]
  */
@@ -60,35 +60,31 @@ try {
         echo "Migration Status:\n";
         $migrations = $migrator->getMigrationFiles();
         $ran = $migrator->getRanMigrations();
-        
+
         foreach ($migrations as $migration) {
             $status = in_array($migration, $ran) ? '✓ Ran' : '✗ Pending';
             echo "  {$migration}: {$status}\n";
         }
-        
     } elseif (isset($options['rollback'])) {
         // Rollback last migration
         echo "Rolling back last migration...\n";
         $migrator->rollback();
         echo "✓ Migration rolled back successfully.\n";
-        
     } elseif (isset($options['fresh'])) {
         // Fresh migration (drop all tables and re-run)
         echo "Running fresh migration...\n";
         $migrator->fresh();
         echo "✓ Fresh migration completed successfully.\n";
-        
     } else {
         // Run pending migrations
         echo "Running pending migrations...\n";
         $migrator->run();
         echo "✓ Migrations completed successfully.\n";
     }
-    
 } catch (Exception $e) {
     echo "✗ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     exit(1);
 }
 
-echo "\nDone!\n"; 
+echo "\nDone!\n";

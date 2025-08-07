@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Http;
@@ -35,31 +36,61 @@ class Uri implements UriInterface
         $this->path = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
         $this->query = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
         $this->fragment = isset($parts['fragment']) ? $this->filterQuery($parts['fragment']) : '';
-        
+
         if (isset($parts['pass'])) {
             $this->userInfo .= ':' . $parts['pass'];
         }
     }
 
-    public function getScheme(): string { return $this->scheme; }
-    public function getAuthority(): string {
-        if ($this->host === '') return '';
+    public function getScheme(): string
+    {
+        return $this->scheme;
+    }
+    public function getAuthority(): string
+    {
+        if ($this->host === '') {
+            return '';
+        }
         $authority = $this->host;
-        if ($this->userInfo !== '') $authority = $this->userInfo . '@' . $authority;
-        if ($this->port !== null) $authority .= ':' . $this->port;
+        if ($this->userInfo !== '') {
+            $authority = $this->userInfo . '@' . $authority;
+        }
+        if ($this->port !== null) {
+            $authority .= ':' . $this->port;
+        }
         return $authority;
     }
-    public function getUserInfo(): string { return $this->userInfo; }
-    public function getHost(): string { return $this->host; }
-    public function getPort(): ?int { return $this->port; }
-    public function getPath(): string { return $this->path; }
-    public function getQuery(): string { return $this->query; }
-    public function getFragment(): string { return $this->fragment; }
+    public function getUserInfo(): string
+    {
+        return $this->userInfo;
+    }
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+    public function getPort(): ?int
+    {
+        return $this->port;
+    }
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+    public function getFragment(): string
+    {
+        return $this->fragment;
+    }
 
     public function withScheme($scheme): self
     {
         $scheme = $this->filterScheme($scheme);
-        if ($this->scheme === $scheme) return $this;
+        if ($this->scheme === $scheme) {
+            return $this;
+        }
         $new = clone $this;
         $new->scheme = $scheme;
         return $new;
@@ -68,8 +99,12 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null): self
     {
         $info = $user;
-        if ($password !== '') $info .= ':' . $password;
-        if ($this->userInfo === $info) return $this;
+        if ($password !== '') {
+            $info .= ':' . $password;
+        }
+        if ($this->userInfo === $info) {
+            return $this;
+        }
         $new = clone $this;
         $new->userInfo = $info;
         return $new;
@@ -78,7 +113,9 @@ class Uri implements UriInterface
     public function withHost($host): self
     {
         $host = strtolower($host);
-        if ($this->host === $host) return $this;
+        if ($this->host === $host) {
+            return $this;
+        }
         $new = clone $this;
         $new->host = $host;
         return $new;
@@ -87,7 +124,9 @@ class Uri implements UriInterface
     public function withPort($port): self
     {
         $port = $this->filterPort($port);
-        if ($this->port === $port) return $this;
+        if ($this->port === $port) {
+            return $this;
+        }
         $new = clone $this;
         $new->port = $port;
         return $new;
@@ -96,7 +135,9 @@ class Uri implements UriInterface
     public function withPath($path): self
     {
         $path = $this->filterPath($path);
-        if ($this->path === $path) return $this;
+        if ($this->path === $path) {
+            return $this;
+        }
         $new = clone $this;
         $new->path = $path;
         return $new;
@@ -105,7 +146,9 @@ class Uri implements UriInterface
     public function withQuery($query): self
     {
         $query = $this->filterQuery($query);
-        if ($this->query === $query) return $this;
+        if ($this->query === $query) {
+            return $this;
+        }
         $new = clone $this;
         $new->query = $query;
         return $new;
@@ -114,7 +157,9 @@ class Uri implements UriInterface
     public function withFragment($fragment): self
     {
         $fragment = $this->filterQuery($fragment);
-        if ($this->fragment === $fragment) return $this;
+        if ($this->fragment === $fragment) {
+            return $this;
+        }
         $new = clone $this;
         $new->fragment = $fragment;
         return $new;
@@ -123,11 +168,21 @@ class Uri implements UriInterface
     public function __toString(): string
     {
         $uri = '';
-        if ($this->scheme !== '') $uri .= $this->scheme . ':';
-        if (($authority = $this->getAuthority()) !== '') $uri .= '//' . $authority;
-        if ($this->path !== '') $uri .= $this->path;
-        if ($this->query !== '') $uri .= '?' . $this->query;
-        if ($this->fragment !== '') $uri .= '#' . $this->fragment;
+        if ($this->scheme !== '') {
+            $uri .= $this->scheme . ':';
+        }
+        if (($authority = $this->getAuthority()) !== '') {
+            $uri .= '//' . $authority;
+        }
+        if ($this->path !== '') {
+            $uri .= $this->path;
+        }
+        if ($this->query !== '') {
+            $uri .= '?' . $this->query;
+        }
+        if ($this->fragment !== '') {
+            $uri .= '#' . $this->fragment;
+        }
         return $uri;
     }
 
@@ -141,7 +196,9 @@ class Uri implements UriInterface
 
     private function filterPort($port): ?int
     {
-        if ($port === null) return null;
+        if ($port === null) {
+            return null;
+        }
         $port = (int) $port;
         if ($port < 1 || $port > 65535) {
             throw new \InvalidArgumentException('Port must be between 1 and 65535');
@@ -156,7 +213,9 @@ class Uri implements UriInterface
         }
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]++|%(?![A-Fa-f0-9]{2}))/',
-            function ($match) { return rawurlencode($match[0]); },
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
             $path
         );
     }
@@ -176,7 +235,9 @@ class Uri implements UriInterface
         }
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=:@\/\?%]++|%(?![A-Fa-f0-9]{2}))/',
-            function ($match) { return rawurlencode($match[0]); },
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
             $str
         );
     }

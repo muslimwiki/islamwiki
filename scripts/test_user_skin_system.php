@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Test User Skin System
- * 
+ *
  * This script tests the new user skin system that reads skins from /skins/
  * instead of src/Skins/.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.28
  * @license AGPL-3.0-only
@@ -108,7 +109,7 @@ if ($bismillahSkin) {
     foreach ($features as $feature) {
         echo "  - " . $feature . "\n";
     }
-    
+
     echo "Bismillah skin dependencies:\n";
     $dependencies = $bismillahSkin->getDependencies();
     foreach ($dependencies as $dep => $source) {
@@ -122,7 +123,7 @@ if ($blueSkin) {
     foreach ($features as $feature) {
         echo "  - " . $feature . "\n";
     }
-    
+
     echo "BlueSkin dependencies:\n";
     $dependencies = $blueSkin->getDependencies();
     foreach ($dependencies as $dep => $source) {
@@ -198,7 +199,7 @@ echo "Available skins in /skins/:\n";
 foreach ($availableSkins as $skinDir) {
     $skinName = basename($skinDir);
     $configFile = $skinDir . '/skin.json';
-    
+
     if (file_exists($configFile)) {
         echo "  ✓ " . $skinName . " (has skin.json)\n";
     } else {
@@ -257,4 +258,4 @@ echo "- Each skin has a skin.json configuration file\n";
 echo "- Skins can be easily added by creating a new folder in /skins/\n";
 echo "- Active skin is controlled by \$wgActiveSkin in LocalSettings.php\n";
 echo "- The system supports CSS, JS, and layout template customization\n";
-echo "- All styling now comes from the active skin, not local templates\n"; 
+echo "- All styling now comes from the active skin, not local templates\n";

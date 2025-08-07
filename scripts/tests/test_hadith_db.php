@@ -2,9 +2,9 @@
 
 /**
  * Simple Hadith Database Test
- * 
+ *
  * Tests if Hadith database tables exist and are accessible.
- * 
+ *
  * @package IslamWiki\Tests
  * @version 0.0.14
  * @since Phase 4
@@ -28,14 +28,14 @@ try {
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
     ];
-    
+
     $connection = new Connection($config);
     echo "✅ Database connection established\n";
 
     // Test Hadith tables
     $hadithTables = [
         'hadiths',
-        'hadith_collections', 
+        'hadith_collections',
         'narrators',
         'hadith_chains',
         'hadith_commentaries',
@@ -54,7 +54,7 @@ try {
             $stmt = $connection->prepare("SHOW TABLES LIKE ?");
             $stmt->execute([$table]);
             $exists = $stmt->fetch();
-            
+
             if ($exists) {
                 // Check table structure
                 $stmt = $connection->prepare("DESCRIBE {$table}");
@@ -90,7 +90,7 @@ try {
             $stmt = $connection->prepare("SHOW TABLES LIKE ?");
             $stmt->execute([$table]);
             $exists = $stmt->fetch();
-            
+
             if ($exists) {
                 $stmt = $connection->prepare("DESCRIBE {$table}");
                 $stmt->execute();
@@ -106,7 +106,7 @@ try {
 
     // Test basic queries
     echo "\n🔍 Testing Basic Queries:\n";
-    
+
     try {
         $stmt = $connection->prepare("SELECT COUNT(*) as count FROM hadiths");
         $stmt->execute();
@@ -143,8 +143,7 @@ try {
     echo "1. Populate tables with Hadith data\n";
     echo "2. Test Hadith model functionality\n";
     echo "3. Test Hadith controller endpoints\n";
-
 } catch (Exception $e) {
     echo "❌ Test failed with exception: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
-} 
+}

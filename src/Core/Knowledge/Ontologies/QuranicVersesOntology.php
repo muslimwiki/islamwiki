@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Knowledge\Ontologies;
@@ -9,7 +10,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
  * QuranicVersesOntology
- * 
+ *
  * Models Qur'anic verses and their relationships
  * TODO: Implement comprehensive functionality
  */
@@ -17,7 +18,7 @@ class QuranicVersesOntology implements OntologyInterface
 {
     private Connection $db;
     private ShahidLogger $logger;
-    
+
     /**
      * Create a new QuranicVersesOntology instance.
      */
@@ -26,7 +27,7 @@ class QuranicVersesOntology implements OntologyInterface
         $this->db = $db;
         $this->logger = $logger;
     }
-    
+
     /**
      * Get related concepts for a term.
      */
@@ -41,7 +42,7 @@ class QuranicVersesOntology implements OntologyInterface
             ]
         ];
     }
-    
+
     /**
      * Get ontology type.
      */

@@ -1,4 +1,5 @@
 <?php
+
 // Test basic PHP functionality
 echo "<h1>PHP Test Page</h1>";
 
@@ -59,4 +60,3 @@ echo "Error Reporting: " . error_reporting() . "\n";
 echo "Memory Limit: " . ini_get('memory_limit') . "\n";
 echo "Max Execution Time: " . ini_get('max_execution_time') . "\n";
 echo "</pre>";
-?>

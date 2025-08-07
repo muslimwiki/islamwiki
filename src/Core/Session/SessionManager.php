@@ -25,7 +25,7 @@ namespace IslamWiki\Core\Session;
 
 /**
  * Wisal (وصال) - Connection Manager
- * 
+ *
  * Handles secure session management and user connection state.
  * Wisal means "connection" or "link" in Arabic, representing the
  * persistent connection between users and the application.
@@ -36,32 +36,32 @@ class Wisal
      * @var string Session name
      */
     private string $sessionName = 'islamwiki_session';
-    
+
     /**
      * @var int Session lifetime in seconds (24 hours)
      */
     private int $sessionLifetime = 86400;
-    
+
     /**
      * @var string Session cookie path
      */
     private string $cookiePath = '/';
-    
+
     /**
      * @var bool Whether to use secure cookies
      */
     private bool $secure = false;
-    
+
     /**
      * @var bool Whether to use HTTP only cookies
      */
     private bool $httpOnly = true;
-    
+
     /**
      * @var string SameSite cookie attribute
      */
     private string $sameSite = 'Lax';
-    
+
     /**
      * Create a new Wisal connection manager instance.
      */
@@ -74,7 +74,7 @@ class Wisal
         $this->httpOnly = $config['http_only'] ?? $this->httpOnly;
         $this->sameSite = $config['same_site'] ?? $this->sameSite;
     }
-    
+
     /**
      * Start the session with secure configuration.
      */
@@ -90,15 +90,15 @@ class Wisal
         ini_set('session.cookie_path', $this->cookiePath);
         ini_set('session.gc_maxlifetime', (string) $this->sessionLifetime);
         ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
-        
+
         // Set session name
         session_name($this->sessionName);
-        
+
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         // Only regenerate session ID if this is a completely new session
         // Don't regenerate if we have any session data or if there's a session cookie
         if (empty($_SESSION) && !$this->has('last_regeneration') && !isset($_COOKIE[$this->sessionName])) {
@@ -107,16 +107,24 @@ class Wisal
             $this->regenerate();
         }
     }
-    
+
     /**
-     * Regenerate the session ID.
+     * Regenerate session ID while preserving data.
      */
     public function regenerate(): void
     {
+        // Store current session data
+        $sessionData = $_SESSION;
+        
+        // Regenerate session ID
         session_regenerate_id(true);
+        
+        // Restore session data
+        $_SESSION = $sessionData;
+        
         $this->put('last_regeneration', time());
     }
-    
+
     /**
      * Get a value from the session.
      */
@@ -124,7 +132,7 @@ class Wisal
     {
         return $_SESSION[$key] ?? $default;
     }
-    
+
     /**
      * Set a value in the session.
      */
@@ -132,7 +140,7 @@ class Wisal
     {
         $_SESSION[$key] = $value;
     }
-    
+
     /**
      * Check if a key exists in the session.
      */
@@ -140,7 +148,7 @@ class Wisal
     {
         return isset($_SESSION[$key]);
     }
-    
+
     /**
      * Remove a value from the session.
      */
@@ -148,7 +156,7 @@ class Wisal
     {
         unset($_SESSION[$key]);
     }
-    
+
     /**
      * Clear all session data.
      */
@@ -157,19 +165,28 @@ class Wisal
         session_unset();
         session_destroy();
     }
-    
+
     /**
      * Set user authentication data.
      */
     public function login(int $userId, string $username, bool $isAdmin = false): void
     {
+        error_log("SessionManager::login - Setting user data: ID=$userId, Username=$username, IsAdmin=" . ($isAdmin ? 'true' : 'false'));
+        
+        // Set user data first
         $this->put('user_id', $userId);
         $this->put('username', $username);
         $this->put('is_admin', $isAdmin);
         $this->put('logged_in_at', time());
+        
+        error_log("SessionManager::login - User data set, session data: " . print_r($_SESSION, true));
+        
+        // Then regenerate session ID for security
         $this->regenerate();
+        
+        error_log("SessionManager::login - Session regenerated, final session data: " . print_r($_SESSION, true));
     }
-    
+
     /**
      * Log out the current user.
      */
@@ -181,7 +198,7 @@ class Wisal
         $this->forget('logged_in_at');
         $this->regenerate();
     }
-    
+
     /**
      * Check if user is logged in.
      */
@@ -189,7 +206,7 @@ class Wisal
     {
         return $this->has('user_id') && $this->has('username');
     }
-    
+
     /**
      * Get the current user ID.
      */
@@ -197,7 +214,7 @@ class Wisal
     {
         return $this->get('user_id');
     }
-    
+
     /**
      * Get the current username.
      */
@@ -205,7 +222,7 @@ class Wisal
     {
         return $this->get('username');
     }
-    
+
     /**
      * Check if current user is admin.
      */
@@ -213,7 +230,7 @@ class Wisal
     {
         return (bool) $this->get('is_admin', false);
     }
-    
+
     /**
      * Generate a CSRF token.
      */
@@ -223,7 +240,7 @@ class Wisal
         $this->put('csrf_token', $token);
         return $token;
     }
-    
+
     /**
      * Get the current CSRF token.
      */
@@ -234,7 +251,7 @@ class Wisal
         }
         return $this->get('csrf_token');
     }
-    
+
     /**
      * Verify a CSRF token.
      */
@@ -242,7 +259,7 @@ class Wisal
     {
         return hash_equals($this->getCsrfToken(), $token);
     }
-    
+
     /**
      * Set remember me token.
      */
@@ -250,7 +267,7 @@ class Wisal
     {
         $this->put('remember_token', $token);
     }
-    
+
     /**
      * Get remember me token.
      */
@@ -258,4 +275,4 @@ class Wisal
     {
         return $this->get('remember_token');
     }
-} 
+}
