@@ -2,7 +2,7 @@
     "name": "islamwiki/islamwiki",
     "description": "A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles",
     "type": "project",
-    "version": "0.0.45",
+    "version": "0.0.50",
     "license": "AGPL-3.0-only",
     "keywords": [
         "islamic",

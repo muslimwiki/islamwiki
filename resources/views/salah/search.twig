@@ -1,0 +1,658 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="prayer-search-container">
+    <!-- Header Section -->
+    <div class="search-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="search-title">
+                        <i class="fas fa-search"></i>
+                        Search Prayer Times
+                    </h1>
+                    <p class="search-subtitle">Find accurate prayer times for any location worldwide</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="/prayer" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left"></i> Back to Prayer Times
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-form-section">
+        <div class="container">
+            <div class="search-form-card">
+                <form id="prayerSearchForm" class="prayer-search-form">
+                    <div class="row">
+                        <!-- Location Search -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Location
+                                </label>
+                                <input type="text" id="location" name="location" class="form-control" 
+                                       placeholder="Enter city, country, or coordinates" required>
+                                <small class="form-text">Example: London, UK or 51.5074, -0.1278</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Date Selection -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="date">
+                                    <i class="fas fa-calendar"></i>
+                                    Date
+                                </label>
+                                <input type="date" id="date" name="date" class="form-control" 
+                                       value="{{ "now"|date("Y-m-d") }}" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Calculation Method -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="method">
+                                    <i class="fas fa-cog"></i>
+                                    Method
+                                </label>
+                                <select id="method" name="method" class="form-control">
+                                    {% for key, name in calculationMethods %}
+                                        <option value="{{ key }}" {% if preferences.calculation_method == key %}selected{% endif %}>
+                                            {{ name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Asr Juristic -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="asr_juristic">
+                                    <i class="fas fa-sun"></i>
+                                    Asr Method
+                                </label>
+                                <select id="asr_juristic" name="asr_juristic" class="form-control">
+                                    {% for key, name in asrJuristicMethods %}
+                                        <option value="{{ key }}" {% if preferences.asr_juristic == key %}selected{% endif %}>
+                                            {{ name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Time Offset -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="minutes_offset">
+                                    <i class="fas fa-clock"></i>
+                                    Time Offset (minutes)
+                                </label>
+                                <input type="number" id="minutes_offset" name="minutes_offset" class="form-control" 
+                                       value="{{ preferences.minutes_offset }}" min="-60" max="60">
+                                <small class="form-text">Adjust prayer times by minutes</small>
+                            </div>
+                        </div>
+                        
+                        <!-- High Latitude Adjustment -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="adjust_high_lats">
+                                    <i class="fas fa-globe"></i>
+                                    High Latitude Adjustment
+                                </label>
+                                <select id="adjust_high_lats" name="adjust_high_lats" class="form-control">
+                                    <option value="1" {% if preferences.adjust_high_lats %}selected{% endif %}>Enabled</option>
+                                    <option value="0" {% if not preferences.adjust_high_lats %}selected{% endif %}>Disabled</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Button -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="search-results-section" id="searchResults" style="display: none;">
+        <div class="container">
+            <div class="search-results-card">
+                <div class="results-header">
+                    <h2>
+                        <i class="fas fa-clock"></i>
+                        Prayer Times Results
+                    </h2>
+                    <div class="results-info">
+                        <span id="resultLocation"></span> • 
+                        <span id="resultDate"></span> • 
+                        <span id="resultMethod"></span>
+                    </div>
+                </div>
+                
+                <div class="prayer-times-results" id="prayerTimesResults">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <div class="results-actions">
+                    <button class="btn btn-outline-primary" onclick="saveToLocations()">
+                        <i class="fas fa-save"></i> Save to My Locations
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="getWidgetCode()">
+                        <i class="fas fa-code"></i> Get Widget Code
+                    </button>
+                    <button class="btn btn-outline-info" onclick="calculateQibla()">
+                        <i class="fas fa-compass"></i> Qibla Direction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Locations -->
+    <div class="popular-locations-section">
+        <div class="container">
+            <div class="popular-locations-card">
+                <h3>
+                    <i class="fas fa-star"></i>
+                    Popular Locations
+                </h3>
+                <div class="popular-locations-grid">
+                    <div class="popular-location-item" onclick="searchLocation('Mecca, Saudi Arabia', 21.4225, 39.8262)">
+                        <div class="location-icon">
+                            <i class="fas fa-kaaba"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Mecca</h4>
+                            <p>Saudi Arabia</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-location-item" onclick="searchLocation('Medina, Saudi Arabia', 24.5247, 39.5692)">
+                        <div class="location-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Medina</h4>
+                            <p>Saudi Arabia</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-location-item" onclick="searchLocation('Istanbul, Turkey', 41.0082, 28.9784)">
+                        <div class="location-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Istanbul</h4>
+                            <p>Turkey</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-location-item" onclick="searchLocation('Cairo, Egypt', 30.0444, 31.2357)">
+                        <div class="location-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Cairo</h4>
+                            <p>Egypt</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-location-item" onclick="searchLocation('Jakarta, Indonesia', -6.2088, 106.8456)">
+                        <div class="location-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Jakarta</h4>
+                            <p>Indonesia</p>
+                        </div>
+                    </div>
+                    
+                    <div class="popular-location-item" onclick="searchLocation('Kuala Lumpur, Malaysia', 3.1390, 101.6869)">
+                        <div class="location-icon">
+                            <i class="fas fa-mosque"></i>
+                        </div>
+                        <div class="location-info">
+                            <h4>Kuala Lumpur</h4>
+                            <p>Malaysia</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Tips -->
+    <div class="search-tips-section">
+        <div class="container">
+            <div class="search-tips-card">
+                <h3>
+                    <i class="fas fa-lightbulb"></i>
+                    Search Tips
+                </h3>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Location Format</h4>
+                            <p>Enter city and country (e.g., "London, UK") or exact coordinates (e.g., "51.5074, -0.1278")</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Date Range</h4>
+                            <p>Search for any date from 1900 to 2100. Prayer times vary throughout the year.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Calculation Methods</h4>
+                            <p>Different Islamic organizations use different calculation methods. Choose the one you prefer.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>High Latitude Areas</h4>
+                            <p>Enable high latitude adjustment for areas near the poles where prayer times may be unusual.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.prayer-search-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+.search-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.search-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.search-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.search-form-section {
+    margin-bottom: 2rem;
+}
+
+.search-form-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.prayer-search-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.prayer-search-form label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.prayer-search-form label i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.prayer-search-form .form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.prayer-search-form .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.prayer-search-form .form-text {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.search-results-section {
+    margin-bottom: 2rem;
+}
+
+.search-results-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.results-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.results-header h2 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.results-header h2 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.results-info {
+    color: #666;
+    font-weight: 500;
+}
+
+.prayer-times-results {
+    margin-bottom: 2rem;
+}
+
+.results-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.popular-locations-section {
+    margin-bottom: 2rem;
+}
+
+.popular-locations-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.popular-locations-card h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.popular-locations-card h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.popular-locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.popular-location-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.popular-location-item:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.location-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: #667eea;
+}
+
+.popular-location-item:hover .location-icon {
+    color: white;
+}
+
+.location-info h4 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.location-info p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.search-tips-section {
+    margin-bottom: 2rem;
+}
+
+.search-tips-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-tips-card h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.search-tips-card h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.tip-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+}
+
+.tip-content h4 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.tip-content p {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .search-title {
+        font-size: 2rem;
+    }
+    
+    .popular-locations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .results-actions {
+        flex-direction: column;
+    }
+    
+    .results-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+document.getElementById('prayerSearchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    searchPrayerTimes();
+});
+
+function searchPrayerTimes() {
+    const formData = new FormData(document.getElementById('prayerSearchForm'));
+    const data = Object.fromEntries(formData);
+    
+    // Show loading state
+    document.getElementById('searchResults').style.display = 'block';
+    document.getElementById('prayerTimesResults').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Searching...</p></div>';
+    
+    // Make API call
+    fetch('/api/prayer-times/times?' + new URLSearchParams(data))
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                displayResults(result.data, data);
+            } else {
+                displayError(result.error);
+            }
+        })
+        .catch(error => {
+            displayError('An error occurred while searching. Please try again.');
+        });
+}
+
+function displayResults(data, searchData) {
+    const resultsDiv = document.getElementById('prayerTimesResults');
+    const prayerNames = {
+        'fajr': 'Fajr',
+        'sunrise': 'Sunrise',
+        'dhuhr': 'Dhuhr',
+        'asr': 'Asr',
+        'maghrib': 'Maghrib',
+        'isha': 'Isha'
+    };
+    
+    let html = '<div class="prayer-times-grid">';
+    for (const [prayer, time] of Object.entries(data.prayer_times)) {
+        html += `
+            <div class="prayer-time-item">
+                <div class="prayer-icon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="prayer-info">
+                    <h3>${prayerNames[prayer]}</h3>
+                    <div class="prayer-time">${time}</div>
+                </div>
+            </div>
+        `;
+    }
+    html += '</div>';
+    
+    resultsDiv.innerHTML = html;
+    
+    // Update result info
+    document.getElementById('resultLocation').textContent = searchData.location;
+    document.getElementById('resultDate').textContent = new Date(searchData.date).toLocaleDateString();
+    document.getElementById('resultMethod').textContent = document.getElementById('method').options[document.getElementById('method').selectedIndex].text;
+}
+
+function displayError(message) {
+    document.getElementById('prayerTimesResults').innerHTML = `
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            ${message}
+        </div>
+    `;
+}
+
+function searchLocation(name, lat, lng) {
+    document.getElementById('location').value = name;
+    searchPrayerTimes();
+}
+
+function saveToLocations() {
+    // Implementation for saving to user locations
+    alert('Save to locations functionality will be implemented.');
+}
+
+function getWidgetCode() {
+    // Implementation for getting widget code
+    alert('Widget code functionality will be implemented.');
+}
+
+function calculateQibla() {
+    // Implementation for calculating Qibla direction
+    alert('Qibla direction functionality will be implemented.');
+}
+</script>
+{% endblock %} 

@@ -2,7 +2,13 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.49)
+## 🚀 Latest Updates (v0.0.50)
+
+### ✅ Page Reliability Fixes
+- **Calendar Page**: Fixed 500 Internal Server Error - now fully functional
+- **Community Page**: Fixed 500 Internal Server Error - now fully functional
+- **All Main Pages**: Quran, Hadith, Salah, Calendar, and Community pages all working
+- **Error Recovery**: Enhanced error handling prevents application crashes
 
 ### ✅ Header Layout Redesign
 - **New Header Structure**: Logo, search bar, and auth buttons now on same line

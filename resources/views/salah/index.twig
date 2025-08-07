@@ -1,0 +1,527 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Salah Times - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="prayer-times-container">
+    <!-- Header Section -->
+    <div class="prayer-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="prayer-title">
+                        <i class="fas fa-mosque"></i>
+                        Salah Times
+                    </h1>
+                    <p class="prayer-subtitle">Accurate salah times for your location</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="prayer-actions">
+                        <a href="/salah/search" class="btn btn-outline-primary">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                        <a href="/salah/locations" class="btn btn-outline-secondary">
+                            <i class="fas fa-map-marker-alt"></i> Locations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="prayer-stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ statistics.total_requests|default(0) }}</h3>
+                            <p>Total Requests</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ statistics.unique_users|default(0) }}</h3>
+                            <p>Unique Users</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ statistics.cache_hits|default(0) }}</h3>
+                            <p>Cache Hits</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ statistics.average_response_time|default(0)|round(2) }}ms</h3>
+                            <p>Avg Response</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="prayer-main">
+        <div class="container">
+            <div class="row">
+                <!-- Today's Prayer Times -->
+                <div class="col-lg-8">
+                    <div class="prayer-card">
+                        <div class="card-header">
+                            <h2>
+                                <i class="fas fa-calendar-day"></i>
+                                Today's Salah Times
+                            </h2>
+                            <div class="date-display">
+                                {{ "now"|date("l, F j, Y") }}
+                            </div>
+                        </div>
+                        
+                        {% if todayPrayerTimes %}
+                            <div class="prayer-times-grid">
+                                {% for prayer, time in todayPrayerTimes.prayer_times %}
+                                    <div class="prayer-time-item {% if nextPrayer and nextPrayer.prayer == prayer %}next-prayer{% endif %}">
+                                        <div class="prayer-icon">
+                                            <i class="fas fa-sun"></i>
+                                        </div>
+                                        <div class="prayer-info">
+                                            <h3>{{ prayerNames[prayer] }}</h3>
+                                            <div class="prayer-time">{{ time }}</div>
+                                            {% if nextPrayer and nextPrayer.prayer == prayer %}
+                                                <div class="next-indicator">
+                                                    <i class="fas fa-arrow-right"></i> Next Prayer
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if nextPrayer %}
+                                <div class="next-prayer-info">
+                                    <div class="next-prayer-card">
+                                        <div class="next-prayer-header">
+                                            <i class="fas fa-bell"></i>
+                                            Next Prayer
+                                        </div>
+                                        <div class="next-prayer-content">
+                                            <h3>{{ prayerNames[nextPrayer.prayer] }}</h3>
+                                            <div class="next-prayer-time">{{ nextPrayer.time }}</div>
+                                            <div class="next-prayer-remaining">
+                                                {{ nextPrayer.remaining }} remaining
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="no-location-message">
+                                <div class="no-location-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <h3>No Location Set</h3>
+                                <p>Please add a location to view prayer times for your area.</p>
+                                <a href="/prayer/locations" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Location
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Current Location -->
+                    {% if defaultLocation %}
+                        <div class="prayer-card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Current Location
+                                </h3>
+                            </div>
+                            <div class="location-info">
+                                <h4>{{ defaultLocation.name }}</h4>
+                                <p>{{ defaultLocation.city }}, {{ defaultLocation.country }}</p>
+                                <div class="location-coordinates">
+                                    {{ defaultLocation.latitude|round(4) }}, {{ defaultLocation.longitude|round(4) }}
+                                </div>
+                                <div class="location-timezone">
+                                    {{ defaultLocation.timezone }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Calculation Method -->
+                    <div class="prayer-card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-cog"></i>
+                                Calculation Method
+                            </h3>
+                        </div>
+                        <div class="method-info">
+                            <h4>{{ calculationMethods[preferences.calculation_method] }}</h4>
+                            <p>Asr: {{ asrJuristicMethods[preferences.asr_juristic] }}</p>
+                            {% if preferences.minutes_offset != 0 %}
+                                <p>Offset: {{ preferences.minutes_offset }} minutes</p>
+                            {% endif %}
+                            <a href="/prayer/preferences" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="prayer-card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-tools"></i>
+                                Quick Actions
+                            </h3>
+                        </div>
+                        <div class="quick-actions">
+                            <a href="/prayer/search" class="quick-action-item">
+                                <i class="fas fa-search"></i>
+                                <span>Search Prayer Times</span>
+                            </a>
+                            <a href="/prayer/locations" class="quick-action-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Manage Locations</span>
+                            </a>
+                            <a href="/prayer/preferences" class="quick-action-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Preferences</span>
+                            </a>
+                            <a href="/prayer/widget" class="quick-action-item">
+                                <i class="fas fa-code"></i>
+                                <span>Get Widget</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.prayer-times-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+.prayer-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.prayer-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.prayer-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.prayer-actions .btn {
+    margin-left: 0.5rem;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+}
+
+.prayer-stats {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.stat-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.stat-content p {
+    color: #666;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.prayer-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.card-header h2, .card-header h3 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.card-header h2 i, .card-header h3 i {
+    color: #667eea;
+    margin-right: 0.5rem;
+}
+
+.date-display {
+    color: #666;
+    font-weight: 500;
+}
+
+.prayer-times-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.prayer-time-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.prayer-time-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.prayer-time-item.next-prayer {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.prayer-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    color: #667eea;
+}
+
+.next-prayer .prayer-icon {
+    color: white;
+}
+
+.prayer-info h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.prayer-time {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.next-prayer .prayer-time {
+    color: white;
+}
+
+.next-indicator {
+    font-size: 0.9rem;
+    color: #667eea;
+    margin-top: 0.5rem;
+}
+
+.next-prayer .next-indicator {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.next-prayer-info {
+    margin-top: 2rem;
+}
+
+.next-prayer-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.next-prayer-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.next-prayer-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.next-prayer-time {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.next-prayer-remaining {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.no-location-message {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.no-location-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+.no-location-message h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.no-location-message p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.location-info h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.location-info p {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.location-coordinates, .location-timezone {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 0.5rem;
+}
+
+.method-info h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.method-info p {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.quick-action-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.quick-action-item:hover {
+    background: #667eea;
+    color: white;
+    transform: translateX(5px);
+}
+
+.quick-action-item i {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .prayer-title {
+        font-size: 2rem;
+    }
+    
+    .prayer-times-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .prayer-actions {
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .prayer-actions .btn {
+        margin: 0.25rem;
+    }
+}
+</style>
+{% endblock %} 

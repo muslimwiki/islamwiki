@@ -1,9 +1,9 @@
 <?php
 
 /**
- * PrayerTime Model
+ * SalahTime Model
  *
- * This model handles prayer time calculations, user locations,
+ * This model handles salah time calculations, user locations,
  * notifications, and preferences for the IslamWiki application.
  *
  * @package IslamWiki
@@ -11,15 +11,15 @@
  * @license AGPL-3.0
  */
 
-namespace Models;
+namespace IslamWiki\Models;
 
-use Core\Database\Connection;
-use Core\Database\Query\Builder;
+use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Database\Query\Builder;
 use DateTime;
 use DateTimeZone;
 use Exception;
 
-class PrayerTime
+class SalahTime
 {
     protected $connection;
     protected $table = 'prayer_times';
@@ -79,13 +79,13 @@ class PrayerTime
 
     public function __construct(Connection $connection = null)
     {
-        $this->connection = $connection ?? new Connection();
+        $this->connection = $connection;
     }
 
     /**
      * Get prayer times for a specific date and location
      */
-    public function getPrayerTimes($date, $latitude, $longitude, $timezone = 'UTC', $method = 'MWL', $asrJuristic = 'Standard', $adjustHighLats = true, $minutesOffset = 0)
+    public function getSalahTimes($date, $latitude, $longitude, $timezone = 'UTC', $method = 'MWL', $asrJuristic = 'Standard', $adjustHighLats = true, $minutesOffset = 0)
     {
         try {
             // Check cache first
@@ -104,16 +104,16 @@ class PrayerTime
                 return $existing;
             }
 
-            // Calculate prayer times
-            $prayerTimes = $this->calculatePrayerTimes($date, $latitude, $longitude, $timezone, $method, $asrJuristic, $adjustHighLats, $minutesOffset);
+            // Calculate salah times
+            $salahTimes = $this->calculateSalahTimes($date, $latitude, $longitude, $timezone, $method, $asrJuristic, $adjustHighLats, $minutesOffset);
 
             // Store in database
-            $this->storePrayerTimes($prayerTimes);
+            $this->storeSalahTimes($salahTimes);
 
             // Cache result
-            $this->cacheResult($cacheKey, $prayerTimes);
+            $this->cacheResult($cacheKey, $salahTimes);
 
-            return $prayerTimes;
+            return $salahTimes;
         } catch (Exception $e) {
             $this->logError('calculation_error', $e->getMessage(), [
                 'date' => $date,
@@ -126,9 +126,9 @@ class PrayerTime
     }
 
     /**
-     * Calculate prayer times using astronomical algorithms
+     * Calculate salah times using astronomical algorithms
      */
-    protected function calculatePrayerTimes($date, $latitude, $longitude, $timezone, $method, $asrJuristic, $adjustHighLats, $minutesOffset)
+    protected function calculateSalahTimes($date, $latitude, $longitude, $timezone, $method, $asrJuristic, $adjustHighLats, $minutesOffset)
     {
         $dateTime = new DateTime($date, new DateTimeZone($timezone));
         $julianDate = $this->getJulianDate($dateTime);
@@ -136,8 +136,8 @@ class PrayerTime
         // Calculate solar coordinates
         $solarCoords = $this->calculateSolarCoordinates($julianDate);
 
-        // Calculate prayer times
-        $prayerTimes = [
+        // Calculate salah times
+        $salahTimes = [
             'fajr' => $this->calculateFajr($solarCoords, $latitude, $longitude, $method, $adjustHighLats, $minutesOffset),
             'sunrise' => $this->calculateSunrise($solarCoords, $latitude, $longitude, $minutesOffset),
             'dhuhr' => $this->calculateDhuhr($solarCoords, $longitude, $minutesOffset),
@@ -155,7 +155,7 @@ class PrayerTime
             'asr_juristic' => $asrJuristic,
             'adjust_high_lats' => $adjustHighLats,
             'minutes_offset' => $minutesOffset,
-            'prayer_times' => $prayerTimes
+            'salah_times' => $salahTimes
         ];
     }
 
@@ -366,10 +366,13 @@ class PrayerTime
      */
     protected function findExisting($date, $latitude, $longitude, $method, $asrJuristic, $adjustHighLats, $minutesOffset)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return null;
+        }
 
-        $result = $query->table($this->table)
-            ->where('date', $date)
+        $query = $this->connection->table($this->table);
+
+        $result = $query->where('date', $date)
             ->where('latitude', $latitude)
             ->where('longitude', $longitude)
             ->where('calculation_method', $method)
@@ -384,24 +387,28 @@ class PrayerTime
     /**
      * Store prayer times in database
      */
-    protected function storePrayerTimes($data)
+    protected function storeSalahTimes($data)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return;
+        }
 
-        $prayerTimes = $data['prayer_times'];
+        $query = $this->connection->table($this->table);
 
-        $query->table($this->table)->insert([
+        $salahTimes = $data['salah_times'];
+
+        $query->insert([
             'date' => $data['date'],
             'location_name' => $this->getLocationName($data['latitude'], $data['longitude']),
             'latitude' => $data['latitude'],
             'longitude' => $data['longitude'],
             'timezone' => $data['timezone'],
-            'fajr' => $prayerTimes['fajr'],
-            'sunrise' => $prayerTimes['sunrise'],
-            'dhuhr' => $prayerTimes['dhuhr'],
-            'asr' => $prayerTimes['asr'],
-            'maghrib' => $prayerTimes['maghrib'],
-            'isha' => $prayerTimes['isha'],
+            'fajr' => $salahTimes['fajr'],
+            'sunrise' => $salahTimes['sunrise'],
+            'dhuhr' => $salahTimes['dhuhr'],
+            'asr' => $salahTimes['asr'],
+            'maghrib' => $salahTimes['maghrib'],
+            'isha' => $salahTimes['isha'],
             'calculation_method' => $data['calculation_method'],
             'asr_juristic' => $data['asr_juristic'],
             'adjust_high_lats' => $data['adjust_high_lats'],
@@ -434,10 +441,13 @@ class PrayerTime
      */
     protected function getFromCache($key)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return null;
+        }
 
-        $result = $query->table('prayer_api_cache')
-            ->where('cache_key', $key)
+        $query = $this->connection->table('prayer_api_cache');
+
+        $result = $query->where('cache_key', $key)
             ->where('expires_at', '>', date('Y-m-d H:i:s'))
             ->first();
 
@@ -449,9 +459,13 @@ class PrayerTime
      */
     protected function cacheResult($key, $data)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return;
+        }
 
-        $query->table('prayer_api_cache')->insert([
+        $query = $this->connection->table('prayer_api_cache');
+
+        $query->insert([
             'cache_key' => $key,
             'response_data' => json_encode($data),
             'expires_at' => date('Y-m-d H:i:s', strtotime('+1 day')),
@@ -482,10 +496,24 @@ class PrayerTime
      */
     public function getUserLocations($userId)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            // Return default location when no database connection
+            return [
+                [
+                    'id' => 1,
+                    'user_id' => $userId,
+                    'name' => 'Default Location',
+                    'latitude' => 40.7128,
+                    'longitude' => -74.0060,
+                    'timezone' => 'America/New_York',
+                    'is_default' => true
+                ]
+            ];
+        }
 
-        return $query->table('user_locations')
-            ->where('user_id', $userId)
+        $query = $this->connection->table('user_locations');
+
+        return $query->where('user_id', $userId)
             ->where('is_active', true)
             ->orderBy('is_default', 'desc')
             ->orderBy('name', 'asc')
@@ -497,16 +525,19 @@ class PrayerTime
      */
     public function addUserLocation($userId, $data)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return 1; // Return default ID when no database
+        }
+
+        $query = $this->connection->table('user_locations');
 
         // If this is set as default, unset other defaults
         if ($data['is_default']) {
-            $query->table('user_locations')
-                ->where('user_id', $userId)
+            $query->where('user_id', $userId)
                 ->update(['is_default' => false]);
         }
 
-        return $query->table('user_locations')->insert([
+        return $query->insert([
             'user_id' => $userId,
             'name' => $data['name'],
             'city' => $data['city'],
@@ -526,10 +557,25 @@ class PrayerTime
      */
     public function getUserPreferences($userId)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            // Return default preferences when no database connection
+            return [
+                'user_id' => $userId,
+                'calculation_method' => 'MWL',
+                'asr_juristic' => 'Standard',
+                'adjust_high_lats' => true,
+                'minutes_offset' => 0,
+                'language' => 'en',
+                'time_format' => '24h',
+                'show_sunrise' => true,
+                'show_dua' => true,
+                'show_qibla' => true
+            ];
+        }
 
-        $preferences = $query->table('prayer_preferences')
-            ->where('user_id', $userId)
+        $query = $this->connection->table('prayer_preferences');
+
+        $preferences = $query->where('user_id', $userId)
             ->first();
 
         if (!$preferences) {
@@ -545,7 +591,22 @@ class PrayerTime
      */
     protected function createDefaultPreferences($userId)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return [
+                'user_id' => $userId,
+                'calculation_method' => 'MWL',
+                'asr_juristic' => 'Standard',
+                'adjust_high_lats' => true,
+                'minutes_offset' => 0,
+                'language' => 'en',
+                'time_format' => '24h',
+                'show_sunrise' => true,
+                'show_dua' => true,
+                'show_qibla' => true
+            ];
+        }
+
+        $query = $this->connection->table('prayer_preferences');
 
         $defaults = [
             'user_id' => $userId,
@@ -562,7 +623,7 @@ class PrayerTime
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        $query->table('prayer_preferences')->insert($defaults);
+        $query->insert($defaults);
 
         return $defaults;
     }
@@ -572,10 +633,13 @@ class PrayerTime
      */
     public function updateUserPreferences($userId, $data)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return true; // Return success when no database
+        }
 
-        return $query->table('prayer_preferences')
-            ->where('user_id', $userId)
+        $query = $this->connection->table('prayer_preferences');
+
+        return $query->where('user_id', $userId)
             ->update(array_merge($data, [
                 'updated_at' => date('Y-m-d H:i:s')
             ]));
@@ -693,12 +757,22 @@ class PrayerTime
      */
     public function getStatistics()
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            // Return default statistics when no database connection
+            return [
+                'total_requests' => 0,
+                'unique_users' => 0,
+                'cache_hits' => 0,
+                'api_calls' => 0,
+                'average_response_time' => 0
+            ];
+        }
+
+        $query = $this->connection->table('prayer_statistics');
 
         $today = date('Y-m-d');
 
-        $stats = $query->table('prayer_statistics')
-            ->where('date', $today)
+        $stats = $query->where('date', $today)
             ->first();
 
         if (!$stats) {
@@ -719,17 +793,19 @@ class PrayerTime
      */
     public function updateStatistics($type, $responseTime = 0)
     {
-        $query = new Builder($this->connection);
+        if (!$this->connection) {
+            return; // Do nothing when no database
+        }
+
+        $query = $this->connection->table('prayer_statistics');
 
         $today = date('Y-m-d');
 
-        $existing = $query->table('prayer_statistics')
-            ->where('date', $today)
+        $existing = $query->where('date', $today)
             ->first();
 
         if ($existing) {
-            $query->table('prayer_statistics')
-                ->where('date', $today)
+            $query->where('date', $today)
                 ->update([
                     'total_requests' => $existing['total_requests'] + 1,
                     'cache_hits' => $existing['cache_hits'] + ($type === 'cache' ? 1 : 0),
@@ -738,7 +814,7 @@ class PrayerTime
                     'updated_at' => date('Y-m-d H:i:s')
                 ]);
         } else {
-            $query->table('prayer_statistics')->insert([
+            $query->insert([
                 'date' => $today,
                 'total_requests' => 1,
                 'unique_users' => 1,

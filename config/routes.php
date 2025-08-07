@@ -12,7 +12,7 @@ use IslamWiki\Http\Controllers\ApiController;
 use IslamWiki\Http\Controllers\ConfigurationController;
 use IslamWiki\Http\Controllers\SearchController;
 use IslamWiki\Http\Controllers\IqraSearchController;
-use IslamWiki\Http\Controllers\PrayerTimeController;
+use IslamWiki\Http\Controllers\SalahTimeController;
 use IslamWiki\Http\Controllers\HadithController;
 use IslamWiki\Http\Controllers\QuranController;
 use IslamWiki\Http\Controllers\IslamicCalendarController;
@@ -24,6 +24,7 @@ use IslamWiki\Http\Controllers\DashboardController;
 use IslamWiki\Http\Controllers\ProfileController;
 use IslamWiki\Http\Controllers\SettingsController;
 use IslamWiki\Http\Controllers\QueueController;
+use IslamWiki\Http\Controllers\SciencesController;
 use IslamWiki\Http\Middleware\AuthenticationMiddleware;
 
 return function (\IslamWiki\Core\Application $app) {
@@ -37,7 +38,7 @@ return function (\IslamWiki\Core\Application $app) {
     $configController = new ConfigurationController($container);
     $searchController = new SearchController($db, $container);
     $iqraSearchController = new IqraSearchController($db, $container);
-    $prayerController = new PrayerTimeController($db, $container);
+    $salahController = new SalahTimeController($db, $container);
     $hadithController = new HadithController($db, $container);
     $quranController = new QuranController($db, $container);
     $calendarController = new IslamicCalendarController($db, $container);
@@ -49,6 +50,7 @@ return function (\IslamWiki\Core\Application $app) {
     $profileController = new ProfileController($db, $container);
     $settingsController = new SettingsController($db, $container);
     $queueController = new QueueController($db, $container);
+    $sciencesController = new SciencesController($db, $container);
 
     // Create middleware instances
     $authMiddleware = new AuthenticationMiddleware($container->get('session'));
@@ -125,12 +127,19 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/iqra-search/api/suggestions', [$iqraSearchController, 'apiSuggestions']);
     $app->get('/iqra-search/api/analytics', [$iqraSearchController, 'apiAnalytics']);
 
-    // Prayer routes
-    $app->get('/prayer', [$prayerController, 'index']);
-    $app->get('/prayer/times', [$prayerController, 'getTimes']);
-    $app->get('/prayer/search', [$prayerController, 'search']);
-    $app->get('/prayer/widget', [$prayerController, 'widget']);
-    $app->post('/prayer/calculate', [$prayerController, 'calculate']);
+    // Salah routes
+    $app->get('/salah', [$salahController, 'index']);
+    $app->get('/salah/times', [$salahController, 'getTimes']);
+    $app->get('/salah/search', [$salahController, 'search']);
+    $app->get('/salah/widget', [$salahController, 'widget']);
+    $app->post('/salah/calculate', [$salahController, 'calculate']);
+
+    // Salah routes (alias for prayer)
+    $app->get('/salah', [$prayerController, 'index']);
+    $app->get('/salah/times', [$prayerController, 'getTimes']);
+    $app->get('/salah/search', [$prayerController, 'search']);
+    $app->get('/salah/widget', [$prayerController, 'widget']);
+    $app->post('/salah/calculate', [$prayerController, 'calculate']);
 
     // Hadith routes
     $app->get('/hadith', [$hadithController, 'index']);
@@ -151,6 +160,10 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/calendar/event/{id}', [$calendarController, 'event']);
     $app->get('/calendar/search', [$calendarController, 'search']);
     $app->get('/calendar/widget', [$calendarController, 'widget']);
+
+    // Sciences routes
+    $app->get('/sciences', [$sciencesController, 'index']);
+    $app->get('/sciences/{category}', [$sciencesController, 'category']);
 
     // Islamic Content routes
     $app->get('/content', [$contentController, 'index']);
@@ -180,7 +193,7 @@ return function (\IslamWiki\Core\Application $app) {
         $apiController,
         $configController,
         $searchController,
-        $prayerController,
+        $salahController,
         $hadithController,
         $quranController,
         $calendarController,
@@ -223,10 +236,10 @@ return function (\IslamWiki\Core\Application $app) {
         $this->get('/search/suggestions', [$searchController, 'apiSuggestions']);
         $this->get('/search/analytics', [$searchController, 'apiAnalytics']);
 
-        // Prayer API
-        $this->get('/prayer/times', [$prayerController, 'apiGetTimes']);
-        $this->post('/prayer/calculate', [$prayerController, 'apiCalculate']);
-        $this->get('/prayer/search', [$prayerController, 'apiSearch']);
+        // Salah API
+        $this->get('/salah/times', [$salahController, 'apiGetTimes']);
+        $this->post('/salah/calculate', [$salahController, 'apiCalculate']);
+        $this->get('/salah/search', [$salahController, 'apiSearch']);
 
         // Hadith API
         $this->get('/hadith', [$hadithController, 'apiIndex']);

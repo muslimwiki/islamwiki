@@ -20,7 +20,7 @@ class HadithController extends Controller
 {
     private $hadith;
 
-    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\Asas $container)
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
         $this->hadith = new Hadith();

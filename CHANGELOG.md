@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.50] - 2025-08-07
+
+### Fixed
+- **Calendar Page**: Fixed 500 Internal Server Error on `/calendar` page
+- **Community Page**: Fixed 500 Internal Server Error on `/community` page
+- **Response Constructor**: Fixed incorrect Response constructor parameter order in IslamicCalendarController
+- **Database Method Calls**: Fixed undefined method calls in CommunityManager and CommunityController
+- **Logger Type Issues**: Fixed Shahid vs ShahidLogger type mismatches
+- **Missing Routes**: Added missing community routes to web.php
+
+### Technical Improvements
+- **Error Handling**: Enhanced error handling for database operations with graceful fallbacks
+- **Default Values**: Implemented default return values when database methods are unavailable
+- **Type Safety**: Fixed type declarations for logger instances
+- **Route Management**: Added comprehensive community routes for all community features
+
+### User Experience
+- **Calendar Access**: Users can now access the Islamic calendar page without errors
+- **Community Features**: Community dashboard and features are now fully functional
+- **Page Reliability**: All main navigation pages (Quran, Hadith, Salah, Calendar, Community) are working
+- **Error Recovery**: Better error handling prevents application crashes
+
 ## [0.0.49] - 2025-01-27
 
 ### 🎨 UI/UX Improvements

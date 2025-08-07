@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace IslamWiki\Http\Controllers;
 
-use App\Models\IslamicCalendar;
-use App\Core\Http\Request;
-use App\Core\Http\Response;
-use App\Core\View\TwigRenderer;
+use IslamWiki\Models\IslamicCalendar;
+use IslamWiki\Core\Http\Request;
+use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\View\TwigRenderer;
 
 /**
  * Islamic Calendar Controller
@@ -22,10 +22,11 @@ class IslamicCalendarController extends Controller
     private $calendar;
     private $renderer;
 
-    public function __construct()
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
-        $this->calendar = new IslamicCalendar();
-        $this->renderer = new TwigRenderer();
+        parent::__construct($db, $container);
+        $this->calendar = new IslamicCalendar($db);
+        $this->renderer = $this->getView();
     }
 
     /**
@@ -47,7 +48,7 @@ class IslamicCalendarController extends Controller
             ];
 
             $html = $this->renderer->render('calendar/index.twig', $data);
-            return new Response($html, 200, ['Content-Type' => 'text/html']);
+            return new Response(200, ['Content-Type' => 'text/html'], $html);
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading Islamic calendar');
         }
@@ -76,7 +77,7 @@ class IslamicCalendarController extends Controller
             ];
 
             $html = $this->renderer->render('calendar/month.twig', $data);
-            return new Response($html, 200, ['Content-Type' => 'text/html']);
+            return new Response(200, ['Content-Type' => 'text/html'], $html);
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading monthly calendar');
         }
@@ -91,7 +92,7 @@ class IslamicCalendarController extends Controller
             $event = $this->calendar->getEvent($id);
 
             if (!$event) {
-                return new Response('Event not found', 404);
+                return new Response(404, [], 'Event not found');
             }
 
             $data = [
@@ -100,7 +101,7 @@ class IslamicCalendarController extends Controller
             ];
 
             $html = $this->renderer->render('calendar/event.twig', $data);
-            return new Response($html, 200, ['Content-Type' => 'text/html']);
+            return new Response(200, ['Content-Type' => 'text/html'], $html);
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading event');
         }
@@ -126,7 +127,7 @@ class IslamicCalendarController extends Controller
             ];
 
             $html = $this->renderer->render('calendar/widget.twig', $data);
-            return new Response($html, 200, ['Content-Type' => 'text/html']);
+            return new Response(200, ['Content-Type' => 'text/html'], $html);
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error loading calendar widget');
         }
@@ -161,7 +162,7 @@ class IslamicCalendarController extends Controller
             ];
 
             $html = $this->renderer->render('calendar/search.twig', $data);
-            return new Response($html, 200, ['Content-Type' => 'text/html']);
+            return new Response(200, ['Content-Type' => 'text/html'], $html);
         } catch (\Exception $e) {
             return $this->handleError($e, 'Error searching events');
         }
@@ -476,7 +477,7 @@ class IslamicCalendarController extends Controller
     private function handleError(\Exception $e, $message)
     {
         error_log("Islamic Calendar Error: " . $e->getMessage());
-        return new Response($message, 500);
+        return new Response(500, [], $message);
     }
 
     private function handleApiError(\Exception $e, $message)

@@ -247,31 +247,47 @@ $router->get('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCal
 $router->get('/api/calendar/convert/{date}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiConvertDate');
 $router->get('/api/calendar/prayer-times/{date}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetPrayerTimes');
 $router->get('/api/calendar/statistics', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetStatistics');
+
+// Sciences Routes
+$router->get('/sciences', 'IslamWiki\Http\Controllers\SciencesController@index');
+$router->get('/sciences/{category}', 'IslamWiki\Http\Controllers\SciencesController@category');
+
+// Community Routes
+$router->get('/community', 'IslamWiki\Http\Controllers\CommunityController@index');
+$router->get('/community/users', 'IslamWiki\Http\Controllers\CommunityController@users');
+$router->get('/community/activity', 'IslamWiki\Http\Controllers\CommunityController@activity');
+$router->get('/community/contribute', 'IslamWiki\Http\Controllers\CommunityController@contribute');
+$router->get('/community/my-contributions', 'IslamWiki\Http\Controllers\CommunityController@myContributions');
+$router->get('/community/moderation', 'IslamWiki\Http\Controllers\CommunityController@moderation');
+$router->get('/community/discussions', 'IslamWiki\Http\Controllers\CommunityController@discussions');
+$router->get('/community/discussions/create', 'IslamWiki\Http\Controllers\CommunityController@createDiscussion');
+$router->get('/community/discussions/{id}', 'IslamWiki\Http\Controllers\CommunityController@showDiscussion');
+$router->get('/community/profile/{userId}', 'IslamWiki\Http\Controllers\CommunityController@profile');
 $router->get('/api/calendar/upcoming', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiGetUpcoming');
 $router->get('/api/calendar/search', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiSearchEvents');
 $router->post('/api/calendar/events', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiCreateEvent');
 $router->put('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiUpdateEvent');
 $router->delete('/api/calendar/events/{id}', 'IslamWiki\Http\Controllers\IslamicCalendarController@apiDeleteEvent');
 
-// Prayer Times Routes - Phase 5 Prayer Times Integration
-$router->get('/prayer', 'IslamWiki\Http\Controllers\PrayerTimeController@index');
-$router->get('/prayer/search', 'IslamWiki\Http\Controllers\PrayerTimeController@search');
-$router->get('/prayer/show/{date}/{locationId}', 'IslamWiki\Http\Controllers\PrayerTimeController@show');
-$router->get('/prayer/widget/{widgetKey}', 'IslamWiki\Http\Controllers\PrayerTimeController@widget');
-$router->get('/prayer/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@locations');
-$router->get('/prayer/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@preferences');
+// Salah Routes - Phase 5 Salah Times Integration
+$router->get('/salah', 'IslamWiki\Http\Controllers\SalahTimeController@index');
+$router->get('/salah/search', 'IslamWiki\Http\Controllers\SalahTimeController@search');
+$router->get('/salah/show/{date}/{locationId}', 'IslamWiki\Http\Controllers\SalahTimeController@show');
+$router->get('/salah/widget/{widgetKey}', 'IslamWiki\Http\Controllers\SalahTimeController@widget');
+$router->get('/salah/locations', 'IslamWiki\Http\Controllers\SalahTimeController@locations');
+$router->get('/salah/preferences', 'IslamWiki\Http\Controllers\SalahTimeController@preferences');
 
-// Prayer Times API Routes
-$router->get('/api/prayer-times/times', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerTimes');
-$router->get('/api/prayer-times/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetLocations');
-$router->post('/api/prayer-times/locations', 'IslamWiki\Http\Controllers\PrayerTimeController@apiAddLocation');
-$router->get('/api/prayer-times/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPreferences');
-$router->put('/api/prayer-times/preferences', 'IslamWiki\Http\Controllers\PrayerTimeController@apiUpdatePreferences');
-$router->get('/api/prayer-times/qibla', 'IslamWiki\Http\Controllers\PrayerTimeController@apiCalculateQibla');
-$router->get('/api/prayer-times/next', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetNextPrayer');
-$router->get('/api/prayer-times/statistics', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetStatistics');
-$router->get('/api/prayer-times/methods', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetCalculationMethods');
-$router->get('/api/prayer-times/names', 'IslamWiki\Http\Controllers\PrayerTimeController@apiGetPrayerNames');
+// Salah Times API Routes
+$router->get('/api/salah-times/times', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetPrayerTimes');
+$router->get('/api/salah-times/locations', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetLocations');
+$router->post('/api/salah-times/locations', 'IslamWiki\Http\Controllers\SalahTimeController@apiAddLocation');
+$router->get('/api/salah-times/preferences', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetPreferences');
+$router->put('/api/salah-times/preferences', 'IslamWiki\Http\Controllers\SalahTimeController@apiUpdatePreferences');
+$router->get('/api/salah-times/qibla', 'IslamWiki\Http\Controllers\SalahTimeController@apiCalculateQibla');
+$router->get('/api/salah-times/next', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetNextPrayer');
+$router->get('/api/salah-times/statistics', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetStatistics');
+$router->get('/api/salah-times/methods', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetCalculationMethods');
+$router->get('/api/salah-times/names', 'IslamWiki\Http\Controllers\SalahTimeController@apiGetPrayerNames');
 
 // Bayan Knowledge Graph Routes - Version 0.0.34
 $router->get('/bayan', 'IslamWiki\Http\Controllers\BayanController@index');

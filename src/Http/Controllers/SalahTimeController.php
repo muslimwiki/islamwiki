@@ -1,9 +1,9 @@
 <?php
 
 /**
- * PrayerTimeController
+ * SalahTimeController
  *
- * This controller handles prayer time requests, user locations,
+ * This controller handles salah time requests, user locations,
  * notifications, and preferences for the IslamWiki application.
  *
  * @package IslamWiki
@@ -11,33 +11,33 @@
  * @license AGPL-3.0
  */
 
-namespace Http\Controllers;
+namespace IslamWiki\Http\Controllers;
 
-use Core\Http\Request;
-use Core\Http\Response;
-use Models\PrayerTime;
-use Models\User;
+use IslamWiki\Core\Http\Request;
+use IslamWiki\Core\Http\Response;
+use IslamWiki\Models\SalahTime;
+use IslamWiki\Models\User;
 
-class PrayerTimeController extends Controller
+class SalahTimeController extends Controller
 {
-    protected $prayerTime;
+    protected $salahTime;
 
-    public function __construct()
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
-        parent::__construct();
-        $this->prayerTime = new PrayerTime();
+        parent::__construct($db, $container);
+        $this->salahTime = new SalahTime($db);
     }
 
     /**
-     * Prayer times index page
+     * Salah times index page
      */
     public function index(Request $request)
     {
         try {
             $userId = $this->getUserId($request);
-            $preferences = $this->prayerTime->getUserPreferences($userId);
-            $locations = $this->prayerTime->getUserLocations($userId);
-            $statistics = $this->prayerTime->getStatistics();
+            $preferences = $this->salahTime->getUserPreferences($userId);
+            $locations = $this->salahTime->getUserLocations($userId);
+            $statistics = $this->salahTime->getStatistics();
 
             $defaultLocation = null;
             foreach ($locations as $location) {
@@ -47,10 +47,10 @@ class PrayerTimeController extends Controller
                 }
             }
 
-            // Get today's prayer times for default location
-            $todayPrayerTimes = null;
+            // Get today's salah times for default location
+            $todaySalahTimes = null;
             if ($defaultLocation) {
-                $todayPrayerTimes = $this->prayerTime->getPrayerTimes(
+                $todaySalahTimes = $this->salahTime->getSalahTimes(
                     date('Y-m-d'),
                     $defaultLocation['latitude'],
                     $defaultLocation['longitude'],
@@ -63,24 +63,24 @@ class PrayerTimeController extends Controller
             }
 
             $nextPrayer = null;
-            if ($todayPrayerTimes) {
-                $nextPrayer = $this->prayerTime->getNextPrayer($todayPrayerTimes['prayer_times']);
+            if ($todaySalahTimes) {
+                $nextPrayer = $this->salahTime->getNextPrayer($todaySalahTimes['prayer_times']);
             }
 
-            return $this->view('prayer/index', [
-                'title' => 'Prayer Times',
+            return $this->view('salah/index', [
+                'title' => 'Salah Times',
                 'preferences' => $preferences,
                 'locations' => $locations,
                 'defaultLocation' => $defaultLocation,
-                'todayPrayerTimes' => $todayPrayerTimes,
+                'todaySalahTimes' => $todaySalahTimes,
                 'nextPrayer' => $nextPrayer,
                 'statistics' => $statistics,
-                'calculationMethods' => $this->prayerTime->getCalculationMethods(),
-                'asrJuristicMethods' => $this->prayerTime->getAsrJuristicMethods(),
-                'prayerNames' => $this->prayerTime->getPrayerNames($preferences['language'])
+                'calculationMethods' => $this->salahTime->getCalculationMethods(),
+                'asrJuristicMethods' => $this->salahTime->getAsrJuristicMethods(),
+                'prayerNames' => $this->salahTime->getPrayerNames($preferences['language'])
             ]);
         } catch (\Exception $e) {
-            return $this->renderError('Error loading prayer times', $e->getMessage());
+            return new Response('Error loading salah times: ' . $e->getMessage(), 500);
         }
     }
 
@@ -92,12 +92,12 @@ class PrayerTimeController extends Controller
         try {
             $userId = $this->getUserId($request);
             $date = $date ?? date('Y-m-d');
-            $preferences = $this->prayerTime->getUserPreferences($userId);
+            $preferences = $this->salahTime->getUserPreferences($userId);
 
             // Get location
             $location = null;
             if ($locationId) {
-                $locations = $this->prayerTime->getUserLocations($userId);
+                $locations = $this->salahTime->getUserLocations($userId);
                 foreach ($locations as $loc) {
                     if ($loc['id'] == $locationId) {
                         $location = $loc;
@@ -106,7 +106,7 @@ class PrayerTimeController extends Controller
                 }
             } else {
                 // Get default location
-                $locations = $this->prayerTime->getUserLocations($userId);
+                $locations = $this->salahTime->getUserLocations($userId);
                 foreach ($locations as $loc) {
                     if ($loc['is_default']) {
                         $location = $loc;
@@ -116,11 +116,11 @@ class PrayerTimeController extends Controller
             }
 
             if (!$location) {
-                return $this->renderError('Location not found', 'Please add a location to view prayer times.');
+                return new Response('Location not found: Please add a location to view salah times.', 404);
             }
 
-            // Get prayer times
-            $prayerTimes = $this->prayerTime->getPrayerTimes(
+            // Get salah times
+            $prayerTimes = $this->salahTime->getSalahTimes(
                 $date,
                 $location['latitude'],
                 $location['longitude'],
@@ -132,26 +132,26 @@ class PrayerTimeController extends Controller
             );
 
             // Calculate Qibla direction
-            $qiblaDirection = $this->prayerTime->calculateQiblaDirection(
+            $qiblaDirection = $this->salahTime->calculateQiblaDirection(
                 $location['latitude'],
                 $location['longitude']
             );
 
             // Get next prayer
-            $nextPrayer = $this->prayerTime->getNextPrayer($prayerTimes['prayer_times']);
+            $nextPrayer = $this->salahTime->getNextPrayer($prayerTimes['salah_times']);
 
-            return $this->view('prayer/show', [
-                'title' => "Prayer Times - {$date}",
+            return $this->view('salah/show', [
+                'title' => "Salah Times - {$date}",
                 'date' => $date,
                 'location' => $location,
                 'prayerTimes' => $prayerTimes,
                 'nextPrayer' => $nextPrayer,
                 'qiblaDirection' => $qiblaDirection,
                 'preferences' => $preferences,
-                'prayerNames' => $this->prayerTime->getPrayerNames($preferences['language'])
+                'prayerNames' => $this->salahTime->getPrayerNames($preferences['language'])
             ]);
         } catch (\Exception $e) {
-            return $this->renderError('Error loading prayer times', $e->getMessage());
+            return new Response('Error loading salah times: ' . $e->getMessage(), 500);
         }
     }
 
@@ -162,18 +162,18 @@ class PrayerTimeController extends Controller
     {
         try {
             $userId = $this->getUserId($request);
-            $preferences = $this->prayerTime->getUserPreferences($userId);
-            $calculationMethods = $this->prayerTime->getCalculationMethods();
-            $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
+            $preferences = $this->salahTime->getUserPreferences($userId);
+            $calculationMethods = $this->salahTime->getCalculationMethods();
+            $asrJuristicMethods = $this->salahTime->getAsrJuristicMethods();
 
-            return $this->view('prayer/search', [
-                'title' => 'Search Prayer Times',
+            return $this->view('salah/search', [
+                'title' => 'Search Salah Times',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
         } catch (\Exception $e) {
-            return $this->renderError('Error loading search page', $e->getMessage());
+            return new Response('Error loading search page: ' . $e->getMessage(), 500);
         }
     }
 
@@ -198,8 +198,8 @@ class PrayerTimeController extends Controller
                 return new Response('Widget not found', 404);
             }
 
-            // Get prayer times
-            $prayerTimes = $this->prayerTime->getPrayerTimes(
+            // Get salah times
+            $prayerTimes = $this->salahTime->getSalahTimes(
                 date('Y-m-d'),
                 $widget['latitude'],
                 $widget['longitude'],
@@ -215,10 +215,10 @@ class PrayerTimeController extends Controller
                 ->where('widget_key', $widgetKey)
                 ->update(['view_count' => $widget['view_count'] + 1]);
 
-            return $this->view('prayer/widget', [
+            return $this->view('salah/widget', [
                 'widget' => $widget,
                 'prayerTimes' => $prayerTimes,
-                'prayerNames' => $this->prayerTime->getPrayerNames($widget['language'])
+                'prayerNames' => $this->salahTime->getPrayerNames($widget['language'])
             ]);
         } catch (\Exception $e) {
             return new Response('Error loading widget', 500);
@@ -232,14 +232,14 @@ class PrayerTimeController extends Controller
     {
         try {
             $userId = $this->getUserId($request);
-            $locations = $this->prayerTime->getUserLocations($userId);
+            $locations = $this->salahTime->getUserLocations($userId);
 
-            return $this->view('prayer/locations', [
+            return $this->view('salah/locations', [
                 'title' => 'My Locations',
                 'locations' => $locations
             ]);
         } catch (\Exception $e) {
-            return $this->renderError('Error loading locations', $e->getMessage());
+            return new Response('Error loading locations: ' . $e->getMessage(), 500);
         }
     }
 
@@ -250,18 +250,18 @@ class PrayerTimeController extends Controller
     {
         try {
             $userId = $this->getUserId($request);
-            $preferences = $this->prayerTime->getUserPreferences($userId);
-            $calculationMethods = $this->prayerTime->getCalculationMethods();
-            $asrJuristicMethods = $this->prayerTime->getAsrJuristicMethods();
+            $preferences = $this->salahTime->getUserPreferences($userId);
+            $calculationMethods = $this->salahTime->getCalculationMethods();
+            $asrJuristicMethods = $this->salahTime->getAsrJuristicMethods();
 
-            return $this->view('prayer/preferences', [
+            return $this->view('salah/preferences', [
                 'title' => 'Prayer Preferences',
                 'preferences' => $preferences,
                 'calculationMethods' => $calculationMethods,
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
         } catch (\Exception $e) {
-            return $this->renderError('Error loading preferences', $e->getMessage());
+            return new Response('Error loading preferences: ' . $e->getMessage(), 500);
         }
     }
 
@@ -287,7 +287,7 @@ class PrayerTimeController extends Controller
             }
 
             $startTime = microtime(true);
-            $prayerTimes = $this->prayerTime->getPrayerTimes(
+            $prayerTimes = $this->salahTime->getSalahTimes(
                 $date,
                 $latitude,
                 $longitude,
@@ -300,7 +300,7 @@ class PrayerTimeController extends Controller
             $responseTime = (microtime(true) - $startTime) * 1000;
 
             // Update statistics
-            $this->prayerTime->updateStatistics('api', $responseTime);
+            $this->salahTime->updateStatistics('api', $responseTime);
 
             return new Response(json_encode([
                 'success' => true,
@@ -321,7 +321,7 @@ class PrayerTimeController extends Controller
     {
         try {
             $userId = $this->getUserId($request);
-            $locations = $this->prayerTime->getUserLocations($userId);
+            $locations = $this->salahTime->getUserLocations($userId);
 
             return new Response(json_encode([
                 'success' => true,
@@ -352,7 +352,7 @@ class PrayerTimeController extends Controller
                 }
             }
 
-            $locationId = $this->prayerTime->addUserLocation($userId, $data);
+            $locationId = $this->salahTime->addUserLocation($userId, $data);
 
             return new Response(json_encode([
                 'success' => true,
@@ -372,7 +372,7 @@ class PrayerTimeController extends Controller
     {
         try {
             $userId = $this->getUserId($request);
-            $preferences = $this->prayerTime->getUserPreferences($userId);
+            $preferences = $this->salahTime->getUserPreferences($userId);
 
             return new Response(json_encode([
                 'success' => true,
@@ -394,7 +394,7 @@ class PrayerTimeController extends Controller
             $userId = $this->getUserId($request);
             $data = json_decode($request->getBody(), true);
 
-            $this->prayerTime->updateUserPreferences($userId, $data);
+            $this->salahTime->updateUserPreferences($userId, $data);
 
             return new Response(json_encode([
                 'success' => true,
@@ -422,7 +422,7 @@ class PrayerTimeController extends Controller
                 ]), 400, ['Content-Type' => 'application/json']);
             }
 
-            $qiblaDirection = $this->prayerTime->calculateQiblaDirection($latitude, $longitude);
+            $qiblaDirection = $this->salahTime->calculateQiblaDirection($latitude, $longitude);
 
             return new Response(json_encode([
                 'success' => true,
@@ -459,7 +459,7 @@ class PrayerTimeController extends Controller
                 ]), 400, ['Content-Type' => 'application/json']);
             }
 
-            $prayerTimes = $this->prayerTime->getPrayerTimes(
+            $prayerTimes = $this->salahTime->getSalahTimes(
                 date('Y-m-d'),
                 $latitude,
                 $longitude,
@@ -470,7 +470,7 @@ class PrayerTimeController extends Controller
                 $minutesOffset
             );
 
-            $nextPrayer = $this->prayerTime->getNextPrayer($prayerTimes['prayer_times']);
+            $nextPrayer = $this->salahTime->getNextPrayer($prayerTimes['salah_times']);
 
             return new Response(json_encode([
                 'success' => true,
@@ -489,7 +489,7 @@ class PrayerTimeController extends Controller
     public function apiGetStatistics(Request $request)
     {
         try {
-            $statistics = $this->prayerTime->getStatistics();
+            $statistics = $this->salahTime->getStatistics();
 
             return new Response(json_encode([
                 'success' => true,
@@ -508,8 +508,8 @@ class PrayerTimeController extends Controller
     public function apiGetCalculationMethods(Request $request)
     {
         try {
-            $methods = $this->prayerTime->getCalculationMethods();
-            $asrMethods = $this->prayerTime->getAsrJuristicMethods();
+            $methods = $this->salahTime->getCalculationMethods();
+            $asrMethods = $this->salahTime->getAsrJuristicMethods();
 
             return new Response(json_encode([
                 'success' => true,
@@ -532,7 +532,7 @@ class PrayerTimeController extends Controller
     {
         try {
             $language = $request->getQueryParam('language', 'en');
-            $prayerNames = $this->prayerTime->getPrayerNames($language);
+            $prayerNames = $this->salahTime->getPrayerNames($language);
 
             return new Response(json_encode([
                 'success' => true,

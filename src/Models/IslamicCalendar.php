@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace IslamWiki\Models;
 
 use PDO;
-use App\Core\Database\Connection;
+use IslamWiki\Core\Database\Connection;
 
 /**
  * Islamic Calendar Model
@@ -22,9 +22,9 @@ class IslamicCalendar
     private $prayerTable = 'prayer_times';
     private $categoryTable = 'event_categories';
 
-    public function __construct()
+    public function __construct(Connection $connection = null)
     {
-        $this->db = Connection::getInstance()->getConnection();
+        $this->db = $connection;
     }
 
     /**
