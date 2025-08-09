@@ -198,22 +198,22 @@
                     <div class="stat-card">
                         <div class="stat-icon">🧩</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ attribute(bayan.statistics, 'total_nodes')|default(bayan.graph.nodes|length|default(0)) }}</div>
-                            <div class="stat-label">Nodes</div>
+                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'total_nodes')|default(bayan.graph.nodes|length|default(0)) }}</div>
+                            <div class="stat-label bayan-stat-label">Nodes</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🔗</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ attribute(bayan.statistics, 'total_edges')|default(bayan.graph.edges|length|default(0)) }}</div>
-                            <div class="stat-label">Relationships</div>
+                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'total_edges')|default(bayan.graph.edges|length|default(0)) }}</div>
+                            <div class="stat-label bayan-stat-label">Relationships</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🏷️</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ attribute(bayan.statistics, 'node_types')|default(bayan.node_types|default(0)) }}</div>
-                            <div class="stat-label">Node Types</div>
+                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'node_types')|default(bayan.node_types|default(0)) }}</div>
+                            <div class="stat-label bayan-stat-label">Node Types</div>
                         </div>
                     </div>
                 </div>
@@ -764,6 +764,10 @@
 .bayan-stats .stat-label {
     color: var(--text-primary) !important;
 }
+
+/* Hard fallback colors if skin variables are too light */
+.bayan-stat-number { color: #0f172a !important; }
+.bayan-stat-label { color: #334155 !important; }
 
 .site-stat-label {
     font-size: 0.8rem;
