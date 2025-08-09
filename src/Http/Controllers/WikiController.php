@@ -926,6 +926,17 @@ class WikiController extends PageController
 
         // Update view count for wiki pages
         $this->updatePageViewCount($page, $request, $userId);
+        // Read back from DB to ensure we display the persisted value
+        try {
+            $fresh = $this->db->table('pages')
+                ->where('id', '=', $page->getAttribute('id'))
+                ->first(['view_count']);
+            if (is_array($fresh) && array_key_exists('view_count', $fresh)) {
+                $page->setAttribute('view_count', (int) $fresh['view_count']);
+            }
+        } catch (\Throwable $e) {
+            // ignore fetch errors
+        }
 
         // Determine watch status for current user
         $isWatched = false;
@@ -992,6 +1003,7 @@ class WikiController extends PageController
             'user' => $user,
             'isWatched' => $isWatched,
             'title' => $page->getAttribute('title') . ' - Wiki - IslamWiki',
+            'viewCount' => $page->getAttribute('view_count'),
         ]);
     }
 
