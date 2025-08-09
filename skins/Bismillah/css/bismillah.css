@@ -4843,3 +4843,13 @@ select:focus {
 
 /* Optional: subtle vertical guide color for tree pipes */
 .markdown-body pre code.lang-tree { color: #0f172a; }
+
+/* Markdown HTML comments rendered as blocks */
+.markdown-body pre.md-comment {
+    background: #f59e0b1a; /* subtle golden tint */
+    border: 1px solid #f59e0b66;
+    color: #92400e;
+    padding: 1rem;
+    border-radius: var(--bismillah-radius);
+    white-space: pre-wrap;
+}

@@ -300,6 +300,15 @@ class DocsController extends Controller
             },
             $html
         );
+        // HTML comment blocks -> styled comment blocks
+        $html = preg_replace_callback(
+            '/&lt;!--([\s\S]*?)--&gt;/',
+            function ($m) {
+                $text = trim($m[1]);
+                return '<pre class="md-comment">' . $text . '</pre>';
+            },
+            $html
+        );
         // horizontal rules
         $html = preg_replace('/^---$/m', '<hr/>', $html);
         // paragraphs
