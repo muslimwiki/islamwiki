@@ -56,7 +56,7 @@ $container->instance('db', $db);
 $container->instance('connection', $db);
 
 // Initialize and register session manager
-$sessionManager = new \IslamWiki\Core\Session\Wisal();
+$sessionManager = new \IslamWiki\Core\Session\WisalSession();
 $container->instance('session', $sessionManager);
 
 // Create a simple logger (since we don't have a proper logger yet)

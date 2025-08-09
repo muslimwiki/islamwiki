@@ -2,24 +2,7 @@
 
 namespace IslamWiki\Core\Container;
 
-// First, check if we need to define the PSR-11 ContainerInterface
-if (!interface_exists('Psr\Container\ContainerInterface')) {
-    // Use a separate file to define the interface to avoid namespace issues
-    $psrContainerFile = __DIR__ . '/../../vendor/psr/container/src/ContainerInterface.php';
-
-    if (file_exists($psrContainerFile)) {
-        require_once $psrContainerFile;
-    } else {
-        // Fallback: Define a minimal ContainerInterface
-        interface PsrContainerInterface
-        {
-            public function get($id);
-            public function has($id);
-        }
-
-        class_alias('IslamWiki\Core\PsrContainerInterface', 'Psr\Container\ContainerInterface');
-    }
-}
+// PSR-11 ContainerInterface should be available via Composer autoload
 
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -93,6 +76,29 @@ class AsasContainer implements ContainerInterface
     public function alias(string $abstract, string $alias): void
     {
         $this->aliases[$alias] = $abstract;
+    }
+
+    /**
+     * Remove a binding/instance/alias from the container.
+     *
+     * This allows systems like the skin manager to invalidate cached
+     * instances safely (e.g., 'skin.data').
+     */
+    public function forget(string $abstract): void
+    {
+        $abstract = $this->getAlias($abstract);
+        if (isset($this->instances[$abstract])) {
+            unset($this->instances[$abstract]);
+        }
+        if (isset($this->bindings[$abstract])) {
+            unset($this->bindings[$abstract]);
+        }
+        // Remove any aliases that point to this abstract
+        foreach ($this->aliases as $alias => $target) {
+            if ($target === $abstract) {
+                unset($this->aliases[$alias]);
+            }
+        }
     }
 
     /**
@@ -258,7 +264,10 @@ class AsasContainer implements ContainerInterface
             } elseif ($dependency->isDefaultValueAvailable()) {
                 $results[] = $dependency->getDefaultValue();
             } else {
-                throw new \RuntimeException("Unresolvable dependency resolving [{$dependency}] in class {$dependency->getDeclaringClass()->getName()}");
+                $declaringClass = $dependency->getDeclaringClass();
+                $className = $declaringClass ? $declaringClass->getName() : 'unknown';
+                $message = 'Unresolvable dependency resolving [' . $dependency->getName() . '] in class ' . $className;
+                throw new \RuntimeException($message);
             }
         }
 

@@ -73,6 +73,7 @@ require_once BASE_PATH . '/src/Models/Hadith.php';
 require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
 require_once BASE_PATH . '/src/Models/SalahTime.php';
 require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
+require_once BASE_PATH . '/src/Http/Controllers/WikiController.php';
 
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;

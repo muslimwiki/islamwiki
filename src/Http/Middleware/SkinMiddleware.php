@@ -21,6 +21,7 @@ use IslamWiki\Core\NizamApplication;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Skins\SkinManager;
+use IslamWiki\Core\View\ParamsBag;
 
 /**
  * SkinMiddleware - Middleware for dynamic skin management
@@ -37,7 +38,7 @@ class SkinMiddleware
     /**
      * @var NizamApplication The application instance
      */
-    private NizamApplication $_app;
+    private NizamApplication $app;
 
     /**
      * Constructor
@@ -46,7 +47,7 @@ class SkinMiddleware
      */
     public function __construct(NizamApplication $app)
     {
-        $this->_app = $app;
+        $this->app = $app;
     }
 
     /**
@@ -107,7 +108,7 @@ class SkinMiddleware
         error_log("SkinMiddleware::updateSkinDataForCurrentUser - Starting");
 
         try {
-            $container = $this->_app->getContainer();
+            $container = $this->app->getContainer();
             $skinManager = $container->get('skin.manager');
             $viewRenderer = $container->get('view');
 
@@ -115,15 +116,18 @@ class SkinMiddleware
 
             // Check for URL parameter skin override
             $urlSkinOverride = $request->getQueryParam('skin');
-            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Query params: " . json_encode($request->getQueryParams()));
+            $queryParams = json_encode($request->getQueryParams());
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Query params: " . $queryParams);
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override value: " . ($urlSkinOverride ?? 'null'));
             if ($urlSkinOverride) {
                 $urlSkinOverride = strtolower(trim($urlSkinOverride));
-                error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override detected: " . $urlSkinOverride);
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - URL skin override detected: " .
+                    $urlSkinOverride);
 
                 // Validate the skin exists
                 if ($skinManager->skinExists($urlSkinOverride)) {
-                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Valid skin override: " . $urlSkinOverride);
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Valid skin override: " .
+                    $urlSkinOverride);
                     $skinManager->setActiveSkin($urlSkinOverride);
                     error_log("SkinMiddleware::updateSkinDataForCurrentUser - Set active skin to: " . $urlSkinOverride);
                 } else {
@@ -177,8 +181,20 @@ class SkinMiddleware
                 error_log("SkinMiddleware::updateSkinDataForCurrentUser - Updated view renderer with skin data");
             }
 
-            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Completed successfully");
+            // Ensure request data is available to Twig as app.request.query.get('key', default)
+            if ($viewRenderer instanceof \IslamWiki\Core\View\TwigRenderer) {
+                $twig = $viewRenderer->getTwig();
+                $globals = method_exists($twig, 'getGlobals') ? $twig->getGlobals() : [];
+                $appGlobal = $globals['app'] ?? [];
+                $appGlobal['request'] = [
+                    'path' => $request->getUri()->getPath(),
+                    'query' => new ParamsBag($request->getQueryParams()),
+                ];
+                $viewRenderer->addGlobals(['app' => $appGlobal]);
+                error_log("SkinMiddleware::updateSkinDataForCurrentUser - Added app.request globals for Twig");
+            }
 
+            error_log("SkinMiddleware::updateSkinDataForCurrentUser - Completed successfully");
         } catch (\Throwable $e) {
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error: " . $e->getMessage());
             error_log("SkinMiddleware::updateSkinDataForCurrentUser - Error trace: " . $e->getTraceAsString());
@@ -197,7 +213,7 @@ class SkinMiddleware
         error_log("SkinMiddleware::updateUserAuthenticationState - Starting");
 
         try {
-            $container = $this->_app->getContainer();
+            $container = $this->app->getContainer();
             $session = $container->get('session');
             $viewRenderer = $container->get('view');
 
@@ -222,7 +238,6 @@ class SkinMiddleware
             }
 
             error_log("SkinMiddleware::updateUserAuthenticationState - Completed successfully");
-
         } catch (\Throwable $e) {
             error_log("SkinMiddleware::updateUserAuthenticationState - Error: " . $e->getMessage());
             error_log("SkinMiddleware::updateUserAuthenticationState - Error trace: " . $e->getTraceAsString());

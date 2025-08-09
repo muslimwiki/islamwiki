@@ -216,7 +216,7 @@
                                 <div class="activity-icon">✏️</div>
                                 <div class="activity-content">
                                     <div class="activity-title">
-                                        <a href="/pages/{{ activity.slug }}">{{ activity.title }}</a>
+                                        <a href="/wiki/{{ activity.slug }}">{{ activity.title }}</a>
                                     </div>
                                     <div class="activity-meta">
                                         <span class="activity-type">Edited</span>
@@ -232,7 +232,7 @@
                             <h3>No Recent Activity</h3>
                             <p>{% if isOwnProfile %}Start contributing to see your activity here!{% else %}This user hasn't been active recently.{% endif %}</p>
                             {% if isOwnProfile %}
-                            <a href="/pages/create" class="btn btn-primary">Create Your First Page</a>
+                            <a href="/wiki/create" class="btn btn-primary">Create Your First Page</a>
                             {% endif %}
                         </div>
                     {% endif %}

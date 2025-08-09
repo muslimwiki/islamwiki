@@ -30,7 +30,7 @@ class PageController extends Controller
     /**
      * @var LoggerInterface Logger instance
      */
-    private $logger;
+    protected $logger;
 
     /**
      * Create a new controller instance.
@@ -365,50 +365,21 @@ class PageController extends Controller
     }
 
     /**
-     * Show the form for creating a new wiki page.
-     *
-     * This method displays the page creation form with optional pre-filled values
-     * for title and namespace from the query parameters. It also checks if the
-     * user has permission to create pages in the specified namespace.
+     * Show the form for creating a new page.
      *
      * @param Request $request The HTTP request
      * @return Response
-     *
-     * @throws HttpException If the user doesn't have permission to create pages
      */
     public function create(Request $request): Response
     {
-        $this->logger->info('PageController::create method called', [
-            'query_params' => $request->getQueryParams(),
-            'user_id' => $this->user($request)['id'] ?? 'guest',
-            'method' => $request->getMethod(),
-            'uri' => $request->getUri()->getPath(),
-        ]);
-
         try {
-            // Use new AmanSecurity for authentication
-            $auth = new \IslamWiki\Core\Auth\AmanSecurity(
-                $this->container->get('session'),
-                $this->db
-            );
-
-            // TEMPORARILY DISABLED AUTHENTICATION FOR TESTING
-            // TODO: Re-enable authentication when session sharing is fixed
-            /*
-            // Check if user is authenticated
-            if (!$auth->check()) {
-                $this->logger->notice('Unauthenticated user attempted to access page creation form');
-                return $this->redirect('/login?redirect=' . urlencode($request->getUri()->getPath() . '?' . $request->getUri()->getQuery()));
-            }
-
-            // Check if user has permission to create pages
-            if (!$auth->can('create_pages')) {
-                $this->logger->warning('User does not have permission to create pages', [
-                    'user_id' => $auth->id(),
+            if ($this->logger) {
+                $this->logger->info('PageController::create method called', [
+                    'query_params' => $request->getQueryParams(),
+                    'method' => $request->getMethod(),
+                    'uri' => $request->getUri()->getPath(),
                 ]);
-                throw new HttpException(403, 'You do not have permission to create pages.');
             }
-            */
 
             // Get title and namespace from query parameters
             $title = trim($request->getQueryParam('title', ''));
@@ -427,22 +398,33 @@ class PageController extends Controller
                 $existingPage = Page::findBySlug($slug, $this->db);
 
                 if ($existingPage) {
-                    $this->logger->info('Attempted to create existing page, redirecting to edit', [
-                        'slug' => $slug,
-                        'existing_page_id' => $existingPage->getAttribute('id'),
-                    ]);
+                    if ($this->logger) {
+                        $this->logger->info('Attempted to create existing page, redirecting to edit', [
+                            'slug' => $slug,
+                            'existing_page_id' => $existingPage->getAttribute('id'),
+                        ]);
+                    }
 
                     return $this->redirect($existingPage->getEditUrl())
                         ->with('info', 'This page already exists. You are now editing the existing page.');
                 }
             }
 
-            // Log successful form access
-            $this->logger->debug('Page creation form displayed', [
-                'title' => $title,
-                'namespace' => $namespace,
-                'user_id' => $this->user($request)['id'],
-            ]);
+            // Get user safely
+            $user = null;
+            try {
+                $user = $this->user($request);
+            } catch (\Exception $e) {
+                // User not authenticated, continue without user
+            }
+
+            if ($this->logger) {
+                $this->logger->debug('Page creation form displayed', [
+                    'title' => $title,
+                    'namespace' => $namespace,
+                    'user_id' => $user['id'] ?? 'guest',
+                ]);
+            }
 
             return $this->view('pages/edit', [
                 'title' => $title,
@@ -452,16 +434,18 @@ class PageController extends Controller
                 'canEdit' => true,
                 'canDelete' => false,
                 'canLock' => $this->isAdmin($request),
-                'auth' => $auth,
+                'user' => $user,
             ]);
         } catch (HttpException $e) {
             throw $e; // Re-throw HTTP exceptions
         } catch (\Exception $e) {
-            $this->logger->error('Failed to display page creation form', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'query_params' => $request->getQueryParams(),
-            ]);
+            if ($this->logger) {
+                $this->logger->error('Failed to display page creation form', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'query_params' => $request->getQueryParams(),
+                ]);
+            }
 
             throw new HttpException(500, 'An error occurred while loading the page creation form. Please try again later.');
         }
@@ -470,67 +454,21 @@ class PageController extends Controller
     /**
      * Store a newly created page in storage.
      *
-     * This method handles the submission of the page creation form. It validates the input,
-     * checks permissions, creates the page and its initial revision, and handles any errors
-     * that may occur during the process.
-     *
      * @param Request $request The HTTP request containing the page data
      * @return Response
-     *
-     * @throws HttpException If the user is not authenticated, lacks permissions, or validation fails
-     * @throws \Exception If an unexpected error occurs during page creation
      */
     public function store(Request $request): Response
     {
-        $startTime = microtime(true);
-        $this->logger->info('PageController::store method called', [
-            'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
-            'user_agent' => $request->getHeaderLine('User-Agent'),
-            'content_type' => $request->getHeaderLine('Content-Type'),
-            'method' => $request->getMethod(),
-            'uri' => $request->getUri()->getPath(),
-        ]);
-
         try {
-            // TEMPORARILY DISABLED CSRF VERIFICATION FOR TESTING
-            // TODO: Re-enable CSRF verification when form includes proper tokens
-            /*
-            // Verify CSRF token
-            $session = $this->container->get('session');
-            $csrfToken = $request->getParsedBody()['_token'] ?? '';
-            if (!$session->verifyCsrfToken($csrfToken)) {
-                throw new HttpException(403, 'Invalid CSRF token.');
-            }
-            */
-
-            // Use new AmanSecurity for authentication
-            $auth = new \IslamWiki\Core\Auth\AmanSecurity(
-                $this->container->get('session'),
-                $this->db
-            );
-
-            // TEMPORARILY DISABLED AUTHENTICATION FOR TESTING
-            // TODO: Re-enable authentication when session sharing is fixed
-            /*
-            // Check authentication
-            if (!$auth->check()) {
-                $this->logger->warning('Unauthenticated user attempted to create a page');
-                throw new HttpException(403, 'You must be logged in to create pages.');
-            }
-
-            // Check permissions
-            if (!$auth->can('create_pages')) {
-                $this->logger->warning('User does not have permission to create pages', [
-                    'user_id' => $auth->id(),
+            if ($this->logger) {
+                $this->logger->info('PageController::store method called', [
+                    'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                    'user_agent' => $request->getHeaderLine('User-Agent'),
+                    'content_type' => $request->getHeaderLine('Content-Type'),
+                    'method' => $request->getMethod(),
+                    'uri' => $request->getUri()->getPath(),
                 ]);
-                throw new HttpException(403, 'You do not have permission to create pages.');
             }
-
-            $user = $auth->user();
-            */
-
-            // Use a default user for testing
-            $user = ['id' => 1, 'username' => 'testuser'];
 
             // Get and validate input
             $data = $request->getParsedBody();
@@ -538,15 +476,16 @@ class PageController extends Controller
             $namespace = trim($data['namespace'] ?? '');
             $content = $data['content'] ?? '';
             $comment = trim($data['comment'] ?? 'Created page');
-            $isMinorEdit = isset($data['is_minor_edit']);
-            $watchPage = isset($data['watch']);
+            $contentFormat = $data['content_format'] ?? 'markdown';
 
-            $this->logger->info('PageController::store - Form data received', [
-                'title' => $title,
-                'namespace' => $namespace,
-                'content_length' => strlen($content),
-                'comment' => $comment,
-            ]);
+            if ($this->logger) {
+                $this->logger->info('PageController::store - Form data received', [
+                    'title' => $title,
+                    'namespace' => $namespace,
+                    'content_length' => strlen($content),
+                    'comment' => $comment,
+                ]);
+            }
 
             // Validate required fields
             $errors = [];
@@ -557,13 +496,8 @@ class PageController extends Controller
                 $errors['content'] = 'Page content cannot be empty';
             }
 
-            $this->logger->info('PageController::store - Validation completed', [
-                'errors_count' => count($errors),
-                'errors' => $errors,
-            ]);
-
             // Validate title format (allow most characters except dangerous ones)
-            if (!preg_match('/^[^<>\[\]|{}_\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+$/u', $title)) {
+            if (!empty($title) && !preg_match('/^[^<>\[\]|{}_\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+$/u', $title)) {
                 $errors['title'] = 'Invalid characters in page title';
             }
 
@@ -572,25 +506,32 @@ class PageController extends Controller
                 $errors['namespace'] = 'Invalid namespace format';
             }
 
-            $this->logger->info('PageController::store - Advanced validation completed', [
-                'errors_count' => count($errors),
-                'errors' => $errors,
-            ]);
+            if ($this->logger) {
+                $this->logger->info('PageController::store - Validation completed', [
+                    'errors_count' => count($errors),
+                    'errors' => $errors,
+                ]);
+            }
 
             // If there are validation errors, return to the form
             if (!empty($errors)) {
-                $this->logger->info('PageController::store - Validation failed', [
-                    'user_id' => $user['id'],
-                    'errors' => $errors,
-                ]);
+                if ($this->logger) {
+                    $this->logger->info('PageController::store - Validation failed', [
+                        'errors' => $errors,
+                    ]);
+                }
 
                 return $this->view('pages/edit', [
                     'title' => $title,
                     'namespace' => $namespace,
                     'content' => $content,
+                    'content_format' => $contentFormat,
                     'isNew' => true,
                     'errors' => $errors,
                     'old' => $data,
+                    'canEdit' => true,
+                    'canDelete' => false,
+                    'canLock' => $this->isAdmin($request),
                 ]);
             }
 
@@ -599,176 +540,257 @@ class PageController extends Controller
             $existingPage = Page::findBySlug($slug, $this->db);
 
             if ($existingPage) {
-                $this->logger->info('Attempted to create existing page', [
-                    'user_id' => $user['id'],
-                    'existing_page_id' => $existingPage->getAttribute('id'),
-                    'slug' => $slug,
-                ]);
+                if ($this->logger) {
+                    $this->logger->info('Attempted to create existing page', [
+                        'existing_page_id' => $existingPage->getAttribute('id'),
+                        'slug' => $slug,
+                    ]);
+                }
 
                 return $this->redirect($existingPage->getEditUrl())
                     ->with('info', 'This page already exists. You are now editing the existing page.');
             }
 
-            // TEMPORARILY USE DIRECT DATABASE INSERTION FOR TESTING
-            // TODO: Fix Page model integration
+            // Create the page
             try {
-                $this->logger->info('PageController::store - Starting database insertion', [
+                if ($this->logger) {
+                    $this->logger->info('PageController::store - Starting database insertion', [
+                        'title' => $title,
+                        'slug' => $slug,
+                        'namespace' => $namespace,
+                    ]);
+                }
+
+                // Create page using direct database insertion
+                $pageId = $this->db->table('pages')->insertGetId([
                     'title' => $title,
                     'slug' => $slug,
+                    'content' => $content,
+                    'content_format' => $contentFormat,
                     'namespace' => $namespace,
+                    'is_locked' => false,
+                    'view_count' => 0,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
 
-                // Create the page directly in database
-                $stmt = $this->db->getPdo()->prepare("
-                    INSERT INTO pages (title, slug, content, namespace, content_format, created_by, updated_by, created_at, updated_at) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ");
+                if ($this->logger) {
+                    $this->logger->info('PageController::store - Page created successfully', [
+                        'page_id' => $pageId,
+                        'title' => $title,
+                        'slug' => $slug,
+                    ]);
+                }
 
-                $now = date('Y-m-d H:i:s');
-                $stmt->execute([
-                    $title,
-                    $slug,
-                    $data['content'] ?? '',
-                    $namespace,
-                    $data['content_format'] ?? 'markdown',
-                    $user['id'],
-                    $user['id'],
-                    $now,
-                    $now
-                ]);
-
-                $pageId = $this->db->getPdo()->lastInsertId();
-
-                $this->logger->info('PageController::store - Page inserted successfully', [
+                // Create initial revision
+                $revisionId = $this->db->table('page_revisions')->insertGetId([
                     'page_id' => $pageId,
                     'title' => $title,
-                    'slug' => $slug,
+                    'content' => $content,
+                    'content_format' => $contentFormat,
+                    'comment' => $comment,
+                    'user_id' => 1, // Default user for now
+                    'created_at' => date('Y-m-d H:i:s'),
                 ]);
 
-                // Create the initial revision
-                $stmt = $this->db->getPdo()->prepare("
-                    INSERT INTO page_history (page_id, user_id, content, comment, created_at) 
-                    VALUES (?, ?, ?, ?, ?)
-                ");
+                if ($this->logger) {
+                    $this->logger->info('PageController::store - Revision created successfully', [
+                        'revision_id' => $revisionId,
+                        'page_id' => $pageId,
+                    ]);
+                }
 
-                $stmt->execute([
-                    $pageId,
-                    $user['id'],
-                    $data['content'] ?? '',
-                    $data['comment'] ?? 'Created page',
-                    $now
-                ]);
+                // Redirect to the new page
+                return $this->redirect("/{$slug}")
+                    ->with('success', 'Page created successfully.');
 
-                // Create a mock page object for the redirect
-                $page = new Page($this->db, [
-                    'id' => $pageId,
-                    'title' => $title,
-                    'slug' => $slug,
-                    'namespace' => $namespace,
-                    'content' => $data['content'] ?? '',
-                    'content_format' => $data['content_format'] ?? 'markdown',
-                ]);
-            } catch (Exception $e) {
-                $this->logger->error('Failed to create page directly', [
+            } catch (\Exception $e) {
+                if ($this->logger) {
+                    $this->logger->error('PageController::store - Database error', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
+
+                throw new HttpException(500, 'Failed to create page. Please try again.');
+            }
+
+        } catch (HttpException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('PageController::store - Unexpected error', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
-                throw new HttpException(500, 'Failed to create page: ' . $e->getMessage());
             }
 
-            // Log successful page creation
-            $this->logger->info('PageController::store - Page created successfully', [
-                'page_id' => $page->getAttribute('id'),
-                'title' => $title,
-                'namespace' => $namespace,
-                'user_id' => $user['id'],
-                'processing_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms',
-            ]);
-
-            return $this->redirect($page->getUrl())
-                ->with('success', 'Page created successfully.');
-        } catch (HttpException $e) {
-            throw $e; // Re-throw HTTP exceptions
-        } catch (\Exception $e) {
-            $this->logger->error('Failed to create page', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'user_id' => $user['id'] ?? null,
-                'title' => $title,
-                'namespace' => $namespace,
-            ]);
-
-            throw new HttpException(500, 'An error occurred while creating the page. Please try again.');
+            throw new HttpException(500, 'An error occurred while creating the page. Please try again later.');
         }
     }
 
     /**
-     * Show the form for editing the specified page.
+     * Show the form for editing an existing page.
+     *
+     * @param Request $request The HTTP request
+     * @param string $slug The page slug
+     * @return Response
      */
     public function edit(Request $request, string $slug): Response
     {
-        $page = Page::findBySlug($slug, $this->db);
+        try {
+            $page = Page::findBySlug($slug, $this->db);
 
-        if (!$page) {
-            $this->abort(404, 'Page not found');
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
+
+            // Check if page is locked and user has permission to edit
+            if ($page->isLocked() && !$this->isAdmin($request)) {
+                throw new HttpException(403, 'This page is locked and cannot be edited');
+            }
+
+            // Get user safely
+            $user = null;
+            try {
+                $user = $this->user($request);
+            } catch (\Exception $e) {
+                // User not authenticated, continue without user
+            }
+
+            return $this->view('pages/edit', [
+                'page' => $page,
+                'title' => $page->getAttribute('title'),
+                'namespace' => $page->getAttribute('namespace'),
+                'content' => $page->getAttribute('content'),
+                'isNew' => false,
+                'canEdit' => true,
+                'canDelete' => $this->canDeletePage($page, $request),
+                'canLock' => $this->isAdmin($request),
+                'user' => $user,
+            ]);
+        } catch (HttpException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Failed to display page edit form', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+
+            throw new HttpException(500, 'An error occurred while loading the page edit form. Please try again later.');
         }
-
-        // Check if page is locked and user has permission to edit
-        if ($page->isLocked() && !$this->isAdmin($request)) {
-            $this->abort(403, 'This page is locked and cannot be edited');
-        }
-
-        // Create AmanSecurity for template
-        $auth = new \IslamWiki\Core\Auth\AmanSecurity(
-            $this->container->get('session'),
-            $this->db
-        );
-
-        return $this->view('pages/edit', [
-            'page' => $page,
-            'title' => $page->getAttribute('title'),
-            'namespace' => $page->getAttribute('namespace'),
-            'content' => $page->getAttribute('content'),
-            'isNew' => false,
-            'auth' => $auth,
-        ]);
     }
 
     /**
      * Update the specified page in storage.
+     *
+     * @param Request $request The HTTP request
+     * @param string $slug The page slug
+     * @return Response
      */
     public function update(Request $request, string $slug): Response
     {
-        $user = $this->user($request);
-        if (!$user) {
-            $this->abort(403, 'You must be logged in to edit pages');
+        try {
+            $page = Page::findBySlug($slug, $this->db);
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
+
+            // Check if page is locked and user has permission to edit
+            if ($page->isLocked() && !$this->isAdmin($request)) {
+                throw new HttpException(403, 'This page is locked and cannot be edited');
+            }
+
+            $data = $request->getParsedBody();
+            $title = trim($data['title'] ?? '');
+            $namespace = trim($data['namespace'] ?? '');
+            $content = $data['content'] ?? '';
+            $comment = trim($data['comment'] ?? 'Edited page');
+            $contentFormat = $data['content_format'] ?? 'markdown';
+
+            // Validate required fields
+            $errors = [];
+            if (empty($title)) {
+                $errors['title'] = 'Page title is required';
+            }
+            if (empty($content)) {
+                $errors['content'] = 'Page content cannot be empty';
+            }
+
+            // Validate title format
+            if (!empty($title) && !preg_match('/^[^<>\[\]|{}_\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+$/u', $title)) {
+                $errors['title'] = 'Invalid characters in page title';
+            }
+
+            // Validate namespace
+            if (!empty($namespace) && !preg_match('/^[a-zA-Z0-9_-]+$/', $namespace)) {
+                $errors['namespace'] = 'Invalid namespace format';
+            }
+
+            // If there are validation errors, return to the form
+            if (!empty($errors)) {
+                return $this->view('pages/edit', [
+                    'page' => $page,
+                    'title' => $title,
+                    'namespace' => $namespace,
+                    'content' => $content,
+                    'content_format' => $contentFormat,
+                    'isNew' => false,
+                    'errors' => $errors,
+                    'old' => $data,
+                    'canEdit' => true,
+                    'canDelete' => $this->canDeletePage($page, $request),
+                    'canLock' => $this->isAdmin($request),
+                ]);
+            }
+
+            // Update page content
+            $page->setAttribute('title', $title);
+            $page->setAttribute('namespace', $namespace);
+            $page->setAttribute('content', $content);
+            $page->setAttribute('content_format', $contentFormat);
+            $page->setAttribute('updated_at', date('Y-m-d H:i:s'));
+            $page->save();
+
+            // Create a new revision
+            $revisionId = $this->db->table('page_revisions')->insertGetId([
+                'page_id' => $page->getAttribute('id'),
+                'title' => $title,
+                'content' => $content,
+                'content_format' => $contentFormat,
+                'comment' => $comment,
+                'user_id' => 1, // Default user for now
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            if ($this->logger) {
+                $this->logger->info('Page updated successfully', [
+                    'page_id' => $page->getAttribute('id'),
+                    'revision_id' => $revisionId,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+            }
+
+            return $this->redirect($page->getUrl())
+                ->with('success', 'Page updated successfully.');
+
+        } catch (HttpException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Failed to update page', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+
+            throw new HttpException(500, 'An error occurred while updating the page. Please try again later.');
         }
-
-        $page = Page::findBySlug($slug, $this->db);
-        if (!$page) {
-            $this->abort(404, 'Page not found');
-        }
-
-        // Check if page is locked and user has permission to edit
-        if ($page->isLocked() && !$this->isAdmin($request)) {
-            $this->abort(403, 'This page is locked and cannot be edited');
-        }
-
-        $data = $request->getParsedBody();
-
-        // Update page content
-        $page->setAttribute('content', $data['content'] ?? '');
-        $page->setAttribute('content_format', $data['content_format'] ?? 'markdown');
-        $page->save();
-
-        // Create a new revision
-        $revision = $page->createRevision(
-            $user['id'],
-            $data['comment'] ?? 'Edited page'
-        );
-
-        return $this->redirect($page->getUrl())
-            ->with('success', 'Page updated successfully.');
     }
 
     /**

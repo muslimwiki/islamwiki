@@ -5,130 +5,497 @@
 {% block styles %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <style>
-        .editor-toolbar {
-            border: 1px solid #d1d5db;
-            border-bottom: none;
-            border-radius: 0.375rem 0.375rem 0 0;
+        .edit-container {
+            background: var(--bismillah-bg);
+            border-radius: var(--bismillah-radius-lg);
+            box-shadow: var(--bismillah-shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
+        
+        .edit-header {
+            background: var(--bismillah-gradient-alt);
+            color: white !important;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .edit-header * {
+            color: white !important;
+        }
+        
+        .edit-header a {
+            color: white !important;
+        }
+        
+        .edit-header a:hover {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        .edit-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .edit-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            color: white !important;
+        }
+        
+        .edit-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0.5rem 0 0 0;
+            position: relative;
+            z-index: 1;
+            color: white !important;
+        }
+        
+        .edit-content {
+            padding: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--bismillah-text);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--bismillah-border);
+            border-radius: var(--bismillah-radius);
+            font-size: 1.1rem;
+            transition: var(--bismillah-transition);
+            background: var(--bismillah-bg);
+            color: var(--bismillah-text);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--bismillah-primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        
+        .form-control.error {
+            border-color: var(--bismillah-danger);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .form-help {
+            font-size: 1rem;
+            color: var(--bismillah-text-light);
+            margin-top: 0.5rem;
+        }
+        
+        .form-error {
+            font-size: 1rem;
+            color: var(--bismillah-danger);
+            margin-top: 0.5rem;
+        }
+        
+        .editor-wrapper {
+            border-radius: var(--bismillah-radius);
+            overflow: hidden;
+            box-shadow: var(--bismillah-shadow);
+        }
+        
+        .editor-toolbar {
+            border: 2px solid var(--bismillah-border);
+            border-bottom: none;
+            border-radius: var(--bismillah-radius) var(--bismillah-radius) 0 0;
+            background: var(--bismillah-bg-light);
+        }
+        
         .CodeMirror {
-            border: 1px solid #d1d5db;
-            border-radius: 0 0 0.375rem 0.375rem;
+            border: 2px solid var(--bismillah-border);
+            border-radius: 0 0 var(--bismillah-radius) var(--bismillah-radius);
             min-height: 400px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 1rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bismillah-border-light);
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--bismillah-radius);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--bismillah-transition);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: var(--bismillah-bg);
+            color: var(--bismillah-text);
+            border: 2px solid var(--bismillah-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bismillah-bg-light);
+            border-color: var(--bismillah-text-light);
+        }
+        
+        .btn-primary {
+            background: var(--bismillah-gradient-alt);
+            color: white;
+            box-shadow: var(--bismillah-shadow);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--bismillah-shadow-lg);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .page-tools {
+            background: var(--bismillah-bg);
+            border-radius: var(--bismillah-radius-lg);
+            box-shadow: var(--bismillah-shadow);
+            overflow: hidden;
+        }
+        
+        .page-tools-header {
+            background: var(--bismillah-bg-light);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--bismillah-border-light);
+        }
+        
+        .page-tools-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--bismillah-text);
+            margin: 0;
+        }
+        
+        .page-tools-content {
+            padding: 1.5rem 2rem;
+        }
+        
+        .tools-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .tools-item {
+            margin-bottom: 1rem;
+        }
+        
+        .tools-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tools-link {
+            color: var(--bismillah-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--bismillah-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tools-link:hover {
+            color: var(--bismillah-secondary);
+        }
+        
+        .tools-button {
+            background: none;
+            border: none;
+            color: var(--bismillah-warning);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--bismillah-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tools-button:hover {
+            color: #d97706;
+        }
+        
+        .tools-button.danger {
+            color: var(--bismillah-danger);
+        }
+        
+        .tools-button.danger:hover {
+            color: #dc2626;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-badge.locked {
+            background: var(--bismillah-warning);
+            color: white;
+        }
+        
+        .status-badge.unlocked {
+            background: var(--bismillah-success);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .edit-header {
+                padding: 1.5rem;
+            }
+            
+            .edit-title {
+                font-size: 1.5rem;
+            }
+            
+            .edit-content {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-        <div class="px-4 py-5 sm:px-6">
-            <h1 class="text-2xl font-bold text-gray-900">
-                {{ isNew ? 'Create New Page' : 'Edit: ' ~ page.title }}
+    <div class="edit-container">
+        <div class="edit-header">
+            <h1 class="edit-title">
+                {% if isNew %}
+                    <span>✨ Create New Page</span>
+                {% else %}
+                    <span>✏️ Edit: {{ page.getAttribute('title') }}</span>
+                {% endif %}
             </h1>
+            <p class="edit-subtitle">
+                {% if isNew %}
+                    Create a new page to share knowledge with the community
+                {% else %}
+                    Make changes to this page and save your edits
+                {% endif %}
+            </p>
         </div>
         
-        <div class="px-4 py-5 sm:p-6">
-            <form method="POST" action="{{ isNew ? '/pages' : '/pages/' ~ page.slug }}">
+        <div class="edit-content">
+            {% set displaySlug = page.getAttribute('slug') %}
+            {% if ':' in page.getAttribute('slug') %}
+                {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+            {% endif %}
+            <form method="POST" action="{{ isNew ? '/wiki' : '/wiki/' ~ displaySlug }}">
                 {% if not isNew %}
                     <input type="hidden" name="_method" value="PUT">
                 {% endif %}
                 
-                <div class="space-y-6">
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700">Page Title</label>
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="title" class="form-label">📝 Page Title</label>
                         <input type="text" name="title" id="title" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                               value="{{ isNew ? title : page.title }}" {{ not isNew and page.isLocked ? 'readonly' : '' }}>
+                               class="form-control {{ errors.title ? 'error' : '' }}"
+                               value="{{ isNew ? title : page.getAttribute('title') }}" 
+                               {{ not isNew and page.getAttribute('is_locked') ? 'readonly' : '' }}
+                               placeholder="Enter page title...">
+                        {% if errors.title %}
+                            <div class="form-error">{{ errors.title }}</div>
+                        {% endif %}
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="namespace" class="block text-sm font-medium text-gray-700">Namespace (optional)</label>
-                            <select id="namespace" name="namespace" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="namespace" class="form-label">📁 Namespace</label>
+                            <select id="namespace" name="namespace" class="form-control">
                                 <option value="">(Main)</option>
-                                <option value="Help" {{ (isNew ? namespace : page.namespace) == 'Help' ? 'selected' : '' }}>Help</option>
-                                <option value="User" {{ (isNew ? namespace : page.namespace) == 'User' ? 'selected' : '' }}>User</option>
-                                <option value="Template" {{ (isNew ? namespace : page.namespace) == 'Template' ? 'selected' : '' }}>Template</option>
-                                <option value="Category" {{ (isNew ? namespace : page.namespace) == 'Category' ? 'selected' : '' }}>Category</option>
+                                <option value="Help" {{ (isNew ? namespace : page.getAttribute('namespace')) == 'Help' ? 'selected' : '' }}>Help</option>
+                                <option value="User" {{ (isNew ? namespace : page.getAttribute('namespace')) == 'User' ? 'selected' : '' }}>User</option>
+                                <option value="Template" {{ (isNew ? namespace : page.getAttribute('namespace')) == 'Template' ? 'selected' : '' }}>Template</option>
+                                <option value="Category" {{ (isNew ? namespace : page.getAttribute('namespace')) == 'Category' ? 'selected' : '' }}>Category</option>
                             </select>
+                            <div class="form-help">Choose a namespace to organize your content</div>
                         </div>
                         
-                        <div>
-                            <label for="content_format" class="block text-sm font-medium text-gray-700">Format</label>
-                            <select id="content_format" name="content_format" class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                                <option value="markdown" {{ (isNew ? 'markdown' : page.content_format) == 'markdown' ? 'selected' : '' }}>Markdown</option>
-                                <option value="html" {{ (isNew ? 'markdown' : page.content_format) == 'html' ? 'selected' : '' }}>HTML</option>
-                                <option value="wikitext" {{ (isNew ? 'markdown' : page.content_format) == 'wikitext' ? 'selected' : '' }}>WikiText</option>
+                        <div class="form-group">
+                            <label for="content_format" class="form-label">📄 Format</label>
+                            <select id="content_format" name="content_format" class="form-control">
+                                <option value="markdown" {{ (isNew ? 'markdown' : page.getAttribute('content_format')) == 'markdown' ? 'selected' : '' }}>Markdown</option>
+                                <option value="html" {{ (isNew ? 'markdown' : page.getAttribute('content_format')) == 'html' ? 'selected' : '' }}>HTML</option>
+                                <option value="wikitext" {{ (isNew ? 'markdown' : page.getAttribute('content_format')) == 'wikitext' ? 'selected' : '' }}>WikiText</option>
                             </select>
+                            <div class="form-help">Select the content format for your page</div>
                         </div>
                     </div>
-                    
-                    <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
-                        <textarea id="content" name="content" rows="20" class="hidden">{{ isNew ? '' : page.content }}</textarea>
-                        <div id="editor"></div>
-                    </div>
-                    
-                    <div>
-                        <label for="comment" class="block text-sm font-medium text-gray-700">Edit Summary</label>
-                        <div class="mt-1">
-                            <input type="text" name="comment" id="comment" 
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                   placeholder="Briefly describe your changes">
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="content" class="form-label">📝 Content</label>
+                        <div class="editor-wrapper">
+                            <textarea id="content" name="content" rows="20" class="hidden">{{ isNew ? '' : page.getAttribute('content') }}</textarea>
+                            <div id="editor"></div>
                         </div>
-                        <p class="mt-2 text-sm text-gray-500">
-                            {{ isNew ? 'Describe what this page is about.' : 'Briefly describe what you changed.' }}
-                        </p>
+                        {% if errors.content %}
+                            <div class="form-error">{{ errors.content }}</div>
+                        {% endif %}
                     </div>
-                    
-                    <div class="flex justify-end space-x-3">
-                        <a href="{{ isNew ? '/' : '/pages/' ~ page.slug }}" 
-                           class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Cancel
-                        </a>
-                        <button type="submit" 
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                {{ not isNew and page.isLocked ? 'disabled' : '' }}>
-                            {{ isNew ? 'Create Page' : 'Save Changes' }}
-                        </button>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="comment" class="form-label">💬 Edit Summary</label>
+                        <input type="text" name="comment" id="comment" 
+                               class="form-control"
+                               placeholder="{% if isNew %}Describe what this page is about...{% else %}Briefly describe what you changed...{% endif %}">
+                        <div class="form-help">
+                            {% if isNew %}
+                                Provide a brief description of what this page will contain
+                            {% else %}
+                                Help other editors understand your changes
+                            {% endif %}
+                        </div>
                     </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="{{ isNew ? '/' : '/wiki/' ~ displaySlug }}" 
+                       class="btn btn-secondary">
+                        <span>❌</span>
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="btn btn-primary"
+                            {{ not isNew and page.getAttribute('is_locked') ? 'disabled' : '' }}>
+                        <span>💾</span>
+                        {{ isNew ? 'Create Page' : 'Save Changes' }}
+                    </button>
                 </div>
             </form>
         </div>
     </div>
     
     {% if not isNew %}
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Page Tools</h3>
+    <div class="page-tools">
+        <div class="page-tools-header">
+            <h3 class="page-tools-title">🔧 Page Tools</h3>
         </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-            <div class="space-y-4">
-                <div>
-                    <a href="/pages/{{ page.slug }}/history" class="text-indigo-600 hover:text-indigo-900">
+        <div class="page-tools-content">
+            <ul class="tools-list">
+                <li class="tools-item">
+                    {% set displaySlug = page.getAttribute('slug') %}
+                    {% if ':' in page.getAttribute('slug') %}
+                        {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+                    {% endif %}
+                    <a href="/wiki/{{ displaySlug }}/history" class="tools-link">
+                        <span>📚</span>
                         View page history
                     </a>
-                </div>
-                {% if not page.isLocked and auth.isAdmin() %}
-                <div>
-                    <form action="/pages/{{ page.slug }}/lock" method="POST" class="inline">
-                        <button type="submit" class="text-yellow-600 hover:text-yellow-900">
+                </li>
+                {% if not page.isLocked and canLock %}
+                <li class="tools-item">
+                    <form action="/wiki/{{ page.slug }}/lock" method="POST" class="inline">
+                        <button type="submit" class="tools-button">
+                            <span>🔒</span>
                             Lock this page
                         </button>
                     </form>
-                </div>
+                </li>
                 {% endif %}
-                {% if auth.isAdmin() %}
-                <div>
-                    <form action="/pages/{{ page.slug }}" method="POST" class="inline"
+                {% if canDelete %}
+                <li class="tools-item">
+                    <form action="/wiki/{{ page.slug }}" method="POST" class="inline"
                           onsubmit="return confirm('Are you sure you want to delete this page? This cannot be undone.');">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="text-red-600 hover:text-red-900">
+                        <button type="submit" class="tools-button danger">
+                            <span>🗑️</span>
                             Delete this page
                         </button>
                     </form>
-                </div>
+                </li>
                 {% endif %}
-            </div>
+            </ul>
         </div>
     </div>
     {% endif %}
@@ -142,7 +509,7 @@
                 element: document.getElementById('content'),
                 spellChecker: false,
                 autofocus: true,
-                placeholder: 'Enter your content here...',
+                placeholder: 'Enter your content here... Use Markdown formatting for rich text.',
                 status: false,
                 toolbar: [
                     'bold', 'italic', 'heading', '|',
@@ -150,7 +517,8 @@
                     'link', 'image', 'table', '|',
                     'preview', 'side-by-side', 'fullscreen', '|',
                     'guide'
-                ]
+                ],
+                theme: 'default'
             });
             
             // Handle form submission with SimpleMDE content
@@ -160,9 +528,21 @@
             
             // Update preview when format changes
             document.getElementById('content_format').addEventListener('change', function() {
-                // This would need to be implemented based on your preview logic
                 console.log('Format changed to:', this.value);
             });
+            
+            // Add smooth animations
+            const editContainer = document.querySelector('.edit-container');
+            if (editContainer) {
+                editContainer.style.opacity = '0';
+                editContainer.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    editContainer.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    editContainer.style.opacity = '1';
+                    editContainer.style.transform = 'translateY(0)';
+                }, 100);
+            }
         });
     </script>
 {% endblock %}

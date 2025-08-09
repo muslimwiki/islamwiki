@@ -11,7 +11,7 @@
                 <h2 class="card-title">Navigation</h2>
             </div>
             <nav class="second-nav">
-                <a href="/pages" class="nav-item">📚 Browse Pages</a>
+                <a href="/wiki" class="nav-item">📚 Wiki</a>
                 <a href="/quran" class="nav-item">📖 Quran</a>
                 <a href="/hadith" class="nav-item">📜 Hadith</a>
                 <a href="/islamic-sciences" class="nav-item">🔬 Sciences</a>
@@ -41,7 +41,7 @@
                             <p>View your activity and stats</p>
                         </div>
                     </a>
-                    <a href="/pages/create" class="user-nav-item">
+                    <a href="/wiki/create" class="user-nav-item">
                         <div class="user-nav-icon">✏️</div>
                         <div class="user-nav-content">
                             <h3>Create Page</h3>
@@ -148,7 +148,7 @@
                 <p class="mb-4">Help us build the most comprehensive Islamic knowledge base. Contribute articles, share knowledge, and learn from others.</p>
                 {% if user %}
                     <div class="flex gap-4 justify-center">
-                        <a href="/pages/create" class="btn">Create Your First Page</a>
+                        <a href="/wiki/create" class="btn">Create Your First Page</a>
                         <a href="/contributing" class="btn btn-secondary">Learn How to Contribute</a>
                     </div>
                 {% else %}
@@ -174,7 +174,7 @@
                 <a href="/islamic-history" class="btn btn-secondary">📜 Islamic History</a>
                 <a href="/islamic-sciences" class="btn btn-secondary">🔬 Islamic Sciences</a>
                 {% if user %}
-                    <a href="/pages/create" class="btn">✏️ Create Page</a>
+                    <a href="/wiki/create" class="btn">✏️ Create Page</a>
                 {% else %}
                     <a href="/register" class="btn">✏️ Join to Contribute</a>
                 {% endif %}
@@ -187,7 +187,7 @@
             <div class="card-header">
                 <div class="card-header-content">
                     <h2 class="card-title">📚 Recent Pages</h2>
-                    <a href="/pages" class="btn btn-small">View All</a>
+                    <a href="/wiki" class="btn btn-small">View All</a>
                 </div>
             </div>
             <div class="page-list">

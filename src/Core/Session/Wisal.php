@@ -171,7 +171,7 @@ class Wisal
      */
     public function login(int $userId, string $username, bool $isAdmin = false): void
     {
-        error_log("SessionManager::login - Setting user data: ID=$userId, Username=$username, IsAdmin=" . ($isAdmin ? 'true' : 'false'));
+        error_log("Wisal::login - Setting user data: ID=$userId, Username=$username, IsAdmin=" . ($isAdmin ? 'true' : 'false'));
         
         // Set user data first
         $this->put('user_id', $userId);
@@ -179,12 +179,12 @@ class Wisal
         $this->put('is_admin', $isAdmin);
         $this->put('logged_in_at', time());
         
-        error_log("SessionManager::login - User data set, session data: " . print_r($_SESSION, true));
+        error_log("Wisal::login - User data set, session data: " . print_r($_SESSION, true));
         
         // Then regenerate session ID for security
         $this->regenerate();
         
-        error_log("SessionManager::login - Session regenerated, final session data: " . print_r($_SESSION, true));
+        error_log("Wisal::login - Session regenerated, final session data: " . print_r($_SESSION, true));
     }
 
     /**

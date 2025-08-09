@@ -3,71 +3,72 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <nav class="text-sm text-gray-500 mb-4">
-            <a href="/hadith" class="hover:text-green-600">Hadith</a>
-            <span class="mx-2">→</span>
-            <a href="/hadith/collection/{{ collection_id }}" class="hover:text-green-600">{{ hadith.collection_name }}</a>
-            <span class="mx-2">→</span>
-            <span class="text-gray-800">{{ hadith_number }}</span>
-        </nav>
-        
-        <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">
-                    {{ hadith.collection_name }} {{ hadith_number }}
-                </h1>
-                {% if hadith.arabic_name %}
-                <h2 class="text-2xl text-gray-700 mb-4" dir="rtl">{{ hadith.arabic_name }}</h2>
-                {% endif %}
-            </div>
-            <div class="text-right">
-                {% if hadith.authenticity_level %}
-                <span class="inline-block px-3 py-1 text-sm rounded-full 
-                           {% if hadith.authenticity_level == 'sahih' %}bg-green-100 text-green-800
-                           {% elseif hadith.authenticity_level == 'hasan' %}bg-blue-100 text-blue-800
-                           {% elseif hadith.authenticity_level == 'daif' %}bg-yellow-100 text-yellow-800
-                           {% else %}bg-gray-100 text-gray-800{% endif %}">
-                    {{ hadith.authenticity_level|title }}
-                </span>
-                {% endif %}
+<div class="hadith-section">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <nav class="text-sm text-gray-500 mb-4">
+                <a href="/hadith" class="hover:text-hadith-primary">Hadith</a>
+                <span class="mx-2">→</span>
+                <a href="/hadith/collection/{{ collection_id }}" class="hover:text-hadith-primary">{{ hadith.collection_name }}</a>
+                <span class="mx-2">→</span>
+                <span class="text-gray-800">{{ hadith_number }}</span>
+            </nav>
+            
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="hadith-content-title">
+                        {{ hadith.collection_name }} {{ hadith_number }}
+                    </h1>
+                    {% if hadith.arabic_name %}
+                    <h2 class="hadith-content-subtitle" dir="rtl">{{ hadith.arabic_name }}</h2>
+                    {% endif %}
+                </div>
+                <div class="text-right">
+                    {% if hadith.authenticity_level %}
+                    <span class="inline-block px-3 py-1 text-sm rounded-full 
+                               {% if hadith.authenticity_level == 'sahih' %}bg-green-100 text-green-800
+                               {% elseif hadith.authenticity_level == 'hasan' %}bg-blue-100 text-blue-800
+                               {% elseif hadith.authenticity_level == 'daif' %}bg-yellow-100 text-yellow-800
+                               {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ hadith.authenticity_level|title }}
+                    </span>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Hadith Content -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <!-- Arabic Text -->
-        {% if hadith.arabic_text %}
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Arabic Text</h3>
-            <div class="border-l-4 border-green-500 pl-4" dir="rtl">
-                <p class="text-xl text-gray-800 leading-relaxed">{{ hadith.arabic_text }}</p>
+        <!-- Hadith Content -->
+        <div class="hadith-content">
+            <!-- Arabic Text -->
+            {% if hadith.arabic_text %}
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Arabic Text</h3>
+                <div class="hadith-text" dir="rtl">
+                    <p class="text-xl text-gray-800 leading-relaxed">{{ hadith.arabic_text }}</p>
+                </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- English Text -->
-        {% if hadith.english_text %}
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">English Translation</h3>
-            <div class="border-l-4 border-blue-500 pl-4">
-                <p class="text-gray-700 leading-relaxed">{{ hadith.english_text }}</p>
+            <!-- English Text -->
+            {% if hadith.english_text %}
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">English Translation</h3>
+                <div class="hadith-text">
+                    <p class="text-gray-700 leading-relaxed">{{ hadith.english_text }}</p>
+                </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- Additional Translation -->
-        {% if hadith.translation %}
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Additional Translation</h3>
-            <div class="border-l-4 border-purple-500 pl-4">
-                <p class="text-gray-600 italic">{{ hadith.translation }}</p>
+            <!-- Additional Translation -->
+            {% if hadith.translation %}
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Additional Translation</h3>
+                <div class="hadith-text">
+                    <p class="text-gray-600 italic">{{ hadith.translation }}</p>
+                </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
         <!-- Chain of Narrators -->
         {% if chain %}

@@ -115,6 +115,14 @@ class Request implements ServerRequestInterface
 
         // Get request method, default to GET if not set
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        
+        // Handle method override (for forms that use _method field)
+        if ($method === 'POST' && isset($_POST['_method'])) {
+            $overrideMethod = strtoupper(trim($_POST['_method']));
+            if (in_array($overrideMethod, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+                $method = $overrideMethod;
+            }
+        }
 
         // Get URI from globals
         $uri = self::getUriFromGlobals();

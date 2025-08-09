@@ -3,102 +3,96 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Hadith Collection</h1>
-        <p class="text-lg text-gray-600">Explore authentic Hadiths from various collections</p>
-    </div>
+<div class="hadith-section">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="hadith-header">
+            <h1 class="hadith-title">Hadith Collection</h1>
+            <p class="hadith-description">Explore authentic Hadiths from various collections</p>
+        </div>
 
-    <!-- Statistics -->
-    {% if stats %}
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Statistics</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-green-600">{{ stats.total_hadiths|default(0) }}</div>
-                <div class="text-sm text-gray-600">Total Hadiths</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-blue-600">{{ stats.total_collections|default(0) }}</div>
-                <div class="text-sm text-gray-600">Collections</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-purple-600">{{ stats.total_narrators|default(0) }}</div>
-                <div class="text-sm text-gray-600">Narrators</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-orange-600">{{ stats.max_hadith_number|default(0) }}</div>
-                <div class="text-sm text-gray-600">Max Number</div>
+        <!-- Statistics -->
+        {% if stats %}
+        <div class="hadith-stats">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Statistics</h2>
+            <div class="hadith-stats-grid">
+                <div class="hadith-stat-item">
+                    <span class="hadith-stat-number">{{ stats.total_hadiths|default(0) }}</span>
+                    <div class="hadith-stat-label">Total Hadiths</div>
+                </div>
+                <div class="hadith-stat-item">
+                    <span class="hadith-stat-number">{{ stats.total_collections|default(0) }}</span>
+                    <div class="hadith-stat-label">Collections</div>
+                </div>
+                <div class="hadith-stat-item">
+                    <span class="hadith-stat-number">{{ stats.total_narrators|default(0) }}</span>
+                    <div class="hadith-stat-label">Narrators</div>
+                </div>
+                <div class="hadith-stat-item">
+                    <span class="hadith-stat-number">{{ stats.max_hadith_number|default(0) }}</span>
+                    <div class="hadith-stat-label">Max Number</div>
+                </div>
             </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    <!-- Search Section -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Hadiths</h2>
-        <form action="/hadith/search" method="GET" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label for="query" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
-                    <input type="text" id="query" name="q" placeholder="Enter search terms..." 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        <!-- Search Section -->
+        <div class="hadith-search-section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Hadiths</h2>
+            <form action="/hadith/search" method="GET" class="hadith-search-form">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="query" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
+                        <input type="text" id="query" name="q" placeholder="Enter search terms..." 
+                               class="hadith-search-input">
+                    </div>
+                    <div>
+                        <label for="collection" class="block text-sm font-medium text-gray-700 mb-2">Collection</label>
+                        <select id="collection" name="collection" class="hadith-search-select">
+                            <option value="">All Collections</option>
+                            {% for collection in collections %}
+                            <option value="{{ collection.id }}">{{ collection.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                        <select id="language" name="lang" class="hadith-search-select">
+                            <option value="en">English</option>
+                            <option value="ar">Arabic</option>
+                            <option value="ur">Urdu</option>
+                            <option value="tr">Turkish</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label for="collection" class="block text-sm font-medium text-gray-700 mb-2">Collection</label>
-                    <select id="collection" name="collection" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="">All Collections</option>
-                        {% for collection in collections %}
-                        <option value="{{ collection.id }}">{{ collection.name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="text-center">
+                    <button type="submit" class="hadith-search-btn">
+                        Search Hadiths
+                    </button>
                 </div>
-                <div>
-                    <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                    <select id="language" name="lang" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="en">English</option>
-                        <option value="ar">Arabic</option>
-                        <option value="ur">Urdu</option>
-                        <option value="tr">Turkish</option>
-                    </select>
-                </div>
-            </div>
-            <div class="text-center">
-                <button type="submit" 
-                        class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                    Search Hadiths
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Collections -->
-    {% if collections %}
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith Collections</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for collection in collections %}
-            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                    <a href="/hadith/collection/{{ collection.id }}" class="text-green-600 hover:text-green-700">
-                        {{ collection.name }}
-                    </a>
-                </h3>
-                {% if collection.arabic_name %}
-                <p class="text-sm text-gray-600 mb-2" dir="rtl">{{ collection.arabic_name }}</p>
-                {% endif %}
-                <p class="text-sm text-gray-500">{{ collection.hadith_count|default(0) }} Hadiths</p>
-                {% if collection.description %}
-                <p class="text-sm text-gray-600 mt-2">{{ collection.description }}</p>
-                {% endif %}
-            </div>
-            {% endfor %}
+            </form>
         </div>
-    </div>
-    {% endif %}
+
+        <!-- Collections -->
+        {% if collections %}
+        <div class="hadith-collections">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith Collections</h2>
+            <div class="hadith-collection-grid">
+                {% for collection in collections %}
+                <a href="/hadith/collection/{{ collection.id }}" class="hadith-collection-item">
+                    <h3 class="hadith-collection-title">{{ collection.name }}</h3>
+                    {% if collection.arabic_name %}
+                    <p class="hadith-collection-arabic">{{ collection.arabic_name }}</p>
+                    {% endif %}
+                    <p class="hadith-collection-count">{{ collection.hadith_count|default(0) }} Hadiths</p>
+                    {% if collection.description %}
+                    <p class="hadith-collection-description">{{ collection.description }}</p>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
     <!-- Random Hadith -->
     {% if random_hadith %}

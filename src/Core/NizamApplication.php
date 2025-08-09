@@ -587,6 +587,11 @@ class NizamApplication
      */
     public function boot(): void
     {
+        // Start session immediately to prevent "headers already sent" errors
+        if (isset($this->_session) && $this->_session) {
+            $this->_session->start();
+        }
+        
         // Boot all systems that have boot methods
         if (isset($this->_auth) && $this->_auth && method_exists($this->_auth, 'boot')) {
             $this->_auth->boot();

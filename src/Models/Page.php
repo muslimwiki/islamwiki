@@ -24,6 +24,7 @@ class Page
      * The attributes that are mass assignable.
      */
     protected array $fillable = [
+        'id',
         'title',
         'slug',
         'content',
@@ -91,6 +92,14 @@ class Page
         }
 
         return null;
+    }
+
+    /**
+     * Magic method to allow direct property access.
+     */
+    public function __get(string $key): mixed
+    {
+        return $this->getAttribute($key);
     }
 
     /**
@@ -168,6 +177,8 @@ class Page
         if (!$data) {
             return null;
         }
+
+
 
         return new static($connection, (array) $data);
     }

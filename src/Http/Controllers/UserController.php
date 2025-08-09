@@ -65,11 +65,13 @@ class UserController extends Controller
         // Update last login timestamp
         $user->recordLogin($request->getServerParam('REMOTE_ADDR'));
         
-        // Set session
-        $_SESSION['user_id'] = $user->getAttribute('id');
-        
-        // Regenerate session ID to prevent session fixation
-        session_regenerate_id(true);
+        // Set session using WisalSession to ensure consistency
+        $session = $this->container->get('session');
+        $session->login(
+            (int) $user->getAttribute('id'),
+            (string) $user->getAttribute('username'),
+            (bool) $user->getAttribute('is_admin')
+        );
         
         return $this->redirect($redirect);
     }
@@ -173,8 +175,12 @@ class UserController extends Controller
         $user->save();
         
         // Log the user in
-        $_SESSION['user_id'] = $user->getAttribute('id');
-        session_regenerate_id(true);
+        $session = $this->container->get('session');
+        $session->login(
+            (int) $user->getAttribute('id'),
+            (string) $user->getAttribute('username'),
+            (bool) $user->getAttribute('is_admin')
+        );
         
         return $this->redirect('/')
             ->with('success', 'Registration successful! Welcome to IslamWiki!');
