@@ -207,6 +207,47 @@ function nestFollowingUnorderedLists() {
 
 nestFollowingUnorderedLists();
 
+// Render color boxes next to hex/rgb/hsl color references
+function enhanceColorSwatches() {
+  const container = document.querySelector('.markdown-body');
+  if (!container) return;
+
+  const HEX_RE = /#(?:[A-Fa-f0-9]{3,4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})\b/g;
+  const RGB_RE = /\brgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*(?:0?\.\d+|1|0))?\s*\)/gi;
+  const HSL_RE = /\bhsla?\(\s*\d+\s*,\s*\d+%\s*,\s*\d+%(?:\s*,\s*(?:0?\.\d+|1|0))?\s*\)/gi;
+
+  const isExcluded = (node) => {
+    if (!node || !node.parentElement) return true;
+    const p = node.parentElement;
+    const tag = p.tagName;
+    return tag === 'CODE' || tag === 'PRE' || tag === 'A' || p.closest('pre, code, a');
+  };
+
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+  const texts = [];
+  let n;
+  while ((n = walker.nextNode())) {
+    if (n.nodeValue && /#|rgb|hsl/i.test(n.nodeValue) && !isExcluded(n)) {
+      texts.push(n);
+    }
+  }
+
+  texts.forEach(tn => {
+    const raw = tn.nodeValue;
+    const replaced = raw
+      .replace(HEX_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m.toUpperCase()}</span>`)
+      .replace(RGB_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m}</span>`)
+      .replace(HSL_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m}</span>`);
+    if (replaced !== raw) {
+      const span = document.createElement('span');
+      span.innerHTML = replaced;
+      tn.parentNode.replaceChild(span, tn);
+    }
+  });
+}
+
+enhanceColorSwatches();
+
 // Remove global toggle wiring since we now offer per-block toggles
 </script>
 {% endblock %}

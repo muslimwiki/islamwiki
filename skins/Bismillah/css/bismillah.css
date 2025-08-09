@@ -4865,6 +4865,21 @@ select:focus {
     margin-top: 0.25rem;
 }
 
+/* Color swatches in docs */
+.markdown-body .color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--bismillah-border);
+    vertical-align: -2px;
+    margin-right: 6px;
+}
+
+.markdown-body .color-text {
+    font-variant-numeric: tabular-nums;
+}
+
 .markdown-body ul.md-list li,
 .markdown-body ol.md-list li {
     margin: 0.25rem 0;
