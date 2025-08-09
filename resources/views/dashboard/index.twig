@@ -212,7 +212,7 @@
                     <div class="stat-card">
                         <div class="stat-icon">🏷️</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ bayan.statistics.node_types ?? 0 }}</div>
+                            <div class="stat-number">{{ (bayan.statistics.node_types is iterable) ? (bayan.statistics.node_types|length) : (bayan.statistics.node_types ?? 0) }}</div>
                             <div class="stat-label">Node Types</div>
                         </div>
                     </div>

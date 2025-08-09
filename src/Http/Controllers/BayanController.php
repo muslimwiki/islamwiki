@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Formatter\BayanManager;
+use IslamWiki\Core\Formatter\BayanFormatter;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use Psr\Log\LoggerInterface;
@@ -38,7 +38,7 @@ class BayanController
     /**
      * Bayan manager instance.
      */
-    protected BayanManager $bayanManager;
+    protected BayanFormatter $bayanManager;
 
     /**
      * Logger instance.
@@ -48,7 +48,7 @@ class BayanController
     /**
      * Create a new BayanController instance.
      */
-    public function __construct(BayanManager $bayanManager, LoggerInterface $logger)
+    public function __construct(BayanFormatter $bayanManager, LoggerInterface $logger)
     {
         $this->bayanManager = $bayanManager;
         $this->logger = $logger;

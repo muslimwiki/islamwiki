@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Formatter\BayanManager;
+use IslamWiki\Core\Formatter\BayanFormatter;
 use IslamWiki\Core\Formatter\NodeManager;
 use IslamWiki\Core\Formatter\EdgeManager;
 use IslamWiki\Core\Formatter\QueryManager;
@@ -42,11 +42,11 @@ class BayanServiceProvider
      */
     public function register(AsasContainer $container): void
     {
-        // Register BayanManager as singleton
-        $container->singleton(BayanManager::class, function () use ($container) {
+        // Register BayanFormatter as singleton (acts as Bayan manager)
+        $container->singleton(BayanFormatter::class, function () use ($container) {
             $connection = $container->get('db');
             $logger = $container->get(LoggerInterface::class);
-            return new BayanManager($connection, $logger);
+            return new BayanFormatter($connection, $logger);
         });
 
         // Register NodeManager as singleton
@@ -71,7 +71,12 @@ class BayanServiceProvider
         });
 
         // Register aliases for easier access
-        $container->alias('bayan', BayanManager::class);
+        $container->alias('bayan', BayanFormatter::class);
+        // Backward-compatibility: allow resolving the historical BayanManager name
+        if (class_exists('IslamWiki\\Core\\Container\\AsasContainer')) {
+            // Some parts of the app may request BayanManager::class; map it to BayanFormatter
+            $container->alias(\IslamWiki\Core\Formatter\BayanFormatter::class, 'IslamWiki\\Core\\Formatter\\BayanManager');
+        }
         $container->alias('bayan.nodes', NodeManager::class);
         $container->alias('bayan.edges', EdgeManager::class);
         $container->alias('bayan.queries', QueryManager::class);
