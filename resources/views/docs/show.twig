@@ -96,7 +96,13 @@ function enhanceCodeBlocks() {
       });
     });
     pre.style.position = 'relative';
-    pre.appendChild(btn);
+    // Hide copy for tree blocks (not super useful to copy with formatting)
+    const code = pre.querySelector('code');
+    if (code && (code.classList.contains('lang-tree') || code.classList.contains('language-tree'))) {
+      // skip adding button
+    } else {
+      pre.appendChild(btn);
+    }
   });
 }
 

@@ -4827,3 +4827,19 @@ select:focus {
 .markdown-body pre .copy-btn:hover {
     background: var(--bismillah-bg-light);
 }
+
+/* Tree-style code blocks (file structures) */
+.markdown-body pre code.lang-tree,
+.markdown-body pre code.language-tree {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    line-height: 1.4;
+}
+
+.markdown-body pre code.lang-tree .comment,
+.markdown-body pre code.language-tree .comment {
+    color: var(--bismillah-text-light);
+}
+
+/* Optional: subtle vertical guide color for tree pipes */
+.markdown-body pre code.lang-tree { color: #0f172a; }

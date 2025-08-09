@@ -15,6 +15,10 @@ function guess_language(array $lines, int $startIndex): string {
         }
         if ($line !== '') {
             $l = ltrim($line);
+            // Tree (file structure) detection
+            if (str_contains($l, '├──') || str_contains($l, '└──') || str_contains($l, '│')) {
+                return 'tree';
+            }
             // PHP
             if (str_starts_with($l, '<?php') || preg_match('/\bnamespace\s+[A-Za-z_\\\\]/', $l)) {
                 return 'php';
