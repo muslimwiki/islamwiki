@@ -365,8 +365,23 @@ class DashboardController extends Controller
     private function getWatchlist(int $userId): array
     {
         try {
-            // For now, return empty array since we don't have user_watchlist table
-            return [];
+            $query = "
+                SELECT w.page_id, p.title, p.slug, w.created_at as watch_date
+                FROM user_watchlist w
+                JOIN pages p ON p.id = w.page_id
+                WHERE w.user_id = ?
+                ORDER BY w.created_at DESC
+                LIMIT 10
+            ";
+            $rows = $this->db->query($query, [$userId])->fetchAll();
+            return array_map(function ($row) {
+                return [
+                    'id' => $row->page_id ?? $row['page_id'],
+                    'title' => $row->title ?? $row['title'],
+                    'slug' => $row->slug ?? $row['slug'],
+                    'watch_date' => $row->watch_date ?? $row['watch_date'],
+                ];
+            }, $rows);
         } catch (\Exception $e) {
             error_log('DashboardController::getWatchlist - Error: ' . $e->getMessage());
             return [];

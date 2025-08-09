@@ -399,6 +399,10 @@ $router->post('/bayan/relationship', 'IslamWiki\Http\Controllers\BayanController
 $router->get('/bayan/statistics', 'IslamWiki\Http\Controllers\BayanController@statistics');
 $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPaths');
 
+// Watch/Unwatch Pages
+$router->post('/wiki/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
+$router->post('/wiki/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
+
 $router->get('/test-router-alive', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
 });

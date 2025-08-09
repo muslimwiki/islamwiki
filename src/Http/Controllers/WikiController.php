@@ -870,16 +870,68 @@ class WikiController extends PageController
      */
     public function watch(Request $request, string $slug): Response
     {
-        // Placeholder watch logic (no-op)
-        return $this->redirect("/wiki/{$slug}")
-            ->with('success', 'Page added to your watchlist.');
+        try {
+            $user = $this->user($request);
+            if (!$user) {
+                return $this->redirect("/login", 302);
+            }
+            $page = Page::findBySlug(self::WIKI_NAMESPACE . ':' . $slug, $this->db) ?? Page::findBySlug($slug, $this->db);
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
+            $exists = $this->db->table('user_watchlist')
+                ->where('user_id', '=', $user['id'])
+                ->where('page_id', '=', $page->getAttribute('id'))
+                ->first(['id']);
+            if (!$exists) {
+                $this->db->table('user_watchlist')->insert([
+                    'user_id' => $user['id'],
+                    'page_id' => $page->getAttribute('id'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+            return $this->redirect("/wiki/{$slug}")
+                ->with('success', 'Page added to your watchlist.');
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Failed to watch page', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+            return $this->redirect("/wiki/{$slug}")
+                ->with('error', 'Unable to add to watchlist.');
+        }
     }
 
     public function unwatch(Request $request, string $slug): Response
     {
-        // Placeholder unwatch logic (no-op)
-        return $this->redirect("/wiki/{$slug}")
-            ->with('success', 'Page removed from your watchlist.');
+        try {
+            $user = $this->user($request);
+            if (!$user) {
+                return $this->redirect("/login", 302);
+            }
+            $page = Page::findBySlug(self::WIKI_NAMESPACE . ':' . $slug, $this->db) ?? Page::findBySlug($slug, $this->db);
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
+            $this->db->table('user_watchlist')
+                ->where('user_id', '=', $user['id'])
+                ->where('page_id', '=', $page->getAttribute('id'))
+                ->delete();
+            return $this->redirect("/wiki/{$slug}")
+                ->with('success', 'Page removed from your watchlist.');
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Failed to unwatch page', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+            return $this->redirect("/wiki/{$slug}")
+                ->with('error', 'Unable to remove from watchlist.');
+        }
     }
 
     /**
