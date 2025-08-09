@@ -29,13 +29,11 @@ These are transformed at parse time into placeholders the Docs viewer renders as
 
 ### Live Example
 
-```markdown
 [=45% "Docs Overhaul"]{: .info}
 [=80% "EnhancedMarkdown"]{: .success}
 [=30% "Bayan Graph"]{: .warning}
-```
 
-The above should render three progress bars when viewed in the Docs viewer or anywhere sitewide.
+The above renders three progress bars when viewed in the Docs viewer or anywhere sitewide.
 
 ## Islamic Content Helpers
 
