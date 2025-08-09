@@ -12,6 +12,7 @@ use IslamWiki\Http\Controllers\ProfileController;
 use IslamWiki\Http\Controllers\DashboardController;
 use IslamWiki\Http\Controllers\HomeController;
 use IslamWiki\Http\Controllers\AssetController;
+use IslamWiki\Http\Controllers\WikiController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -119,14 +120,89 @@ $router->get('/test-closure', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Test closure route works!');
 });
 
-// Pages
-$router->get('/pages', 'IslamWiki\Http\Controllers\PageController@index');
-$router->get('/pages/create', 'IslamWiki\Http\Controllers\PageController@create');
-$router->post('/pages', 'IslamWiki\Http\Controllers\PageController@store');
-$router->get('/pages/{id}', 'IslamWiki\Http\Controllers\PageController@show');
-$router->get('/pages/{id}/edit', 'IslamWiki\Http\Controllers\PageController@edit');
-$router->put('/pages/{id}', 'IslamWiki\Http\Controllers\PageController@update');
-$router->delete('/pages/{id}', 'IslamWiki\Http\Controllers\PageController@destroy');
+// Pages - Redirect to Wiki for consolidation
+$router->get('/pages', function($request) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => '/wiki'], '');
+});
+
+$router->get('/pages/create', function($request) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => '/wiki/create'], '');
+});
+
+$router->post('/pages', function($request) {
+    // Redirect POST to wiki with same data
+    $body = $request->getBody()->getContents();
+    $headers = $request->getHeaders();
+    $headers['Content-Type'] = ['application/x-www-form-urlencoded'];
+    
+    $wikiRequest = $request->withUri($request->getUri()->withPath('/wiki'))
+                           ->withBody(new \IslamWiki\Core\Http\Stream($body));
+    
+    return $router->handle($wikiRequest);
+});
+
+$router->get('/pages/{slug}', function($request, $slug) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => "/wiki/{$slug}"], '');
+});
+
+$router->get('/pages/{slug}/edit', function($request, $slug) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => "/wiki/{$slug}/edit"], '');
+});
+
+$router->put('/pages/{slug}', function($request, $slug) {
+    // Redirect PUT to wiki with same data
+    $body = $request->getBody()->getContents();
+    $headers = $request->getHeaders();
+    $headers['Content-Type'] = ['application/x-www-form-urlencoded'];
+    
+    $wikiRequest = $request->withUri($request->getUri()->withPath("/wiki/{$slug}"))
+                           ->withBody(new \IslamWiki\Core\Http\Stream($body));
+    
+    return $router->handle($wikiRequest);
+});
+
+$router->delete('/pages/{slug}', function($request, $slug) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => "/wiki/{$slug}"], '');
+});
+
+$router->get('/pages/{slug}/history', function($request, $slug) {
+    return new \IslamWiki\Core\Http\Response(302, ['Location' => "/wiki/{$slug}/history"], '');
+});
+
+// Wiki Routes - Content Management (must come before catch-all routes)
+$router->get('/wiki', 'IslamWiki\Http\Controllers\WikiController@index');
+$router->get('/wiki/create', 'IslamWiki\Http\Controllers\WikiController@create');
+$router->post('/wiki', 'IslamWiki\Http\Controllers\WikiController@store');
+$router->get('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@show');
+$router->get('/wiki/{slug}/edit', 'IslamWiki\Http\Controllers\WikiController@edit');
+$router->put('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@update');
+$router->delete('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@destroy');
+$router->get('/wiki/{slug}/history', 'IslamWiki\Http\Controllers\WikiController@history');
+$router->post('/wiki/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
+$router->delete('/wiki/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
+
+// Wiki API Routes
+$router->get('/api/wiki/pages', 'IslamWiki\Http\Controllers\WikiController@apiIndex');
+$router->get('/api/wiki/pages/{slug}', 'IslamWiki\Http\Controllers\WikiController@apiShow');
+$router->post('/api/wiki/pages', 'IslamWiki\Http\Controllers\WikiController@apiStore');
+$router->put('/api/wiki/pages/{slug}', 'IslamWiki\Http\Controllers\WikiController@apiUpdate');
+$router->delete('/api/wiki/pages/{slug}', 'IslamWiki\Http\Controllers\WikiController@apiDestroy');
+
+// Legacy page routes - Redirect to Wiki
+$router->get('/{slug}', 'IslamWiki\Http\Controllers\WikiController@show');
+
+$router->get('/{slug}/edit', 'IslamWiki\Http\Controllers\WikiController@edit');
+
+$router->put('/{slug}', 'IslamWiki\Http\Controllers\WikiController@update');
+
+$router->delete('/{slug}', 'IslamWiki\Http\Controllers\WikiController@destroy');
+
+$router->get('/{slug}/history', 'IslamWiki\Http\Controllers\WikiController@history');
+
+// Watchlist - Redirect to Wiki
+$router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
+
+$router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
 
 // Search Routes - Phase 6 Search and Discovery Features (Moved before variable routes)
 $router->get('/search', 'IslamWiki\Http\Controllers\SearchController@index');
@@ -146,6 +222,8 @@ $router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetControlle
 // Skin asset routes
 $router->get('/skins/{skin}/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinCss');
 $router->get('/skins/{skin}/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinJs');
+
+
 
 // Additional page routes (variable routes - must come after specific routes)
 // MOVED TO END OF FILE
@@ -311,13 +389,7 @@ $router->get('/test-simple', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Simple test route working!');
 });
 
-// Additional page routes (variable routes - must come after specific routes)
-$router->get('/{slug}', 'IslamWiki\Http\Controllers\PageController@show');
-$router->get('/{slug}/history', 'IslamWiki\Http\Controllers\PageController@history');
-$router->get('/{slug}/edit', 'IslamWiki\Http\Controllers\PageController@edit');
-$router->put('/{slug}', 'IslamWiki\Http\Controllers\PageController@update');
-$router->delete('/{slug}', 'IslamWiki\Http\Controllers\PageController@destroy');
-
-// Watchlist
-$router->post('/{slug}/watch', 'IslamWiki\Http\Controllers\PageController@watch');
-$router->delete('/{slug}/unwatch', 'IslamWiki\Http\Controllers\PageController@unwatch');
+// Test wiki route
+$router->get('/wiki-test', function ($request) {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Wiki test route working!');
+});

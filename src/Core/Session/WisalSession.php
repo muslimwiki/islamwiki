@@ -80,6 +80,11 @@ class WisalSession
      */
     public function start(): void
     {
+        // If session is already active, don't reconfigure it
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            return;
+        }
+
         // Set session save path to our custom directory
         $sessionPath = __DIR__ . '/../../../storage/sessions';
         if (!is_dir($sessionPath)) {
@@ -101,7 +106,11 @@ class WisalSession
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '1');
             ini_set('session.cookie_httponly', $this->httpOnly ? '1' : '0');
-            ini_set('session.cookie_secure', $this->secure ? '1' : '0');
+            // Only set Secure when the request is HTTPS or explicitly configured
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+            $useSecure = $this->secure && $isHttps;
+            ini_set('session.cookie_secure', $useSecure ? '1' : '0');
             ini_set('session.cookie_samesite', $this->sameSite);
             ini_set('session.cookie_path', $this->cookiePath);
             ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
@@ -112,21 +121,21 @@ class WisalSession
         // Set session name BEFORE starting session
         session_name($this->sessionName);
 
-        // Always start session if not already active
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        } elseif (session_name() !== $this->sessionName) {
-            // Session name doesn't match, close and restart
-            session_write_close();
-            session_name($this->sessionName);
-            session_start();
-        }
+        // Start session
+        session_start();
 
         // Only regenerate session ID if this is a completely new session
         // Don't regenerate if there's a session cookie (indicating an existing session)
-        if (empty($_SESSION) && !isset($_SESSION['last_regeneration']) && !isset($_COOKIE[$this->sessionName])) {
+        if (
+            empty($_SESSION)
+            && !isset($_SESSION['last_regeneration'])
+            && !isset($_COOKIE[$this->sessionName])
+        ) {
             $this->regenerate();
-        } elseif (isset($_SESSION['last_regeneration']) && (time() - $_SESSION['last_regeneration'] > 1800)) { // 30 minutes instead of 5
+        } elseif (
+            isset($_SESSION['last_regeneration'])
+            && (time() - $_SESSION['last_regeneration'] > 1800) // 30 minutes
+        ) {
             $this->regenerate();
         }
 
@@ -163,11 +172,11 @@ class WisalSession
     {
         error_log("WisalSession::regenerate - Regenerating session ID");
         error_log("WisalSession::regenerate - Session data before regeneration: " . print_r($_SESSION, true));
-        
+
         session_regenerate_id(true);
         // Directly set the value to avoid triggering the put() method's write logic
         $_SESSION['last_regeneration'] = time();
-        
+
         error_log("WisalSession::regenerate - Session data after regeneration: " . print_r($_SESSION, true));
     }
 
@@ -185,12 +194,12 @@ class WisalSession
     public function put(string $key, $value): void
     {
         error_log("WisalSession::put - Setting $key = " . print_r($value, true));
-        
+
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
             $this->start();
         }
-        
+
         $_SESSION[$key] = $value;
         error_log("WisalSession::put - Session data after setting $key: " . print_r($_SESSION, true));
 
@@ -234,12 +243,12 @@ class WisalSession
     public function login(int $userId, string $username, bool $isAdmin = false): void
     {
         error_log("WisalSession::login - Starting login with userId: $userId, username: $username, isAdmin: " . ($isAdmin ? 'true' : 'false'));
-        
+
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
             $this->start();
         }
-        
+
         $this->put('user_id', $userId);
         $this->put('username', $username);
         $this->put('is_admin', $isAdmin);
@@ -252,7 +261,7 @@ class WisalSession
             session_write_close();
             session_start();
         }
-        
+
         error_log("WisalSession::login - Session data after restart: " . print_r($_SESSION, true));
     }
 
@@ -278,7 +287,9 @@ class WisalSession
      */
     public function isLoggedIn(): bool
     {
-        return $this->has('user_id') && $this->has('username');
+        // Consider logged in if we have a user_id. Username is optional for
+        // backward compatibility with controllers that only set user_id.
+        return $this->has('user_id');
     }
 
     /**

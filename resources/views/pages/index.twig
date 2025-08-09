@@ -11,10 +11,10 @@
                 <h2 class="card-title">📝 Create Content</h2>
             </div>
             <div class="flex gap-4 flex-wrap">
-                <a href="/pages/create" class="btn">✏️ Create New Page</a>
-                <a href="/pages/create?template=article" class="btn btn-secondary">📄 Article Template</a>
-                <a href="/pages/create?template=guide" class="btn btn-secondary">📚 Guide Template</a>
-                <a href="/pages/create?template=reference" class="btn btn-secondary">📖 Reference Template</a>
+                <a href="/wiki/create" class="btn">✏️ Create New Page</a>
+                <a href="/wiki/create?template=article" class="btn btn-secondary">📄 Article Template</a>
+                <a href="/wiki/create?template=guide" class="btn btn-secondary">📚 Guide Template</a>
+                <a href="/wiki/create?template=reference" class="btn btn-secondary">📖 Reference Template</a>
             </div>
         </div>
 
@@ -62,7 +62,7 @@
         <div class="hero">
             <div class="hero-content">
                 <h1>📚 All Pages</h1>
-                <p>Browse and discover all wiki pages in the system</p>
+                <p>Explore and discover all wiki pages in the system</p>
             </div>
         </div>
 
@@ -76,10 +76,10 @@
                             <h3>No pages found</h3>
                             <p>No pages match your current filters. Try adjusting your search criteria or create a new page.</p>
                             <div class="empty-actions">
-                                <a href="/pages" class="btn btn-primary">
+                                <a href="/wiki" class="btn btn-primary">
                                     <span>🔄</span> Clear Filters
                                 </a>
-                                <a href="/pages/create" class="btn btn-outline">
+                                <a href="/wiki/create" class="btn btn-outline">
                                     <span>📝</span> Create New Page
                                 </a>
                             </div>
@@ -89,10 +89,14 @@
             {% else %}
                 <div class="pages-grid">
                     {% for page in pages %}
+                    {% set displaySlug = page.slug %}
+                    {% if ':' in page.slug %}
+                        {% set displaySlug = page.slug|split(':')|last %}
+                    {% endif %}
                     <div class="page-card">
                         <div class="page-header">
                             <h3>
-                                <a href="/{{ page.slug }}" class="page-title">
+                                <a href="/wiki/{{ displaySlug }}" class="page-title">
                                     <span class="page-icon">
                                         {% if page.namespace == 'help' %}❓
                                         {% elseif page.namespace == 'user' %}👤
@@ -126,13 +130,13 @@
                         </div>
                         
                         <div class="page-actions">
-                            <a href="/{{ page.slug }}" class="btn btn-small btn-primary">
+                            <a href="/wiki/{{ displaySlug }}" class="btn btn-small btn-primary">
                                 <span>👁️</span> View
                             </a>
-                            <a href="/{{ page.slug }}/edit" class="btn btn-small btn-secondary">
+                            <a href="/wiki/{{ displaySlug }}/edit" class="btn btn-small btn-secondary">
                                 <span>✏️</span> Edit
                             </a>
-                            <a href="/{{ page.slug }}/history" class="btn btn-small btn-outline">
+                            <a href="/wiki/{{ displaySlug }}/history" class="btn btn-small btn-outline">
                                 <span>📜</span> History
                             </a>
                         </div>
@@ -177,7 +181,7 @@
                 <h2 class="card-title">🔍 Search & Filter</h2>
             </div>
             <div class="card-body">
-                <form method="GET" action="/pages" class="filters-form">
+                <form method="GET" action="/wiki" class="filters-form">
                     <div class="filter-group">
                         <label for="search" class="form-label">Search Pages:</label>
                         <input type="text" id="search" name="q" value="{{ filters.search }}" 
@@ -215,7 +219,7 @@
                         <button type="submit" class="btn btn-primary">
                             <span>🔍</span> Apply Filters
                         </button>
-                        <a href="/pages" class="btn btn-secondary">
+                        <a href="/wiki" class="btn btn-secondary">
                             <span>🔄</span> Clear
                         </a>
                     </div>

@@ -30,14 +30,14 @@
                     <div class="stat-card">
                         <div class="stat-icon">👀</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ userStats.watchlist_items ?? 0 }}</div>
+                            <div class="stat-number">{{ userStats.watchlist_count ?? 0 }}</div>
                             <div class="stat-label">Pages Watched</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">⭐</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ userStats.contribution_score ?? 0 }}</div>
+                            <div class="stat-number">{{ userStats.recent_activity ?? 0 }}</div>
                             <div class="stat-label">Contribution Score</div>
                         </div>
                     </div>
@@ -45,8 +45,8 @@
                 
                 <!-- Contribution Actions -->
                 <div class="contribution-actions">
-                    <a href="/pages/create" class="btn btn-primary">Create New Page</a>
-                    <a href="/pages" class="btn btn-outline">Edit Existing</a>
+                    <a href="/wiki/create" class="btn btn-primary">Create New Page</a>
+                    <a href="/wiki" class="btn btn-outline">Edit Existing</a>
                 </div>
             </div>
         </div>
@@ -58,13 +58,13 @@
             </div>
             <div class="card-body">
                 <div class="quick-actions-list">
-                    <a href="/pages/create" class="quick-action-item primary">
+                    <a href="/wiki/create" class="quick-action-item primary">
                         <span class="action-icon">✏️</span>
                         <span class="action-text">Create New Page</span>
                     </a>
-                    <a href="/pages" class="quick-action-item">
+                    <a href="/wiki" class="quick-action-item">
                         <span class="action-icon">📚</span>
-                        <span class="action-text">Browse Pages</span>
+                        <span class="action-text">Wiki</span>
                     </a>
                     <a href="/search" class="quick-action-item">
                         <span class="action-icon">🔍</span>
@@ -140,7 +140,7 @@
                             </div>
                             <div class="activity-content">
                                 <div class="activity-title">
-                                    <a href="/pages/{{ activity.page_slug }}">{{ activity.page_title }}</a>
+                                    <a href="/wiki/{{ activity.page_slug }}">{{ activity.page_title }}</a>
                                 </div>
                                 <div class="activity-meta">
                                     <span class="activity-type">{{ activity.action }}</span>
@@ -165,7 +165,7 @@
                         <div class="empty-icon">📊</div>
                         <h3>No recent activity yet</h3>
                         <p>Start contributing to see your activity here!</p>
-                        <a href="/pages/create" class="btn btn-primary">Create Your First Page</a>
+                        <a href="/wiki/create" class="btn btn-primary">Create Your First Page</a>
                     </div>
                 {% endif %}
             </div>
@@ -184,7 +184,7 @@
                             <div class="watchlist-icon">📖</div>
                             <div class="watchlist-content">
                                 <div class="watchlist-title">
-                                    <a href="/pages/{{ page.slug }}">{{ page.title }}</a>
+                                    <a href="/wiki/{{ page.slug }}">{{ page.title }}</a>
                                 </div>
                                 <div class="watchlist-meta">
                                     <span class="watchlist-date">Watched {{ page.watch_date|date('M j, Y') }}</span>
@@ -201,14 +201,14 @@
                         {% endfor %}
                     </div>
                     <div class="watchlist-footer">
-                        <a href="/pages" class="btn btn-outline">Browse More Pages</a>
+                        <a href="/wiki" class="btn btn-outline">View More Pages</a>
                     </div>
                 {% else %}
                     <div class="empty-state">
                         <div class="empty-icon">👀</div>
                         <h3>You're not watching any pages yet</h3>
                         <p>Watch pages to get notified of changes!</p>
-                        <a href="/pages" class="btn btn-primary">Browse Pages</a>
+                        <a href="/wiki" class="btn btn-primary">View Pages</a>
                     </div>
                 {% endif %}
             </div>

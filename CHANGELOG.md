@@ -738,3 +738,4 @@ All notable changes to this project will be documented in this file.
 - Deployment problems
 - Backup system issues
 - Monitoring and logging problems
+\n## [0.0.35] - 2025-08-09\n### Added\n- WikiController: robust namespace-aware page resolution and index view.\n- Session: cookie 'secure' only on HTTPS; stabilized login persistence.\n- Dashboard: fixed user stats queries and template keys; session fallback.\n- Safa CSS utilities extended; history icon sizing and templates modernized.\n\n### Fixed\n- History page links, dates, and icon sizes.\n- Edit page header visibility and create form font sizes.\n- Page links now consistently point to /wiki/{slug}.\n- Author display for pages and latest revision.\n\n### Changed\n- Generic CSS variables for skin-agnostic templates.\n- Reworked routes to routes/web.php and WikiController usage.\n

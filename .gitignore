@@ -276,3 +276,14 @@ skins/*/*.log
 !skins/
 !skins/*/
 !skins/*/*
+
+# Generated files
+storage/sessions/
+storage/logs/
+storage/cache/
+/tmp/
+*.log
+/vendor/
+node_modules/
+# Local dev overrides
+LocalSettings.php
