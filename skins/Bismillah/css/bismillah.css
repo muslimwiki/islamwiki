@@ -4884,3 +4884,33 @@ select:focus {
 .markdown-body ol.md-list li {
     margin: 0.25rem 0;
 }
+
+/* Progress bars (EnhancedMarkdown + Docs viewer) */
+.markdown-body .progress {
+    position: relative;
+    width: 100%;
+    background: #f2f4f7;
+    border: 1px solid var(--bismillah-border);
+    border-radius: 6px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+.markdown-body .progress-bar {
+    height: 28px;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: #0a0a0a;
+    font-weight: 600;
+}
+.markdown-body .progress .progress-label {
+    color: #0a0a0a;
+}
+/* bucketed background variants */
+.markdown-body .progress.progress-0plus   .progress-bar { background: #e5e7eb; color: #111827; }
+.markdown-body .progress.progress-20plus  .progress-bar { background: #93c5fd; }
+.markdown-body .progress.progress-40plus  .progress-bar { background: #60a5fa; }
+.markdown-body .progress.progress-60plus  .progress-bar { background: #34d399; }
+.markdown-body .progress.progress-80plus  .progress-bar { background: #22c55e; }
+.markdown-body .progress.progress-100plus .progress-bar { background: #16a34a; }
