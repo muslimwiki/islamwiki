@@ -273,7 +273,7 @@ All notable changes to this project will be documented in this file.
 - Session management problems
 - Template rendering issues
 
-## [0.0.35] - 2025-07-28
+## [0.0.53] - 2025-07-28
 
 ### Added
 - User management system
