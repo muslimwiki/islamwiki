@@ -289,7 +289,7 @@ class NizamApplication
             // \IslamWiki\Providers\SabrServiceProvider::class,
             // \IslamWiki\Providers\UsulServiceProvider::class,
             // \IslamWiki\Providers\SirajServiceProvider::class,
-            // \IslamWiki\Providers\BayanServiceProvider::class,
+            \IslamWiki\Providers\BayanServiceProvider::class,
             \IslamWiki\Providers\ExtensionServiceProvider::class,
         ];
 

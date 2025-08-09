@@ -125,18 +125,45 @@ class DashboardController extends Controller
             // Get site statistics (available for all users)
             $siteStats = $this->getSiteStatistics();
 
-            // Try to get Bayan (Knowledge Graph) stats if available
+            // Try to get Bayan (Knowledge Graph) stats
             try {
-                if ($this->container->has(\IslamWiki\Core\Formatter\BayanManager::class)) {
+                $dataBayan = null;
+                // Prefer manager from container when present
+                if (method_exists($this->container, 'has') && $this->container->has(\IslamWiki\Core\Formatter\BayanManager::class)) {
                     /** @var \IslamWiki\Core\Formatter\BayanManager $bayan */
                     $bayan = $this->container->get(\IslamWiki\Core\Formatter\BayanManager::class);
+                    $stats = $bayan->getStatistics();
+                    $hub = $bayan->getQueryManager()->getHubNodes(5);
+                    $recent = $bayan->getNodeManager()->search('', [], 5);
                     $dataBayan = [
-                        'statistics' => $bayan->getStatistics(),
-                        'hub_nodes' => $bayan->getQueryManager()->getHubNodes(5),
-                        'recent_nodes' => $bayan->getNodeManager()->search('', [], 5)
+                        'statistics' => [
+                            'total_nodes' => $stats['total_nodes'] ?? 0,
+                            'total_edges' => $stats['total_edges'] ?? 0,
+                            'node_types' => is_array($stats['node_types'] ?? null) ? count($stats['node_types']) : ($stats['node_types'] ?? 0),
+                        ],
+                        'hub_nodes' => $hub,
+                        'recent_nodes' => $recent,
                     ];
                 } else {
-                    $dataBayan = null;
+                    // Fallback: build from QueryManager/NodeManager directly
+                    $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+                    $queryManager = new \IslamWiki\Core\Formatter\QueryManager($this->db, $logger);
+                    $nodeManager = new \IslamWiki\Core\Formatter\NodeManager($this->db, $logger);
+                    $metrics = $queryManager->getGraphMetrics();
+                    $hub = $queryManager->getHubNodes(5);
+                    $recent = $nodeManager->search('', [], 5);
+                    // Only expose card when tables exist and metrics look sane
+                    if (is_array($metrics) && (isset($metrics['total_nodes']) || isset($metrics['total_edges']))) {
+                        $dataBayan = [
+                            'statistics' => [
+                                'total_nodes' => (int)($metrics['total_nodes'] ?? 0),
+                                'total_edges' => (int)($metrics['total_edges'] ?? 0),
+                                'node_types' => is_array($metrics['node_types'] ?? null) ? count($metrics['node_types']) : 0,
+                            ],
+                            'hub_nodes' => $hub,
+                            'recent_nodes' => $recent,
+                        ];
+                    }
                 }
             } catch (\Throwable $e) {
                 error_log('Dashboard: Bayan unavailable - ' . $e->getMessage());
