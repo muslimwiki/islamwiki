@@ -4906,6 +4906,9 @@ select:focus {
 }
 .markdown-body .progress .progress-label {
     color: #0a0a0a;
+    margin: 0;
+    line-height: 1;
+    display: inline-block;
 }
 /* bucketed background variants */
 .markdown-body .progress.progress-0plus   .progress-bar { background: #e5e7eb; color: #111827; }
