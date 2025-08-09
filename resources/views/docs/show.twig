@@ -184,6 +184,29 @@ function normalizeOrderedLists() {
 
 normalizeOrderedLists();
 
+// If an unordered list follows an ordered list, nest it under the last item
+function nestFollowingUnorderedLists() {
+  const container = document.querySelector('.markdown-body');
+  if (!container) return;
+  let el = container.firstElementChild;
+  while (el) {
+    if (el.tagName === 'UL' && el.classList.contains('md-list')) {
+      const prev = el.previousElementSibling;
+      if (prev && prev.tagName === 'OL' && prev.classList.contains('md-list')) {
+        const lastLi = prev.querySelector(':scope > li:last-child');
+        if (lastLi) {
+          lastLi.appendChild(el);
+          // adjust pointer since el is now child of lastLi
+          el = lastLi; // continue traversal
+        }
+      }
+    }
+    el = el.nextElementSibling || (el.parentElement === container ? null : el.parentElement.nextElementSibling);
+  }
+}
+
+nestFollowingUnorderedLists();
+
 // Remove global toggle wiring since we now offer per-block toggles
 </script>
 {% endblock %}
