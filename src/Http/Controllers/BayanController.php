@@ -26,6 +26,8 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Core\Formatter\BayanFormatter;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Container\AsasContainer;
+use IslamWiki\Core\Database\Connection;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -33,7 +35,7 @@ use Psr\Log\LoggerInterface;
  *
  * Handles HTTP requests for the Bayan knowledge graph system.
  */
-class BayanController
+class BayanController extends Controller
 {
     /**
      * Bayan manager instance.
@@ -48,10 +50,16 @@ class BayanController
     /**
      * Create a new BayanController instance.
      */
-    public function __construct(BayanFormatter $bayanManager, LoggerInterface $logger)
+    public function __construct(Connection $db, AsasContainer $container)
     {
-        $this->bayanManager = $bayanManager;
-        $this->logger = $logger;
+        parent::__construct($db, $container);
+        $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
+        // Resolve via container when bound; otherwise construct directly
+        if ($container->has(BayanFormatter::class)) {
+            $this->bayanManager = $container->get(BayanFormatter::class);
+        } else {
+            $this->bayanManager = new BayanFormatter($db, $this->logger);
+        }
     }
 
     /**
@@ -72,7 +80,7 @@ class BayanController
                 'title' => 'Bayan Knowledge Graph'
             ];
 
-            return new Response(200, ['Content-Type' => 'text/html'], $this->renderView('bayan/index.twig', $data));
+            return $this->view('bayan/index', $data, 200);
         } catch (\Exception $e) {
             $this->logger->error('Failed to display Bayan dashboard', [
                 'error' => $e->getMessage()
@@ -103,7 +111,7 @@ class BayanController
                 'title' => $node['title']
             ];
 
-            return new Response(200, ['Content-Type' => 'text/html'], $this->renderView('bayan/show.twig', $data));
+            return $this->view('bayan/show', $data, 200);
         } catch (\Exception $e) {
             $this->logger->error('Failed to display Bayan node', [
                 'node_id' => $id,
@@ -142,7 +150,7 @@ class BayanController
                 'title' => 'Search Bayan Knowledge Graph'
             ];
 
-            return new Response(200, ['Content-Type' => 'text/html'], $this->renderView('bayan/search.twig', $data));
+            return $this->view('bayan/search', $data, 200);
         } catch (\Exception $e) {
             $this->logger->error('Failed to search Bayan graph', [
                 'query' => $query ?? '',
@@ -158,9 +166,9 @@ class BayanController
     public function create(Request $request): Response
     {
         if ($request->getMethod() === 'GET') {
-            return new Response(200, ['Content-Type' => 'text/html'], $this->renderView('bayan/create.twig', [
+            return $this->view('bayan/create', [
                 'title' => 'Create New Node'
-            ]));
+            ], 200);
         }
 
         try {
@@ -317,22 +325,5 @@ class BayanController
         }
     }
 
-    /**
-     * Render a view template.
-     */
-    protected function renderView(string $template, array $data = []): string
-    {
-        // This is a simplified view renderer
-        // In a real implementation, you would use a proper template engine
-        $templatePath = dirname(__DIR__, 2) . '/resources/views/' . $template;
-
-        if (!file_exists($templatePath)) {
-            return '<h1>Bayan Knowledge Graph</h1><p>Template not found: ' . htmlspecialchars($template) . '</p>';
-        }
-
-        extract($data);
-        ob_start();
-        include $templatePath;
-        return ob_get_clean();
-    }
+    // Uses base Controller::view()
 }
