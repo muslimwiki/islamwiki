@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-## [0.0.53] - 2025-08-09
+## [0.0.52] - 2025-08-09
 
 ### Added
 - WikiController: namespace-aware show/index with wiki/Main/no-namespace fallback.
