@@ -988,6 +988,19 @@ class WikiController extends PageController
 
         // Parse wiki text content
         $content = $this->parseWikiText($page->getAttribute('content'));
+        // Allow extensions to enhance page HTML (sitewide progress bars, etc.)
+        try {
+            if ($this->container->has(\IslamWiki\Core\Extensions\ExtensionManager::class)) {
+                $extMgr = $this->container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+                $hook = $extMgr->getHookManager();
+                $post = $hook->runLast('ContentPostRender', [$content, 'wiki']);
+                if (is_string($post) && $post !== '') {
+                    $content = $post;
+                }
+            }
+        } catch (\Throwable $e) {
+            // non-fatal
+        }
 
         $this->logger->info('Wiki page displayed successfully', [
             'page_id' => $page->getAttribute('id'),

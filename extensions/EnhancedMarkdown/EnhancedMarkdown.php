@@ -144,41 +144,66 @@ class EnhancedMarkdown extends Extension
      */
     public function onContentPostRender(string $html, string $context = ''): string
     {
-        // Apply only in docs viewer context or when markdown HTML is passed
-        if ($context !== 'docs') {
-            return $html;
-        }
-
-        // Add class wrappers for tables, images, blockquotes, code
-        $html = preg_replace('/<table(\s|>)/', '<table class="md-table bismillah-table"$1', $html);
-        $html = preg_replace('/<img /', '<img class="md-image" ', $html);
-        $html = preg_replace('/<blockquote>/', '<blockquote class="md-quote">', $html);
-        $html = preg_replace('/<pre><code/', '<pre class="md-code"><code', $html);
-
-        // Auto-generate a simple TOC if headings exist
-        if (preg_match_all('/<h([1-6])>(.*?)<\/h\1>/', $html, $m, PREG_SET_ORDER)) {
-            $toc = [];
-            $idx = 0;
-            $html = preg_replace_callback(
-                '/<h([1-6])>(.*?)<\/h\1>/',
-                function ($mm) use (&$toc, &$idx) {
-                    $level = (int) $mm[1];
-                    $text = strip_tags($mm[2]);
-                    $id = 'h-' . (++$idx) . '-' . strtolower(preg_replace('/[^a-z0-9]+/i', '-', $text));
-                    $toc[] = ['level' => $level, 'text' => $text, 'id' => $id];
-                    return '<h' . $level . ' id="' . $id . '">' . $mm[2] . '</h' . $level . '>';
-                },
-                $html
-            );
-
-            if (!empty($toc)) {
-                $tocHtml = '<nav class="md-toc"><strong>Contents</strong><ul>';
-                foreach ($toc as $entry) {
-                    $indent = str_repeat('&nbsp;&nbsp;', max(0, $entry['level'] - 1));
-                    $tocHtml .= '<li>' . $indent . '<a href="#' . htmlspecialchars($entry['id']) . '">' . htmlspecialchars($entry['text']) . '</a></li>';
+        // Sitewide: render PROGRESS placeholders into HTML
+        $html = preg_replace_callback(
+            '/\[\[\[PROGRESS;percent=([0-9]+(?:\.[0-9]+)?);label=([^;\]]*);classes=([^\]]*)\]\]\]/',
+            function ($m) {
+                $percent = (float)$m[1];
+                $label = htmlspecialchars($m[2] ?? '', ENT_QUOTES, 'UTF-8');
+                $classes = trim($m[3] ?? '');
+                $cls = 'progress ';
+                if ($classes !== '') {
+                    foreach (explode(',', $classes) as $c) {
+                        $c = trim($c);
+                        if ($c !== '') {
+                            $cls .= $c . ' ';
+                        }
+                    }
                 }
-                $tocHtml .= '</ul></nav>';
-                $html = $tocHtml . $html;
+                $bucket = ((int) floor($percent / 20)) * 20; // 0,20,40,60,80,100
+                $bucket = max(0, min(100, $bucket));
+                $cls .= 'progress-' . $bucket . 'plus';
+                $bar = '<div class="progress-bar" style="width:' . number_format($percent, 2) . '%">'
+                     . '<p class="progress-label">' . $label . '</p>'
+                     . '</div>';
+                return '<div class="' . trim($cls) . '">' . $bar . '</div>';
+            },
+            $html
+        );
+
+        // Docs-specific enhancements (styling wrappers, TOC)
+        if ($context === 'docs') {
+            // Add class wrappers for tables, images, blockquotes, code
+            $html = preg_replace('/<table(\s|>)/', '<table class="md-table bismillah-table"$1', $html);
+            $html = preg_replace('/<img /', '<img class="md-image" ', $html);
+            $html = preg_replace('/<blockquote>/', '<blockquote class="md-quote">', $html);
+            $html = preg_replace('/<pre><code/', '<pre class="md-code"><code', $html);
+
+            // Auto-generate a simple TOC if headings exist
+            if (preg_match_all('/<h([1-6])>(.*?)<\/h\1>/', $html, $m, PREG_SET_ORDER)) {
+                $toc = [];
+                $idx = 0;
+                $html = preg_replace_callback(
+                    '/<h([1-6])>(.*?)<\/h\1>/',
+                    function ($mm) use (&$toc, &$idx) {
+                        $level = (int) $mm[1];
+                        $text = strip_tags($mm[2]);
+                        $id = 'h-' . (++$idx) . '-' . strtolower(preg_replace('/[^a-z0-9]+/i', '-', $text));
+                        $toc[] = ['level' => $level, 'text' => $text, 'id' => $id];
+                        return '<h' . $level . ' id="' . $id . '">' . $mm[2] . '</h' . $level . '>';
+                    },
+                    $html
+                );
+
+                if (!empty($toc)) {
+                    $tocHtml = '<nav class="md-toc"><strong>Contents</strong><ul>';
+                    foreach ($toc as $entry) {
+                        $indent = str_repeat('&nbsp;&nbsp;', max(0, $entry['level'] - 1));
+                        $tocHtml .= '<li>' . $indent . '<a href="#' . htmlspecialchars($entry['id']) . '">' . htmlspecialchars($entry['text']) . '</a></li>';
+                    }
+                    $tocHtml .= '</ul></nav>';
+                    $html = $tocHtml . $html;
+                }
             }
         }
 

@@ -1144,6 +1144,20 @@ class PageController extends Controller
         // Convert line breaks to <br> tags
         $text = nl2br($text);
 
+        // Allow extensions to post-process rendered HTML sitewide (e.g., progress bars)
+        try {
+            if ($this->container->has(\IslamWiki\Core\Extensions\ExtensionManager::class)) {
+                $extMgr = $this->container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+                $hook = $extMgr->getHookManager();
+                $post = $hook->runLast('ContentPostRender', [$text, 'page']);
+                if (is_string($post) && $post !== '') {
+                    $text = $post;
+                }
+            }
+        } catch (\Throwable $e) {
+            // non-fatal
+        }
+
         return $text;
     }
 
