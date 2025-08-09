@@ -188,6 +188,42 @@
     .page-actions .btn {
         min-width: 120px;
         justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        background: var(--background-color);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .page-actions .btn:hover {
+        border-color: var(--primary-color);
+        background: var(--card-background);
+        text-decoration: none;
+        color: var(--text-primary);
+    }
+
+    .page-actions .btn-primary {
+        background: var(--primary-color);
+        color: #fff;
+        border-color: var(--primary-color);
+    }
+    .page-actions .btn-primary:hover {
+        background: var(--primary-hover);
+        color: #fff;
+    }
+    .page-actions .btn-secondary {
+        background: var(--card-background);
+        color: var(--text-primary);
+    }
+    .page-actions .btn-outline {
+        background: transparent;
+        color: var(--text-primary);
     }
     
     .page-revision-info {
@@ -332,11 +368,11 @@
         <form id="unwatchForm" method="POST" action="/wiki/{{ displaySlug }}/unwatch" style="display:none;">
             <input type="hidden" name="_token" value="{{ csrf_token }}" />
         </form>
-        <button type="button" class="btn btn-outline" onclick="document.getElementById('watchForm').submit();">
+        <button type="button" class="btn btn-outline" style="cursor:pointer;" onclick="document.getElementById('watchForm').submit();">
             <span>👁️</span>
             Watch
         </button>
-        <button type="button" class="btn btn-outline" onclick="document.getElementById('unwatchForm').submit();">
+        <button type="button" class="btn btn-outline" style="cursor:pointer;" onclick="document.getElementById('unwatchForm').submit();">
             <span>🚫</span>
             Unwatch
         </button>
