@@ -368,11 +368,11 @@
         <form id="unwatchForm" method="POST" action="/wiki/{{ displaySlug }}/unwatch" style="display:none;">
             <input type="hidden" name="_token" value="{{ csrf_token }}" />
         </form>
-        <button type="button" class="btn btn-outline" style="cursor:pointer;" onclick="document.getElementById('watchForm').submit();">
+        <button type="submit" form="watchForm" class="btn btn-outline" style="cursor:pointer;">
             <span>👁️</span>
             Watch
         </button>
-        <button type="button" class="btn btn-outline" style="cursor:pointer;" onclick="document.getElementById('unwatchForm').submit();">
+        <button type="submit" form="unwatchForm" class="btn btn-outline" style="cursor:pointer;">
             <span>🚫</span>
             Unwatch
         </button>

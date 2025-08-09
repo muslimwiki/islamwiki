@@ -402,6 +402,9 @@ $router->get('/bayan/paths', 'IslamWiki\Http\Controllers\BayanController@findPat
 // Watch/Unwatch Pages
 $router->post('/wiki/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
 $router->post('/wiki/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
+// Also support GET for simple UI links
+$router->get('/wiki/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
+$router->get('/wiki/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
 
 $router->get('/test-router-alive', function ($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'ROUTER IS ALIVE: ' . date('Y-m-d H:i:s'));
@@ -428,3 +431,6 @@ $router->delete('/{slug}', 'IslamWiki\\Http\\Controllers\\WikiController@destroy
 $router->get('/{slug}/history', 'IslamWiki\\Http\\Controllers\\WikiController@history');
 $router->post('/{slug}/watch', 'IslamWiki\\Http\\Controllers\\WikiController@watch');
 $router->delete('/{slug}/unwatch', 'IslamWiki\\Http\\Controllers\\WikiController@unwatch');
+// GET variants
+$router->get('/{slug}/watch', 'IslamWiki\\Http\\Controllers\\WikiController@watch');
+$router->get('/{slug}/unwatch', 'IslamWiki\\Http\\Controllers\\WikiController@unwatch');
