@@ -242,7 +242,7 @@ $page->save();
 ### Debug Mode
 
 Enable debug mode in your `.env` file:
-```
+```ini
 APP_DEBUG=true
 ```
 
