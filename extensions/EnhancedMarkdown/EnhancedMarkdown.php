@@ -89,23 +89,28 @@ class EnhancedMarkdown extends Extension
             return $content;
         }
 
-        // Convert ProgressBar shorthand to placeholders understood by the Docs renderer
+        // Convert ProgressBar shorthand to placeholders understood by renderers
         // Syntax inspired by PyMdown ProgressBar: [=65% "Title"]{: .class1 .class2}
-        // Ref: https://facelessuser.github.io/pymdown-extensions/extensions/progressbar/
-        $content = preg_replace_callback(
-            '/^\s*\[(=+)\s*([^\]"\']+?)\s*(?:\"([^\"]*)\"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?$/m',
-            function ($m) {
+        // Skip conversion inside fenced code blocks
+        $lines = preg_split('/\r?\n/', $content);
+        $insideFence = false;
+        for ($i = 0, $n = count($lines); $i < $n; $i++) {
+            $line = $lines[$i];
+            if (preg_match('/^```/', $line)) {
+                $insideFence = !$insideFence;
+                continue;
+            }
+            if ($insideFence) {
+                continue;
+            }
+            if (preg_match('/^\s*\[(=+)\s*([^]"\']+?)\s*(?:"([^"]*)"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?\s*$/', $line, $m)) {
                 $rawVal = trim($m[2]);
-                $title = isset($m[3]) && $m[3] !== '' ? $m[3] : (isset($m[4]) ? $m[4] : '');
-                $attrs = isset($m[5]) ? trim($m[5]) : '';
-                // Extract classes from {: .class .class2}
+                $title = ($m[3] ?? '') !== '' ? $m[3] : (($m[4] ?? '') !== '' ? $m[4] : '');
+                $attrs = trim($m[5] ?? '');
                 $classes = [];
-                if ($attrs) {
-                    if (preg_match_all('/\.([A-Za-z0-9_-]+)/', $attrs, $mm)) {
-                        $classes = $mm[1];
-                    }
+                if ($attrs && preg_match_all('/\.([A-Za-z0-9_-]+)/', $attrs, $mm)) {
+                    $classes = $mm[1];
                 }
-                // Normalize percent
                 $percent = 0.0;
                 if (preg_match('/^([0-9]+(?:\.[0-9]+)?)%$/', $rawVal, $pm)) {
                     $percent = (float)$pm[1];
@@ -116,19 +121,16 @@ class EnhancedMarkdown extends Extension
                 }
                 $percent = max(0.0, min(100.0, $percent));
                 $label = $title !== '' ? $title : (sprintf('%.0f%%', $percent));
-                // Placeholder token the docs renderer will convert to HTML
                 $token = sprintf(
                     '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',
                     number_format($percent, 2, '.', ''),
                     str_replace([';',']',"\n"], ['\;', '', ' '], $label),
-                    implode(',', array_map(function ($c) {
-                        return str_replace([';',','], '', $c);
-                    }, $classes))
+                    implode(',', array_map(function ($c) { return str_replace([';',','], '', $c); }, $classes))
                 );
-                return $token;
-            },
-            $content
-        );
+                $lines[$i] = $token;
+            }
+        }
+        $content = implode("\n", $lines);
 
         // Parse Islamic syntax
         $content = $this->parseIslamicSyntax($content);
