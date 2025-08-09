@@ -4787,3 +4787,43 @@ select:focus {
         line-height: 1.6 !important;
     }
 }
+
+/* ===== Markdown Docs Styling ===== */
+.markdown-body pre {
+    background: #0f172a0d; /* subtle slate tint */
+    border: 1px solid var(--bismillah-border);
+    border-radius: var(--bismillah-radius);
+    padding: 1rem;
+    overflow: auto;
+    position: relative;
+}
+
+.markdown-body code {
+    background: rgba(15, 23, 42, 0.06);
+    border: 1px solid var(--bismillah-border-light);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+}
+
+.markdown-body pre code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.markdown-body pre .copy-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    background: var(--bismillah-bg);
+    border: 1px solid var(--bismillah-border);
+    border-radius: 6px;
+    color: var(--bismillah-text);
+}
+
+.markdown-body pre .copy-btn:hover {
+    background: var(--bismillah-bg-light);
+}
