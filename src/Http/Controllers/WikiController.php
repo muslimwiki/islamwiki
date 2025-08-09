@@ -944,6 +944,17 @@ class WikiController extends PageController
         // Get page revisions
         $revisions = $page->revisions();
         $latestRevision = $revisions[0] ?? null;
+        // Attach author username for latest revision if available
+        if ($latestRevision) {
+            try {
+                $stmt = $this->db->getPdo()->prepare('SELECT username FROM users WHERE id = ? LIMIT 1');
+                $stmt->execute([$latestRevision->getAttribute('user_id')]);
+                $authorUsername = $stmt->fetchColumn();
+                $latestRevision->setAttribute('author_name', $authorUsername ?: 'Unknown');
+            } catch (\Throwable $e) {
+                // ignore author lookup errors
+            }
+        }
 
         // Parse wiki text content
         $content = $this->parseWikiText($page->getAttribute('content'));

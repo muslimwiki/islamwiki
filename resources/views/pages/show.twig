@@ -297,7 +297,7 @@
             {% endif %}
             <div class="page-meta-item">
                 <span class="page-meta-icon">👁️</span>
-                <span>{{ page.getAttribute('view_count') }} views</span>
+                <span>{{ (page.getAttribute('view_count') ?? 0) }} views</span>
             </div>
             <div class="page-meta-item">
                 <span class="page-meta-icon">📅</span>
@@ -385,7 +385,7 @@
     <div class="page-revision-info">
         <small>
             <span class="page-revision-icon">👤</span>
-            Last edited by {{ latestRevision.author_name ?? 'Unknown' }} 
+            Last edited by {{ latestRevision.getAttribute('author_name') ?? 'Unknown' }} 
             on {{ latestRevision.created_at|date('M j, Y \a\t g:i A') }}
             {% if latestRevision.comment %}
                 - {{ latestRevision.comment }}
