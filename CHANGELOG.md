@@ -1,6 +1,23 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [0.0.53] - 2025-08-09
+
+### Added
+- WikiController: namespace-aware show/index with wiki/Main/no-namespace fallback.
+- Pages index modern layout; normalized links to /wiki/{slug}.
+- Author display on pages list and latest revision footer.
+
+### Fixed
+- Dashboard user stats (table/columns, recent activity, session fallback).
+- Session cookie: 'secure' only on HTTPS; login persists on http dev.
+- History page links, dates, and icon sizing.
+- Edit/Create page header visibility and form font sizes.
+
+### Changed
+- Generic skin-agnostic CSS variables across templates.
+- Moved and consolidated routes to routes/web.php using WikiController.
+
 
 ## [0.0.51] - 2025-08-08
 
