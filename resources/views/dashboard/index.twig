@@ -12,7 +12,7 @@
                 <h2 class="card-title">📊 Your Stats</h2>
             </div>
             <div class="card-body">
-                <div class="stats-grid">
+                <div class="stats-grid bayan-stats">
                     <div class="stat-card">
                         <div class="stat-icon">📄</div>
                         <div class="stat-content">
@@ -757,6 +757,12 @@
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1;
+}
+
+/* Ensure Bayan stat numbers are readable regardless of skin */
+.bayan-stats .stat-number,
+.bayan-stats .stat-label {
+    color: var(--text-primary) !important;
 }
 
 .site-stat-label {
