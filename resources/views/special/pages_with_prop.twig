@@ -1,0 +1,12 @@
+{% extends 'layouts/app.twig' %}
+{% set full_width = true %}
+{% block content %}
+  <section class="special-hero"><div class="special-hero-inner">
+    <h1 class="special-title">Pages with a page property</h1>
+    <form method="GET" class="special-form">
+      <input type="text" name="prop" value="{{ prop }}" placeholder="Property name" />
+      <button type="submit">Filter</button>
+    </form>
+  </div></section>
+{% endblock %}
+

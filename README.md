@@ -2,21 +2,19 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.51)
+## 🚀 Latest Updates (v0.0.52)
 
-### 🎨 Enhanced Islamic UI Design
+### 🧭 MediaWiki-style Namespaces
 
-- **Beautiful Quran Pages**: Modern design with proper Arabic typography
-- **Elegant Hadith Layout**: Clean, organized hadith collection display
-- **Modern Community Section**: Complete UI overhaul with smooth interactions
-- **Custom Color Schemes**: Dedicated palettes for each major section
+- **Special:** `Special:SpecialPages`, `Special:AllPages`
+- **Shorthand Redirects:** `Quran:{query}` → `/quran/search?q={query}`, `Hadith:{query}` → `/hadith/search?q={query}`
+- **Namespace Manager:** Centralized canonical namespace and alias handling
+- **Wiki Redirects:** `/wiki/{slug}` recognizes prefixed titles and redirects accordingly
 
-### ✨ UI/UX Improvements
-- **Arabic Typography**: Enhanced with Amiri and Scheherazade fonts
-- **Interactive Elements**: Smooth animations and transitions
-- **Mobile Experience**: Better responsive design across all sections
-- **Accessibility**: Improved contrast ratios and focus states
-- **Print Layout**: Optimized printing for Quran and Hadith content
+### ✨ Special Pages (Full-width)
+- **Special:SpecialPages**: Modern full-width hub with categories
+- **Special:AllPages**: Namespace filters and full-width layout
+- **Maintenance Reports**: Placeholders for broken redirects, dead-end pages, etc.
 
 ### 🛠️ Technical Enhancements
 - **Modular CSS**: Better organized styles with section-specific modules

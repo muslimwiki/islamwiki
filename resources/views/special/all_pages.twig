@@ -1,0 +1,55 @@
+{% extends 'layouts/app.twig' %}
+
+{% block main_wrapper_start %}{% endblock %}
+{% block main_wrapper_end %}{% endblock %}
+
+{% block content %}
+  <section class="special-hero">
+    <div class="special-hero-inner">
+      <h1 class="special-title">All Pages</h1>
+      <p class="special-subtitle">Browse every page in IslamWiki, grouped by namespace</p>
+    </div>
+  </section>
+
+  <section class="ns-list">
+    {% if namespace %}
+      <div class="ns-filter">Filtered by namespace: <strong>{{ namespace }}</strong> · <a href="/Special:AllPages">Clear filter</a></div>
+    {% endif %}
+    {% for ns, pages in pagesByNs %}
+      <div class="ns-card">
+        <h2 class="ns-title">{{ ns }}</h2>
+        {% if pages|length == 0 %}
+          <p class="ns-empty">No pages.</p>
+        {% else %}
+          <ul class="ns-pages">
+            {% for page in pages %}
+              {% set displaySlug = page.slug %}
+              {% if ':' in page.slug %}
+                {% set displaySlug = page.slug.split(':', 2)[1] %}
+              {% endif %}
+              <li><a href="/wiki/{{ displaySlug }}">{{ page.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+
+  <style>
+  .special-hero { padding: 3rem 1.5rem; background: var(--card-background); border-bottom: 1px solid var(--border-color); }
+  .special-hero-inner { max-width: 1200px; margin: 0 auto; }
+  .special-title { font-size: 2rem; margin: 0 0 0.5rem; }
+  .special-subtitle { color: var(--text-secondary); margin: 0; }
+  .ns-list { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
+  .ns-filter { grid-column: 1 / -1; padding: .5rem .75rem; background: var(--card-background); border: 1px solid var(--border-color); border-radius: .5rem; }
+  .ns-card { background: var(--background-color); border: 1px solid var(--border-color); border-radius: .75rem; padding: 1rem 1.25rem; }
+  .ns-title { margin: 0 0 .75rem; font-size: 1.125rem; }
+  .ns-empty { color: var(--text-secondary); }
+  .ns-pages { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+  .ns-pages a { color: var(--primary-color); text-decoration: none; }
+  .ns-pages a:hover { color: var(--primary-hover); text-decoration: underline; }
+  </style>
+{% endblock %}
+
+
+

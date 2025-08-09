@@ -129,7 +129,8 @@
                 <div class="bismillah-header-container">
                     <nav class="bismillah-secondary-nav">
                         <a href="/" class="nav-link {{ is_current_page('/') ? 'active' : '' }}">Home</a>
-                        <a href="/wiki" class="nav-link {{ is_current_page('/wiki') ? 'active' : '' }}">Wiki</a>
+                        <a href="/Special:AllPages" class="nav-link {{ is_current_page('/Special:AllPages') ? 'active' : '' }}">All Pages</a>
+                        <a href="/Special:SpecialPages" class="nav-link {{ is_current_page('/Special:SpecialPages') ? 'active' : '' }}">Special Pages</a>
                         <a href="/quran" class="nav-link {{ is_current_page('/quran') ? 'active' : '' }}">Quran</a>
                         <a href="/hadith" class="nav-link {{ is_current_page('/hadith') ? 'active' : '' }}">Hadith</a>
                                             <a href="/sciences" class="nav-link {{ is_current_page('/sciences') ? 'active' : '' }}">Sciences</a>
@@ -144,9 +145,9 @@
 
         <!-- Main Content Area -->
         <main class="bismillah-main">
-            <div class="bismillah-container">
-                {% block content %}{% endblock %}
-            </div>
+            {% block main_wrapper_start %}<div class="bismillah-container">{% endblock %}
+            {% block content %}{% endblock %}
+            {% block main_wrapper_end %}</div>{% endblock %}
         </main>
 
         <!-- Bismillah Footer -->
@@ -160,7 +161,8 @@
                     <div class="footer-section">
                         <h4>Quick Links</h4>
                         <ul>
-                            <li><a href="/wiki">Wiki</a></li>
+                            <li><a href="/Special:AllPages">All Pages</a></li>
+                            <li><a href="/Special:SpecialPages">Special Pages</a></li>
                             <li><a href="/quran">Quran</a></li>
                             <li><a href="/hadith">Hadith</a></li>
                             <li><a href="/community">Community</a></li>

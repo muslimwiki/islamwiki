@@ -1,0 +1,15 @@
+{% extends 'layouts/app.twig' %}
+{% block main_wrapper_start %}{% endblock %}
+{% block main_wrapper_end %}{% endblock %}
+{% block content %}
+  <section class="special-hero"><div class="special-hero-inner">
+    <h1 class="special-title">{{ title }}</h1>
+    {% if description %}<p class="special-subtitle">{{ description }}</p>{% endif %}
+  </div></section>
+  <section class="ns-list">
+    <div class="ns-card">
+      {% block maintenance_content %}{% endblock %}
+    </div>
+  </section>
+{% endblock %}
+

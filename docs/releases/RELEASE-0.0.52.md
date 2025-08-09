@@ -1,71 +1,45 @@
-# Release 0.0.52 - Modern Islamic Theme
+# Release 0.0.52 - Namespaces and Special Pages
 
-**Release Date:** 2025-08-06  
-**Status:** Production Ready  
-**Type:** Major UI/UX Update
+**Release Date:** 2025-08-09  
+**Status:** Feature Release  
+**Type:** Namespace System & Special Pages
 
-## 🎨 Major UI/UX Improvements
+## 🧭 Namespace System
 
-### Modern Islamic Theme
-- **Complete Redesign**: Completely redesigned Bismillah skin with modern, beautiful Islamic theme
-- **Professional Color Palette**: Primary blue (#1E40AF), Secondary blue (#3B82F6), Accent blue (#60A5FA)
-- **Beautiful Gradients**: Multi-color gradients throughout the interface
-- **Glass Morphism**: Modern glass-morphism effects with backdrop blur
-- **Enhanced Typography**: Updated to Inter font family with professional typography hierarchy
+### Canonical Namespaces
+- `Special:` with `Special:SpecialPages` and `Special:AllPages`
+- Aliases and case-insensitive matching via `NamespaceManager`
 
-### Advanced Animations & Effects
-- **Smooth Transitions**: Cubic-bezier transitions (0.3s) for natural feel
-- **Hover Effects**: Interactive hover effects on buttons, cards, and navigation
-- **Loading Animations**: Fade-in, slide-in, and loading animations
-- **Focus States**: Proper accessibility with focus outlines and keyboard navigation
-- **Layered Shadows**: Depth and modern feel with layered shadows
+### Shorthand Redirects
+- `Quran:{query}` → `/quran/search?q={query}`
+- `Hadith:{query}` → `/hadith/search?q={query}`
 
-### Responsive Design
-- **Desktop (1400px+)**: 4-column footer, full feature set
-- **Large (1200px)**: 4-column footer, reduced gaps
-- **Tablet (768px)**: 2-column footer, mobile navigation
-- **Mobile (480px)**: 1-column footer, optimized for small screens
+### Wiki Routing
+- `/wiki/{slug}` recognizes prefixed titles and redirects:
+  - `Special:{page}` → `/Special:{page}`
+  - `Quran:{query}` → `/quran/search?q={query}`
+  - `Hadith:{query}` → `/hadith/search?q={query}`
 
-## 🔧 Technical Fixes
+## 🔧 Technical
 
-### Critical Bug Fixes
-- **Circular Dependency Resolution**: Fixed critical circular dependency between LoggingServiceProvider and ConfigurationServiceProvider
-- **Skin CSS Loading**: Resolved skin CSS not loading due to missing StaticDataServiceProvider
-- **Login Page Layout**: Fixed login page to use modern Muslim header layout
-- **Dashboard Type Error**: Fixed DashboardController type mismatch (Wisal → WisalSession)
-- **Footer Layout**: Fixed footer displaying in 5th column, now properly centered
+### Controllers & Routing
+- Added `SpecialController` with placeholders for List pages and Maintenance reports
+- Updated `WikiController` to dispatch namespace-prefixed titles
+- Added routes for `Special:{page}`, `special:{page}` and shorthand redirects
 
-### Service Provider Improvements
-- **StaticDataServiceProvider**: Updated to standard service provider pattern
-- **Service Registration**: Fixed service provider registration in NizamApplication
-- **Error Handling**: Improved error handling and logging throughout the application
-
-## 🚀 New Features
-
-### Modern Interface Components
-- **Sticky Header**: Modern sticky header with gradient background and backdrop blur
-- **Enhanced Search**: Beautiful search bar with focus effects and animations
-- **User Dropdown**: Professional user menu with hover effects and smooth transitions
-- **Modern Cards**: Cards with gradient borders, hover effects, and animations
-- **Hero Section**: Stunning multi-color gradient hero with texture overlay
-- **Responsive Footer**: 4-column footer that adapts to different screen sizes
+## 🚀 Special Pages (Full-width)
+- `Special:SpecialPages` redesigned as a full-width hub
+- `Special:AllPages` with namespace filters and full-width layout
+- Base template for maintenance reports (`special/maintenance/_base.twig`)
 
 ### JavaScript Framework
 - **ZamZam.js Initialization**: Improved JavaScript framework initialization and error handling
 - **Component System**: Enhanced component system with proper event handling
 - **Animation Framework**: Smooth animations and transitions throughout the interface
 
-## 🔒 Security & Organization
-
-### Test Files Relocation
-- **Security Improvement**: Moved all test files from public/ to maintenance/tests/
-- **Clean Public Directory**: Public directory now only contains essential production files
-- **Development Safety**: Test files are still accessible for development but not publicly exposed
-
-### Code Organization
-- **Service Provider Pattern**: Standardized all service providers to follow consistent pattern
-- **Type Safety**: Fixed type hints and improved type safety throughout the codebase
-- **Error Handling**: Comprehensive error handling and logging improvements
+## 🧱 Documentation & Changelog
+- Updated README latest updates to 0.0.52 and documented namespaces
+- Cleaned `CHANGELOG.md` for markdownlint (MD022/MD032/MD024)
 
 ## 📁 Files Changed
 
@@ -86,16 +60,14 @@
 ## 🎯 Impact
 
 ### User Experience
-- **Modern Interface**: Beautiful, professional interface that's both functional and visually appealing
-- **Responsive Design**: Perfect experience across all devices and screen sizes
-- **Accessibility**: Proper focus states, keyboard navigation, and screen reader support
-- **Performance**: Optimized CSS and JavaScript loading for fast page loads
+- **Intuitive Addresses**: `Special:...`, `Quran:...`, `Hadith:...` behave as expected
+- **Navigation**: Header/footer links point to Special pages and All Pages
+- **Full-width**: Special pages render in full width for better overview
 
 ### Developer Experience
-- **Clean Codebase**: Organized, well-structured code with proper error handling
-- **Security**: Test files no longer publicly accessible
-- **Maintainability**: Consistent patterns and improved code organization
-- **Documentation**: Comprehensive documentation and release notes
+- **Centralized Namespaces**: `NamespaceManager` centralizes namespace logic
+- **Explicit Routes**: Clear routes prevent catch-all collisions
+- **Templates**: Base template for consistent special pages
 
 ### Technical Improvements
 - **Error Resolution**: Fixed all critical bugs and circular dependencies
@@ -106,16 +78,13 @@
 ## 🚀 Migration Notes
 
 ### For Developers
-- All test files have been moved to `maintenance/tests/`
-- Service providers now follow standard pattern with container parameter
-- Type hints have been updated throughout the codebase
-- CSS classes have been updated for modern design system
+- Ensure specific routes are declared before legacy catch-alls
+- Use `NamespaceManager` for canonicalization when parsing titles
+- Special pages should override `main_wrapper_start`/`end` blocks for full width
 
 ### For Users
-- No breaking changes for end users
-- Improved visual experience with modern Islamic theme
-- Better responsive design for mobile devices
-- Enhanced accessibility and keyboard navigation
+- No breaking changes
+- Easier navigation via Special pages and All Pages hub
 
 ## 📊 Performance Metrics
 
@@ -134,5 +103,5 @@
 
 ---
 
-**Next Release:** 0.0.53 - Enhanced Search & Content Management  
-**Target Date:** 2025-08-13 
+**Next Release:** 0.0.53 - Enhanced Special Pages and Search  
+**Target Date:** 2025-08-13

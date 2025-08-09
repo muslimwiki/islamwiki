@@ -33,6 +33,12 @@ class Page
         'is_locked',
         'namespace',
         'parent_id',
+        // Tracking/meta fields
+        'view_count',
+        'last_viewed_at',
+        'last_viewed_by',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -41,8 +47,11 @@ class Page
     protected array $casts = [
         'is_locked' => 'boolean',
         'parent_id' => 'integer',
+        'view_count' => 'integer',
+        'last_viewed_by' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'last_viewed_at' => 'datetime',
     ];
 
     /**

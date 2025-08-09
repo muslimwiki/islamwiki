@@ -1,0 +1,87 @@
+{% extends 'layouts/app.twig' %}
+
+{% block main_wrapper_start %}{% endblock %}
+{% block main_wrapper_end %}{% endblock %}
+
+{% block content %}
+  <section class="special-hero">
+    <div class="special-hero-inner">
+      <h1 class="special-title">Special Pages</h1>
+      <p class="special-subtitle">System-generated reports and tools to help you navigate and maintain IslamWiki</p>
+    </div>
+  </section>
+
+  <section class="special-grid">
+    <div class="special-card">
+      <h2>Lists of pages</h2>
+      <ul class="special-links">
+        <li><a href="/Special:AllPages">All pages</a></li>
+        <li><a href="/Special:PrefixIndex">All pages with prefix</a></li>
+        <li><a href="/Special:Categories">Categories</a></li>
+        <li><a href="/Special:CategoryTree">Category tree</a></li>
+        <li><a href="/Special:DisambiguationPages">Disambiguation pages</a></li>
+        <li><a href="/Special:LinkSearch">External links search</a></li>
+        <li><a href="/Special:ListRedirects">List of redirects</a></li>
+        <li><a href="/Special:DisambiguationPageLinks">Pages linking to disambiguation pages</a></li>
+        <li><a href="/Special:PagesWithProp">Pages with a page property</a></li>
+        <li><a href="/Special:Search">Search</a></li>
+        <li><a href="/Special:TrackingCategories">Tracking categories</a></li>
+      </ul>
+    </div>
+
+    <div class="special-card">
+      <h2>Namespaces</h2>
+      <ul class="special-namespaces">
+        {% for ns in namespaces %}
+          {% set nsParam = ns %}
+          {% if ns == 'Main' %}{% set nsParam = 'Main' %}{% endif %}
+          <li><a href="/Special:AllPages?namespace={{ nsParam|url_encode }}">{{ ns }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="special-card">
+      <h2>Maintenance reports</h2>
+      <ul class="special-links">
+        <li><a href="/Special:BrokenRedirects">Broken redirects</a></li>
+        <li><a href="/Special:DeadendPages">Dead-end pages</a></li>
+        <li><a href="/Special:DoubleRedirects">Double redirects</a></li>
+        <li><a href="/Special:LintErrors">Lint errors</a></li>
+        <li><a href="/Special:LongPages">Long pages</a></li>
+        <li><a href="/Special:OldestPages">Oldest pages</a></li>
+        <li><a href="/Special:OrphanedPages">Orphaned pages</a></li>
+        <li><a href="/Special:FewestRevisions">Pages with the fewest revisions</a></li>
+        <li><a href="/Special:WithoutLanguageLinks">Pages without language links</a></li>
+        <li><a href="/Special:ProtectedPages">Protected pages</a></li>
+        <li><a href="/Special:ProtectedTitles">Protected titles</a></li>
+        <li><a href="/Special:ShortPages">Short pages</a></li>
+        <li><a href="/Special:UncategorizedCategories">Uncategorized categories</a></li>
+        <li><a href="/Special:UncategorizedFiles">Uncategorized files</a></li>
+        <li><a href="/Special:UncategorizedPages">Uncategorized pages</a></li>
+        <li><a href="/Special:UncategorizedTemplates">Uncategorized templates</a></li>
+        <li><a href="/Special:UnusedCategories">Unused categories</a></li>
+        <li><a href="/Special:UnusedFiles">Unused files</a></li>
+        <li><a href="/Special:UnusedTemplates">Unused templates</a></li>
+        <li><a href="/Special:WantedCategories">Wanted categories</a></li>
+        <li><a href="/Special:WantedFiles">Wanted files</a></li>
+        <li><a href="/Special:WantedPages">Wanted pages</a></li>
+        <li><a href="/Special:WantedTemplates">Wanted templates</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <style>
+  .special-hero { padding: 3rem 2rem; background: var(--card-background); border-bottom: 1px solid var(--border-color); }
+  .special-hero-inner { width: 100%; }
+  .special-title { font-size: 2rem; margin: 0 0 0.5rem; }
+  .special-subtitle { color: var(--text-secondary); margin: 0; }
+  .special-grid { width: 100%; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; }
+  .special-card { background: var(--background-color); border: 1px solid var(--border-color); border-radius: .75rem; padding: 1.25rem; }
+  .special-links, .special-namespaces { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  .special-links a { color: var(--primary-color); text-decoration: none; }
+  .special-links a:hover { color: var(--primary-hover); text-decoration: underline; }
+  </style>
+{% endblock %}
+
+
+

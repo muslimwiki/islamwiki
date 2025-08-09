@@ -4,7 +4,13 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.46 (Latest)
+### Version 0.0.52 (Latest)
+- **[RELEASE-0.0.52.md](RELEASE-0.0.52.md)** - Namespaces and Special Pages
+- **Date**: 2025-08-09
+- **Status**: Feature Release
+- **Focus**: MediaWiki-style namespaces (Special:, Quran:, Hadith:), Special Pages, redirects
+
+### Version 0.0.46
 - **[RELEASE-NOTES-0.0.46](RELEASE-NOTES-0.0.46)** - Critical Session Persistence Fix
 - **Date**: 2025-08-03
 - **Status**: Critical Bug Fix Release
