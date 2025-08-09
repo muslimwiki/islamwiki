@@ -271,6 +271,36 @@ class DocsController extends Controller
 
     private function basicMarkdownToHtml(string $md): string
     {
+        // Pre-pass: convert progress shorthand lines to placeholders if not already handled by extensions
+        $md = preg_replace_callback(
+            '/^\s*\[=+\s*([^]\"\']+?)\s*(?:\"([^\"]*)\"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?$/m',
+            function ($m) {
+                $rawVal = trim($m[1] ?? '');
+                $title = ($m[2] ?? '') !== '' ? $m[2] : (($m[3] ?? '') !== '' ? $m[3] : '');
+                $attrs = trim($m[4] ?? '');
+                $classes = [];
+                if ($attrs && preg_match_all('/\.([A-Za-z0-9_-]+)/', $attrs, $mm)) {
+                    $classes = $mm[1];
+                }
+                $percent = 0.0;
+                if (preg_match('/^([0-9]+(?:\.[0-9]+)?)%$/', $rawVal, $pm)) {
+                    $percent = (float)$pm[1];
+                } elseif (preg_match('/^(\d+)\/(\d+)$/', $rawVal, $fm)) {
+                    $den = (int)$fm[2];
+                    $num = (int)$fm[1];
+                    $percent = $den > 0 ? ($num / $den) * 100.0 : 0.0;
+                }
+                $percent = max(0.0, min(100.0, $percent));
+                $label = $title !== '' ? $title : (sprintf('%.0f%%', $percent));
+                return sprintf(
+                    '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',$percent === 0.0 ? '0.00' : number_format($percent, 2, '.', ''),
+                    str_replace([';','\n',']'], ['\;',' ',''], $label),
+                    implode(',', array_map(fn($c) => str_replace(['; ', ';', ','], '', $c), $classes))
+                );
+            },
+            $md
+        );
+
         // Pre-process complex blocks (tables) and store placeholders
         $tables = [];
         $md = preg_replace_callback(
