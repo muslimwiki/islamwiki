@@ -2964,13 +2964,15 @@ select:focus {
     font-size: 1.2rem;
     font-weight: 600;
     margin: 0 0 0.25rem 0;
+    color: #ffffff !important;
 }
 
 .user-nav-content p {
     font-size: 0.9rem;
-    opacity: 0.8;
+    opacity: 0.9;
     margin: 0;
     line-height: 1.4;
+    color: rgba(255,255,255,0.9) !important;
 }
 
 /* Dashboard Stats Grid */
@@ -3009,7 +3011,7 @@ select:focus {
 
 .dashboard-stat-label {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.95) !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 500;
