@@ -69,14 +69,55 @@ class BayanController extends Controller
     {
         try {
             $statistics = $this->bayanManager->getStatistics();
-            $hubNodes = $this->bayanManager->getQueryManager()->getHubNodes(5);
+            $queryManager = $this->bayanManager->getQueryManager();
+            $hubNodes = $queryManager->getHubNodes(5);
             // Use QueryManager search for consistency with dashboard
-            $recentNodes = $this->bayanManager->getQueryManager()->search('', [], 10);
+            $recentNodes = $queryManager->search('', [], 10);
+
+            // Graph data: take top hubs and a few neighbors each
+            $graph = [ 'nodes' => [], 'edges' => [] ];
+            $nodeIndexById = [];
+            $maxHubs = min(5, count($hubNodes));
+            for ($i = 0; $i < $maxHubs; $i++) {
+                $hubNode = $hubNodes[$i];
+                $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
+                if ($hubId === 0) { continue; }
+                if (!isset($nodeIndexById[$hubId])) {
+                    $nodeIndexById[$hubId] = true;
+                    $graph['nodes'][] = [
+                        'id' => $hubId,
+                        'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
+                        'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
+                        'isHub' => true,
+                    ];
+                }
+                $neighbors = $queryManager->getRelatedNodes($hubId, null, 6);
+                foreach ($neighbors as $neighbor) {
+                    $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
+                    if ($neighborId === 0) { continue; }
+                    if (!isset($nodeIndexById[$neighborId])) {
+                        $nodeIndexById[$neighborId] = true;
+                        $graph['nodes'][] = [
+                            'id' => $neighborId,
+                            'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
+                            'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
+                            'isHub' => false,
+                        ];
+                    }
+                    $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
+                }
+            }
+
+            // Metrics for distributions
+            $metrics = $queryManager->getGraphMetrics();
 
             $data = [
                 'statistics' => $statistics,
                 'hub_nodes' => $hubNodes,
                 'recent_nodes' => $recentNodes,
+                'graph' => $graph,
+                'node_types' => $metrics['node_types'] ?? [],
+                'edge_types' => $metrics['edge_types'] ?? [],
                 'title' => 'Bayan Knowledge Graph'
             ];
 

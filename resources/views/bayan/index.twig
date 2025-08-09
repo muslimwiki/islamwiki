@@ -68,6 +68,26 @@
         </div>
     </div>
 
+    <!-- Mini Graph Visualization (Hubs + Neighbors) -->
+    {% if graph and graph.nodes|length > 0 %}
+    <div class="bg-white rounded-lg shadow p-4 mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">Graph Overview</h2>
+        <div class="bayan-mini-graph" style="width:100%; height:320px; border:1px solid var(--border-color); border-radius:8px; background:var(--background-color); position:relative;">
+            <svg id="bayanGraphSvgPage" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet" style="width:100%; height:100%;">
+                {% for e in graph.edges %}
+                <line data-edge="{{ loop.index0 }}" stroke="var(--border-color)" stroke-width="1.5" x1="0" y1="0" x2="0" y2="0"></line>
+                {% endfor %}
+                {% for n in graph.nodes %}
+                <g data-node="{{ n.id }}">
+                    <circle r="9" fill="{{ n.isHub ? '#3b82f6' : '#94a3b8' }}" stroke="#1f2937" stroke-width="1"></circle>
+                    <text font-size="10" fill="var(--text-primary)" text-anchor="middle" dy="-12">{{ n.label|length > 22 ? n.label|slice(0,22) ~ '…' : n.label }}</text>
+                </g>
+                {% endfor %}
+            </svg>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Action Buttons -->
     <div class="flex flex-wrap gap-4 mb-8">
         <a href="/bayan/search" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
@@ -162,4 +182,67 @@
 .bayan-icon { width: 16px; height: 16px; }
 @media (min-width: 768px) { .bayan-icon { width: 18px; height: 18px; } }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  try { initBayanGraphPage(); } catch (e) { console.warn('bayan graph init failed', e); }
+});
+
+function initBayanGraphPage() {
+  const svg = document.getElementById('bayanGraphSvgPage');
+  if (!svg) return;
+  const width = 800, height = 300;
+  const nodes = Array.from(svg.querySelectorAll('g[data-node]'));
+  const edges = Array.from(svg.querySelectorAll('line[data-edge]'));
+
+  // Split hubs/others by fill color
+  const nodeData = nodes.map(g => ({ id: parseInt(g.getAttribute('data-node'), 10), el: g }));
+  const hubs = nodeData.filter(nd => (nd.el.querySelector('circle')?.getAttribute('fill') === '#3b82f6'));
+  const others = nodeData.filter(nd => !hubs.includes(nd));
+
+  // Place hubs across the top
+  const hubCount = Math.max(1, hubs.length);
+  hubs.forEach((nd, i) => {
+    const x = ((i + 1) * (width / (hubCount + 1)));
+    const y = 110;
+    nd.el.setAttribute('transform', `translate(${x},${y})`);
+  });
+
+  // Place others in two arcs below
+  const radius = 90;
+  const step = (Math.PI) / Math.max(1, others.length);
+  others.forEach((nd, i) => {
+    const angle = i * step + Math.PI/6;
+    const x = width/2 + Math.cos(angle) * (radius + (i % 2 === 0 ? 20 : 0));
+    const y = 200 + Math.sin(angle) * 35;
+    nd.el.setAttribute('transform', `translate(${x},${y})`);
+  });
+
+  // Build id -> position map
+  const pos = new Map();
+  [...hubs, ...others].forEach(nd => {
+    const t = nd.el.getAttribute('transform');
+    const m = /translate\(([^,]+),([^\)]+)\)/.exec(t || '');
+    if (m) pos.set(nd.id, { x: parseFloat(m[1]), y: parseFloat(m[2]) });
+  });
+
+  // Draw edges between hubs and nearest others
+  let idx = 0;
+  hubs.forEach(h => {
+    others.slice(idx, idx + 6).forEach(o => {
+      const e = edges.shift();
+      if (!e) return;
+      const p1 = pos.get(h.id), p2 = pos.get(o.id);
+      e.setAttribute('x1', String(p1.x));
+      e.setAttribute('y1', String(p1.y));
+      e.setAttribute('x2', String(p2.x));
+      e.setAttribute('y2', String(p2.y));
+      e.setAttribute('stroke', 'var(--border-color)');
+    });
+    idx += 6;
+  });
+}
+</script>
 {% endblock %}
