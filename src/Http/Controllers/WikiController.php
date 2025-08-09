@@ -250,48 +250,7 @@ class WikiController extends PageController
             $isAdmin = $user ? $this->isAdmin($request) : false;
             $userId = $user ? $user['id'] : null;
 
-            // Skip view count increment for certain conditions
-            $skipViewCount = $request->isXmlHttpRequest() ||
-                            $request->hasHeader('X-PJAX') ||
-                            $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
-
-            // Track page view if not skipped
-            if (!$skipViewCount) {
-                try {
-                    $this->db->beginTransaction();
-
-                    // Get current view count and increment it
-                    $currentPage = $this->db->table('pages')
-                        ->where('id', '=', $page->getAttribute('id'))
-                        ->first(['view_count']);
-
-                    $newViewCount = ($currentPage['view_count'] ?? 0) + 1;
-
-                    $result = $this->db->table('pages')
-                        ->where('id', '=', $page->getAttribute('id'))
-                        ->update([
-                            'view_count' => $newViewCount,
-                            'last_viewed_at' => date('Y-m-d H:i:s'),
-                            'last_viewed_by' => $userId,
-                        ]);
-
-                    $this->db->commit();
-                    $viewCountUpdated = (bool)$result;
-
-                    // Log the page view for analytics
-                    if ($viewCountUpdated) {
-                        $this->logPageView($page, $request);
-                    }
-                } catch (\Exception $e) {
-                    $this->db->rollBack();
-                    if ($this->logger) {
-                        $this->logger->error('Failed to update page view count', [
-                            'page_id' => $page->getAttribute('id'),
-                            'error' => $e->getMessage(),
-                        ]);
-                    }
-                }
-            }
+            // View count increment handled centrally in displayWikiPage() via updatePageViewCount()
 
             // Get page revisions and attach author name for latest revision
             $revisions = $page->revisions();
@@ -317,7 +276,7 @@ class WikiController extends PageController
                     'title' => $page->getAttribute('title'),
                     'namespace' => $page->getAttribute('namespace'),
                     'revision_count' => count($revisions),
-                    'view_count' => $page->getAttribute('view_count') + 1,
+                    'view_count' => $page->getAttribute('view_count'),
                 ]);
             }
 
