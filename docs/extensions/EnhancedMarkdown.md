@@ -30,10 +30,24 @@ These are transformed at parse time into placeholders the Docs viewer renders as
 ### Live Example
 
 [=45% "Docs Overhaul"]{: .info}
+
+```markdown
+[=45% "Docs Overhaul"]{: .info}
+```
+
 [=80% "EnhancedMarkdown"]{: .success}
+
+```markdown
+[=80% "EnhancedMarkdown"]{: .success}
+```
+
 [=30% "Bayan Graph"]{: .warning}
 
-The above renders three progress bars when viewed in the Docs viewer or anywhere sitewide.
+```markdown
+[=30% "Bayan Graph"]{: .warning}
+```
+
+The above examples render each progress bar followed by its exact source.
 
 ## Islamic Content Helpers
 
