@@ -70,13 +70,11 @@ class BayanServiceProvider
             return new QueryManager($connection, $logger);
         });
 
-        // Register aliases for easier access
-        $container->alias('bayan', BayanFormatter::class);
-        // Backward-compatibility: allow resolving the historical BayanManager name
-        if (class_exists('IslamWiki\\Core\\Container\\AsasContainer')) {
-            // Some parts of the app may request BayanManager::class; map it to BayanFormatter
-            $container->alias(\IslamWiki\Core\Formatter\BayanFormatter::class, 'IslamWiki\\Core\\Formatter\\BayanManager');
-        }
+        // Register aliases for easier access (alias => abstract)
+        // This container stores aliases as: aliases[alias] = abstract
+        $container->alias(BayanFormatter::class, 'bayan');
+        // Backward-compatibility: map the historical BayanManager class name to BayanFormatter
+        $container->alias(BayanFormatter::class, 'IslamWiki\\Core\\Formatter\\BayanManager');
         $container->alias('bayan.nodes', NodeManager::class);
         $container->alias('bayan.edges', EdgeManager::class);
         $container->alias('bayan.queries', QueryManager::class);
