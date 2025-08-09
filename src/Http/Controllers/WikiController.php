@@ -891,6 +891,10 @@ class WikiController extends PageController
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
+            // Redirect back to dashboard to reflect updated watchlist quickly
+            if ($request->getHeaderLine('Referer') && strpos($request->getHeaderLine('Referer'), '/dashboard') !== false) {
+                return $this->redirect('/dashboard', 302);
+            }
             return $this->redirect("/wiki/{$slug}")
                 ->with('success', 'Page added to your watchlist.');
         } catch (\Exception $e) {
@@ -920,6 +924,9 @@ class WikiController extends PageController
                 ->where('user_id', '=', $user['id'])
                 ->where('page_id', '=', $page->getAttribute('id'))
                 ->delete();
+            if ($request->getHeaderLine('Referer') && strpos($request->getHeaderLine('Referer'), '/dashboard') !== false) {
+                return $this->redirect('/dashboard', 302);
+            }
             return $this->redirect("/wiki/{$slug}")
                 ->with('success', 'Page removed from your watchlist.');
         } catch (\Exception $e) {
@@ -961,6 +968,20 @@ class WikiController extends PageController
         // Update view count for wiki pages
         $this->updatePageViewCount($page, $request, $userId);
 
+        // Determine watch status for current user
+        $isWatched = false;
+        if ($userId) {
+            try {
+                $existing = $this->db->table('user_watchlist')
+                    ->where('user_id', '=', $userId)
+                    ->where('page_id', '=', $page->getAttribute('id'))
+                    ->first(['id']);
+                $isWatched = (bool) ($existing['id'] ?? null);
+            } catch (\Exception $e) {
+                // ignore watch status errors
+            }
+        }
+
         // Get page revisions
         $revisions = $page->revisions();
         $latestRevision = $revisions[0] ?? null;
@@ -986,6 +1007,7 @@ class WikiController extends PageController
             'canLock' => $isAdmin,
             'isLocked' => $page->isLocked(),
             'user' => $user,
+            'isWatched' => $isWatched,
             'title' => $page->getAttribute('title') . ' - Wiki - IslamWiki',
         ]);
     }
