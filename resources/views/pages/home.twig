@@ -11,7 +11,15 @@
                 <h2 class="card-title">Navigation</h2>
             </div>
             <nav class="second-nav">
-                <a href="/Special:AllPages" class="nav-item">📚 All Pages</a>
+                <div class="nav-item" style="padding:0;">
+                    <details>
+                        <summary style="list-style:none; cursor:pointer; padding: 1rem 1.25rem;">🧭 Special Pages</summary>
+                        <div style="margin-left: 1rem; padding-bottom: 0.5rem;">
+                            <a href="/Special:SpecialPages" class="nav-item">🧭 Index</a>
+                            <a href="/Special:AllPages" class="nav-item">📚 All Pages</a>
+                        </div>
+                    </details>
+                </div>
                 <a href="/quran" class="nav-item">📖 Quran</a>
                 <a href="/hadith" class="nav-item">📜 Hadith</a>
                 <a href="/islamic-sciences" class="nav-item">🔬 Sciences</a>
@@ -112,6 +120,16 @@
                     <div class="page-meta">
                         <small>🎯 Getting Started</small>
                         <a href="/welcome" class="btn btn-small">Read Guide</a>
+                    </div>
+                </div>
+
+                <!-- Progress examples under features -->
+                <div class="page-item">
+                    <h3>Project Progress</h3>
+                    <div class="markdown-body">
+                        [=70% "Wiki Features"]{: .success}
+                        [=45% "Bayan Graph"]{: .warning}
+                        [=85% "Docs & Guides"]{: .info}
                     </div>
                 </div>
                 
