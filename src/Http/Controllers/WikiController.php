@@ -924,19 +924,7 @@ class WikiController extends PageController
             ], 403);
         }
 
-        // Update view count for wiki pages
-        $this->updatePageViewCount($page, $request, $userId);
-        // Read back from DB to ensure we display the persisted value
-        try {
-            $fresh = $this->db->table('pages')
-                ->where('id', '=', $page->getAttribute('id'))
-                ->first(['view_count']);
-            if (is_array($fresh) && array_key_exists('view_count', $fresh)) {
-                $page->setAttribute('view_count', (int) $fresh['view_count']);
-            }
-        } catch (\Throwable $e) {
-            // ignore fetch errors
-        }
+        // View count disabled per request
 
         // Determine watch status for current user
         $isWatched = false;

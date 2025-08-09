@@ -109,10 +109,7 @@
                         </div>
                         
                         <div class="page-meta">
-                            <div class="meta-item">
-                                <span class="label">👁️ Views:</span>
-                                <span class="value">{{ page.view_count }}</span>
-                            </div>
+                            {# removed view count per request #}
                             <div class="meta-item">
                                 <span class="label">📝 Revisions:</span>
                                 <span class="value">{{ page.revision_count }}</span>
@@ -203,7 +200,7 @@
                         <select id="sort" name="sort" class="form-control">
                             <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>📝 Title</option>
                             <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>🕒 Last Updated</option>
-                            <option value="view_count" {{ filters.sort == 'view_count' ? 'selected' : '' }}>👁️ Views</option>
+                            {# removed view_count sort option per request #}
                         </select>
                     </div>
                     

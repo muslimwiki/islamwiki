@@ -296,7 +296,7 @@ class PageController extends Controller
                 'title' => $page->getAttribute('title'),
                 'namespace' => $page->getAttribute('namespace'),
                 'revision_count' => count($revisions),
-                'view_count' => $page->getAttribute('view_count'),
+                // view_count removed per request
             ]);
 
             return $this->view('pages/show', [

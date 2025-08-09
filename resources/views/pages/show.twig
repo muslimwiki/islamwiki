@@ -295,10 +295,7 @@
                     <span>{{ page.getAttribute('namespace') }}</span>
                 </div>
             {% endif %}
-            <div class="page-meta-item">
-                <span class="page-meta-icon">👁️</span>
-                <span>{{ viewCount|default(0) }} views</span>
-            </div>
+            {# removed view counter per request #}
             <div class="page-meta-item">
                 <span class="page-meta-icon">📅</span>
                 <span>Last edited: {{ page.getAttribute('updated_at')|date('M j, Y') }}</span>
