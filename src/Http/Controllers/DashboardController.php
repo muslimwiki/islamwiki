@@ -138,117 +138,65 @@ class DashboardController extends Controller
 
             // Try to get Bayan (Knowledge Graph) stats
             try {
-                $dataBayan = null;
-                // Prefer manager from container when present
-                if (method_exists($this->container, 'has') && $this->container->has(\IslamWiki\Core\Formatter\BayanManager::class)) {
-                    /** @var \IslamWiki\Core\Formatter\BayanManager $bayan */
-                    $bayan = $this->container->get(\IslamWiki\Core\Formatter\BayanManager::class);
-                    $stats = $bayan->getStatistics();
-                    $queryManager = $bayan->getQueryManager();
-                    $nodeManager = $bayan->getNodeManager();
-                    $hub = $queryManager->getHubNodes(5);
-                    $recent = $nodeManager->search('', [], 5);
-                    // Build small graph: hub nodes and a few of their neighbors
-                    $graph = [ 'nodes' => [], 'edges' => [] ];
-                    $nodeIndexById = [];
-                    $maxHubs = min(3, count($hub));
-                    for ($i = 0; $i < $maxHubs; $i++) {
-                        $hubNode = $hub[$i];
-                        $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
-                        if ($hubId === 0) { continue; }
-                        if (!isset($nodeIndexById[$hubId])) {
-                            $nodeIndexById[$hubId] = true;
+                // Always compute from QueryManager/NodeManager to avoid manager binding mismatches
+                $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+                $queryManager = new \IslamWiki\Core\Formatter\QueryManager($this->db, $logger);
+                $nodeManager = new \IslamWiki\Core\Formatter\NodeManager($this->db, $logger);
+
+                $metrics = $queryManager->getGraphMetrics();
+                $hub = $queryManager->getHubNodes(5);
+                $recent = $nodeManager->search('', [], 5);
+
+                // Build small graph: hub nodes and a few of their neighbors
+                $graph = [ 'nodes' => [], 'edges' => [] ];
+                $nodeIndexById = [];
+                $maxHubs = min(3, count($hub));
+                for ($i = 0; $i < $maxHubs; $i++) {
+                    $hubNode = $hub[$i];
+                    $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
+                    if ($hubId === 0) { continue; }
+                    if (!isset($nodeIndexById[$hubId])) {
+                        $nodeIndexById[$hubId] = true;
+                        $graph['nodes'][] = [
+                            'id' => $hubId,
+                            'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
+                            'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
+                            'isHub' => true,
+                        ];
+                    }
+                    $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
+                    foreach ($neighbors as $neighbor) {
+                        $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
+                        if ($neighborId === 0) { continue; }
+                        if (!isset($nodeIndexById[$neighborId])) {
+                            $nodeIndexById[$neighborId] = true;
                             $graph['nodes'][] = [
-                                'id' => $hubId,
-                                'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
-                                'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
-                                'isHub' => true,
+                                'id' => $neighborId,
+                                'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
+                                'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
+                                'isHub' => false,
                             ];
                         }
-                        $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
-                        foreach ($neighbors as $neighbor) {
-                            $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
-                            if ($neighborId === 0) { continue; }
-                            if (!isset($nodeIndexById[$neighborId])) {
-                                $nodeIndexById[$neighborId] = true;
-                                $graph['nodes'][] = [
-                                    'id' => $neighborId,
-                                    'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
-                                    'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
-                                    'isHub' => false,
-                                ];
-                            }
-                            $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
-                        }
+                        $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
                     }
+                }
+
+                // Expose card when tables exist and metrics look sane
+                if (is_array($metrics) && (isset($metrics['total_nodes']) || isset($metrics['total_edges']))) {
                     $dataBayan = [
                         'statistics' => [
-                            'total_nodes' => $stats['total_nodes'] ?? 0,
-                            'total_edges' => $stats['total_edges'] ?? 0,
-                            'node_types' => is_array($stats['node_types'] ?? null) ? count($stats['node_types']) : ($stats['node_types'] ?? 0),
+                            'total_nodes' => (int)($metrics['total_nodes'] ?? 0),
+                            'total_edges' => (int)($metrics['total_edges'] ?? 0),
+                            'node_types' => is_array($metrics['node_types'] ?? null) ? count($metrics['node_types']) : 0,
                         ],
                         'hub_nodes' => $hub,
                         'recent_nodes' => $recent,
                         'graph' => $graph,
                     ];
-                } else {
-                    // Fallback: build from QueryManager/NodeManager directly
-                    $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
-                    $queryManager = new \IslamWiki\Core\Formatter\QueryManager($this->db, $logger);
-                    $nodeManager = new \IslamWiki\Core\Formatter\NodeManager($this->db, $logger);
-                    $metrics = $queryManager->getGraphMetrics();
-                    $hub = $queryManager->getHubNodes(5);
-                    $recent = $nodeManager->search('', [], 5);
-                    // Build small graph as above
-                    $graph = [ 'nodes' => [], 'edges' => [] ];
-                    $nodeIndexById = [];
-                    $maxHubs = min(3, count($hub));
-                    for ($i = 0; $i < $maxHubs; $i++) {
-                        $hubNode = $hub[$i];
-                        $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
-                        if ($hubId === 0) { continue; }
-                        if (!isset($nodeIndexById[$hubId])) {
-                            $nodeIndexById[$hubId] = true;
-                            $graph['nodes'][] = [
-                                'id' => $hubId,
-                                'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
-                                'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
-                                'isHub' => true,
-                            ];
-                        }
-                        $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
-                        foreach ($neighbors as $neighbor) {
-                            $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
-                            if ($neighborId === 0) { continue; }
-                            if (!isset($nodeIndexById[$neighborId])) {
-                                $nodeIndexById[$neighborId] = true;
-                                $graph['nodes'][] = [
-                                    'id' => $neighborId,
-                                    'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
-                                    'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
-                                    'isHub' => false,
-                                ];
-                            }
-                            $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
-                        }
-                    }
-                    // Only expose card when tables exist and metrics look sane
-                    if (is_array($metrics) && (isset($metrics['total_nodes']) || isset($metrics['total_edges']))) {
-                        $dataBayan = [
-                            'statistics' => [
-                                'total_nodes' => (int)($metrics['total_nodes'] ?? 0),
-                                'total_edges' => (int)($metrics['total_edges'] ?? 0),
-                                'node_types' => is_array($metrics['node_types'] ?? null) ? count($metrics['node_types']) : 0,
-                            ],
-                            'hub_nodes' => $hub,
-                            'recent_nodes' => $recent,
-                            'graph' => $graph,
-                        ];
-                    }
                 }
             } catch (\Throwable $e) {
-                error_log('Dashboard: Bayan unavailable - ' . $e->getMessage());
-                $dataBayan = null;
+                error_log('Dashboard: Bayan compute failed - ' . $e->getMessage());
+                // keep default empty $dataBayan
             }
         } catch (\Exception $e) {
             error_log('DashboardController: Error loading dashboard data: ' . $e->getMessage());
