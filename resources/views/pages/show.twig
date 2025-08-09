@@ -324,6 +324,20 @@
             <span>📚</span>
             View History
         </a>
+
+        {# Watch/Unwatch #}
+        <form method="POST" action="/wiki/{{ displaySlug }}/watch" style="display:inline;">
+            <button type="submit" class="btn btn-outline">
+                <span>👁️</span>
+                Watch
+            </button>
+        </form>
+        <form method="POST" action="/wiki/{{ displaySlug }}/unwatch" style="display:inline;">
+            <button type="submit" class="btn btn-outline">
+                <span>🚫</span>
+                Unwatch
+            </button>
+        </form>
     </div>
 
     {% if latestRevision %}
