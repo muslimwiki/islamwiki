@@ -66,6 +66,17 @@ class DashboardController extends Controller
         $watchlist = [];
         $quickStats = [];
         $siteStats = [];
+        // Ensure Bayan card always has data structure so it renders
+        $dataBayan = [
+            'statistics' => [
+                'total_nodes' => 0,
+                'total_edges' => 0,
+                'node_types' => 0,
+            ],
+            'hub_nodes' => [],
+            'recent_nodes' => [],
+            'graph' => [ 'nodes' => [], 'edges' => [] ],
+        ];
 
         try {
             error_log("DashboardController::index - About to get auth service");
