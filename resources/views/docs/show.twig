@@ -43,6 +43,11 @@
   <section class="docs-content" style="flex: 1; min-width:0;">
     <article class="card">
       <div class="card-body">
+        <div class="docs-toolbar" style="display:flex; justify-content:flex-end; gap:12px; margin-bottom:12px;">
+          <label style="display:flex; align-items:center; gap:6px; font-size: 0.9rem;">
+            <input id="toggle-ascii-tree" type="checkbox" /> ASCII tree
+          </label>
+        </div>
         <div class="markdown-body">
           {{ content|raw }}
         </div>
@@ -107,6 +112,46 @@ function enhanceCodeBlocks() {
 }
 
 enhanceCodeBlocks();
+
+// Tree ASCII/Unicode toggle
+function prepareTreeBlocks() {
+  document.querySelectorAll('.markdown-body pre code.lang-tree, .markdown-body pre code.language-tree').forEach(code => {
+    if (code.dataset.treeReady) return;
+    code.dataset.treeReady = '1';
+    const original = code.textContent;
+    code.dataset.treeOriginal = original;
+    // Build ASCII variant
+    let ascii = original
+      .replaceAll('├──', '+--')
+      .replaceAll('└──', '`--')
+      .replaceAll('│',  '|')
+      .replaceAll('─',  '-')
+      .replace(/\u00A0/g, ' ');
+    code.dataset.treeAscii = ascii;
+  });
+}
+
+function applyTreeMode(asAscii) {
+  document.querySelectorAll('.markdown-body pre code.lang-tree, .markdown-body pre code.language-tree').forEach(code => {
+    if (!code.dataset.treeReady) return;
+    code.textContent = asAscii ? (code.dataset.treeAscii || code.textContent) : (code.dataset.treeOriginal || code.textContent);
+  });
+}
+
+prepareTreeBlocks();
+
+// Load preference
+const asciiPref = localStorage.getItem('docs_tree_ascii') === '1';
+const toggle = document.getElementById('toggle-ascii-tree');
+if (toggle) {
+  toggle.checked = asciiPref;
+  applyTreeMode(asciiPref);
+  toggle.addEventListener('change', () => {
+    const on = toggle.checked;
+    localStorage.setItem('docs_tree_ascii', on ? '1' : '0');
+    applyTreeMode(on);
+  });
+}
 </script>
 {% endblock %}
 
