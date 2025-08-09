@@ -270,11 +270,13 @@ class DashboardController extends Controller
             $recent = $this->db->query($recentQuery, [$userId])->fetch();
             error_log("DashboardController::getUserStatistics - Recent query result: " . json_encode($recent));
 
-            // Get watchlist count (placeholder for now). No params to avoid HY093.
+            // Get watchlist count
             $watchlistQuery = "
-                SELECT 0 as watchlist_count
+                SELECT COUNT(*) as watchlist_count
+                FROM user_watchlist
+                WHERE user_id = ?
             ";
-            $watchlist = $this->db->query($watchlistQuery)->fetch();
+            $watchlist = $this->db->query($watchlistQuery, [$userId])->fetch();
 
             $result = [
                 'total_pages' => $contributions->total_pages ?? $contributions['total_pages'] ?? 0,
