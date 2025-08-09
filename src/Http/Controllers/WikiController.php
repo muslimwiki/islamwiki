@@ -1029,25 +1029,26 @@ class WikiController extends PageController
             try {
                 $this->db->beginTransaction();
 
-                $currentPage = $this->db->table('pages')
-                    ->where('id', '=', $page->getAttribute('id'))
-                    ->first(['view_count']);
-
-                $newViewCount = ($currentPage['view_count'] ?? 0) + 1;
-
-                $this->db->table('pages')
-                    ->where('id', '=', $page->getAttribute('id'))
-                    ->update([
-                        'view_count' => $newViewCount,
-                        'last_viewed_at' => date('Y-m-d H:i:s'),
-                        'last_viewed_by' => $userId,
-                    ]);
+                // Atomic increment using a single UPDATE to avoid race conditions
+                $this->db->getPdo()->prepare(
+                    'UPDATE pages SET view_count = COALESCE(view_count,0) + 1, last_viewed_at = ?, last_viewed_by = ? WHERE id = ?'
+                )->execute([
+                    date('Y-m-d H:i:s'),
+                    $userId,
+                    $page->getAttribute('id'),
+                ]);
 
                 $this->db->commit();
 
                 // Keep in-memory model in sync so the template sees the updated count
                 try {
-                    $page->setAttribute('view_count', $newViewCount);
+                    // Fetch the new value after atomic increment
+                    $fresh = $this->db->table('pages')
+                        ->where('id', '=', $page->getAttribute('id'))
+                        ->first(['view_count']);
+                    if (is_array($fresh) && array_key_exists('view_count', $fresh)) {
+                        $page->setAttribute('view_count', (int) $fresh['view_count']);
+                    }
                 } catch (\Throwable $syncErr) {
                     // ignore model sync errors
                 }
