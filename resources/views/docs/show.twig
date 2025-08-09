@@ -155,6 +155,35 @@ function enhanceCodeBlocks() {
 
 enhanceCodeBlocks();
 
+// Normalize ordered lists numbering across separated blocks
+function normalizeOrderedLists() {
+  const container = document.querySelector('.markdown-body');
+  if (!container) return;
+  const ols = Array.from(container.querySelectorAll('ol.md-list'));
+  let running = 0;
+  let prev = null;
+  const isReset = (el) => el && (/^H[1-6]$/.test(el.tagName) || el.tagName === 'HR' || el.tagName === 'PRE' || el.tagName === 'BLOCKQUOTE');
+  ols.forEach((ol) => {
+    // reset if there's a reset element between previous list and this one
+    if (prev) {
+      let s = prev.nextElementSibling;
+      let resetFound = false;
+      while (s && s !== ol) {
+        if (isReset(s)) { resetFound = true; break; }
+        s = s.nextElementSibling;
+      }
+      if (resetFound) running = 0;
+    }
+    const items = ol.querySelectorAll(':scope > li').length;
+    const start = running + 1;
+    if (start !== 1) ol.setAttribute('start', String(start));
+    running += items;
+    prev = ol;
+  });
+}
+
+normalizeOrderedLists();
+
 // Remove global toggle wiring since we now offer per-block toggles
 </script>
 {% endblock %}
