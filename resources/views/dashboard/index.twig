@@ -198,21 +198,21 @@
                     <div class="stat-card">
                         <div class="stat-icon">🧩</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ bayan.statistics.total_nodes is defined and bayan.statistics.total_nodes is not null ? bayan.statistics.total_nodes : (bayan.graph.nodes|length ?? 0) }}</div>
+                            <div class="stat-number">{{ (attribute(bayan.statistics, 'total_nodes') ?? (bayan.graph.nodes|length ?? 0)) }}</div>
                             <div class="stat-label">Nodes</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🔗</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ bayan.statistics.total_edges is defined and bayan.statistics.total_edges is not null ? bayan.statistics.total_edges : (bayan.graph.edges|length ?? 0) }}</div>
+                            <div class="stat-number">{{ (attribute(bayan.statistics, 'total_edges') ?? (bayan.graph.edges|length ?? 0)) }}</div>
                             <div class="stat-label">Relationships</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🏷️</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ (bayan.statistics.node_types is iterable) ? (bayan.statistics.node_types|length) : ((bayan.node_types is iterable) ? (bayan.node_types|length) : (bayan.statistics.node_types ?? 0)) }}</div>
+                            <div class="stat-number">{{ (attribute(bayan.statistics, 'node_types') ?? []) is iterable ? (attribute(bayan.statistics, 'node_types')|length) : ((bayan.node_types ?? [])|length) }}</div>
                             <div class="stat-label">Node Types</div>
                         </div>
                     </div>
