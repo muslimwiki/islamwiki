@@ -63,6 +63,9 @@ class EnhancedMarkdown extends Extension
         // Content parsing hook
         $hookManager->register('ContentParse', [$this, 'onContentParse'], 10);
 
+        // Post-render hook for wrapping markdown HTML in nicer containers
+        $hookManager->register('ContentPostRender', [$this, 'onContentPostRender'], 10);
+
         // Editor initialization hook
         $hookManager->register('EditorInit', [$this, 'onEditorInit'], 10);
 
@@ -86,6 +89,47 @@ class EnhancedMarkdown extends Extension
             return $content;
         }
 
+        // Convert ProgressBar shorthand to placeholders understood by the Docs renderer
+        // Syntax inspired by PyMdown ProgressBar: [=65% "Title"]{: .class1 .class2}
+        // Ref: https://facelessuser.github.io/pymdown-extensions/extensions/progressbar/
+        $content = preg_replace_callback(
+            '/^\s*\[(=+)\s*([^\]"\']+?)\s*(?:\"([^\"]*)\"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?$/m',
+            function ($m) {
+                $rawVal = trim($m[2]);
+                $title = isset($m[3]) && $m[3] !== '' ? $m[3] : (isset($m[4]) ? $m[4] : '');
+                $attrs = isset($m[5]) ? trim($m[5]) : '';
+                // Extract classes from {: .class .class2}
+                $classes = [];
+                if ($attrs) {
+                    if (preg_match_all('/\.([A-Za-z0-9_-]+)/', $attrs, $mm)) {
+                        $classes = $mm[1];
+                    }
+                }
+                // Normalize percent
+                $percent = 0.0;
+                if (preg_match('/^([0-9]+(?:\.[0-9]+)?)%$/', $rawVal, $pm)) {
+                    $percent = (float)$pm[1];
+                } elseif (preg_match('/^(\d+)\/(\d+)$/', $rawVal, $fm)) {
+                    $den = (int)$fm[2];
+                    $num = (int)$fm[1];
+                    $percent = $den > 0 ? ($num / $den) * 100.0 : 0.0;
+                }
+                $percent = max(0.0, min(100.0, $percent));
+                $label = $title !== '' ? $title : (sprintf('%.0f%%', $percent));
+                // Placeholder token the docs renderer will convert to HTML
+                $token = sprintf(
+                    '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',
+                    number_format($percent, 2, '.', ''),
+                    str_replace([';',']',"\n"], ['\;', '', ' '], $label),
+                    implode(',', array_map(function ($c) {
+                        return str_replace([';',','], '', $c);
+                    }, $classes))
+                );
+                return $token;
+            },
+            $content
+        );
+
         // Parse Islamic syntax
         $content = $this->parseIslamicSyntax($content);
 
@@ -93,6 +137,52 @@ class EnhancedMarkdown extends Extension
         $content = $this->parseArabicText($content);
 
         return $content;
+    }
+
+    /**
+     * Post-render enhancement: add classes and containers for prettier docs
+     */
+    public function onContentPostRender(string $html, string $context = ''): string
+    {
+        // Apply only in docs viewer context or when markdown HTML is passed
+        if ($context !== 'docs') {
+            return $html;
+        }
+
+        // Add class wrappers for tables, images, blockquotes, code
+        $html = preg_replace('/<table(\s|>)/', '<table class="md-table bismillah-table"$1', $html);
+        $html = preg_replace('/<img /', '<img class="md-image" ', $html);
+        $html = preg_replace('/<blockquote>/', '<blockquote class="md-quote">', $html);
+        $html = preg_replace('/<pre><code/', '<pre class="md-code"><code', $html);
+
+        // Auto-generate a simple TOC if headings exist
+        if (preg_match_all('/<h([1-6])>(.*?)<\/h\1>/', $html, $m, PREG_SET_ORDER)) {
+            $toc = [];
+            $idx = 0;
+            $html = preg_replace_callback(
+                '/<h([1-6])>(.*?)<\/h\1>/',
+                function ($mm) use (&$toc, &$idx) {
+                    $level = (int) $mm[1];
+                    $text = strip_tags($mm[2]);
+                    $id = 'h-' . (++$idx) . '-' . strtolower(preg_replace('/[^a-z0-9]+/i', '-', $text));
+                    $toc[] = ['level' => $level, 'text' => $text, 'id' => $id];
+                    return '<h' . $level . ' id="' . $id . '">' . $mm[2] . '</h' . $level . '>';
+                },
+                $html
+            );
+
+            if (!empty($toc)) {
+                $tocHtml = '<nav class="md-toc"><strong>Contents</strong><ul>';
+                foreach ($toc as $entry) {
+                    $indent = str_repeat('&nbsp;&nbsp;', max(0, $entry['level'] - 1));
+                    $tocHtml .= '<li>' . $indent . '<a href="#' . htmlspecialchars($entry['id']) . '">' . htmlspecialchars($entry['text']) . '</a></li>';
+                }
+                $tocHtml .= '</ul></nav>';
+                $html = $tocHtml . $html;
+            }
+        }
+
+        return $html;
     }
 
     /**

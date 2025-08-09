@@ -1,0 +1,78 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="docs-layout" style="display:flex; gap: 24px;">
+  <aside class="docs-sidebar" style="flex: 0 0 420px; max-width: 420px;">
+    <div class="card">
+      <div class="card-header"><h2 class="card-title">Documentation</h2></div>
+      <div class="card-body">
+        <input type="text" id="docs-search" class="input" placeholder="Search docs..." oninput="filterDocsTree(this.value)">
+        <ul id="docs-tree" class="docs-tree" style="margin-top:12px; list-style:none; padding-left:0;">
+          {% macro render_node(node, current) %}
+            {% if node.type == 'dir' %}
+              {% if node.name %}
+                <li class="tree-dir" data-name="{{ node.name|lower }}">
+                  <button class="tree-toggle" aria-expanded="{{ node.open ? 'true' : 'false' }}" data-path="{{ node.path }}">{{ node.open ? '▼' : '▶' }}</button>
+                  <a href="/docs/{{ node.path }}">📁 {{ node.name }}</a>
+                  <ul class="tree-children" style="list-style:none; margin-left: 1rem; display: {{ node.open ? 'block' : 'none' }};">
+                    {% for child in node.children %}
+                      {{ _self.render_node(child, current) }}
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% else %}
+                {# synthetic root: render children only #}
+                {% for child in node.children %}
+                  {{ _self.render_node(child, current) }}
+                {% endfor %}
+              {% endif %}
+            {% else %}
+              <li class="tree-file" data-name="{{ node.name|lower }}">
+                <a href="/docs/{{ node.path }}" class="{{ current == node.path ? 'active' : '' }}">📄 {{ node.name }}</a>
+              </li>
+            {% endif %}
+          {% endmacro %}
+          {{ _self.render_node({ type: 'dir', path: '', name: '', children: tree, open: true }, current) }}
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <section class="docs-content" style="flex: 1; min-width:0;">
+    <article class="card">
+      <div class="card-body">
+        <div class="markdown-body">
+          {{ content|raw }}
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<script>
+function filterDocsTree(q) {
+  const term = (q||'').toLowerCase().trim();
+  document.querySelectorAll('#docs-tree li').forEach(li => {
+    const name = li.getAttribute('data-name') || '';
+    li.style.display = !term || name.includes(term) ? '' : 'none';
+  });
+}
+
+// Toggle hide/show directories
+document.addEventListener('click', function(e) {
+  const toggle = e.target.closest('.tree-toggle');
+  if (!toggle) return;
+  e.preventDefault();
+  const li = toggle.closest('.tree-dir');
+  const children = li.querySelector(':scope > .tree-children');
+  const expanded = toggle.getAttribute('aria-expanded') === 'true';
+  toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  toggle.textContent = expanded ? '▶' : '▼';
+  children.style.display = expanded ? 'none' : 'block';
+});
+</script>
+{% endblock %}
+
+

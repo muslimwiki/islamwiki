@@ -42,6 +42,11 @@
                     <a href="/Special:SpecialPages" class="nav-link {{ is_current_page('/Special:SpecialPages') ? 'active' : '' }}">Special Pages</a>
                     <a href="/about" class="nav-link {{ is_current_page('/about') ? 'active' : '' }}">About</a>
                     <a href="/sciences" class="nav-link {{ is_current_page('/sciences') ? 'active' : '' }}">Sciences</a>
+                    {% if extension_nav_links is defined and extension_nav_links %}
+                        {% for link in extension_nav_links %}
+                            <a href="{{ link.href }}" class="nav-link {{ is_current_page(link.href) ? 'active' : '' }}">{{ link.label }}</a>
+                        {% endfor %}
+                    {% endif %}
                 </nav>
                 
                 <div class="user-menu">

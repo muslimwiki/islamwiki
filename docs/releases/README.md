@@ -4,7 +4,13 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.52 (Latest)
+### Version 0.0.53 (Latest)
+- **[RELEASE-0.0.53.md](RELEASE-0.0.53.md)** - Docs Viewer and Enhanced Markdown
+- **Date**: 2025-08-09
+- **Status**: Feature Release
+- **Focus**: Docs viewer, folder-aware nav, progress bars, TOC, improved Markdown
+
+### Version 0.0.52
 - **[RELEASE-0.0.52.md](RELEASE-0.0.52.md)** - Namespaces and Special Pages
 - **Date**: 2025-08-09
 - **Status**: Feature Release
@@ -129,5 +135,5 @@ For detailed versioning information, see [Versioning Strategy](../guides/version
 
 ---
 
-**Last Updated**: 2025-08-02  
-**Current Version**: 0.0.38 
+**Last Updated**: 2025-08-09  
+**Current Version**: 0.0.53

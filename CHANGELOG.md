@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.53] - 2025-08-09
+
+### Added (0.0.53)
+
+- Markdown Docs Viewer extension with folder-aware, collapsible sidebar and search
+- Docs routes (`/docs` and nested paths) and templates
+- Enhanced Markdown rendering: images, strikethrough, GFM tables with alignment, blockquotes, HRs
+- Auto-generated TOC and ProgressBar-style syntax for docs
+- Extension hooks for markdown pre/post processing
+
+### Changed (0.0.53)
+
+- Moved `AMAN_SECURITY_UPDATE.md`, `CORE_ARCHITECTURE_UPDATE.md`, and `bayan-system.md` to `docs/architecture/`
+- Moved `Cursor_initial-prompt.md` to `docs/plans/`
+- Moved `naming-conventions.md` to `docs/guides/`
+
+### Developer Notes (0.0.53)
+
+- Extension system enabled; nav links injected via globals
+- Docs renderer remains dependency-light; can be swapped to a full parser later if needed
+
 ## [0.0.52] - 2025-08-09
 
 ### Added (0.0.52)

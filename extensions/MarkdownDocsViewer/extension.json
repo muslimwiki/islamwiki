@@ -1,0 +1,8 @@
+{
+  "name": "MarkdownDocsViewer",
+  "version": "0.1.0",
+  "main": "MarkdownDocsViewer.php",
+  "class": "IslamWiki\\Extensions\\MarkdownDocsViewer\\MarkdownDocsViewer",
+  "description": "Adds a Docs link and renders /docs Markdown with left nav and search."
+}
+

@@ -2,43 +2,15 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.52)
+## 🚀 Latest Updates (v0.0.53)
 
-### 🧭 MediaWiki-style Namespaces
+### 📚 Docs Viewer & Markdown Enhancements
 
-- **Special:** `Special:SpecialPages`, `Special:AllPages`
-- **Shorthand Redirects:** `Quran:{query}` → `/quran/search?q={query}`, `Hadith:{query}` → `/hadith/search?q={query}`
-- **Namespace Manager:** Centralized canonical namespace and alias handling
-- **Wiki Redirects:** `/wiki/{slug}` recognizes prefixed titles and redirects accordingly
-
-### ✨ Special Pages (Full-width)
-- **Special:SpecialPages**: Modern full-width hub with categories
-- **Special:AllPages**: Namespace filters and full-width layout
-- **Maintenance Reports**: Placeholders for broken redirects, dead-end pages, etc.
-
-### 🛠️ Technical Enhancements
-- **Modular CSS**: Better organized styles with section-specific modules
-- **Color System**: New CSS custom properties for consistent theming
-- **Animation Framework**: Standardized transitions and effects
-- **Grid Layout**: Improved content organization with CSS Grid
-- **Responsive Framework**: Enhanced mobile-first design system
-- **Calendar Page**: Fixed 500 Internal Server Error - now fully functional
-- **Community Page**: Fixed 500 Internal Server Error - now fully functional
-- **All Main Pages**: Quran, Hadith, Salah, Calendar, and Community pages all working
-- **Error Recovery**: Enhanced error handling prevents application crashes
-
-### ✅ Header Layout Redesign
-- **New Header Structure**: Logo, search bar, and auth buttons now on same line
-- **Improved Navigation**: Primary navigation moved to secondary bar for better organization
-- **Full Width Layout**: All pages now use full available width for better content display
-- **Enhanced Search**: Search bar is more prominent and better positioned
-- **Better Spacing**: Added proper padding for improved visual balance
-
-### 🎨 UI/UX Improvements
-- **Streamlined Design**: Cleaner, more intuitive header layout
-- **Better Accessibility**: Improved button and link positioning
-- **Mobile Responsive**: Enhanced mobile layout for new header structure
-- **Visual Hierarchy**: Better organization of navigation elements
+- **Docs in Nav**: New link surfaces the docs viewer at `/docs`
+- **Two-Pane Layout**: Folder-aware, collapsible left nav; content on the right
+- **Richer Markdown**: Images, tables (aligned), strikethrough, blockquotes, HRs
+- **Auto TOC**: Headings generate a “Contents” section
+- **Progress Bars**: Simple syntax renders visual status bars
 
 ## 🌟 Features
 

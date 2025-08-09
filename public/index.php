@@ -56,6 +56,7 @@ require_once BASE_PATH . '/src/Http/Controllers/ProfileController.php';
 require_once BASE_PATH . '/src/Http/Controllers/SettingsController.php';
 require_once BASE_PATH . '/src/Http/Controllers/HomeController.php';
 require_once BASE_PATH . '/src/Http/Controllers/PageController.php';
+require_once BASE_PATH . '/src/Http/Controllers/DocsController.php';
 require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
 require_once BASE_PATH . '/src/Http/Controllers/Controller.php';
 require_once BASE_PATH . '/src/Http/Controllers/SearchController.php';
@@ -76,6 +77,9 @@ require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
 require_once BASE_PATH . '/src/Http/Controllers/WikiController.php';
 require_once BASE_PATH . '/src/Http/Controllers/SpecialController.php';
 require_once BASE_PATH . '/src/Core/Wiki/NamespaceManager.php';
+require_once BASE_PATH . '/src/Providers/ExtensionServiceProvider.php';
+require_once BASE_PATH . '/src/Core/Extensions/Hooks/HookManager.php';
+require_once BASE_PATH . '/src/Core/Extensions/ExtensionManager.php';
 
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
@@ -97,6 +101,26 @@ $db = $container->get('db');
 $sessionManager = $container->get('session');
 $logger = $container->get('logger');
 $view = $container->get('view');
+
+// After core services are ready, load extensions and allow them to compose view globals
+try {
+    /** @var \IslamWiki\Core\Extensions\ExtensionManager $extMgr */
+    $extMgr = $container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+    $extMgr->loadExtensions();
+
+    // Allow extensions to contribute global Twig variables (e.g., nav links)
+    $hook = $extMgr->getHookManager();
+    if (method_exists($view, 'addGlobals')) {
+        $globals = $hook->runLast('ComposeViewGlobals', [ [] ]);
+        if (!is_array($globals)) { $globals = []; }
+        if (empty($globals['extension_nav_links'])) {
+            $globals['extension_nav_links'] = [ [ 'href' => '/docs', 'label' => 'Docs' ] ];
+        }
+        $view->addGlobals($globals);
+    }
+} catch (\Throwable $e) {
+    error_log('Extension bootstrap error: ' . $e->getMessage());
+}
 
 // Initialize and register controller factory
 $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory(

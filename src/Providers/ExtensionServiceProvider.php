@@ -26,7 +26,7 @@ class ExtensionServiceProvider
         });
 
         // Register the ExtensionManager
-        $container->singleton(ExtensionManager::class, function (Asas $container) {
+        $container->singleton(ExtensionManager::class, function (AsasContainer $container) {
             return new ExtensionManager($container);
         });
     }

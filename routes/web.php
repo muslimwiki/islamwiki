@@ -236,6 +236,13 @@ $router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetControlle
 $router->get('/skins/{skin}/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinCss');
 $router->get('/skins/{skin}/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinJs');
 
+// Docs viewer routes (MarkdownDocsViewer extension)
+$router->get('/docs', 'IslamWiki\\Http\\Controllers\\DocsController@index');
+$router->get('/docs/{segments}', 'IslamWiki\\Http\\Controllers\\DocsController@show');
+$router->get('/docs/{segments}/{segments2}', 'IslamWiki\\Http\\Controllers\\DocsController@show');
+$router->get('/docs/{segments}/{segments2}/{segments3}', 'IslamWiki\\Http\\Controllers\\DocsController@show');
+$router->get('/docs/{segments}/{segments2}/{segments3}/{segments4}', 'IslamWiki\\Http\\Controllers\\DocsController@show');
+$router->get('/docs/{segments}/{segments2}/{segments3}/{segments4}/{segments5}', 'IslamWiki\\Http\\Controllers\\DocsController@show');
 
 
 // Additional page routes (variable routes - must come after specific routes)

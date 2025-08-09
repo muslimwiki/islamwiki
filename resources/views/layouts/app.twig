@@ -138,6 +138,12 @@
                     <a href="/calendar" class="nav-link {{ is_current_page('/calendar') ? 'active' : '' }}">Calendar</a>
                         <a href="/community" class="nav-link {{ is_current_page('/community') ? 'active' : '' }}">Community</a>
                         <a href="/about" class="nav-link {{ is_current_page('/about') ? 'active' : '' }}">About</a>
+                        {# Extension nav injection point #}
+                        {% if extension_nav_links is defined and extension_nav_links %}
+                            {% for link in extension_nav_links %}
+                                <a href="{{ link.href }}" class="nav-link {{ is_current_page(link.href) ? 'active' : '' }}">{{ link.label }}</a>
+                            {% endfor %}
+                        {% endif %}
                     </nav>
                 </div>
             </div>
