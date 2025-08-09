@@ -49,6 +49,11 @@ class BayanServiceProvider
             return new BayanFormatter($connection, $logger);
         });
 
+        // Also expose under simple key 'bayan' for places resolving by string alias
+        $container->singleton('bayan', function (AsasContainer $c) {
+            return $c->get(BayanFormatter::class);
+        });
+
         // Register NodeManager as singleton
         $container->singleton(NodeManager::class, function () use ($container) {
             $connection = $container->get('db');
