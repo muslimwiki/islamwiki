@@ -4853,3 +4853,15 @@ select:focus {
     border-radius: var(--bismillah-radius);
     white-space: pre-wrap;
 }
+
+/* Markdown lists spacing */
+.markdown-body ul.md-list,
+.markdown-body ol.md-list {
+    margin: 0 0 1rem 1.25rem;
+    padding-left: 1.25rem;
+}
+
+.markdown-body ul.md-list li,
+.markdown-body ol.md-list li {
+    margin: 0.25rem 0;
+}
