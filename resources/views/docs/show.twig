@@ -78,80 +78,84 @@ document.addEventListener('click', function(e) {
   children.style.display = expanded ? 'none' : 'block';
 });
 
-// Add copy buttons to code blocks
+// Helpers
+function looksLikeTree(text) {
+  return text && (text.includes('├──') || text.includes('└──') || text.includes('│'));
+}
+
+// Add copy buttons and per-block ASCII toggles where relevant
 function enhanceCodeBlocks() {
   document.querySelectorAll('.markdown-body pre').forEach(pre => {
-    if (pre.dataset.copyReady) return;
-    pre.dataset.copyReady = '1';
+    if (pre.dataset.enhanced) return;
+    pre.dataset.enhanced = '1';
+    pre.style.position = 'relative';
+
+    const code = pre.querySelector('code');
+    const isTree = code && (code.classList.contains('lang-tree') || code.classList.contains('language-tree') || looksLikeTree(code.textContent));
+
+    // Copy button
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.textContent = 'Copy';
     btn.style.position = 'absolute';
-    btn.style.right = '8px';
+    btn.style.right = isTree ? '60px' : '8px';
     btn.style.top = '8px';
     btn.style.padding = '4px 8px';
     btn.style.fontSize = '12px';
     btn.style.cursor = 'pointer';
     btn.addEventListener('click', () => {
-      const code = pre.querySelector('code');
-      const text = code ? code.textContent : pre.textContent;
+      const c = pre.querySelector('code');
+      const text = c ? c.textContent : pre.textContent;
       navigator.clipboard.writeText(text || '').then(() => {
         btn.textContent = 'Copied!';
         setTimeout(() => (btn.textContent = 'Copy'), 1200);
       });
     });
-    pre.style.position = 'relative';
-    // Hide copy for tree blocks (not super useful to copy with formatting)
-    const code = pre.querySelector('code');
-    if (code && (code.classList.contains('lang-tree') || code.classList.contains('language-tree'))) {
-      // skip adding button
-    } else {
-      pre.appendChild(btn);
+    pre.appendChild(btn);
+
+    // ASCII toggle for tree-like blocks
+    if (isTree) {
+      const asciiBtn = document.createElement('button');
+      asciiBtn.className = 'ascii-btn';
+      asciiBtn.textContent = 'ASCII';
+      asciiBtn.style.position = 'absolute';
+      asciiBtn.style.right = '8px';
+      asciiBtn.style.top = '8px';
+      asciiBtn.style.padding = '4px 8px';
+      asciiBtn.style.fontSize = '12px';
+      asciiBtn.style.cursor = 'pointer';
+
+      const c = code;
+      c.dataset.treeOriginal = c.textContent;
+      let ascii = c.textContent
+        .replaceAll('├──', '+--')
+        .replaceAll('└──', '`--')
+        .replaceAll('│',  '|')
+        .replaceAll('─',  '-')
+        .replace(/\u00A0/g, ' ');
+      c.dataset.treeAscii = ascii;
+      c.dataset.treeAsciiOn = '0';
+
+      asciiBtn.addEventListener('click', () => {
+        const on = c.dataset.treeAsciiOn === '1';
+        if (on) {
+          c.textContent = c.dataset.treeOriginal || c.textContent;
+          c.dataset.treeAsciiOn = '0';
+          asciiBtn.textContent = 'ASCII';
+        } else {
+          c.textContent = c.dataset.treeAscii || c.textContent;
+          c.dataset.treeAsciiOn = '1';
+          asciiBtn.textContent = 'Unicode';
+        }
+      });
+      pre.appendChild(asciiBtn);
     }
   });
 }
 
 enhanceCodeBlocks();
 
-// Tree ASCII/Unicode toggle
-function prepareTreeBlocks() {
-  document.querySelectorAll('.markdown-body pre code.lang-tree, .markdown-body pre code.language-tree').forEach(code => {
-    if (code.dataset.treeReady) return;
-    code.dataset.treeReady = '1';
-    const original = code.textContent;
-    code.dataset.treeOriginal = original;
-    // Build ASCII variant
-    let ascii = original
-      .replaceAll('├──', '+--')
-      .replaceAll('└──', '`--')
-      .replaceAll('│',  '|')
-      .replaceAll('─',  '-')
-      .replace(/\u00A0/g, ' ');
-    code.dataset.treeAscii = ascii;
-  });
-}
-
-function applyTreeMode(asAscii) {
-  document.querySelectorAll('.markdown-body pre code.lang-tree, .markdown-body pre code.language-tree').forEach(code => {
-    if (!code.dataset.treeReady) return;
-    code.textContent = asAscii ? (code.dataset.treeAscii || code.textContent) : (code.dataset.treeOriginal || code.textContent);
-  });
-}
-
-prepareTreeBlocks();
-
-// Load preference
-const asciiPref = localStorage.getItem('docs_tree_ascii') === '1';
-const toggle = document.getElementById('toggle-ascii-tree');
-if (toggle) {
-  toggle.checked = asciiPref;
-  applyTreeMode(asciiPref);
-  toggle.addEventListener('change', () => {
-    const on = toggle.checked;
-    localStorage.setItem('docs_tree_ascii', on ? '1' : '0');
-    applyTreeMode(on);
-  });
-}
+// Remove global toggle wiring since we now offer per-block toggles
 </script>
 {% endblock %}
 
