@@ -133,8 +133,43 @@ class DashboardController extends Controller
                     /** @var \IslamWiki\Core\Formatter\BayanManager $bayan */
                     $bayan = $this->container->get(\IslamWiki\Core\Formatter\BayanManager::class);
                     $stats = $bayan->getStatistics();
-                    $hub = $bayan->getQueryManager()->getHubNodes(5);
-                    $recent = $bayan->getNodeManager()->search('', [], 5);
+                    $queryManager = $bayan->getQueryManager();
+                    $nodeManager = $bayan->getNodeManager();
+                    $hub = $queryManager->getHubNodes(5);
+                    $recent = $nodeManager->search('', [], 5);
+                    // Build small graph: hub nodes and a few of their neighbors
+                    $graph = [ 'nodes' => [], 'edges' => [] ];
+                    $nodeIndexById = [];
+                    $maxHubs = min(3, count($hub));
+                    for ($i = 0; $i < $maxHubs; $i++) {
+                        $hubNode = $hub[$i];
+                        $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
+                        if ($hubId === 0) { continue; }
+                        if (!isset($nodeIndexById[$hubId])) {
+                            $nodeIndexById[$hubId] = true;
+                            $graph['nodes'][] = [
+                                'id' => $hubId,
+                                'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
+                                'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
+                                'isHub' => true,
+                            ];
+                        }
+                        $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
+                        foreach ($neighbors as $neighbor) {
+                            $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
+                            if ($neighborId === 0) { continue; }
+                            if (!isset($nodeIndexById[$neighborId])) {
+                                $nodeIndexById[$neighborId] = true;
+                                $graph['nodes'][] = [
+                                    'id' => $neighborId,
+                                    'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
+                                    'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
+                                    'isHub' => false,
+                                ];
+                            }
+                            $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
+                        }
+                    }
                     $dataBayan = [
                         'statistics' => [
                             'total_nodes' => $stats['total_nodes'] ?? 0,
@@ -143,6 +178,7 @@ class DashboardController extends Controller
                         ],
                         'hub_nodes' => $hub,
                         'recent_nodes' => $recent,
+                        'graph' => $graph,
                     ];
                 } else {
                     // Fallback: build from QueryManager/NodeManager directly
@@ -152,6 +188,39 @@ class DashboardController extends Controller
                     $metrics = $queryManager->getGraphMetrics();
                     $hub = $queryManager->getHubNodes(5);
                     $recent = $nodeManager->search('', [], 5);
+                    // Build small graph as above
+                    $graph = [ 'nodes' => [], 'edges' => [] ];
+                    $nodeIndexById = [];
+                    $maxHubs = min(3, count($hub));
+                    for ($i = 0; $i < $maxHubs; $i++) {
+                        $hubNode = $hub[$i];
+                        $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
+                        if ($hubId === 0) { continue; }
+                        if (!isset($nodeIndexById[$hubId])) {
+                            $nodeIndexById[$hubId] = true;
+                            $graph['nodes'][] = [
+                                'id' => $hubId,
+                                'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
+                                'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
+                                'isHub' => true,
+                            ];
+                        }
+                        $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
+                        foreach ($neighbors as $neighbor) {
+                            $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
+                            if ($neighborId === 0) { continue; }
+                            if (!isset($nodeIndexById[$neighborId])) {
+                                $nodeIndexById[$neighborId] = true;
+                                $graph['nodes'][] = [
+                                    'id' => $neighborId,
+                                    'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
+                                    'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
+                                    'isHub' => false,
+                                ];
+                            }
+                            $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
+                        }
+                    }
                     // Only expose card when tables exist and metrics look sane
                     if (is_array($metrics) && (isset($metrics['total_nodes']) || isset($metrics['total_edges']))) {
                         $dataBayan = [
@@ -162,6 +231,7 @@ class DashboardController extends Controller
                             ],
                             'hub_nodes' => $hub,
                             'recent_nodes' => $recent,
+                            'graph' => $graph,
                         ];
                     }
                 }

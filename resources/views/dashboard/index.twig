@@ -178,6 +178,23 @@
                 <h2 class="card-title">🧠 Knowledge Graph (Bayan)</h2>
             </div>
             <div class="card-body">
+                {% if bayan.graph and bayan.graph.nodes|length > 0 %}
+                <div class="bayan-mini-graph" style="width:100%; height:220px; border:1px solid var(--border-color); border-radius:8px; background:var(--background-color); margin-bottom:1rem; position:relative;">
+                    <svg id="bayanGraphSvg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet" style="width:100%; height:100%;">
+                        <!-- edges -->
+                        {% for e in bayan.graph.edges %}
+                        <line data-edge="{{ loop.index0 }}" stroke="var(--border-color)" stroke-width="1.5" x1="0" y1="0" x2="0" y2="0"></line>
+                        {% endfor %}
+                        <!-- nodes -->
+                        {% for n in bayan.graph.nodes %}
+                        <g data-node="{{ n.id }}">
+                            <circle r="8" fill="{{ n.isHub ? '#3b82f6' : '#94a3b8' }}" stroke="#1f2937" stroke-width="1"></circle>
+                            <text font-size="10" fill="var(--text-primary)" text-anchor="middle" dy="-12">{{ n.label|length > 18 ? n.label|slice(0,18) ~ '…' : n.label }}</text>
+                        </g>
+                        {% endfor %}
+                    </svg>
+                </div>
+                {% endif %}
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">🧩</div>
@@ -829,6 +846,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeDashboard() {
     // Add any dashboard-specific JavaScript here
     console.log('Dashboard initialized');
+    try { initBayanMiniGraph(); } catch (e) { console.warn('Bayan mini-graph init failed', e); }
 }
 
 function unwatchPage(pageId) {
@@ -844,5 +862,61 @@ setInterval(function() {
     // TODO: Implement auto-refresh functionality
     console.log('Dashboard auto-refresh triggered');
 }, 300000);
+
+function initBayanMiniGraph() {
+    const svg = document.getElementById('bayanGraphSvg');
+    if (!svg) return;
+    const width = 600, height = 200;
+    const nodes = Array.from(svg.querySelectorAll('g[data-node]'));
+    const edges = Array.from(svg.querySelectorAll('line[data-edge]'));
+    // Basic radial layout around center for hubs and neighbors
+    const centerX = width / 2, centerY = height / 2;
+    // Separate hubs and others
+    const nodeData = nodes.map(g => ({ id: parseInt(g.getAttribute('data-node'), 10), el: g }));
+    const hubs = nodeData.filter(nd => {
+        const circle = nd.el.querySelector('circle');
+        return circle && circle.getAttribute('fill') === '#3b82f6';
+    });
+    const others = nodeData.filter(nd => !hubs.includes(nd));
+    // Place hubs horizontally
+    const hubCount = Math.max(1, hubs.length);
+    hubs.forEach((nd, i) => {
+        const x = centerX + (i - (hubCount - 1) / 2) * 120;
+        const y = centerY;
+        nd.el.setAttribute('transform', `translate(${x},${y})`);
+    });
+    // Place others in a ring
+    const radius = 70;
+    const step = (Math.PI * 2) / Math.max(1, others.length);
+    others.forEach((nd, i) => {
+        const angle = i * step;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        nd.el.setAttribute('transform', `translate(${x},${y})`);
+    });
+    // Build id -> position map
+    const pos = new Map();
+    [...hubs, ...others].forEach(nd => {
+        const t = nd.el.getAttribute('transform');
+        const m = /translate\(([^,]+),([^\)]+)\)/.exec(t || '');
+        if (m) pos.set(nd.id, { x: parseFloat(m[1]), y: parseFloat(m[2]) });
+    });
+    // Map edges using adjacent groups order and dataset from controller order; fallback draws simple spokes between closest
+    // Since we don't have edge node IDs in DOM, distribute edges between hubs->others in order
+    let edgeIdx = 0;
+    hubs.forEach(h => {
+        others.slice(edgeIdx, edgeIdx + 3).forEach(o => {
+            const e = edges.shift();
+            if (!e) return;
+            const p1 = pos.get(h.id), p2 = pos.get(o.id);
+            e.setAttribute('x1', String(p1.x));
+            e.setAttribute('y1', String(p1.y));
+            e.setAttribute('x2', String(p2.x));
+            e.setAttribute('y2', String(p2.y));
+            e.setAttribute('stroke', 'var(--border-color)');
+        });
+        edgeIdx += 3;
+    });
+}
 </script>
 {% endblock %}
