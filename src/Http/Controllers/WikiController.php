@@ -993,12 +993,16 @@ class WikiController extends PageController
      */
     private function updatePageViewCount(Page $page, Request $request, ?int $userId): void
     {
-        // Skip view count increment for AJAX requests
-        $skipViewCount = $request->isXmlHttpRequest() ||
-                        $request->hasHeader('X-PJAX') ||
-                        $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
+        // Decide whether to increment based on request intent
+        $method = strtoupper($request->getMethod());
+        $path = method_exists($request->getUri(), 'getPath') ? $request->getUri()->getPath() : '';
+        $accept = strtolower($request->getHeaderLine('Accept'));
+        $isApi = is_string($path) && str_starts_with($path, '/api');
+        $wantsHtml = ($accept === '' || str_contains($accept, 'text/html'));
+        $isGetHtmlPage = ($method === 'GET' && !$isApi && $wantsHtml);
 
-        if (!$skipViewCount) {
+        // Allow increment on normal HTML page GETs even if XHR/PJAX headers are set
+        if ($isGetHtmlPage) {
             try {
                 $this->db->beginTransaction();
 
