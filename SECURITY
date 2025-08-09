@@ -1,18 +1,20 @@
-# IslamWiki Security Guidelines
-
-## Security Policy
+# Security Policy
 
 IslamWiki follows a responsible disclosure policy. If you discover a security vulnerability, please report it to our security team.
 
-## Reporting Security Issues
+## Reporting a Vulnerability
 
-**DO NOT** create a public GitHub issue for security vulnerabilities.
+Please **do not** create a public GitHub issue for security vulnerabilities.
 
-Instead, please email security@islamwiki.org with:
+Email `security@islamwiki.org` with:
 - Detailed description of the vulnerability
 - Steps to reproduce
 - Potential impact assessment
 - Suggested fix (if available)
+
+## Supported Versions
+
+We currently support security fixes for the latest minor release (0.0.x). Older versions may receive fixes at our discretion.
 
 ## Security Best Practices
 
@@ -61,7 +63,7 @@ Instead, please email security@islamwiki.org with:
    - Implement proper logging
    - Regular security audits
 
-## Islamic Content Security
+## Islamic Content Security (Project‑Specific)
 
 ### Content Moderation
 - Review Islamic content for accuracy
@@ -115,5 +117,5 @@ Instead, please email security@islamwiki.org with:
 
 ---
 
-**Version**: 0.0.10  
-**Last Updated**: 2025-07-30 
+**Version**: 0.0.11  
+**Last Updated**: 2025-08-08
