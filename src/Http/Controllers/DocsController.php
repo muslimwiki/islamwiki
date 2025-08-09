@@ -262,9 +262,9 @@ class DocsController extends Controller
         $html = htmlspecialchars($md, ENT_QUOTES, 'UTF-8');
         // code fences
         $html = preg_replace('/```([\w-]*)\n([\s\S]*?)```/m', '<pre><code class="lang-$1">$2</code></pre>', $html);
-        // indented code blocks (4 spaces)
+        // indented code blocks (4 spaces) - exclude list items
         $html = preg_replace_callback(
-            '/(^ {4}.+(?:\n {4}.+)*)/m',
+            '/(^ {4}(?![-*]\s|\d+\.\s).+(?:\n {4}(?![-*]\s|\d+\.\s).+)*)/m',
             function ($m) {
                 $block = preg_replace('/^ {4}/m', '', $m[1]);
                 return '<pre><code>' . $block . '</code></pre>';
