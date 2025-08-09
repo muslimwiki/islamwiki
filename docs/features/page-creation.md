@@ -147,8 +147,10 @@ Content here with **bold** and *italic* text.
 
 ## Code Example
 ```php
+```php
 <?php
 echo "Hello World!";
+```
 ?>
 ```
 ```

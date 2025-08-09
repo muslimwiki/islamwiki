@@ -72,28 +72,102 @@ foreach ($iter as $file) {
     // preg_split with flags preserves separators; instead, split by lines preserving EOL via explode on "\n" and manage CR.
     $lines = explode("\n", str_replace("\r\n", "\n", $contents));
 
-    $out = $lines;
-    $modified = false;
-    $i = 0;
-    $n = count($lines);
-    while ($i < $n) {
-        $line = $lines[$i];
-        if (preg_match('/^```(\s*)$/', $line)) {
-            // unlabeled fence
-            $lang = guess_language($lines, $i);
-            if ($lang !== '') {
-                $out[$i] = "```" . $lang;
-                $modified = true;
+$out = $lines;
+$modified = false;
+
+// Pass 1: label unlabeled fences
+$i = 0;
+$n = count($lines);
+$insideFence = false;
+while ($i < $n) {
+    $line = $lines[$i];
+    if (preg_match('/^```(.*)$/', $line, $m)) {
+        if (!$insideFence) {
+            // opening fence
+            $label = trim($m[1]);
+            if ($label === '') {
+                $lang = guess_language($lines, $i);
+                if ($lang !== '') {
+                    $out[$i] = "```" . $lang;
+                    $modified = true;
+                }
             }
+            $insideFence = true;
+        } else {
+            // closing fence
+            $insideFence = false;
         }
+    }
+    $i++;
+}
+
+// Pass 2: wrap bare PHP-like lines into code fences (heuristic)
+// Only operate when not already inside an existing fence
+$result = [];
+$i = 0;
+$insideFence = false;
+while ($i < $n) {
+    $line = $out[$i];
+    if (preg_match('/^```/', $line)) {
+        $insideFence = !$insideFence;
+        $result[] = $line;
         $i++;
+        continue;
     }
 
-    if ($modified) {
-        file_put_contents($path, implode("\n", $out));
-        $changed[] = $path;
-        echo "Updated fences: {$path}\n";
+    if (!$insideFence) {
+        // Detect a block of code-like lines
+        $blockStart = $i;
+        $block = [];
+        while ($i < $n) {
+            $l = rtrim($out[$i]);
+            if ($l === '') {
+                break;
+            }
+            $codeish = false;
+            $trim = ltrim($l);
+            if (
+                str_starts_with($trim, '<?php') ||
+                preg_match('/^\$[A-Za-z_]/', $trim) ||
+                str_contains($trim, '$router->') ||
+                preg_match('/->\w+\(/', $trim) ||
+                preg_match('/;\s*$/', $trim)
+            ) {
+                $codeish = true;
+            }
+            if ($codeish) {
+                $block[] = $out[$i];
+                $i++;
+                continue;
+            }
+            break;
+        }
+        if (count($block) >= 2) {
+            // Wrap this block
+            $result[] = '```php';
+            foreach ($block as $bline) {
+                $result[] = $bline;
+            }
+            $result[] = '```';
+            $modified = true;
+            continue;
+        } else {
+            // No block; emit original line and advance one
+            $result[] = $out[$blockStart];
+            $i = $blockStart + 1;
+            continue;
+        }
     }
+    // Inside existing fence: passthrough
+    $result[] = $out[$i];
+    $i++;
+}
+
+if ($modified) {
+    file_put_contents($path, implode("\n", $result));
+    $changed[] = $path;
+    echo "Updated fences: {$path}\n";
+}
 }
 
 echo "\nTotal updated files: " . count($changed) . "\n";

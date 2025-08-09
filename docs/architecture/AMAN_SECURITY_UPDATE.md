@@ -50,8 +50,10 @@ This document summarizes the comprehensive update to ensure `AmanSecurity` is pr
 - ✅ `require_once BASE_PATH . '/src/Core/Auth/Aman.php';` → `require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';`
 
 #### **Container Registration:**
+```php
 - ✅ `$container->singleton(Aman::class, ...)` → `$container->singleton(AmanSecurity::class, ...)`
 - ✅ `$this->container->alias('auth', \IslamWiki\Core\Auth\Aman::class);` → `$this->container->alias('auth', \IslamWiki\Core\Auth\AmanSecurity::class);`
+```
 
 #### **Return Type Hints:**
 - ✅ `public function getAuth(): Aman` → `public function getAuth(): AmanSecurity`
