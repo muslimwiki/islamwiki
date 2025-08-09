@@ -171,6 +171,55 @@
             </div>
         </div>
 
+        {% if bayan %}
+        <!-- Knowledge Graph (Bayan) -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🧠 Knowledge Graph (Bayan)</h2>
+            </div>
+            <div class="card-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🧩</div>
+                        <div class="stat-content">
+                            <div class="stat-number">{{ bayan.statistics.total_nodes ?? 0 }}</div>
+                            <div class="stat-label">Nodes</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔗</div>
+                        <div class="stat-content">
+                            <div class="stat-number">{{ bayan.statistics.total_edges ?? 0 }}</div>
+                            <div class="stat-label">Relationships</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏷️</div>
+                        <div class="stat-content">
+                            <div class="stat-number">{{ bayan.statistics.node_types ?? 0 }}</div>
+                            <div class="stat-label">Node Types</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:1rem;">
+                    <h3 class="section-title">Top Hub Nodes</h3>
+                    <ul>
+                        {% for node in bayan.hub_nodes ?? [] %}
+                            <li><a href="/bayan/node/{{ node.id }}">{{ node.title }}</a></li>
+                        {% else %}
+                            <li>No hub nodes found yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="dashboard-links" style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <a class="dashboard-link" href="/bayan">Open Bayan</a>
+                    <a class="dashboard-link" href="/bayan/create">Create Node</a>
+                    <a class="dashboard-link" href="/bayan/search">Search</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Watched Pages -->
         <div class="card">
             <div class="card-header">

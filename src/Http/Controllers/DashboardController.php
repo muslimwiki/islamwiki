@@ -124,6 +124,24 @@ class DashboardController extends Controller
 
             // Get site statistics (available for all users)
             $siteStats = $this->getSiteStatistics();
+
+            // Try to get Bayan (Knowledge Graph) stats if available
+            try {
+                if ($this->container->has(\IslamWiki\Core\Formatter\BayanManager::class)) {
+                    /** @var \IslamWiki\Core\Formatter\BayanManager $bayan */
+                    $bayan = $this->container->get(\IslamWiki\Core\Formatter\BayanManager::class);
+                    $dataBayan = [
+                        'statistics' => $bayan->getStatistics(),
+                        'hub_nodes' => $bayan->getQueryManager()->getHubNodes(5),
+                        'recent_nodes' => $bayan->getNodeManager()->search('', [], 5)
+                    ];
+                } else {
+                    $dataBayan = null;
+                }
+            } catch (\Throwable $e) {
+                error_log('Dashboard: Bayan unavailable - ' . $e->getMessage());
+                $dataBayan = null;
+            }
         } catch (\Exception $e) {
             error_log('DashboardController: Error loading dashboard data: ' . $e->getMessage());
         }
@@ -143,7 +161,8 @@ class DashboardController extends Controller
             'currentTime' => date('Y-m-d H:i:s'),
             'isLoggedIn' => $this->_session->isLoggedIn(),
             // Provide user to view when available (either from auth or fallback)
-            'user' => $user
+            'user' => $user,
+            'bayan' => $dataBayan
         ];
 
         return $this->view('dashboard/index', $data);
