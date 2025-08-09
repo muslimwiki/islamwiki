@@ -271,10 +271,19 @@ class DocsController extends Controller
 
     private function basicMarkdownToHtml(string $md): string
     {
-        // Pre-pass: convert progress shorthand lines to placeholders if not already handled by extensions
-        $md = preg_replace_callback(
-            '/^\s*\[=+\s*([^]\"\']+?)\s*(?:\"([^\"]*)\"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?$/m',
-            function ($m) {
+        // Pre-pass: convert progress shorthand lines to placeholders, but skip inside fenced code
+        $lines = preg_split('/\r?\n/', $md);
+        $insideFence = false;
+        for ($i = 0, $n = count($lines); $i < $n; $i++) {
+            $line = $lines[$i];
+            if (preg_match('/^```/', $line)) {
+                $insideFence = !$insideFence;
+                continue;
+            }
+            if ($insideFence) {
+                continue;
+            }
+            if (preg_match('/^\s*\[=+\s*([^]"\']+?)\s*(?:"([^"]*)"|\'([^\']*)\')?\]\s*(\{\s*:[^}]+\}\s*)?\s*$/', $line, $m)) {
                 $rawVal = trim($m[1] ?? '');
                 $title = ($m[2] ?? '') !== '' ? $m[2] : (($m[3] ?? '') !== '' ? $m[3] : '');
                 $attrs = trim($m[4] ?? '');
@@ -292,14 +301,16 @@ class DocsController extends Controller
                 }
                 $percent = max(0.0, min(100.0, $percent));
                 $label = $title !== '' ? $title : (sprintf('%.0f%%', $percent));
-                return sprintf(
-                    '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',$percent === 0.0 ? '0.00' : number_format($percent, 2, '.', ''),
+                $token = sprintf(
+                    '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',
+                    $percent === 0.0 ? '0.00' : number_format($percent, 2, '.', ''),
                     str_replace([';','\n',']'], ['\;',' ',''], $label),
                     implode(',', array_map(fn($c) => str_replace(['; ', ';', ','], '', $c), $classes))
                 );
-            },
-            $md
-        );
+                $lines[$i] = $token;
+            }
+        }
+        $md = implode("\n", $lines);
 
         // Pre-process complex blocks (tables) and store placeholders
         $tables = [];
