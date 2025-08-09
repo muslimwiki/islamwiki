@@ -1007,9 +1007,9 @@ class WikiController extends PageController
         // Decide whether to increment based on request intent
         $method = strtoupper($request->getMethod());
         $path = method_exists($request->getUri(), 'getPath') ? $request->getUri()->getPath() : '';
-        $accept = strtolower($request->getHeaderLine('Accept'));
+        $accept = strtolower(trim($request->getHeaderLine('Accept')));
         $isApi = is_string($path) && str_starts_with($path, '/api');
-        $wantsHtml = ($accept === '' || str_contains($accept, 'text/html'));
+        $wantsHtml = ($accept === '' || $accept === '*/*' || str_contains($accept, 'text/html'));
         $isGetHtmlPage = ($method === 'GET' && !$isApi && $wantsHtml);
 
         // Allow increment on normal HTML page GETs even if XHR/PJAX headers are set
