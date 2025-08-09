@@ -326,18 +326,20 @@
         </a>
 
         {# Watch/Unwatch #}
-        <form method="POST" action="/wiki/{{ displaySlug }}/watch" style="display:inline;">
-            <button type="submit" class="btn btn-outline">
-                <span>👁️</span>
-                Watch
-            </button>
+        <form id="watchForm" method="POST" action="/wiki/{{ displaySlug }}/watch" style="display:none;">
+            <input type="hidden" name="_token" value="{{ csrf_token }}" />
         </form>
-        <form method="POST" action="/wiki/{{ displaySlug }}/unwatch" style="display:inline;">
-            <button type="submit" class="btn btn-outline">
-                <span>🚫</span>
-                Unwatch
-            </button>
+        <form id="unwatchForm" method="POST" action="/wiki/{{ displaySlug }}/unwatch" style="display:none;">
+            <input type="hidden" name="_token" value="{{ csrf_token }}" />
         </form>
+        <a href="#" class="btn btn-outline" onclick="document.getElementById('watchForm').submit(); return false;">
+            <span>👁️</span>
+            Watch
+        </a>
+        <a href="#" class="btn btn-outline" onclick="document.getElementById('unwatchForm').submit(); return false;">
+            <span>🚫</span>
+            Unwatch
+        </a>
     </div>
 
     {% if latestRevision %}
