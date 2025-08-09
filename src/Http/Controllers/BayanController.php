@@ -62,7 +62,8 @@ class BayanController
         try {
             $statistics = $this->bayanManager->getStatistics();
             $hubNodes = $this->bayanManager->getQueryManager()->getHubNodes(5);
-            $recentNodes = $this->bayanManager->getNodeManager()->search('', [], 10);
+            // Use QueryManager search for consistency with dashboard
+            $recentNodes = $this->bayanManager->getQueryManager()->search('', [], 10);
 
             $data = [
                 'statistics' => $statistics,
@@ -76,7 +77,7 @@ class BayanController
             $this->logger->error('Failed to display Bayan dashboard', [
                 'error' => $e->getMessage()
             ]);
-            return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error');
+            return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error: ' . htmlspecialchars($e->getMessage()));
         }
     }
 
