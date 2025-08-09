@@ -1059,6 +1059,13 @@ class WikiController extends PageController
 
                 $this->db->commit();
 
+                // Keep in-memory model in sync so the template sees the updated count
+                try {
+                    $page->setAttribute('view_count', $newViewCount);
+                } catch (\Throwable $syncErr) {
+                    // ignore model sync errors
+                }
+
                 // Log the page view for analytics
                 $this->logPageView($page, $request);
 
