@@ -27,6 +27,16 @@ Syntax inspired by PyMdown ProgressBar. Use bracket shorthand and optional class
 
 These are transformed at parse time into placeholders the Docs viewer renders as a progress bar.
 
+### Live Example
+
+```markdown
+[=45% "Docs Overhaul"]{: .info}
+[=80% "EnhancedMarkdown"]{: .success}
+[=30% "Bayan Graph"]{: .warning}
+```
+
+The above should render three progress bars when viewed in the Docs viewer or anywhere sitewide.
+
 ## Islamic Content Helpers
 
 Inline helpers that render structured placeholders:
