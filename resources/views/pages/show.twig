@@ -297,7 +297,7 @@
             {% endif %}
             <div class="page-meta-item">
                 <span class="page-meta-icon">👁️</span>
-                <span>{{ (viewCount ?? page.getAttribute('view_count') ?? 0) }} views</span>
+                <span>{{ viewCount|default(0) }} views</span>
             </div>
             <div class="page-meta-item">
                 <span class="page-meta-icon">📅</span>

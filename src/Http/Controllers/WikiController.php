@@ -1016,16 +1016,11 @@ class WikiController extends PageController
      */
     private function updatePageViewCount(Page $page, Request $request, ?int $userId): void
     {
-        // Decide whether to increment based on request intent
+        // Always increment on GET /wiki... page requests (server-rendered view)
         $method = strtoupper($request->getMethod());
         $path = method_exists($request->getUri(), 'getPath') ? $request->getUri()->getPath() : '';
-        $accept = strtolower(trim($request->getHeaderLine('Accept')));
-        $isApi = is_string($path) && str_starts_with($path, '/api');
-        $wantsHtml = ($accept === '' || $accept === '*/*' || str_contains($accept, 'text/html'));
-        $isGetHtmlPage = ($method === 'GET' && !$isApi && $wantsHtml);
-
-        // Allow increment on normal HTML page GETs even if XHR/PJAX headers are set
-        if ($isGetHtmlPage) {
+        $isWikiPage = is_string($path) && (preg_match('#^/wiki(?:/|$)#', $path) === 1 || preg_match('#^/[^/]+$#', $path) === 1);
+        if ($method === 'GET' && $isWikiPage) {
             try {
                 $this->db->beginTransaction();
 
