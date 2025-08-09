@@ -288,9 +288,28 @@ class DocsController extends Controller
         $html = preg_replace('/`([^`]+)`/', '<code>$1</code>', $html);
         // links [text](url)
         $html = preg_replace('/\[([^\]]+)\]\(([^\)]+)\)/', '<a href="$2">$1</a>', $html);
-        // unordered lists
-        $html = preg_replace('/^\s*[-*]\s+(.+)$/m', '<li>$1</li>', $html);
-        $html = preg_replace('/(<li>.*<\/li>\n?)+/m', '<ul class="md-list">$0</ul>', $html);
+        // unordered lists (use temp wrappers to avoid greedily capturing other blocks)
+        $html = preg_replace('/^\s*[-*]\s+(.+)$/m', '<uli>$1</uli>', $html);
+        $html = preg_replace_callback(
+            '/(?:<uli>.*<\/uli>\n?)+/m',
+            function ($m) {
+                $block = $m[0];
+                $block = str_replace(['<uli>', '</uli>'], ['<li>', '</li>'], $block);
+                return '<ul class="md-list">' . $block . '</ul>';
+            },
+            $html
+        );
+        // ordered lists
+        $html = preg_replace('/^\s*\d+\.\s+(.+)$/m', '<oli>$1</oli>', $html);
+        $html = preg_replace_callback(
+            '/(?:<oli>.*<\/oli>\n?)+/m',
+            function ($m) {
+                $block = $m[0];
+                $block = str_replace(['<oli>', '</oli>'], ['<li>', '</li>'], $block);
+                return '<ol class="md-list">' . $block . '</ol>';
+            },
+            $html
+        );
         // blockquotes (group consecutive lines)
         $html = preg_replace_callback(
             '/(^&gt;\s.*(?:\n&gt;\s.*)*)/m',
@@ -312,7 +331,11 @@ class DocsController extends Controller
         // horizontal rules
         $html = preg_replace('/^---$/m', '<hr/>', $html);
         // paragraphs
-        $html = preg_replace('/^(?!<h\d|<ul>|<li>|<pre>|<\/ul>|<\/li>)([^\n<][^\n]*)$/m', '<p>$1</p>', $html);
+        $html = preg_replace(
+            '/^(?!<h\d|<ul>|<ol>|<li>|<pre>|<blockquote>|<\/ul>|<\/ol>|<\/li>)([^\n<][^\n]*)$/m',
+            '<p>$1</p>',
+            $html
+        );
 
         // Progress placeholders from EnhancedMarkdown pre-pass
         $html = preg_replace_callback(
