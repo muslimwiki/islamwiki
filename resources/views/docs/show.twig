@@ -36,6 +36,16 @@
           {% endmacro %}
           {{ _self.render_node({ type: 'dir', path: '', name: '', children: tree, open: true }, current) }}
         </ul>
+        <hr/>
+        <h3 style="margin:10px 0 6px; font-size: 1rem;">Project Files</h3>
+        <ul id="root-tree" class="docs-tree" style="list-style:none; padding-left:0;">
+          {% for file in rootMd|default([]) %}
+            {% set lower = file|lower %}
+            <li class="tree-file" data-name="{{ lower }}">
+              <a href="/docs/_root/{{ file }}" class="{{ (currentRoot|default('') == file) ? 'active' : '' }}">📄 {{ file }}</a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </aside>
@@ -59,7 +69,7 @@
 <script>
 function filterDocsTree(q) {
   const term = (q||'').toLowerCase().trim();
-  document.querySelectorAll('#docs-tree li').forEach(li => {
+  document.querySelectorAll('#docs-tree li, #root-tree li').forEach(li => {
     const name = li.getAttribute('data-name') || '';
     li.style.display = !term || name.includes(term) ? '' : 'none';
   });

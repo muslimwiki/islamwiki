@@ -21,26 +21,43 @@ class DocsController extends Controller
         $basePath = dirname(__DIR__, 3); // project root
         $docsDir = $basePath . '/docs';
 
+        // root-level markdown support via "/docs/_root/{file}.md"
+        $isRootMarkdown = false;
+        $rootFile = '';
+
         // Sanitize and resolve path
         $relativePath = trim($path, '/');
         if ($relativePath === '') {
             $relativePath = 'README.md';
         }
-        $fullPath = realpath($docsDir . '/' . $relativePath);
 
-        // Prevent path traversal
-        $docsRoot = realpath($docsDir) ?: $docsDir;
-        $prefix = $docsRoot . DIRECTORY_SEPARATOR;
-        if ($fullPath === false || strncmp($fullPath, $prefix, strlen($prefix)) !== 0) {
-            return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+        // Determine if user requested a root-level markdown file
+        if (str_starts_with($relativePath, '_root/')) {
+            $isRootMarkdown = true;
+            $rootFile = basename(substr($relativePath, strlen('_root/')));
         }
 
-        // Build sidebar tree (nested) and expand ancestors of current path
-        $currentRel = $this->relativePathFrom($fullPath, $docsDir);
-        $tree = $this->buildDocsTree($docsDir, $currentRel);
+        // Build sidebar tree (nested) and expand ancestors of current docs path
+        $fullPath = null;
+        if ($isRootMarkdown) {
+            $currentRel = '';
+        } else {
+            $fullPath = realpath($docsDir . '/' . $relativePath);
+            // Prevent path traversal
+            $docsRoot = realpath($docsDir) ?: $docsDir;
+            $prefix = $docsRoot . DIRECTORY_SEPARATOR;
+            if ($fullPath === false || strncmp($fullPath, $prefix, strlen($prefix)) !== 0) {
+                return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+            }
+            $currentRel = $this->relativePathFrom($fullPath, $docsDir);
+        }
+        $tree = $this->buildDocsTree($docsDir, $currentRel ?? '');
 
-        // Read file or fallback to index if directory
-        if (is_dir($fullPath)) {
+        // Also list allowed root-level markdown files for secondary navigation
+        $rootMd = $this->listRootMarkdownFiles($basePath);
+
+        // Read file or fallback to index if directory (docs only)
+        if (!$isRootMarkdown && is_dir($fullPath)) {
             $indexMd = $fullPath . '/README.md';
             if (file_exists($indexMd)) {
                 $fullPath = $indexMd;
@@ -50,14 +67,28 @@ class DocsController extends Controller
                 return $this->view('docs/show', [
                     'title' => 'Docs',
                     'tree' => $tree,
+                    'rootMd' => $rootMd,
                     'content' => $contentHtml,
                     'current' => $this->relativePathFrom($fullPath, $docsDir),
+                    'currentRoot' => $isRootMarkdown ? $rootFile : '',
                 ]);
             }
         }
 
-        if (!file_exists($fullPath) || !is_readable($fullPath)) {
-            return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+        // Resolve content source
+        if ($isRootMarkdown) {
+            // Only permit specifically listed root markdown files
+            if (!in_array($rootFile, $rootMd, true)) {
+                return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+            }
+            $fullPath = realpath($basePath . '/' . $rootFile) ?: ($basePath . '/' . $rootFile);
+            if (!file_exists($fullPath) || !is_readable($fullPath)) {
+                return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+            }
+        } else {
+            if (!file_exists($fullPath) || !is_readable($fullPath)) {
+                return new Response(404, ['Content-Type' => 'text/html'], '<h1>Doc not found</h1>');
+            }
         }
 
         $markdown = file_get_contents($fullPath) ?: '';
@@ -94,8 +125,10 @@ class DocsController extends Controller
         return $this->view('docs/show', [
             'title' => 'Docs',
             'tree' => $tree,
+            'rootMd' => $rootMd,
             'content' => $contentHtml,
-            'current' => $this->relativePathFrom($fullPath, $docsDir),
+            'current' => $isRootMarkdown ? '' : $this->relativePathFrom($fullPath, $docsDir),
+            'currentRoot' => $isRootMarkdown ? $rootFile : '',
         ]);
     }
 
@@ -195,6 +228,45 @@ class DocsController extends Controller
         $listItems = implode('', $links);
         $list = '<ul class="doc-index">' . $listItems . '</ul>';
         return '<h1>Index</h1>' . $list;
+    }
+
+    private function listRootMarkdownFiles(string $basePath): array
+    {
+        $allowed = [
+            'README.md',
+            'CHANGELOG.md',
+            'CODE_OF_CONDUCT.md',
+            'SECURITY.md',
+            'CREDITS.md',
+            'FAQ.md',
+            'INSTALL.md',
+            'UPGRADE.md',
+            'CONTRIBUTING.md',
+        ];
+        $existing = [];
+        foreach ($allowed as $file) {
+            $p = $basePath . DIRECTORY_SEPARATOR . $file;
+            if (is_file($p) && is_readable($p)) {
+                $existing[] = $file;
+            }
+        }
+        // Add any other .md files directly under root (non-hidden), excluding docs directory
+        $dh = opendir($basePath);
+        if ($dh) {
+            while (($entry = readdir($dh)) !== false) {
+                if ($entry[0] === '.') continue;
+                $abs = $basePath . DIRECTORY_SEPARATOR . $entry;
+                if (is_file($abs) && preg_match('/\.md$/i', $entry)) {
+                    if (!in_array($entry, $existing, true)) {
+                        $existing[] = $entry;
+                    }
+                }
+            }
+            closedir($dh);
+        }
+
+        sort($existing, SORT_FLAG_CASE | SORT_NATURAL);
+        return $existing;
     }
 
     private function basicMarkdownToHtml(string $md): string
