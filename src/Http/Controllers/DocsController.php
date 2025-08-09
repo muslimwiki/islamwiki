@@ -262,6 +262,15 @@ class DocsController extends Controller
         $html = htmlspecialchars($md, ENT_QUOTES, 'UTF-8');
         // code fences
         $html = preg_replace('/```([\w-]*)\n([\s\S]*?)```/m', '<pre><code class="lang-$1">$2</code></pre>', $html);
+        // indented code blocks (4 spaces)
+        $html = preg_replace_callback(
+            '/(^ {4}.+(?:\n {4}.+)*)/m',
+            function ($m) {
+                $block = preg_replace('/^ {4}/m', '', $m[1]);
+                return '<pre><code>' . $block . '</code></pre>';
+            },
+            $html
+        );
         // images ![alt](src)
         $html = preg_replace('/!\[([^\]]*)\]\(([^\)]+)\)/', '<img alt="$1" src="$2" class="md-image"/>', $html);
         // headings
