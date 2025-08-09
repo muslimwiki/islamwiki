@@ -366,9 +366,8 @@ class NizamApplication
         $this->container->alias('queue', \IslamWiki\Core\Queue\SabrQueue::class);
         $this->container->alias('knowledge', \IslamWiki\Core\Knowledge\UsulKnowledge::class);
         $this->container->alias('search', \IslamWiki\Core\Search\IqraSearch::class);
-        $this->container->alias('formatter', \IslamWiki\Core\Formatter\BayanFormatter::class);
-        // Provide 'bayan' alias globally so controllers/views can resolve it
-        $this->container->alias('bayan', \IslamWiki\Core\Formatter\BayanFormatter::class);
+        // Ensure legacy 'formatter' alias points to the BayanFormatter binding
+        $this->container->alias(\IslamWiki\Core\Formatter\BayanFormatter::class, 'formatter');
         $this->container->alias('api', \IslamWiki\Core\API\SirajAPI::class);
         $this->container->alias('config', \IslamWiki\Core\Configuration\TadbirConfiguration::class);
     }
