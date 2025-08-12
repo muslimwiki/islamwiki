@@ -1,56 +1,59 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * Test Home Controller
+ *
+ * This script tests if the HomeController works without skin manager issues.
+ */
 
-// Start output buffering
-ob_start();
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-echo "=== HomeController Test ===<br>";
+// Define base path
+define('BASE_PATH', dirname(__DIR__));
+
+// Include Composer autoloader
+require_once BASE_PATH . '/vendor/autoload.php';
+
+echo "<h1>🔍 Test Home Controller</h1>";
 
 try {
-    echo "Step 1: Loading autoloader...<br>";
-    require_once __DIR__ . '/../vendor/autoload.php';
-    echo "Step 2: Autoloader loaded successfully<br>";
-
-    echo "Step 3: Creating Application...<br>";
-    $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
-    echo "Step 4: Application created successfully<br>";
-
-    echo "Step 5: Getting container...<br>";
+    // Initialize Application
+    $app = new \IslamWiki\Core\Application(BASE_PATH);
     $container = $app->getContainer();
-    echo "Step 6: Container retrieved successfully<br>";
+    $container->instance('app', $app);
 
-    echo "Step 7: Getting database connection...<br>";
-    $db = $container->get(\IslamWiki\Core\Database\Connection::class);
-    echo "Step 8: Database connection retrieved successfully<br>";
+    // Initialize router
+    $router = new \IslamWiki\Core\Routing\IslamRouter($container);
 
-    echo "Step 9: Creating HomeController...<br>";
-    $controller = new \IslamWiki\Http\Controllers\HomeController($db, $container);
-    echo "Step 10: HomeController created successfully<br>";
+    // Load routes
+    require_once BASE_PATH . '/routes/web.php';
 
-    echo "Step 11: Creating test request...<br>";
-    $request = \IslamWiki\Core\Http\Request::capture();
-    echo "Step 12: Test request created successfully<br>";
+    echo "<h2>Testing HomeController</h2>";
 
-    echo "Step 13: Calling HomeController@index...<br>";
-    $response = $controller->index($request);
-    echo "Step 14: HomeController@index completed successfully<br>";
+    // Test with root request
+    $request = new \IslamWiki\Core\Http\Request('GET', new \IslamWiki\Core\Http\Uri('/'));
 
-    echo "Step 15: Clearing output buffer...<br>";
-    ob_end_clean();
+    try {
+        $response = $router->handle($request);
+        echo "<p>✅ HomeController handled request successfully</p>";
+        echo "<p><strong>Response Status:</strong> " . $response->getStatusCode() . "</p>";
+        echo "<p><strong>Response Body Length:</strong> " . strlen($response->getBody()) . " characters</p>";
 
-    echo "Step 16: Sending response...<br>";
-    http_response_code($response->getStatusCode());
-    foreach ($response->getHeaders() as $name => $values) {
-        foreach ($values as $value) {
-            header(sprintf('%s: %s', $name, $value), false);
-        }
+        // Show first 500 characters of response
+        $body = $response->getBody();
+        echo "<h3>Response Preview:</h3>";
+        echo "<pre>" . htmlspecialchars(substr($body, 0, 500)) . "...</pre>";
+    } catch (\Exception $e) {
+        echo "<p>❌ HomeController failed: " . $e->getMessage() . "</p>";
+        echo "<p>Stack trace: <pre>" . $e->getTraceAsString() . "</pre></p>";
     }
-    echo $response->getBody();
-    echo "<br>Step 17: Response sent successfully<br>";
-} catch (\Throwable $e) {
-    ob_end_clean();
-    echo "<br><strong>ERROR: " . $e->getMessage() . "</strong><br>";
-    echo "File: " . $e->getFile() . ":" . $e->getLine() . "<br>";
-    echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+} catch (\Exception $e) {
+    echo "<h2>❌ Error</h2>";
+    echo "<p>Error: " . $e->getMessage() . "</p>";
+    echo "<p>File: " . $e->getFile() . "</p>";
+    echo "<p>Line: " . $e->getLine() . "</p>";
+    echo "<h3>Stack Trace:</h3>";
+    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
 }

@@ -1,3 +1,6 @@
 <?php
 
-echo "Rewrite test - this file should be accessible directly";
+echo "Rewrite test successful!";
+echo "Request URI: " . $_SERVER['REQUEST_URI'];
+echo "Script Name: " . $_SERVER['SCRIPT_NAME'];
+exit;

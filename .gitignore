@@ -165,6 +165,14 @@ tests/tmp/
 test-results/
 coverage/
 
+# Maintenance test artifacts
+maintenance/tests/data/
+maintenance/tests/tmp/
+maintenance/tests/output/
+maintenance/tests/.cache/
+maintenance/tests/coverage/
+maintenance/tests/logs/
+
 # Development files
 *.dev.php
 *.test.php
@@ -253,9 +261,14 @@ skins/*/*.log
 
 # Keep these files even if they match patterns above
 !tests/
+!maintenance/tests/
 !debug/
 !scripts/tests/
 !docs/tests/
+
+# Keep maintenance test PHP scripts (override global test_*.php ignore)
+!maintenance/tests/web/*.php
+!maintenance/tests/cli/*.php
 
 # Keep test scripts but ignore their output
 !*.test.php
