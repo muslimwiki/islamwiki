@@ -23,6 +23,8 @@
 - **Clean Public Directory**: Removed development files from web-accessible directory
 - **Proper Structure**: Follows web application best practices
 
+> Note (Later Reorganization): In subsequent versions, all tests were consolidated under `maintenance/tests/` (including `maintenance/tests/web/`) for consistency and improved maintainability.
+
 ### ✅ Technical Improvements
 - **SkinServiceProvider**: Properly registered skin management system
 - **Settings Binding**: Added comprehensive settings configuration

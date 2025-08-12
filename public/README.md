@@ -11,9 +11,7 @@ public/
 ├── update-user-skin.php         # User skin update utility
 ├── .htaccess                    # Apache configuration
 ├── css/                         # Stylesheets
-├── js/                          # JavaScript files
-├── tests/                       # Test files (moved from root)
-└── debug/                       # Debug files (moved from root)
+└── js/                          # JavaScript files
 ```
 
 ## File Organization
@@ -25,14 +23,6 @@ public/
 - `.htaccess` - Apache server configuration
 
 ### Subdirectories
-
-#### `/tests/` - Test Files
-Contains all test-related files that were previously in the root:
-- `test-*.php` - Various test scripts
-- `check-*.php` - Check/validation scripts
-- `login-test.php` - Login testing
-- `simple-skin-test.php` - Simple skin testing
-- `zzz-*.php` - Miscellaneous test files
 
 #### `/debug/` - Debug Files
 Contains all debug-related files that were previously in the root:
@@ -52,8 +42,8 @@ Contains all debug-related files that were previously in the root:
 
 - Main site: `https://local.islam.wiki/`
 - Skin status: `https://local.islam.wiki/skin-system-status.php`
-- Tests: `https://local.islam.wiki/tests/`
-- Debug: `https://local.islam.wiki/debug/`
+
+Note: Tests are now consolidated under `maintenance/tests/` and are not web-accessible.
 
 ## Organization Benefits
 
@@ -65,8 +55,7 @@ Contains all debug-related files that were previously in the root:
 
 ## Migration Notes
 
-- All `test*` and `check*` files moved to `/tests/`
-- All `debug*` files moved to `/debug/`
+- All test files are consolidated under `maintenance/tests/` (`cli/`, `Unit/`, `Integration/`, `web/`) and are not served from `public/`.
 - Main application files remain in root
 - CSS and JS directories unchanged
-- URLs for main functionality remain the same 
+- URLs for main functionality remain the same

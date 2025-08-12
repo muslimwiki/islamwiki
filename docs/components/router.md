@@ -246,7 +246,7 @@ protected function renderErrorPage(int $status, string $message): string
 
 ### **Comprehensive Test Suite**
 ```php
-// Test file: tests/web/test-islam-router-comprehensive.php
+// Test file: maintenance/tests/web/test-islam-router-comprehensive.php
 // Covers all router features and edge cases
 ```
 

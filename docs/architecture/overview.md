@@ -160,7 +160,7 @@ islamwiki/
 │   ├── logs/           # Log files
 │   └── framework/      # Framework cache
 ├── docs/               # Documentation
-└── tests/              # Test files
+└── maintenance/tests/  # Test files
 ```
 
 ## Configuration

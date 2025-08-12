@@ -68,7 +68,7 @@ The system includes comprehensive tests covering:
 
 ### Running Tests
 ```bash
-php tests/TestSalahTimes.php
+php maintenance/tests/cli/TestSalahTimes.php
 ```
 
 ## Recent Updates
