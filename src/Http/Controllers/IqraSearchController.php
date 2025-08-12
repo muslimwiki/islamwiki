@@ -100,7 +100,7 @@ class IqraSearchController extends Controller
             'searchTypes' => [
                 'all' => 'All Content',
                 'pages' => 'Wiki Pages',
-                'quran' => 'Quran Verses',
+                'quran' => 'Quran Ayahs',
                 'hadith' => 'Hadith',
                 'calendar' => 'Calendar Events',
                 'prayer' => 'Prayer Times',
@@ -238,6 +238,44 @@ class IqraSearchController extends Controller
     }
 
     /**
+     * Search Quran ayahs with Islamic term optimization
+     */
+    public function searchQuran(Request $request): Response
+    {
+        $query = $request->getQueryParams()['q'] ?? '';
+        $page = max(1, (int)($request->getQueryParams()['page'] ?? 1));
+        $limit = min(50, max(10, (int)($request->getQueryParams()['limit'] ?? 20)));
+        $offset = ($page - 1) * $limit;
+
+        if (empty($query)) {
+            return $this->json([
+                'error' => 'Search query is required',
+                'results' => [],
+                'total' => 0,
+                'page' => $page,
+                'limit' => $limit
+            ]);
+        }
+
+        $results = $this->searchEngine->search($query, [
+            'type' => 'quran',
+            'offset' => $offset,
+            'limit' => $limit
+        ]);
+
+        $total = $this->searchEngine->getQuranCount($this->searchEngine->tokenizeQuery($query));
+
+        return $this->json([
+            'query' => $query,
+            'results' => $results,
+            'total' => $total,
+            'page' => $page,
+            'limit' => $limit,
+            'total_pages' => ceil($total / $limit)
+        ]);
+    }
+
+    /**
      * Get search statistics
      */
     protected function getSearchStatistics(string $query): array
@@ -247,7 +285,7 @@ class IqraSearchController extends Controller
             'total_quran' => $this->getContentTypeCount($query, 'quran'),
             'total_hadith' => $this->getContentTypeCount($query, 'hadith'),
             'total_calendar' => $this->getContentTypeCount($query, 'calendar'),
-            'total_prayer' => $this->getContentTypeCount($query, 'prayer'),
+            'total_salah' => $this->getContentTypeCount($query, 'salah'),
             'total_scholars' => $this->getContentTypeCount($query, 'scholars'),
             'total_all' => $this->getContentTypeCount($query, 'all')
         ];
@@ -271,8 +309,8 @@ class IqraSearchController extends Controller
                 return $this->searchEngine->getHadithCount($words);
             case 'calendar':
                 return $this->searchEngine->getCalendarCount($words);
-            case 'prayer':
-                return $this->searchEngine->getPrayerCount($words);
+            case 'salah':
+                return $this->searchEngine->getSalahCount($words);
             case 'scholars':
                 return $this->searchEngine->getScholarCount($words);
             default:

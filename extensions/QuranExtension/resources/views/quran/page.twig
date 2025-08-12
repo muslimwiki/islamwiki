@@ -1,0 +1,141 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Page {{ page.page_number }} - Quran{% endblock %}
+
+{% block content %}
+<div class="quran-container">
+    <div class="quran-header">
+        <h1>Page {{ page.page_number }}</h1>
+        <div class="quran-header-subtitle">
+            <span>Juz {{ page.juz_number }} - {{ page.start_surah }}:{{ page.start_ayah }} to {{ page.end_surah }}:{{ page.end_ayah }}</span>
+        </div>
+    </div>
+
+    <div class="quran-page-info">
+        <div class="quran-page-stats">
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ page.ayahs|length }}</div>
+                <div class="quran-stat-label">Ayahs</div>
+            </div>
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ page.surahs_count }}</div>
+                <div class="quran-stat-label">Surahs</div>
+            </div>
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ page.juz_number }}</div>
+                <div class="quran-stat-label">Juz</div>
+            </div>
+        </div>
+
+        <div class="quran-page-navigation">
+            {% if page.page_number > 1 %}
+                <a href="/quran/page/{{ page.page_number - 1 }}" class="quran-nav-btn" data-action="prev-page">
+                    <i class="fas fa-chevron-left"></i> Previous Page
+                </a>
+            {% endif %}
+            
+            {% if page.page_number < 604 %}
+                <a href="/quran/page/{{ page.page_number + 1 }}" class="quran-nav-btn" data-action="next-page">
+                    Next Page <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="quran-page-content">
+        <div class="quran-page-ayahs">
+            {% for ayah in page.ayahs %}
+                <div class="quran-ayah-item" data-ayah-id="{{ ayah.id }}">
+                    <div class="quran-ayah-header">
+                        <span class="quran-ayah-reference">{{ ayah.surah_number }}:{{ ayah.ayah_number }}</span>
+                        <span class="quran-ayah-surah">{{ ayah.surah_name }}</span>
+                        <span class="quran-ayah-juz">Juz {{ ayah.juz }}</span>
+                    </div>
+                    
+                    <div class="quran-ayah-text">{{ ayah.text }}</div>
+                    
+                    {% if ayah.translation %}
+                        <div class="quran-ayah-translation">{{ ayah.translation }}</div>
+                    {% endif %}
+                    
+                    <div class="quran-ayah-actions">
+                        <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
+                        <button class="quran-bookmark-btn" data-ayah-id="{{ ayah.id }}">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                        <button class="quran-copy-btn" data-ayah-text="{{ ayah.text }}">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        {% if ayah.sajda %}
+                            <span class="quran-sajda-indicator">
+                                <i class="fas fa-star"></i> Sajda
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="quran-page-pagination">
+        {% if page.page_number > 1 %}
+            <a href="/quran/page/{{ page.page_number - 1 }}" class="quran-page-btn">
+                <i class="fas fa-chevron-left"></i> Page {{ page.page_number - 1 }}
+            </a>
+        {% endif %}
+        
+        <span class="quran-current-page">Page {{ page.page_number }} of 604</span>
+        
+        {% if page.page_number < 604 %}
+            <a href="/quran/page/{{ page.page_number + 1 }}" class="quran-page-btn">
+                Page {{ page.page_number + 1 }} <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="quran-page-actions">
+        <div class="quran-action-buttons">
+            <button class="quran-nav-btn" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Page
+            </button>
+            <button class="quran-nav-btn" onclick="downloadPage()">
+                <i class="fas fa-download"></i> Download
+            </button>
+            <button class="quran-nav-btn" onclick="sharePage()">
+                <i class="fas fa-share"></i> Share
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/extensions/QuranExtension/resources/assets/js/quran.js"></script>
+<script>
+function downloadPage() {
+    // Implementation for downloading page content
+    const pageContent = document.querySelector('.quran-page-content').innerText;
+    const blob = new Blob([pageContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quran-page-{{ page.page_number }}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function sharePage() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Quran Page {{ page.page_number }}',
+            text: 'Check out this page from the Quran',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(window.location.href);
+        alert('Page URL copied to clipboard!');
+    }
+}
+</script>
+{% endblock %}

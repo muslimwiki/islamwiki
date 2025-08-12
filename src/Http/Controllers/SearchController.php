@@ -27,9 +27,9 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\View\TwigRenderer;
 use IslamWiki\Models\Page;
-use IslamWiki\Models\QuranVerse;
+use IslamWiki\Models\QuranAyah;
 use IslamWiki\Models\Hadith;
-use IslamWiki\Models\IslamicCalendar;
+use IslamWiki\Models\HijriCalendar;
 use IslamWiki\Models\PrayerTime;
 use IslamWiki\Core\Database\Connection;
 use Exception;
@@ -73,7 +73,7 @@ class SearchController extends Controller
             'searchTypes' => [
                 'all' => 'All Content',
                 'pages' => 'Wiki Pages',
-                'quran' => 'Quran Verses',
+                'quran' => 'Quran Ayahs',
                 'hadith' => 'Hadith',
                 'calendar' => 'Calendar Events',
                 'prayer' => 'Prayer Times'
@@ -146,8 +146,8 @@ class SearchController extends Controller
             case 'calendar':
                 $results = $this->searchCalendar($query, $offset, $limit);
                 break;
-            case 'prayer':
-                $results = $this->searchPrayer($query, $offset, $limit);
+            case 'salah':
+                $results = $this->searchSalah($query, $offset, $limit);
                 break;
             default:
                 $results = $this->searchAll($query, $offset, $limit);
@@ -191,16 +191,16 @@ class SearchController extends Controller
     }
 
     /**
-     * Search Quran verses
+     * Search Quran ayahs
      */
     protected function searchQuran(string $query, int $offset, int $limit): array
     {
         $sql = "SELECT v.*, s.name_english as surah_name, s.name_translation as english_name,
                        MATCH(v.text_arabic, v.text_uthmani) AGAINST(? IN BOOLEAN MODE) as relevance
-                FROM verses v
+                FROM ayahs v
                 JOIN surahs s ON v.surah_number = s.number
                 WHERE MATCH(v.text_arabic, v.text_uthmani) AGAINST(? IN BOOLEAN MODE)
-                ORDER BY relevance DESC, v.surah_number ASC, v.verse_number ASC
+                ORDER BY relevance DESC, v.surah_number ASC, v.ayah_number ASC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
@@ -211,16 +211,16 @@ class SearchController extends Controller
             $results[] = [
                 'type' => 'quran',
                 'id' => $row->id,
-                'title' => "{$row->surah_name} ({$row->surah_number}:{$row->verse_number})",
+                'title' => "{$row->surah_name} ({$row->surah_number}:{$row->ayah_number})",
                 'surah_name' => $row->surah_name,
                 'english_name' => $row->english_name,
-                'verse_number' => $row->verse_number,
+                'ayah_number' => $row->ayah_number,
                 'surah_number' => $row->surah_number,
-                'arabic_text' => $row->text_arabic,
-                'translation' => $row->text_uthmani,
+                'text_arabic' => $row->text_arabic,
+                'translation_text' => $row->text_uthmani,
                 'excerpt' => $this->createExcerpt($row->text_uthmani, $query),
                 'relevance' => $row->relevance,
-                'url' => "/quran/verse/{$row->surah_number}/{$row->verse_number}"
+                'url' => "/quran/{$row->surah_number}/{$row->ayah_number}"
             ];
         }
 
@@ -303,9 +303,9 @@ class SearchController extends Controller
     }
 
     /**
-     * Search prayer times
+     * Search salah times
      */
-    protected function searchPrayer(string $query, int $offset, int $limit): array
+    protected function searchSalah(string $query, int $offset, int $limit): array
     {
         $sql = "SELECT ul.*,
                        MATCH(ul.name, ul.city, ul.country) AGAINST(? IN BOOLEAN MODE) as relevance
@@ -320,20 +320,20 @@ class SearchController extends Controller
         $results = [];
         while ($row = $stmt->fetch()) {
             $results[] = [
-                'type' => 'prayer',
+                'type' => 'salah',
                 'id' => $row->id,
-                'title' => "Prayer Location - {$row->city}, {$row->country}",
+                'title' => "Salah Location - {$row->city}, {$row->country}",
                 'city' => $row->city,
                 'country' => $row->country,
                 'location_name' => $row->name,
-                'prayer_date' => date('Y-m-d'),
+                'salah_date' => date('Y-m-d'),
                 'fajr' => 'N/A',
                 'dhuhr' => 'N/A',
                 'asr' => 'N/A',
                 'maghrib' => 'N/A',
                 'isha' => 'N/A',
                 'relevance' => $row->relevance,
-                'url' => "/prayer/show/" . date('Y-m-d') . "/{$row->id}"
+                'url' => "/salah/show/" . date('Y-m-d') . "/{$row->id}"
             ];
         }
 
@@ -352,10 +352,10 @@ class SearchController extends Controller
         $quran = $this->searchQuran($query, 0, $limit);
         $hadith = $this->searchHadith($query, 0, $limit);
         $calendar = $this->searchCalendar($query, 0, $limit);
-        $prayer = $this->searchPrayer($query, 0, $limit);
+        $salah = $this->searchSalah($query, 0, $limit);
 
         // Combine and sort by relevance
-        $allResults = array_merge($pages, $quran, $hadith, $calendar, $prayer);
+        $allResults = array_merge($pages, $quran, $hadith, $calendar, $salah);
         usort($allResults, function ($a, $b) {
             return $b['relevance'] <=> $a['relevance'];
         });
@@ -379,7 +379,7 @@ class SearchController extends Controller
                 $count = $stmt->fetchColumn();
                 break;
             case 'quran':
-                $sql = "SELECT COUNT(*) FROM verses WHERE MATCH(text_arabic, text_uthmani) AGAINST(?)";
+                $sql = "SELECT COUNT(*) FROM ayahs WHERE MATCH(text_arabic, text_uthmani) AGAINST(?)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute([$query]);
                 $count = $stmt->fetchColumn();
@@ -523,24 +523,24 @@ class SearchController extends Controller
         }
 
         // Get Quran suggestions
-        $sql = "SELECT s.name_english as surah_name, v.verse_number, v.text_uthmani 
-                FROM verses v 
+        $sql = "SELECT s.name_english as surah_name, v.ayah_number, v.text_uthmani, v.surah_number 
+                FROM ayahs v 
                 JOIN surahs s ON v.surah_number = s.number 
-                WHERE v.text_uthmani LIKE ? 
-                ORDER BY v.surah_number ASC, v.verse_number ASC LIMIT 3";
+                WHERE v.text_arabic LIKE ? OR s.name_english LIKE ?
+                ORDER BY v.surah_number ASC, v.ayah_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(["%$query%"]);
+        $stmt->execute(["%$query%", "%$query%"]);
 
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'quran',
-                'text' => "{$row->surah_name} {$row->verse_number}",
-                'url' => "/quran/verse/{$row->surah_number}/{$row->verse_number}"
+                'text' => "{$row->surah_name} {$row->ayah_number}",
+                'url' => "/quran/{$row->surah_number}/{$row->ayah_number}"
             ];
         }
 
         // Get Hadith suggestions
-        $sql = "SELECT h.hadith_number, c.name as collection_name, h.english_text 
+        $sql = "SELECT h.hadith_number, c.name as collection_name, h.english_text, h.collection_id 
                 FROM hadiths h 
                 JOIN hadith_collections c ON h.collection_id = c.id 
                 WHERE h.english_text LIKE ? 

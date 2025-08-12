@@ -4,50 +4,55 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Database\Islamic;
 
-use IslamWiki\Core\Database\Connection;
+use PDO;
 use RuntimeException;
+use IslamWiki\Core\Database\Connection as CoreConnection;
 
 /**
  * Islamic Database Manager
  *
  * Manages separate database connections for different Islamic content types:
- * - Quran Database: For Quran verses and translations
+ * - Quran Database: For Quran ayahs and translations
  * - Hadith Database: For Hadith collections and chains
  * - Wiki Database: For general Islamic wiki content
  * - Scholar Database: For scholar verification and credentials
  */
 class IslamicDatabaseManager
 {
-    /**
-     * The database connections.
-     */
-    protected array $connections = [];
+    private array $configs;
+    private array $connections = [];
+    private ?CoreConnection $quranConnection = null;
 
-    /**
-     * The database configurations.
-     */
-    protected array $configs = [];
-
-    /**
-     * Create a new Islamic database manager instance.
-     */
-    public function __construct(array $configs = [])
+    public function __construct(array $configs)
     {
         $this->configs = $configs;
     }
 
     /**
-     * Get the Quran database connection.
+     * Quran connection (app-level wrapper)
      */
-    public function getQuranConnection(): Connection
+    public function getQuranConnection(): CoreConnection
     {
-        return $this->getConnection('quran');
+        if ($this->quranConnection instanceof CoreConnection) {
+            return $this->quranConnection;
+        }
+        $cfg = $this->configs['quran'] ?? [];
+        $this->quranConnection = new CoreConnection($cfg);
+        return $this->quranConnection;
+    }
+
+    /**
+     * Raw PDO for Quran (for importers/scripts)
+     */
+    public function getQuranPdo(): PDO
+    {
+        return $this->getQuranConnection()->getPdo();
     }
 
     /**
      * Get the Hadith database connection.
      */
-    public function getHadithConnection(): Connection
+    public function getHadithConnection(): CoreConnection
     {
         return $this->getConnection('hadith');
     }
@@ -55,7 +60,7 @@ class IslamicDatabaseManager
     /**
      * Get the Wiki database connection.
      */
-    public function getWikiConnection(): Connection
+    public function getWikiConnection(): CoreConnection
     {
         return $this->getConnection('wiki');
     }
@@ -63,7 +68,7 @@ class IslamicDatabaseManager
     /**
      * Get the Scholar database connection.
      */
-    public function getScholarConnection(): Connection
+    public function getScholarConnection(): CoreConnection
     {
         return $this->getConnection('scholar');
     }
@@ -71,7 +76,7 @@ class IslamicDatabaseManager
     /**
      * Get a specific database connection.
      */
-    protected function getConnection(string $type): Connection
+    protected function getConnection(string $type): CoreConnection
     {
         if (!isset($this->connections[$type])) {
             $this->connections[$type] = $this->createConnection($type);
@@ -83,7 +88,7 @@ class IslamicDatabaseManager
     /**
      * Create a new database connection.
      */
-    protected function createConnection(string $type): Connection
+    protected function createConnection(string $type): CoreConnection
     {
         $config = $this->getConfig($type);
 
@@ -91,7 +96,7 @@ class IslamicDatabaseManager
             throw new RuntimeException("Database configuration for '{$type}' not found");
         }
 
-        return new Connection($config);
+        return new CoreConnection($config);
     }
 
     /**
@@ -119,6 +124,7 @@ class IslamicDatabaseManager
             $connection->disconnect();
         }
         $this->connections = [];
+        $this->quranConnection = null;
     }
 
     /**
@@ -194,7 +200,7 @@ class IslamicDatabaseManager
     /**
      * Get database size in MB.
      */
-    protected function getDatabaseSize(Connection $connection): float
+    protected function getDatabaseSize(CoreConnection $connection): float
     {
         try {
             $database = $connection->getDatabaseName();

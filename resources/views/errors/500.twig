@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>500 Internal Server Error</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #d32f2f;
+            margin-top: 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            font-size: 2.2em;
+        }
+        .error-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .error-icon {
+            font-size: 3em;
+            margin-right: 20px;
+            color: #d32f2f;
+        }
+        .error-summary {
+            background: #fff5f5;
+            border-left: 4px solid #ff5252;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .error-details {
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .error-details h2 {
+            margin-top: 0;
+            color: #d32f2f;
+            font-size: 1.4em;
+        }
+        .error-meta {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: 10px 20px;
+            margin: 15px 0;
+        }
+        .error-meta dt {
+            font-weight: bold;
+            color: #555;
+        }
+        .error-meta dd {
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            word-break: break-all;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        pre .line-number {
+            color: #6c757d;
+            display: inline-block;
+            width: 2em;
+            user-select: none;
+            opacity: 0.5;
+        }
+        .code-snippet {
+            margin: 20px 0;
+        }
+        .code-snippet pre {
+            margin: 0;
+            border-radius: 0 0 6px 6px;
+        }
+        .suggestion-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .suggestion-box h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            font-size: 1.2em;
+        }
+        .suggestion-box ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        .suggestion-box li {
+            margin-bottom: 8px;
+        }
+        .debug-info {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin: 5px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-header">
+            <div class="error-icon">💥</div>
+            <h1>500 - Internal Server Error</h1>
+        </div>
+        
+        <div class="error-summary">
+            <p><strong>Server Error:</strong> Something went wrong on our end. We're working to fix this issue.</p>
+        </div>
+        
+        <div class="error-details">
+            <h2>Request Details:</h2>
+            <dl class="error-meta">
+                <dt>Requested URL:</dt>
+                <dd>{{ request_uri|default('Unknown') }}</dd>
+                <dt>Request Method:</dt>
+                <dd>{{ request_method|default('Unknown') }}</dd>
+                <dt>Referrer:</dt>
+                <dd>{{ referrer|default('None') }}</dd>
+                <dt>Timestamp:</dt>
+                <dd>{{ timestamp|default('Unknown') }}</dd>
+            </dl>
+        </div>
+
+        <div class="suggestion-box">
+            <h3>What you can do:</h3>
+            <ul>
+                <li>Try refreshing the page</li>
+                <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
+                <li>Try again in a few minutes</li>
+                <li>Contact support if the problem persists</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{{ url('/') }}" class="btn btn-primary">Go Home</a>
+            <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+        </div>
+
+        {% if debug %}
+            <div class="debug-info">
+                <h2>Debug Information:</h2>
+                <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
+                <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
+                <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
+                <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
+                
+                {% if exception is defined and exception %}
+                    <h3>Exception Details:</h3>
+                    <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
+                    <p><strong>File:</strong> {{ exception.file|default('Unknown') }}:{{ exception.line|default('Unknown') }}</p>
+                    <h4>Stack Trace:</h4>
+                    <pre>{{ exception.trace|default('No stack trace available') }}</pre>
+                {% endif %}
+                
+                <h3>Server Environment:</h3>
+                <pre>{{ server_info|default('Server information not available') }}</pre>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

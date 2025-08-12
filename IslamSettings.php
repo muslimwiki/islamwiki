@@ -132,7 +132,7 @@ $wgIslamicContentCategories = [
  * Islamic content templates
  */
 $wgIslamicContentTemplates = [
-    'quran_verse' => 'templates/quran/verse.twig',
+    'quran_ayah' => 'templates/quran/ayah.twig',
     'hadith_narration' => 'templates/hadith/narration.twig',
     'scholar_profile' => 'templates/scholar/profile.twig',
     'prayer_times' => 'templates/prayer/times.twig',
@@ -199,7 +199,7 @@ $wgIslamicAPIAuth = [
  * Islamic search settings
  */
 $wgIslamicSearchSettings = [
-    'search_quran_verses' => true,
+    'search_quran_ayahs' => true,
     'search_hadith_narrations' => true,
     'search_scholar_profiles' => true,
     'search_islamic_articles' => true,
@@ -213,7 +213,7 @@ $wgIslamicSearchSettings = [
  * Islamic search weights
  */
 $wgIslamicSearchWeights = [
-    'quran_verse' => 1.0,
+    'quran_ayah' => 1.0,
     'hadith_narration' => 0.9,
     'scholar_profile' => 0.8,
     'islamic_article' => 0.7,
@@ -254,7 +254,7 @@ $wgIslamicCacheSettings = [
  * Islamic cache keys
  */
 $wgIslamicCacheKeys = [
-    'quran_verse' => 'quran:verse:{surah}:{ayah}',
+    'quran_ayah' => 'quran:ayah:{surah}:{ayah}',
     'hadith_narration' => 'hadith:narration:{collection}:{number}',
     'prayer_times' => 'prayer:times:{location}:{date}',
     'islamic_calendar' => 'calendar:islamic:{year}:{month}',
@@ -355,8 +355,8 @@ $wgIslamicDatabaseOptimization = [
 $wgQuranExtensionSettings = array_merge($wgQuranExtensionSettings ?? [], [
     'enable_arabic_support' => true,
     'enable_multiple_translations' => true,
-    'enable_verse_audio' => true,
-    'enable_verse_highlights' => true,
+    'enable_ayah_audio' => true,
+    'enable_ayah_highlights' => true,
 ]);
 
 $wgHadithExtensionSettings = array_merge($wgHadithExtensionSettings ?? [], [

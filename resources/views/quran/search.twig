@@ -8,31 +8,32 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-4">Search Quran</h1>
-            <p class="text-gray-600">Find verses by keywords, topics, or specific references</p>
+            <p class="text-gray-600">Find ayahs by keywords, topics, or specific references</p>
         </div>
 
         <!-- Search Form -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <form action="/quran/search" method="GET" class="space-y-4">
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
-                        <input type="text" id="search" name="q" value="{{ query }}" 
-                               placeholder="Enter keywords to search..." 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+            <form method="GET" action="/quran/search" class="space-y-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <input type="text" name="q" value="{{ query }}" placeholder="Search for ayahs, topics, or keywords..." 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
                     </div>
-                    <div>
-                        <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                        <select id="language" name="lang" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option value="en" {% if language == 'en' %}selected{% endif %}>English</option>
-                            <option value="ar" {% if language == 'ar' %}selected{% endif %}>Arabic</option>
-                            <option value="ur" {% if language == 'ur' %}selected{% endif %}>Urdu</option>
-                            <option value="tr" {% if language == 'tr' %}selected{% endif %}>Turkish</option>
+                    <div class="flex gap-2">
+                        <select name="lang" class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option value="english" {{ language == 'english' ? 'selected' : '' }}>English</option>
+                            <option value="en" {{ language == 'en' ? 'selected' : '' }}>English (Alternative)</option>
+                            <option value="arabic" {{ language == 'arabic' ? 'selected' : '' }}>Arabic</option>
                         </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-200">
-                            Search
+                        <select name="translator" class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            {% for t in translators %}
+                                <option value="{{ t.translator }}" {{ translator == t.translator ? 'selected' : '' }}>
+                                    {{ t.name }} ({{ t.language }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition duration-200 font-medium">
+                            🔍 Search
                         </button>
                     </div>
                 </div>
@@ -40,65 +41,56 @@
         </div>
 
         <!-- Search Results -->
-        {% if query %}
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-800">Search Results</h2>
-                <div class="text-sm text-gray-600">
-                    {{ total_results }} result{% if total_results != 1 %}s{% endif %} for "{{ query }}"
+        {% if query and results %}
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    Search Results for "{{ query }}" ({{ total_results }} found)
+                </h2>
+                
+                <div class="space-y-6">
+                    {% for ayah in results %}
+                        <div class="border-b border-gray-200 pb-4 last:border-b-0">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-lg font-semibold text-green-600">
+                                    Surah {{ ayah.surah_number }}, Ayah {{ ayah.ayah_number }}
+                                </h3>
+                                <span class="text-sm text-gray-500">{{ ayah.translator }}</span>
+                            </div>
+                            
+                            {% if ayah.text_arabic %}
+                                <div class="text-right mb-3">
+                                    <p class="text-xl font-arabic leading-relaxed">{{ ayah.text_arabic }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            {% if ayah.translation_text %}
+                                <div class="mb-3">
+                                    <p class="text-gray-700 leading-relaxed">{{ ayah.translation_text }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex gap-2">
+                                <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" 
+                                   class="text-green-600 hover:text-green-700 text-sm font-medium">
+                                    View Full Ayah →
+                                </a>
+                                <a href="/quran/{{ ayah.surah_number }}" 
+                                   class="text-gray-600 hover:text-gray-700 text-sm">
+                                    View Surah
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-
-            {% if results %}
-            <div class="space-y-6">
-                {% for verse in results %}
-                <div class="border-b border-gray-200 pb-6 last:border-b-0">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="text-sm text-gray-500">
-                            <a href="/quran/verse/{{ verse.chapter_number }}/{{ verse.verse_number }}" 
-                               class="text-green-600 hover:text-green-700 font-medium">
-                                Quran {{ verse.chapter_number }}:{{ verse.verse_number }}
-                            </a>
-                        </div>
-                        <div class="text-xs text-gray-400">
-                            {% if verse.translator_name %}{{ verse.translator_name }}{% endif %}
-                        </div>
-                    </div>
-                    
-                    <div class="text-right mb-3">
-                        <div class="text-lg font-arabic text-gray-800 leading-relaxed">{{ verse.arabic_text }}</div>
-                    </div>
-                    
-                    {% if verse.translation_text %}
-                    <div class="text-gray-700">
-                        <div class="font-medium mb-1">Translation:</div>
-                        <div class="italic">{{ verse.translation_text }}</div>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="mt-3 flex space-x-2">
-                        <a href="/quran/verse/{{ verse.chapter_number }}/{{ verse.verse_number }}" 
-                           class="text-sm text-green-600 hover:text-green-700">
-                            View Full Verse
-                        </a>
-                        <span class="text-gray-300">|</span>
-                        <a href="/quran/chapter/{{ verse.chapter_number }}" 
-                           class="text-sm text-blue-600 hover:text-blue-700">
-                            View Chapter
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
+        {% elseif query %}
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">No Results Found</h2>
+                <p class="text-gray-600">No ayahs found for "{{ query }}". Try different keywords or check your spelling.</p>
             </div>
-            {% else %}
-            <div class="text-center py-8">
-                <div class="text-4xl mb-4">🔍</div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">No Results Found</h3>
-                <p class="text-gray-600">Try different keywords or check your spelling</p>
-            </div>
-            {% endif %}
-        </div>
         {% endif %}
+
+
 
         <!-- Search Tips -->
         <div class="bg-gray-50 rounded-lg p-6 mt-8">
@@ -107,7 +99,7 @@
                 <div>
                     <h4 class="font-medium text-gray-800 mb-2">Keywords</h4>
                     <ul class="space-y-1">
-                        <li>• Use specific terms like "mercy", "prayer", "charity"</li>
+                        <li>• Use specific terms like "mercy", "salah", "charity"</li>
                         <li>• Search for names like "Muhammad", "Ibrahim", "Maryam"</li>
                         <li>• Try Arabic terms like "رحمة", "صلاة", "زكاة"</li>
                     </ul>
@@ -118,7 +110,7 @@
                         <li>• Family and relationships</li>
                         <li>• Business and trade</li>
                         <li>• Social justice and charity</li>
-                        <li>• Prayer and worship</li>
+                        <li>• Worship and creed</li>
                     </ul>
                 </div>
             </div>

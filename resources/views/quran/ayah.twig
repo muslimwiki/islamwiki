@@ -1,0 +1,73 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="quran-section">
+    <div class="max-w-4xl mx-auto">
+        <nav class="text-sm text-gray-500 mb-6">
+            <a href="/quran" class="hover:text-quran-primary">Quran</a>
+            <span class="mx-2">/</span>
+            <a href="/quran/surah/{{ surah }}" class="hover:text-quran-primary">Surah {{ surah }}</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-700">Ayah {{ ayah_number }}</span>
+        </nav>
+
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="quran-ayah-title">Quran {{ surah }}:{{ ayah_number }}</h1>
+            <form method="get" class="flex items-center space-x-2">
+                <input type="hidden" name="lang" value="{{ language|default('en') }}" />
+                <label class="text-sm">Translation</label>
+                <select name="translator" class="quran-search-select" onchange="this.form.submit()">
+                    {% for t in translators %}
+                        <option value="{{ t.translator|default(t.name) }}" {% if translator == (t.translator|default(t.name)) %}selected{% endif %}>
+                            {{ t.name }} ({{ t.language|upper }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <div class="quran-ayah-section">
+            <div class="quran-ayah-content">
+                <div class="quran-ayah-arabic">{{ ayah.text_arabic }}</div>
+                <div class="text-sm text-gray-500 text-center">الآية {{ ayah_number }}</div>
+            </div>
+
+            {% if ayah.translation_text %}
+            <div class="quran-ayah-translation">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Translation</h3>
+                <div class="text-gray-700 leading-relaxed">{{ ayah.translation_text }}</div>
+                {% if ayah.translator %}
+                <div class="text-sm text-gray-500 mt-2">— {{ ayah.translator }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        {% if ayah_number > 1 %}
+                        <a href="/quran/{{ surah }}/{{ ayah_number - 1 }}"
+                           class="text-green-600 hover:text-green-700 font-medium">
+                            ← Previous Ayah
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="text-center">
+                        <a href="/quran/surah/{{ surah }}" class="text-blue-600 hover:text-blue-700 font-medium">
+                            View Surah
+                        </a>
+                    </div>
+                    <div>
+                        <a href="/quran/{{ surah }}/{{ ayah_number + 1 }}"
+                           class="text-green-600 hover:text-green-700 font-medium">
+                            Next Ayah →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

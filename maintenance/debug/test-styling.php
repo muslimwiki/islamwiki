@@ -59,8 +59,8 @@ $mockRecentActivity = [
         'created_at' => '2025-08-07 09:15:00'
     ],
     [
-        'title' => 'Quranic Verses',
-        'slug' => 'quran-verses',
+        'title' => 'Quranic Ayahs',
+        'slug' => 'quran-ayahs',
         'created_at' => '2025-08-06 14:30:00'
     ]
 ];

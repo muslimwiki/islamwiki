@@ -1,191 +1,262 @@
 <?php
 
 /**
- * This file is part of IslamWiki.
+ * Migration: Bayan Knowledge Graph
  *
- * Copyright (C) 2025 IslamWiki Contributors
+ * This migration creates the database schema for the Bayan knowledge graph
+ * system, including entities, relationships, knowledge nodes, and semantic
+ * connections for Islamic knowledge representation.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR ANY PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * @package IslamWiki
+ * @version 0.0.22
+ * @license AGPL-3.0-only
  */
 
 declare(strict_types=1);
 
-/**
- * Bayan Knowledge Graph Migration
- *
- * Creates the database tables for the Bayan knowledge graph system
- * that connects Islamic concepts, verses, hadith, scholars, and other entities.
- */
-return [
-    'version' => '0.0.34',
-    'description' => 'Create Bayan knowledge graph system tables',
-    'up' => function ($connection) {
-        // Create bayan_nodes table
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_nodes (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                type VARCHAR(50) NOT NULL COMMENT 'Node type: concept, verse, hadith, scholar, etc.',
-                title VARCHAR(255) NOT NULL COMMENT 'Node title/name',
-                content TEXT NOT NULL COMMENT 'Node content/description',
-                metadata JSON DEFAULT '{}' COMMENT 'Additional metadata as JSON',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                deleted_at TIMESTAMP NULL DEFAULT NULL,
-                INDEX idx_type (type),
-                INDEX idx_title (title),
-                INDEX idx_created_at (created_at),
-                INDEX idx_deleted_at (deleted_at),
-                FULLTEXT idx_content (title, content)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Knowledge graph nodes representing Islamic concepts, verses, hadith, scholars, etc.'
-        ");
+use IslamWiki\Core\Database\Migrations\Migration;
+use IslamWiki\Core\Database\Connection;
 
-        // Create bayan_edges table
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_edges (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                source_id INT NOT NULL COMMENT 'Source node ID',
-                target_id INT NOT NULL COMMENT 'Target node ID',
-                type VARCHAR(50) NOT NULL COMMENT 'Relationship type: references, explains, authored_by, etc.',
-                attributes JSON DEFAULT '{}' COMMENT 'Relationship attributes as JSON',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                deleted_at TIMESTAMP NULL DEFAULT NULL,
-                FOREIGN KEY (source_id) REFERENCES bayan_nodes(id) ON DELETE CASCADE,
-                FOREIGN KEY (target_id) REFERENCES bayan_nodes(id) ON DELETE CASCADE,
-                INDEX idx_source_id (source_id),
-                INDEX idx_target_id (target_id),
-                INDEX idx_type (type),
-                INDEX idx_created_at (created_at),
-                INDEX idx_deleted_at (deleted_at),
-                UNIQUE KEY unique_relationship (source_id, target_id, type, deleted_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Knowledge graph relationships between nodes'
-        ");
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
+    {
+        /**
+         * Run the migration.
+         */
+        public function up(): void
+        {
+            // Knowledge entities table
+            $this->schema()->create('knowledge_entities', function ($table) {
+                $table->id();
+                $table->string('name', 255)->comment('Entity name');
+                $table->string('type', 100)->comment('Entity type');
+                $table->text('description')->nullable()->comment('Entity description');
+                $table->json('attributes')->nullable()->comment('Entity attributes');
+                $table->string('source', 255)->nullable()->comment('Source reference');
+                $table->string('language', 10)->default('en')->comment('Entity language');
+                $table->boolean('is_verified')->default(false)->comment('Whether entity is verified');
+                $table->integer('confidence_score')->default(0)->comment('Confidence score (0-100)');
+                $table->json('metadata')->nullable()->comment('Additional metadata');
+                $table->timestamps();
 
-        // Create bayan_node_types table for predefined node types
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_node_types (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                type VARCHAR(50) NOT NULL UNIQUE COMMENT 'Node type identifier',
-                name VARCHAR(100) NOT NULL COMMENT 'Human-readable name',
-                description TEXT COMMENT 'Type description',
-                icon VARCHAR(50) COMMENT 'Icon identifier',
-                color VARCHAR(7) COMMENT 'Hex color code',
-                is_active BOOLEAN DEFAULT TRUE COMMENT 'Whether this type is active',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                INDEX idx_is_active (is_active)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Predefined node types for the knowledge graph'
-        ");
+                $table->index('name');
+                $table->index('type');
+                $table->index('language');
+                $table->index('is_verified');
+                $table->index('confidence_score');
+            });
 
-        // Create bayan_edge_types table for predefined relationship types
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_edge_types (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                type VARCHAR(50) NOT NULL UNIQUE COMMENT 'Relationship type identifier',
-                name VARCHAR(100) NOT NULL COMMENT 'Human-readable name',
-                description TEXT COMMENT 'Relationship description',
-                is_directed BOOLEAN DEFAULT TRUE COMMENT 'Whether this relationship is directed',
-                is_active BOOLEAN DEFAULT TRUE COMMENT 'Whether this type is active',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                INDEX idx_is_active (is_active)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Predefined relationship types for the knowledge graph'
-        ");
+            // Knowledge relationships table
+            $this->schema()->create('knowledge_relationships', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('source_entity_id')->comment('Source entity ID');
+                $table->unsignedBigInteger('target_entity_id')->comment('Target entity ID');
+                $table->string('relationship_type', 100)->comment('Type of relationship');
+                $table->text('description')->nullable()->comment('Relationship description');
+                $table->json('attributes')->nullable()->comment('Relationship attributes');
+                $table->float('strength')->default(1.0)->comment('Relationship strength');
+                $table->string('source', 255)->nullable()->comment('Source reference');
+                $table->boolean('is_bidirectional')->default(false)->comment('Whether relationship is bidirectional');
+                $table->boolean('is_verified')->default(false)->comment('Whether relationship is verified');
+                $table->timestamps();
 
-        // Insert default node types
-        $connection->exec("
-            INSERT INTO bayan_node_types (type, name, description, icon, color) VALUES
-            ('concept', 'Islamic Concept', 'General Islamic concepts and terms', 'lightbulb', '#4CAF50'),
-            ('verse', 'Quran Verse', 'Verses from the Holy Quran', 'book-open', '#2196F3'),
-            ('hadith', 'Hadith', 'Sayings and actions of Prophet Muhammad (PBUH)', 'quote-right', '#FF9800'),
-            ('scholar', 'Scholar', 'Islamic scholars and authorities', 'user-graduate', '#9C27B0'),
-            ('school', 'School of Thought', 'Islamic schools and madhabs', 'building', '#795548'),
-            ('event', 'Historical Event', 'Important events in Islamic history', 'calendar-alt', '#F44336'),
-            ('place', 'Place', 'Important places in Islamic history', 'map-marker-alt', '#607D8B'),
-            ('person', 'Person', 'Important figures in Islamic history', 'user', '#E91E63'),
-            ('book', 'Book', 'Islamic books and texts', 'book', '#3F51B5'),
-            ('topic', 'Topic', 'General topics and subjects', 'folder', '#009688')
-            ON DUPLICATE KEY UPDATE
-            name = VALUES(name),
-            description = VALUES(description),
-            icon = VALUES(icon),
-            color = VALUES(color)
-        ");
+                $table->unique(['source_entity_id', 'target_entity_id', 'relationship_type']);
+                $table->index('source_entity_id');
+                $table->index('target_entity_id');
+                $table->index('relationship_type');
+                $table->index('strength');
+                $table->index('is_verified');
+            });
 
-        // Insert default relationship types
-        $connection->exec("
-            INSERT INTO bayan_edge_types (type, name, description, is_directed) VALUES
-            ('references', 'References', 'One concept references another', TRUE),
-            ('explains', 'Explains', 'One concept explains another', TRUE),
-            ('authored_by', 'Authored By', 'Content authored by a scholar', TRUE),
-            ('belongs_to', 'Belongs To', 'Concept belongs to a category', TRUE),
-            ('related_to', 'Related To', 'General relationship between concepts', FALSE),
-            ('mentions', 'Mentions', 'One concept mentions another', TRUE),
-            ('derived_from', 'Derived From', 'Concept derived from another', TRUE),
-            ('similar_to', 'Similar To', 'Similar concepts', FALSE),
-            ('opposes', 'Opposes', 'Opposing concepts', TRUE),
-            ('supports', 'Supports', 'Supporting evidence or concept', TRUE)
-            ON DUPLICATE KEY UPDATE
-            name = VALUES(name),
-            description = VALUES(description),
-            is_directed = VALUES(is_directed)
-        ");
+            // Knowledge nodes table
+            $this->schema()->create('knowledge_nodes', function ($table) {
+                $table->id();
+                $table->string('node_id', 100)->unique()->comment('Unique node identifier');
+                $table->string('title', 255)->comment('Node title');
+                $table->text('content')->comment('Node content');
+                $table->string('category', 100)->comment('Node category');
+                $table->json('tags')->nullable()->comment('Node tags');
+                $table->string('author', 100)->nullable()->comment('Node author');
+                $table->string('source', 255)->nullable()->comment('Source reference');
+                $table->string('language', 10)->default('en')->comment('Node language');
+                $table->enum('status', ['draft', 'published', 'archived'])->default('draft')->comment('Node status');
+                $table->integer('view_count')->default(0)->comment('Number of views');
+                $table->integer('like_count')->default(0)->comment('Number of likes');
+                $table->integer('share_count')->default(0)->comment('Number of shares');
+                $table->json('metadata')->nullable()->comment('Additional metadata');
+                $table->timestamps();
 
-        // Create bayan_graph_metrics table for caching metrics
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_graph_metrics (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                metric_name VARCHAR(100) NOT NULL COMMENT 'Metric identifier',
-                metric_value JSON NOT NULL COMMENT 'Metric value as JSON',
-                calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_metric_name (metric_name),
-                INDEX idx_calculated_at (calculated_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Cached graph metrics and statistics'
-        ");
+                $table->index('node_id');
+                $table->index('title');
+                $table->index('category');
+                $table->index('status');
+                $table->index('language');
+                $table->index('view_count');
+            });
 
-        // Create bayan_search_index table for full-text search
-        $connection->exec("
-            CREATE TABLE IF NOT EXISTS bayan_search_index (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                node_id INT NOT NULL COMMENT 'Reference to bayan_nodes.id',
-                search_text TEXT NOT NULL COMMENT 'Searchable text content',
-                search_vector TEXT COMMENT 'Full-text search vector',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (node_id) REFERENCES bayan_nodes(id) ON DELETE CASCADE,
-                INDEX idx_node_id (node_id),
-                FULLTEXT idx_search_text (search_text)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            COMMENT='Search index for knowledge graph nodes'
-        ");
+            // Semantic connections table
+            $this->schema()->create('semantic_connections', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('source_node_id')->comment('Source node ID');
+                $table->unsignedBigInteger('target_node_id')->comment('Target node ID');
+                $table->string('connection_type', 100)->comment('Type of semantic connection');
+                $table->text('description')->nullable()->comment('Connection description');
+                $table->float('similarity_score')->default(0.0)->comment('Semantic similarity score');
+                $table->json('semantic_features')->nullable()->comment('Semantic features');
+                $table->string('algorithm', 100)->nullable()->comment('Algorithm used for connection');
+                $table->boolean('is_automatic')->default(true)->comment('Whether connection was automatic');
+                $table->boolean('is_verified')->default(false)->comment('Whether connection is verified');
+                $table->timestamps();
 
-        echo "Bayan knowledge graph tables created successfully.\n";
-    },
-    'down' => function ($connection) {
-        // Drop tables in reverse order
-        $connection->exec("DROP TABLE IF EXISTS bayan_search_index");
-        $connection->exec("DROP TABLE IF EXISTS bayan_graph_metrics");
-        $connection->exec("DROP TABLE IF EXISTS bayan_edge_types");
-        $connection->exec("DROP TABLE IF EXISTS bayan_node_types");
-        $connection->exec("DROP TABLE IF EXISTS bayan_edges");
-        $connection->exec("DROP TABLE IF EXISTS bayan_nodes");
+                $table->unique(['source_node_id', 'target_node_id', 'connection_type']);
+                $table->index('source_node_id');
+                $table->index('target_node_id');
+                $table->index('connection_type');
+                $table->index('similarity_score');
+                $table->index('is_automatic');
+            });
 
-        echo "Bayan knowledge graph tables dropped successfully.\n";
-    }
-];
+            // Knowledge categories table
+            $this->schema()->create('knowledge_categories', function ($table) {
+                $table->id();
+                $table->string('name', 100)->comment('Category name');
+                $table->string('slug', 100)->unique()->comment('Category slug');
+                $table->text('description')->nullable()->comment('Category description');
+                $table->unsignedBigInteger('parent_id')->nullable()->comment('Parent category ID');
+                $table->integer('sort_order')->default(0)->comment('Sort order');
+                $table->string('icon', 50)->nullable()->comment('Category icon');
+                $table->string('color', 7)->nullable()->comment('Category color (hex)');
+                $table->boolean('is_active')->default(true)->comment('Whether category is active');
+                $table->timestamps();
+
+                $table->index('parent_id');
+                $table->index('slug');
+                $table->index('is_active');
+                $table->index('sort_order');
+            });
+
+            // Knowledge tags table
+            $this->schema()->create('knowledge_tags', function ($table) {
+                $table->id();
+                $table->string('name', 100)->comment('Tag name');
+                $table->string('slug', 100)->unique()->comment('Tag slug');
+                $table->text('description')->nullable()->comment('Tag description');
+                $table->string('color', 7)->nullable()->comment('Tag color (hex)');
+                $table->integer('usage_count')->default(0)->comment('Number of times tag is used');
+                $table->boolean('is_active')->default(true)->comment('Whether tag is active');
+                $table->timestamps();
+
+                $table->index('slug');
+                $table->index('is_active');
+                $table->index('usage_count');
+            });
+
+            // Knowledge node tag assignments table
+            $this->schema()->create('knowledge_node_tags', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('node_id')->comment('Knowledge node ID');
+                $table->unsignedBigInteger('tag_id')->comment('Tag ID');
+                $table->timestamps();
+
+                $table->unique(['node_id', 'tag_id']);
+                $table->index('node_id');
+                $table->index('tag_id');
+            });
+
+            // Knowledge search index table
+            $this->schema()->create('knowledge_search_index', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('node_id')->comment('Knowledge node ID');
+                $table->text('searchable_content')->comment('Searchable text content');
+                $table->json('keywords')->nullable()->comment('Extracted keywords');
+                $table->json('semantic_vectors')->nullable()->comment('Semantic vector representation');
+                $table->float('relevance_score')->default(0.0)->comment('Relevance score');
+                $table->timestamp('last_indexed_at')->comment('When last indexed');
+                $table->timestamps();
+
+                $table->unique('node_id');
+                $table->index('searchable_content');
+                $table->index('relevance_score');
+                $table->index('last_indexed_at');
+            });
+
+            // Insert default data
+            $this->insertDefaultCategories();
+            $this->insertDefaultTags();
+        }
+
+        /**
+         * Reverse the migration.
+         */
+        public function down(): void
+        {
+            $this->schema()->drop('knowledge_search_index');
+            $this->schema()->drop('knowledge_node_tags');
+            $this->schema()->drop('knowledge_tags');
+            $this->schema()->drop('knowledge_categories');
+            $this->schema()->drop('semantic_connections');
+            $this->schema()->drop('knowledge_nodes');
+            $this->schema()->drop('knowledge_relationships');
+            $this->schema()->drop('knowledge_entities');
+        }
+
+        /**
+         * Insert default knowledge categories.
+         */
+        private function insertDefaultCategories(): void
+        {
+            $categories = [
+                ['name' => 'Quranic Studies', 'slug' => 'quranic-studies', 'description' => 'Quran recitation, interpretation, and analysis'],
+                ['name' => 'Hadith Sciences', 'slug' => 'hadith-sciences', 'description' => 'Hadith collection, authentication, and study'],
+                ['name' => 'Islamic Law', 'slug' => 'islamic-law', 'description' => 'Fiqh, legal rulings, and jurisprudence'],
+                ['name' => 'Islamic Theology', 'slug' => 'islamic-theology', 'description' => 'Aqeedah, beliefs, and theological concepts'],
+                ['name' => 'Islamic History', 'slug' => 'islamic-history', 'description' => 'Historical events, figures, and periods'],
+                ['name' => 'Islamic Philosophy', 'slug' => 'islamic-philosophy', 'description' => 'Philosophical thought and reasoning'],
+                ['name' => 'Islamic Ethics', 'slug' => 'islamic-ethics', 'description' => 'Moral teachings and character development'],
+                ['name' => 'Islamic Spirituality', 'slug' => 'islamic-spirituality', 'description' => 'Sufism and spiritual practices'],
+                ['name' => 'Islamic Art & Architecture', 'slug' => 'islamic-art', 'description' => 'Artistic traditions and architectural styles'],
+                ['name' => 'Islamic Science', 'slug' => 'islamic-science', 'description' => 'Scientific contributions and discoveries']
+            ];
+
+            foreach ($categories as $category) {
+                $this->connection->table('knowledge_categories')->insert([
+                    'name' => $category['name'],
+                    'slug' => $category['slug'],
+                    'description' => $category['description'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+
+        /**
+         * Insert default knowledge tags.
+         */
+        private function insertDefaultTags(): void
+        {
+            $tags = [
+                ['name' => 'Beginner', 'slug' => 'beginner', 'description' => 'Suitable for beginners', 'color' => '#28a745'],
+                ['name' => 'Intermediate', 'slug' => 'intermediate', 'description' => 'Suitable for intermediate learners', 'color' => '#ffc107'],
+                ['name' => 'Advanced', 'slug' => 'advanced', 'description' => 'Suitable for advanced learners', 'color' => '#dc3545'],
+                ['name' => 'Authentic', 'slug' => 'authentic', 'description' => 'Authenticated and verified content', 'color' => '#20c997'],
+                ['name' => 'Scholarly', 'slug' => 'scholarly', 'description' => 'Academic and scholarly content', 'color' => '#6c757d'],
+                ['name' => 'Practical', 'slug' => 'practical', 'description' => 'Practical application and guidance', 'color' => '#e83e8c'],
+                ['name' => 'Theoretical', 'slug' => 'theoretical', 'description' => 'Theoretical knowledge and concepts', 'color' => '#495057'],
+                ['name' => 'Historical', 'slug' => 'historical', 'description' => 'Historical context and background', 'color' => '#17a2b8'],
+                ['name' => 'Contemporary', 'slug' => 'contemporary', 'description' => 'Modern and contemporary issues', 'color' => '#fd7e14'],
+                ['name' => 'Spiritual', 'slug' => 'spiritual', 'description' => 'Spiritual and mystical content', 'color' => '#6f42c1']
+            ];
+
+            foreach ($tags as $tag) {
+                $this->connection->table('knowledge_tags')->insert([
+                    'name' => $tag['name'],
+                    'slug' => $tag['slug'],
+                    'description' => $tag['description'],
+                    'color' => $tag['color'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+    };
+};

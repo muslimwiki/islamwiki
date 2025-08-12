@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>401 - Authentication Required</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        .error-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .error-icon {
+            font-size: 3em;
+            margin-right: 20px;
+            color: #e74c3c;
+        }
+        h1 {
+            color: #e74c3c;
+            margin-top: 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            font-size: 2.2em;
+        }
+        .error-summary {
+            background: #fff5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .error-details {
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .error-details h2 {
+            margin-top: 0;
+            color: #e74c3c;
+            font-size: 1.4em;
+        }
+        .error-meta {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: 10px 20px;
+            margin: 15px 0;
+        }
+        .error-meta dt {
+            font-weight: bold;
+            color: #555;
+        }
+        .error-meta dd {
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            word-break: break-all;
+        }
+        .suggestion-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .suggestion-box h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            font-size: 1.2em;
+        }
+        .suggestion-box ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        .suggestion-box li {
+            margin-bottom: 8px;
+        }
+        .auth-actions {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .debug-info {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-header">
+            <div class="error-icon">🔒</div>
+            <h1>401 - Authentication Required</h1>
+        </div>
+        
+        <div class="error-summary">
+            <p><strong>Access Denied:</strong> You need to be authenticated to access this resource.</p>
+        </div>
+        
+        <div class="error-details">
+            <h2>Request Details:</h2>
+            <dl class="error-meta">
+                <dt>Requested URL:</dt>
+                <dd>{{ request_uri|default('Unknown') }}</dd>
+                <dt>Request Method:</dt>
+                <dd>{{ request_method|default('Unknown') }}</dd>
+                <dt>Referrer:</dt>
+                <dd>{{ referrer|default('None') }}</dd>
+                <dt>Timestamp:</dt>
+                <dd>{{ timestamp|default('Unknown') }}</dd>
+            </dl>
+        </div>
+
+        <div class="suggestion-box">
+            <h3>What you can do:</h3>
+            <ul>
+                <li>Log in to your account if you have one</li>
+                <li>Create a new account if you don't have one</li>
+                <li>Contact an administrator if you believe you should have access</li>
+                <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
+            </ul>
+        </div>
+
+        <div class="auth-actions">
+            <a href="{{ url('/auth/login') }}" class="btn btn-primary">Log In</a>
+            <a href="{{ url('/auth/register') }}" class="btn btn-secondary">Register</a>
+            <a href="{{ url('/') }}" class="btn btn-secondary">Go Home</a>
+        </div>
+
+        {% if debug %}
+            <div class="debug-info">
+                <h2>Debug Information:</h2>
+                <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
+                <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
+                <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
+                <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
+                
+                {% if exception is defined and exception %}
+                    <h3>Exception Details:</h3>
+                    <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
+                    <p><strong>File:</strong> {{ exception.file|default('Unknown') }}:{{ exception.line|default('Unknown') }}</p>
+                    <h4>Stack Trace:</h4>
+                    <pre>{{ exception.trace|default('No stack trace available') }}</pre>
+                {% endif %}
+                
+                <h3>Server Environment:</h3>
+                <pre>{{ server_info|default('Server information not available') }}</pre>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

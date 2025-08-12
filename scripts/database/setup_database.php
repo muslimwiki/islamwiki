@@ -203,7 +203,7 @@ class DatabaseSetup
             // Drop existing tables first
             $this->dropExistingTables($connection);
 
-            $migrationPath = __DIR__ . '/../database/migrations';
+            $migrationPath = __DIR__ . '/../../database/migrations';
             $migrator = new Migrator($connection, $migrationPath);
 
             $migrator->run();

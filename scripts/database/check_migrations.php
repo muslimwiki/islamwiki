@@ -33,7 +33,7 @@ try {
     echo "✅ Database connection successful\n";
 
     // Create migrator
-    $migrationPath = __DIR__ . '/../database/migrations';
+    $migrationPath = __DIR__ . '/../../database/migrations';
     $migrator = new Migrator($connection, $migrationPath);
 
     // Get migration files

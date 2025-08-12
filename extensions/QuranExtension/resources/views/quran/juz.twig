@@ -1,0 +1,123 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Juz {{ juz.juz_number }} - {{ juz.name }} - Quran{% endblock %}
+
+{% block content %}
+<div class="quran-container">
+    <div class="quran-header">
+        <h1>Juz {{ juz.juz_number }}: {{ juz.name }}</h1>
+        <div class="quran-header-subtitle">
+            <span>Surah {{ juz.start_surah }}:{{ juz.start_ayah }} to {{ juz.end_surah }}:{{ juz.end_ayah }}</span>
+        </div>
+    </div>
+
+    <div class="quran-juz-info">
+        <div class="quran-juz-stats">
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ juz.ayahs|length }}</div>
+                <div class="quran-stat-label">Ayahs</div>
+            </div>
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ juz.surahs_count }}</div>
+                <div class="quran-stat-label">Surahs</div>
+            </div>
+            <div class="quran-stat-card">
+                <div class="quran-stat-number">{{ juz.pages_count }}</div>
+                <div class="quran-stat-label">Pages</div>
+            </div>
+        </div>
+
+        <div class="quran-juz-navigation">
+            {% if juz.juz_number > 1 %}
+                <a href="/quran/juz/{{ juz.juz_number - 1 }}" class="quran-nav-btn" data-action="prev-juz">
+                    <i class="fas fa-chevron-left"></i> Previous Juz
+                </a>
+            {% endif %}
+            
+            {% if juz.juz_number < 30 %}
+                <a href="/quran/juz/{{ juz.juz_number + 1 }}" class="quran-nav-btn" data-action="next-juz">
+                    Next Juz <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="quran-juz-surahs">
+        <h2>Surahs in this Juz</h2>
+        <div class="quran-surahs-list">
+            {% for surah in juz.surahs %}
+                <div class="quran-surah-item">
+                    <div class="quran-surah-header">
+                        <span class="quran-surah-number">{{ surah.surah_number }}</span>
+                        <span class="quran-surah-name">{{ surah.name_arabic }}</span>
+                        <span class="quran-surah-name-en">{{ surah.name_english }}</span>
+                    </div>
+                    <div class="quran-surah-info">
+                        <div class="quran-surah-details">
+                            <span>Ayahs: {{ surah.ayahs_count }}</span>
+                            <span>Type: {{ surah.revelation_type }}</span>
+                        </div>
+                        <a href="/quran/surah/{{ surah.surah_number }}" class="quran-nav-btn">View Surah</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="quran-juz-ayahs">
+        <h2>Ayahs in this Juz</h2>
+        <div class="quran-ayahs-list">
+            {% for ayah in juz.ayahs %}
+                <div class="quran-ayah-item" data-ayah-id="{{ ayah.id }}">
+                    <div class="quran-ayah-header">
+                        <span class="quran-ayah-reference">{{ ayah.surah_number }}:{{ ayah.ayah_number }}</span>
+                        <span class="quran-ayah-surah">{{ ayah.surah_name }}</span>
+                        <span class="quran-ayah-page">Page {{ ayah.page }}</span>
+                    </div>
+                    
+                    <div class="quran-ayah-text">{{ ayah.text }}</div>
+                    
+                    {% if ayah.translation %}
+                        <div class="quran-ayah-translation">{{ ayah.translation }}</div>
+                    {% endif %}
+                    
+                    <div class="quran-ayah-actions">
+                        <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
+                        <button class="quran-bookmark-btn" data-ayah-id="{{ ayah.id }}">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                        <button class="quran-copy-btn" data-ayah-text="{{ ayah.text }}">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        {% if ayah.sajda %}
+                            <span class="quran-sajda-indicator">
+                                <i class="fas fa-star"></i> Sajda
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="quran-juz-pagination">
+        {% if juz.juz_number > 1 %}
+            <a href="/quran/juz/{{ juz.juz_number - 1 }}" class="quran-page-btn">
+                <i class="fas fa-chevron-left"></i> Juz {{ juz.juz_number - 1 }}
+            </a>
+        {% endif %}
+        
+        <span class="quran-current-page">Juz {{ juz.juz_number }} of 30</span>
+        
+        {% if juz.juz_number < 30 %}
+            <a href="/quran/juz/{{ juz.juz_number + 1 }}" class="quran-page-btn">
+                Juz {{ juz.juz_number + 1 }} <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/extensions/QuranExtension/resources/assets/js/quran.js"></script>
+{% endblock %}

@@ -1,0 +1,275 @@
+/* Hijri Calendar Main Styles */
+.hijri-calendar {
+    font-family: 'Noto Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.hijri-calendar-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.hijri-calendar-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hijri-calendar-header .hijri-date {
+    font-size: 1.1rem;
+    margin-top: 8px;
+    opacity: 0.9;
+}
+
+.hijri-calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hijri-nav-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hijri-nav-btn:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.hijri-nav-btn:active {
+    transform: translateY(0);
+}
+
+.hijri-nav-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.hijri-current-month {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.hijri-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e2e8f0;
+}
+
+.hijri-weekday-header {
+    background: #f1f5f9;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hijri-day {
+    background: white;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hijri-day:hover {
+    background: #f8fafc;
+    transform: scale(1.02);
+}
+
+.hijri-day.today {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    font-weight: 600;
+}
+
+.hijri-day.selected {
+    background: #3b82f6;
+    color: white;
+}
+
+.hijri-day.other-month {
+    color: #94a3b8;
+    background: #f8fafc;
+}
+
+.hijri-day.has-event {
+    position: relative;
+}
+
+.hijri-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
+.hijri-day-number {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.hijri-day-gregorian {
+    font-size: 0.75rem;
+    color: #64748b;
+    opacity: 0.8;
+}
+
+.hijri-day-events {
+    font-size: 0.7rem;
+    color: #ef4444;
+    margin-top: 2px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hijri-calendar {
+        border-radius: 8px;
+        margin: 10px;
+    }
+    
+    .hijri-calendar-header {
+        padding: 15px;
+    }
+    
+    .hijri-calendar-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .hijri-calendar-nav {
+        padding: 12px 15px;
+    }
+    
+    .hijri-day {
+        padding: 8px 4px;
+        min-height: 50px;
+    }
+    
+    .hijri-day-number {
+        font-size: 0.9rem;
+    }
+    
+    .hijri-day-gregorian {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hijri-calendar-header {
+        padding: 12px;
+    }
+    
+    .hijri-calendar-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .hijri-nav-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .hijri-current-month {
+        font-size: 1rem;
+    }
+    
+    .hijri-day {
+        padding: 6px 2px;
+        min-height: 45px;
+    }
+    
+    .hijri-day-number {
+        font-size: 0.8rem;
+    }
+    
+    .hijri-day-gregorian {
+        font-size: 0.65rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .hijri-calendar {
+        background: #1e293b;
+        color: #f1f5f9;
+    }
+    
+    .hijri-calendar-nav {
+        background: #334155;
+        border-bottom-color: #475569;
+    }
+    
+    .hijri-current-month {
+        color: #f1f5f9;
+    }
+    
+    .hijri-weekday-header {
+        background: #334155;
+        color: #cbd5e1;
+        border-bottom-color: #475569;
+    }
+    
+    .hijri-day {
+        background: #1e293b;
+        color: #f1f5f9;
+    }
+    
+    .hijri-day:hover {
+        background: #334155;
+    }
+    
+    .hijri-day.today {
+        background: #1e40af;
+        border-color: #3b82f6;
+    }
+    
+    .hijri-day.other-month {
+        color: #64748b;
+        background: #334155;
+    }
+    
+    .hijri-day-gregorian {
+        color: #94a3b8;
+    }
+}

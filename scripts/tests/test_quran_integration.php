@@ -4,7 +4,7 @@
  * Test Script for Phase 4 Quran Integration
  *
  * This script tests the Quran integration functionality including:
- * - QuranVerse model functionality
+ * - QuranAyah model functionality
  * - QuranController API endpoints
  * - Database connectivity
  * - Search functionality
@@ -17,7 +17,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use IslamWiki\Core\Application;
-use IslamWiki\Models\QuranVerse;
+use IslamWiki\Models\QuranAyah;
 use IslamWiki\Http\Controllers\QuranController;
 
 echo "🧪 Testing Phase 4 Quran Integration\n";
@@ -28,8 +28,8 @@ try {
     $app = new Application(__DIR__ . '/../../');
     echo "✅ Application initialized successfully\n";
 
-    // Test QuranVerse model
-    echo "\n📖 Testing QuranVerse Model:\n";
+    // Test QuranAyah model
+    echo "\n📖 Testing QuranAyah Model:\n";
 
     // Create Islamic database configurations
     $islamicConfigs = [
@@ -74,48 +74,48 @@ try {
     // Create IslamicDatabaseManager with configurations
     $islamicDbManager = new \IslamWiki\Core\Database\Islamic\IslamicDatabaseManager($islamicConfigs);
 
-    // Create QuranVerse model with database manager
-    $quranVerse = new QuranVerse($islamicDbManager);
-    echo "✅ QuranVerse model instantiated\n";
+    // Create QuranAyah model with database manager
+    $quranAyah = new QuranAyah($islamicDbManager);
+    echo "✅ QuranAyah model instantiated\n";
 
     // Test statistics
     try {
-        $stats = $quranVerse->getStatistics();
+        $stats = $quranAyah->getStatistics();
         echo "✅ Statistics retrieved: " . json_encode($stats) . "\n";
     } catch (Exception $e) {
         echo "⚠️  Statistics test failed: " . $e->getMessage() . "\n";
     }
 
-    // Test random verse
+    // Test random ayah
     try {
-        $randomVerse = $quranVerse->getRandomVerse();
-        if ($randomVerse) {
-            echo "✅ Random verse retrieved: Chapter {$randomVerse['chapter_number']}, Verse {$randomVerse['verse_number']}\n";
+        $randomAyah = $quranAyah->getRandomAyah();
+        if ($randomAyah) {
+            echo "✅ Random ayah retrieved: Chapter {$randomAyah['chapter_number']}, Ayah {$randomAyah['ayah_number']}\n";
         } else {
-            echo "⚠️  No random verse available (database may be empty)\n";
+            echo "⚠️  No random ayah available (database may be empty)\n";
         }
     } catch (Exception $e) {
-        echo "⚠️  Random verse test failed: " . $e->getMessage() . "\n";
+        echo "⚠️  Random ayah test failed: " . $e->getMessage() . "\n";
     }
 
     // Test search functionality
     try {
-        $searchResults = $quranVerse->search('mercy', 'en', 5);
+        $searchResults = $quranAyah->search('mercy', 'en', 5);
         echo "✅ Search test completed: " . count($searchResults) . " results for 'mercy'\n";
     } catch (Exception $e) {
         echo "⚠️  Search test failed: " . $e->getMessage() . "\n";
     }
 
-    // Test verse by reference
+    // Test ayah by reference
     try {
-        $verse = $quranVerse->getByReference(1, 1); // Al-Fatiha, first verse
-        if ($verse) {
-            echo "✅ Verse by reference test: Found verse 1:1\n";
+        $ayah = $quranAyah->getByReference(1, 1); // Al-Fatiha, first ayah
+        if ($ayah) {
+            echo "✅ Ayah by reference test: Found ayah 1:1\n";
         } else {
-            echo "⚠️  Verse by reference test: No verse found for 1:1\n";
+            echo "⚠️  Ayah by reference test: No ayah found for 1:1\n";
         }
     } catch (Exception $e) {
-        echo "⚠️  Verse by reference test failed: " . $e->getMessage() . "\n";
+        echo "⚠️  Ayah by reference test failed: " . $e->getMessage() . "\n";
     }
 
     // Test QuranController
@@ -128,7 +128,7 @@ try {
 
     // Simulate API calls
     $testEndpoints = [
-        '/api/quran/verses',
+        '/api/quran/ayahs',
         '/api/quran/statistics',
         '/api/quran/random',
         '/api/quran/search?q=mercy'
@@ -144,7 +144,7 @@ try {
         '/quran',
         '/quran/search',
         '/quran/chapter/1',
-        '/quran/verse/1/1'
+        '/quran/ayah/1/1'
     ];
 
     foreach ($webRoutes as $route) {
@@ -155,7 +155,7 @@ try {
     echo "\n🗄️  Testing Database Connectivity:\n";
     try {
         // Test database connection through the model
-        $quranVerse->getStatistics();
+        $quranAyah->getStatistics();
         echo "✅ Database connection established\n";
     } catch (Exception $e) {
         echo "❌ Database connection failed: " . $e->getMessage() . "\n";
@@ -166,7 +166,7 @@ try {
     $templateFiles = [
         'resources/views/quran/index.twig',
         'resources/views/quran/search.twig',
-        'resources/views/quran/verse.twig',
+        'resources/views/quran/ayah.twig',
         'resources/views/quran/widget.twig'
     ];
 
@@ -192,7 +192,7 @@ try {
     $startTime = microtime(true);
 
     try {
-        $quranVerse->getStatistics();
+        $quranAyah->getStatistics();
         $endTime = microtime(true);
         $duration = ($endTime - $startTime) * 1000; // Convert to milliseconds
 
@@ -208,7 +208,7 @@ try {
     // Summary
     echo "\n📊 Test Summary:\n";
     echo "================\n";
-    echo "✅ QuranVerse Model: Ready\n";
+    echo "✅ QuranAyah Model: Ready\n";
     echo "✅ QuranController: Ready\n";
     echo "✅ API Endpoints: Ready\n";
     echo "✅ Web Routes: Ready\n";

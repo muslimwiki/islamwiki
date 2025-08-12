@@ -67,7 +67,7 @@ try {
 
     // Test search functionality
     try {
-        $searchResults = $hadithModel->search('prayer', 'en', 5);
+        $searchResults = $hadithModel->search('salah', 'en', 5);
         echo "✅ Search functionality working: " . count($searchResults) . " results\n";
     } catch (Exception $e) {
         echo "❌ Search test failed: " . $e->getMessage() . "\n";
@@ -99,7 +99,7 @@ try {
         'GET /api/hadith/collections' => 'List Collections',
         'GET /api/hadith/statistics' => 'Get Statistics',
         'GET /api/hadith/random' => 'Get Random Hadith',
-        'GET /api/hadith/search?q=prayer' => 'Search Hadiths',
+        'GET /api/hadith/search?q=salah' => 'Search Hadiths',
         'GET /api/hadith/authenticity/sahih' => 'Get by Authenticity'
     ];
 

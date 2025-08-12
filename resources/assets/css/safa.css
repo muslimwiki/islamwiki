@@ -99,6 +99,37 @@ p {
     margin: 0 0 1rem 0;
 }
 
+/* ===== FOOTNOTE & SUPERSCRIPT STYLES ===== */
+sup {
+    font-size: 0.75em;
+    vertical-align: super;
+    line-height: 0;
+    position: relative;
+    top: -0.5em;
+}
+
+sup[foot_note] {
+    cursor: pointer;
+    color: var(--link-color);
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+sup[foot_note]:hover {
+    color: var(--link-hover-color);
+}
+
+/* Footnote content styling */
+.footnote-content {
+    font-size: 0.875em;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--light-color);
+    border-left: 3px solid var(--accent-color);
+    border-radius: 0.25rem;
+}
+
 a {
     text-decoration: none;
 }

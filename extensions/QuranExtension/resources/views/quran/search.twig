@@ -1,0 +1,312 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Quran Search - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="quran-search-container">
+    <div class="search-header">
+        <h1>Search Quran</h1>
+        <p>Search through the Noble Quran by text or translation</p>
+    </div>
+
+    <div class="search-form">
+        <form method="GET" action="/quran/search">
+            <div class="search-input-group">
+                <input 
+                    type="text" 
+                    name="q" 
+                    value="{{ query }}" 
+                    placeholder="Enter search term..."
+                    class="search-input"
+                    required
+                >
+                <select name="lang" class="language-select">
+                    <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+                    <option value="ar" {% if lang == 'ar' %}selected{% endif %}>Arabic</option>
+                    <option value="ur" {% if lang == 'ur' %}selected{% endif %}>Urdu</option>
+                    <option value="tr" {% if lang == 'tr' %}selected{% endif %}>Turkish</option>
+                </select>
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+        </form>
+    </div>
+
+    {% if query %}
+    <div class="search-results">
+        <h2>Search Results for "{{ query }}"</h2>
+        
+        {% if results|length > 0 %}
+        <div class="results-info">
+            <p>Found {{ results|length }} results</p>
+        </div>
+        
+        <div class="ayah-results">
+            {% for ayah in results %}
+            <div class="ayah-card">
+                <div class="ayah-header">
+                    <span class="ayah-reference">{{ ayah.surah_number }}:{{ ayah.ayah_number }}</span>
+                    <span class="ayah-juz">Juz {{ ayah.juz }}</span>
+                    <span class="ayah-page">Page {{ ayah.page }}</span>
+                </div>
+                
+                <div class="ayah-content">
+                    <div class="ayah-text-arabic">
+                        {{ ayah.text }}
+                    </div>
+                    {% if ayah.translation %}
+                    <div class="ayah-translation">
+                        {{ ayah.translation }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="ayah-actions">
+                    <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="btn btn-primary">View Ayah</a>
+                    <a href="/quran/surah/{{ ayah.surah_number }}" class="btn btn-secondary">View Surah</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-results">
+            <p>No results found for "{{ query }}".</p>
+            <p>Try different keywords or check your spelling.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="search-tips">
+        <h3>Search Tips</h3>
+        <ul>
+            <li>Search in English, Arabic, or other supported languages</li>
+            <li>Use specific keywords for better results</li>
+            <li>Search by surah name, ayah content, or translation</li>
+            <li>Results include surah number, ayah number, and page information</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.quran-search-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.search-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.search-header h1 {
+    color: #2c5530;
+    margin-bottom: 0.5rem;
+}
+
+.search-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.search-form {
+    margin-bottom: 3rem;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2c5530;
+}
+
+.language-select {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    background: white;
+    font-size: 1rem;
+}
+
+.search-btn {
+    padding: 0.75rem 1.5rem;
+    background: #2c5530;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #1e3a22;
+}
+
+.search-results {
+    margin-bottom: 3rem;
+}
+
+.search-results h2 {
+    color: #2c5530;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+.results-info {
+    margin-bottom: 1.5rem;
+    color: #666;
+}
+
+.ayah-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ayah-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: white;
+    transition: box-shadow 0.3s ease;
+}
+
+.ayah-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.ayah-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ayah-reference {
+    background: #2c5530;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.ayah-juz, .ayah-page {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.ayah-content {
+    margin-bottom: 1.5rem;
+}
+
+.ayah-text-arabic {
+    font-size: 1.2rem;
+    line-height: 2;
+    margin-bottom: 1rem;
+    text-align: right;
+    direction: rtl;
+}
+
+.ayah-translation {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.ayah-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #2c5530;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1e3a22;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-results p {
+    margin-bottom: 0.5rem;
+}
+
+.search-tips {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #2c5530;
+}
+
+.search-tips h3 {
+    color: #2c5530;
+    margin-bottom: 1rem;
+}
+
+.search-tips ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.search-tips li {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .ayah-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .ayah-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

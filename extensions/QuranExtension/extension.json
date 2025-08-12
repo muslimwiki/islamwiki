@@ -1,0 +1,74 @@
+{
+    "name": "QuranExtension",
+    "version": "0.0.1",
+    "description": "Comprehensive Quran system with ayahs, surahs, and Juz management",
+    "author": "IslamWiki Team",
+    "main": "QuranExtension.php",
+    "class": "IslamWiki\\Extensions\\QuranExtension\\QuranExtension",
+    "dependencies": [],
+    "permissions": [],
+    "settings": {
+        "default_language": "en",
+        "default_translator": "Saheeh International",
+        "search_limit": 50,
+        "enable_tafsir": false,
+        "enable_recitation": false
+    },
+    "routes": [
+        {
+            "method": "GET",
+            "path": "/quran",
+            "controller": "QuranController@indexPage",
+            "name": "quran.index"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/search",
+            "controller": "QuranController@searchPage",
+            "name": "quran.search"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/surah/{surah}",
+            "controller": "QuranController@surahPage",
+            "name": "quran.surah"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/surah/{surah}/ayah/{ayah}",
+            "controller": "QuranController@ayahPage",
+            "name": "quran.ayah"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/surah/{surah}/info",
+            "controller": "QuranController@surahInfoPage",
+            "name": "quran.surah.info"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/juz/{juz}",
+            "controller": "QuranController@juzPage",
+            "name": "quran.juz"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/page/{page}",
+            "controller": "QuranController@pagePage",
+            "name": "quran.page"
+        },
+        {
+            "method": "GET",
+            "path": "/quran/widget/{surah}/{ayah}",
+            "controller": "QuranController@widget",
+            "name": "quran.widget"
+        }
+    ],
+    "database": {
+        "tables": [
+            "quran_surahs",
+            "quran_ayahs",
+            "quran_juz"
+        ]
+    }
+}

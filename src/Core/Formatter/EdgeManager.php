@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
  * Bayan Edge Manager
  *
  * Manages relationships (edges) between knowledge graph nodes,
- * representing connections between Islamic concepts, verses, hadith, etc.
+ * representing connections between Islamic concepts, ayahs, hadith, etc.
  */
 class EdgeManager
 {

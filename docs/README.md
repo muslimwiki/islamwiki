@@ -1,8 +1,8 @@
 # IslamWiki Documentation
 
-**Version**: 0.0.38  
-**Status**: Production Ready - Error-Free Codebase & Code Quality Improvements  
-**Last Updated**: 2025-08-02
+**Version**: 0.0.54  
+**Status**: Feature + Infrastructure Release (Quran refactor, Salah Times, extensions)  
+**Last Updated**: 2025-08-12
 
 Welcome to the comprehensive documentation for the Islam Wiki project. This documentation covers all aspects of the application architecture, components, and development guidelines.
 

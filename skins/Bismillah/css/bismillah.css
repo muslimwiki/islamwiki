@@ -4921,3 +4921,12 @@ select:focus {
 .markdown-body .progress.progress-60plus  .progress-bar { background: #34d399; }
 .markdown-body .progress.progress-80plus  .progress-bar { background: #22c55e; }
 .markdown-body .progress.progress-100plus .progress-bar { background: #16a34a; }
+
+/* Quran feature icon - skin-scoped */
+.bismillah-quran-icon {
+    font-size: 1.25rem; /* ~20px, subtle */
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    opacity: 0.85;
+}

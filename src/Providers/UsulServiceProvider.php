@@ -24,15 +24,15 @@ class UsulServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register Usul as singleton
-        $container->singleton(Usul::class, function () use ($container) {
+        $container->singleton(UsulKnowledge::class, function () use ($container) {
             $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
             return new UsulKnowledge($container, $logger, $db);
         });
 
         // Register Usul with alias for easier access
-        $container->alias('knowledge', Usul::class);
-        $container->alias('usul', Usul::class);
+        $container->alias('knowledge', UsulKnowledge::class);
+        $container->alias('usul', UsulKnowledge::class);
 
         // Register knowledge system configuration
         $container->singleton('knowledge.config', function () {
@@ -49,7 +49,7 @@ class UsulServiceProvider
                 ],
                 'ontologies' => [
                     'islamic_concepts' => ['enabled' => true],
-                    'quranic_verses' => ['enabled' => true],
+                    'quranic_ayahs' => ['enabled' => true],
                     'hadith_chain' => ['enabled' => true],
                 ],
                 'schema_layers' => [
@@ -75,7 +75,7 @@ class UsulServiceProvider
                 'features' => [
                     'root_systems' => ['quranic', 'hadith', 'fiqh'],
                     'classifications' => ['hadith', 'scholars', 'topics'],
-                    'ontologies' => ['islamic_concepts', 'quranic_verses', 'hadith_chain'],
+                    'ontologies' => ['islamic_concepts', 'quranic_ayahs', 'hadith_chain'],
                     'schema_layers' => ['content', 'relationships', 'metadata']
                 ]
             ]);

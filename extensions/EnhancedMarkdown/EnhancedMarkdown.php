@@ -125,7 +125,9 @@ class EnhancedMarkdown extends Extension
                     '[[[PROGRESS;percent=%s;label=%s;classes=%s]]]',
                     number_format($percent, 2, '.', ''),
                     str_replace([';',']',"\n"], ['\;', '', ' '], $label),
-                    implode(',', array_map(function ($c) { return str_replace([';',','], '', $c); }, $classes))
+                    implode(',', array_map(function ($c) {
+                        return str_replace([';',','], '', $c);
+                    }, $classes))
                 );
                 $lines[$i] = $token;
             }
@@ -201,7 +203,9 @@ class EnhancedMarkdown extends Extension
                     $tocHtml = '<nav class="md-toc"><strong>Contents</strong><ul>';
                     foreach ($toc as $entry) {
                         $indent = str_repeat('&nbsp;&nbsp;', max(0, $entry['level'] - 1));
-                        $tocHtml .= '<li>' . $indent . '<a href="#' . htmlspecialchars($entry['id']) . '">' . htmlspecialchars($entry['text']) . '</a></li>';
+                        $tocHtml .= '<li>' . $indent . '<a href="#' .
+                            htmlspecialchars($entry['id']) . '">' .
+                            htmlspecialchars($entry['text']) . '</a></li>';
                     }
                     $tocHtml .= '</ul></nav>';
                     $html = $tocHtml . $html;
@@ -220,10 +224,10 @@ class EnhancedMarkdown extends Extension
      */
     private function parseIslamicSyntax(string $content): string
     {
-        // Parse Quran verse references
+        // Parse Quran ayah references
         $content = preg_replace_callback(
             '/{{quran:(\d+):(\d+)}}/',
-            [$this, 'parseQuranVerse'],
+            [$this, 'parseQuranAyah'],
             $content
         );
 
@@ -259,24 +263,24 @@ class EnhancedMarkdown extends Extension
     }
 
     /**
-     * Parse Quran verse reference
+     * Parse Quran ayah reference
      *
      * @param array $matches Regex matches
      * @return string HTML output
      */
-    private function parseQuranVerse(array $matches): string
+    private function parseQuranAyah(array $matches): string
     {
         $surah = (int) $matches[1];
         $ayah = (int) $matches[2];
 
         return sprintf(
-            '<div class="quran-verse" data-surah="%d" data-ayah="%d">
-                <div class="verse-header">
-                    <span class="verse-number">%d:%d</span>
-                    <span class="verse-title">Surah %d, Ayah %d</span>
+            '<div class="quran-ayah" data-surah="%d" data-ayah="%d">
+                <div class="ayah-header">
+                    <span class="ayah-number">%d:%d</span>
+                    <span class="ayah-title">Surah %d, Ayah %d</span>
                 </div>
-                <div class="verse-content">
-                    <div class="arabic-text" dir="rtl">[Quran verse content]</div>
+                <div class="ayah-content">
+                    <div class="arabic-text" dir="rtl">[Quran ayah content]</div>
                     <div class="translation">[Translation content]</div>
                 </div>
             </div>',
@@ -512,7 +516,7 @@ class EnhancedMarkdown extends Extension
      */
     private function validateIslamicSyntax(string $content): string
     {
-        // Validate Quran verse references
+        // Validate Quran ayah references
         $content = preg_replace_callback(
             '/{{quran:(\d+):(\d+)}}/',
             function ($matches) {

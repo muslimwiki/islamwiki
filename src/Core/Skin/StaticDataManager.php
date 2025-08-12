@@ -80,6 +80,7 @@ class StaticDataManager
                 'secondary' => [
                     ['url' => '/search', 'label' => 'Search', 'icon' => '🔍'],
                     ['url' => '/iqra-search', 'label' => 'Iqra Search', 'icon' => '📖'],
+                    ['url' => '/docs', 'label' => 'Documentation', 'icon' => '📄'],
                     ['url' => '/help', 'label' => 'Help', 'icon' => '❓'],
                 ],
                 'user' => [

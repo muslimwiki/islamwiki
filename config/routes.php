@@ -14,7 +14,7 @@ use IslamWiki\Http\Controllers\SearchController;
 use IslamWiki\Http\Controllers\IqraSearchController;
 use IslamWiki\Http\Controllers\SalahTimeController;
 use IslamWiki\Http\Controllers\HadithController;
-use IslamWiki\Http\Controllers\QuranController;
+use IslamWiki\Extensions\QuranExtension\Http\Controllers\QuranController;
 use IslamWiki\Http\Controllers\IslamicCalendarController;
 use IslamWiki\Http\Controllers\IslamicContentController;
 use IslamWiki\Http\Controllers\CommunityController;
@@ -57,6 +57,14 @@ return function (\IslamWiki\Core\Application $app) {
 
     // Homepage
     $app->get('/', [$homeController, 'index']);
+
+    // Documentation routes (placed early to avoid any catch-alls)
+    $docsController = new \IslamWiki\Http\Controllers\DocsController(
+        $db,
+        $container
+    );
+    $app->get('/docs', [$docsController, 'index']);
+    $app->get('/docs/{path:.*}', [$docsController, 'show']);
 
     // Dashboard
     $app->get('/dashboard', [$dashboardController, 'index']);
@@ -134,13 +142,6 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/salah/widget', [$salahController, 'widget']);
     $app->post('/salah/calculate', [$salahController, 'calculate']);
 
-    // Salah routes (alias for prayer)
-    $app->get('/salah', [$prayerController, 'index']);
-    $app->get('/salah/times', [$prayerController, 'getTimes']);
-    $app->get('/salah/search', [$prayerController, 'search']);
-    $app->get('/salah/widget', [$prayerController, 'widget']);
-    $app->post('/salah/calculate', [$prayerController, 'calculate']);
-
     // Hadith routes
     $app->get('/hadith', [$hadithController, 'index']);
     $app->get('/hadith/collection/{collection}', [$hadithController, 'collection']);
@@ -148,11 +149,8 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/hadith/search', [$hadithController, 'search']);
     $app->get('/hadith/widget', [$hadithController, 'widget']);
 
-    // Quran routes
-    $app->get('/quran', [$quranController, 'index']);
-    $app->get('/quran/verse/{surah}:{ayah}', [$quranController, 'verse']);
-    $app->get('/quran/search', [$quranController, 'search']);
-    $app->get('/quran/widget', [$quranController, 'widget']);
+    // Quran routes - Handled by QuranExtension
+    // Note: Quran routes are now registered by the QuranExtension
 
     // Islamic Calendar routes
     $app->get('/calendar', [$calendarController, 'index']);
@@ -247,10 +245,8 @@ return function (\IslamWiki\Core\Application $app) {
         $this->get('/hadith/collection/{collection}', [$hadithController, 'apiCollection']);
         $this->get('/hadith/search', [$hadithController, 'apiSearch']);
 
-        // Quran API
-        $this->get('/quran', [$quranController, 'apiIndex']);
-        $this->get('/quran/verse/{surah}:{ayah}', [$quranController, 'apiVerse']);
-        $this->get('/quran/search', [$quranController, 'apiSearch']);
+        // Quran API - Handled by QuranExtension
+        // Note: Quran API routes are now registered by the QuranExtension
 
         // Calendar API
         $this->get('/calendar', [$calendarController, 'apiIndex']);
@@ -286,6 +282,8 @@ return function (\IslamWiki\Core\Application $app) {
         $this->put('/profile', [$profileController, 'apiUpdate']);
         $this->put('/profile/password', [$profileController, 'apiUpdatePassword']);
     });
+
+    // (docs routes are registered above)
 
     // Asset serving routes (serve files from resources through application)
     $app->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');

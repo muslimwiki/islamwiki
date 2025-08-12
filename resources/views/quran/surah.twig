@@ -1,0 +1,58 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="quran-section">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-semibold">Surah {{ surah.surah_number }}</h1>
+            <form method="get" class="flex items-center space-x-2">
+                <input type="hidden" name="lang" value="{{ language|default('en') }}" />
+                <label class="text-sm">Translation</label>
+                <select name="translator" class="quran-search-select" onchange="this.form.submit()">
+                    {% for t in translators %}
+                        <option value="{{ t.translator|default(t.name) }}" {% if translator == (t.translator|default(t.name)) %}selected{% endif %}>
+                            {{ t.name }} ({{ t.language|upper }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        {% if surah %}
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <div class="text-xl">{{ surah.surah_name_arabic }} — {{ surah.surah_name_english }} ({{ surah.surah_name_translation }})</div>
+            <div class="text-sm text-gray-600">{{ surah.revelation_type }} • {{ surah.ayah_count }} ayahs</div>
+            <div class="mt-2 text-gray-700">{{ surah.description }}</div>
+            <div class="mt-2 text-sm">
+                <a href="/quran/surah/{{ surah.surah_number }}/info" class="text-blue-600 hover:text-blue-700">More info</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="space-y-6">
+            {% for v in ayahs %}
+            <div class="border-b border-gray-200 pb-6 last:border-b-0">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="text-sm text-gray-500">
+                        <a href="/quran/{{ v.surah_number }}/{{ v.ayah_number }}"
+                           class="text-green-600 hover:text-green-700 font-medium">
+                            {{ surah.surah_number }}:{{ v.ayah_number }}
+                        </a>
+                    </div>
+                </div>
+                <div class="text-right mb-3">
+                    <div class="text-lg font-arabic text-gray-800 leading-relaxed">{{ v.text_arabic }}</div>
+                </div>
+                {% if v.translation_text %}
+                <div class="text-gray-700">
+                    <div class="italic">{{ v.translation_text }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

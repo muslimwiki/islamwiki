@@ -365,7 +365,7 @@ class RihlahCaching
     private function warmUpApiResponses(): void
     {
         // Cache common API responses
-        $this->rememberApiResponse('api:quran:verses', function () {
+        $this->rememberApiResponse('api:quran:ayahs', function () {
             return ['status' => 'cached', 'data' => []];
         }, 1800);
     }

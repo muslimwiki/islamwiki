@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
 
-class Migration_0013_AdvancedSecuritySchema extends Migration
+class Migration_0017_AdvancedSecuritySchema extends Migration
 {
     /**
      * Run the migration.

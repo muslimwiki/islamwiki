@@ -5,6 +5,8 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Models\Hadith;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Container\AsasContainer;
 
 /**
  * HadithController
@@ -20,10 +22,95 @@ class HadithController extends Controller
 {
     private $hadith;
 
-    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
+    public function __construct(Connection $db, AsasContainer $container)
     {
         parent::__construct($db, $container);
         $this->hadith = new Hadith();
+    }
+
+    /**
+     * Display Hadith index page
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function index(Request $request)
+    {
+        $stats = $this->hadith->getStatistics();
+        $collections = $this->hadith->getCollections();
+        $randomHadith = $this->hadith->getRandomHadith();
+
+        $data = [
+            'title' => 'Hadith - IslamWiki',
+            'stats' => $stats,
+            'collections' => $collections,
+            'random_hadith' => $randomHadith
+        ];
+
+        return $this->view('hadith/index', $data);
+    }
+
+    /**
+     * Display specific Hadith page
+     *
+     * @param Request $request
+     * @param int $id Hadith ID
+     * @return Response
+     */
+    public function show(Request $request, $id)
+    {
+        $hadithData = $this->hadith->findById($id);
+
+        if (!$hadithData) {
+            return $this->notFound('Hadith not found');
+        }
+
+        // Get chain of narrators
+        $chain = $this->hadith->getChain($hadithData['id']);
+
+        // Get commentary if available
+        $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
+
+        $data = [
+            'title' => "Hadith {$hadithData['collection_name']} {$hadithData['hadith_number']} - IslamWiki",
+            'hadith' => $hadithData,
+            'chain' => $chain,
+            'commentary' => $commentary,
+            'collection_id' => $hadithData['collection_id'],
+            'hadith_number' => $hadithData['hadith_number']
+        ];
+
+        return $this->view('hadith/hadith', $data);
+    }
+
+    /**
+     * Display collection page
+     *
+     * @param Request $request
+     * @param int $collection Collection ID
+     * @return Response
+     */
+    public function collection(Request $request, $collection)
+    {
+        $hadiths = $this->hadith->getByCollection($collection);
+        $collectionInfo = $this->hadith->getCollectionInfo($collection);
+
+        if (empty($hadiths)) {
+            return new Response(
+                404,
+                ['Content-Type' => 'application/json'],
+                json_encode(['success' => false, 'error' => 'Collection not found'])
+            );
+        }
+
+        $data = [
+            'title' => "Hadith Collection {$collectionInfo['name']} - IslamWiki",
+            'hadiths' => $hadiths,
+            'collection_info' => $collectionInfo,
+            'collection_id' => $collection
+        ];
+
+        return $this->view('hadith/collection', $data);
     }
 
     /**
@@ -32,11 +119,11 @@ class HadithController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function searchPage(Request $request)
+    public function search(Request $request)
     {
-        $query = $request->getQuery('q', '');
-        $language = $request->getQuery('lang', 'en');
-        $collection = $request->getQuery('collection', '');
+        $query = $request->getQueryParam('q', '');
+        $language = $request->getQueryParam('lang', 'en');
+        $collection = $request->getQueryParam('collection', '');
         $results = [];
 
         if (!empty($query)) {
@@ -59,66 +146,6 @@ class HadithController extends Controller
     }
 
     /**
-     * Display specific Hadith page
-     *
-     * @param Request $request
-     * @param int $collectionId Collection ID
-     * @param int $hadithNumber Hadith number
-     * @return Response
-     */
-    public function hadithPage(Request $request, $collectionId, $hadithNumber)
-    {
-        $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
-
-        if (!$hadithData) {
-            return $this->notFound('Hadith not found');
-        }
-
-        // Get chain of narrators
-        $chain = $this->hadith->getChain($hadithData['id']);
-
-        // Get commentary if available
-        $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
-
-        $data = [
-            'title' => "Hadith {$hadithData['collection_name']} {$hadithNumber} - IslamWiki",
-            'hadith' => $hadithData,
-            'chain' => $chain,
-            'commentary' => $commentary,
-            'collection_id' => $collectionId,
-            'hadith_number' => $hadithNumber
-        ];
-
-        return $this->view('hadith/hadith', $data);
-    }
-
-    /**
-     * Display collection page
-     *
-     * @param Request $request
-     * @param int $collectionId Collection ID
-     * @return Response
-     */
-    public function collectionPage(Request $request, $collectionId)
-    {
-        $hadiths = $this->hadith->getByCollection($collectionId);
-        $collectionInfo = $this->hadith->getCollectionInfo($collectionId);
-
-        if (empty($hadiths)) {
-            return $this->notFound('Collection not found');
-        }
-
-        $data = [
-            'title' => "Hadith Collection {$collectionInfo['name']} - IslamWiki",
-            'hadiths' => $hadiths,
-            'collection_info' => $collectionInfo,
-            'collection_id' => $collectionId
-        ];
-
-        return $this->view('hadith/collection', $data);
-    }
-
-    /**
      * API endpoint to get Hadiths
      *
      * @param Request $request
@@ -126,8 +153,8 @@ class HadithController extends Controller
      */
     public function apiHadiths(Request $request)
     {
-        $collectionId = $request->getQuery('collection');
-        $limit = (int)$request->getQuery('limit', 50);
+        $collectionId = $request->getQueryParam('collection');
+        $limit = (int)$request->getQueryParam('limit', 50);
 
         if ($collectionId) {
             $hadiths = $this->hadith->getByCollection($collectionId, $limit);
@@ -141,11 +168,7 @@ class HadithController extends Controller
             'total' => count($hadiths)
         ];
 
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        return Response::json($response, 200);
     }
 
     /**
@@ -161,9 +184,9 @@ class HadithController extends Controller
 
         if (!$hadith) {
             return new Response(
-                json_encode(['success' => false, 'error' => 'Hadith not found']),
                 404,
-                ['Content-Type' => 'application/json']
+                ['Content-Type' => 'application/json'],
+                json_encode(['success' => false, 'error' => 'Hadith not found'])
             );
         }
 
@@ -172,11 +195,7 @@ class HadithController extends Controller
             'data' => $hadith
         ];
 
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        return Response::json($response, 200);
     }
 
     /**
@@ -187,15 +206,15 @@ class HadithController extends Controller
      */
     public function apiSearch(Request $request)
     {
-        $query = $request->getQuery('q', '');
-        $language = $request->getQuery('lang', 'en');
-        $limit = (int)$request->getQuery('limit', 50);
+        $query = $request->getQueryParam('q', '');
+        $language = $request->getQueryParam('lang', 'en');
+        $limit = (int)$request->getQueryParam('limit', 50);
 
         if (empty($query)) {
             return new Response(
-                json_encode(['success' => false, 'error' => 'Search query required']),
                 400,
-                ['Content-Type' => 'application/json']
+                ['Content-Type' => 'application/json'],
+                json_encode(['success' => false, 'error' => 'Search query required'])
             );
         }
 
@@ -208,11 +227,7 @@ class HadithController extends Controller
             'query' => $query
         ];
 
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        return Response::json($response, 200);
     }
 
     /**
@@ -281,7 +296,7 @@ class HadithController extends Controller
      */
     public function apiCommentary(Request $request, $hadithId)
     {
-        $language = $request->getQuery('lang', 'en');
+        $language = $request->getQueryParam('lang', 'en');
         $commentary = $this->hadith->getCommentary($hadithId, $language);
 
         if (!$commentary) {
@@ -388,7 +403,7 @@ class HadithController extends Controller
      */
     public function apiByAuthenticity(Request $request, $authenticityLevel)
     {
-        $limit = (int)$request->getQuery('limit', 50);
+        $limit = (int)$request->getQueryParam('limit', 50);
         $hadiths = $this->hadith->getByAuthenticity($authenticityLevel, $limit);
 
         $response = [
@@ -453,28 +468,6 @@ class HadithController extends Controller
             200,
             ['Content-Type' => 'application/json']
         );
-    }
-
-    /**
-     * Display Hadith index page
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function indexPage(Request $request)
-    {
-        $stats = $this->hadith->getStatistics();
-        $collections = $this->hadith->getCollections();
-        $randomHadith = $this->hadith->getRandomHadith();
-
-        $data = [
-            'title' => 'Hadith - IslamWiki',
-            'stats' => $stats,
-            'collections' => $collections,
-            'random_hadith' => $randomHadith
-        ];
-
-        return $this->view('hadith/index', $data);
     }
 
     /**

@@ -2,11 +2,42 @@
 <ruleset name="IslamWiki">
     <description>PHP CodeSniffer rules for IslamWiki project</description>
 
+    <!-- Show progress -->
+    <arg value="p"/>
+    
+    <!-- Show colors in output -->
+    <arg name="colors"/>
+    
+    <!-- Show sniff codes in all reports -->
+    <arg value="s"/>
+    
     <!-- Include PSR-12 standard -->
     <rule ref="PSR12">
         <!-- Disable some overly strict rules for debug files -->
         <exclude name="PSR12.Classes.OpeningBraceSpace"/>
         <exclude name="PSR12.Functions.ReturnTypeDeclaration"/>
+    </rule>
+    
+    <!-- Include Slevomat coding standard -->
+    <rule ref="SlevomatCodingStandard"/>
+    
+    <!-- PHP version -->
+    <config name="testVersion" value="8.1-" />
+    
+    <!-- Custom error codes -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="140"/>
+        </properties>
+    </rule>
+    
+    <!-- Ignore some Slevomat rules that conflict with PSR-12 -->
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <severity>0</severity>
+    </rule>
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireYodaComparison">
+        <severity>0</severity>
     </rule>
 
     <!-- Custom rules for this project -->

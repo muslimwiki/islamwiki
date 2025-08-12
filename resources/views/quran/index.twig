@@ -12,124 +12,121 @@
             <p class="quran-description">Explore the divine revelation with search, study, and reflection tools</p>
         </div>
 
+        <!-- Controls -->
+        <form method="get" class="quran-search-form">
+            <label class="quran-language-selector">Translation</label>
+            <select name="translator" class="quran-search-select" onchange="this.form.submit()">
+                {% for t in translators %}
+                    <option value="{{ t.translator|default(t.name) }}" {% if translator == (t.translator|default(t.name)) %}selected{% endif %}>
+                        {{ t.name }} ({{ t.language|upper }})
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="lang" value="{{ language|default('en') }}" />
+        </form>
+
         <!-- Statistics -->
         {% if stats %}
         <div class="quran-stats">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Quran Statistics</h3>
+            <h3>Quran Statistics</h3>
             <div class="quran-stats-grid">
                 <div class="quran-stat-item">
                     <span class="quran-stat-number">{{ stats.total_chapters }}</span>
-                    <div class="quran-stat-label">Chapters</div>
+                    <div class="quran-stat-label">Surahs</div>
                 </div>
                 <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.total_verses }}</span>
-                    <div class="quran-stat-label">Verses</div>
+                    <span class="quran-stat-number">{{ stats.total_ayahs }}</span>
+                    <div class="quran-stat-label">Ayahs</div>
                 </div>
                 <div class="quran-stat-item">
                     <span class="quran-stat-number">{{ stats.max_chapter }}</span>
-                    <div class="quran-stat-label">Last Chapter</div>
+                    <div class="quran-stat-label">Last Surah</div>
                 </div>
                 <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.max_verse }}</span>
-                    <div class="quran-stat-label">Longest Chapter</div>
+                    <span class="quran-stat-number">{{ stats.max_ayah }}</span>
+                    <div class="quran-stat-label">Max Ayahs in Surah</div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <!-- Quick Actions -->
-        <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <!-- Search -->
-            <div class="quran-search-section">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Search Quran</h3>
-                <form action="/quran/search" method="GET" class="quran-search-form">
-                    <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
-                        <input type="text" id="search" name="q" placeholder="Enter keywords to search..." 
-                               class="quran-search-input">
+        <!-- Surah List -->
+        {% if surahs %}
+        <div class="quran-content-section">
+            <h3 class="quran-section-title">Surahs</h3>
+            <div class="quran-grid">
+                {% for s in surahs %}
+                <a href="/quran/surah/{{ s.surah_number }}" class="quran-nav-item">
+                    <div class="quran-nav-title">
+                        {{ s.surah_number }}. {{ s.name_english }} — {{ s.name_translation }}
                     </div>
-                    <div>
-                        <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                        <select id="language" name="lang" class="quran-search-select">
-                            <option value="en">English</option>
-                            <option value="ar">Arabic</option>
-                            <option value="ur">Urdu</option>
-                            <option value="tr">Turkish</option>
-                        </select>
+                    <div class="quran-nav-subtitle">
+                        {{ s.revelation_type }} • {{ s.verses_count }} ayahs
                     </div>
-                    <button type="submit" class="quran-search-btn">
-                        Search Quran
-                    </button>
-                </form>
-            </div>
-
-            <!-- Quick Navigation -->
-            <div class="quran-navigation">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Quick Navigation</h3>
-                <div class="space-y-3">
-                    <a href="/quran/chapter/1" class="quran-nav-item">
-                        <div class="quran-nav-title">Al-Fatiha (The Opening)</div>
-                        <div class="quran-nav-subtitle">Chapter 1 - 7 verses</div>
-                    </a>
-                    <a href="/quran/chapter/2" class="quran-nav-item">
-                        <div class="quran-nav-title">Al-Baqarah (The Cow)</div>
-                        <div class="quran-nav-subtitle">Chapter 2 - 286 verses</div>
-                    </a>
-                    <a href="/quran/chapter/36" class="quran-nav-item">
-                        <div class="quran-nav-title">Ya-Sin</div>
-                        <div class="quran-nav-subtitle">Chapter 36 - 83 verses</div>
-                    </a>
-                    <a href="/quran/chapter/55" class="quran-nav-item">
-                        <div class="quran-nav-title">Ar-Rahman (The Beneficent)</div>
-                        <div class="quran-nav-subtitle">Chapter 55 - 78 verses</div>
-                    </a>
-                </div>
+                </a>
+                {% endfor %}
             </div>
         </div>
+        {% endif %}
 
-        <!-- Random Verse -->
-        {% if random_verse %}
-        <div class="quran-verse-section">
-            <div class="quran-verse-header">
-                <h3 class="quran-verse-title">Verse of the Day</h3>
+        <!-- Juz Overview -->
+        {% if juz_stats %}
+        <div class="quran-content-section">
+            <h3 class="quran-section-title">Juz (30 Parts)</h3>
+            <div class="quran-grid">
+                {% for j in juz_stats %}
+                <a href="/quran/juz/{{ j.juz }}" class="quran-nav-item">
+                    <div class="quran-nav-title">Juz {{ j.juz }}</div>
+                    <div class="quran-nav-subtitle">{{ j.ayah_count }} ayahs</div>
+                </a>
+                {% endfor %}
             </div>
-            <div class="quran-verse-content">
-                <div class="quran-verse-arabic">{{ random_verse.arabic_text }}</div>
-                {% if random_verse.translation_text %}
-                <div class="quran-verse-translation">
-                    <div class="font-medium mb-2">Translation:</div>
-                    <div class="italic">{{ random_verse.translation_text }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Random Ayah -->
+        {% if random_ayah %}
+        <div class="quran-ayah-section">
+            <div class="quran-ayah-header">
+                <h3 class="quran-ayah-title">Ayah of the Day</h3>
+            </div>
+            <div class="quran-ayah-content">
+                <div class="quran-ayah-arabic">{{ random_ayah.arabic_text }}</div>
+                {% if random_ayah.translation_text %}
+                <div class="quran-ayah-translation">
+                    <div class="quran-translation-label">Translation:</div>
+                    <div class="quran-translation-text">{{ random_ayah.translation_text }}</div>
                 </div>
                 {% endif %}
             </div>
-            <div class="quran-verse-meta">
-                <a href="/quran/verse/{{ random_verse.chapter_number }}/{{ random_verse.verse_number }}" 
-                   class="quran-verse-chapter">
-                    Quran {{ random_verse.chapter_number }}:{{ random_verse.verse_number }}
+            <div class="quran-ayah-meta">
+                <a href="/quran/{{ random_ayah.chapter_number }}/{{ random_ayah.ayah_number }}" 
+                   class="quran-ayah-chapter">
+                    Quran {{ random_ayah.chapter_number }}:{{ random_ayah.ayah_number }}
                 </a>
-                {% if random_verse.translator_name %}
-                <span class="quran-verse-number">- {{ random_verse.translator_name }}</span>
+                {% if random_ayah.translator_name %}
+                <span class="quran-ayah-number">- {{ random_ayah.translator_name }}</span>
                 {% endif %}
             </div>
         </div>
         {% endif %}
 
         <!-- Features -->
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="text-3xl mb-4">📖</div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Study</h3>
-                <p class="text-gray-600 text-sm">Read and study Quran verses with translations and interpretations</p>
+        <div class="quran-features">
+            <div class="quran-feature-item">
+                <div class="bismillah-quran-icon">📖</div>
+                <h3 class="quran-feature-title">Study</h3>
+                <p class="quran-feature-description">Read and study Quran ayahs with translations and interpretations</p>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="text-3xl mb-4">🔍</div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Search</h3>
-                <p class="text-gray-600 text-sm">Search through the entire Quran by keywords and topics</p>
+            <div class="quran-feature-item">
+                <div class="bismillah-quran-icon">🔍</div>
+                <h3 class="quran-feature-title">Search</h3>
+                <p class="quran-feature-description">Search through the entire Quran by keywords and topics</p>
             </div>
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="text-3xl mb-4">🎧</div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Listen</h3>
-                <p class="text-gray-600 text-sm">Listen to beautiful recitations of Quran verses</p>
+            <div class="quran-feature-item">
+                <div class="bismillah-quran-icon">🎧</div>
+                <h3 class="quran-feature-title">Listen</h3>
+                <p class="quran-feature-description">Listen to beautiful recitations of Quran ayahs</p>
             </div>
         </div>
     </div>

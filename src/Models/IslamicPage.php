@@ -93,7 +93,7 @@ class IslamicPage extends Page
      * Islamic content templates.
      */
     protected array $islamicTemplates = [
-        'quran_verse' => 'Quran Verse Analysis',
+                    'quran_ayah' => 'Quran Ayah Analysis',
         'hadith_study' => 'Hadith Study',
         'fiqh_ruling' => 'Fiqh Ruling',
         'scholar_biography' => 'Scholar Biography',
@@ -509,7 +509,7 @@ class IslamicPage extends Page
     public static function getIslamicTemplates(): array
     {
         return [
-            'quran_verse' => 'Quran Verse Analysis',
+            'quran_ayah' => 'Quran Ayah Analysis',
             'hadith_study' => 'Hadith Study',
             'fiqh_ruling' => 'Fiqh Ruling',
             'scholar_biography' => 'Scholar Biography',

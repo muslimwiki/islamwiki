@@ -21,7 +21,7 @@ return function (Connection $connection) {
                 $table->string('name_english', 100); // English transliteration
                 $table->string('name_translation', 100); // English translation
                 $table->string('revelation_type', 20); // Meccan or Medinan
-                $table->unsignedInteger('verses_count'); // Number of verses
+                $table->unsignedInteger('ayahs_count'); // Number of ayahs
                 $table->unsignedInteger('juz_start')->nullable(); // Juz number
                 $table->unsignedInteger('juz_end')->nullable(); // Juz number
                 $table->text('description')->nullable(); // Brief description
@@ -30,11 +30,11 @@ return function (Connection $connection) {
                 $table->index(['number', 'revelation_type']);
             });
 
-            // Verses table
-            $this->schema()->create('verses', function (Blueprint $table) {
+            // Ayahs table
+            $this->schema()->create('ayahs', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedInteger('surah_number'); // 1-114 (changed from unsignedTinyInteger)
-                $table->unsignedInteger('verse_number'); // Verse number within surah
+                $table->unsignedInteger('ayah_number'); // Ayah number within surah
                 $table->text('text_arabic'); // Arabic text
                 $table->text('text_uthmani')->nullable(); // Uthmani script
                 $table->text('text_indopak')->nullable(); // Indopak script
@@ -45,7 +45,7 @@ return function (Connection $connection) {
                 $table->unsignedInteger('sajda_number')->nullable(); // Sajda number (if applicable)
                 $table->timestamps();
 
-                $table->unique(['surah_number', 'verse_number']);
+                $table->unique(['surah_number', 'ayah_number']);
                 $table->index(['juz_number', 'hizb_number']);
                 $table->index('page_number');
             });
@@ -65,16 +65,16 @@ return function (Connection $connection) {
                 $table->index(['language', 'is_active']);
             });
 
-            // Verse translations table
-            $this->schema()->create('verse_translations', function (Blueprint $table) {
+            // Ayah translations table
+            $this->schema()->create('ayah_translations', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('verse_id');
+                $table->unsignedBigInteger('ayah_id');
                 $table->unsignedBigInteger('translation_id');
                 $table->text('translation_text'); // Translated text
                 $table->timestamps();
 
-                $table->unique(['verse_id', 'translation_id']);
-                $table->index('verse_id');
+                $table->unique(['ayah_id', 'translation_id']);
+                $table->index('ayah_id');
                 $table->index('translation_id');
             });
 
@@ -89,16 +89,16 @@ return function (Connection $connection) {
                 $table->timestamps();
             });
 
-            // Verse tajweed table
-            $this->schema()->create('verse_tajweed', function (Blueprint $table) {
+            // Ayah tajweed table
+            $this->schema()->create('ayah_tajweed', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('verse_id');
+                $table->unsignedBigInteger('ayah_id');
                 $table->unsignedBigInteger('tajweed_rule_id');
-                $table->unsignedInteger('start_position'); // Start position in verse
-                $table->unsignedInteger('end_position'); // End position in verse
+                $table->unsignedInteger('start_position'); // Start position in ayah
+                $table->unsignedInteger('end_position'); // End position in ayah
                 $table->timestamps();
 
-                $table->index(['verse_id', 'start_position']);
+                $table->index(['ayah_id', 'start_position']);
                 $table->index('tajweed_rule_id');
             });
 
@@ -114,17 +114,17 @@ return function (Connection $connection) {
                 $table->timestamps();
             });
 
-            // Verse recitations table
-            $this->schema()->create('verse_recitations', function (Blueprint $table) {
+            // Ayah recitations table
+            $this->schema()->create('ayah_recitations', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('verse_id');
+                $table->unsignedBigInteger('ayah_id');
                 $table->unsignedBigInteger('recitation_id');
                 $table->string('audio_url', 500); // Audio file URL
                 $table->unsignedInteger('duration')->nullable(); // Duration in seconds
                 $table->timestamps();
 
-                $table->unique(['verse_id', 'recitation_id']);
-                $table->index('verse_id');
+                $table->unique(['ayah_id', 'recitation_id']);
+                $table->index('ayah_id');
                 $table->index('recitation_id');
             });
 
@@ -140,16 +140,16 @@ return function (Connection $connection) {
                 $table->timestamps();
             });
 
-            // Verse tafsir table
-            $this->schema()->create('verse_tafsir', function (Blueprint $table) {
+            // Ayah tafsir table
+            $this->schema()->create('ayah_tafsir', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('verse_id');
+                $table->unsignedBigInteger('ayah_id');
                 $table->unsignedBigInteger('tafsir_source_id');
                 $table->text('tafsir_text'); // Tafsir text
                 $table->timestamps();
 
-                $table->unique(['verse_id', 'tafsir_source_id']);
-                $table->index('verse_id');
+                $table->unique(['ayah_id', 'tafsir_source_id']);
+                $table->index('ayah_id');
                 $table->index('tafsir_source_id');
             });
 
@@ -165,32 +165,32 @@ return function (Connection $connection) {
                 $table->index('parent_id');
             });
 
-            // Verse topics table
-            $this->schema()->create('verse_topics', function (Blueprint $table) {
+            // Ayah topics table
+            $this->schema()->create('ayah_topics', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('verse_id');
+                $table->unsignedBigInteger('ayah_id');
                 $table->unsignedBigInteger('topic_id');
                 $table->timestamps();
 
-                $table->unique(['verse_id', 'topic_id']);
-                $table->index('verse_id');
+                $table->unique(['ayah_id', 'topic_id']);
+                $table->index('ayah_id');
                 $table->index('topic_id');
             });
         }
 
         public function down(): void
         {
-            $this->schema()->dropIfExists('verse_topics');
+            $this->schema()->dropIfExists('ayah_topics');
             $this->schema()->dropIfExists('quranic_topics');
-            $this->schema()->dropIfExists('verse_tafsir');
+            $this->schema()->dropIfExists('ayah_tafsir');
             $this->schema()->dropIfExists('tafsir_sources');
-            $this->schema()->dropIfExists('verse_recitations');
+            $this->schema()->dropIfExists('ayah_recitations');
             $this->schema()->dropIfExists('recitations');
-            $this->schema()->dropIfExists('verse_tajweed');
+            $this->schema()->dropIfExists('ayah_tajweed');
             $this->schema()->dropIfExists('tajweed_rules');
-            $this->schema()->dropIfExists('verse_translations');
+            $this->schema()->dropIfExists('ayah_translations');
             $this->schema()->dropIfExists('translations');
-            $this->schema()->dropIfExists('verses');
+            $this->schema()->dropIfExists('ayahs');
             $this->schema()->dropIfExists('surahs');
         }
     };

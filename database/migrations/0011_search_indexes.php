@@ -34,7 +34,7 @@ class CreateSearchIndexes extends Migration
         $this->schema()->create('search_statistics', function ($table) {
             $table->id();
             $table->string('query', 255);
-            $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'prayer']);
+            $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'salah']);
             $table->integer('results_count')->default(0);
             $table->integer('search_time_ms')->default(0);
             $table->integer('user_id')->nullable();
@@ -51,7 +51,7 @@ class CreateSearchIndexes extends Migration
         $this->schema()->create('search_suggestions', function ($table) {
             $table->id();
             $table->string('query', 255);
-            $table->enum('suggestion_type', ['page', 'quran', 'hadith', 'calendar', 'prayer']);
+            $table->enum('suggestion_type', ['page', 'quran', 'hadith', 'calendar', 'salah']);
             $table->string('suggestion_text', 500);
             $table->string('suggestion_url', 500);
             $table->integer('click_count')->default(0);
@@ -72,7 +72,7 @@ class CreateSearchIndexes extends Migration
             $table->text('results');
             $table->integer('results_count')->default(0);
             $table->timestamp('expires_at');
-            $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'prayer']);
+            $table->enum('search_type', ['all', 'pages', 'quran', 'hadith', 'calendar', 'salah']);
             $table->timestamps();
 
             $table->index('query_hash');
@@ -139,12 +139,12 @@ class CreateSearchIndexes extends Migration
             ['calendar', 'Mawlid', '/calendar/search?q=Mawlid', 0.92],
             ['calendar', 'Laylat al-Qadr', '/calendar/search?q=Laylat al-Qadr', 0.91],
 
-            // Prayer suggestions
-            ['prayer', 'Mecca', '/prayer/search?q=Mecca', 0.95],
-            ['prayer', 'Medina', '/prayer/search?q=Medina', 0.94],
-            ['prayer', 'Jerusalem', '/prayer/search?q=Jerusalem', 0.93],
-            ['prayer', 'Istanbul', '/prayer/search?q=Istanbul', 0.92],
-            ['prayer', 'Cairo', '/prayer/search?q=Cairo', 0.91],
+                    // Salah suggestions
+        ['salah', 'Mecca', '/salah/search?q=Mecca', 0.95],
+        ['salah', 'Medina', '/salah/search?q=Medina', 0.94],
+        ['salah', 'Jerusalem', '/salah/search?q=Jerusalem', 0.93],
+        ['salah', 'Istanbul', '/salah/search?q=Istanbul', 0.92],
+        ['salah', 'Cairo', '/salah/search?q=Cairo', 0.91],
 
             // Page suggestions
             ['page', 'Islam', '/Islam', 0.95],

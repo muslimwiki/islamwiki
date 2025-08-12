@@ -15,9 +15,8 @@ class DocsController extends Controller
         return $this->show($request, 'README.md');
     }
 
-    public function show(Request $request, string ...$segments): Response
+    public function show(Request $request, string $path = ''): Response
     {
-        $path = implode('/', $segments);
         $basePath = dirname(__DIR__, 3); // project root
         $docsDir = $basePath . '/docs';
 

@@ -1,0 +1,274 @@
+/* Hijri Date Display Styles */
+.hijri-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-family: 'Noto Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.2s ease;
+}
+
+.hijri-display:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hijri-display.compact {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+}
+
+.hijri-display.large {
+    padding: 16px 20px;
+    font-size: 1.2rem;
+}
+
+.hijri-display-icon {
+    width: 20px;
+    height: 20px;
+    color: #1e40af;
+    flex-shrink: 0;
+}
+
+.hijri-display.compact .hijri-display-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.hijri-display.large .hijri-display-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.hijri-date-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hijri-date-primary {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 1rem;
+}
+
+.hijri-date-secondary {
+    font-size: 0.8rem;
+    color: #64748b;
+    opacity: 0.8;
+}
+
+.hijri-display.compact .hijri-date-primary {
+    font-size: 0.9rem;
+}
+
+.hijri-display.compact .hijri-date-secondary {
+    font-size: 0.75rem;
+}
+
+.hijri-display.large .hijri-date-primary {
+    font-size: 1.3rem;
+}
+
+.hijri-display.large .hijri-date-secondary {
+    font-size: 0.9rem;
+}
+
+/* Hijri Date Badge */
+.hijri-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #1e40af;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.hijri-badge:hover {
+    background: #1e3a8a;
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: white;
+}
+
+.hijri-badge.small {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+}
+
+.hijri-badge.large {
+    padding: 10px 16px;
+    font-size: 1rem;
+}
+
+/* Hijri Date Inline */
+.hijri-inline {
+    display: inline;
+    color: #1e40af;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dotted #1e40af;
+    transition: all 0.2s ease;
+}
+
+.hijri-inline:hover {
+    color: #1e3a8a;
+    border-bottom-color: #1e3a8a;
+    text-decoration: none;
+}
+
+/* Hijri Date Tooltip */
+.hijri-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.hijri-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hijri-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1e293b;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.hijri-tooltip:hover::after,
+.hijri-tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hijri Date List */
+.hijri-date-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hijri-date-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hijri-date-list li:last-child {
+    border-bottom: none;
+}
+
+.hijri-date-list .hijri-date-icon {
+    width: 24px;
+    height: 24px;
+    color: #1e40af;
+    flex-shrink: 0;
+}
+
+.hijri-date-list .hijri-date-content {
+    flex: 1;
+}
+
+.hijri-date-list .hijri-date-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.hijri-date-list .hijri-date-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hijri-display {
+        padding: 6px 10px;
+    }
+    
+    .hijri-display.large {
+        padding: 12px 16px;
+    }
+    
+    .hijri-badge.large {
+        padding: 8px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hijri-display {
+        padding: 4px 8px;
+        gap: 6px;
+    }
+    
+    .hijri-display.large {
+        padding: 10px 14px;
+    }
+    
+    .hijri-date-text {
+        gap: 1px;
+    }
+    
+    .hijri-badge.large {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .hijri-display {
+        background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        border-color: #64748b;
+    }
+    
+    .hijri-date-primary {
+        color: #f1f5f9;
+    }
+    
+    .hijri-date-secondary {
+        color: #cbd5e1;
+    }
+    
+    .hijri-date-list li {
+        border-bottom-color: #475569;
+    }
+    
+    .hijri-date-list .hijri-date-title {
+        color: #f1f5f9;
+    }
+    
+    .hijri-date-list .hijri-date-subtitle {
+        color: #94a3b8;
+    }
+}

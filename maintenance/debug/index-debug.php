@@ -57,9 +57,9 @@ try {
     require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
     require_once BASE_PATH . '/src/Core/Search/IqraSearch.php';
     require_once BASE_PATH . '/src/Models/Page.php';
-    require_once BASE_PATH . '/src/Models/QuranVerse.php';
+    require_once BASE_PATH . '/src/Models/QuranAyah.php';
     require_once BASE_PATH . '/src/Models/Hadith.php';
-    require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
+    require_once BASE_PATH . '/src/Models/HijriCalendar.php';
     require_once BASE_PATH . '/src/Models/PrayerTime.php';
     echo "<p>✅ Core files loaded</p>";
 

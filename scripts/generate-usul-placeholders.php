@@ -32,11 +32,11 @@ $placeholders = [
         'interface' => 'OntologyInterface',
         'description' => 'Models Islamic concepts and their relationships'
     ],
-    'src/Core/Knowledge/Ontologies/QuranicVersesOntology.php' => [
+    'src/Core/Knowledge/Ontologies/QuranicAyahsOntology.php' => [
         'namespace' => 'IslamWiki\Core\Knowledge\Ontologies',
-        'class' => 'QuranicVersesOntology',
+        'class' => 'QuranicAyahsOntology',
         'interface' => 'OntologyInterface',
-        'description' => 'Models Qur\'anic verses and their relationships'
+        'description' => 'Models Qur\'anic ayahs and their relationships'
     ],
     'src/Core/Knowledge/Ontologies/HadithChainOntology.php' => [
         'namespace' => 'IslamWiki\Core\Knowledge\Ontologies',

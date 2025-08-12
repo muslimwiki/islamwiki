@@ -237,7 +237,7 @@ class IqraSearchTest
                     break;
                 case 'quran':
                     $topics[] = 'Surah';
-                    $topics[] = 'Verses';
+                    $topics[] = 'Ayahs';
                     $topics[] = 'Recitation';
                     break;
                 case 'hadith':
@@ -322,7 +322,7 @@ try {
 
     // Test search analytics
     echo "<h2>Search Analytics Test</h2>";
-    $analytics = $iqraTest->getSearchAnalytics("Quran and Hadith about prayer");
+            $analytics = $iqraTest->getSearchAnalytics("Quran and Hadith about salah");
     echo "<pre>" . json_encode($analytics, JSON_PRETTY_PRINT) . "</pre>";
 
     echo "<h2>✅ All Iqra Search Engine tests passed!</h2>";

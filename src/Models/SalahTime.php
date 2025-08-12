@@ -19,12 +19,11 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 
-class SalahTime
+class SalahTime extends BaseModel
 {
-    protected $connection;
-    protected $table = 'prayer_times';
+    protected string $table = 'salah_times';
 
-    // Prayer time calculation methods
+    // Salah time calculation methods
     const CALCULATION_METHODS = [
         'MWL' => 'Muslim World League',
         'ISNA' => 'Islamic Society of North America',
@@ -41,8 +40,8 @@ class SalahTime
         'Hanafi' => 'Hanafi'
     ];
 
-    // Prayer names in multiple languages
-    const PRAYER_NAMES = [
+    // Salah names in multiple languages
+    const SALAH_NAMES = [
         'en' => [
             'fajr' => 'Fajr',
             'sunrise' => 'Sunrise',
@@ -77,9 +76,9 @@ class SalahTime
         ]
     ];
 
-    public function __construct(Connection $connection = null)
+    public function __construct(?Connection $connection = null)
     {
-        $this->connection = $connection;
+        parent::__construct($connection);
     }
 
     /**
@@ -445,7 +444,7 @@ class SalahTime
             return null;
         }
 
-        $query = $this->connection->table('prayer_api_cache');
+        $query = $this->connection->table('salah_api_cache');
 
         $result = $query->where('cache_key', $key)
             ->where('expires_at', '>', date('Y-m-d H:i:s'))
@@ -463,7 +462,7 @@ class SalahTime
             return;
         }
 
-        $query = $this->connection->table('prayer_api_cache');
+        $query = $this->connection->table('salah_api_cache');
 
         $query->insert([
             'cache_key' => $key,
@@ -481,7 +480,7 @@ class SalahTime
     {
         $query = new Builder($this->connection);
 
-        $query->table('prayer_errors')->insert([
+        $query->from('salah_errors')->insert([
             'error_type' => $type,
             'error_message' => $message,
             'request_data' => json_encode($context),
@@ -573,7 +572,7 @@ class SalahTime
             ];
         }
 
-        $query = $this->connection->table('prayer_preferences');
+        $query = $this->connection->table('salah_preferences');
 
         $preferences = $query->where('user_id', $userId)
             ->first();
@@ -606,7 +605,7 @@ class SalahTime
             ];
         }
 
-        $query = $this->connection->table('prayer_preferences');
+        $query = $this->connection->table('salah_preferences');
 
         $defaults = [
             'user_id' => $userId,
@@ -637,7 +636,7 @@ class SalahTime
             return true; // Return success when no database
         }
 
-        $query = $this->connection->table('prayer_preferences');
+        $query = $this->connection->table('salah_preferences');
 
         return $query->where('user_id', $userId)
             ->update(array_merge($data, [
@@ -648,9 +647,9 @@ class SalahTime
     /**
      * Get prayer names in specified language
      */
-    public function getPrayerNames($language = 'en')
+    public function getSalahNames($language = 'en')
     {
-        return self::PRAYER_NAMES[$language] ?? self::PRAYER_NAMES['en'];
+        return self::SALAH_NAMES[$language] ?? self::SALAH_NAMES['en'];
     }
 
     /**
@@ -697,41 +696,41 @@ class SalahTime
     /**
      * Get next prayer
      */
-    public function getNextPrayer($prayerTimes, $currentTime = null)
+    public function getNextSalah($salahTimes, $currentTime = null)
     {
         if (!$currentTime) {
             $currentTime = date('H:i');
         }
 
-        $prayers = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+        $salahs = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
-        foreach ($prayers as $prayer) {
-            if ($prayerTimes[$prayer] > $currentTime) {
+        foreach ($salahs as $salah) {
+            if ($salahTimes[$salah] > $currentTime) {
                 return [
-                    'prayer' => $prayer,
-                    'time' => $prayerTimes[$prayer],
-                    'remaining' => $this->getTimeRemaining($currentTime, $prayerTimes[$prayer])
+                    'salah' => $salah,
+                    'time' => $salahTimes[$salah],
+                    'remaining' => $this->getTimeRemaining($currentTime, $salahTimes[$salah])
                 ];
             }
         }
 
-        // If no prayer found, next prayer is tomorrow's Fajr
+        // If no salah found, next salah is tomorrow's Fajr
         return [
-            'prayer' => 'fajr',
-            'time' => $prayerTimes['fajr'],
+            'salah' => 'fajr',
+            'time' => $salahTimes['fajr'],
             'remaining' => 'Tomorrow'
         ];
     }
 
     /**
-     * Get time remaining until prayer
+     * Get time remaining until salah
      */
-    protected function getTimeRemaining($current, $prayer)
+    protected function getTimeRemaining($current, $salah)
     {
         $currentMinutes = $this->timeToMinutes($current);
-        $prayerMinutes = $this->timeToMinutes($prayer);
+        $salahMinutes = $this->timeToMinutes($salah);
 
-        $diff = $prayerMinutes - $currentMinutes;
+        $diff = $salahMinutes - $currentMinutes;
 
         if ($diff < 0) {
             $diff += 1440; // Add 24 hours
@@ -753,7 +752,7 @@ class SalahTime
     }
 
     /**
-     * Get prayer statistics
+     * Get salah statistics
      */
     public function getStatistics()
     {
@@ -768,7 +767,7 @@ class SalahTime
             ];
         }
 
-        $query = $this->connection->table('prayer_statistics');
+        $query = $this->connection->table('salah_statistics');
 
         $today = date('Y-m-d');
 
@@ -797,7 +796,7 @@ class SalahTime
             return; // Do nothing when no database
         }
 
-        $query = $this->connection->table('prayer_statistics');
+        $query = $this->connection->table('salah_statistics');
 
         $today = date('Y-m-d');
 

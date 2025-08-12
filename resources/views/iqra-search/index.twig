@@ -122,7 +122,7 @@
                             <div class="stat-item">
                                 <span class="stat-icon">📖</span>
                                 <span class="stat-number">{{ searchStats.total_quran }}</span>
-                                <span class="stat-label">verses</span>
+                                <span class="stat-label">ayahs</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-icon">📚</span>
@@ -190,7 +190,7 @@
                                 {% if result.type == 'quran' %}
                                     <div class="result-details">
                                         <p class="result-meta">
-                                            <strong>Surah:</strong> {{ result.surah_name }} ({{ result.surah_id }}:{{ result.verse_number }})
+                                            <strong>Surah:</strong> {{ result.surah_name }} ({{ result.surah_id }}:{{ result.ayah_number }})
                                         </p>
                                         {% if result.arabic_text %}
                                             <div class="arabic-text" dir="rtl">

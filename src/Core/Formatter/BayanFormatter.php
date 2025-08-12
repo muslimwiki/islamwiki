@@ -31,7 +31,7 @@ use Psr\Log\LoggerInterface;
  * Bayan Knowledge Graph Manager
  *
  * Manages the Islamic knowledge graph system for connecting concepts,
- * verses, hadith, scholars, and other Islamic knowledge entities.
+ * ayahs, hadith, scholars, and other Islamic knowledge entities.
  */
 class BayanFormatter
 {

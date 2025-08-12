@@ -2,7 +2,7 @@
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Models\IslamicCalendar;
+use IslamWiki\Models\HijriCalendar;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\View\TwigRenderer;
@@ -25,7 +25,7 @@ class IslamicCalendarController extends Controller
     public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
-        $this->calendar = new IslamicCalendar($db);
+        $this->calendar = new HijriCalendar($db);
         $this->renderer = $this->getView();
     }
 

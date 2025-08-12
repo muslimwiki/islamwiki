@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.54] - 2025-08-12
+
+### Added (0.0.54)
+
+- Salah Times system: `SalahTimeController`, `src/Models/SalahTime.php`, frontend helper `resources/assets/js/salah-calculator.js`
+- Quran data models and views: `QuranSurah`, `QuranPage`, `QuranJuz`, `QuranTranslation`; new Quran views under `resources/views/quran/`
+- New extensions scaffolding: `extensions/QuranExtension/`, `extensions/HadithExtension/`, `extensions/HijriCalendar/`, `extensions/SalahTime/`
+- Error pages: `resources/views/errors/{401,404,500}.twig`
+- Tooling/config: `.php-cs-fixer.php`, `phpstan.neon`, `phpunit.xml`
+- Docs: `docs/features/SALAH_TIMES.md`, Quran implementation/status updates, Quran import docs
+
+### Changed (0.0.54)
+
+- Routing expanded in `routes/web.php` and `config/routes.php` for Quran, Hadith, Hijri, SalahTime
+- Core updates across `src/Core/*` (search, caching, formatting, knowledge graph)
+- Public entrypoints and server config updated (`public/index.php`, `public/.htaccess`)
+- Search indexes and queries improved; updated tests and maintenance scripts
+
+### Removed (0.0.54)
+
+- Legacy `src/Models/QuranVerse.php` removed in favor of new Quran model set
+- Legacy migration `database/migrations/0013_advanced_security_schema.php` removed; replaced by `0017_advanced_security_schema.php`
+
+### Developer Notes (0.0.54)
+
+- Multiple new database scripts under `scripts/database/` to initialize and populate Quran data
+- Introduced code style and static analysis tooling; added web/integration tests scaffolding
+
 ## [0.0.53] - 2025-08-09
 
 ### Added (0.0.53)

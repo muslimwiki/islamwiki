@@ -16,10 +16,10 @@ use PDO;
  * @version 0.0.14
  * @since Phase 4
  */
-class Hadith
+class Hadith extends BaseModel
 {
-    private $db;
-    private $table = 'hadiths';
+    private $db; // backward-compatible reference
+    protected string $table = 'hadiths';
     private $collectionsTable = 'hadith_collections';
     private $narratorsTable = 'narrators';
     private $chainsTable = 'hadith_chains';
@@ -43,7 +43,10 @@ class Hadith
             $islamicDbManager = new IslamicDatabaseManager($configs);
         }
 
-        $this->db = $islamicDbManager->getHadithConnection();
+        // Use the Core Connection from the manager and initialize BaseModel
+        $connection = $islamicDbManager->getHadithConnection();
+        parent::__construct($connection);
+        $this->db = $connection;
     }
 
     /**

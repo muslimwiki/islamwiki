@@ -1,39 +1,31 @@
+<!-- Quran Widget - Ayah {{ chapter }}:{{ ayah_number }} -->
 {% if is_widget %}
-<!-- Quran Widget - Verse {{ chapter }}:{{ verse_number }} -->
-<div class="quran-widget bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-    <div class="text-center mb-3">
-        <div class="text-sm text-gray-500 mb-1">Quran {{ chapter }}:{{ verse_number }}</div>
-        <div class="text-lg font-arabic text-gray-800 leading-relaxed">{{ verse.arabic_text }}</div>
-    </div>
-    
-    {% if verse.translation_text %}
-    <div class="text-sm text-gray-700 mb-3 italic">{{ verse.translation_text }}</div>
-    {% endif %}
-    
-    <div class="text-xs text-gray-500 text-center">
-        <a href="/quran/verse/{{ chapter }}/{{ verse_number }}" target="_blank" class="text-green-600 hover:text-green-700">
-            View Full Verse →
+<div class="p-4 bg-white rounded-lg shadow">
+    <div class="text-sm text-gray-500 mb-1">Quran {{ chapter }}:{{ ayah_number }}</div>
+    <div class="text-lg font-arabic text-gray-800 leading-relaxed">{{ ayah.arabic_text }}</div>
+{% if ayah.translation_text %}
+<div class="text-sm text-gray-700 mb-3 italic">{{ ayah.translation_text }}</div>
+{% endif %}
+    <div>
+        <a href="/quran/{{ chapter }}/{{ ayah_number }}" target="_blank" class="text-green-600 hover:text-green-700">
+            View Ayah →
         </a>
     </div>
 </div>
 {% else %}
-<!-- Full Quran Verse Display -->
-<div class="bg-white rounded-lg shadow-md p-6">
-    <div class="text-center mb-4">
-        <h2 class="text-xl font-bold text-gray-900">Quran {{ chapter }}:{{ verse_number }}</h2>
+<div class="quran-ayah-section">
+    <div class="quran-ayah-header">
+        <h2 class="text-xl font-bold text-gray-900">Quran {{ chapter }}:{{ ayah_number }}</h2>
     </div>
-    
-    <div class="text-center mb-4">
-        <div class="text-2xl font-arabic text-gray-800 leading-relaxed">{{ verse.arabic_text }}</div>
+    <div class="quran-ayah-content">
+        <div class="text-2xl font-arabic text-gray-800 leading-relaxed">{{ ayah.arabic_text }}</div>
     </div>
-    
-    {% if verse.translation_text %}
-    <div class="text-gray-700 mb-4 italic">{{ verse.translation_text }}</div>
+    {% if ayah.translation_text %}
+    <div class="text-gray-700 mb-4 italic">{{ ayah.translation_text }}</div>
     {% endif %}
-    
-    <div class="text-center">
-        <a href="/quran/verse/{{ chapter }}/{{ verse_number }}" class="text-green-600 hover:text-green-700 font-medium">
-            Read Full Verse
+    <div>
+        <a href="/quran/{{ chapter }}/{{ ayah_number }}" class="text-green-600 hover:text-green-700 font-medium">
+            View Ayah
         </a>
     </div>
 </div>

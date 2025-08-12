@@ -1,0 +1,121 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title|default('Quran Error') }} - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="quran-error-container">
+    <div class="error-content">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="error-title">Quran Error</h1>
+        <p class="error-message">{{ error|default('An error occurred while loading the Quran content.') }}</p>
+        
+        <div class="error-actions">
+            <a href="/quran" class="btn btn-primary">Return to Quran</a>
+            <a href="/" class="btn btn-secondary">Go Home</a>
+        </div>
+        
+        <div class="error-help">
+            <p>If this problem persists, please:</p>
+            <ul>
+                <li>Check your internet connection</li>
+                <li>Try refreshing the page</li>
+                <li>Contact support if the issue continues</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.quran-error-container {
+    max-width: 600px;
+    margin: 4rem auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.error-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.error-message {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.error-actions {
+    margin-bottom: 2rem;
+}
+
+.error-actions .btn {
+    margin: 0 0.5rem;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+.error-help {
+    text-align: left;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+}
+
+.error-help p {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.error-help ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #7f8c8d;
+}
+
+.error-help li {
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}

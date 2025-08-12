@@ -529,7 +529,7 @@ class CommunityController extends Controller
         return [
             'article' => 'Article',
             'hadith' => 'Hadith',
-            'quran' => 'Quran Verse',
+            'quran' => 'Quran Ayah',
             'scholar' => 'Scholar Biography',
             'event' => 'Islamic Event'
         ];

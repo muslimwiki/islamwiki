@@ -2,15 +2,15 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.53)
+## 🚀 Latest Updates (v0.0.54)
 
-### 📚 Docs Viewer & Markdown Enhancements
+### 📖 Quran, 🌙 Salah Times, and 🧩 Extensions
 
-- **Docs in Nav**: New link surfaces the docs viewer at `/docs`
-- **Two-Pane Layout**: Folder-aware, collapsible left nav; content on the right
-- **Richer Markdown**: Images, tables (aligned), strikethrough, blockquotes, HRs
-- **Auto TOC**: Headings generate a “Contents” section
-- **Progress Bars**: Simple syntax renders visual status bars
+- **Quran Data Model Refactor**: New models (`QuranSurah`, `QuranPage`, `QuranJuz`, `QuranTranslation`) and refreshed Quran views
+- **Salah Times System**: `SalahTimeController`, `SalahTime` model, and calculator JS helper
+- **Extensions**: New modular extensions for Quran, Hadith, Hijri Calendar, and Salah Time
+- **Routes & Core**: Expanded routes, core search/caching/formatting improvements, and updated public entrypoints
+- **Docs**: New guides for Quran import and Salah Times; see `docs/releases/RELEASE-0.0.54.md`
 
 ## 🌟 Features
 

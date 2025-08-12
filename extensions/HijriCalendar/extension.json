@@ -1,0 +1,132 @@
+{
+    "name": "HijriCalendar",
+    "version": "0.0.1",
+    "description": "Comprehensive Hijri calendar system with date conversion, display, and Islamic date management capabilities",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/HijriCalendar",
+    "main": "HijriCalendar.php",
+    "class": "IslamWiki\\Extensions\\HijriCalendar\\HijriCalendar",
+    "type": "content",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "enableDateConversion": true,
+        "enableHijriDisplay": true,
+        "enableGregorianConversion": true,
+        "enableIslamicEvents": true,
+        "enableLunarPhases": true,
+        "enableHijriWidgets": true,
+        "enableHijriTemplates": true,
+        "enableHijriAPI": true,
+        "defaultCalendarView": "month",
+        "supportedCalendarViews": ["month", "year", "week", "day"],
+        "enableNotifications": true,
+        "enableTimezoneSupport": true,
+        "enableMultipleLocales": true,
+        "defaultLocale": "en",
+        "supportedLocales": ["en", "ar", "ur", "tr", "ms", "id"],
+        "enableHijriHolidays": true,
+        "enableCustomEvents": true
+    },
+    "hooks": {
+        "ContentParse": "onContentParse",
+        "PageDisplay": "onPageDisplay",
+        "SearchIndex": "onSearchIndex",
+        "WidgetRender": "onWidgetRender",
+        "TemplateLoad": "onTemplateLoad",
+        "AdminMenu": "onAdminMenu",
+        "UserProfile": "onUserProfile",
+        "HijriDateConversion": "onHijriDateConversion",
+        "IslamicEventCalculation": "onIslamicEventCalculation"
+    },
+    "resources": {
+        "css": [
+            "assets/css/hijri-calendar.css",
+            "assets/css/hijri-display.css",
+            "assets/css/hijri-widgets.css",
+            "assets/css/islamic-events.css"
+        ],
+        "js": [
+            "assets/js/hijri-calendar.js",
+            "assets/js/hijri-converter.js",
+            "assets/js/hijri-widgets.js",
+            "assets/js/islamic-events.js",
+            "assets/js/lunar-phases.js"
+        ]
+    },
+    "templates": {
+        "hijri-calendar": "templates/hijri-calendar.twig",
+        "hijri-converter": "templates/hijri-converter.twig",
+        "hijri-widget": "templates/hijri-widget.twig",
+        "islamic-events": "templates/islamic-events.twig",
+        "lunar-phases": "templates/lunar-phases.twig",
+        "hijri-settings": "templates/hijri-settings.twig"
+    },
+    "routes": {
+        "hijri": {
+            "pattern": "/hijri",
+            "controller": "HijriController",
+            "action": "index"
+        },
+        "hijri_convert": {
+            "pattern": "/hijri/convert",
+            "controller": "HijriController",
+            "action": "convert"
+        },
+        "hijri_calendar": {
+            "pattern": "/hijri/calendar",
+            "controller": "HijriController",
+            "action": "calendar"
+        },
+        "hijri_events": {
+            "pattern": "/hijri/events",
+            "controller": "HijriController",
+            "action": "events"
+        },
+        "hijri_api": {
+            "pattern": "/api/hijri",
+            "controller": "HijriApiController",
+            "action": "index"
+        },
+        "hijri_admin": {
+            "pattern": "/admin/hijri",
+            "controller": "HijriAdminController",
+            "action": "index"
+        }
+    },
+    "widgets": {
+        "hijri_date": {
+            "name": "Hijri Date",
+            "description": "Display current Hijri date",
+            "class": "HijriDateWidget"
+        },
+        "hijri_converter": {
+            "name": "Hijri Converter",
+            "description": "Convert between Hijri and Gregorian dates",
+            "class": "HijriConverterWidget"
+        },
+        "hijri_calendar": {
+            "name": "Hijri Calendar",
+            "description": "Display Hijri calendar for current month",
+            "class": "HijriCalendarWidget"
+        },
+        "islamic_events": {
+            "name": "Islamic Events",
+            "description": "Show upcoming Islamic events and holidays",
+            "class": "IslamicEventsWidget"
+        },
+        "lunar_phase": {
+            "name": "Lunar Phase",
+            "description": "Display current lunar phase and Hijri date",
+            "class": "LunarPhaseWidget"
+        }
+    },
+    "permissions": {
+        "hijri_view": "View Hijri calendar and dates",
+        "hijri_convert": "Convert between Hijri and Gregorian dates",
+        "hijri_edit": "Edit Hijri calendar settings",
+        "hijri_manage": "Manage Hijri calendar system",
+        "hijri_import": "Import Islamic events and holidays"
+    }
+}

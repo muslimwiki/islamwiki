@@ -8,7 +8,7 @@ namespace IslamWiki\Core\Knowledge\Interfaces;
  * Root System Interface
  *
  * Defines the contract for root systems that extract principles
- * from Islamic texts like Qur'anic verses and Hadith.
+ * from Islamic texts like Qur'anic ayahs and Hadith.
  */
 interface RootSystemInterface
 {

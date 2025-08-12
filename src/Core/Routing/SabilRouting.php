@@ -185,12 +185,8 @@ class SabilRouting implements RequestHandlerInterface
             return new Response(404, [], $this->renderErrorPage(404, 'Page not found'));
         }
 
-        // Extract parameters from URI
-        $params = $this->matchRoute($route['route'], $uri);
-
-        if ($params === null) {
-            return new Response(404, [], $this->renderErrorPage(404, 'Page not found'));
-        }
+        // Get parameters from the route (already extracted in findRoute)
+        $params = $route['params'] ?? [];
 
         // Add parameters to request
         $request = $request->withAttribute('params', $params);
@@ -208,7 +204,15 @@ class SabilRouting implements RequestHandlerInterface
         $handler = $route['handler'];
 
         if (is_callable($handler)) {
-            $response = call_user_func($handler, $request);
+            // Try to call with parameters, fallback to just request if it fails
+            try {
+                $methodParams = array_values($params);
+                array_unshift($methodParams, $request);
+                $response = call_user_func_array($handler, $methodParams);
+            } catch (\ArgumentCountError $e) {
+                // Fallback to just passing the request
+                $response = call_user_func($handler, $request);
+            }
         } elseif (is_string($handler)) {
             // Controller@method format
             if (strpos($handler, '@') !== false) {
@@ -257,6 +261,8 @@ class SabilRouting implements RequestHandlerInterface
             if (in_array($method, $route['methods'])) {
                 $params = $this->matchRoute($route['route'], $uri);
                 if ($params !== null) {
+                    // Store the parameters in the route array
+                    $route['params'] = $params;
                     return $route;
                 }
             }
@@ -286,6 +292,10 @@ class SabilRouting implements RequestHandlerInterface
             preg_match_all('/\{([^}]+)\}/', $pattern, $paramNames);
 
             foreach ($paramNames[1] as $index => $paramName) {
+                // Support tokens like name:regex by stripping the regex part for the param key
+                if (strpos($paramName, ':') !== false) {
+                    [$paramName] = explode(':', $paramName, 2);
+                }
                 if (isset($matches[$index])) {
                     $params[$paramName] = $matches[$index];
                 }
@@ -306,8 +316,19 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function patternToRegex(string $pattern): string
     {
-        // Replace {param} with regex capture groups
-        $pattern = preg_replace('/\{([^}]+)\}/', '([^/]+)', $pattern);
+        // Replace {name} with default capture and {name:regex} with custom capture
+        $pattern = preg_replace_callback('/\{([^}]+)\}/', function ($m) {
+            $token = $m[1];
+            $name = $token;
+            $regex = '[^/]+'; // default: segment without slash
+            if (strpos($token, ':') !== false) {
+                [$name, $regexPart] = explode(':', $token, 2);
+                if ($regexPart !== '') {
+                    $regex = $regexPart;
+                }
+            }
+            return '(' . $regex . ')';
+        }, $pattern);
 
         // Escape forward slashes
         $pattern = str_replace('/', '\/', $pattern);

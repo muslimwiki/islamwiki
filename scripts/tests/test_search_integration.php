@@ -95,7 +95,7 @@ try {
     // Test caching
     $testResults = [
         ['type' => 'page', 'title' => 'Test Page', 'url' => '/test'],
-        ['type' => 'quran', 'title' => 'Test Verse', 'url' => '/quran/1/1']
+                    ['type' => 'quran', 'title' => 'Test Ayah', 'url' => '/quran/1/1']
     ];
 
     $searchModel->cacheResults('test query', 'all', $testResults, 2);
@@ -180,7 +180,7 @@ try {
 
     $indexes = [
         'pages' => 'ft_pages_title_content',
-        'verses' => 'ft_verses_arabic_translation',
+                    'ayahs' => 'ft_ayahs_arabic_translation',
         'hadiths' => 'ft_hadiths_arabic_translation_narrator',
         'islamic_events' => 'ft_events_title_description_arabic',
         'user_locations' => 'ft_locations_city_country_name'

@@ -61,7 +61,9 @@ require_once BASE_PATH . '/src/Core/View/TwigRenderer.php';
 require_once BASE_PATH . '/src/Http/Controllers/Controller.php';
 require_once BASE_PATH . '/src/Http/Controllers/SearchController.php';
 require_once BASE_PATH . '/src/Http/Controllers/IqraSearchController.php';
-require_once BASE_PATH . '/src/Http/Controllers/QuranController.php';
+// QuranController now loaded via extension system
+require_once BASE_PATH . '/extensions/QuranExtension/Http/Controllers/QuranController.php';
+require_once BASE_PATH . '/extensions/QuranExtension/Models/QuranAyah.php';
 require_once BASE_PATH . '/src/Http/Controllers/HadithController.php';
 require_once BASE_PATH . '/src/Http/Controllers/SalahTimeController.php';
 require_once BASE_PATH . '/src/Http/Controllers/IslamicCalendarController.php';
@@ -69,9 +71,9 @@ require_once BASE_PATH . '/src/Http/Controllers/CommunityController.php';
 require_once BASE_PATH . '/src/Http/Controllers/SciencesController.php';
 require_once BASE_PATH . '/src/Core/Search/IqraSearch.php';
 require_once BASE_PATH . '/src/Models/Page.php';
-require_once BASE_PATH . '/src/Models/QuranVerse.php';
+
 require_once BASE_PATH . '/src/Models/Hadith.php';
-require_once BASE_PATH . '/src/Models/IslamicCalendar.php';
+require_once BASE_PATH . '/src/Models/HijriCalendar.php';
 require_once BASE_PATH . '/src/Models/SalahTime.php';
 require_once BASE_PATH . '/src/Http/Controllers/AssetController.php';
 require_once BASE_PATH . '/src/Http/Controllers/WikiController.php';
@@ -90,6 +92,9 @@ use IslamWiki\Core\Http\Response;
 // Initialize Application (which creates its own container)
 error_log("MAIN ENTRY POINT: index.php is being executed");
 $app = new \IslamWiki\Core\NizamApplication(BASE_PATH);
+
+// Set global app variable for helper functions
+global $app;
 
 // Boot the application to start all systems including session
 $app->boot();
@@ -111,10 +116,12 @@ try {
     // Allow extensions to contribute global Twig variables (e.g., nav links)
     $hook = $extMgr->getHookManager();
     if (method_exists($view, 'addGlobals')) {
-        $globals = $hook->runLast('ComposeViewGlobals', [ [] ]);
-        if (!is_array($globals)) { $globals = []; }
+        $globals = $hook->runLast('ComposeViewGlobals', [[]]);
+        if (!is_array($globals)) {
+            $globals = [];
+        }
         if (empty($globals['extension_nav_links'])) {
-            $globals['extension_nav_links'] = [ [ 'href' => '/docs', 'label' => 'Docs' ] ];
+            $globals['extension_nav_links'] = [['href' => '/docs', 'label' => 'Docs']];
         }
         $view->addGlobals($globals);
     }
@@ -137,6 +144,23 @@ global $router;
 // Load routes
 error_log("index.php: About to load routes");
 require_once BASE_PATH . '/routes/web.php';
+
+// Register extension routes now that router is available
+try {
+    if ($container->has(\IslamWiki\Core\Extensions\ExtensionManager::class)) {
+        $extMgr = $container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+        $loadedExtensions = $extMgr->getLoadedExtensions();
+
+        foreach ($loadedExtensions as $extension) {
+            if (method_exists($extension, 'registerRoutes')) {
+                $extension->registerRoutes();
+            }
+        }
+    }
+} catch (\Exception $e) {
+    error_log('Extension route registration error: ' . $e->getMessage());
+}
+
 // error_log("index.php: Routes loaded, router class: " . get_class($router));
 
 // Get current request

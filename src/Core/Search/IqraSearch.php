@@ -56,45 +56,70 @@ class IqraSearch
      */
     public function search(string $query, array $options = []): array
     {
-        $query = $this->normalizeQuery($query);
-        $searchType = $options['type'] ?? 'all';
-        $page = (int) ($options['page'] ?? 1);
-        $limit = (int) ($options['limit'] ?? 20);
-        $offset = (int) (($page - 1) * $limit);
+        try {
+            $query = $this->normalizeQuery($query);
 
-        $results = [];
+            if (empty($query)) {
+                return [
+                    'results' => [],
+                    'total' => 0,
+                    'query' => $query,
+                    'type' => $options['type'] ?? 'all',
+                    'page' => 1,
+                    'limit' => 20,
+                    'error' => 'Empty search query'
+                ];
+            }
 
-        switch ($searchType) {
-            case 'pages':
-                $results = $this->searchPages($query, $offset, $limit);
-                break;
-            case 'quran':
-                $results = $this->searchQuran($query, $offset, $limit);
-                break;
-            case 'hadith':
-                $results = $this->searchHadith($query, $offset, $limit);
-                break;
-            case 'calendar':
-                $results = $this->searchCalendar($query, $offset, $limit);
-                break;
-            case 'prayer':
-                $results = $this->searchPrayer($query, $offset, $limit);
-                break;
-            case 'scholars':
-                $results = $this->searchScholars($query, $offset, $limit);
-                break;
-            default:
-                $results = $this->searchAll($query, $offset, $limit);
+            $searchType = $options['type'] ?? 'all';
+            $page = max(1, (int) ($options['page'] ?? 1));
+            $limit = min(100, max(1, (int) ($options['limit'] ?? 20)));
+            $offset = (int) (($page - 1) * $limit);
+
+            $results = [];
+
+            switch ($searchType) {
+                case 'pages':
+                    $results = $this->searchPages($query, $offset, $limit);
+                    break;
+                case 'quran':
+                    $results = $this->searchQuran($query, $offset, $limit);
+                    break;
+                case 'hadith':
+                    $results = $this->searchHadith($query, $offset, $limit);
+                    break;
+                case 'calendar':
+                    $results = $this->searchCalendar($query, $offset, $limit);
+                    break;
+                case 'salah':
+                    $results = $this->searchSalah($query, $offset, $limit);
+                    break;
+                case 'scholars':
+                    $results = $this->searchScholars($query, $offset, $limit);
+                    break;
+                default:
+                    $results = $this->searchAll($query, $offset, $limit);
+            }
+
+            return [
+                'results' => $results,
+                'total' => $this->getTotalCount($query, $searchType),
+                'query' => $query,
+                'type' => $searchType,
+                'page' => $page,
+                'limit' => $limit
+            ];
+        } catch (Exception $e) {
+            return [
+                'results' => [],
+                'total' => 0,
+                'query' => $query ?? '',
+                'type' => $options['type'] ?? 'all',
+                'page' => 1,
+                'limit' => 20,
+                'error' => 'Search error: ' . $e->getMessage()
+            ];
         }
-
-        return [
-            'results' => $results,
-            'total' => $this->getTotalCount($query, $searchType),
-            'query' => $query,
-            'type' => $searchType,
-            'page' => $page,
-            'limit' => $limit
-        ];
     }
 
     /**
@@ -138,7 +163,7 @@ class IqraSearch
     }
 
     /**
-     * Search Quran verses with Islamic term optimization
+     * Search Quran ayahs with Islamic term optimization
      */
     protected function searchQuran(string $query, int $offset, int $limit): array
     {
@@ -149,11 +174,11 @@ class IqraSearch
                        vt.translation_text,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
-                FROM verses v
+                FROM ayahs v
                 JOIN surahs s ON v.surah_number = s.number
-                LEFT JOIN verse_translations vt ON v.id = vt.verse_id
+                LEFT JOIN ayah_translations vt ON v.id = vt.ayah_id
                 WHERE {$relevanceConditions['where']}
-                ORDER BY relevance_score DESC, v.surah_number ASC, v.verse_number ASC
+                ORDER BY relevance_score DESC, v.surah_number ASC, v.ayah_number ASC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
@@ -164,18 +189,18 @@ class IqraSearch
             $results[] = [
                 'type' => 'quran',
                 'id' => $row['id'],
-                'title' => "{$row['surah_name']} ({$row['surah_number']}:{$row['verse_number']})",
+                'title' => "{$row['surah_name']} ({$row['surah_number']}:{$row['ayah_number']})",
                 'surah_name' => $row['surah_name'],
                 'english_name' => $row['name_english'],
                 'arabic_name' => $row['name_arabic'],
-                'verse_number' => $row['verse_number'],
+                'ayah_number' => $row['ayah_number'],
                 'surah_number' => $row['surah_number'],
                 'arabic_text' => $row['text_arabic'],
                 'translation' => $row['translation_text'],
                 'excerpt' => $this->createHighlightedExcerpt($row['translation_text'] ?? '', $query),
                 'relevance' => $row['relevance_score'],
                 'match_count' => $row['match_count'],
-                'url' => "/quran/verse/{$row['surah_number']}/{$row['verse_number']}"
+                'url' => "/quran/{$row['surah_number']}/{$row['ayah_number']}"
             ];
         }
 
@@ -268,17 +293,17 @@ class IqraSearch
     }
 
     /**
-     * Search prayer times
+     * Search salah times
      */
-    protected function searchPrayer(string $query, int $offset, int $limit): array
+    protected function searchSalah(string $query, int $offset, int $limit): array
     {
         $words = $this->tokenizeQuery($query);
-        $relevanceConditions = $this->buildPrayerRelevanceConditions($words);
+        $relevanceConditions = $this->buildSalahRelevanceConditions($words);
 
         $sql = "SELECT pt.*, pt.location as location_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
-                FROM prayer_times pt
+                FROM salah_times pt
                 WHERE {$relevanceConditions['where']}
                 ORDER BY relevance_score DESC, pt.date DESC
                 LIMIT ? OFFSET ?";
@@ -289,13 +314,13 @@ class IqraSearch
         $results = [];
         while ($row = $stmt->fetch()) {
             $results[] = [
-                'type' => 'prayer',
+                'type' => 'salah',
                 'id' => $row['id'],
-                'title' => "Prayer Times - {$row['location_name']}",
+                'title' => "Salah Times - {$row['location_name']}",
                 'city' => null,
                 'country' => null,
                 'location_name' => $row['location_name'],
-                'prayer_date' => $row['date'],
+                'salah_date' => $row['date'],
                 'fajr' => $row['fajr'],
                 'dhuhr' => $row['dhuhr'],
                 'asr' => $row['asr'],
@@ -303,7 +328,7 @@ class IqraSearch
                 'isha' => $row['isha'],
                 'relevance' => $row['relevance_score'],
                 'match_count' => $row['match_count'],
-                'url' => "/prayer/show/{$row['prayer_date']}/{$row['location_id']}"
+                'url' => "/salah/show/{$row['salah_date']}/{$row['location_id']}"
             ];
         }
 
@@ -365,11 +390,11 @@ class IqraSearch
         $quran = $this->searchQuran($query, 0, $subLimit);
         $hadith = $this->searchHadith($query, 0, $subLimit);
         $calendar = $this->searchCalendar($query, 0, $subLimit);
-        $prayer = $this->searchPrayer($query, 0, $subLimit);
+        $salah = $this->searchSalah($query, 0, $subLimit);
         $scholars = $this->searchScholars($query, 0, $subLimit);
 
         // Combine and normalize relevance scores
-        $allResults = array_merge($pages, $quran, $hadith, $calendar, $prayer, $scholars);
+        $allResults = array_merge($pages, $quran, $hadith, $calendar, $salah, $scholars);
 
         // Apply content type weighting
         $allResults = $this->applyContentTypeWeighting($allResults);
@@ -535,7 +560,8 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
 
-            $matchCountParts[] = "CASE WHEN e.title LIKE ? OR e.description LIKE ? OR e.title_arabic LIKE ? OR c.name LIKE ? THEN 1 ELSE 0 END";
+            $matchCountParts[] = "CASE WHEN e.title LIKE ? OR e.description LIKE ? OR 
+                                  e.title_arabic LIKE ? OR c.name LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -555,9 +581,9 @@ class IqraSearch
     }
 
     /**
-     * Build relevance conditions for prayer times
+     * Build relevance conditions for salah times
      */
-    protected function buildPrayerRelevanceConditions(array $words): array
+    protected function buildSalahRelevanceConditions(array $words): array
     {
         $conditions = [];
         $params = [];
@@ -615,7 +641,8 @@ class IqraSearch
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
 
-            $matchCountParts[] = "CASE WHEN s.name LIKE ? OR s.arabic_name LIKE ? OR s.biography LIKE ? OR s.specialization LIKE ? THEN 1 ELSE 0 END";
+            $matchCountParts[] = "CASE WHEN s.name LIKE ? OR s.arabic_name LIKE ? OR 
+                                  s.biography LIKE ? OR s.specialization LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
             $params[] = "%{$word}%";
@@ -645,7 +672,7 @@ class IqraSearch
             'scholar' => 1.2,    // High priority for scholars
             'calendar' => 1.1,   // Medium-high for events
             'page' => 1.0,       // Standard weight for pages
-            'prayer' => 0.9      // Lower weight for prayer times
+            'salah' => 0.9      // Lower weight for salah times
         ];
 
         foreach ($results as &$result) {
@@ -689,6 +716,64 @@ class IqraSearch
         }
 
         return array_unique($tokens);
+    }
+
+    /**
+     * Get fuzzy search variations for a word
+     */
+    public function getFuzzyVariations(string $word): array
+    {
+        $variations = [$word];
+
+        // Add common transliterations for Islamic terms
+        $transliterations = [
+            'allah' => ['الله', 'al-lah', 'al lah'],
+            'muhammad' => ['محمد', 'mohammed', 'mohammad', 'mohamed'],
+            'quran' => ['قرآن', 'koran', 'quran'],
+            'hadith' => ['حديث', 'hadeeth', 'hadees'],
+            'salah' => ['صلاة', 'salah', 'namaz'],
+            'ramadan' => ['رمضان', 'ramazan', 'ramadhan'],
+            'eid' => ['عيد', 'id', 'eid'],
+            'hajj' => ['حج', 'haj', 'hajj'],
+            'umrah' => ['عمرة', 'umra', 'umrah'],
+            'zakat' => ['زكاة', 'zakat', 'zakaat'],
+            'sadaqah' => ['صدقة', 'sadaqa', 'sadaqah'],
+            'jannah' => ['جنة', 'janna', 'jannah'],
+            'akhirah' => ['آخرة', 'akhira', 'akhirah'],
+            'taqwa' => ['تقوى', 'taqwa', 'taqwah'],
+            'iman' => ['إيمان', 'eeman', 'iman'],
+            'islam' => ['إسلام', 'islam', 'islaam'],
+            'muslim' => ['مسلم', 'muslim', 'muslim'],
+            'sahaba' => ['صحابة', 'sahaba', 'sahabah'],
+            'tabiun' => ['تابعون', 'tabiun', 'tabiun'],
+            'madhhab' => ['مذهب', 'madhhab', 'madhhab'],
+            'fiqh' => ['فقه', 'fiqh', 'fiqh'],
+            'usul' => ['أصول', 'usul', 'usool'],
+            'aqeedah' => ['عقيدة', 'aqeedah', 'aqidah'],
+            'tawhid' => ['توحيد', 'tawhid', 'tawheed'],
+            'shirk' => ['شرك', 'shirk', 'shirk'],
+            'bidah' => ['بدعة', 'bidah', 'bida'],
+            'sunnah' => ['سنة', 'sunnah', 'sunnah'],
+            'dua' => ['دعاء', 'dua', 'duaa'],
+            'dhikr' => ['ذكر', 'dhikr', 'dhikr'],
+            'tasbih' => ['تسبيح', 'tasbih', 'tasbeeh'],
+            'istighfar' => ['استغفار', 'istighfar', 'istighfar'],
+            'bismillah' => ['بسم الله', 'bismillah', 'bismillah'],
+            'alhamdulillah' => ['الحمد لله', 'alhamdulillah', 'alhamdulillah'],
+            'mashallah' => ['ما شاء الله', 'mashallah', 'masha allah'],
+            'inshallah' => ['إن شاء الله', 'inshallah', 'in sha allah'],
+            'astaghfirullah' => ['أستغفر الله', 'astaghfirullah', 'astaghfirullah'],
+            'subhanallah' => ['سبحان الله', 'subhanallah', 'subhanallah'],
+            'allahumma' => ['اللهم', 'allahumma', 'allahumma'],
+            'ya allah' => ['يا الله', 'ya allah', 'ya allah']
+        ];
+
+        $wordLower = strtolower($word);
+        if (isset($transliterations[$wordLower])) {
+            $variations = array_merge($variations, $transliterations[$wordLower]);
+        }
+
+        return array_unique($variations);
     }
 
     /**
@@ -751,8 +836,8 @@ class IqraSearch
                 return $this->getHadithCount($words);
             case 'calendar':
                 return $this->getCalendarCount($words);
-            case 'prayer':
-                return $this->getPrayerCount($words);
+            case 'salah':
+                return $this->getSalahCount($words);
             case 'scholars':
                 return $this->getScholarCount($words);
             default:
@@ -804,7 +889,10 @@ class IqraSearch
             $params[] = "%{$word}%";
         }
 
-        $sql = "SELECT COUNT(*) FROM verses v JOIN surahs s ON v.surah_number = s.number LEFT JOIN verse_translations vt ON v.id = vt.verse_id WHERE " . implode(" OR ", $conditions);
+        $sql = "SELECT COUNT(*) FROM ayahs v 
+                JOIN surahs s ON v.surah_number = s.number 
+                LEFT JOIN ayah_translations vt ON v.id = vt.ayah_id 
+                WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
@@ -857,7 +945,9 @@ class IqraSearch
             $params[] = "%{$word}%";
         }
 
-        $sql = "SELECT COUNT(*) FROM islamic_events e LEFT JOIN event_categories c ON e.category_id = c.id WHERE " . implode(" OR ", $conditions);
+        $sql = "SELECT COUNT(*) FROM islamic_events e 
+                LEFT JOIN event_categories c ON e.category_id = c.id 
+                WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
@@ -865,9 +955,9 @@ class IqraSearch
     }
 
     /**
-     * Get count for prayer times
+     * Get count for salah times
      */
-    public function getPrayerCount(array $words): int
+    public function getSalahCount(array $words): int
     {
         if (empty($words)) {
             return 0;
@@ -881,7 +971,7 @@ class IqraSearch
             $params[] = "%{$word}%";
         }
 
-        $sql = "SELECT COUNT(*) FROM prayer_times pt WHERE " . implode(" OR ", $conditions);
+        $sql = "SELECT COUNT(*) FROM salah_times pt WHERE " . implode(" OR ", $conditions);
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
@@ -924,7 +1014,7 @@ class IqraSearch
                $this->getQuranCount($words) +
                $this->getHadithCount($words) +
                $this->getCalendarCount($words) +
-               $this->getPrayerCount($words) +
+               $this->getSalahCount($words) +
                $this->getScholarCount($words);
     }
 
@@ -935,7 +1025,7 @@ class IqraSearch
     {
         $this->islamicTerms = [
             'allah', 'muhammad', 'quran', 'hadith', 'sunnah', 'shariah', 'halal', 'haram',
-            'salah', 'prayer', 'ramadan', 'eid', 'hajj', 'umrah', 'zakat', 'sadaqah',
+            'salah', 'ramadan', 'eid', 'hajj', 'umrah', 'zakat', 'sadaqah',
             'jannah', 'akhirah', 'taqwa', 'iman', 'islam', 'muslim', 'sahaba', 'tabiun',
             'madhhab', 'fiqh', 'usul', 'aqeedah', 'tawhid', 'shirk', 'bidah', 'sunnah',
             'dua', 'dhikr', 'tasbih', 'istighfar', 'bismillah', 'alhamdulillah', 'mashallah',
@@ -961,6 +1051,37 @@ class IqraSearch
             'كان', 'كانت', 'يكون', 'تكون', 'أنا', 'أنت', 'هو', 'هي', 'نحن', 'أنتم',
             'هم', 'هن', 'لي', 'لك', 'له', 'لها', 'لنا', 'لكم', 'لهم', 'لهن'
         ];
+    }
+
+    /**
+     * Enhanced search with fuzzy matching
+     */
+    public function enhancedSearch(string $query, array $options = []): array
+    {
+        $originalQuery = $query;
+        $query = $this->normalizeQuery($query);
+
+        if (empty($query)) {
+            return $this->search($originalQuery, $options);
+        }
+
+        // Get fuzzy variations for each word
+        $words = $this->tokenizeQuery($query);
+        $enhancedWords = [];
+
+        foreach ($words as $word) {
+            $variations = $this->getFuzzyVariations($word);
+            $enhancedWords = array_merge($enhancedWords, $variations);
+        }
+
+        // Perform search with enhanced query
+        $enhancedQuery = implode(' ', array_unique($enhancedWords));
+
+        // Store original query for reference
+        $options['original_query'] = $originalQuery;
+        $options['enhanced_query'] = $enhancedQuery;
+
+        return $this->search($enhancedQuery, $options);
     }
 
     /**
@@ -991,20 +1112,20 @@ class IqraSearch
         }
 
         // Get Quran suggestions
-        $sql = "SELECT s.name_english as surah_name, v.verse_number, v.surah_number 
-                FROM verses v 
+        $sql = "SELECT s.name_english as surah_name, v.ayah_number, v.surah_number 
+                FROM ayahs v 
                 JOIN surahs s ON v.surah_number = s.number 
-                LEFT JOIN verse_translations vt ON v.id = vt.verse_id
+                LEFT JOIN ayah_translations vt ON v.id = vt.ayah_id
                 WHERE vt.translation_text LIKE ? OR s.name_english LIKE ?
-                ORDER BY v.surah_number ASC, v.verse_number ASC LIMIT 3";
+                ORDER BY v.surah_number ASC, v.ayah_number ASC LIMIT 3";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(["%$query%", "%$query%"]);
 
         while ($row = $stmt->fetch()) {
             $suggestions[] = [
                 'type' => 'quran',
-                'text' => "{$row['surah_name']} {$row['verse_number']}",
-                'url' => "/quran/verse/{$row['surah_number']}/{$row['verse_number']}"
+                'text' => "{$row['surah_name']} {$row['ayah_number']}",
+                'url' => "/quran/{$row['surah_number']}/{$row['ayah_number']}"
             ];
         }
 
@@ -1049,7 +1170,7 @@ class IqraSearch
                 'quran' => $this->getQuranCount($words),
                 'hadith' => $this->getHadithCount($words),
                 'calendar' => $this->getCalendarCount($words),
-                'prayer' => $this->getPrayerCount($words),
+                'salah' => $this->getSalahCount($words),
                 'scholars' => $this->getScholarCount($words)
             ],
             'relevance_insights' => [
@@ -1080,7 +1201,7 @@ class IqraSearch
 
         $islamicTerms = [
             'allah', 'muhammad', 'quran', 'hadith', 'sunnah', 'shariah', 'halal', 'haram',
-            'salah', 'prayer', 'ramadan', 'eid', 'hajj', 'umrah', 'zakat', 'sadaqah'
+            'salah', 'ramadan', 'eid', 'hajj', 'umrah', 'zakat', 'sadaqah'
         ];
 
         foreach ($islamicTerms as $term) {
@@ -1116,7 +1237,7 @@ class IqraSearch
         $suggestions = [];
 
         // Add common Islamic terms to the query
-        $islamicTerms = ['allah', 'quran', 'hadith', 'prayer', 'ramadan'];
+        $islamicTerms = ['allah', 'quran', 'hadith', 'salah', 'ramadan'];
 
         foreach ($islamicTerms as $term) {
             if (strpos(strtolower($query), $term) === false) {
@@ -1142,7 +1263,7 @@ class IqraSearch
                     break;
                 case 'quran':
                     $topics[] = 'Surah';
-                    $topics[] = 'Verses';
+                    $topics[] = 'Ayahs';
                     $topics[] = 'Recitation';
                     break;
                 case 'hadith':
@@ -1150,14 +1271,75 @@ class IqraSearch
                     $topics[] = 'Narrators';
                     $topics[] = 'Authenticity';
                     break;
-                case 'prayer':
+                case 'salah':
                     $topics[] = 'Salah';
-                    $topics[] = 'Prayer Times';
+                    $topics[] = 'Salah Times';
                     $topics[] = 'Mosque';
                     break;
             }
         }
 
         return array_unique($topics);
+    }
+
+    /**
+     * Get search performance metrics
+     */
+    public function getSearchMetrics(): array
+    {
+        return [
+            'total_searches' => $this->getTotalSearchCount(),
+            'popular_queries' => $this->getPopularQueries(),
+            'search_performance' => [
+                'average_response_time' => $this->getAverageResponseTime(),
+                'cache_hit_rate' => $this->getCacheHitRate(),
+                'most_searched_content_types' => $this->getMostSearchedContentTypes()
+            ]
+        ];
+    }
+
+    /**
+     * Get total search count (placeholder for future implementation)
+     */
+    protected function getTotalSearchCount(): int
+    {
+        // TODO: Implement search logging and counting
+        return 0;
+    }
+
+    /**
+     * Get popular queries (placeholder for future implementation)
+     */
+    protected function getPopularQueries(): array
+    {
+        // TODO: Implement search query analytics
+        return [];
+    }
+
+    /**
+     * Get average response time (placeholder for future implementation)
+     */
+    protected function getAverageResponseTime(): float
+    {
+        // TODO: Implement performance monitoring
+        return 0.0;
+    }
+
+    /**
+     * Get cache hit rate (placeholder for future implementation)
+     */
+    protected function getCacheHitRate(): float
+    {
+        // TODO: Implement cache monitoring
+        return 0.0;
+    }
+
+    /**
+     * Get most searched content types (placeholder for future implementation)
+     */
+    protected function getMostSearchedContentTypes(): array
+    {
+        // TODO: Implement content type analytics
+        return [];
     }
 }

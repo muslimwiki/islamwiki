@@ -15,589 +15,350 @@
 declare(strict_types=1);
 
 use IslamWiki\Core\Database\Migrations\Migration;
+use IslamWiki\Core\Database\Connection;
 
-class Migration_0014_AdvancedIslamicFeatures extends Migration
-{
-    /**
-     * Run the migration.
-     */
-    public function up(): void
+return function (Connection $connection) {
+    return new class ($connection) extends Migration
     {
-        // Islamic content table
-        $this->createTable('islamic_content', function ($table) {
-            $table->id();
-            $table->string('title', 255)->comment('Content title');
-            $table->text('content')->comment('Content body');
-            $table->string('category', 50)->comment('Content category');
-            $table->json('tags')->nullable()->comment('Content tags');
-            $table->string('author', 100)->nullable()->comment('Content author');
-            $table->string('source', 255)->nullable()->comment('Content source');
-            $table->text('summary')->nullable()->comment('Content summary');
-            $table->string('language', 10)->default('en')->comment('Content language');
-            $table->boolean('is_published')->default(false)->comment('Whether content is published');
-            $table->boolean('is_featured')->default(false)->comment('Whether content is featured');
-            $table->boolean('is_verified')->default(false)->comment('Whether content is verified by scholars');
-            $table->integer('view_count')->default(0)->comment('Number of views');
-            $table->integer('like_count')->default(0)->comment('Number of likes');
-            $table->integer('share_count')->default(0)->comment('Number of shares');
-            $table->integer('comment_count')->default(0)->comment('Number of comments');
-            $table->timestamps();
+        /**
+         * Run the migration.
+         */
+        public function up(): void
+        {
+            // Islamic content table
+            $this->schema()->create('islamic_content', function ($table) {
+                $table->id();
+                $table->string('title', 255)->comment('Content title');
+                $table->text('content')->comment('Content body');
+                $table->string('category', 50)->comment('Content category');
+                $table->json('tags')->nullable()->comment('Content tags');
+                $table->string('author', 100)->nullable()->comment('Content author');
+                $table->string('source', 255)->nullable()->comment('Content source');
+                $table->text('summary')->nullable()->comment('Content summary');
+                $table->string('language', 10)->default('en')->comment('Content language');
+                $table->boolean('is_published')->default(false)->comment('Whether content is published');
+                $table->boolean('is_featured')->default(false)->comment('Whether content is featured');
+                $table->boolean('is_verified')->default(false)->comment('Whether content is verified by scholars');
+                $table->integer('view_count')->default(0)->comment('Number of views');
+                $table->integer('like_count')->default(0)->comment('Number of likes');
+                $table->integer('share_count')->default(0)->comment('Number of shares');
+                $table->integer('comment_count')->default(0)->comment('Number of comments');
+                $table->timestamps();
 
-            $table->index('category');
-            $table->index('is_published');
-            $table->index('is_featured');
-            $table->index('created_at');
-            $table->index('view_count');
-        });
+                $table->index('category');
+                $table->index('is_published');
+                $table->index('is_featured');
+                $table->index('created_at');
+                $table->index('view_count');
+            });
 
-        // User preferences table
-        $this->createTable('user_preferences', function ($table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->comment('User ID');
-            $table->json('preferences')->comment('User preferences JSON');
-            $table->string('language', 10)->default('en')->comment('Preferred language');
-            $table->string('timezone', 50)->nullable()->comment('User timezone');
-            $table->string('prayer_method', 20)->default('MWL')->comment('Prayer calculation method');
-            $table->boolean('notifications_enabled')->default(true)->comment('Whether notifications are enabled');
-            $table->json('notification_settings')->nullable()->comment('Notification settings JSON');
-            $table->timestamps();
+            // User preferences table
+            $this->schema()->create('user_preferences', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->comment('User ID');
+                $table->json('preferences')->comment('User preferences JSON');
+                $table->string('language', 10)->default('en')->comment('Preferred language');
+                $table->string('timezone', 50)->nullable()->comment('User timezone');
+                $table->string('prayer_method', 20)->default('MWL')->comment('Prayer calculation method');
+                $table->boolean('notifications_enabled')->default(true)->comment('Whether notifications are enabled');
+                $table->json('notification_settings')->nullable()->comment('Notification settings JSON');
+                $table->timestamps();
 
-            $table->unique('user_id');
-            $table->index('language');
-            $table->index('prayer_method');
-        });
+                $table->unique('user_id');
+                $table->index('language');
+                $table->index('prayer_method');
+            });
 
-        // User content history table
-        $this->createTable('user_content_history', function ($table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->comment('User ID');
-            $table->unsignedBigInteger('content_id')->comment('Content ID');
-            $table->string('category', 50)->comment('Content category');
-            $table->integer('view_duration')->nullable()->comment('View duration in seconds');
-            $table->boolean('completed')->default(false)->comment('Whether content was fully viewed');
-            $table->timestamp('viewed_at')->comment('When content was viewed');
-            $table->timestamps();
+            // User content history table
+            $this->schema()->create('user_content_history', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->comment('User ID');
+                $table->unsignedBigInteger('content_id')->comment('Content ID');
+                $table->string('category', 50)->comment('Content category');
+                $table->integer('view_duration')->nullable()->comment('View duration in seconds');
+                $table->boolean('completed')->default(false)->comment('Whether content was fully viewed');
+                $table->timestamp('viewed_at')->comment('When content was viewed');
+                $table->timestamps();
 
-            $table->index('user_id');
-            $table->index('content_id');
-            $table->index('category');
-            $table->index('viewed_at');
-        });
+                $table->index('user_id');
+                $table->index('content_id');
+                $table->index('category');
+                $table->index('viewed_at');
+            });
 
-        // User comments table
-        $this->createTable('user_comments', function ($table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->comment('User ID');
-            $table->unsignedBigInteger('content_id')->comment('Content ID');
-            $table->text('comment')->comment('Comment text');
-            $table->boolean('is_approved')->default(false)->comment('Whether comment is approved');
-            $table->boolean('is_flagged')->default(false)->comment('Whether comment is flagged');
-            $table->integer('like_count')->default(0)->comment('Number of likes');
-            $table->integer('reply_count')->default(0)->comment('Number of replies');
-            $table->unsignedBigInteger('parent_id')->nullable()->comment('Parent comment ID');
-            $table->timestamps();
+            // User comments table
+            $this->schema()->create('user_comments', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->comment('User ID');
+                $table->unsignedBigInteger('content_id')->comment('Content ID');
+                $table->text('comment')->comment('Comment text');
+                $table->boolean('is_approved')->default(false)->comment('Whether comment is approved');
+                $table->boolean('is_flagged')->default(false)->comment('Whether comment is flagged');
+                $table->integer('like_count')->default(0)->comment('Number of likes');
+                $table->integer('reply_count')->default(0)->comment('Number of replies');
+                $table->unsignedBigInteger('parent_id')->nullable()->comment('Parent comment ID');
+                $table->timestamps();
 
-            $table->index('user_id');
-            $table->index('content_id');
-            $table->index('is_approved');
-            $table->index('created_at');
-        });
+                $table->index('user_id');
+                $table->index('content_id');
+                $table->index('is_approved');
+                $table->index('parent_id');
+                $table->index('created_at');
+            });
 
-        // User likes table
-        $this->createTable('user_likes', function ($table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->comment('User ID');
-            $table->unsignedBigInteger('content_id')->comment('Content ID');
-            $table->enum('type', ['like', 'dislike'])->default('like')->comment('Like type');
-            $table->timestamps();
+            // Content categories table
+            $this->schema()->create('content_categories', function ($table) {
+                $table->id();
+                $table->string('name', 100)->comment('Category name');
+                $table->string('slug', 100)->unique()->comment('Category slug');
+                $table->text('description')->nullable()->comment('Category description');
+                $table->unsignedBigInteger('parent_id')->nullable()->comment('Parent category ID');
+                $table->integer('sort_order')->default(0)->comment('Sort order');
+                $table->boolean('is_active')->default(true)->comment('Whether category is active');
+                $table->timestamps();
 
-            $table->unique(['user_id', 'content_id']);
-            $table->index('content_id');
-            $table->index('type');
-        });
+                $table->index('parent_id');
+                $table->index('slug');
+                $table->index('is_active');
+                $table->index('sort_order');
+            });
 
-        // User shares table
-        $this->createTable('user_shares', function ($table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->comment('User ID');
-            $table->unsignedBigInteger('content_id')->comment('Content ID');
-            $table->string('platform', 50)->nullable()->comment('Sharing platform');
-            $table->text('comment')->nullable()->comment('Share comment');
-            $table->timestamps();
+            // Content tags table
+            $this->schema()->create('content_tags', function ($table) {
+                $table->id();
+                $table->string('name', 100)->comment('Tag name');
+                $table->string('slug', 100)->unique()->comment('Tag slug');
+                $table->text('description')->nullable()->comment('Tag description');
+                $table->string('color', 7)->nullable()->comment('Tag color (hex)');
+                $table->boolean('is_active')->default(true)->comment('Whether tag is active');
+                $table->timestamps();
 
-            $table->index('user_id');
-            $table->index('content_id');
-            $table->index('platform');
-        });
+                $table->index('slug');
+                $table->index('is_active');
+            });
 
-        // Islamic events table
-        $this->createTable('islamic_events', function ($table) {
-            $table->id();
-            $table->string('name', 100)->comment('Event name');
-            $table->string('name_arabic', 100)->comment('Event name in Arabic');
-            $table->text('description')->nullable()->comment('Event description');
-            $table->string('hijri_month', 2)->comment('Hijri month');
-            $table->string('hijri_day', 2)->comment('Hijri day');
-            $table->enum('type', ['religious', 'historical', 'cultural'])->default('religious')->comment('Event type');
-            $table->boolean('is_public_holiday')->default(false)->comment('Whether it is a public holiday');
-            $table->json('custom_dates')->nullable()->comment('Custom dates for the event');
-            $table->timestamps();
+            // Content tag assignments table
+            $this->schema()->create('content_tag_assignments', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('content_id')->comment('Content ID');
+                $table->unsignedBigInteger('tag_id')->comment('Tag ID');
+                $table->timestamps();
 
-            $table->index(['hijri_month', 'hijri_day']);
-            $table->index('type');
-            $table->index('is_public_holiday');
-        });
+                $table->unique(['content_id', 'tag_id']);
+                $table->index('content_id');
+                $table->index('tag_id');
+            });
 
-        // Prayer times cache table
-        $this->createTable('prayer_times_cache', function ($table) {
-            $table->id();
-            $table->float('latitude')->comment('Location latitude');
-            $table->float('longitude')->comment('Location longitude');
-            $table->date('date')->comment('Prayer date');
-            $table->string('method', 20)->comment('Calculation method');
-            $table->json('prayer_times')->comment('Prayer times JSON');
-            $table->json('qibla_direction')->comment('Qibla direction JSON');
-            $table->json('lunar_phase')->comment('Lunar phase JSON');
-            $table->timestamps();
+            // Islamic events table
+            $this->schema()->create('islamic_events', function ($table) {
+                $table->id();
+                $table->string('title', 255)->comment('Event title');
+                $table->text('description')->nullable()->comment('Event description');
+                $table->date('hijri_date')->comment('Hijri date');
+                $table->date('gregorian_date')->comment('Gregorian date');
+                $table->string('event_type', 50)->comment('Event type (religious, historical, cultural)');
+                $table->string('significance', 50)->comment('Event significance (high, medium, low)');
+                $table->json('locations')->nullable()->comment('Event locations');
+                $table->json('participants')->nullable()->comment('Event participants');
+                $table->text('source_references')->nullable()->comment('Source references');
+                $table->boolean('is_verified')->default(false)->comment('Whether event is verified');
+                $table->timestamps();
 
-            $table->unique(['latitude', 'longitude', 'date', 'method']);
-            $table->index('date');
-            $table->index('method');
-        });
+                $table->index('hijri_date');
+                $table->index('gregorian_date');
+                $table->index('event_type');
+                $table->index('significance');
+                $table->index('is_verified');
+            });
 
-        // Islamic content categories table
-        $this->createTable('islamic_content_categories', function ($table) {
-            $table->id();
-            $table->string('name', 50)->unique()->comment('Category name');
-            $table->string('display_name', 100)->comment('Category display name');
-            $table->string('display_name_arabic', 100)->comment('Category display name in Arabic');
-            $table->text('description')->nullable()->comment('Category description');
-            $table->string('icon', 50)->nullable()->comment('Category icon');
-            $table->string('color', 7)->nullable()->comment('Category color');
-            $table->integer('sort_order')->default(0)->comment('Sort order');
-            $table->boolean('is_active')->default(true)->comment('Whether category is active');
-            $table->timestamps();
+            // User study sessions table
+            $this->schema()->create('user_study_sessions', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->comment('User ID');
+                $table->string('session_type', 50)->comment('Session type (quran, hadith, fiqh, etc.)');
+                $table->timestamp('started_at')->comment('When session started');
+                $table->timestamp('ended_at')->nullable()->comment('When session ended');
+                $table->integer('duration_minutes')->nullable()->comment('Session duration in minutes');
+                $table->json('materials_studied')->nullable()->comment('Materials studied during session');
+                $table->text('notes')->nullable()->comment('Session notes');
+                $table->integer('focus_score')->nullable()->comment('Focus score (1-10)');
+                $table->timestamps();
 
-            $table->index('sort_order');
-            $table->index('is_active');
-        });
+                $table->index('user_id');
+                $table->index('session_type');
+                $table->index('started_at');
+                $table->index('ended_at');
+            });
 
-        // Islamic content tags table
-        $this->createTable('islamic_content_tags', function ($table) {
-            $table->id();
-            $table->string('name', 50)->unique()->comment('Tag name');
-            $table->string('display_name', 100)->comment('Tag display name');
-            $table->string('display_name_arabic', 100)->comment('Tag display name in Arabic');
-            $table->text('description')->nullable()->comment('Tag description');
-            $table->string('color', 7)->nullable()->comment('Tag color');
-            $table->integer('usage_count')->default(0)->comment('Number of times tag is used');
-            $table->boolean('is_active')->default(true)->comment('Whether tag is active');
-            $table->timestamps();
+            // User learning progress table
+            $this->schema()->create('user_learning_progress', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->comment('User ID');
+                $table->string('subject', 100)->comment('Learning subject');
+                $table->string('topic', 100)->comment('Learning topic');
+                $table->integer('progress_percentage')->default(0)->comment('Progress percentage (0-100)');
+                $table->integer('time_spent_minutes')->default(0)->comment('Total time spent in minutes');
+                $table->integer('lessons_completed')->default(0)->comment('Number of lessons completed');
+                $table->integer('total_lessons')->default(0)->comment('Total number of lessons');
+                $table->timestamp('last_studied_at')->nullable()->comment('When last studied');
+                $table->json('achievements')->nullable()->comment('Achievements earned');
+                $table->timestamps();
 
-            $table->index('usage_count');
-            $table->index('is_active');
-        });
+                $table->unique(['user_id', 'subject', 'topic']);
+                $table->index('user_id');
+                $table->index('subject');
+                $table->index('progress_percentage');
+                $table->index('last_studied_at');
+            });
 
-        // Insert default Islamic content categories
-        $this->insertDefaultCategories();
-
-        // Insert default Islamic content tags
-        $this->insertDefaultTags();
-
-        // Insert major Islamic events
-        $this->insertIslamicEvents();
-    }
-
-    /**
-     * Reverse the migration.
-     */
-    public function down(): void
-    {
-        $this->dropTable('islamic_content_tags');
-        $this->dropTable('islamic_content_categories');
-        $this->dropTable('prayer_times_cache');
-        $this->dropTable('islamic_events');
-        $this->dropTable('user_shares');
-        $this->dropTable('user_likes');
-        $this->dropTable('user_comments');
-        $this->dropTable('user_content_history');
-        $this->dropTable('user_preferences');
-        $this->dropTable('islamic_content');
-    }
-
-    /**
-     * Insert default Islamic content categories.
-     */
-    private function insertDefaultCategories(): void
-    {
-        $categories = [
-            [
-                'name' => 'quran',
-                'display_name' => 'Quran & Tafsir',
-                'display_name_arabic' => 'القرآن والتفسير',
-                'description' => 'Quranic studies, tafsir, and interpretation',
-                'icon' => 'book-open',
-                'color' => '#1f2937',
-                'sort_order' => 1
-            ],
-            [
-                'name' => 'hadith',
-                'display_name' => 'Hadith & Sunnah',
-                'display_name_arabic' => 'الحديث والسنة',
-                'description' => 'Prophetic traditions and sayings',
-                'icon' => 'chat-bubble-left-right',
-                'color' => '#059669',
-                'sort_order' => 2
-            ],
-            [
-                'name' => 'fiqh',
-                'display_name' => 'Islamic Law & Jurisprudence',
-                'display_name_arabic' => 'الفقه والأحكام',
-                'description' => 'Islamic legal rulings and jurisprudence',
-                'icon' => 'scale',
-                'color' => '#dc2626',
-                'sort_order' => 3
-            ],
-            [
-                'name' => 'aqeedah',
-                'display_name' => 'Islamic Beliefs & Creed',
-                'display_name_arabic' => 'العقيدة والإيمان',
-                'description' => 'Islamic theology and beliefs',
-                'icon' => 'heart',
-                'color' => '#7c3aed',
-                'sort_order' => 4
-            ],
-            [
-                'name' => 'seerah',
-                'display_name' => 'Prophet Muhammad (PBUH)',
-                'display_name_arabic' => 'سيرة النبي محمد ﷺ',
-                'description' => 'Life and teachings of Prophet Muhammad',
-                'icon' => 'user',
-                'color' => '#ea580c',
-                'sort_order' => 5
-            ],
-            [
-                'name' => 'history',
-                'display_name' => 'Islamic History',
-                'display_name_arabic' => 'التاريخ الإسلامي',
-                'description' => 'Islamic historical events and figures',
-                'icon' => 'clock',
-                'color' => '#0891b2',
-                'sort_order' => 6
-            ],
-            [
-                'name' => 'scholars',
-                'display_name' => 'Islamic Scholars',
-                'display_name_arabic' => 'العلماء والمفكرون',
-                'description' => 'Biographies and works of Islamic scholars',
-                'icon' => 'academic-cap',
-                'color' => '#65a30d',
-                'sort_order' => 7
-            ],
-            [
-                'name' => 'prayer',
-                'display_name' => 'Prayer & Worship',
-                'display_name_arabic' => 'الصلاة والعبادة',
-                'description' => 'Prayer, worship, and spiritual practices',
-                'icon' => 'hands-praying',
-                'color' => '#059669',
-                'sort_order' => 8
-            ],
-            [
-                'name' => 'ramadan',
-                'display_name' => 'Ramadan & Fasting',
-                'display_name_arabic' => 'رمضان والصيام',
-                'description' => 'Ramadan, fasting, and spiritual practices',
-                'icon' => 'moon',
-                'color' => '#7c3aed',
-                'sort_order' => 9
-            ],
-            [
-                'name' => 'hajj',
-                'display_name' => 'Hajj & Umrah',
-                'display_name_arabic' => 'الحج والعمرة',
-                'description' => 'Pilgrimage and sacred journeys',
-                'icon' => 'building-library',
-                'color' => '#dc2626',
-                'sort_order' => 10
-            ],
-            [
-                'name' => 'charity',
-                'display_name' => 'Charity & Zakat',
-                'display_name_arabic' => 'الصدقة والزكاة',
-                'description' => 'Charity, zakat, and social responsibility',
-                'icon' => 'gift',
-                'color' => '#65a30d',
-                'sort_order' => 11
-            ],
-            [
-                'name' => 'family',
-                'display_name' => 'Family & Marriage',
-                'display_name_arabic' => 'الأسرة والزواج',
-                'description' => 'Family life, marriage, and relationships',
-                'icon' => 'users',
-                'color' => '#ea580c',
-                'sort_order' => 12
-            ],
-            [
-                'name' => 'education',
-                'display_name' => 'Islamic Education',
-                'display_name_arabic' => 'التعليم الإسلامي',
-                'description' => 'Islamic education and learning',
-                'icon' => 'academic-cap',
-                'color' => '#0891b2',
-                'sort_order' => 13
-            ],
-            [
-                'name' => 'modern',
-                'display_name' => 'Modern Islamic Issues',
-                'display_name_arabic' => 'القضايا الإسلامية المعاصرة',
-                'description' => 'Contemporary Islamic issues and challenges',
-                'icon' => 'globe-alt',
-                'color' => '#1f2937',
-                'sort_order' => 14
-            ]
-        ];
-
-        foreach ($categories as $category) {
-            $this->insert('islamic_content_categories', $category);
+            // Insert default data
+            $this->insertDefaultCategories();
+            $this->insertDefaultTags();
+            $this->insertIslamicEvents();
         }
-    }
 
-    /**
-     * Insert default Islamic content tags.
-     */
-    private function insertDefaultTags(): void
-    {
-        $tags = [
-            [
-                'name' => 'beginner',
-                'display_name' => 'Beginner Level',
-                'display_name_arabic' => 'مستوى المبتدئ',
-                'description' => 'Content suitable for beginners',
-                'color' => '#059669',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'intermediate',
-                'display_name' => 'Intermediate Level',
-                'display_name_arabic' => 'مستوى المتوسط',
-                'description' => 'Content suitable for intermediate learners',
-                'color' => '#ea580c',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'advanced',
-                'display_name' => 'Advanced Level',
-                'display_name_arabic' => 'مستوى المتقدم',
-                'description' => 'Content suitable for advanced learners',
-                'color' => '#dc2626',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'scholarly',
-                'display_name' => 'Scholarly Content',
-                'display_name_arabic' => 'محتوى علمي',
-                'description' => 'Academic and scholarly content',
-                'color' => '#7c3aed',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'practical',
-                'display_name' => 'Practical Guidance',
-                'display_name_arabic' => 'إرشادات عملية',
-                'description' => 'Practical guidance and advice',
-                'color' => '#65a30d',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'theoretical',
-                'display_name' => 'Theoretical Knowledge',
-                'display_name_arabic' => 'معرفة نظرية',
-                'description' => 'Theoretical and conceptual knowledge',
-                'color' => '#0891b2',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'historical',
-                'display_name' => 'Historical Context',
-                'display_name_arabic' => 'سياق تاريخي',
-                'description' => 'Historical context and background',
-                'color' => '#1f2937',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'contemporary',
-                'display_name' => 'Contemporary Issues',
-                'display_name_arabic' => 'قضايا معاصرة',
-                'description' => 'Contemporary issues and challenges',
-                'color' => '#ea580c',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'spiritual',
-                'display_name' => 'Spiritual Development',
-                'display_name_arabic' => 'التطور الروحي',
-                'description' => 'Spiritual development and growth',
-                'color' => '#7c3aed',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'social',
-                'display_name' => 'Social Issues',
-                'display_name_arabic' => 'قضايا اجتماعية',
-                'description' => 'Social issues and community',
-                'color' => '#059669',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'economic',
-                'display_name' => 'Economic Principles',
-                'display_name_arabic' => 'المبادئ الاقتصادية',
-                'description' => 'Islamic economic principles',
-                'color' => '#65a30d',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'political',
-                'display_name' => 'Political Thought',
-                'display_name_arabic' => 'الفكر السياسي',
-                'description' => 'Islamic political thought',
-                'color' => '#dc2626',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'scientific',
-                'display_name' => 'Scientific Perspective',
-                'display_name_arabic' => 'منظور علمي',
-                'description' => 'Scientific and empirical perspective',
-                'color' => '#0891b2',
-                'usage_count' => 0
-            ],
-            [
-                'name' => 'philosophical',
-                'display_name' => 'Philosophical Discussion',
-                'display_name_arabic' => 'مناقشة فلسفية',
-                'description' => 'Philosophical and intellectual discussion',
-                'color' => '#1f2937',
-                'usage_count' => 0
-            ]
-        ];
-
-        foreach ($tags as $tag) {
-            $this->insert('islamic_content_tags', $tag);
+        /**
+         * Reverse the migration.
+         */
+        public function down(): void
+        {
+            $this->schema()->drop('user_learning_progress');
+            $this->schema()->drop('user_study_sessions');
+            $this->schema()->drop('islamic_events');
+            $this->schema()->drop('content_tag_assignments');
+            $this->schema()->drop('content_tags');
+            $this->schema()->drop('content_categories');
+            $this->schema()->drop('user_comments');
+            $this->schema()->drop('user_content_history');
+            $this->schema()->drop('user_preferences');
+            $this->schema()->drop('islamic_content');
         }
-    }
 
-    /**
-     * Insert major Islamic events.
-     */
-    private function insertIslamicEvents(): void
-    {
-        $events = [
-            [
-                'name' => 'Ashura',
-                'name_arabic' => 'عاشوراء',
-                'description' => 'The 10th day of Muharram, commemorating the martyrdom of Husayn ibn Ali',
-                'hijri_month' => '01',
-                'hijri_day' => '10',
-                'type' => 'religious',
-                'is_public_holiday' => true
-            ],
-            [
-                'name' => 'Arbaeen',
-                'name_arabic' => 'الأربعين',
-                'description' => 'The 40th day after Ashura, marking the end of the mourning period',
-                'hijri_month' => '01',
-                'hijri_day' => '27',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'Mawlid al-Nabi',
-                'name_arabic' => 'مولد النبي',
-                'description' => 'The birthday of Prophet Muhammad (peace be upon him)',
-                'hijri_month' => '03',
-                'hijri_day' => '12',
-                'type' => 'religious',
-                'is_public_holiday' => true
-            ],
-            [
-                'name' => 'Laylat al-Miraj',
-                'name_arabic' => 'ليلة الإسراء والمعراج',
-                'description' => 'The night journey and ascension of Prophet Muhammad',
-                'hijri_month' => '07',
-                'hijri_day' => '27',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'Laylat al-Baraah',
-                'name_arabic' => 'ليلة البراءة',
-                'description' => 'The night of forgiveness and salvation',
-                'hijri_month' => '08',
-                'hijri_day' => '15',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'First day of Ramadan',
-                'name_arabic' => 'أول يوم من رمضان',
-                'description' => 'The beginning of the holy month of fasting',
-                'hijri_month' => '09',
-                'hijri_day' => '01',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'Laylat al-Qadr',
-                'name_arabic' => 'ليلة القدر',
-                'description' => 'The night of power, better than a thousand months',
-                'hijri_month' => '09',
-                'hijri_day' => '27',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'Eid al-Fitr',
-                'name_arabic' => 'عيد الفطر',
-                'description' => 'The festival of breaking the fast',
-                'hijri_month' => '10',
-                'hijri_day' => '01',
-                'type' => 'religious',
-                'is_public_holiday' => true
-            ],
-            [
-                'name' => 'Day of Arafah',
-                'name_arabic' => 'يوم عرفة',
-                'description' => 'The day of standing at Arafah during Hajj',
-                'hijri_month' => '12',
-                'hijri_day' => '08',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ],
-            [
-                'name' => 'Eid al-Adha',
-                'name_arabic' => 'عيد الأضحى',
-                'description' => 'The festival of sacrifice',
-                'hijri_month' => '12',
-                'hijri_day' => '10',
-                'type' => 'religious',
-                'is_public_holiday' => true
-            ],
-            [
-                'name' => 'Eid al-Ghadeer',
-                'name_arabic' => 'عيد الغدير',
-                'description' => 'The day of Ghadir Khumm',
-                'hijri_month' => '12',
-                'hijri_day' => '18',
-                'type' => 'religious',
-                'is_public_holiday' => false
-            ]
-        ];
+        /**
+         * Insert default content categories.
+         */
+        private function insertDefaultCategories(): void
+        {
+            $categories = [
+                ['name' => 'Quran Studies', 'slug' => 'quran-studies', 'description' => 'Quran recitation, memorization, and interpretation'],
+                ['name' => 'Hadith Studies', 'slug' => 'hadith-studies', 'description' => 'Hadith collection, authentication, and understanding'],
+                ['name' => 'Islamic Law (Fiqh)', 'slug' => 'islamic-law', 'description' => 'Islamic jurisprudence and legal rulings'],
+                ['name' => 'Islamic History', 'slug' => 'islamic-history', 'description' => 'Islamic civilization and historical events'],
+                ['name' => 'Islamic Ethics', 'slug' => 'islamic-ethics', 'description' => 'Moral teachings and character development'],
+                ['name' => 'Islamic Spirituality', 'slug' => 'islamic-spirituality', 'description' => 'Sufism and spiritual practices'],
+                ['name' => 'Islamic Art & Architecture', 'slug' => 'islamic-art', 'description' => 'Islamic artistic traditions and architectural styles'],
+                ['name' => 'Islamic Science', 'slug' => 'islamic-science', 'description' => 'Scientific contributions from Islamic civilization'],
+                ['name' => 'Contemporary Issues', 'slug' => 'contemporary-issues', 'description' => 'Modern Islamic challenges and solutions'],
+                ['name' => 'Interfaith Dialogue', 'slug' => 'interfaith-dialogue', 'description' => 'Building bridges between faiths']
+            ];
 
-        foreach ($events as $event) {
-            $this->insert('islamic_events', $event);
+            foreach ($categories as $category) {
+                $this->connection->table('content_categories')->insert([
+                    'name' => $category['name'],
+                    'slug' => $category['slug'],
+                    'description' => $category['description'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
         }
-    }
-}
+
+        /**
+         * Insert default content tags.
+         */
+        private function insertDefaultTags(): void
+        {
+            $tags = [
+                ['name' => 'Beginner', 'slug' => 'beginner', 'description' => 'Suitable for beginners', 'color' => '#28a745'],
+                ['name' => 'Intermediate', 'slug' => 'intermediate', 'description' => 'Suitable for intermediate learners', 'color' => '#ffc107'],
+                ['name' => 'Advanced', 'slug' => 'advanced', 'description' => 'Suitable for advanced learners', 'color' => '#dc3545'],
+                ['name' => 'Memorization', 'slug' => 'memorization', 'description' => 'Content for memorization', 'color' => '#17a2b8'],
+                ['name' => 'Recitation', 'slug' => 'recitation', 'description' => 'Content for recitation practice', 'color' => '#6f42c1'],
+                ['name' => 'Tafsir', 'slug' => 'tafsir', 'description' => 'Quranic interpretation', 'color' => '#fd7e14'],
+                ['name' => 'Authentic', 'slug' => 'authentic', 'description' => 'Authenticated content', 'color' => '#20c997'],
+                ['name' => 'Scholarly', 'slug' => 'scholarly', 'description' => 'Academic or scholarly content', 'color' => '#6c757d'],
+                ['name' => 'Practical', 'slug' => 'practical', 'description' => 'Practical application', 'color' => '#e83e8c'],
+                ['name' => 'Theoretical', 'slug' => 'theoretical', 'description' => 'Theoretical knowledge', 'color' => '#495057']
+            ];
+
+            foreach ($tags as $tag) {
+                $this->connection->table('content_tags')->insert([
+                    'name' => $tag['name'],
+                    'slug' => $tag['slug'],
+                    'description' => $tag['description'],
+                    'color' => $tag['color'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+
+        /**
+         * Insert default Islamic events.
+         */
+        private function insertIslamicEvents(): void
+        {
+            $events = [
+                [
+                    'title' => 'Laylat al-Qadr',
+                    'description' => 'The Night of Power, one of the holiest nights in Islam',
+                    'hijri_date' => '1445-09-27',
+                    'gregorian_date' => '2024-04-06',
+                    'event_type' => 'religious',
+                    'significance' => 'high',
+                    'is_verified' => true
+                ],
+                [
+                    'title' => 'Eid al-Fitr',
+                    'description' => 'Festival of Breaking the Fast, celebrated at the end of Ramadan',
+                    'hijri_date' => '1445-10-01',
+                    'gregorian_date' => '2024-04-10',
+                    'event_type' => 'religious',
+                    'significance' => 'high',
+                    'is_verified' => true
+                ],
+                [
+                    'title' => 'Eid al-Adha',
+                    'description' => 'Festival of Sacrifice, commemorating Prophet Ibrahim\'s willingness to sacrifice his son',
+                    'hijri_date' => '1445-12-10',
+                    'gregorian_date' => '2024-06-17',
+                    'event_type' => 'religious',
+                    'significance' => 'high',
+                    'is_verified' => true
+                ],
+                [
+                    'title' => 'Islamic New Year',
+                    'description' => 'Beginning of the Islamic calendar year',
+                    'hijri_date' => '1446-01-01',
+                    'gregorian_date' => '2024-07-08',
+                    'event_type' => 'religious',
+                    'significance' => 'medium',
+                    'is_verified' => true
+                ],
+                [
+                    'title' => 'Mawlid al-Nabi',
+                    'description' => 'Birthday of Prophet Muhammad (PBUH)',
+                    'hijri_date' => '1446-03-12',
+                    'gregorian_date' => '2024-09-16',
+                    'event_type' => 'religious',
+                    'significance' => 'high',
+                    'is_verified' => true
+                ]
+            ];
+
+            foreach ($events as $event) {
+                $this->connection->table('islamic_events')->insert([
+                    'title' => $event['title'],
+                    'description' => $event['description'],
+                    'hijri_date' => $event['hijri_date'],
+                    'gregorian_date' => $event['gregorian_date'],
+                    'event_type' => $event['event_type'],
+                    'significance' => $event['significance'],
+                    'is_verified' => $event['is_verified'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+    };
+};

@@ -17,7 +17,14 @@ echo "<!DOCTYPE html>
     <title>Iqra Search Engine - Simple Test</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
         .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
         .success { background-color: #d4edda; border-color: #c3e6cb; }
         .error { background-color: #f8d7da; border-color: #f5c6cb; }
@@ -100,7 +107,8 @@ try {
         if (!empty($suggestions)) {
             echo "<ul>";
             foreach ($suggestions as $suggestion) {
-                echo "<li><strong>{$suggestion['type']}:</strong> {$suggestion['text']} - <a href='{$suggestion['url']}'>{$suggestion['url']}</a></li>";
+                echo "<li><strong>{$suggestion['type']}:</strong> {$suggestion['text']} - ";
+                echo "<a href='{$suggestion['url']}'>{$suggestion['url']}</a></li>";
             }
             echo "</ul>";
         }
@@ -158,7 +166,7 @@ try {
             'quran' => $iqraEngine->getQuranCount($tokens),
             'hadith' => $iqraEngine->getHadithCount($tokens),
             'calendar' => $iqraEngine->getCalendarCount($tokens),
-            'prayer' => $iqraEngine->getPrayerCount($tokens),
+            'salah' => $iqraEngine->getSalahCount($tokens),
             'scholars' => $iqraEngine->getScholarCount($tokens)
         ];
 

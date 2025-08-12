@@ -52,7 +52,7 @@ try {
         CREATE TABLE IF NOT EXISTS search_statistics (
             id INT AUTO_INCREMENT PRIMARY KEY,
             query VARCHAR(255) NOT NULL,
-            search_type ENUM('all', 'pages', 'quran', 'hadith', 'calendar', 'prayer') NOT NULL,
+            search_type ENUM('all', 'pages', 'quran', 'hadith', 'calendar', 'salah') NOT NULL,
             results_count INT NOT NULL DEFAULT 0,
             search_time_ms INT NOT NULL DEFAULT 0,
             user_id INT NULL,
@@ -71,7 +71,7 @@ try {
         CREATE TABLE IF NOT EXISTS search_suggestions (
             id INT AUTO_INCREMENT PRIMARY KEY,
             query VARCHAR(255) NOT NULL,
-            suggestion_type ENUM('page', 'quran', 'hadith', 'calendar', 'prayer') NOT NULL,
+            suggestion_type ENUM('page', 'quran', 'hadith', 'calendar', 'salah') NOT NULL,
             suggestion_text VARCHAR(500) NOT NULL,
             suggestion_url VARCHAR(500) NOT NULL,
             click_count INT NOT NULL DEFAULT 0,
@@ -92,7 +92,7 @@ try {
             id INT AUTO_INCREMENT PRIMARY KEY,
             query_hash VARCHAR(64) NOT NULL,
             query_text TEXT NOT NULL,
-            search_type ENUM('all', 'pages', 'quran', 'hadith', 'calendar', 'prayer') NOT NULL,
+            search_type ENUM('all', 'pages', 'quran', 'hadith', 'calendar', 'salah') NOT NULL,
             results_data LONGTEXT NOT NULL,
             results_count INT NOT NULL DEFAULT 0,
             cache_hits INT NOT NULL DEFAULT 0,
@@ -144,15 +144,15 @@ try {
         }
     }
 
-    // Check if verses table exists and add index
+    // Check if ayahs table exists and add index
     try {
         $db->exec("
-            ALTER TABLE verses 
-            ADD FULLTEXT INDEX ft_verses_arabic_translation (arabic_text, translation)
+            ALTER TABLE ayahs 
+            ADD FULLTEXT INDEX ft_ayahs_arabic_translation (arabic_text, translation)
         ");
-        echo "✅ Added full-text index to verses table\n";
+        echo "✅ Added full-text index to ayahs table\n";
     } catch (Exception $e) {
-        echo "⚠️  Could not add index to verses table: " . $e->getMessage() . "\n";
+        echo "⚠️  Could not add index to ayahs table: " . $e->getMessage() . "\n";
     }
 
     // Check if hadiths table exists and add index
@@ -214,12 +214,12 @@ try {
         ['calendar', 'Mawlid', '/calendar/search?q=Mawlid', 0.92],
         ['calendar', 'Laylat al-Qadr', '/calendar/search?q=Laylat al-Qadr', 0.91],
 
-        // Prayer suggestions
-        ['prayer', 'Mecca', '/prayer/search?q=Mecca', 0.95],
-        ['prayer', 'Medina', '/prayer/search?q=Medina', 0.94],
-        ['prayer', 'Jerusalem', '/prayer/search?q=Jerusalem', 0.93],
-        ['prayer', 'Istanbul', '/prayer/search?q=Istanbul', 0.92],
-        ['prayer', 'Cairo', '/prayer/search?q=Cairo', 0.91],
+        // Salah suggestions
+        ['salah', 'Mecca', '/salah/search?q=Mecca', 0.95],
+        ['salah', 'Medina', '/salah/search?q=Medina', 0.94],
+        ['salah', 'Jerusalem', '/salah/search?q=Jerusalem', 0.93],
+        ['salah', 'Istanbul', '/salah/search?q=Istanbul', 0.92],
+        ['salah', 'Cairo', '/salah/search?q=Cairo', 0.91],
 
         // Page suggestions
         ['page', 'Islam', '/Islam', 0.95],

@@ -4,7 +4,13 @@ This directory contains release notes for all versions of IslamWiki.
 
 ## Release Notes Index
 
-### Version 0.0.53 (Latest)
+### Version 0.0.54 (Latest)
+- **[RELEASE-0.0.54.md](RELEASE-0.0.54.md)** - Quran Data Model, Salah Times, and Extensions
+- **Date**: 2025-08-12
+- **Status**: Feature + Infrastructure Release
+- **Focus**: Quran data model refactor, Salah Times system, modular extensions, routes/views
+
+### Version 0.0.53
 - **[RELEASE-0.0.53.md](RELEASE-0.0.53.md)** - Docs Viewer and Enhanced Markdown
 - **Date**: 2025-08-09
 - **Status**: Feature Release
@@ -135,5 +141,5 @@ For detailed versioning information, see [Versioning Strategy](../guides/version
 
 ---
 
-**Last Updated**: 2025-08-09  
-**Current Version**: 0.0.53
+**Last Updated**: 2025-08-12  
+**Current Version**: 0.0.54

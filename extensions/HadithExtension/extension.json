@@ -1,0 +1,117 @@
+{
+    "name": "HadithExtension",
+    "version": "0.0.1",
+    "description": "Comprehensive Hadith system with search, display, and management capabilities",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/HadithExtension",
+    "main": "HadithExtension.php",
+    "class": "IslamWiki\\Extensions\\HadithExtension\\HadithExtension",
+    "type": "content",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "enableHadithSearch": true,
+        "enableHadithDisplay": true,
+        "enableHadithManagement": true,
+        "enableHadithWidgets": true,
+        "enableHadithTemplates": true,
+        "defaultLanguage": "en",
+        "supportedLanguages": ["en", "ar", "ur", "tr", "id"],
+        "maxSearchResults": 100,
+        "enableAuthenticityFiltering": true,
+        "enableNarratorChains": true,
+        "enableCommentaries": true,
+        "enableDailyHadith": true,
+        "enableHadithCategories": true
+    },
+    "hooks": {
+        "ContentParse": "onContentParse",
+        "PageDisplay": "onPageDisplay",
+        "SearchIndex": "onSearchIndex",
+        "WidgetRender": "onWidgetRender",
+        "TemplateLoad": "onTemplateLoad",
+        "AdminMenu": "onAdminMenu",
+        "UserProfile": "onUserProfile"
+    },
+    "resources": {
+        "css": [
+            "assets/css/hadith-system.css",
+            "assets/css/hadith-display.css",
+            "assets/css/hadith-search.css",
+            "assets/css/hadith-widgets.css"
+        ],
+        "js": [
+            "assets/js/hadith-system.js",
+            "assets/js/hadith-search.js",
+            "assets/js/hadith-display.js",
+            "assets/js/hadith-widgets.js"
+        ]
+    },
+    "templates": {
+        "hadith-display": "templates/hadith-display.twig",
+        "hadith-search": "templates/hadith-search.twig",
+        "hadith-widget": "templates/hadith-widget.twig",
+        "hadith-collection": "templates/hadith-collection.twig",
+        "hadith-narrator": "templates/hadith-narrator.twig",
+        "hadith-commentary": "templates/hadith-commentary.twig",
+        "hadith-citation": "templates/hadith-citation.twig",
+        "daily-hadith": "templates/daily-hadith.twig"
+    },
+    "routes": {
+        "hadith": {
+            "pattern": "/hadith",
+            "controller": "HadithController",
+            "action": "index"
+        },
+        "hadith_search": {
+            "pattern": "/hadith/search",
+            "controller": "HadithController",
+            "action": "search"
+        },
+        "hadith_show": {
+            "pattern": "/hadith/{collection}/{number}",
+            "controller": "HadithController",
+            "action": "show"
+        },
+        "hadith_collection": {
+            "pattern": "/hadith/collection/{id}",
+            "controller": "HadithController",
+            "action": "collection"
+        },
+        "hadith_narrator": {
+            "pattern": "/hadith/narrator/{id}",
+            "controller": "HadithController",
+            "action": "narrator"
+        },
+        "hadith_admin": {
+            "pattern": "/admin/hadith",
+            "controller": "HadithAdminController",
+            "action": "index"
+        }
+    },
+    "widgets": {
+        "daily_hadith": {
+            "name": "Daily Hadith",
+            "description": "Display a random hadith for daily reading",
+            "class": "DailyHadithWidget"
+        },
+        "hadith_search": {
+            "name": "Hadith Search",
+            "description": "Quick hadith search widget",
+            "class": "HadithSearchWidget"
+        },
+        "hadith_collections": {
+            "name": "Hadith Collections",
+            "description": "List of available hadith collections",
+            "class": "HadithCollectionsWidget"
+        }
+    },
+    "permissions": {
+        "hadith_view": "View hadith content",
+        "hadith_search": "Search hadith database",
+        "hadith_edit": "Edit hadith content",
+        "hadith_manage": "Manage hadith system",
+        "hadith_import": "Import hadith data"
+    }
+}

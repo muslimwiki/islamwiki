@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Prayer Times Schema Migration
+ * Salah Times Schema Migration
  *
- * This migration creates the comprehensive prayer times database schema
- * for the IslamWiki application, including prayer time calculations,
+ * This migration creates the comprehensive salah times database schema
+ * for the IslamWiki application, including salah time calculations,
  * user locations, notifications, and preferences.
  *
  * @package IslamWiki
@@ -16,16 +16,17 @@ use IslamWiki\Core\Database\Migrations\Migration;
 use IslamWiki\Core\Database\Schema\Blueprint;
 use IslamWiki\Core\Database\Schema\Builder;
 
-class CreatePrayerTimesSchema extends Migration
+class CreateSalahTimesSchema extends Migration
 {
     /**
      * Run the migration
      */
     public function up(): void
     {
-        // Note: prayer_times table already created in Islamic Calendar migration
+        // Note: salah_times table already created in Islamic Calendar migration
 
         // User locations table
+        if (!$this->schema()->hasTable('user_locations')) {
         $this->schema()->create('user_locations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -42,9 +43,11 @@ class CreatePrayerTimesSchema extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->index(['user_id', 'is_default']);
         });
+        }
 
-        // Prayer time notifications table
-        $this->schema()->create('prayer_notifications', function (Blueprint $table) {
+        // Salah time notifications table
+        if (!$this->schema()->hasTable('salah_notifications')) {
+        $this->schema()->create('salah_notifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('location_id');
@@ -59,9 +62,11 @@ class CreatePrayerTimesSchema extends Migration
             $table->foreign('location_id')->references('id')->on('user_locations')->onDelete('cascade');
             $table->unique(['user_id', 'location_id', 'prayer']);
         });
+        }
 
-        // Prayer time preferences table
-        $this->schema()->create('prayer_preferences', function (Blueprint $table) {
+        // Salah time preferences table
+        if (!$this->schema()->hasTable('salah_preferences')) {
+        $this->schema()->create('salah_preferences', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('calculation_method', 50)->default('MWL');
@@ -78,9 +83,11 @@ class CreatePrayerTimesSchema extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unique('user_id');
         });
+        }
 
-        // Prayer time history table
-        $this->schema()->create('prayer_history', function (Blueprint $table) {
+        // Salah time history table
+        if (!$this->schema()->hasTable('salah_history')) {
+        $this->schema()->create('salah_history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('location_id');
@@ -96,8 +103,10 @@ class CreatePrayerTimesSchema extends Migration
             $table->foreign('location_id')->references('id')->on('user_locations')->onDelete('cascade');
             $table->index(['user_id', 'date', 'prayer']);
         });
+        }
 
         // Qibla direction table
+        if (!$this->schema()->hasTable('qibla_directions')) {
         $this->schema()->create('qibla_directions', function (Blueprint $table) {
             $table->id();
             $table->string('location_name', 255);
@@ -109,9 +118,11 @@ class CreatePrayerTimesSchema extends Migration
 
             $table->index(['latitude', 'longitude']);
         });
+        }
 
-        // Prayer time widgets table
-        $this->schema()->create('prayer_widgets', function (Blueprint $table) {
+        // Salah time widgets table
+        if (!$this->schema()->hasTable('salah_widgets')) {
+        $this->schema()->create('salah_widgets', function (Blueprint $table) {
             $table->id();
             $table->string('widget_key', 255)->unique();
             $table->string('name', 255);
@@ -132,9 +143,11 @@ class CreatePrayerTimesSchema extends Migration
 
             $table->index(['widget_key', 'is_active']);
         });
+        }
 
-        // Prayer time API cache table
-        $this->schema()->create('prayer_api_cache', function (Blueprint $table) {
+        // Salah time API cache table
+        if (!$this->schema()->hasTable('salah_api_cache')) {
+        $this->schema()->create('salah_api_cache', function (Blueprint $table) {
             $table->id();
             $table->string('cache_key', 255)->unique();
             $table->text('response_data');
@@ -143,9 +156,11 @@ class CreatePrayerTimesSchema extends Migration
 
             $table->index(['cache_key', 'expires_at']);
         });
+        }
 
-        // Prayer time statistics table
-        $this->schema()->create('prayer_statistics', function (Blueprint $table) {
+        // Salah time statistics table
+        if (!$this->schema()->hasTable('salah_statistics')) {
+        $this->schema()->create('salah_statistics', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->integer('total_requests');
@@ -157,9 +172,11 @@ class CreatePrayerTimesSchema extends Migration
 
             $table->index('date');
         });
+        }
 
-        // Prayer time errors table
-        $this->schema()->create('prayer_errors', function (Blueprint $table) {
+        // Salah time errors table
+        if (!$this->schema()->hasTable('salah_errors')) {
+        $this->schema()->create('salah_errors', function (Blueprint $table) {
             $table->id();
             $table->string('error_type', 100);
             $table->text('error_message');
@@ -170,9 +187,11 @@ class CreatePrayerTimesSchema extends Migration
 
             $table->index(['error_type', 'occurred_at']);
         });
+        }
 
-        // Prayer time integration table
-        $this->schema()->create('prayer_wiki_links', function (Blueprint $table) {
+        // Salah time integration table
+        if (!$this->schema()->hasTable('salah_wiki_links')) {
+        $this->schema()->create('salah_wiki_links', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('page_id');
             $table->string('location_name', 255);
@@ -185,6 +204,7 @@ class CreatePrayerTimesSchema extends Migration
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
             $table->index(['page_id', 'is_active']);
         });
+        }
     }
 
     /**
@@ -192,20 +212,20 @@ class CreatePrayerTimesSchema extends Migration
      */
     public function down(): void
     {
-        $this->schema()->drop('prayer_wiki_links');
-        $this->schema()->drop('prayer_errors');
-        $this->schema()->drop('prayer_statistics');
-        $this->schema()->drop('prayer_api_cache');
-        $this->schema()->drop('prayer_widgets');
-        $this->schema()->drop('qibla_directions');
-        $this->schema()->drop('prayer_history');
-        $this->schema()->drop('prayer_preferences');
-        $this->schema()->drop('prayer_notifications');
-        $this->schema()->drop('user_locations');
+        $this->schema()->dropIfExists('salah_wiki_links');
+        $this->schema()->dropIfExists('salah_errors');
+        $this->schema()->dropIfExists('salah_statistics');
+        $this->schema()->dropIfExists('salah_api_cache');
+        $this->schema()->dropIfExists('salah_widgets');
+        $this->schema()->dropIfExists('qibla_directions');
+        $this->schema()->dropIfExists('salah_history');
+        $this->schema()->dropIfExists('salah_preferences');
+        $this->schema()->dropIfExists('salah_notifications');
+        $this->schema()->dropIfExists('user_locations');
         // Note: prayer_times table handled by Islamic Calendar migration
     }
 };
 
 return function ($connection) {
-    return new CreatePrayerTimesSchema($connection);
+    return new CreateSalahTimesSchema($connection);
 };

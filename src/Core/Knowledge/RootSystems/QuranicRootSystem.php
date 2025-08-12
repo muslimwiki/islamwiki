@@ -11,7 +11,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
 /**
  * Quranic Root System
  *
- * Extracts principles from Qur'anic verses using Arabic root analysis.
+ * Extracts principles from Qur'anic ayahs using Arabic root analysis.
  */
 class QuranicRootSystem implements RootSystemInterface
 {

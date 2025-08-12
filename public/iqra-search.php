@@ -383,7 +383,7 @@ if (!empty($query) && $searchEngine) {
                     type="text" 
                     name="q" 
                     value="<?= htmlspecialchars($query) ?>" 
-                    placeholder="Search for Islamic content (e.g., 'allah', 'quran', 'hadith', 'prayer')"
+                    placeholder="Search for Islamic content (e.g., 'allah', 'quran', 'hadith', 'salah')"
                     class="search-input"
                     required
                 >
@@ -396,7 +396,7 @@ if (!empty($query) && $searchEngine) {
                     <select name="type" id="type" onchange="this.form.submit()">
                         <option value="all" <?= $type === 'all' ? 'selected' : '' ?>>All Content</option>
                         <option value="pages" <?= $type === 'pages' ? 'selected' : '' ?>>Wiki Pages</option>
-                        <option value="quran" <?= $type === 'quran' ? 'selected' : '' ?>>Quran Verses</option>
+                        <option value="quran" <?= $type === 'quran' ? 'selected' : '' ?>>Quran Ayahs</option>
                         <option value="hadith" <?= $type === 'hadith' ? 'selected' : '' ?>>Hadith</option>
                         <option value="calendar" <?= $type === 'calendar' ? 'selected' : '' ?>>Calendar Events</option>
                         <option value="prayer" <?= $type === 'prayer' ? 'selected' : '' ?>>Prayer Times</option>
@@ -508,14 +508,14 @@ if (!empty($query) && $searchEngine) {
                 <h3>Welcome to Iqra Search Engine</h3>
                 <p>Enter a search query above to discover Islamic knowledge across:</p>
                 <ul style="text-align: left; max-width: 400px; margin: 20px auto;">
-                    <li>📖 Quran verses and translations</li>
+                    <li>📖 Quran ayahs and translations</li>
                     <li>📚 Hadith collections and narrations</li>
                     <li>📅 Islamic calendar events</li>
                     <li>🕌 Prayer times and locations</li>
                     <li>👨‍🎓 Islamic scholars and works</li>
                     <li>📄 Wiki pages and articles</li>
                 </ul>
-                <p><strong>Example searches:</strong> "allah", "quran", "hadith", "prayer", "ramadan", "صلاة"</p>
+                <p><strong>Example searches:</strong> "allah", "quran", "hadith", "salah", "ramadan", "صلاة"</p>
             </div>
         </div>
         <?php endif; ?>

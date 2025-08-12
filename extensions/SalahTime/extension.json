@@ -1,0 +1,126 @@
+{
+    "name": "SalahTime",
+    "version": "0.0.1",
+    "description": "Comprehensive Salah time system with calculation, display, and management capabilities",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/SalahTime",
+    "main": "SalahTime.php",
+    "class": "IslamWiki\\Extensions\\SalahTime\\SalahTime",
+    "type": "content",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "enableSalahCalculation": true,
+        "enableSalahDisplay": true,
+        "enableSalahManagement": true,
+        "enableSalahWidgets": true,
+        "enableSalahTemplates": true,
+        "enableLocationServices": true,
+        "enableQiblaDirection": true,
+        "enableLunarPhase": true,
+        "enableHijriCalendar": true,
+        "defaultCalculationMethod": "MWL",
+        "supportedMethods": ["MWL", "ISNA", "EGYPT", "MAKKAH", "KARACHI", "TEHRAN", "JAFARI"],
+        "enableNotifications": true,
+        "enableAdhanAudio": false,
+        "enableTimezoneSupport": true,
+        "enableMultipleLocations": true
+    },
+    "hooks": {
+        "ContentParse": "onContentParse",
+        "PageDisplay": "onPageDisplay",
+        "SearchIndex": "onSearchIndex",
+        "WidgetRender": "onWidgetRender",
+        "TemplateLoad": "onTemplateLoad",
+        "AdminMenu": "onAdminMenu",
+        "UserProfile": "onUserProfile",
+        "SalahTimeCalculation": "onSalahTimeCalculation",
+        "LocationUpdate": "onLocationUpdate"
+    },
+    "resources": {
+        "css": [
+            "assets/css/salah-time.css",
+            "assets/css/salah-display.css",
+            "assets/css/salah-widgets.css",
+            "assets/css/qibla-direction.css"
+        ],
+        "js": [
+            "assets/js/salah-time.js",
+            "assets/js/salah-calculator.js",
+            "assets/js/salah-widgets.js",
+            "assets/js/qibla-direction.js",
+            "assets/js/location-services.js"
+        ]
+    },
+    "templates": {
+        "salah-times": "templates/salah-times.twig",
+        "salah-calculator": "templates/salah-calculator.twig",
+        "salah-widget": "templates/salah-widget.twig",
+        "qibla-direction": "templates/qibla-direction.twig",
+        "lunar-phase": "templates/lunar-phase.twig",
+        "hijri-calendar": "templates/hijri-calendar.twig",
+        "salah-settings": "templates/salah-settings.twig"
+    },
+    "routes": {
+        "salah": {
+            "pattern": "/salah",
+            "controller": "SalahController",
+            "action": "index"
+        },
+        "salah_calculate": {
+            "pattern": "/salah/calculate",
+            "controller": "SalahController",
+            "action": "calculate"
+        },
+        "salah_location": {
+            "pattern": "/salah/location",
+            "controller": "SalahController",
+            "action": "location"
+        },
+        "salah_qibla": {
+            "pattern": "/salah/qibla",
+            "controller": "SalahController",
+            "action": "qibla"
+        },
+        "salah_calendar": {
+            "pattern": "/salah/calendar",
+            "controller": "SalahController",
+            "action": "calendar"
+        },
+        "salah_admin": {
+            "pattern": "/admin/salah",
+            "controller": "SalahAdminController",
+            "action": "index"
+        }
+    },
+    "widgets": {
+        "salah_times": {
+            "name": "Salah Times",
+            "description": "Display current day's salah times",
+            "class": "SalahTimesWidget"
+        },
+        "salah_calculator": {
+            "name": "Salah Calculator",
+            "description": "Calculate salah times for any location and date",
+            "class": "SalahCalculatorWidget"
+        },
+        "qibla_direction": {
+            "name": "Qibla Direction",
+            "description": "Show qibla direction for current location",
+            "class": "QiblaDirectionWidget"
+        },
+        "lunar_phase": {
+            "name": "Lunar Phase",
+            "description": "Display current lunar phase and hijri date",
+            "class": "LunarPhaseWidget"
+        }
+    },
+    "permissions": {
+        "salah_view": "View salah times and information",
+        "salah_calculate": "Calculate salah times for locations",
+        "salah_edit": "Edit salah time settings",
+        "salah_manage": "Manage salah time system",
+        "salah_import": "Import location and timezone data"
+    }
+}

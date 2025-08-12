@@ -65,6 +65,7 @@ class SettingsController extends Controller
         $loadedSkins = $skinManager->getSkins();
 
         $skinOptions = [];
+        $skinPreviewCss = [];
 
         // Process discovered skins
         foreach ($availableSkins as $skinKey => $skinData) {
@@ -88,6 +89,9 @@ class SettingsController extends Controller
                     'features' => $skinData['features'] ?? [],
                     'config' => $skinData['config'] ?? []
                 ];
+
+                // Generate preview CSS for this skin
+                $skinPreviewCss[$lowerSkinName] = $this->createPreviewCss($skinData);
             }
         }
 
@@ -97,7 +101,8 @@ class SettingsController extends Controller
             'skinOptions' => $skinOptions,
             'activeSkin' => $userActiveSkin,
             'availableSkins' => $availableSkins,
-            'userSettings' => $userSettings
+            'userSettings' => $userSettings,
+            'skinPreviewCss' => $skinPreviewCss
         ], 200, [
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Pragma' => 'no-cache',
@@ -415,5 +420,155 @@ class SettingsController extends Controller
         </html>";
 
         return new Response($statusCode, ['Content-Type' => 'text/html'], $fallbackHtml);
+    }
+
+    /**
+     * Create preview CSS for a skin
+     */
+    private function createPreviewCss(array $skinData): string
+    {
+        $cssVariables = $this->extractCssVariables($skinData);
+        return $this->generatePreviewStyles($cssVariables, $skinData['name']);
+    }
+
+    /**
+     * Extract CSS variables from skin configuration
+     */
+    private function extractCssVariables(array $skinData): array
+    {
+        $variables = [];
+        
+        // Extract colors from skin config
+        if (isset($skinData['config'])) {
+            $config = $skinData['config'];
+            
+            // Map config colors to CSS variables
+            $variables['primary'] = $config['primary_color'] ?? '#4F46E5';
+            $variables['secondary'] = $config['secondary_color'] ?? '#7C3AED';
+            $variables['accent'] = $config['accent_color'] ?? '#A855F7';
+            
+            // Generate additional colors based on primary
+            $variables['primary-light'] = $this->lightenColor($variables['primary'], 0.2);
+            $variables['primary-dark'] = $this->darkenColor($variables['primary'], 0.2);
+            $variables['secondary-light'] = $this->lightenColor($variables['secondary'], 0.2);
+            $variables['secondary-dark'] = $this->darkenColor($variables['secondary'], 0.2);
+        }
+        
+        // Default fallback colors if no config
+        if (empty($variables)) {
+            $variables = [
+                'primary' => '#4F46E5',
+                'secondary' => '#7C3AED',
+                'accent' => '#A855F7',
+                'primary-light' => '#6366F1',
+                'primary-dark' => '#3730A3',
+                'secondary-light' => '#8B5CF6',
+                'secondary-dark' => '#5B21B6'
+            ];
+        }
+        
+        return $variables;
+    }
+
+    /**
+     * Generate preview styles using CSS variables
+     */
+    private function generatePreviewStyles(array $variables, string $skinName): string
+    {
+        $css = "/* Preview styles for {$skinName} skin */
+.skin-preview-{$skinName} {
+    --preview-primary: {$variables['primary']};
+    --preview-secondary: {$variables['secondary']};
+    --preview-accent: {$variables['accent']};
+    --preview-primary-light: {$variables['primary-light']};
+    --preview-primary-dark: {$variables['primary-dark']};
+    --preview-secondary-light: {$variables['secondary-light']};
+    --preview-secondary-dark: {$variables['secondary-dark']};
+}
+
+.skin-preview-{$skinName} .preview-header {
+    background: linear-gradient(135deg, var(--preview-primary) 0%, var(--preview-secondary) 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    text-align: center;
+}
+
+.skin-preview-{$skinName} .preview-content {
+    background: white;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.skin-preview-{$skinName} .preview-title {
+    color: var(--preview-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.skin-preview-{$skinName} .preview-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.skin-preview-{$skinName} .preview-button {
+    background: var(--preview-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.skin-preview-{$skinName} .preview-button:hover {
+    background: var(--preview-primary-dark);
+}
+
+.skin-preview-{$skinName} .preview-accent {
+    color: var(--preview-accent);
+    font-weight: 500;
+}";
+
+        return $css;
+    }
+
+    /**
+     * Lighten a hex color by a percentage
+     */
+    private function lightenColor(string $hex, float $percent): string
+    {
+        $hex = ltrim($hex, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        
+        $r = min(255, $r + (255 - $r) * $percent);
+        $g = min(255, $g + (255 - $g) * $percent);
+        $b = min(255, $b + (255 - $b) * $percent);
+        
+        return sprintf("#%02x%02x%02x", round($r), round($g), round($b));
+    }
+
+    /**
+     * Darken a hex color by a percentage
+     */
+    private function darkenColor(string $hex, float $percent): string
+    {
+        $hex = ltrim($hex, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        
+        $r = max(0, $r - $r * $percent);
+        $g = max(0, $g - $g * $percent);
+        $b = max(0, $b - $b * $percent);
+        
+        return sprintf("#%02x%02x%02x", round($r), round($g), round($b));
     }
 }

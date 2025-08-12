@@ -64,7 +64,7 @@ class SalahTimeController extends Controller
 
             $nextPrayer = null;
             if ($todaySalahTimes) {
-                $nextPrayer = $this->salahTime->getNextPrayer($todaySalahTimes['prayer_times']);
+                $nextPrayer = $this->salahTime->getNextSalah($todaySalahTimes['salah_times']);
             }
 
             return $this->view('salah/index', [
@@ -77,10 +77,10 @@ class SalahTimeController extends Controller
                 'statistics' => $statistics,
                 'calculationMethods' => $this->salahTime->getCalculationMethods(),
                 'asrJuristicMethods' => $this->salahTime->getAsrJuristicMethods(),
-                'prayerNames' => $this->salahTime->getPrayerNames($preferences['language'])
+                'prayerNames' => $this->salahTime->getSalahNames($preferences['language'])
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading salah times: ' . $e->getMessage(), 500);
+            return new Response(500, [], 'Error loading salah times: ' . $e->getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ class SalahTimeController extends Controller
             }
 
             if (!$location) {
-                return new Response('Location not found: Please add a location to view salah times.', 404);
+                return new Response(404, [], 'Location not found: Please add a location to view salah times.');
             }
 
             // Get salah times
@@ -138,7 +138,7 @@ class SalahTimeController extends Controller
             );
 
             // Get next prayer
-            $nextPrayer = $this->salahTime->getNextPrayer($prayerTimes['salah_times']);
+            $nextPrayer = $this->salahTime->getNextSalah($prayerTimes['salah_times']);
 
             return $this->view('salah/show', [
                 'title' => "Salah Times - {$date}",
@@ -148,10 +148,10 @@ class SalahTimeController extends Controller
                 'nextPrayer' => $nextPrayer,
                 'qiblaDirection' => $qiblaDirection,
                 'preferences' => $preferences,
-                'prayerNames' => $this->salahTime->getPrayerNames($preferences['language'])
+                'prayerNames' => $this->salahTime->getSalahNames($preferences['language'])
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading salah times: ' . $e->getMessage(), 500);
+            return new Response(500, [], 'Error loading salah times: ' . $e->getMessage());
         }
     }
 
@@ -173,7 +173,7 @@ class SalahTimeController extends Controller
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading search page: ' . $e->getMessage(), 500);
+            return new Response(500, [], 'Error loading search page: ' . $e->getMessage());
         }
     }
 
@@ -184,18 +184,18 @@ class SalahTimeController extends Controller
     {
         try {
             if (!$widgetKey) {
-                return new Response('Widget key required', 400);
+                return new Response(400, [], 'Widget key required');
             }
 
             // Get widget configuration
-            $query = new \Core\Database\Query\Builder($this->connection);
-            $widget = $query->table('prayer_widgets')
+            $query = new \IslamWiki\Core\Database\Query\Builder($this->db);
+            $widget = $query->from('prayer_widgets')
                 ->where('widget_key', $widgetKey)
                 ->where('is_active', true)
                 ->first();
 
             if (!$widget) {
-                return new Response('Widget not found', 404);
+                return new Response(404, [], 'Widget not found');
             }
 
             // Get salah times
@@ -211,17 +211,17 @@ class SalahTimeController extends Controller
             );
 
             // Update view count
-            $query->table('prayer_widgets')
+            $query->from('prayer_widgets')
                 ->where('widget_key', $widgetKey)
                 ->update(['view_count' => $widget['view_count'] + 1]);
 
             return $this->view('salah/widget', [
                 'widget' => $widget,
                 'prayerTimes' => $prayerTimes,
-                'prayerNames' => $this->salahTime->getPrayerNames($widget['language'])
+                'prayerNames' => $this->salahTime->getSalahNames($widget['language'])
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading widget', 500);
+            return new Response(500, [], 'Error loading widget');
         }
     }
 
@@ -239,7 +239,7 @@ class SalahTimeController extends Controller
                 'locations' => $locations
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading locations: ' . $e->getMessage(), 500);
+            return new Response(500, [], 'Error loading locations: ' . $e->getMessage());
         }
     }
 
@@ -261,7 +261,7 @@ class SalahTimeController extends Controller
                 'asrJuristicMethods' => $asrJuristicMethods
             ]);
         } catch (\Exception $e) {
-            return new Response('Error loading preferences: ' . $e->getMessage(), 500);
+            return new Response(500, [], 'Error loading preferences: ' . $e->getMessage());
         }
     }
 
@@ -281,9 +281,9 @@ class SalahTimeController extends Controller
             $minutesOffset = $request->getQueryParam('minutes_offset', 0);
 
             if (!$latitude || !$longitude) {
-                return new Response(json_encode([
+                return Response::json([
                     'error' => 'Latitude and longitude are required'
-                ]), 400, ['Content-Type' => 'application/json']);
+                ], 400);
             }
 
             $startTime = microtime(true);
@@ -302,15 +302,15 @@ class SalahTimeController extends Controller
             // Update statistics
             $this->salahTime->updateStatistics('api', $responseTime);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $prayerTimes,
                 'response_time' => round($responseTime, 2)
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -323,14 +323,14 @@ class SalahTimeController extends Controller
             $userId = $this->getUserId($request);
             $locations = $this->salahTime->getUserLocations($userId);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $locations
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -346,22 +346,22 @@ class SalahTimeController extends Controller
             $required = ['name', 'city', 'country', 'latitude', 'longitude', 'timezone'];
             foreach ($required as $field) {
                 if (!isset($data[$field])) {
-                    return new Response(json_encode([
+                    return Response::json([
                         'error' => "Field '{$field}' is required"
-                    ]), 400, ['Content-Type' => 'application/json']);
+                    ], 400);
                 }
             }
 
             $locationId = $this->salahTime->addUserLocation($userId, $data);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => ['id' => $locationId]
-            ]), 201, ['Content-Type' => 'application/json']);
+            ], 201);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -374,14 +374,14 @@ class SalahTimeController extends Controller
             $userId = $this->getUserId($request);
             $preferences = $this->salahTime->getUserPreferences($userId);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $preferences
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -396,14 +396,14 @@ class SalahTimeController extends Controller
 
             $this->salahTime->updateUserPreferences($userId, $data);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'message' => 'Preferences updated successfully'
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -424,18 +424,18 @@ class SalahTimeController extends Controller
 
             $qiblaDirection = $this->salahTime->calculateQiblaDirection($latitude, $longitude);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => [
                     'direction' => $qiblaDirection,
                     'latitude' => $latitude,
                     'longitude' => $longitude
                 ]
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -470,16 +470,16 @@ class SalahTimeController extends Controller
                 $minutesOffset
             );
 
-            $nextPrayer = $this->salahTime->getNextPrayer($prayerTimes['salah_times']);
+            $nextPrayer = $this->salahTime->getNextSalah($prayerTimes['salah_times']);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $nextPrayer
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -491,14 +491,14 @@ class SalahTimeController extends Controller
         try {
             $statistics = $this->salahTime->getStatistics();
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $statistics
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -511,17 +511,17 @@ class SalahTimeController extends Controller
             $methods = $this->salahTime->getCalculationMethods();
             $asrMethods = $this->salahTime->getAsrJuristicMethods();
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => [
                     'calculation_methods' => $methods,
                     'asr_juristic_methods' => $asrMethods
                 ]
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 
@@ -532,16 +532,16 @@ class SalahTimeController extends Controller
     {
         try {
             $language = $request->getQueryParam('language', 'en');
-            $prayerNames = $this->salahTime->getPrayerNames($language);
+            $prayerNames = $this->salahTime->getSalahNames($language);
 
-            return new Response(json_encode([
+            return Response::json([
                 'success' => true,
                 'data' => $prayerNames
-            ]), 200, ['Content-Type' => 'application/json']);
+            ], 200);
         } catch (\Exception $e) {
-            return new Response(json_encode([
+            return Response::json([
                 'error' => $e->getMessage()
-            ]), 500, ['Content-Type' => 'application/json']);
+            ], 500);
         }
     }
 

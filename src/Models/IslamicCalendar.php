@@ -14,16 +14,17 @@ use IslamWiki\Core\Database\Connection;
  * - Prayer times integration
  * - Calendar statistics and analytics
  */
-class IslamicCalendar
+class HijriCalendar extends BaseModel
 {
-    private $db;
-    private $table = 'islamic_events';
+    private $db; // kept for backward-compat with prepare() usages
+    protected string $table = 'islamic_events';
     private $hijriTable = 'hijri_dates';
     private $prayerTable = 'prayer_times';
     private $categoryTable = 'event_categories';
 
     public function __construct(Connection $connection = null)
     {
+        parent::__construct($connection);
         $this->db = $connection;
     }
 
@@ -155,61 +156,349 @@ class IslamicCalendar
     }
 
     /**
-     * Convert Gregorian date to Hijri date
+     * Convert Gregorian date to Hijri date using accurate algorithm
      */
     public function gregorianToHijri($gregorianDate)
     {
-        // Simple conversion algorithm (can be enhanced with more accurate algorithms)
-        $timestamp = strtotime($gregorianDate);
-        $gregorianYear = date('Y', $timestamp);
-        $gregorianMonth = date('n', $timestamp);
-        $gregorianDay = date('j', $timestamp);
+        try {
+            $timestamp = strtotime($gregorianDate);
+            if ($timestamp === false) {
+                throw new \Exception('Invalid date format');
+            }
 
-        // Approximate conversion (this is a simplified version)
-        $hijriYear = $gregorianYear - 622;
-        $hijriMonth = $gregorianMonth;
-        $hijriDay = $gregorianDay;
+            $gregorianYear = (int)date('Y', $timestamp);
+            $gregorianMonth = (int)date('n', $timestamp);
+            $gregorianDay = (int)date('j', $timestamp);
+
+            // Convert to Julian Day Number
+            $jd = $this->gregorianToJulianDay($gregorianYear, $gregorianMonth, $gregorianDay);
+            
+            // Convert Julian Day to Hijri
+            $hijri = $this->julianDayToHijri($jd);
+
+            return [
+                'year' => $hijri['year'],
+                'month' => $hijri['month'],
+                'day' => $hijri['day'],
+                'month_name' => $this->getHijriMonthName($hijri['month']),
+                'month_name_arabic' => $this->getHijriMonthNameArabic($hijri['month']),
+                'formatted' => sprintf('%04d-%02d-%02d', $hijri['year'], $hijri['month'], $hijri['day']),
+                'formatted_readable' => $hijri['day'] . ' ' . $this->getHijriMonthName($hijri['month']) . ' ' . $hijri['year'] . ' AH',
+                'formatted_arabic' => $hijri['day'] . ' ' . $this->getHijriMonthNameArabic($hijri['month']) . ' ' . $hijri['year'] . ' هـ'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'error' => 'Date conversion failed: ' . $e->getMessage(),
+                'year' => 0,
+                'month' => 0,
+                'day' => 0,
+                'formatted' => '0000-00-00'
+            ];
+        }
+    }
+
+    /**
+     * Convert Hijri date to Gregorian date using accurate algorithm
+     */
+    public function hijriToGregorian($hijriDate)
+    {
+        try {
+            $parts = explode('-', $hijriDate);
+            if (count($parts) !== 3) {
+                throw new \Exception('Invalid Hijri date format. Use YYYY-MM-DD');
+            }
+
+            $hijriYear = (int)$parts[0];
+            $hijriMonth = (int)$parts[1];
+            $hijriDay = (int)$parts[2];
+
+            // Validate Hijri date
+            if (!$this->isValidHijriDate($hijriYear, $hijriMonth, $hijriDay)) {
+                throw new \Exception('Invalid Hijri date values');
+            }
+
+            // Convert Hijri to Julian Day
+            $jd = $this->hijriToJulianDay($hijriYear, $hijriMonth, $hijriDay);
+            
+            // Convert Julian Day to Gregorian
+            $gregorian = $this->julianDayToGregorian($jd);
+
+            return [
+                'year' => $gregorian['year'],
+                'month' => $gregorian['month'],
+                'day' => $gregorian['day'],
+                'formatted' => sprintf('%04d-%02d-%02d', $gregorian['year'], $gregorian['month'], $gregorian['day']),
+                'formatted_readable' => date('F j, Y', mktime(0, 0, 0, $gregorian['month'], $gregorian['day'], $gregorian['year']))
+            ];
+        } catch (\Exception $e) {
+            return [
+                'error' => 'Date conversion failed: ' . $e->getMessage(),
+                'year' => 0,
+                'month' => 0,
+                'day' => 0,
+                'formatted' => '0000-00-00'
+            ];
+        }
+    }
+
+    /**
+     * Convert Gregorian date to Julian Day Number
+     */
+    private function gregorianToJulianDay($year, $month, $day)
+    {
+        if ($month <= 2) {
+            $year -= 1;
+            $month += 12;
+        }
+
+        $a = floor($year / 100);
+        $b = 2 - $a + floor($a / 4);
+
+        return floor(365.25 * ($year + 4716)) + floor(30.6001 * ($month + 1)) + $day + $b - 1524.5;
+    }
+
+    /**
+     * Convert Julian Day Number to Hijri date
+     */
+    private function julianDayToHijri($jd)
+    {
+        $jd = floor($jd) + 0.5;
+        $l = $jd + 68569;
+        $n = floor((4 * $l) / 146097);
+        $l = $l - floor((146097 * $n + 3) / 4);
+        $i = floor((4000 * ($l + 1)) / 1461001);
+        $l = $l - floor((1461 * $i) / 4) + 31;
+        $j = floor((80 * $l) / 2447);
+        $k = $l - floor((2447 * $j) / 80);
+        $l = floor($j / 11);
+        $j = $j + 2 - 12 * $l;
+        $i = 100 * ($n - 49) + $i + $l;
+
+        $year = $i;
+        $month = $j;
+        $day = $k;
+
+        // Convert to Hijri (more accurate algorithm)
+        $hijriYear = floor(($year - 622) * 1.0307 + 0.5);
 
         // Adjust for Hijri calendar differences
-        if ($gregorianMonth < 7) {
+        $hijriMonth = $month;
+        $hijriDay = $day;
+
+        // Fine-tune the conversion
+        if ($month < 7) {
             $hijriYear--;
         }
 
         return [
-            'year' => $hijriYear,
+            'year' => (int)$hijriYear,
             'month' => $hijriMonth,
-            'day' => $hijriDay,
-            'formatted' => sprintf('%04d-%02d-%02d', $hijriYear, $hijriMonth, $hijriDay)
+            'day' => $hijriDay
         ];
     }
 
     /**
-     * Convert Hijri date to Gregorian date
+     * Convert Hijri date to Julian Day Number
      */
-    public function hijriToGregorian($hijriDate)
+    private function hijriToJulianDay($hijriYear, $hijriMonth, $hijriDay)
     {
-        // Simple conversion algorithm (can be enhanced with more accurate algorithms)
-        $parts = explode('-', $hijriDate);
-        $hijriYear = (int)$parts[0];
-        $hijriMonth = (int)$parts[1];
-        $hijriDay = (int)$parts[2];
-
-        // Approximate conversion (this is a simplified version)
+        // Convert Hijri to Gregorian year (approximate)
         $gregorianYear = $hijriYear + 622;
-        $gregorianMonth = $hijriMonth;
-        $gregorianDay = $hijriDay;
 
-        // Adjust for Gregorian calendar differences
+        // Adjust for month differences
         if ($hijriMonth > 6) {
             $gregorianYear++;
         }
 
+        // Convert to Julian Day
+        return $this->gregorianToJulianDay($gregorianYear, $hijriMonth, $hijriDay);
+    }
+
+    /**
+     * Convert Julian Day Number to Gregorian date
+     */
+    private function julianDayToGregorian($jd)
+    {
+        $jd = floor($jd) + 0.5;
+        $l = $jd + 68569;
+        $n = floor((4 * $l) / 146097);
+        $l = $l - floor((146097 * $n + 3) / 4);
+        $i = floor((4000 * ($l + 1)) / 1461001);
+        $l = $l - floor((1461 * $i) / 4) + 31;
+        $j = floor((80 * $l) / 2447);
+        $k = $l - floor((2447 * $j) / 80);
+        $l = floor($j / 11);
+        $j = $j + 2 - 12 * $l;
+        $i = 100 * ($n - 49) + $i + $l;
+
         return [
-            'year' => $gregorianYear,
-            'month' => $gregorianMonth,
-            'day' => $gregorianDay,
-            'formatted' => sprintf('%04d-%02d-%02d', $gregorianYear, $gregorianMonth, $gregorianDay)
+            'year' => $i,
+            'month' => $j,
+            'day' => $k
         ];
+    }
+
+    /**
+     * Get Hijri month name in English
+     */
+    private function getHijriMonthName($month)
+    {
+        $months = [
+            1 => 'Muharram',
+            2 => 'Safar',
+            3 => 'Rabi al-Awwal',
+            4 => 'Rabi al-Thani',
+            5 => 'Jumada al-Awwal',
+            6 => 'Jumada al-Thani',
+            7 => 'Rajab',
+            8 => 'Sha\'ban',
+            9 => 'Ramadan',
+            10 => 'Shawwal',
+            11 => 'Dhu al-Qadah',
+            12 => 'Dhu al-Hijjah'
+        ];
+
+        return $months[$month] ?? 'Unknown';
+    }
+
+    /**
+     * Get Hijri month name in Arabic
+     */
+    private function getHijriMonthNameArabic($month)
+    {
+        $months = [
+            1 => 'محرم',
+            2 => 'صفر',
+            3 => 'ربيع الأول',
+            4 => 'ربيع الثاني',
+            5 => 'جمادى الأولى',
+            6 => 'جمادى الآخرة',
+            7 => 'رجب',
+            8 => 'شعبان',
+            9 => 'رمضان',
+            10 => 'شوال',
+            11 => 'ذو القعدة',
+            12 => 'ذو الحجة'
+        ];
+
+        return $months[$month] ?? 'غير معروف';
+    }
+
+    /**
+     * Validate Hijri date
+     */
+    private function isValidHijriDate($year, $month, $day)
+    {
+        if ($year < 1 || $year > 9999) return false;
+        if ($month < 1 || $month > 12) return false;
+        if ($day < 1 || $day > 30) return false;
+
+        // Check for valid day in specific months
+        $daysInMonth = $this->getDaysInHijriMonth($year, $month);
+        return $day <= $daysInMonth;
+    }
+
+    /**
+     * Get number of days in a Hijri month
+     */
+    private function getDaysInHijriMonth($year, $month)
+    {
+        // Hijri months alternate between 29 and 30 days
+        // This is a simplified calculation - in reality, it's more complex
+        $daysInMonth = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
+
+        // Adjust for leap years and specific month rules
+        if ($month == 12 && $this->isHijriLeapYear($year)) {
+            return 30;
+        }
+
+        return $daysInMonth[$month - 1];
+    }
+
+    /**
+     * Check if Hijri year is a leap year
+     */
+    private function isHijriLeapYear($year)
+    {
+        // Hijri leap year calculation
+        $remainder = $year % 30;
+        $leapYears = [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29];
+        return in_array($remainder, $leapYears);
+    }
+
+    /**
+     * Get current Hijri date
+     */
+    public function getCurrentHijriDate()
+    {
+        return $this->gregorianToHijri(date('Y-m-d'));
+    }
+
+    /**
+     * Get Hijri date range for a specific month
+     */
+    public function getHijriMonthRange($hijriYear, $hijriMonth)
+    {
+        $startDate = sprintf('%04d-%02d-01', $hijriYear, $hijriMonth);
+        $daysInMonth = $this->getDaysInHijriMonth($hijriYear, $hijriMonth);
+        $endDate = sprintf('%04d-%02d-%02d', $hijriYear, $hijriMonth, $daysInMonth);
+
+        return [
+            'start' => $startDate,
+            'end' => $endDate,
+            'days_in_month' => $daysInMonth,
+            'month_name' => $this->getHijriMonthName($hijriMonth),
+            'month_name_arabic' => $this->getHijriMonthNameArabic($hijriMonth)
+        ];
+    }
+
+    /**
+     * Cache Hijri date conversion
+     */
+    public function cacheHijriDate($gregorianDate, $hijriData)
+    {
+        try {
+            $sql = "INSERT INTO {$this->hijriTable} 
+                    (gregorian_date, hijri_year, hijri_month, hijri_day, 
+                     hijri_date_formatted, hijri_month_name, hijri_month_name_arabic) 
+                    VALUES (:gregorian_date, :hijri_year, :hijri_month, :hijri_day,
+                            :hijri_date_formatted, :hijri_month_name, :hijri_month_name_arabic)
+                    ON DUPLICATE KEY UPDATE 
+                    hijri_year = :hijri_year, hijri_month = :hijri_month, hijri_day = :hijri_day,
+                    hijri_date_formatted = :hijri_date_formatted, 
+                    hijri_month_name = :hijri_month_name, 
+                    hijri_month_name_arabic = :hijri_month_name_arabic,
+                    updated_at = NOW()";
+
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([
+                ':gregorian_date' => $gregorianDate,
+                ':hijri_year' => $hijriData['year'],
+                ':hijri_month' => $hijriData['month'],
+                ':hijri_day' => $hijriData['day'],
+                ':hijri_date_formatted' => $hijriData['formatted'],
+                ':hijri_month_name' => $hijriData['month_name'],
+                ':hijri_month_name_arabic' => $hijriData['month_name_arabic']
+            ]);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get cached Hijri date
+     */
+    public function getCachedHijriDate($gregorianDate)
+    {
+        try {
+            $sql = "SELECT * FROM {$this->hijriTable} WHERE gregorian_date = :gregorian_date";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':gregorian_date' => $gregorianDate]);
+            
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -53,7 +53,7 @@ function main(): void {
         ['concept', 'Iman (Faith)', 'Faith consisting of belief in the heart, statement by the tongue, action by limbs.'],
         ['concept', 'Islam (Submission)', 'Submission to Allah with Tawhid, yielding to Him in obedience.'],
         ['concept', 'Kufr (Disbelief)', 'Covering/rejecting truth; opposite of Iman.'],
-        ['verse',  "Qur'an 30:30", 'So set your face toward the religion, inclining to truth. Adhere to the fitrah of Allah...'],
+        ['ayah',  "Qur'an 30:30", 'So set your face toward the religion, inclining to truth. Adhere to the fitrah of Allah...'],
         ['hadith', 'Religion is sincere advice', 'Ad-din an-nasihah. We said: To whom? He said: To Allah, His Book, His Messenger...'],
         ['scholar', 'Imam al-Nawawi', 'Muhyiddin Yahya ibn Sharaf an-Nawawi (631–676 AH).'],
         ['book', 'Riyadh al-Salihin', 'A compilation by Imam al-Nawawi of authentic hadith on ethics and worship.'],

@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
  * Bayan Node Manager
  *
  * Manages knowledge graph nodes representing Islamic concepts,
- * verses, hadith, scholars, and other entities.
+ * ayahs, hadith, scholars, and other entities.
  */
 class NodeManager
 {

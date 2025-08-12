@@ -5,6 +5,13 @@
 {% block body_class %}settings-page{% endblock %}
 
 {% block content %}
+<!-- Dynamic CSS for skin previews -->
+<style>
+{% for skinKey, css in skinPreviewCss %}
+{{ css | raw }}
+{% endfor %}
+</style>
+
 <div class="settings-container">
     <div class="container">
         <!-- Settings Header -->
@@ -71,6 +78,18 @@
                                     <button class="skin-info-btn" data-skin="{{ skinName }}">
                                         Info
                                     </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Skin Preview -->
+                            <div class="skin-preview skin-preview-{{ skinName }}">
+                                <div class="preview-header">
+                                    <h4>Preview</h4>
+                                </div>
+                                <div class="preview-content">
+                                    <div class="preview-title">Sample Content</div>
+                                    <div class="preview-text">This is how content will look with the <span class="preview-accent">{{ skin.name }}</span> skin.</div>
+                                    <button class="preview-button">Sample Button</button>
                                 </div>
                             </div>
                         </div>

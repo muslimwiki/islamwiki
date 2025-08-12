@@ -57,7 +57,7 @@ try {
     echo "✅ Database connection created\n";
 
     // Create migrator directly
-    $migrationPath = __DIR__ . '/../database/migrations';
+    $migrationPath = __DIR__ . '/database/migrations';
     $migrator = new Migrator($connection, $migrationPath);
     echo "✅ Migrator created\n";
 
