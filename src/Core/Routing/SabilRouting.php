@@ -72,12 +72,17 @@ class SabilRouting implements RequestHandlerInterface
             $methods = [$methods];
         }
 
-        $this->_routes[] = [
+        $routeData = [
             'methods' => array_map('strtoupper', $methods),
             'route' => $route,
             'handler' => $handler,
             'middleware' => $middleware
         ];
+
+        // Log route registration
+        error_log('Registering route: ' . json_encode($routeData));
+        
+        $this->_routes[] = $routeData;
 
         return $this;
     }
@@ -175,7 +180,18 @@ class SabilRouting implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $path = $request->getUri()->getPath();
         $method = $request->getMethod();
+        
+        // Debug: Log the incoming request
+        error_log("SabilRouting: Handling request - Method: {$method}, Path: {$path}");
+        error_log("SabilRouting: Available routes: " . json_encode(array_map(function($route) {
+            return [
+                'methods' => $route['methods'],
+                'route' => $route['route']
+            ];
+        }, $this->_routes), JSON_PRETTY_PRINT));
+
         $uri = $request->getUri()->getPath();
 
         // Find matching route
@@ -257,17 +273,36 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function findRoute(string $method, string $uri): ?array
     {
-        foreach ($this->_routes as $route) {
-            if (in_array($method, $route['methods'])) {
-                $params = $this->matchRoute($route['route'], $uri);
-                if ($params !== null) {
-                    // Store the parameters in the route array
-                    $route['params'] = $params;
-                    return $route;
-                }
+        error_log("Finding route for: $method $uri");
+        error_log("Available routes:");
+        
+        // Log all registered routes for debugging
+        foreach ($this->_routes as $i => $route) {
+            error_log(sprintf('  Route #%d: %s %s', $i, implode('|', $route['methods']), $route['route']));
+        }
+        
+        foreach ($this->_routes as $i => $route) {
+            $logPrefix = sprintf('Route #%d %s %s: ', $i, implode('|', $route['methods']), $route['route']);
+            
+            if (!in_array($method, $route['methods'])) {
+                error_log($logPrefix . 'Method not matched');
+                continue;
+            }
+            
+            error_log($logPrefix . 'Method matched, checking path...');
+            $params = $this->matchRoute($route['route'], $uri);
+            
+            if ($params !== null) {
+                // Store the parameters in the route array
+                $route['params'] = $params;
+                error_log($logPrefix . 'MATCHED with params: ' . json_encode($params));
+                return $route;
+            } else {
+                error_log($logPrefix . 'Path not matched');
             }
         }
 
+        error_log("No route found for: $method $uri");
         return null;
     }
 
@@ -281,29 +316,44 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function matchRoute(string $pattern, string $uri): ?array
     {
+        error_log("Matching pattern: '$pattern' against URI: '$uri'");
+        
         $regex = $this->patternToRegex($pattern);
+        error_log("Generated regex: $regex");
 
         if (preg_match($regex, $uri, $matches)) {
+            error_log("Pattern matched! Matches: " . json_encode($matches));
+            
             // Remove the full match from the beginning
             array_shift($matches);
 
             // Convert numeric keys to parameter names
             $params = [];
             preg_match_all('/\{([^}]+)\}/', $pattern, $paramNames);
+            
+            error_log("Parameter names in pattern: " . json_encode($paramNames[1] ?? []));
 
             foreach ($paramNames[1] as $index => $paramName) {
                 // Support tokens like name:regex by stripping the regex part for the param key
+                $originalParamName = $paramName;
                 if (strpos($paramName, ':') !== false) {
                     [$paramName] = explode(':', $paramName, 2);
                 }
                 if (isset($matches[$index])) {
                     $params[$paramName] = $matches[$index];
+                    error_log(sprintf("  - Parameter '%s' (original: '%s') = '%s'", 
+                        $paramName, $originalParamName, $matches[$index]));
+                } else {
+                    error_log(sprintf("  - Parameter '%s' (original: '%s') not found in matches", 
+                        $paramName, $originalParamName));
                 }
             }
 
+            error_log("Final parameters: " . json_encode($params));
             return $params;
         }
 
+        error_log("Pattern did not match URI");
         return null;
     }
 
@@ -316,24 +366,41 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function patternToRegex(string $pattern): string
     {
+        error_log("Converting route pattern to regex: '$pattern'");
+        
         // Replace {name} with default capture and {name:regex} with custom capture
         $pattern = preg_replace_callback('/\{([^}]+)\}/', function ($m) {
             $token = $m[1];
             $name = $token;
             $regex = '[^/]+'; // default: segment without slash
+            
+            error_log(sprintf("  - Found token: '%s'", $token));
+            
             if (strpos($token, ':') !== false) {
                 [$name, $regexPart] = explode(':', $token, 2);
                 if ($regexPart !== '') {
                     $regex = $regexPart;
+                    error_log(sprintf("    Using custom regex '%s' for parameter '%s'", $regex, $name));
+                } else {
+                    error_log(sprintf("    Using default regex for parameter '%s'", $name));
                 }
+            } else {
+                error_log(sprintf("    No custom regex for parameter '%s', using default", $name));
             }
-            return '(' . $regex . ')';
+            
+            $result = '(' . $regex . ')';
+            error_log(sprintf("    Replaced token with: %s", $result));
+            
+            return $result;
         }, $pattern);
 
         // Escape forward slashes
-        $pattern = str_replace('/', '\/', $pattern);
-
-        return '/^' . $pattern . '$/';
+        $escapedPattern = str_replace('/', '\/', $pattern);
+        $finalRegex = '/^' . $escapedPattern . '$/';
+        
+        error_log(sprintf("Final regex pattern: %s", $finalRegex));
+        
+        return $finalRegex;
     }
 
     /**

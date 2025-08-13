@@ -1,0 +1,239 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ surah_name ?? 'Surah' }} {{ surah }}:{{ ayah_number }} - Quran - IslamWiki{% endblock %}
+
+{% block styles %}
+{{ parent() }}
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
+<style>
+/* Ayah Page Specific Styles */
+.ayah-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.ayah-breadcrumbs {
+    font-size: 0.95rem;
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+
+.ayah-breadcrumbs a {
+    color: #2b6cb0;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ayah-breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.ayah-breadcrumbs .separator {
+    margin: 0 0.5rem;
+    color: #a0aec0;
+}
+
+.ayah-content {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.ayah-header-row {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ayah-surah-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.ayah-number-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background-color: #2b6cb0;
+    color: white;
+    font-weight: 600;
+    margin-left: 1rem;
+}
+
+.ayah-arabic-container {
+    padding: 2rem 1.5rem;
+    direction: rtl;
+    text-align: right;
+    font-size: 1.75rem;
+    line-height: 2.5rem;
+    color: #2d3748;
+    font-family: 'Traditional Arabic', 'Amiri', 'Traditional Naskh', 'Scheherazade', 'KFGQPC Uthmanic Script HAFS', 'KFGQPC Uthman Taha Naskh', 'UthmanicHafs', 'UthmanicHafs1 Ver18', sans-serif;
+}
+
+.ayah-translation-container {
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: #4a5568;
+}
+
+.ayah-navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    background-color: #f7fafc;
+    color: #2b6cb0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: 1px solid #bee3f8;
+}
+
+.nav-button:hover {
+    background-color: #ebf8ff;
+    border-color: #90cdf4;
+}
+
+.nav-button.prev::before {
+    content: '←';
+    margin-right: 0.5rem;
+}
+
+.nav-button.next::after {
+    content: '→';
+    margin-left: 0.5rem;
+}
+
+.translation-selector {
+    margin-bottom: 1.5rem;
+}
+
+.translation-dropdown {
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    background-color: white;
+    color: #4a5568;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+.translation-dropdown:focus {
+    outline: none;
+    border-color: #90cdf4;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ayah-container">
+    <!-- Translation Selector -->
+    <div class="translation-selector">
+        <form method="get" action="" class="translation-form">
+            <select name="translator" id="translator" onchange="this.form.submit()" class="translation-dropdown">
+                {% for trans in translators %}
+                    <option value="{{ trans.translator|default(trans.name) }}" {% if (translator ?? 'Saheeh International') == (trans.translator|default(trans.name)) %}selected{% endif %}>
+                        {{ trans.name|default(trans.translator) }}
+                        {% if trans.language_name %}({{ trans.language_name }}){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="surah" value="{{ surah }}">
+            <input type="hidden" name="ayah" value="{{ ayah_number }}">
+        </form>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="ayah-breadcrumbs">
+        <a href="/quran">Quran</a>
+        <span class="separator">:</span>
+        <a href="/quran/{{ surah }}">Surah {{ surah_name ?? surah }}</a>
+        <span class="separator">:</span>
+        <span>Ayah {{ ayah_number }}</span>
+    </div>
+
+    {% if ayah %}
+        <div class="ayah-content">
+            <!-- Header Row with Surah Name -->
+            <div class="ayah-header-row">
+                <div class="ayah-surah-name">
+                    {{ surah_name ?? 'Surah' }} {{ surah }}:{{ ayah_number }}
+                </div>
+            </div>
+
+            <!-- Arabic Text with Ayah Number -->
+            <div class="ayah-arabic-container">
+                <div style="display: flex; align-items: center; width: 100%; direction: rtl;">
+                    <span style="text-align: right; flex-grow: 1;">
+                        {{ ayah.text_arabic|raw }}
+                    </span>
+                    <span class="ayah-number-badge" style="margin-right: 10px; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; font-family: 'Traditional Arabic', 'Amiri', 'Traditional Naskh', 'Scheherazade', 'KFGQPC Uthmanic Script HAFS', 'KFGQPC Uthman Taha Naskh', 'UthmanicHafs', 'UthmanicHafs1 Ver18', sans-serif;">
+                        {{ ayah_number|replace({'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'}) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Translation -->
+            {% if ayah.translation_text %}
+                <div class="ayah-translation-container">
+                    {{ ayah.translation_text|raw }}
+                    {% if ayah.translator_name %}
+                        <div class="translation-meta">
+                            — {{ ayah.translator_name }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="ayah-navigation">
+                {% if prev_ayah %}
+                    <a href="/quran/{{ surah }}/{{ prev_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button prev">
+                        Previous Ayah
+                    </a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+                
+                {% if next_ayah %}
+                    <a href="/quran/{{ surah }}/{{ next_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button next">
+                        Next Ayah
+                    </a>
+                {% else %}
+                    <span></span>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="error-message">
+            <p>Sorry, the requested ayah could not be found.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

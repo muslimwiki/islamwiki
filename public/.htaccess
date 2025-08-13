@@ -1,3 +1,10 @@
+# Test directive - if this causes a 500 error, .htaccess is being processed
+# If you see this comment in the browser, .htaccess is NOT being processed
+# <IfModule !mod_headers.c>
+#     # This will cause a 500 error if .htaccess is being processed
+#     InvalidDirective test
+# </IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

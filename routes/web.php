@@ -371,10 +371,27 @@ $router->get('/api/quran/ayahs/{chapter}/{ayah}', function ($request, $chapter, 
     return new \IslamWiki\Core\Http\Response(302, ['Location' => "/api/quran/{$chapter}/{$ayah}"], '');
 });
 
+// Debug route to test route matching
+$router->get('/debug-route-check', function() {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Debug route is working!');
+});
+
 // Quran Routes - Must come before catch-all routes to prevent interference
 $router->get('/quran', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@indexPage');
 $router->get('/quran/search', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@searchPage');
+
+// Specific routes before parameterized routes to ensure they take precedence
+$router->get('/quran/juz/{juz}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@juzPage');
+$router->get('/quran/page/{page}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@pagePage');
+
+// More specific routes before less specific ones
+$router->get('/quran/{surah}/info', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@surahInfoPage');
+
+// Surah and ayah routes - order is important
+$router->map(['GET', 'HEAD'], '/quran/{surah}/{ayah}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@ayahPage');
 $router->get('/quran/{surah}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@surahPage');
+
+// Test route (can be removed in production)
 $router->get('/quran-ayah/{surah}/{ayah}', function ($request, $surah, $ayah) {
     return new \IslamWiki\Core\Http\Response(
         200,
@@ -382,9 +399,6 @@ $router->get('/quran-ayah/{surah}/{ayah}', function ($request, $surah, $ayah) {
         "Quran Ayah Test: Surah {$surah}, Ayah {$ayah}"
     );
 });
-$router->get('/quran/{surah}/info', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@surahInfoPage');
-$router->get('/quran/juz/{juz}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@juzPage');
-$router->get('/quran/page/{page}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@pagePage');
 
 // Quran API routes
 $router->get('/api/quran', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@apiAyahs');
@@ -403,8 +417,18 @@ $router->get('/api/quran/juz/{juz}', 'IslamWiki\\Extensions\\QuranExtension\\Htt
 $router->get('/api/quran/pages', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@apiPages');
 $router->get('/api/quran/page/{page}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@apiPageDetail');
 
+// Quran page routes
+$router->get('/quran', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@indexPage');
+$router->get('/quran/{surah}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@surahPage');
+$router->get('/quran/{surah}/{ayah}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@ayahPage');
+
 // Quran widget routes
 $router->get('/quran/widget/{surah}/{ayah}', 'IslamWiki\\Extensions\\QuranExtension\\Http\\Controllers\\QuranController@widget');
+
+// Debug route for testing
+$router->get('/quran-debug', function($request) {
+    return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Debug route is working!');
+});
 
 // Catch-all legacy wiki routes (must be last)
 $router->get('/{slug}', 'IslamWiki\\Http\\Controllers\\WikiController@show');

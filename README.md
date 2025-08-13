@@ -2,15 +2,20 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.54)
+## 🚀 Latest Updates (v0.0.55)
 
-### 📖 Quran, 🌙 Salah Times, and 🧩 Extensions
+### 📖 Quran Experience Enhanced
 
-- **Quran Data Model Refactor**: New models (`QuranSurah`, `QuranPage`, `QuranJuz`, `QuranTranslation`) and refreshed Quran views
-- **Salah Times System**: `SalahTimeController`, `SalahTime` model, and calculator JS helper
-- **Extensions**: New modular extensions for Quran, Hadith, Hijri Calendar, and Salah Time
-- **Routes & Core**: Expanded routes, core search/caching/formatting improvements, and updated public entrypoints
-- **Docs**: New guides for Quran import and Salah Times; see `docs/releases/RELEASE-0.0.54.md`
+- **Quran Ayah Pages**: Beautifully designed ayah pages with RTL support and Arabic numerals
+- **Translation Support**: Dropdown to switch between multiple translations
+- **Navigation**: Easy navigation between ayahs with previous/next buttons
+- **Breadcrumbs**: Clear navigation path through Quran content
+- **Responsive Design**: Optimized for all devices from mobile to desktop
+
+### 🎨 Design Improvements
+- **Quran.com Style Layout**: Modern, clean interface matching quran.com
+- **Arabic Typography**: Enhanced RTL text rendering and Arabic numeral support
+- **Consistent Styling**: Unified look across all Quran pages
 
 ## 🌟 Features
 

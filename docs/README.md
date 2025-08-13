@@ -143,10 +143,12 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 ├── 📁 tests/              # Test scripts
 └── 📁 utils/              # Utility and maintenance scripts
 
-📁 tests/                  # Test files
+📁 maintenance/tests/      # Consolidated tests
+├── 📁 cli/                # CLI test runners
 ├── 📁 Unit/               # Unit tests
 │   └── 📁 Database/       # Database unit tests
-└── 📁 web/                # Web-based tests
+├── 📁 Integration/        # Integration tests
+└── 📁 web/                # Web-style test scripts
 
 📁 public/                 # Web root (minimal)
 ├── index.php              # Main application entry point
@@ -176,9 +178,9 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **Utilities**: Maintenance scripts in `scripts/utils/`
 
 #### **Test Organization**
-- **Unit Tests**: PHPUnit tests in `tests/Unit/`
-- **Web Tests**: Browser-based tests in `tests/web/`
-- **Integration Tests**: End-to-end tests in `tests/`
+- **Unit Tests**: PHPUnit tests in `maintenance/tests/Unit/`
+- **Web Tests**: Browser-style test scripts in `maintenance/tests/web/`
+- **Integration Tests**: End-to-end tests in `maintenance/tests/Integration/`
 
 #### **Clean Public Directory**
 - **Minimal Web Root**: Only essential web-accessible files
@@ -201,9 +203,9 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **Middleware**: Request processing in `src/Http/Middleware/`
 
 ### Testing Strategy
-- **Unit Tests**: `tests/Unit/` for isolated component testing
-- **Web Tests**: `tests/web/` for browser-based testing
-- **Integration Tests**: End-to-end testing in `tests/`
+- **Unit Tests**: `maintenance/tests/Unit/` for isolated component testing
+- **Web Tests**: `maintenance/tests/web/` for browser-style testing
+- **Integration Tests**: End-to-end testing in `maintenance/tests/Integration/`
 
 ### Scripts and Utilities
 - **Database**: Migration and setup scripts in `scripts/database/`

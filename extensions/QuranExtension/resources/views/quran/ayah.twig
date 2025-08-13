@@ -9,18 +9,21 @@
             <i class="fas fa-arrow-left"></i> Back to Surah {{ surah }}
         </a>
         <div class="ayah-reference">
-            <span class="surah-number">{{ surah }}</span>
+            <span class="surah-number">Surah {{ surah }}</span>
             <span class="separator">:</span>
-            <span class="ayah-number">{{ ayah_number }}</span>
+            <span class="ayah-number">Ayah {{ ayah_number }}</span>
         </div>
     </div>
 
     {% if ayah %}
     <div class="ayah-content">
+        <!-- Arabic Text Section -->
         <div class="ayah-arabic">
             <div class="arabic-text">{{ ayah.text_arabic|default('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ') }}</div>
+            <div class="ayah-number-arabic">{{ ayah.ayah_number|default(ayah_number) }}</div>
         </div>
 
+        <!-- Translation Section -->
         <div class="ayah-translation">
             <div class="translation-text">{{ ayah.translation|default('In the name of Allah, the Entirely Merciful, the Especially Merciful.') }}</div>
             <div class="translation-meta">
@@ -29,14 +32,47 @@
             </div>
         </div>
 
+        <!-- Audio Player -->
         {% if ayah.audio_url %}
         <div class="ayah-audio">
-            <audio controls>
+            <h4>Listen to Recitation</h4>
+            <audio controls class="audio-player">
                 <source src="{{ ayah.audio_url }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
         </div>
         {% endif %}
+
+        <!-- Additional Ayah Information -->
+        <div class="ayah-details">
+            <h3>Ayah Details</h3>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Surah:</span>
+                    <span class="detail-value">{{ ayah.surah_name_arabic|default('') }} ({{ ayah.surah_name_english|default('') }})</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Ayah Number:</span>
+                    <span class="detail-value">{{ ayah.ayah_number|default(ayah_number) }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Juz:</span>
+                    <span class="detail-value">{{ ayah.juz_number|default('N/A') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Page:</span>
+                    <span class="detail-value">{{ ayah.page_number|default('N/A') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Hizb Quarter:</span>
+                    <span class="detail-value">{{ ayah.hizb_quarter|default('N/A') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Sajdah:</span>
+                    <span class="detail-value">{{ ayah.sajdah|default('No') }}</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     {% if tafsir %}
@@ -88,135 +124,204 @@
 
 {% block styles %}
 <style>
+/* Base Styles */
 .quran-ayah-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
 }
 
+/* Navigation */
 .ayah-navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e1e8ed;
+    margin-bottom: 2.5rem;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 
 .nav-link {
-    color: #3498db;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #2c3e50;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-link:hover {
-    text-decoration: underline;
+    background-color: #3498db;
+    color: white;
+    transform: translateX(-3px);
 }
 
 .ayah-reference {
-    font-size: 1.5rem;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: #2c3e50;
+    background-color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.surah-number {
-    color: #e74c3c;
-}
-
-.separator {
-    margin: 0 0.5rem;
-    color: #7f8c8d;
-}
-
-.ayah-number {
-    color: #27ae60;
-}
-
+/* Main Content */
 .ayah-content {
-    background: #fff;
-    border-radius: 8px;
-    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Arabic Text Section */
 .ayah-arabic {
+    text-align: right;
+    font-size: 2.2rem;
+    line-height: 2.2;
+    margin: 0 0 3rem 0;
+    color: #1a365d;
+    font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade', 'Traditional Naskh', serif;
+    position: relative;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.ayah-number-arabic {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     text-align: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 6px;
+    line-height: 40px;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
 }
 
-.arabic-text {
-    font-size: 2rem;
-    line-height: 2;
-    color: #2c3e50;
-    font-family: 'Amiri', 'Scheherazade', serif;
-}
-
+/* Translation Section */
 .ayah-translation {
-    text-align: center;
-    margin-bottom: 1.5rem;
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    border-right: 4px solid #3498db;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
 }
 
 .translation-text {
-    font-size: 1.2rem;
-    line-height: 1.6;
-    color: #34495e;
-    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    line-height: 1.9;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
 }
 
 .translation-meta {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    font-style: italic;
+    text-align: right;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #dee2e6;
+}
+
+/* Audio Player */
+.ayah-audio {
+    margin: 3rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.ayah-audio h4 {
+    margin: 0 0 1.2rem 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+audio.audio-player {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ayah Details */
+.ayah-details {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.ayah-details h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    position: relative;
+    padding-bottom: 0.8rem;
+}
+
+.ayah-details h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #9b59b6);
+    border-radius: 3px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.detail-item {
+    background: #f8f9fa;
+    padding: 1.2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.detail-label {
     font-size: 0.9rem;
     color: #7f8c8d;
-}
-
-.translator {
+    margin-bottom: 0.3rem;
     font-weight: 500;
-    color: #3498db;
 }
 
-.ayah-audio {
-    text-align: center;
-    margin: 1.5rem 0;
-}
-
-.ayah-audio audio {
-    width: 100%;
-    max-width: 400px;
-}
-
-.ayah-tafsir {
-    background: #fff;
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.ayah-tafsir h3 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
-}
-
-.tafsir-text {
+.detail-value {
     font-size: 1.1rem;
-    line-height: 1.7;
-    color: #34495e;
-    margin-bottom: 1rem;
-}
-
-.tafsir-author {
-    font-style: italic;
-    color: #7f8c8d;
-    text-align: right;
-}
-
-.ayah-actions {
-    display: flex;
     gap: 1rem;
     justify-content: center;
     margin-bottom: 2rem;

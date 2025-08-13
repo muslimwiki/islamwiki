@@ -2,6 +2,11 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block styles %}
+{{ parent() }}
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
+{% endblock %}
+
 {% block content %}
 <div class="quran-section">
     <div class="max-w-5xl mx-auto">

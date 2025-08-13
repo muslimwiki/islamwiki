@@ -4,6 +4,7 @@ namespace IslamWiki\Extensions\QuranExtension;
 
 use IslamWiki\Core\Extensions\Extension;
 use IslamWiki\Core\Container\AsasContainer;
+use QuranExtension\BreadcrumbsExtension;
 
 class QuranExtension extends Extension
 {
@@ -11,6 +12,11 @@ class QuranExtension extends Extension
     {
         parent::__construct($container);
     }
+
+    /**
+     * @var BreadcrumbsExtension
+     */
+    private $breadcrumbsExtension;
 
     /**
      * Called when the extension is initialized
@@ -21,6 +27,9 @@ class QuranExtension extends Extension
             // Note: Routes will be registered when registerRoutes() is called externally
             // after the router is available in the container
 
+            // Initialize breadcrumbs extension
+            $this->breadcrumbsExtension = new BreadcrumbsExtension();
+
             // Register views
             $this->registerViews();
 
@@ -28,6 +37,16 @@ class QuranExtension extends Extension
         } catch (\Exception $e) {
             error_log("QuranExtension initialization failed: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Get the breadcrumbs extension
+     * 
+     * @return BreadcrumbsExtension
+     */
+    public function getBreadcrumbsExtension(): BreadcrumbsExtension
+    {
+        return $this->breadcrumbsExtension;
     }
 
     /**

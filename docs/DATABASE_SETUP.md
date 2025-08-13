@@ -53,7 +53,7 @@ This script will:
 Verify that everything is working correctly:
 
 ```bash
-php tests/Unit/Database/IntegrationTest.php
+php maintenance/tests/Unit/Database/IntegrationTest.php
 ```
 
 ## Database Schema
@@ -155,10 +155,10 @@ The setup script creates the following sample data:
 
 ```bash
 # Run database integration tests
-php tests/Unit/Database/IntegrationTest.php
+php maintenance/tests/Unit/Database/IntegrationTest.php
 
 # Run database connection test
-php tests/Unit/Database/DatabaseConnectionTest.php
+php maintenance/tests/Unit/Database/DatabaseConnectionTest.php
 ```
 
 ### Creating Migrations

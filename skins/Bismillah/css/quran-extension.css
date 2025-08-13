@@ -1,0 +1,109 @@
+/* QuranExtension Styles for Bismillah Skin */
+
+/* Main Container */
+.quran-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: var(--arabic-font, 'Amiri', 'Scheherazade', serif);
+}
+
+/* Header */
+.quran-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2.5rem 1.5rem;
+    background: var(--bismillah-gradient);
+    color: white;
+    border-radius: var(--bismillah-radius-lg);
+    box-shadow: var(--bismillah-shadow);
+}
+
+.quran-header h1 {
+    font-size: 2.75rem;
+    margin: 0;
+    font-weight: 800;
+}
+
+/* Stats Cards */
+.quran-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.quran-stat-card {
+    background: var(--bismillah-bg);
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--bismillah-radius);
+    box-shadow: var(--bismillah-shadow);
+    text-align: center;
+    border-left: 4px solid var(--quran-primary);
+    transition: var(--bismillah-transition);
+}
+
+/* Surah Cards */
+.quran-surahs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.quran-surah-card {
+    background: var(--bismillah-bg);
+    border-radius: var(--bismillah-radius);
+    box-shadow: var(--bismillah-shadow);
+    overflow: hidden;
+    transition: var(--bismillah-transition);
+    border: 1px solid var(--bismillah-border);
+}
+
+.quran-surah-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--bismillah-shadow-lg);
+}
+
+.quran-surah-header {
+    background: var(--quran-primary);
+    color: white;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Ayah Display */
+.quran-ayah-display {
+    background: var(--bismillah-bg);
+    border: 1px solid var(--bismillah-border);
+    border-radius: var(--bismillah-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.quran-ayah-text {
+    font-size: 2.25rem;
+    line-height: 2;
+    margin-bottom: 1.5rem;
+    color: var(--quran-dark);
+    direction: rtl;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quran-header h1 {
+        font-size: 2rem;
+    }
+    
+    .quran-ayah-text {
+        font-size: 1.75rem;
+    }
+    
+    .quran-surahs-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -4,7 +4,7 @@
     "description": "Default Islamic-themed skin with traditional design and beautiful gradients",
     "author": "IslamWiki Team",
     "assets": {
-        "css": "css/bismillah.css",
+        "css": ["css/bismillah.css", "css/quran.css"],
         "js": "js/bismillah.js"
     },
     "config": {

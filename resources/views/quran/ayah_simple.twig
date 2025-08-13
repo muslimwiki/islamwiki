@@ -1,0 +1,188 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title|default('Quran Ayah') }} - IslamWiki{% endblock %}
+
+{% block styles %}
+{{ parent() }}
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
+<style>
+/* Base Styles */
+.quran-ayah-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
+}
+
+/* Navigation */
+.ayah-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-link:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateX(-3px);
+}
+
+.ayah-reference {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c3e50;
+    background-color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.ayah-content {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+}
+
+/* Arabic Text Section */
+.ayah-arabic {
+    text-align: right;
+    font-size: 2.2rem;
+    line-height: 2.2;
+    margin: 0 0 3rem 0;
+    color: #1a365d;
+    font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade', 'Traditional Naskh', serif;
+    position: relative;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.ayah-number-arabic {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Translation Section */
+.ayah-translation {
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    border-right: 4px solid #3498db;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+}
+
+.translation-text {
+    font-size: 1.3rem;
+    line-height: 1.9;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+.translation-meta {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    font-style: italic;
+    text-align: right;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quran-ayah-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .ayah-arabic {
+        font-size: 1.8rem;
+        line-height: 2;
+        padding: 1rem 0;
+    }
+    
+    .ayah-content {
+        padding: 1.5rem;
+    }
+    
+    .ayah-navigation {
+        flex-direction: column;
+        gap: 1.2rem;
+        text-align: center;
+        padding: 1.5rem 1rem;
+    }
+    
+    .ayah-reference {
+        font-size: 1.2rem;
+        padding: 0.4rem 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quran-ayah-container">
+    <div class="ayah-navigation">
+        <a href="/quran/surah/{{ surah }}" class="nav-link">
+            <i class="fas fa-arrow-left"></i> Back to Surah {{ surah }}
+        </a>
+        <div class="ayah-reference">
+            <span class="surah-number">Surah {{ surah }}</span>
+            <span class="separator">:</span>
+            <span class="ayah-number">Ayah {{ ayah_number }}</span>
+        </div>
+    </div>
+
+    <div class="ayah-content">
+        <!-- Arabic Text Section -->
+        <div class="ayah-arabic">
+            <div class="arabic-text">{{ ayah.text_arabic|default('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ') }}</div>
+            <div class="ayah-number-arabic">{{ ayah.ayah_number|default(ayah_number) }}</div>
+        </div>
+
+        <!-- Translation Section -->
+        <div class="ayah-translation">
+            <div class="translation-text">{{ ayah.translation|default('In the name of Allah, the Entirely Merciful, the Especially Merciful.') }}</div>
+            <div class="translation-meta">
+                <span class="translator">{{ ayah.translator|default('Saheeh International') }}</span>
+                <span class="language">({{ ayah.language|default('English') }})</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -38,7 +38,7 @@ public/
 └── (essential web files only)
 ```
 
-**Rationale**: Keep web root minimal for security and performance. All test files moved to `tests/web/`.
+**Rationale**: Keep web root minimal for security and performance. All test files consolidated under `maintenance/tests/` (`web/`, `Unit/`, `Integration/`, `cli/`).
 
 #### **`resources/` - Application Resources**
 ```
@@ -99,9 +99,9 @@ scripts/
 
 ### Testing Organization
 
-#### **`tests/` - Comprehensive Testing**
+#### **`maintenance/tests/` - Comprehensive Testing**
 ```
-tests/
+maintenance/tests/
 ├── Unit/           # Unit tests
 │   └── Database/   # Database unit tests
 └── web/            # Web-based tests
@@ -125,7 +125,7 @@ tests/
 
 ### **3. Test File Organization**
 - **Before**: Test files scattered in `public/` and `routes/`
-- **After**: All web tests in `tests/web/`, unit tests in `tests/Unit/`
+- **After**: All web-style scripts in `maintenance/tests/web/`, unit tests in `maintenance/tests/Unit/`, integration tests in `maintenance/tests/Integration/`, CLI runners in `maintenance/tests/cli/`
 - **Benefits**: Clear separation, better security (tests not web-accessible)
 
 ### **4. Clean Public Directory**
@@ -175,9 +175,9 @@ tests/
 - **Examples**: `scripts/database/migrate.php`
 
 ### **Test Files**
-- **Unit Tests**: `tests/Unit/` for isolated testing
-- **Web Tests**: `tests/web/` for browser-based testing
-- **Integration Tests**: `tests/` for end-to-end testing
+- **Unit Tests**: `maintenance/tests/Unit/` for isolated testing
+- **Web Tests**: `maintenance/tests/web/` for browser-style testing
+- **Integration Tests**: `maintenance/tests/Integration/` for end-to-end testing
 - **Naming**: Use descriptive names with test prefix
 
 ### **Web-Accessible Files**

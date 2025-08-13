@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.55] - 2025-08-13
+
+### Added (0.0.55)
+
+- Enhanced Quran ayah page with improved RTL layout and Arabic numeral support
+- Added translation dropdown for ayah translations
+- Implemented breadcrumb navigation for better Quran navigation
+- Added previous/next ayah navigation buttons
+
+### Changed (0.0.55)
+
+- Updated Quran ayah page layout to match quran.com style
+- Improved Arabic text rendering with proper RTL support
+- Enhanced mobile responsiveness of Quran pages
+- Updated Quran index page with improved surah list and search functionality
+
+### Fixed (0.0.55)
+
+- Fixed 404 errors on Quran ayah pages
+- Resolved PDO fetch method compatibility issues
+- Fixed CSS loading for Quran pages
+- Corrected ayah number display to use Arabic numerals
+
 ## [0.0.54] - 2025-08-12
 
 ### Added (0.0.54)

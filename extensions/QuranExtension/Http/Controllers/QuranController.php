@@ -227,11 +227,20 @@ class QuranController extends Controller
             $surahNumber = (int) $surah;
             $ayahNumber = (int) $ayah;
 
+            // Get ayah data
             $ayahData = $this->quranAyah->getByReference($surahNumber, $ayahNumber, $language, $translator);
 
             if (!$ayahData) {
                 return $this->notFound("Ayah {$surah}:{$ayah} not found");
             }
+
+            // Get surah info for breadcrumbs
+            $surahInfo = $this->quranAyah->getSurahInfo($surahNumber);
+            $surahName = $surahInfo['name'] ?? null;
+
+            // Get previous and next ayahs for navigation
+            $prevAyah = $this->quranAyah->getPreviousAyah($surahNumber, $ayahNumber, $language, $translator);
+            $nextAyah = $this->quranAyah->getNextAyah($surahNumber, $ayahNumber, $language, $translator);
 
             // Get tafsir if available
             $tafsir = null;
@@ -244,18 +253,34 @@ class QuranController extends Controller
             // Get translators for the view
             $translators = $this->ayahRepository->getAllTranslators($language);
 
+            // Prepare data for the view
             $data = [
-                'title' => "Quran {$surahNumber}:{$ayahNumber} - IslamWiki",
-                'ayah' => $ayahData,
-                'tafsir' => $tafsir,
-                'language' => $language,
-                'translator' => $translator,
+                'title' => "{$surahName} {$surahNumber}:{$ayahNumber} - Quran - IslamWiki",
+                'ayah' => [
+                    'text_arabic' => $ayahData['text_arabic'] ?? '',
+                    'translation_text' => $ayahData['translation'] ?? '',
+                    'translator_name' => $ayahData['translator'] ?? $translator,
+                    'surah_number' => $surahNumber,
+                    'ayah_number' => $ayahNumber,
+                ],
+                'surah_name' => $surahName,
                 'surah' => $surahNumber,
                 'ayah_number' => $ayahNumber,
+                'language' => $language,
+                'translator' => $translator,
                 'translators' => $translators,
+                'prev_ayah' => $prevAyah ? [
+                    'surah_number' => $prevAyah['surah_number'],
+                    'ayah_number' => $prevAyah['ayah_number']
+                ] : null,
+                'next_ayah' => $nextAyah ? [
+                    'surah_number' => $nextAyah['surah_number'],
+                    'ayah_number' => $nextAyah['ayah_number']
+                ] : null,
+                'tafsir' => $tafsir,
             ];
 
-            return $this->view('quran/ayah', $data);
+            return $this->view('quran/ayah_new', $data);
         } catch (Exception $e) {
             error_log("Quran ayah page error: " . $e->getMessage());
             return $this->view('quran/error', [

@@ -134,9 +134,13 @@
 {% endblock %}
 
 {% block styles %}
+{{ parent() }}
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
 <style>
     .font-arabic {
         font-family: 'Amiri', 'Scheherazade', serif;
     }
+    /* Test style - should make background red if CSS is loading */
+    body { background-color: red !important; }
 </style>
 {% endblock %} 

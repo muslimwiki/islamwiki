@@ -504,8 +504,120 @@ class QuranAyahRepository
                 throw $e;
             }
         });
+    }
 
-    // ... [other methods with similar error handling and documentation]
-}
+    /**
+     * Get tafsir (exegesis/explanation) for a specific ayah.
+     *
+     * @param int $ayahId The ID of the ayah
+     * @param string $language The language code for the tafsir
+     * @return array|null The tafsir data or null if not found
+     */
+    public function getTafsir(int $ayahId, string $language = 'en'): ?array
+    {
+        // Log the method call for debugging
+        $this->logger?->debug('Getting tafsir for ayah', ['ayah_id' => $ayahId, 'language' => $language]);
+        
+        // For now, return null as the tafsir feature is not fully implemented
+        // In a full implementation, this would query the tafsir table
+        return null;
+    }
 
+
+
+    /**
+     * Get the previous ayah in sequence
+     *
+     * @param int $surahNumber Current surah number
+     * @param int $ayahNumber Current ayah number
+     * @param string $language Language code
+     * @param string $translator Translator identifier
+     * @return array|null Previous ayah data or null if at the beginning
+     */
+    public function getPreviousAyah(int $surahNumber, int $ayahNumber, string $language = 'en', string $translator = 'Saheeh International'): ?array
+    {
+        try {
+            // First try to get previous ayah in the same surah
+            if ($ayahNumber > 1) {
+                $query = 'SELECT * FROM quran_ayahs 
+                         WHERE surah_number = :surah_number AND ayah_number = :ayah_number 
+                         LIMIT 1';
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([
+                    'surah_number' => $surahNumber,
+                    'ayah_number' => $ayahNumber - 1
+                ]);
+                
+                $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+                if ($result) {
+                    return $result;
+                }
+            }
+            
+            // If no previous ayah in the same surah, get the last ayah of the previous surah
+            if ($surahNumber > 1) {
+                $query = 'SELECT * FROM quran_ayahs 
+                         WHERE surah_number = :surah_number 
+                         ORDER BY ayah_number DESC 
+                         LIMIT 1';
+                $stmt = $this->db->prepare($query);
+                $stmt->execute(['surah_number' => $surahNumber - 1]);
+                
+                return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+            }
+            
+            return null;
+            
+        } catch (\Exception $e) {
+            $this->logger?->error('Failed to get previous ayah: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get the next ayah in sequence
+     *
+     * @param int $surahNumber Current surah number
+     * @param int $ayahNumber Current ayah number
+     * @param string $language Language code
+     * @param string $translator Translator identifier
+     * @return array|null Next ayah data or null if at the end
+     */
+    public function getNextAyah(int $surahNumber, int $ayahNumber, string $language = 'en', string $translator = 'Saheeh International'): ?array
+    {
+        try {
+            // First try to get next ayah in the same surah
+            $query = 'SELECT * FROM quran_ayahs 
+                     WHERE surah_number = :surah_number AND ayah_number = :ayah_number 
+                     LIMIT 1';
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                'surah_number' => $surahNumber,
+                'ayah_number' => $ayahNumber + 1
+            ]);
+            
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            }
+            
+            // If no next ayah in the same surah, get the first ayah of the next surah
+            if ($surahNumber < 114) {
+                $query = 'SELECT * FROM quran_ayahs 
+                         WHERE surah_number = :surah_number 
+                         ORDER BY ayah_number ASC 
+                         LIMIT 1';
+                $stmt = $this->db->prepare($query);
+                $stmt->execute(['surah_number' => $surahNumber + 1]);
+                
+                return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+            }
+            
+            return null;
+            
+        } catch (\Exception $e) {
+            $this->logger?->error('Failed to get next ayah: ' . $e->getMessage());
+            return null;
+        }
+    }
 }
