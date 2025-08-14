@@ -152,8 +152,14 @@ try {
         $loadedExtensions = $extMgr->getLoadedExtensions();
 
         foreach ($loadedExtensions as $extension) {
-            if (method_exists($extension, 'registerRoutes')) {
-                $extension->registerRoutes();
+            try {
+                if (method_exists($extension, 'registerRoutes')) {
+                    $extension->registerRoutes();
+                }
+            } catch (\Exception $e) {
+                error_log('Error registering routes for extension ' . get_class($extension) . ': ' . $e->getMessage());
+                // Continue with other extensions even if one fails
+                continue;
             }
         }
     }

@@ -60,27 +60,27 @@
     },
     "routes": {
         "hadith": {
-            "pattern": "/hadith",
+            "pattern": "/hadiths",
             "controller": "HadithController",
             "action": "index"
         },
         "hadith_search": {
-            "pattern": "/hadith/search",
+            "pattern": "/hadiths/search",
             "controller": "HadithController",
             "action": "search"
         },
         "hadith_show": {
-            "pattern": "/hadith/{collection}/{number}",
+            "pattern": "/hadiths/{collection}/{number}",
             "controller": "HadithController",
             "action": "show"
         },
         "hadith_collection": {
-            "pattern": "/hadith/collection/{id}",
+            "pattern": "/hadiths/collection/{id}",
             "controller": "HadithController",
             "action": "collection"
         },
         "hadith_narrator": {
-            "pattern": "/hadith/narrator/{id}",
+            "pattern": "/hadiths/narrator/{id}",
             "controller": "HadithController",
             "action": "narrator"
         },

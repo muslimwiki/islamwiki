@@ -233,7 +233,7 @@ $router->get('/quran:{query}', function ($request, $query) {
 // Note: Quran routes are registered by the QuranExtension when the router becomes available
 
 // Hadith Routes - Phase 4 Islamic Features Integration
-$router->get('/hadith', 'IslamWiki\\Http\\Controllers\\HadithController@indexPage');
+$router->get('/hadith', 'IslamWiki\\Http\\Controllers\\HadithController@index');
 $router->get('/hadith/search', 'IslamWiki\\Http\\Controllers\\HadithController@searchPage');
 $router->get('/hadith/collection/{collectionId}', 'IslamWiki\\Http\\Controllers\\HadithController@collectionPage');
 $router->get('/hadith/{collectionId}/{hadithNumber}', 'IslamWiki\\Http\\Controllers\\HadithController@hadithPage');

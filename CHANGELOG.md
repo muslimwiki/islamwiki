@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.56] - 2025-08-13
+
+### Added (0.0.56)
+
+- **HadithExtension**: Initial implementation of Hadith browsing functionality
+- Added support for viewing hadith collections, books, and individual narrations
+- Implemented hadith search functionality with filters
+- Added narrator information and linking between related hadiths
+- Integrated with existing authentication and permission system
+
+### Fixed (0.0.56)
+
+- Resolved routing conflict between /hadith path and MediaWiki's default routing
+- Fixed PHP parse errors in public/index.php related to extension loading
+- Corrected method name in route definition for HadithController@index
+- Updated route prefixes to use consistent '/hadiths' base path
+- Fixed error handling in extension route registration
+
 ## [0.0.55] - 2025-08-13
 
 ### Added (0.0.55)

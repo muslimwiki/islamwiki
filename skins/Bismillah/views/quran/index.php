@@ -1,4 +1,4 @@
-<?php
+      <?php
 /**
  * Quran Index View
  * Displays the main Quran interface with navigation
