@@ -2,7 +2,15 @@
 
 A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles.
 
-## 🚀 Latest Updates (v0.0.55)
+## 🚀 Latest Updates (v0.0.56)
+
+### 📜 Hadith Extension
+
+- **Hadith Browsing**: Complete implementation for viewing hadith collections, books, and individual narrations
+- **Advanced Search**: Full-text search with filters by collection, book, narrator, and authenticity
+- **Narrator Information**: Detailed profiles for hadith narrators with biographical data
+- **Responsive Design**: Optimized for all devices with RTL support
+- **API Endpoints**: Comprehensive API for developers to integrate hadith data
 
 ### 📖 Quran Experience Enhanced
 
