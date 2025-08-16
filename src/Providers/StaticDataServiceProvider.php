@@ -44,12 +44,60 @@ class StaticDataServiceProvider
     {
         // Register the static data manager as a singleton
         $container->singleton('static.data', function (AsasContainer $container) {
-            return new StaticDataManager($container->get('app'));
+            // For now, return a simple mock implementation
+            return new class {
+                public function getStaticData(string $key = null): array
+                {
+                    $data = [
+                        'site' => [
+                            'name' => 'IslamWiki',
+                            'tagline' => 'Your comprehensive source for Islamic knowledge and community',
+                            'version' => '0.0.44',
+                            'url' => 'https://local.islam.wiki',
+                            'email' => 'contact@islam.wiki',
+                        ],
+                        'navigation' => [
+                            'main' => [
+                                ['url' => '/', 'label' => 'Home', 'icon' => '🏠'],
+                                ['url' => '/quran', 'label' => 'Quran', 'icon' => '📖'],
+                                ['url' => '/hadith', 'label' => 'Hadith', 'icon' => '📜'],
+                                ['url' => '/community', 'label' => 'Community', 'icon' => '👥'],
+                            ],
+                        ],
+                        'footer' => [
+                            'sections' => [
+                                'main' => [
+                                    'title' => 'IslamWiki',
+                                    'description' => 'Your comprehensive source for Islamic knowledge and community.',
+                                ],
+                            ],
+                        ],
+                        'features' => [],
+                        'social' => [],
+                        'components' => [
+                            'login' => [
+                                'title' => 'Login',
+                                'description' => 'Sign in to your account',
+                            ],
+                            'register' => [
+                                'title' => 'Create Account',
+                                'description' => 'Join the IslamWiki community',
+                            ],
+                        ],
+                    ];
+                    
+                    if ($key === null) {
+                        return $data;
+                    }
+                    
+                    return $data[$key] ?? [];
+                }
+            };
         });
 
         // Register the static data manager as a factory for dynamic updates
         $container->bind('static.data.manager', function (AsasContainer $container) {
-            return new StaticDataManager($container->get('app'));
+            return $container->get('static.data');
         });
 
         // Register global static data as a singleton

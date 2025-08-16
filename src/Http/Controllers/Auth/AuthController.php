@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         // Get static data manager
         $staticDataManager = $this->container->get('static.data');
-        $staticData = $staticDataManager->getStaticData('login');
+        $staticData = $staticDataManager->getStaticData(); // Get full data, not just 'login'
 
         // Use the base Controller's view() method - this will automatically include user data
         return $this->view('auth/login', [
@@ -147,7 +147,7 @@ class AuthController extends Controller
 
         // Get static data manager
         $staticDataManager = $this->container->get('static.data');
-        $staticData = $staticDataManager->getStaticData('register');
+        $staticData = $staticDataManager->getStaticData(); // Get full data, not just 'register'
 
         // Use the base Controller's view() method - this will automatically include user data
         return $this->view('auth/register', [

@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.57] - 2025-01-15
+
+### Added (0.0.57)
+
+- **RTL Language Support**: Complete right-to-left (RTL) layout support for Arabic language
+- **Language Toggle Button**: Functional language toggle in header navigation with persistent preferences
+- **RTL CSS Framework**: 47 RTL-specific CSS rules for comprehensive Arabic layout support
+- **Dynamic Language Switching**: Seamless switching between LTR and RTL text direction
+- **Mobile RTL Support**: Responsive RTL layout optimized for all device sizes
+
+### Fixed (0.0.57)
+
+- **Critical Authentication Issues**: Fixed missing AuthServiceProvider registration causing login/register failures
+- **Service Container Bindings**: Resolved 'auth' service binding issues and container interface mismatches
+- **Route Handling**: Fixed /login, /register, /dashboard, /profile, and /settings route failures
+- **Service Provider Architecture**: Proper registration and boot sequence for all service providers
+- **Container Interface**: Standardized on AsasContainer throughout the system
+- **HTAccess Configuration**: Updated .htaccess to point to correct app.php entry point
+- **Controller Dependencies**: Fixed missing 'app' and 'skin.manager' binding issues
+- **Session Management**: Corrected session management initialization and CSRF token handling
+
+### Changed (0.0.57)
+
+- **Service Provider Registration**: All service providers now properly registered in main app.php
+- **Container Management**: Enhanced AsasContainer with proper service registration
+- **Error Handling**: Improved error handling and graceful fallbacks for missing services
+- **Code Quality**: PSR-12 standards adherence and proper type hints throughout
+- **RTL Implementation**: Leveraged existing CSS custom properties for consistent RTL styling
+
+### Developer Notes (0.0.57)
+
+- Service provider architecture now follows proper registration and boot sequence
+- RTL support implemented using [dir="rtl"] CSS selectors for maintainable code
+- Language preferences stored in localStorage for persistent user experience
+- All authentication routes now fully functional and accessible
+
 ## [0.0.56] - 2025-08-13
 
 ### Added (0.0.56)

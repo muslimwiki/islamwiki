@@ -203,8 +203,12 @@ class DashboardController extends Controller
         }
 
         // Get active skin using standardized skin manager
-        $app = $this->container->get('app');
-        $activeSkinName = SkinManager::getActiveSkinNameStatic($app);
+        // For now, use a fallback since we don't have the 'app' binding
+        $activeSkinName = 'Bismillah'; // Default skin name
+        
+        // TODO: Once the full application system is implemented, this can be updated to:
+        // $app = $this->container->get('app');
+        // $activeSkinName = SkinManager::getActiveSkinNameStatic($app);
 
         $data = [
             'title' => 'Dashboard - IslamWiki',

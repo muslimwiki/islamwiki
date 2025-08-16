@@ -184,15 +184,40 @@ $logger = new class implements \Psr\Log\LoggerInterface
 // Register logger in container
 $container->instance(\Psr\Log\LoggerInterface::class, $logger);
 
-// Initialize and register TwigRenderer
-$viewsPath = BASE_PATH . '/resources/views';
-$cachePath = BASE_PATH . '/storage/framework/views';
-$twigRenderer = new \IslamWiki\Core\View\TwigRenderer(
-    $viewsPath,
-    $cachePath,
-    true // debug mode
-);
-$container->instance('view', $twigRenderer);
+// Register service providers
+error_log("MAIN ENTRY POINT: Registering service providers");
+
+// Register AuthServiceProvider
+require_once BASE_PATH . '/src/Providers/AuthServiceProvider.php';
+$authProvider = new \IslamWiki\Providers\AuthServiceProvider();
+$authProvider->register($container);
+
+// Register SessionServiceProvider
+require_once BASE_PATH . '/src/Providers/SessionServiceProvider.php';
+$sessionProvider = new \IslamWiki\Providers\SessionServiceProvider();
+$sessionProvider->register($container);
+
+// Register ViewServiceProvider
+require_once BASE_PATH . '/src/Providers/ViewServiceProvider.php';
+$viewProvider = new \IslamWiki\Providers\ViewServiceProvider();
+$viewProvider->register($container);
+
+// Register StaticDataServiceProvider
+require_once BASE_PATH . '/src/Providers/StaticDataServiceProvider.php';
+$staticDataProvider = new \IslamWiki\Providers\StaticDataServiceProvider();
+$staticDataProvider->register($container);
+
+// Register SkinServiceProvider
+require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
+$skinProvider = new \IslamWiki\Providers\SkinServiceProvider();
+$skinProvider->register($container);
+
+// Boot all service providers
+error_log("MAIN ENTRY POINT: Booting service providers");
+$authProvider->boot($container);
+$sessionProvider->boot($container);
+$staticDataProvider->boot($container);
+$skinProvider->boot($container);
 
 // Initialize and register controller factory
 $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $container);
