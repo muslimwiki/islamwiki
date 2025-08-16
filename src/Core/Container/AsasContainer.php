@@ -137,7 +137,28 @@ class AsasContainer implements ContainerInterface
      */
     protected function resolve(string $abstract, array $parameters = [])
     {
+        return $this->resolveWithStack($abstract, $parameters, []);
+    }
+
+    /**
+     * Resolve the given type from the container with resolution stack tracking.
+     */
+    protected function resolveWithStack(string $abstract, array $parameters = [], array $resolutionStack = [])
+    {
+        // Prevent excessive recursion depth
+        if (count($resolutionStack) > 100) {
+            throw new \RuntimeException("Maximum dependency resolution depth exceeded (100). Possible circular dependency: " . implode(' -> ', $resolutionStack));
+        }
+
         $abstract = $this->getAlias($abstract);
+
+        // Check for circular dependencies
+        if (in_array($abstract, $resolutionStack)) {
+            throw new \RuntimeException("Circular dependency detected: " . implode(' -> ', $resolutionStack) . " -> {$abstract}");
+        }
+
+        // Add current abstract to resolution stack
+        $resolutionStack[] = $abstract;
 
         // If an instance of the type is currently being managed as a singleton, return it
         if (isset($this->instances[$abstract])) {
@@ -161,7 +182,7 @@ class AsasContainer implements ContainerInterface
         if ($concrete === $abstract) {
             $object = $this->build($concrete, $parameters);
         } else {
-            $object = $this->resolve($concrete, $parameters);
+            $object = $this->resolveWithStack($concrete, $parameters, $resolutionStack);
         }
 
         // If the type is a shared binding, store the instance
