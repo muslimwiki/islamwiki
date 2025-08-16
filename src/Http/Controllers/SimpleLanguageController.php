@@ -200,20 +200,103 @@ class SimpleLanguageController
             $_SESSION['is_rtl'] = $this->supportedLanguages[$language]['isRTL'];
         }
 
-        $languageData = $this->supportedLanguages[$language];
-        
-        $data = [
+        // Return language-specific home page
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'message' => "Welcome to {$this->supportedLanguages[$language]['name']} version",
             'language' => $language,
-            'direction' => $languageData['direction'],
-            'is_rtl' => $languageData['isRTL'],
-            'name' => $languageData['name'],
-            'native' => $languageData['native'],
-            'flag' => $languageData['flag'],
-            'message' => 'Language-specific home page',
-            'current_host' => $_SERVER['HTTP_HOST'] ?? $this->baseDomain
-        ];
+            'direction' => $this->supportedLanguages[$language]['direction'],
+            'is_rtl' => $this->supportedLanguages[$language]['isRTL'],
+            'available_languages' => $this->supportedLanguages,
+            'current_url' => $request->getUri()->getPath(),
+            'base_url' => $this->generateLanguageUrl($language, '/')
+        ]));
+    }
 
-        return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));
+    /**
+     * Handle language-specific content requests
+     * This method routes language-specific requests to the appropriate controllers
+     * while maintaining the language context
+     */
+    public function languageContent(Request $request, string $language, ...$parameters): Response
+    {
+        if (!isset($this->supportedLanguages[$language])) {
+            return new Response(404, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'Language not supported',
+                'supported_languages' => array_keys($this->supportedLanguages)
+            ]));
+        }
+
+        // Set language in session
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['language'] = $language;
+            $_SESSION['language_direction'] = $this->supportedLanguages[$language]['direction'];
+            $_SESSION['is_rtl'] = $this->supportedLanguages[$language]['isRTL'];
+        }
+
+        // Get the original path without the language prefix
+        $originalPath = $request->getUri()->getPath();
+        $pathWithoutLanguage = preg_replace("/^\/{$language}/", '', $originalPath);
+        
+        // If no additional path, redirect to language home
+        if (empty($pathWithoutLanguage) || $pathWithoutLanguage === '/') {
+            return new Response(302, ['Location' => "/{$language}/"], '');
+        }
+
+        // Create a new request with the original path (without language prefix)
+        // This allows the existing controllers to handle the request normally
+        $modifiedRequest = $this->createModifiedRequest($request, $pathWithoutLanguage);
+
+        // Route to the appropriate controller based on the path
+        $response = $this->routeToController($modifiedRequest, $pathWithoutLanguage, $parameters);
+
+        // If the controller returns a response, return it
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        // Fallback: return language context information
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'message' => "Language-specific content for {$this->supportedLanguages[$language]['name']}",
+            'language' => $language,
+            'direction' => $this->supportedLanguages[$language]['direction'],
+            'is_rtl' => $this->supportedLanguages[$language]['isRTL'],
+            'original_path' => $originalPath,
+            'path_without_language' => $pathWithoutLanguage,
+            'parameters' => $parameters,
+            'note' => 'This content should be handled by the appropriate controller'
+        ]));
+    }
+
+    /**
+     * Create a modified request with the path without language prefix
+     */
+    private function createModifiedRequest(Request $originalRequest, string $newPath): Request
+    {
+        // Create a new URI with the modified path
+        $uri = $originalRequest->getUri();
+        $newUri = $uri->withPath($newPath);
+        
+        // Create a new request with the modified URI
+        return new Request(
+            $originalRequest->getMethod(),
+            $newUri,
+            $originalRequest->getHeaders(),
+            $originalRequest->getBody(),
+            $originalRequest->getProtocolVersion()
+        );
+    }
+
+    /**
+     * Route to the appropriate controller based on the path
+     */
+    private function routeToController(Request $request, string $path, array $parameters): ?Response
+    {
+        // This is a simplified routing logic
+        // In a full implementation, you would use the router to find the appropriate controller
+        
+        // For now, return null to indicate that the controller should handle it
+        // The actual routing will be handled by the main router
+        return null;
     }
 
     /**

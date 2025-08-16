@@ -456,7 +456,75 @@ $router->get('/{language}/language/switch/{targetLanguage}', 'IslamWiki\Http\Con
 $router->post('/{language}/language/translate', 'IslamWiki\Http\Controllers\SimpleLanguageController@translateText');
 $router->get('/{language}/language/stats', 'IslamWiki\Http\Controllers\SimpleLanguageController@getTranslationStats');
 
+// Language-specific content routes - Main pages
+$router->get('/{language}/quran', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/hadith', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/wiki', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/sciences', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/docs', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/bayan', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/about', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/help', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
 
+// Language-specific Quran routes
+$router->get('/{language}/quran/search', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/quran/juz/{juz}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/quran/page/{page}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/quran/{surah}/info', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/quran/{surah}/{ayah}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/quran/{surah}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Hadith routes
+$router->get('/{language}/hadith/search', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/hadith/collection/{collectionId}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/hadith/{collectionId}/{hadithNumber}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Calendar routes
+$router->get('/{language}/calendar', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/calendar/month/{year}/{month}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/calendar/event/{id}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Salah routes
+$router->get('/{language}/salah', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/salah/search', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/salah/show/{date}/{locationId}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Sciences routes
+$router->get('/{language}/sciences/{category}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Community routes
+$router->get('/{language}/community/users', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/activity', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/contribute', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/my-contributions', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/moderation', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/discussions', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/discussions/create', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/discussions/{id}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/community/profile/{userId}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Bayan routes
+$router->get('/{language}/bayan/search', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/bayan/create', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/bayan/node/{id}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/bayan/statistics', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/bayan/paths', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Wiki routes
+$router->get('/{language}/wiki/{slug}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/wiki/{slug}/edit', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/wiki/{slug}/history', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Language-specific Special pages
+$router->get('/{language}/Special', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/Special:{page}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/special', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+$router->get('/{language}/special:{page}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
+
+// Catch-all route for language-specific paths that aren't explicitly defined
+// This allows any /{language}/{path} to be handled by the languageContent method
+$router->get('/{language}/{path:.*}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
 
 // Wiki routes - only for actual wiki pages, not system paths
 // Note: These are more specific and won't interfere with auth/system routes
