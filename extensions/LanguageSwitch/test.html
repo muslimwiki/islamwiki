@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LanguageSwitch Extension Test</title>
+    <link rel="stylesheet" href="assets/css/language-switch.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2d5016;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+        }
+        .test-title {
+            color: #2d5016;
+            margin-bottom: 1rem;
+        }
+        .language-switch-demo {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        .rtl-demo {
+            direction: rtl;
+            text-align: right;
+            padding: 1rem;
+            background: #e8f5e8;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .ltr-demo {
+            direction: ltr;
+            text-align: left;
+            padding: 1rem;
+            background: #e8f0f8;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🌐 LanguageSwitch Extension Test</h1>
+            <p>Test the language switching functionality with Arabic and English support</p>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">Language Switch Component</h2>
+            <div class="language-switch-demo">
+                <!-- Language Switch Component -->
+                <div class="language-switch" id="languageSwitch" data-lang="en">
+                    <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
+                        <span class="language-flag">🇺🇸</span>
+                        <span class="language-text">English</span>
+                        <span class="language-dropdown-arrow">▼</span>
+                    </button>
+                    
+                    <div class="language-dropdown" role="menu" aria-label="Language Options">
+                        <div class="language-option" role="menuitem" data-language="en" tabindex="0" aria-current="true">
+                            <span class="language-option-flag">🇺🇸</span>
+                            <div class="language-option-content">
+                                <div class="language-option-name">English</div>
+                                <div class="language-option-native">English</div>
+                            </div>
+                        </div>
+                        <div class="language-option" role="menuitem" data-language="ar" tabindex="0">
+                            <span class="language-option-flag">🇸🇦</span>
+                            <div class="language-option-content">
+                                <div class="language-option-name">Arabic</div>
+                                <div class="language-option-native">العربية</div>
+                                <div class="language-option-rtl">RTL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">Direction Testing</h2>
+            <div class="ltr-demo">
+                <h3>Left-to-Right (LTR) Text</h3>
+                <p>This is English text that flows from left to right. It demonstrates the standard Western text direction.</p>
+                <p>Numbers: 123 456 789</p>
+                <p>Mixed content: English text with <strong>bold</strong> and <em>italic</em> formatting.</p>
+            </div>
+            
+            <div class="rtl-demo">
+                <h3>Right-to-Left (RTL) Text</h3>
+                <p>هذا نص عربي يتدفق من اليمين إلى اليسار. يوضح اتجاه النص العربي القياسي.</p>
+                <p>أرقام: ١٢٣ ٤٥٦ ٧٨٩</p>
+                <p>محتوى مختلط: نص عربي مع <strong>تنسيق عريض</strong> و <em>مائل</em>.</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">Current Language Status</h2>
+            <div id="languageStatus">
+                <p><strong>Current Language:</strong> <span id="currentLang">English</span></p>
+                <p><strong>Direction:</strong> <span id="currentDir">LTR</span></p>
+                <p><strong>Is RTL:</strong> <span id="isRTL">No</span></p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">Test Instructions</h2>
+            <ol>
+                <li>Click the language switch button to see the dropdown</li>
+                <li>Select Arabic to switch to RTL mode</li>
+                <li>Select English to switch back to LTR mode</li>
+                <li>Notice how the page direction changes</li>
+                <li>Check that the language preference is saved</li>
+                <li>Refresh the page to verify persistence</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="assets/js/language-switch.js"></script>
+    <script>
+        // Test script to monitor language changes
+        document.addEventListener('languageChanged', (e) => {
+            console.log('Language changed event:', e.detail);
+            
+            // Update status display
+            document.getElementById('currentLang').textContent = e.detail.language === 'ar' ? 'Arabic' : 'English';
+            document.getElementById('currentDir').textContent = e.detail.direction.toUpperCase();
+            document.getElementById('isRTL').textContent = e.detail.isRTL ? 'Yes' : 'No';
+            
+            // Update page direction for testing
+            document.documentElement.setAttribute('dir', e.detail.direction);
+            document.documentElement.setAttribute('lang', e.detail.language);
+        });
+        
+        // Initialize status display
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = document.documentElement.getAttribute('lang') || 'en';
+            const currentDir = document.documentElement.getAttribute('dir') || 'ltr';
+            const isRTL = currentDir === 'rtl';
+            
+            document.getElementById('currentLang').textContent = currentLang === 'ar' ? 'Arabic' : 'English';
+            document.getElementById('currentDir').textContent = currentDir.toUpperCase();
+            document.getElementById('isRTL').textContent = isRTL ? 'Yes' : 'No';
+        });
+    </script>
+</body>
+</html> 

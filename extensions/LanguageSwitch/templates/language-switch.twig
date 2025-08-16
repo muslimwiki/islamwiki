@@ -1,0 +1,66 @@
+<!-- Language Switch Component -->
+<!-- Provides language switching functionality with Arabic and English support -->
+
+<div class="language-switch" id="languageSwitch" data-lang="{{ language_switch.current_language|default('en') }}">
+    <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
+        <span class="language-flag">
+            {% if language_switch.current_language == 'ar' %}
+                🇸🇦
+            {% else %}
+                🇺🇸
+            {% endif %}
+        </span>
+        <span class="language-text">
+            {% if language_switch.current_language == 'ar' %}
+                العربية
+            {% else %}
+                English
+            {% endif %}
+        </span>
+        <span class="language-dropdown-arrow">▼</span>
+    </button>
+    
+    <div class="language-dropdown" role="menu" aria-label="Language Options">
+        {% for language in language_switch.supported_languages|default(['en', 'ar']) %}
+            <div class="language-option" 
+                 role="menuitem" 
+                 data-language="{{ language.code }}"
+                 tabindex="0"
+                 {% if language.code == language_switch.current_language %}aria-current="true"{% endif %}>
+                <span class="language-option-flag">{{ language.flag|default('🌐') }}</span>
+                <div class="language-option-content">
+                    <div class="language-option-name">{{ language.name|default(language.code|upper) }}</div>
+                    <div class="language-option-native">{{ language.native|default(language.name|default(language.code|upper)) }}</div>
+                    {% if language.is_rtl|default(false) %}
+                        <div class="language-option-rtl">RTL</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+// Initialize language switch with current language data
+document.addEventListener('DOMContentLoaded', function() {
+    const languageSwitch = document.getElementById('languageSwitch');
+    if (languageSwitch) {
+        // Set initial language state
+        const currentLang = languageSwitch.getAttribute('data-lang') || 'en';
+        languageSwitch.setAttribute('data-lang', currentLang);
+        
+        // Update button content based on current language
+        const button = languageSwitch.querySelector('.language-switch-button');
+        const flag = button.querySelector('.language-flag');
+        const text = button.querySelector('.language-text');
+        
+        if (currentLang === 'ar') {
+            if (flag) flag.textContent = '🇸🇦';
+            if (text) text.textContent = 'العربية';
+        } else {
+            if (flag) flag.textContent = '🇺🇸';
+            if (text) text.textContent = 'English';
+        }
+    }
+});
+</script> 

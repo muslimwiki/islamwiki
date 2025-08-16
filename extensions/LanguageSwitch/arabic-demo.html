@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Translation Demo - LanguageSwitch Extension</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .demo-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2d5016;
+        }
+        .demo-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+        }
+        .demo-title {
+            color: #2d5016;
+            margin-bottom: 1rem;
+        }
+        .translation-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+        .english-text, .arabic-text {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: #f8f9fa;
+        }
+        .english-text {
+            background: #e8f0f8;
+        }
+        .arabic-text {
+            background: #e8f5e8;
+            direction: rtl;
+            text-align: right;
+        }
+        .text-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2d5016;
+        }
+        .translation-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-left: 3px solid #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+        .translation-original {
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 0.25rem;
+        }
+        .translation-arabic {
+            color: #1a3009;
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .demo-btn {
+            background: #2d5016;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .demo-btn:hover {
+            background: #1a3009;
+            transform: translateY(-2px);
+        }
+        .demo-btn.arabic {
+            background: #d4af37;
+            color: #1a3009;
+        }
+        .demo-btn.arabic:hover {
+            background: #b8941f;
+        }
+        .status-indicator {
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            background: #e8f5e8;
+            color: #1a3009;
+            font-weight: 600;
+        }
+        .status-indicator.english {
+            background: #e8f0f8;
+            color: #2d5016;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🌐 Arabic Translation Demo</h1>
+            <p>Demonstrating the Arabic translation system for IslamWiki</p>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">Language Switch Component</h2>
+            <div style="text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 0.5rem;">
+                <!-- Language Switch Component -->
+                <div class="language-switch" id="languageSwitch" data-lang="en">
+                    <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
+                        <span class="language-flag">🇺🇸</span>
+                        <span class="language-text">English</span>
+                        <span class="language-dropdown-arrow">▼</span>
+                    </button>
+                    
+                    <div class="language-dropdown" role="menu" aria-label="Language Options">
+                        <div class="language-option" role="menuitem" data-language="en" tabindex="0" aria-current="true">
+                            <span class="language-option-flag">🇺🇸</span>
+                            <div class="language-option-content">
+                                <div class="language-option-name">English</div>
+                                <div class="language-option-native">English</div>
+                            </div>
+                        </div>
+                        <div class="language-option" role="menuitem" data-language="ar" tabindex="0">
+                            <span class="language-option-flag">🇸🇦</span>
+                            <div class="language-option-content">
+                                <div class="language-option-name">Arabic</div>
+                                <div class="language-option-native">العربية</div>
+                                <div class="language-option-rtl">RTL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">Translation Examples</h2>
+            <div class="translation-demo">
+                <div class="english-text">
+                    <div class="text-label">English Text</div>
+                    <div class="translation-item">
+                        <div class="translation-original">Home</div>
+                        <div class="translation-arabic">الرئيسية</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">Quran</div>
+                        <div class="translation-arabic">القرآن الكريم</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">Hadith</div>
+                        <div class="translation-arabic">الحديث الشريف</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">Sciences</div>
+                        <div class="translation-arabic">العلوم الإسلامية</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">Community</div>
+                        <div class="translation-arabic">المجتمع</div>
+                    </div>
+                </div>
+                
+                <div class="arabic-text">
+                    <div class="text-label">Arabic Text</div>
+                    <div class="translation-item">
+                        <div class="translation-original">الرئيسية</div>
+                        <div class="translation-arabic">Home</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">القرآن الكريم</div>
+                        <div class="translation-arabic">Quran</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">الحديث الشريف</div>
+                        <div class="translation-arabic">Hadith</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">العلوم الإسلامية</div>
+                        <div class="translation-arabic">Sciences</div>
+                    </div>
+                    <div class="translation-item">
+                        <div class="translation-original">المجتمع</div>
+                        <div class="translation-arabic">Community</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">Demo Actions</h2>
+            <div class="demo-actions">
+                <button class="demo-btn" onclick="testEnglishMode()">Test English Mode</button>
+                <button class="demo-btn arabic" onclick="testArabicMode()">Test Arabic Mode</button>
+                <button class="demo-btn" onclick="showAllTranslations()">Show All Translations</button>
+            </div>
+            
+            <div class="status-indicator" id="statusIndicator">
+                Current Language: English
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">How It Works</h2>
+            <ol>
+                <li><strong>Language Detection</strong>: The system automatically detects text that can be translated</li>
+                <li><strong>Translation Mapping</strong>: English text is mapped to Arabic equivalents</li>
+                <li><strong>RTL Support</strong>: When Arabic is selected, the page switches to right-to-left layout</li>
+                <li><strong>Dynamic Updates</strong>: New content is automatically translated as it's added</li>
+                <li><strong>Persistence</strong>: Language preference is saved and restored on page reload</li>
+            </ol>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">Supported Elements</h2>
+            <ul>
+                <li><strong>Navigation Items</strong>: Menu items, dropdown options</li>
+                <li><strong>Page Content</strong>: Headings, paragraphs, buttons</li>
+                <li><strong>Form Elements</strong>: Labels, placeholders, button text</li>
+                <li><strong>Dynamic Content</strong>: Content added via JavaScript</li>
+                <li><strong>Error Messages</strong>: System notifications and alerts</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Translation Status Indicator -->
+    <div class="translation-status" id="translationStatus"></div>
+
+    <script>
+        // Demo functions
+        function testEnglishMode() {
+            document.documentElement.setAttribute('lang', 'en');
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.body.classList.remove('rtl');
+            document.body.classList.add('ltr');
+            
+            const status = document.getElementById('statusIndicator');
+            status.textContent = 'Current Language: English (LTR)';
+            status.className = 'status-indicator english';
+        }
+
+        function testArabicMode() {
+            document.documentElement.setAttribute('lang', 'ar');
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.body.classList.remove('ltr');
+            document.body.classList.add('rtl');
+            
+            const status = document.getElementById('statusIndicator');
+            status.textContent = 'Current Language: Arabic (RTL)';
+            status.className = 'status-indicator';
+        }
+
+        function showAllTranslations() {
+            if (window.ARABIC_TRANSLATIONS) {
+                const translations = window.ARABIC_TRANSLATIONS;
+                const count = Object.keys(translations).length;
+                alert(`Arabic translation system loaded with ${count} translations available!`);
+            } else {
+                alert('Arabic translation system is loading... Please wait a moment and try again.');
+            }
+        }
+
+        // Listen for language changes
+        document.addEventListener('languageChanged', (e) => {
+            console.log('Language changed:', e.detail);
+            const status = document.getElementById('statusIndicator');
+            
+            if (e.detail.language === 'ar') {
+                status.textContent = `Current Language: Arabic (${e.detail.direction.toUpperCase()})`;
+                status.className = 'status-indicator';
+            } else {
+                status.textContent = `Current Language: English (${e.detail.direction.toUpperCase()})`;
+                status.className = 'status-indicator english';
+            }
+        });
+    </script>
+
+    <!-- Include the language switch component -->
+    <script src="assets/js/language-switch.js"></script>
+</body>
+</html> 
