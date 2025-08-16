@@ -1,0 +1,241 @@
+<!-- Global RTL Language Toggle Component -->
+<!-- This component provides RTL/LTR language switching functionality -->
+<!-- It can be included in any layout or skin for consistent RTL support -->
+
+<div class="global-rtl-toggle" id="globalRtlToggle" data-lang="en">
+    <button class="rtl-toggle-btn" onclick="toggleGlobalLanguage()" title="Toggle RTL/LTR Language">
+        <span class="rtl-icon">🌐</span>
+        <span class="rtl-text">العربية</span>
+    </button>
+</div>
+
+<style>
+/* Global RTL Toggle Styles - Works with any skin */
+.global-rtl-toggle {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.rtl-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(45, 80, 22, 0.1);
+    color: #2d5016;
+    border: 2px solid rgba(45, 80, 22, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 120px;
+    justify-content: center;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.rtl-toggle-btn:hover {
+    background: rgba(45, 80, 22, 0.2);
+    border-color: #d4af37;
+    color: #2d5016;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.2);
+}
+
+.rtl-toggle-btn:active {
+    transform: translateY(0);
+}
+
+.rtl-icon {
+    font-size: 1.125rem;
+    transition: all 0.3s ease;
+}
+
+.rtl-text {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* RTL Button States */
+.global-rtl-toggle[data-lang="ar"] .rtl-toggle-btn {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+    color: #2d5016;
+}
+
+.global-rtl-toggle[data-lang="ar"] .rtl-toggle-btn:hover {
+    background: rgba(212, 175, 55, 0.3);
+    border-color: #2d5016;
+    color: #2d5016;
+}
+
+.global-rtl-toggle[data-lang="en"] .rtl-toggle-btn {
+    background: rgba(45, 80, 22, 0.1);
+    border-color: rgba(45, 80, 22, 0.3);
+    color: #2d5016;
+}
+
+.global-rtl-toggle[data-lang="en"] .rtl-toggle-btn:hover {
+    background: rgba(45, 80, 22, 0.2);
+    border-color: #d4af37;
+    color: #2d5016;
+}
+
+/* RTL Layout Support */
+[dir="rtl"] .rtl-toggle-btn {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .rtl-icon {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rtl-toggle-btn {
+        min-width: 100px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .rtl-text {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .rtl-toggle-btn {
+        min-width: 80px;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .rtl-text {
+        display: none;
+    }
+    
+    .rtl-icon {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<script>
+// Global RTL Language Toggle Functionality
+// This script provides RTL/LTR switching that works with any skin
+
+(function() {
+    'use strict';
+    
+    // Initialize language from localStorage or default to English
+    function initializeLanguage() {
+        const currentLang = localStorage.getItem('islamwiki_global_lang') || 'en';
+        setGlobalLanguage(currentLang);
+    }
+    
+    // Toggle between English and Arabic
+    function toggleGlobalLanguage() {
+        const currentLang = document.getElementById('globalRtlToggle').getAttribute('data-lang');
+        const newLang = currentLang === 'en' ? 'ar' : 'en';
+        setGlobalLanguage(newLang);
+    }
+    
+    // Set the language and update the interface
+    function setGlobalLanguage(lang) {
+        const rtlToggle = document.getElementById('globalRtlToggle');
+        const rtlIcon = rtlToggle.querySelector('.rtl-icon');
+        const rtlText = rtlToggle.querySelector('.rtl-text');
+        const htmlElement = document.documentElement;
+        const bodyElement = document.body;
+        
+        // Update button state
+        rtlToggle.setAttribute('data-lang', lang);
+        
+        if (lang === 'ar') {
+            // Arabic - RTL
+            rtlIcon.textContent = '🇺🇸';
+            rtlText.textContent = 'English';
+            htmlElement.setAttribute('dir', 'rtl');
+            htmlElement.setAttribute('lang', 'ar');
+            bodyElement.classList.add('rtl');
+            bodyElement.classList.remove('ltr');
+            
+            // Dispatch custom event for skins to listen to
+            document.dispatchEvent(new CustomEvent('languageChanged', {
+                detail: { language: 'ar', direction: 'rtl' }
+            }));
+        } else {
+            // English - LTR
+            rtlIcon.textContent = '🌐';
+            rtlText.textContent = 'العربية';
+            htmlElement.setAttribute('dir', 'ltr');
+            htmlElement.setAttribute('lang', 'en');
+            bodyElement.classList.add('ltr');
+            bodyElement.classList.remove('rtl');
+            
+            // Dispatch custom event for skins to listen to
+            document.dispatchEvent(new CustomEvent('languageChanged', {
+                detail: { language: 'en', direction: 'ltr' }
+            }));
+        }
+        
+        // Store preference in localStorage
+        localStorage.setItem('islamwiki_global_lang', lang);
+        
+        // Update any existing language toggles to stay in sync
+        updateOtherLanguageToggles(lang);
+    }
+    
+    // Update other language toggles to stay in sync
+    function updateOtherLanguageToggles(lang) {
+        const otherToggles = document.querySelectorAll('[id*="langToggle"], [id*="languageToggle"]');
+        otherToggles.forEach(toggle => {
+            if (toggle.id !== 'globalRtlToggle') {
+                toggle.setAttribute('data-lang', lang);
+                const icon = toggle.querySelector('.lang-icon, .rtl-icon');
+                const text = toggle.querySelector('.lang-text, .rtl-text');
+                
+                if (icon && text) {
+                    if (lang === 'ar') {
+                        icon.textContent = '🇺🇸';
+                        text.textContent = 'English';
+                    } else {
+                        icon.textContent = '🌐';
+                        text.textContent = 'العربية';
+                    }
+                }
+            }
+        });
+    }
+    
+    // Listen for language changes from other toggles
+    function listenForLanguageChanges() {
+        document.addEventListener('languageChanged', function(event) {
+            const { language, direction } = event.detail;
+            const rtlToggle = document.getElementById('globalRtlToggle');
+            if (rtlToggle) {
+                rtlToggle.setAttribute('data-lang', language);
+                localStorage.setItem('islamwiki_global_lang', language);
+            }
+        });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLanguage();
+            listenForLanguageChanges();
+        });
+    } else {
+        initializeLanguage();
+        listenForLanguageChanges();
+    }
+    
+    // Make functions globally available
+    window.toggleGlobalLanguage = toggleGlobalLanguage;
+    window.setGlobalLanguage = setGlobalLanguage;
+    
+})();
+</script> 

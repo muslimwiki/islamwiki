@@ -8,14 +8,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Hybrid translation system with Google Translate API integration
 - Translation memory and quality scoring
 - User feedback system for translations
 - Advanced caching and performance optimization
-- Support for additional languages (Urdu, Turkish, Persian)
 - Advanced extension marketplace with community contributions
 - AI-powered content analysis and recommendations
 - Real-time collaboration features for content creation
+
+## [0.0.60] - 2024-12-19
+
+### Added
+- **Hybrid Translation System** - Complete Google Translate API integration with local translation memory
+- **Subdomain-Based Language Switching** - Language-specific subdomains (en.local.islam.wiki, ar.local.islam.wiki, etc.)
+- **8 Language Support** - English, Arabic, Urdu, Turkish, Indonesian, Malay, Persian, Hebrew
+- **Translation Service** - Core translation service with Google Translate API integration
+- **Subdomain Language Middleware** - Automatic language detection from subdomains
+- **Language Controller** - API endpoints for language management and translation
+- **Enhanced Language Switch Component** - Frontend component with subdomain integration
+- **Translation Configuration** - Comprehensive configuration system for translation services
+- **Quality Assurance System** - Automatic translation quality scoring and metrics
+- **Performance Optimization** - Intelligent caching and memory management
+- **Fallback Strategies** - Graceful degradation when API is unavailable
+
+### Changed
+- **Language switching** now uses subdomain-based routing instead of client-side switching
+- **Default language** is now English with base domain (local.islam.wiki)
+- **Language URLs** follow pattern: {language}.{domain}/{current-page}
+- **Translation system** integrated with existing LanguageSwitch extension
+- **Service architecture** enhanced with new translation service provider
+
+### Technical Details
+- **Subdomain Pattern**: en.local.islam.wiki (default), ar.local.islam.wiki, ur.local.islam.wiki, etc.
+- **Language Detection**: Automatic detection from subdomains, sessions, and browser preferences
+- **Translation Memory**: Local caching with configurable limits and quality thresholds
+- **API Integration**: Google Translate API with batch processing and rate limiting
+- **Quality Metrics**: Length ratio, character consistency, HTML entity validation
+- **Performance**: Memory cache, database cache, and API response caching
+- **Security**: API key protection, input validation, and rate limiting
 
 ## [0.0.59] - 2024-12-19
 

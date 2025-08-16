@@ -18,7 +18,7 @@ The Static Data System provides a centralized way to manage global static data a
    - Provides helper functions for data access
    - Sets up global variables for templates
 
-3. **Base Layout** (`resources/views/layouts/base.twig`)
+3. **Debug Layout** (`resources/views/layouts/debug.twig`)
    - Uses the static data system
    - Dynamically loads skin-specific components
    - Provides fallback components
@@ -282,7 +282,7 @@ The component data is automatically provided by the StaticDataManager. You can a
 
 ### From Old System
 
-1. **Update Layouts**: Change from `layouts/app.twig` to `layouts/base.twig`
+1. **Update Layouts**: Change from `layouts/app.twig` to `layouts/debug.twig`
 2. **Update Templates**: Use the new helper functions and global variables
 3. **Create Components**: Move skin-specific layout code to component templates
 4. **Update Controllers**: Use `renderWithSkin()` and pass static data
@@ -300,7 +300,7 @@ The component data is automatically provided by the StaticDataManager. You can a
 
 **New Template:**
 ```twig
-{% extends 'layouts/base.twig' %}
+{% extends 'layouts/debug.twig' %}
 {# Navigation is handled by the header component #}
 {% block content %}
     <!-- Your page content here -->

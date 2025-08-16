@@ -32,6 +32,20 @@ class LanguageSwitch extends Extension
     private string $defaultLanguage = 'en';
 
     /**
+     * @var array Extended language support
+     */
+    private array $extendedLanguages = [
+        'en' => 'English',
+        'ar' => 'Arabic',
+        'ur' => 'Urdu',
+        'tr' => 'Turkish',
+        'id' => 'Indonesian',
+        'ms' => 'Malay',
+        'fa' => 'Persian',
+        'he' => 'Hebrew'
+    ];
+
+    /**
      * Initialize the extension
      */
     protected function onInitialize(): void

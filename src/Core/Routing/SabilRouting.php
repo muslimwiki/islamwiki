@@ -453,6 +453,28 @@ class SabilRouting implements RequestHandlerInterface
     {
         if ($this->_middlewareStack === null) {
             $this->_middlewareStack = [];
+            
+            // Add global middleware
+            $this->addGlobalMiddleware();
+        }
+    }
+
+    /**
+     * Add global middleware to the stack.
+     *
+     * @return void
+     */
+    private function addGlobalMiddleware(): void
+    {
+        try {
+            // Add SubdomainLanguageMiddleware if available
+            if ($this->_container && $this->_container->has(\IslamWiki\Http\Middleware\SubdomainLanguageMiddleware::class)) {
+                $languageMiddleware = $this->_container->get(\IslamWiki\Http\Middleware\SubdomainLanguageMiddleware::class);
+                $this->_middlewareStack[] = $languageMiddleware;
+                error_log("SabilRouting: Added SubdomainLanguageMiddleware to stack");
+            }
+        } catch (\Exception $e) {
+            error_log("SabilRouting: Failed to add SubdomainLanguageMiddleware: " . $e->getMessage());
         }
     }
 

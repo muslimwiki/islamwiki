@@ -38,7 +38,7 @@ This document defines the development standards, conventions, and best practices
 - **Abstract Classes:** `Abstract{Name}.php` (e.g., `AbstractJob.php`)
 
 #### Template Files
-- **Layouts:** `layouts/{name}.twig` (e.g., `layouts/base.twig`)
+- **Layouts:** `layouts/{name}.twig` (e.g., `layouts/app.twig`)
 - **Pages:** `{section}/{name}.twig` (e.g., `pages/home.twig`)
 - **Components:** `components/{name}.twig` (e.g., `components/header.twig`)
 - **Error Pages:** `errors/{code}.php` (e.g., `errors/404.php`)

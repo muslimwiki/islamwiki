@@ -440,6 +440,13 @@ $router->get('/quran-debug', function($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Debug route is working!');
 });
 
+// Language switching and translation routes
+$router->get('/language/current', 'IslamWiki\Http\Controllers\SimpleLanguageController@getCurrentLanguage');
+$router->get('/language/available', 'IslamWiki\Http\Controllers\SimpleLanguageController@getAvailableLanguages');
+$router->get('/language/switch/{language}', 'IslamWiki\Http\Controllers\SimpleLanguageController@switchLanguage');
+$router->post('/language/translate', 'IslamWiki\Http\Controllers\SimpleLanguageController@translateText');
+$router->get('/language/stats', 'IslamWiki\Http\Controllers\SimpleLanguageController@getTranslationStats');
+
 
 
 // Wiki routes - only for actual wiki pages, not system paths

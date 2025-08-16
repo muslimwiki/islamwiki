@@ -1,5 +1,5 @@
 <!-- Enhanced Language Switch Component -->
-<!-- Integrates with subdomain-based language switching -->
+<!-- Integrates with subdomain-based language switching and Google Translate API -->
 
 <div class="enhanced-language-switch" id="enhancedLanguageSwitch">
     <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
@@ -117,6 +117,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Translation Status Indicator -->
+    <div class="translation-status" id="translationStatus"></div>
 </div>
 
 <style>
@@ -179,7 +182,7 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -244,6 +247,59 @@
     display: inline-block;
 }
 
+.translation-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    z-index: 10000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.translation-status.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.translation-status.arabic {
+    background: linear-gradient(135deg, #1976D2, #2196F3);
+}
+
+.translation-status.english {
+    background: linear-gradient(135deg, #388E3C, #4CAF50);
+}
+
+.translation-status.urdu {
+    background: linear-gradient(135deg, #D32F2F, #F44336);
+}
+
+.translation-status.turkish {
+    background: linear-gradient(135deg, #FF8F00, #FF9800);
+}
+
+.translation-status.indonesian {
+    background: linear-gradient(135deg, #C2185B, #E91E63);
+}
+
+.translation-status.malay {
+    background: linear-gradient(135deg, #7B1FA2, #9C27B0);
+}
+
+.translation-status.persian {
+    background: linear-gradient(135deg, #D81B60, #E91E63);
+}
+
+.translation-status.hebrew {
+    background: linear-gradient(135deg, #FF6F00, #FF8F00);
+}
+
 /* RTL Support */
 [dir="rtl"] .language-dropdown {
     right: auto;
@@ -279,11 +335,39 @@
     outline: 2px solid #2E7D32;
     outline-offset: 2px;
 }
+
+/* Animation for language switching */
+.language-switch-transition {
+    transition: all 0.3s ease;
+}
+
+/* Loading state */
+.language-switch-button.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.language-switch-button.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 
 <script>
 /**
  * Enhanced Language Switch with Subdomain Integration
+ * Integrates with Google Translate API and subdomain-based language switching
  */
 
 (function() {
@@ -365,21 +449,46 @@
         }
     };
 
+    // Default language
+    const DEFAULT_LANGUAGE = 'en';
+
+    // Storage key for language preference
+    const LANGUAGE_STORAGE_KEY = 'islamwiki_language';
+
     /**
      * Enhanced Language Switch Class
      */
     class EnhancedLanguageSwitch {
         constructor() {
-            this.currentLanguage = this.detectCurrentLanguage();
+            this.currentLanguage = this.getStoredLanguage() || this.detectCurrentLanguage();
+            this.translationService = null;
             this.init();
         }
 
         /**
          * Initialize the language switch
          */
-        init() {
+        async init() {
             this.setupEventListeners();
             this.updateInterface();
+            this.applyLanguage(this.currentLanguage);
+            await this.initializeTranslationService();
+        }
+
+        /**
+         * Initialize translation service
+         */
+        async initializeTranslationService() {
+            try {
+                // Check if translation service is available
+                const response = await fetch('/language/stats');
+                if (response.ok) {
+                    this.translationService = true;
+                    console.log('Translation service initialized');
+                }
+            } catch (error) {
+                console.log('Translation service not available:', error.message);
+            }
         }
 
         /**
@@ -495,7 +604,7 @@
         /**
          * Switch to a specific language
          */
-        switchLanguage(languageCode) {
+        async switchLanguage(languageCode) {
             if (!LANGUAGES[languageCode]) {
                 console.warn(`Language ${languageCode} is not supported`);
                 return;
@@ -504,26 +613,43 @@
             const previousLanguage = this.currentLanguage;
             this.currentLanguage = languageCode;
 
-            // Update interface immediately
-            this.updateInterface();
-            
-            // Apply language changes
-            this.applyLanguage(languageCode);
-            
-            // Store preference
-            this.storeLanguage(languageCode);
-            
-            // Close dropdown
-            this.closeDropdown();
-            
-            // Switch to language-specific subdomain
-            this.switchToLanguageSubdomain(languageCode);
+            // Show loading state
+            this.showLoadingState(true);
+
+            try {
+                // Update interface immediately
+                this.updateInterface();
+                
+                // Apply language changes
+                this.applyLanguage(languageCode);
+                
+                // Store preference
+                this.storeLanguage(languageCode);
+                
+                // Close dropdown
+                this.closeDropdown();
+                
+                // Dispatch custom event
+                this.dispatchLanguageChangeEvent(languageCode, previousLanguage);
+                
+                // Switch to language-specific subdomain
+                await this.switchToLanguageSubdomain(languageCode);
+                
+            } catch (error) {
+                console.error('Language switch failed:', error);
+                // Revert to previous language
+                this.currentLanguage = previousLanguage;
+                this.updateInterface();
+                this.applyLanguage(previousLanguage);
+            } finally {
+                this.showLoadingState(false);
+            }
         }
 
         /**
          * Switch to language-specific subdomain
          */
-        switchToLanguageSubdomain(languageCode) {
+        async switchToLanguageSubdomain(languageCode) {
             const language = LANGUAGES[languageCode];
             if (!language) return;
 
@@ -545,13 +671,12 @@
                     newUrl = `${window.location.protocol}//${baseDomain}${currentPath}`;
                 }
 
-                console.log(`Switching to: ${newUrl}`);
-                
                 // Redirect to new URL
                 window.location.href = newUrl;
                 
             } catch (error) {
                 console.error('Failed to switch to language subdomain:', error);
+                throw error;
             }
         }
 
@@ -623,6 +748,12 @@
             body.classList.remove('ltr', 'rtl');
             body.classList.add(language.direction);
 
+            // Show translation status
+            if (this.translationService) {
+                const statusMessage = this.getStatusMessage(languageCode);
+                this.showTranslationStatus(statusMessage, languageCode);
+            }
+
             // Add transition class for smooth changes
             body.classList.add('language-switch-transition');
             
@@ -633,13 +764,76 @@
         }
 
         /**
+         * Get status message for language
+         */
+        getStatusMessage(languageCode) {
+            const messages = {
+                'en': 'English restored',
+                'ar': 'تم تفعيل الترجمة العربية',
+                'ur': 'اردو ترجمہ فعال ہو گیا',
+                'tr': 'Türkçe çeviri etkinleştirildi',
+                'id': 'Terjemahan Indonesia diaktifkan',
+                'ms': 'Terjemahan Melayu diaktifkan',
+                'fa': 'ترجمه فارسی فعال شد',
+                'he': 'התרגום העברי הופעל'
+            };
+            
+            return messages[languageCode] || messages['en'];
+        }
+
+        /**
+         * Show translation status message
+         */
+        showTranslationStatus(message, languageCode) {
+            const statusElement = document.getElementById('translationStatus');
+            if (statusElement) {
+                statusElement.textContent = message;
+                statusElement.className = `translation-status ${languageCode}`;
+                statusElement.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    statusElement.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        /**
+         * Show/hide loading state
+         */
+        showLoadingState(loading) {
+            const button = document.querySelector('.language-switch-button');
+            if (button) {
+                if (loading) {
+                    button.classList.add('loading');
+                    button.disabled = true;
+                } else {
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                }
+            }
+        }
+
+        /**
          * Store language preference
          */
         storeLanguage(languageCode) {
             try {
-                localStorage.setItem('islamwiki_language', languageCode);
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
             } catch (e) {
                 console.warn('Could not store language preference:', e);
+            }
+        }
+
+        /**
+         * Get stored language preference
+         */
+        getStoredLanguage() {
+            try {
+                return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            } catch (e) {
+                console.warn('Could not retrieve language preference:', e);
+                return null;
             }
         }
 
@@ -661,18 +855,23 @@
                 }
             }
 
-            // Check localStorage
-            try {
-                const stored = localStorage.getItem('islamwiki_language');
-                if (stored && LANGUAGES[stored]) {
-                    return stored;
-                }
-            } catch (e) {
-                // Ignore localStorage errors
-            }
-
             // Default to English
-            return 'en';
+            return DEFAULT_LANGUAGE;
+        }
+
+        /**
+         * Dispatch language change event
+         */
+        dispatchLanguageChangeEvent(newLanguage, previousLanguage) {
+            const event = new CustomEvent('languageChanged', {
+                detail: {
+                    language: newLanguage,
+                    previousLanguage: previousLanguage,
+                    direction: LANGUAGES[newLanguage]?.direction || 'ltr',
+                    isRTL: LANGUAGES[newLanguage]?.isRTL || false
+                }
+            });
+            document.dispatchEvent(event);
         }
     }
 

@@ -1,7 +1,7 @@
-<!-- Enhanced Language Switch Component -->
-<!-- Integrates with subdomain-based language switching -->
+<!-- Simple Language Switch Component -->
+<!-- Works without complex extension system -->
 
-<div class="enhanced-language-switch" id="enhancedLanguageSwitch">
+<div class="simple-language-switch" id="simpleLanguageSwitch">
     <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
         <span class="language-flag">
             {% if app.request.attributes.get('language', 'en') == 'ar' %}
@@ -120,7 +120,7 @@
 </div>
 
 <style>
-.enhanced-language-switch {
+.simple-language-switch {
     position: relative;
     display: inline-block;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -283,7 +283,7 @@
 
 <script>
 /**
- * Enhanced Language Switch with Subdomain Integration
+ * Simple Language Switch with Subdomain Integration
  */
 
 (function() {
@@ -366,9 +366,9 @@
     };
 
     /**
-     * Enhanced Language Switch Class
+     * Simple Language Switch Class
      */
-    class EnhancedLanguageSwitch {
+    class SimpleLanguageSwitch {
         constructor() {
             this.currentLanguage = this.detectCurrentLanguage();
             this.init();
@@ -377,9 +377,36 @@
         /**
          * Initialize the language switch
          */
-        init() {
+        async init() {
+            await this.loadLanguageData();
             this.setupEventListeners();
             this.updateInterface();
+        }
+
+        /**
+         * Load language data from API
+         */
+        async loadLanguageData() {
+            try {
+                const response = await fetch('/language/available');
+                if (response.ok) {
+                    const apiLanguages = await response.json();
+                    
+                    // Update our local language data with API data
+                    for (const [code, lang] of Object.entries(apiLanguages)) {
+                        if (LANGUAGES[code]) {
+                            LANGUAGES[code] = {
+                                ...LANGUAGES[code],
+                                ...lang
+                            };
+                        }
+                    }
+                    
+                    console.log('Language data loaded from API');
+                }
+            } catch (error) {
+                console.warn('Failed to load language data from API, using defaults:', error);
+            }
         }
 
         /**
@@ -427,7 +454,7 @@
 
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('.enhanced-language-switch')) {
+                if (!e.target.closest('.simple-language-switch')) {
                     this.closeDropdown();
                 }
             });
@@ -523,35 +550,75 @@
         /**
          * Switch to language-specific subdomain
          */
-        switchToLanguageSubdomain(languageCode) {
+        async switchToLanguageSubdomain(languageCode) {
             const language = LANGUAGES[languageCode];
             if (!language) return;
 
+            try {
+                // First, call the API to switch language
+                const response = await fetch(`/language/switch/${languageCode}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success && result.redirect_url) {
+                        console.log(`Language switched successfully to ${languageCode}`);
+                        console.log(`Redirecting to: ${result.redirect_url}`);
+                        
+                        // Redirect to the language-specific URL
+                        window.location.href = result.redirect_url;
+                    } else {
+                        console.error('Language switch failed:', result);
+                        // Fallback to manual URL generation
+                        this.fallbackLanguageSwitch(languageCode);
+                    }
+                } else {
+                    console.error('Language switch API call failed:', response.status);
+                    // Fallback to manual URL generation
+                    this.fallbackLanguageSwitch(languageCode);
+                }
+                
+            } catch (error) {
+                console.error('Failed to switch language via API:', error);
+                // Fallback to manual URL generation
+                this.fallbackLanguageSwitch(languageCode);
+            }
+        }
+
+        /**
+         * Fallback language switching method
+         */
+        fallbackLanguageSwitch(languageCode) {
             try {
                 // Get current path
                 const currentPath = window.location.pathname;
                 
                 // Generate language-specific URL
                 let newUrl;
-                if (language.subdomain) {
-                    // For non-default languages, use subdomain
-                    const currentHost = window.location.host;
-                    const baseDomain = this.extractBaseDomain(currentHost);
-                    newUrl = `${window.location.protocol}//${language.subdomain}.${baseDomain}${currentPath}`;
-                } else {
+                if (languageCode === 'en') {
                     // For default language (English), use base domain
                     const currentHost = window.location.host;
                     const baseDomain = this.extractBaseDomain(currentHost);
                     newUrl = `${window.location.protocol}//${baseDomain}${currentPath}`;
+                } else {
+                    // For non-default languages, use subdomain
+                    const currentHost = window.location.host;
+                    const baseDomain = this.extractBaseDomain(currentHost);
+                    newUrl = `${window.location.protocol}//${languageCode}.${baseDomain}${currentPath}`;
                 }
 
-                console.log(`Switching to: ${newUrl}`);
+                console.log(`Fallback: Switching to ${newUrl}`);
                 
                 // Redirect to new URL
                 window.location.href = newUrl;
                 
             } catch (error) {
-                console.error('Failed to switch to language subdomain:', error);
+                console.error('Fallback language switch failed:', error);
             }
         }
 
@@ -679,14 +746,14 @@
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            new EnhancedLanguageSwitch();
+            new SimpleLanguageSwitch();
         });
     } else {
-        new EnhancedLanguageSwitch();
+        new SimpleLanguageSwitch();
     }
 
     // Export for global access if needed
-    window.EnhancedLanguageSwitch = EnhancedLanguageSwitch;
+    window.SimpleLanguageSwitch = SimpleLanguageSwitch;
 
 })();
 </script> 

@@ -284,6 +284,7 @@ class NizamApplication
             \IslamWiki\Providers\ViewServiceProvider::class,
             \IslamWiki\Providers\SkinServiceProvider::class,
             \IslamWiki\Providers\StaticDataServiceProvider::class,
+            \IslamWiki\Providers\TranslationServiceProvider::class,
             // Temporarily disable non-essential providers
             // \IslamWiki\Providers\RihlahServiceProvider::class,
             // \IslamWiki\Providers\SabrServiceProvider::class,

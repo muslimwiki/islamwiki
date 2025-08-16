@@ -86,7 +86,7 @@ RewriteRule ^ app.php [L]
 7. **`src/Http/Controllers/ProfileController.php`** - Removed 'app' binding dependency
 
 ### Views
-8. **`resources/views/layouts/main.twig`** - Added RTL language toggle functionality
+8. **`resources/views/layouts/app.twig`** - Added RTL language toggle functionality
 
 ### CSS
 9. **`skins/Bismillah/css/bismillah.css`** - Added comprehensive RTL support

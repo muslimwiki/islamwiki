@@ -187,6 +187,11 @@ $container->instance(\Psr\Log\LoggerInterface::class, $logger);
 // Register service providers
 error_log("MAIN ENTRY POINT: Registering service providers");
 
+// Register LoggingServiceProvider first
+require_once BASE_PATH . '/src/Providers/LoggingServiceProvider.php';
+$loggingProvider = new \IslamWiki\Providers\LoggingServiceProvider();
+$loggingProvider->register($container);
+
 // Register AuthServiceProvider
 require_once BASE_PATH . '/src/Providers/AuthServiceProvider.php';
 $authProvider = new \IslamWiki\Providers\AuthServiceProvider();
@@ -212,12 +217,19 @@ require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
 $skinProvider = new \IslamWiki\Providers\SkinServiceProvider();
 $skinProvider->register($container);
 
+// Register TranslationServiceProvider
+require_once BASE_PATH . '/src/Providers/TranslationServiceProvider.php';
+$translationProvider = new \IslamWiki\Providers\TranslationServiceProvider();
+$translationProvider->register($container);
+
 // Boot all service providers
 error_log("MAIN ENTRY POINT: Booting service providers");
+$loggingProvider->boot($container);
 $authProvider->boot($container);
 $sessionProvider->boot($container);
 $staticDataProvider->boot($container);
 $skinProvider->boot($container);
+$translationProvider->boot($container);
 
 // Initialize and register controller factory
 $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $container);

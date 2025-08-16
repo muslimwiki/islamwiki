@@ -1,5 +1,6 @@
 /* ===== BISMILLAH SKIN CSS - NEW BEAUTIFUL ISLAMIC THEME ===== */
 /* Modern Islamic-themed design with beautiful green gradients and enhanced styling */
+/* Version: 1.0.3 - Enhanced RTL text color specificity - Forces text colors on all elements */
 
 /* ===== CSS VARIABLES ===== */
 :root {
@@ -42,6 +43,1434 @@
     /* Transitions */
     --transition: all 0.3s ease;
     --transition-fast: all 0.15s ease;
+}
+
+/* ===== RTL SUPPORT ===== */
+/* Right-to-Left language support for Arabic and other RTL languages */
+
+/* RTL Base Layout */
+[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+[dir="rtl"] body {
+    direction: rtl !important;
+    text-align: right !important;
+    /* Improved text colors for RTL readability */
+    color: var(--islamic-dark-green) !important;
+}
+
+/* RTL Text Color Improvements - High Contrast for Readability */
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+    color: var(--islamic-green) !important;
+}
+
+[dir="rtl"] p, [dir="rtl"] div, [dir="rtl"] span, [dir="rtl"] li, [dir="rtl"] td, [dir="rtl"] th {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Force RTL text colors on ALL elements with maximum specificity */
+[dir="rtl"] *:not(button):not(input):not(textarea):not(select):not(a):not(.btn) {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Ensure headings are always green in RTL */
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
+[dir="rtl"] .h1, [dir="rtl"] .h2, [dir="rtl"] .h3, [dir="rtl"] .h4, [dir="rtl"] .h5, [dir="rtl"] .h6 {
+    color: var(--islamic-green) !important;
+}
+
+/* Ensure main content areas have proper RTL text colors */
+[dir="rtl"] .main-content,
+[dir="rtl"] .content-container,
+[dir="rtl"] .container,
+[dir="rtl"] .page-content,
+[dir="rtl"] .article-content,
+[dir="rtl"] .post-content {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .bismillah-main {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .bismillah-container {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Catch any other common content selectors */
+[dir="rtl"] .content,
+[dir="rtl"] .main,
+[dir="rtl"] .wrapper,
+[dir="rtl"] .page,
+[dir="rtl"] .article,
+[dir="rtl"] .post,
+[dir="rtl"] .entry,
+[dir="rtl"] .text,
+[dir="rtl"] .body-content {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Force RTL text colors on any element with text */
+[dir="rtl"] [class*="content"],
+[dir="rtl"] [class*="main"],
+[dir="rtl"] [class*="text"],
+[dir="rtl"] [class*="body"] {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] a {
+    color: var(--islamic-green) !important;
+}
+
+[dir="rtl"] a:hover {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] label {
+    color: var(--islamic-green) !important;
+    font-weight: 600;
+}
+
+/* Ensure all text elements in RTL mode are visible */
+[dir="rtl"] strong, [dir="rtl"] b {
+    color: var(--islamic-green) !important;
+}
+
+[dir="rtl"] em, [dir="rtl"] i {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] small, [dir="rtl"] .text-small {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .text-muted {
+    color: var(--islamic-dark-green) !important;
+    opacity: 0.8;
+}
+
+[dir="rtl"] input, [dir="rtl"] textarea, [dir="rtl"] select {
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] button {
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .btn {
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .card {
+    background-color: var(--islamic-white);
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .card-header {
+    background-color: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .card-body {
+    text-align: right;
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] table {
+    direction: rtl;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] th {
+    background-color: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] td {
+    text-align: right;
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] .nav-link {
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .nav-link:hover {
+    color: var(--islamic-gold);
+}
+
+[dir="rtl"] .dropdown-item {
+    text-align: right;
+    color: var(--islamic-dark-green);
+    border-bottom: 1px solid var(--border-light);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] .dropdown-item:hover {
+    background-color: var(--islamic-cream);
+    color: var(--islamic-green);
+}
+
+/* RTL Header Layout */
+[dir="rtl"] .bismillah-header-content {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .bismillah-logo {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .bismillah-search {
+    margin: 0 var(--spacing-lg) 0 0;
+}
+
+[dir="rtl"] .bismillah-user-menu {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .bismillah-header-actions {
+    flex-direction: row-reverse;
+}
+
+/* RTL Navigation */
+[dir="rtl"] .bismillah-nav-menu {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .bismillah-nav-link {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .bismillah-nav-icon {
+    margin-left: var(--spacing-xs);
+    margin-right: 0;
+}
+
+/* RTL Dropdowns */
+[dir="rtl"] .nav-dropdown {
+    left: auto !important;
+    right: 0 !important;
+    text-align: right;
+    background-color: var(--islamic-white);
+    border: 1px solid var(--border-light);
+}
+
+[dir="rtl"] .dropdown-item {
+    text-align: right;
+    color: var(--islamic-dark-green);
+    border-bottom: 1px solid var(--border-light);
+}
+
+[dir="rtl"] .dropdown-item:hover {
+    background-color: var(--islamic-cream);
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] .dropdown-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* RTL Search */
+[dir="rtl"] .search-input {
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] .search-button {
+    right: auto;
+    left: 0.5rem;
+    background-color: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+/* RTL Footer */
+[dir="rtl"] .bismillah-footer-content {
+    direction: rtl;
+}
+
+[dir="rtl"] .bismillah-footer-section {
+    text-align: right;
+}
+
+[dir="rtl"] .bismillah-footer-section h3::after {
+    left: auto;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+/* RTL Forms */
+[dir="rtl"] .form-group {
+    text-align: right;
+}
+
+[dir="rtl"] .form-label {
+    flex-direction: row-reverse;
+    color: var(--islamic-green);
+    font-weight: 600;
+}
+
+[dir="rtl"] .label-icon {
+    margin-left: var(--spacing-xs);
+    margin-right: 0;
+}
+
+[dir="rtl"] .form-options {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .checkbox-group {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .form-checkbox {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+[dir="rtl"] .form-control {
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+    border: 2px solid var(--border-light);
+}
+
+[dir="rtl"] .form-control:focus {
+    border-color: var(--islamic-green);
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Buttons */
+[dir="rtl"] .btn {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .btn-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Cards */
+[dir="rtl"] .card-header {
+    text-align: right;
+    background-color: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .card-body {
+    text-align: right;
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+/* RTL Tables */
+[dir="rtl"] table {
+    direction: rtl;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+    text-align: right;
+}
+
+/* RTL Lists */
+[dir="rtl"] ul,
+[dir="rtl"] ol {
+    padding-right: var(--spacing-lg);
+    padding-left: 0;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] li {
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Blockquotes */
+[dir="rtl"] blockquote {
+    border-right: 4px solid var(--islamic-green);
+    border-left: none;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    padding-right: var(--spacing-md);
+    padding-left: 0;
+    background-color: var(--islamic-cream);
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Code */
+[dir="rtl"] code {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: bidi-override;
+    background-color: rgba(45, 80, 22, 0.1);
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] pre {
+    direction: ltr;
+    text-align: left;
+    background-color: rgba(45, 80, 22, 0.05);
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Icons and Symbols */
+[dir="rtl"] .icon-left {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+[dir="rtl"] .icon-right {
+    margin-left: 0;
+    margin-right: var(--spacing-xs);
+}
+
+/* RTL Navigation Dropdown Arrows */
+[dir="rtl"] .bismillah-nav-item.has-dropdown .bismillah-nav-link::after {
+    margin-left: 0;
+    margin-right: var(--spacing-xs);
+}
+
+/* RTL Language Toggle Button */
+[dir="rtl"] .bismillah-lang-toggle {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lang-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* RTL Alert Messages */
+[dir="rtl"] .alert {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .alert-danger {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+[dir="rtl"] .alert-success {
+    background-color: #f0fdf4;
+    color: #059669;
+    border-color: #bbf7d0;
+}
+
+[dir="rtl"] .alert-content {
+    flex-direction: row-reverse;
+}
+
+/* RTL Modal */
+[dir="rtl"] .modal-header {
+    flex-direction: row-reverse;
+    background-color: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+[dir="rtl"] .modal-footer {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .modal-body {
+    color: var(--islamic-dark-green);
+    background-color: var(--islamic-white);
+}
+
+/* RTL Tooltip */
+[dir="rtl"] .tooltip {
+    text-align: right;
+    background-color: var(--islamic-dark-green);
+    color: var(--islamic-white);
+}
+
+/* RTL Progress Bar */
+[dir="rtl"] .progress-bar {
+    direction: rtl;
+    background-color: var(--islamic-green);
+}
+
+/* RTL Breadcrumbs */
+[dir="rtl"] .breadcrumb-list {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .breadcrumb-item:not(:last-child)::after {
+    margin-left: 0;
+    margin-right: var(--spacing-sm);
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] .breadcrumb-link {
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] .breadcrumb-current {
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Pagination */
+[dir="rtl"] .pagination {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .page-item:not(:last-child) {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+[dir="rtl"] .page-link {
+    color: var(--islamic-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] .page-link:hover {
+    color: var(--islamic-white);
+    background-color: var(--islamic-green);
+}
+
+/* RTL Tabs */
+[dir="rtl"] .nav-tabs {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .tab-content {
+    direction: rtl;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .nav-tab {
+    color: var(--islamic-green);
+    background-color: var(--islamic-white);
+}
+
+[dir="rtl"] .nav-tab.active {
+    color: var(--islamic-white);
+    background-color: var(--islamic-green);
+}
+
+/* RTL Accordion */
+[dir="rtl"] .accordion-header {
+    flex-direction: row-reverse;
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] .accordion-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+[dir="rtl"] .accordion-content {
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Carousel */
+[dir="rtl"] .carousel-control-prev {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .carousel-control-next {
+    right: auto;
+    left: 0;
+}
+
+/* RTL Timeline */
+[dir="rtl"] .timeline-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .timeline-content {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Chat */
+[dir="rtl"] .chat-message {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .chat-bubble {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Notification */
+[dir="rtl"] .notification {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .notification-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Loading Spinner */
+[dir="rtl"] .spinner {
+    direction: rtl;
+}
+
+/* RTL Progress Steps */
+[dir="rtl"] .progress-steps {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .step-connector {
+    transform: rotate(180deg);
+}
+
+[dir="rtl"] .step-label {
+    color: var(--islamic-green);
+}
+
+/* RTL File Upload */
+[dir="rtl"] .file-upload-area {
+    text-align: center;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .file-upload-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Rating */
+[dir="rtl"] .rating-stars {
+    flex-direction: row-reverse;
+}
+
+/* RTL Social Share */
+[dir="rtl"] .social-share-buttons {
+    flex-direction: row-reverse;
+}
+
+/* RTL Comment System */
+[dir="rtl"] .comment-avatar {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+[dir="rtl"] .comment-content {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Calendar */
+[dir="rtl"] .calendar-header {
+    flex-direction: row-reverse;
+    color: var(--islamic-green);
+}
+
+[dir="rtl"] .calendar-nav {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .calendar-day {
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Data Table */
+[dir="rtl"] .data-table th,
+[dir="rtl"] .data-table td {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .data-table .sort-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* RTL Filter Panel */
+[dir="rtl"] .filter-panel {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .filter-group {
+    flex-direction: row-reverse;
+}
+
+/* RTL Search Results */
+[dir="rtl"] .search-result {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .search-result-meta {
+    flex-direction: row-reverse;
+}
+
+/* RTL User Profile */
+[dir="rtl"] .profile-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .profile-avatar {
+    margin-right: 0;
+    margin-left: var(--spacing-lg);
+}
+
+[dir="rtl"] .profile-info {
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Settings Panel */
+[dir="rtl"] .settings-section {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .setting-item {
+    flex-direction: row-reverse;
+}
+
+/* RTL Help System */
+[dir="rtl"] .help-content {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .help-navigation {
+    flex-direction: row-reverse;
+}
+
+/* RTL Error Pages */
+[dir="rtl"] .error-content {
+    text-align: center;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .error-actions {
+    flex-direction: row-reverse;
+}
+
+/* RTL Maintenance Mode */
+[dir="rtl"] .maintenance-content {
+    text-align: center;
+    color: var(--islamic-dark-green);
+}
+
+[dir="rtl"] .maintenance-info {
+    text-align: right;
+    color: var(--islamic-dark-green);
+}
+
+/* RTL Print Styles */
+@media print {
+    [dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+        color: #000000 !important;
+    }
+    
+    [dir="rtl"] .page-break {
+        page-break-before: always;
+    }
+}
+
+/* RTL Responsive Design */
+@media (max-width: 768px) {
+    [dir="rtl"] .bismillah-header-content {
+        flex-direction: column;
+    }
+    
+    [dir="rtl"] .bismillah-nav-menu {
+        flex-direction: column;
+    }
+    
+    [dir="rtl"] .bismillah-footer-content {
+        direction: ltr;
+    }
+}
+
+/* Additional RTL text color overrides for better readability */
+[dir="rtl"] .main-content,
+[dir="rtl"] .content-container,
+[dir="rtl"] .container,
+[dir="rtl"] .page-content,
+[dir="rtl"] .article-content,
+[dir="rtl"] .post-content {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .bismillah-main {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .bismillah-container {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Force RTL text colors on all text elements */
+[dir="rtl"] .text-primary,
+[dir="rtl"] .text-secondary,
+[dir="rtl"] .text-light {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .text-green,
+[dir="rtl"] .text-success {
+    color: var(--islamic-green) !important;
+}
+
+/* Enhanced RTL text visibility */
+[dir="rtl"] .text-dark {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .text-body {
+    color: var(--islamic-dark-green) !important;
+}
+
+[dir="rtl"] .text-default {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Ensure form text is visible */
+[dir="rtl"] input::placeholder,
+[dir="rtl"] textarea::placeholder {
+    color: var(--islamic-dark-green) !important;
+    opacity: 0.7;
+}
+
+/* Ensure list items are visible */
+[dir="rtl"] ul li,
+[dir="rtl"] ol li {
+    color: var(--islamic-dark-green) !important;
+}
+
+/* Ensure table text is visible */
+[dir="rtl"] table caption {
+    color: var(--islamic-green) !important;
+}
+
+/* ===== LANGUAGE TOGGLE BUTTON STYLING ===== */
+/* Beautiful styling for the RTL/LTR language toggle button */
+
+.bismillah-lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--islamic-white);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.bismillah-lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--islamic-gold);
+    color: var(--islamic-gold);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.bismillah-lang-toggle:active {
+    transform: translateY(0);
+}
+
+.lang-icon {
+    font-size: 1.125rem;
+    transition: var(--transition);
+}
+
+.lang-text {
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+/* RTL Language Toggle Button */
+[dir="rtl"] .bismillah-lang-toggle {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lang-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* Language Toggle Button States */
+.bismillah-lang-toggle[data-lang="ar"] {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--islamic-gold);
+    color: var(--islamic-gold);
+}
+
+.bismillah-lang-toggle[data-lang="ar"]:hover {
+    background: rgba(212, 175, 55, 0.3);
+    border-color: var(--islamic-white);
+    color: var(--islamic-white);
+}
+
+.bismillah-lang-toggle[data-lang="en"] {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--islamic-white);
+}
+
+.bismillah-lang-toggle[data-lang="en"]:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--islamic-gold);
+    color: var(--islamic-gold);
+}
+
+/* ===== RTL UTILITY CLASSES ===== */
+/* Utility classes for RTL support */
+
+.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+.ltr {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+.text-right-rtl {
+    text-align: right;
+}
+
+.text-left-rtl {
+    text-align: left;
+}
+
+[dir="rtl"] .text-right-rtl {
+    text-align: left;
+}
+
+[dir="rtl"] .text-left-rtl {
+    text-align: right;
+}
+
+/* RTL Margins and Padding */
+[dir="rtl"] .ml-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+[dir="rtl"] .mr-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+[dir="rtl"] .pl-0 {
+    padding-left: 0 !important;
+}
+
+[dir="rtl"] .pr-0 {
+    padding-right: 0 !important;
+}
+
+/* RTL Borders */
+[dir="rtl"] .border-l {
+    border-left: none !important;
+    border-right: 1px solid !important;
+}
+
+[dir="rtl"] .border-r {
+    border-right: none !important;
+    border-left: 1px solid !important;
+}
+
+/* RTL Flexbox */
+[dir="rtl"] .flex-row-reverse {
+    flex-direction: row !important;
+}
+
+[dir="rtl"] .flex-row {
+    flex-direction: row-reverse !important;
+}
+
+/* RTL Grid */
+[dir="rtl"] .grid-cols-2 > *:first-child {
+    order: 2;
+}
+
+[dir="rtl"] .grid-cols-2 > *:last-child {
+    order: 1;
+}
+
+/* RTL Position */
+[dir="rtl"] .left-0 {
+    left: auto !important;
+    right: 0 !important;
+}
+
+[dir="rtl"] .right-0 {
+    right: auto !important;
+    left: 0 !important;
+}
+
+/* RTL Transform */
+[dir="rtl"] .translate-x-0 {
+    transform: translateX(0) !important;
+}
+
+[dir="rtl"] .-translate-x-full {
+    transform: translateX(100%) !important;
+}
+
+/* RTL Animation */
+[dir="rtl"] .slide-in-left {
+    animation: slideInRight 0.3s ease-out;
+}
+
+[dir="rtl"] .slide-in-right {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+/* RTL Keyframes */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== RTL COMPONENT OVERRIDES ===== */
+/* Specific component overrides for RTL support */
+
+/* RTL Navigation Menu */
+[dir="rtl"] .bismillah-nav-menu {
+    padding-right: 0;
+    padding-left: var(--spacing-sm);
+}
+
+[dir="rtl"] .bismillah-nav-item {
+    margin-right: 0;
+    margin-left: 4px;
+}
+
+/* RTL Search Bar */
+[dir="rtl"] .bismillah-search-input {
+    text-align: right;
+}
+
+[dir="rtl"] .bismillah-search-input::placeholder {
+    text-align: right;
+}
+
+/* RTL User Menu */
+[dir="rtl"] .bismillah-user-actions {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .auth-buttons {
+    flex-direction: row-reverse;
+}
+
+/* RTL Footer Links */
+[dir="rtl"] .bismillah-footer-links {
+    text-align: right;
+}
+
+[dir="rtl"] .bismillah-footer-links a:hover {
+    transform: translateX(-5px);
+}
+
+/* RTL Form Elements */
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] input[type="search"],
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+    text-align: right;
+}
+
+[dir="rtl"] .form-control {
+    text-align: right;
+}
+
+/* RTL Alert Messages */
+[dir="rtl"] .alert {
+    text-align: right;
+}
+
+[dir="rtl"] .alert-content {
+    flex-direction: row-reverse;
+}
+
+/* RTL Modal */
+[dir="rtl"] .modal-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .modal-footer {
+    flex-direction: row-reverse;
+}
+
+/* RTL Tooltip */
+[dir="rtl"] .tooltip {
+    text-align: right;
+}
+
+/* RTL Progress Bar */
+[dir="rtl"] .progress-bar {
+    direction: rtl;
+}
+
+/* RTL Breadcrumbs */
+[dir="rtl"] .breadcrumb-list {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .breadcrumb-item:not(:last-child)::after {
+    margin-left: 0;
+    margin-right: var(--spacing-sm);
+}
+
+/* RTL Pagination */
+[dir="rtl"] .pagination {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .page-item:not(:last-child) {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* RTL Tabs */
+[dir="rtl"] .nav-tabs {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .tab-content {
+    direction: rtl;
+}
+
+/* RTL Accordion */
+[dir="rtl"] .accordion-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .accordion-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Carousel */
+[dir="rtl"] .carousel-control-prev {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .carousel-control-next {
+    right: auto;
+    left: 0;
+}
+
+/* RTL Timeline */
+[dir="rtl"] .timeline-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .timeline-content {
+    text-align: right;
+}
+
+/* RTL Chat */
+[dir="rtl"] .chat-message {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .chat-bubble {
+    text-align: right;
+}
+
+/* RTL Notification */
+[dir="rtl"] .notification {
+    text-align: right;
+}
+
+[dir="rtl"] .notification-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Loading Spinner */
+[dir="rtl"] .spinner {
+    direction: rtl;
+}
+
+/* RTL Progress Steps */
+[dir="rtl"] .progress-steps {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .step-connector {
+    transform: rotate(180deg);
+}
+
+/* RTL File Upload */
+[dir="rtl"] .file-upload-area {
+    text-align: center;
+}
+
+[dir="rtl"] .file-upload-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+/* RTL Rating */
+[dir="rtl"] .rating-stars {
+    flex-direction: row-reverse;
+}
+
+/* RTL Social Share */
+[dir="rtl"] .social-share-buttons {
+    flex-direction: row-reverse;
+}
+
+/* RTL Comment System */
+[dir="rtl"] .comment-avatar {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+[dir="rtl"] .comment-content {
+    text-align: right;
+}
+
+/* RTL Calendar */
+[dir="rtl"] .calendar-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .calendar-nav {
+    flex-direction: row-reverse;
+}
+
+/* RTL Data Table */
+[dir="rtl"] .data-table th,
+[dir="rtl"] .data-table td {
+    text-align: right;
+}
+
+[dir="rtl"] .data-table .sort-icon {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* RTL Filter Panel */
+[dir="rtl"] .filter-panel {
+    text-align: right;
+}
+
+[dir="rtl"] .filter-group {
+    flex-direction: row-reverse;
+}
+
+/* RTL Search Results */
+[dir="rtl"] .search-result {
+    text-align: right;
+}
+
+[dir="rtl"] .search-result-meta {
+    flex-direction: row-reverse;
+}
+
+/* RTL User Profile */
+[dir="rtl"] .profile-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .profile-avatar {
+    margin-right: 0;
+    margin-left: var(--spacing-lg);
+}
+
+/* RTL Settings Panel */
+[dir="rtl"] .settings-section {
+    text-align: right;
+}
+
+[dir="rtl"] .setting-item {
+    flex-direction: row-reverse;
+}
+
+/* RTL Help System */
+[dir="rtl"] .help-content {
+    text-align: right;
+}
+
+[dir="rtl"] .help-navigation {
+    flex-direction: row-reverse;
+}
+
+/* RTL Error Pages */
+[dir="rtl"] .error-content {
+    text-align: center;
+}
+
+[dir="rtl"] .error-actions {
+    flex-direction: row-reverse;
+}
+
+/* RTL Maintenance Mode */
+[dir="rtl"] .maintenance-content {
+    text-align: center;
+}
+
+[dir="rtl"] .maintenance-info {
+    text-align: right;
+}
+
+/* RTL Print Styles */
+@media print {
+    [dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+    }
+    
+    [dir="rtl"] .page-break {
+        page-break-before: always;
+    }
+}
+
+/* ===== RTL RESPONSIVE DESIGN ===== */
+/* Responsive RTL support for all screen sizes */
+
+@media (max-width: 1200px) {
+    [dir="rtl"] .bismillah-header-content {
+        flex-direction: column;
+    }
+    
+    [dir="rtl"] .bismillah-nav-menu {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    [dir="rtl"] .bismillah-footer-content {
+        direction: ltr;
+        text-align: center;
+    }
+    
+    [dir="rtl"] .bismillah-footer-section {
+        text-align: center;
+    }
+    
+    [dir="rtl"] .bismillah-footer-section h3::after {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+    }
+    
+    [dir="rtl"] .bismillah-footer-links {
+        text-align: center;
+    }
+    
+    [dir="rtl"] .bismillah-footer-links a:hover {
+        transform: translateY(-2px);
+    }
+}
+
+@media (max-width: 480px) {
+    [dir="rtl"] .bismillah-lang-toggle {
+        min-width: 100px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    [dir="rtl"] .lang-text {
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== RTL ANIMATIONS ===== */
+/* Smooth animations for RTL transitions */
+
+[dir="rtl"] .fade-in {
+    animation: fadeInRTL 0.5s ease-in-out;
+}
+
+[dir="rtl"] .slide-in {
+    animation: slideInRTL 0.3s ease-out;
+}
+
+@keyframes fadeInRTL {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRTL {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* RTL Hover Effects */
+[dir="rtl"] .hover-lift:hover {
+    transform: translateY(-2px) translateX(2px);
+}
+
+[dir="rtl"] .hover-slide:hover {
+    transform: translateX(-5px);
+}
+
+/* RTL Focus Effects */
+[dir="rtl"] .focus-ring:focus {
+    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1), 0 0 0 1px var(--islamic-green);
+}
+
+/* RTL Active States */
+[dir="rtl"] .active-slide {
+    transform: translateX(-3px);
+}
+
+/* RTL Loading States */
+[dir="rtl"] .loading-spinner {
+    animation: spinRTL 1s linear infinite;
+}
+
+@keyframes spinRTL {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
 }
 
 /* ===== GLOBAL RESET & BASE STYLES ===== */

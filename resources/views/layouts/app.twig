@@ -703,10 +703,7 @@
             </div>
             
             <div class="bismillah-header-actions">
-                <button class="bismillah-lang-toggle" id="langToggle" data-lang="en" onclick="toggleLanguage()">
-                    <span class="lang-icon">🌐</span>
-                    <span class="lang-text">العربية</span>
-                </button>
+                {% include 'components/simple-language-switch.twig' %}
                 <a href="/contribute" class="bismillah-contribute-btn">Contribute</a>
             </div>
         </div>
@@ -952,27 +949,8 @@
                 </div>
             </div>
 
-    <!-- Language Toggle Script -->
+    <!-- Dropdown functionality for mobile/touch devices -->
     <script>
-        // Language toggle functionality
-        function toggleLanguage() {
-            const currentLang = document.documentElement.lang;
-            const newLang = currentLang === 'en' ? 'ar' : 'en';
-            setLanguage(newLang);
-        }
-
-        function setLanguage(lang) {
-            document.documentElement.lang = lang;
-            localStorage.setItem('preferred-language', lang);
-            
-            // Update language toggle button text
-            const langToggle = document.getElementById('langToggle');
-            if (langToggle) {
-                langToggle.textContent = lang === 'en' ? 'العربية' : 'English';
-            }
-        }
-
-        // Dropdown functionality for mobile/touch devices
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, checking dropdowns...');
             
@@ -1073,12 +1051,6 @@
                     }
                 });
             });
-            
-            // Initialize language from localStorage
-            const savedLang = localStorage.getItem('preferred-language');
-            if (savedLang) {
-                setLanguage(savedLang);
-            }
         });
     </script>
     

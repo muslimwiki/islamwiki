@@ -12,7 +12,7 @@
     },
     "config": {
         "defaultLanguage": "en",
-        "supportedLanguages": ["en", "ar"],
+        "supportedLanguages": ["en", "ar", "ur", "tr", "id", "ms", "fa", "he"],
         "enableLanguageDetection": true,
         "enableLanguagePersistence": true,
         "enableRTLSupport": true,
