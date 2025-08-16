@@ -1,930 +1,328 @@
-{% extends "layouts/app.twig" %}
+{% extends "layouts/dashboard.twig" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}IslamWiki Dashboard{% endblock %}
 
 {% block content %}
-<div class="home-three-column-layout full-width">
-    <!-- Left Column: Quick Actions & User Stats (2/10) -->
-    <div class="second-nav-column">
-        <!-- User Stats -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">📊 Your Stats</h2>
+<div class="dashboard-container">
+    <!-- Islamic Greeting -->
+    <div class="islamic-greeting">
+        <div class="greeting-arabic">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+        <div class="greeting-text">Welcome to IslamWiki - Preserving and Sharing Islamic Knowledge</div>
+    </div>
+
+    <!-- Dashboard Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                    </svg>
+                </div>
+                <div class="stat-title">Total Articles</div>
             </div>
-            <div class="card-body">
-                <div class="stats-grid bayan-stats">
-                    <div class="stat-card">
-                        <div class="stat-icon">📄</div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{ userStats.total_pages ?? 0 }}</div>
-                            <div class="stat-label">Pages Created</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✏️</div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{ userStats.total_edits ?? 0 }}</div>
-                            <div class="stat-label">Total Edits</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">👀</div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{ userStats.watchlist_count ?? 0 }}</div>
-                            <div class="stat-label">Pages Watched</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{ userStats.recent_activity ?? 0 }}</div>
-                            <div class="stat-label">Contribution Score</div>
-                        </div>
-                    </div>
+            <div class="stat-value">{{ stats.total_articles|default(2847) }}</div>
+            <div class="stat-change positive">+127 this month</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5Z"/>
+                    </svg>
                 </div>
-                
-                <!-- Contribution Actions -->
-                <div class="contribution-actions">
-                    <a href="/wiki/create" class="btn btn-primary">Create New Page</a>
-                    <a href="/wiki" class="btn btn-outline">Edit Existing</a>
+                <div class="stat-title">Active Contributors</div>
+            </div>
+            <div class="stat-value">{{ stats.active_contributors|default(1247) }}</div>
+            <div class="stat-change positive">+89 this week</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12H7A5,5 0 0,0 12,17A5,5 0 0,0 17,12H19Z"/>
+                    </svg>
                 </div>
+                <div class="stat-title">Verified Scholars</div>
+            </div>
+            <div class="stat-value">{{ stats.verified_scholars|default(156) }}</div>
+            <div class="stat-change positive">+12 verified</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                    </svg>
+                </div>
+                <div class="stat-title">Languages</div>
+            </div>
+            <div class="stat-value">{{ stats.languages|default(47) }}</div>
+            <div class="stat-change positive">+3 new languages</div>
+        </div>
+    </div>
+
+    <!-- Islamic Content Categories -->
+    <div class="islamic-content-grid">
+        <div class="content-category">
+            <div class="category-icon">📖</div>
+            <div class="category-title">Quran & Tafsir</div>
+            <div class="category-count">6,236 verses with commentary</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 100%"></div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">🚀 Quick Actions</h2>
+        <div class="content-category">
+            <div class="category-icon">📚</div>
+            <div class="category-title">Hadith Collections</div>
+            <div class="category-count">12,847 authenticated hadith</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 85%"></div>
             </div>
-            <div class="card-body">
-                <div class="quick-actions-list">
-                    <a href="/wiki/create" class="quick-action-item primary">
-                        <span class="action-icon">✏️</span>
-                        <span class="action-text">Create New Page</span>
-                    </a>
-                    <a href="/wiki" class="quick-action-item">
-                        <span class="action-icon">📚</span>
-                        <span class="action-text">Wiki</span>
-                    </a>
-                    <a href="/search" class="quick-action-item">
-                        <span class="action-icon">🔍</span>
-                        <span class="action-text">Search Content</span>
-                    </a>
-                    <a href="/profile" class="quick-action-item">
-                        <span class="action-icon">👤</span>
-                        <span class="action-text">Edit Profile</span>
-                    </a>
-                    <a href="/settings" class="quick-action-item">
-                        <span class="action-icon">⚙️</span>
-                        <span class="action-text">Settings</span>
-                    </a>
-                    <a href="/contributing" class="quick-action-item">
-                        <span class="action-icon">📖</span>
-                        <span class="action-text">Contributing Guide</span>
-                    </a>
-                </div>
+        </div>
+
+        <div class="content-category">
+            <div class="category-icon">🕌</div>
+            <div class="category-title">Islamic History</div>
+            <div class="category-count">1,456 historical articles</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 72%"></div>
+            </div>
+        </div>
+
+        <div class="content-category">
+            <div class="category-icon">⚖️</div>
+            <div class="category-title">Fiqh & Jurisprudence</div>
+            <div class="category-count">3,289 rulings & opinions</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 68%"></div>
+            </div>
+        </div>
+
+        <div class="content-category">
+            <div class="category-icon">👨‍🏫</div>
+            <div class="category-title">Scholars & Biographies</div>
+            <div class="category-count">892 scholar profiles</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 58%"></div>
+            </div>
+        </div>
+
+        <div class="content-category">
+            <div class="category-icon">🌙</div>
+            <div class="category-title">Islamic Practices</div>
+            <div class="category-count">567 practice guides</div>
+            <div class="category-progress">
+                <div class="progress-bar" style="width: 45%"></div>
             </div>
         </div>
     </div>
 
-    <!-- Middle Column: Main Content (6/10) -->
-    <div class="main-content-column">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <div class="welcome-section">
-                <div class="welcome-content">
-                    <div class="welcome-text">
-                        <h1 class="welcome-title">
-                            {% if isLoggedIn %}
-                                Welcome back, {{ user.username ?? 'User' }}! 👋
-                            {% else %}
-                                Welcome to IslamWiki! 🕌
-                            {% endif %}
-                        </h1>
-                        <p class="welcome-subtitle">
-                            {% if isLoggedIn %}
-                                Manage your contributions and explore Islamic knowledge
-                            {% else %}
-                                Discover and contribute to Islamic knowledge
-                            {% endif %}
-                        </p>
-                        <div class="welcome-meta">
-                            <span class="meta-item">
-                                <span class="meta-icon">🕒</span>
-                                {{ currentTime }}
-                            </span>
-                            {% if isLoggedIn and userStats.member_since %}
-                            <span class="meta-item">
-                                <span class="meta-icon">📅</span>
-                                Member since {{ userStats.member_since|date('M j, Y') }}
-                            </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <!-- Main Content Grid -->
+    <div class="content-grid">
         <!-- Recent Activity -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">📈 Recent Activity</h2>
-            </div>
-            <div class="card-body">
-                {% if recentActivity|length > 0 %}
-                    <div class="activity-list">
-                        {% for activity in recentActivity %}
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                {% if activity.type == 'edit' %}✏️{% else %}📄{% endif %}
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">
-                                    <a href="/wiki/{{ activity.page_slug }}">{{ activity.page_title }}</a>
-                                </div>
-                                <div class="activity-meta">
-                                    <span class="activity-type">{{ activity.action }}</span>
-                                    <span class="activity-time">{{ activity.timestamp|date('M j, Y g:i A') }}</span>
-                                </div>
-                            </div>
-                            <div class="activity-badge">
-                                {% if activity.type == 'edit' %}
-                                    <span class="badge badge-edit">Edit</span>
-                                {% else %}
-                                    <span class="badge badge-create">Create</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="activity-footer">
-                        <a href="/profile" class="btn btn-outline">View All Activity</a>
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <h3>No recent activity yet</h3>
-                        <p>Start contributing to see your activity here!</p>
-                        <a href="/wiki/create" class="btn btn-primary">Create Your First Page</a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Knowledge Graph (Bayan) -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">🧠 Knowledge Graph (Bayan)</h2>
-            </div>
-            <div class="card-body">
-                {% if bayan.graph and bayan.graph.nodes|length > 0 %}
-                <div class="bayan-mini-graph" style="width:100%; height:220px; border:1px solid var(--border-color); border-radius:8px; background:var(--background-color); margin-bottom:1rem; position:relative;">
-                    <svg id="bayanGraphSvg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet" style="width:100%; height:100%;">
-                        <!-- edges -->
-                        {% for e in bayan.graph.edges %}
-                        <line data-edge="{{ loop.index0 }}" stroke="var(--border-color)" stroke-width="1.5" x1="0" y1="0" x2="0" y2="0"></line>
-                        {% endfor %}
-                        <!-- nodes -->
-                        {% for n in bayan.graph.nodes %}
-                        <g data-node="{{ n.id }}">
-                            <circle r="8" fill="{{ n.isHub ? '#3b82f6' : '#94a3b8' }}" stroke="#1f2937" stroke-width="1"></circle>
-                            <text font-size="10" fill="var(--text-primary)" text-anchor="middle" dy="-12">{{ n.label|length > 18 ? n.label|slice(0,18) ~ '…' : n.label }}</text>
-                        </g>
-                        {% endfor %}
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
                     </svg>
+                    Recent Activity
                 </div>
+                <span style="font-size:12px;color:var(--text-secondary);">Last 24 hours</span>
+            </div>
+            <div class="card-body">
+                {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                    <div class="activity-item">
+                        <div class="activity-avatar">{{ activity.user_initials|default('U') }}</div>
+                        <div class="activity-content">
+                            <div class="activity-action">{{ activity.action|default('User performed action') }}</div>
+                            <a href="{{ activity.target_url|default('#') }}" class="activity-target">{{ activity.target|default('Target item') }}</a>
+                            <div class="activity-description">{{ activity.description|default('Activity description') }}</div>
+                            <div class="activity-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                {{ activity.time_ago|default('2 hours ago') }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Default activity items -->
+                    <div class="activity-item">
+                        <div class="activity-avatar">AH</div>
+                        <div class="activity-content">
+                            <div class="activity-action">Dr. Ahmed Hassan added new tafsir commentary</div>
+                            <a href="#" class="activity-target">Surah Al-Fatiha: Verse 1-7</a>
+                            <div class="activity-description">Comprehensive explanation of the opening chapter</div>
+                            <div class="activity-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                2 hours ago
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-avatar">MK</div>
+                        <div class="activity-content">
+                            <div class="activity-action">Maryam Khan created new biography</div>
+                            <a href="#" class="activity-target">Imam Abu Hanifa</a>
+                            <div class="activity-description">Detailed life story of the great jurist</div>
+                            <div class="activity-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                4 hours ago
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🧩</div>
-                        <div class="stat-content">
-                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'total_nodes')|default(bayan.graph.nodes|length|default(0)) }}</div>
-                            <div class="stat-label bayan-stat-label">Nodes</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔗</div>
-                        <div class="stat-content">
-                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'total_edges')|default(bayan.graph.edges|length|default(0)) }}</div>
-                            <div class="stat-label bayan-stat-label">Relationships</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🏷️</div>
-                        <div class="stat-content">
-                            <div class="stat-number bayan-stat-number">{{ attribute(bayan.statistics, 'node_types')|default(bayan.node_types|default(0)) }}</div>
-                            <div class="stat-label bayan-stat-label">Node Types</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top:1rem;">
-                    <h3 class="section-title">Top Hub Nodes</h3>
-                    <ul>
-                        {% for node in bayan.hub_nodes ?? [] %}
-                            <li><a href="/bayan/node/{{ node.id }}">{{ node.title }}</a></li>
-                        {% else %}
-                            <li>No hub nodes found yet.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="dashboard-links" style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
-                    <a class="dashboard-link" href="/bayan">Open Bayan</a>
-                    <a class="dashboard-link" href="/bayan/create">Create Node</a>
-                    <a class="dashboard-link" href="/bayan/search">Search</a>
-                </div>
             </div>
         </div>
 
-        <!-- Watched Pages -->
+        <!-- Quick Actions & Tools -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">👀 Watched Pages</h2>
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M19,19V5H5V19H19Z"/>
+                    </svg>
+                    Quick Actions
+                </div>
             </div>
             <div class="card-body">
-                {% if watchlist|length > 0 %}
-                    <div class="watchlist-list">
-                        {% for page in watchlist %}
-                        <div class="watchlist-item">
-                            <div class="watchlist-icon">📖</div>
-                            <div class="watchlist-content">
-                                <div class="watchlist-title">
-                                    <a href="/wiki/{{ page.slug }}">{{ page.title }}</a>
-                                </div>
-                                <div class="watchlist-meta">
-                                    <span class="watchlist-date">Watched {{ page.watch_date|date('M j, Y') }}</span>
-                                    <span class="watchlist-status">Active</span>
-                                </div>
-                            </div>
-                            <div class="watchlist-actions">
-                                <button class="btn btn-sm btn-outline" onclick="unwatchPage({{ page.id }})">
-                                    <span>👁️</span>
-                                    Unwatch
-                                </button>
-                            </div>
+                <div class="quick-actions">
+                    <a href="/wiki/create" class="action-btn">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                        </svg>
+                        Create Article
+                    </a>
+                    
+                    <a href="/media/upload" class="action-btn secondary">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Upload Media
+                    </a>
+
+                    <a href="/content/verify" class="action-btn tertiary">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                        </svg>
+                        Verify Content
+                    </a>
+
+                    <a href="/content/translate" class="action-btn">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                        </svg>
+                        Translate
+                    </a>
+                </div>
+
+                <!-- Islamic Tools Section -->
+                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
+                    <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Islamic Tools</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Next Prayer</div>
+                            <div style="font-size: 12px;">Asr - 3:45 PM</div>
                         </div>
-                        {% endfor %}
+                        <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Qibla</div>
+                            <div style="font-size: 12px;">285° NW</div>
+                        </div>
                     </div>
-                    <div class="watchlist-footer">
-                        <a href="/wiki" class="btn btn-outline">View More Pages</a>
+                </div>
+
+                <!-- Featured Content -->
+                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
+                    <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Featured Content</h4>
+                    <div style="background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green)); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">Article of the Day</div>
+                        <div style="font-size: 14px; opacity: 0.9;">The Night Journey (Isra and Mi'raj)</div>
                     </div>
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon">👀</div>
-                        <h3>You're not watching any pages yet</h3>
-                        <p>Watch pages to get notified of changes!</p>
-                        <a href="/wiki" class="btn btn-primary">View Pages</a>
+                    <div style="background: linear-gradient(135deg, var(--islamic-gold), #f4d03f); color: var(--islamic-dark-green); padding: 15px; border-radius: 8px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">Verse of the Day</div>
+                        <div style="font-size: 14px;">Surah Al-Baqarah, Verse 255 (Ayat al-Kursi)</div>
                     </div>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Column: Learning Resources & Site Stats (2/10) -->
-    <div class="sidebar-column">
-        <!-- Learning Resources -->
+    <!-- Content Management Tables -->
+    <div style="margin-top: 30px;">
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">📚 Learning Resources</h2>
-            </div>
-            <div class="card-body">
-                <div class="resources-list">
-                    <a href="/welcome" class="resource-item">
-                        <span class="resource-icon">🎯</span>
-                        <div class="resource-content">
-                            <h3>Welcome Guide</h3>
-                            <p>Learn how to use IslamWiki effectively</p>
-                        </div>
-                    </a>
-                    
-                    <a href="/contributing" class="resource-item">
-                        <span class="resource-icon">📖</span>
-                        <div class="resource-content">
-                            <h3>Contributing Guidelines</h3>
-                            <p>Best practices for contributing</p>
-                        </div>
-                    </a>
-                    
-                    <a href="/islamic-sciences" class="resource-item">
-                        <span class="resource-icon">🔬</span>
-                        <div class="resource-content">
-                            <h3>Islamic Sciences</h3>
-                            <p>Explore Islamic scholarship</p>
-                        </div>
-                    </a>
-                    
-                    <a href="/quran" class="resource-item">
-                        <span class="resource-icon">🕌</span>
-                        <div class="resource-content">
-                            <h3>Quran Studies</h3>
-                            <p>Comprehensive Quranic resources</p>
-                        </div>
-                    </a>
-                    
-                    <a href="/hadith" class="resource-item">
-                        <span class="resource-icon">📜</span>
-                        <div class="resource-content">
-                            <h3>Hadith Collection</h3>
-                            <p>Authentic hadith collections</p>
-                        </div>
-                    </a>
-                    
-                    <a href="/salah" class="resource-item">
-                        <span class="resource-icon">🕐</span>
-                        <div class="resource-content">
-                            <h3>Salah Times</h3>
-                            <p>Salah times and calendar</p>
-                        </div>
-                    </a>
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                    Recent Articles Pending Review
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="/wiki" style="background: var(--islamic-green); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none;">View All</a>
+                    <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">Filter</button>
                 </div>
             </div>
-        </div>
-
-        <!-- Site Statistics -->
-        {% if isLoggedIn %}
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">📊 Site Statistics</h2>
+            <div class="card-body" style="padding: 0;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if recent_pages %}
+                            {% for page in recent_pages %}
+                            <tr>
+                                <td style="font-weight: 600;">{{ page.title }}</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 30px; height: 30px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">{{ page.author_initials|default('U') }}</div>
+                                        <div>
+                                            <div style="font-weight: 500;">{{ page.author|default('Unknown') }}</div>
+                                            <div class="role-indicator contributor">Contributor</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ page.category|default('General') }}</td>
+                                <td><span class="status-badge draft">Draft</span></td>
+                                <td>{{ page.created_at|date('M j, Y') }}</td>
+                                <td>
+                                    <div style="display: flex; gap: 8px;">
+                                        <a href="/{{ page.slug }}" style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; text-decoration: none;">View</a>
+                                        <a href="/{{ page.slug }}/edit" style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; text-decoration: none;">Edit</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    No articles pending review at the moment.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
             </div>
-            <div class="card-body">
-                <div class="site-stats-list">
-                    <div class="site-stat-item">
-                        <div class="site-stat-icon">📄</div>
-                        <div class="site-stat-content">
-                            <div class="site-stat-number">{{ siteStats.total_pages }}</div>
-                            <div class="site-stat-label">Total Pages</div>
-                        </div>
-                    </div>
-                    <div class="site-stat-item">
-                        <div class="site-stat-icon">👥</div>
-                        <div class="site-stat-content">
-                            <div class="site-stat-number">{{ siteStats.total_users }}</div>
-                            <div class="site-stat-label">Active Users</div>
-                        </div>
-                    </div>
-                    <div class="site-stat-item">
-                        <div class="site-stat-icon">✏️</div>
-                        <div class="site-stat-content">
-                            <div class="site-stat-number">{{ siteStats.total_edits }}</div>
-                            <div class="site-stat-label">Total Edits</div>
-                        </div>
-                    </div>
-                    <div class="site-stat-item">
-                        <div class="site-stat-icon">📚</div>
-                        <div class="site-stat-content">
-                            <div class="site-stat-number">{{ siteStats.total_categories }}</div>
-                            <div class="site-stat-label">Categories</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        {% endif %}
     </div>
 </div>
-
-<style>
-/* Dashboard Header */
-.dashboard-header {
-    margin-bottom: 2rem;
-}
-
-.welcome-section {
-    text-align: center;
-    padding: 2rem;
-    background: var(--card-background);
-    border-radius: 1rem;
-    border: 1px solid var(--border-color);
-}
-
-.welcome-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.welcome-subtitle {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-}
-
-.welcome-meta {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.meta-icon {
-    font-size: 1rem;
-}
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.stat-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.stat-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.stat-content {
-    flex: 1;
-}
-
-.stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-/* Contribution Actions */
-.contribution-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.contribution-actions .btn {
-    flex: 1;
-    min-width: 120px;
-}
-
-/* Quick Actions */
-.quick-actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.quick-action-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    background: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    text-decoration: none;
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
-
-.quick-action-item:hover {
-    border-color: var(--primary-color);
-    background: var(--card-background);
-    transform: translateY(-1px);
-    text-decoration: none;
-    color: var(--text-primary);
-}
-
-.quick-action-item.primary {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.quick-action-item.primary:hover {
-    background: var(--primary-hover);
-    color: white;
-}
-
-.action-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.action-text {
-    font-weight: 500;
-}
-
-/* Activity List */
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-}
-
-.activity-item:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.activity-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.activity-content {
-    flex: 1;
-}
-
-.activity-title a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.activity-title a:hover {
-    color: var(--primary-hover);
-}
-
-.activity-meta {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.25rem;
-}
-
-.activity-type {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-}
-
-.activity-time {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-}
-
-.activity-badge {
-    flex-shrink: 0;
-}
-
-.badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.badge-edit {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-}
-
-.badge-create {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-}
-
-/* Watchlist */
-.watchlist-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.watchlist-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-}
-
-.watchlist-item:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.watchlist-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.watchlist-content {
-    flex: 1;
-}
-
-.watchlist-title a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.watchlist-title a:hover {
-    color: var(--primary-hover);
-}
-
-.watchlist-meta {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.25rem;
-}
-
-.watchlist-date {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-}
-
-.watchlist-status {
-    color: #22c55e;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.watchlist-actions {
-    flex-shrink: 0;
-}
-
-/* Resources */
-.resources-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.resource-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-    text-decoration: none;
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
-
-.resource-item:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-    text-decoration: none;
-    color: var(--text-primary);
-}
-
-.resource-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.resource-content h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.resource-content p {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-/* Site Stats */
-.site-stats-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.site-stat-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-}
-
-.site-stat-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.site-stat-content {
-    flex: 1;
-}
-
-.site-stat-number {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1;
-}
-
-/* Ensure Bayan stat numbers are readable regardless of skin */
-.bayan-stats .stat-number,
-.bayan-stats .stat-label {
-    color: var(--text-primary) !important;
-}
-
-/* Hard fallback colors if skin variables are too light */
-.bayan-stat-number { color: #0f172a !important; }
-.bayan-stat-label { color: #334155 !important; }
-
-.site-stat-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 0.25rem;
-}
-
-/* Empty States */
-.empty-state {
-    text-align: center;
-    padding: 2rem;
-}
-
-.empty-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
-
-.empty-state h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.empty-state p {
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-}
-
-.empty-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .contribution-actions {
-        flex-direction: column;
-    }
-    
-    .welcome-title {
-        font-size: 1.5rem;
-    }
-    
-    .welcome-meta {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .activity-meta {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    
-    .watchlist-meta {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    
-    .empty-actions {
-        flex-direction: column;
-    }
-}
-</style>
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize dashboard functionality
-    initializeDashboard();
-});
-
-function initializeDashboard() {
-    // Add any dashboard-specific JavaScript here
-    console.log('Dashboard initialized');
-    try { initBayanMiniGraph(); } catch (e) { console.warn('Bayan mini-graph init failed', e); }
-}
-
-function unwatchPage(pageId) {
-    if (confirm('Are you sure you want to unwatch this page?')) {
-        // TODO: Implement unwatch functionality
-        console.log('Unwatching page:', pageId);
-        alert('Unwatch functionality will be implemented soon!');
-    }
-}
-
-// Auto-refresh dashboard data every 5 minutes
-setInterval(function() {
-    // TODO: Implement auto-refresh functionality
-    console.log('Dashboard auto-refresh triggered');
-}, 300000);
-
-function initBayanMiniGraph() {
-    const svg = document.getElementById('bayanGraphSvg');
-    if (!svg) return;
-    const width = 600, height = 200;
-    const nodes = Array.from(svg.querySelectorAll('g[data-node]'));
-    const edges = Array.from(svg.querySelectorAll('line[data-edge]'));
-    // Basic radial layout around center for hubs and neighbors
-    const centerX = width / 2, centerY = height / 2;
-    // Separate hubs and others
-    const nodeData = nodes.map(g => ({ id: parseInt(g.getAttribute('data-node'), 10), el: g }));
-    const hubs = nodeData.filter(nd => {
-        const circle = nd.el.querySelector('circle');
-        return circle && circle.getAttribute('fill') === '#3b82f6';
-    });
-    const others = nodeData.filter(nd => !hubs.includes(nd));
-    // Place hubs horizontally
-    const hubCount = Math.max(1, hubs.length);
-    hubs.forEach((nd, i) => {
-        const x = centerX + (i - (hubCount - 1) / 2) * 120;
-        const y = centerY;
-        nd.el.setAttribute('transform', `translate(${x},${y})`);
-    });
-    // Place others in a ring
-    const radius = 70;
-    const step = (Math.PI * 2) / Math.max(1, others.length);
-    others.forEach((nd, i) => {
-        const angle = i * step;
-        const x = centerX + Math.cos(angle) * radius;
-        const y = centerY + Math.sin(angle) * radius;
-        nd.el.setAttribute('transform', `translate(${x},${y})`);
-    });
-    // Build id -> position map
-    const pos = new Map();
-    [...hubs, ...others].forEach(nd => {
-        const t = nd.el.getAttribute('transform');
-        const m = /translate\(([^,]+),([^\)]+)\)/.exec(t || '');
-        if (m) pos.set(nd.id, { x: parseFloat(m[1]), y: parseFloat(m[2]) });
-    });
-    // Map edges using adjacent groups order and dataset from controller order; fallback draws simple spokes between closest
-    // Since we don't have edge node IDs in DOM, distribute edges between hubs->others in order
-    let edgeIdx = 0;
-    hubs.forEach(h => {
-        others.slice(edgeIdx, edgeIdx + 3).forEach(o => {
-            const e = edges.shift();
-            if (!e) return;
-            const p1 = pos.get(h.id), p2 = pos.get(o.id);
-            e.setAttribute('x1', String(p1.x));
-            e.setAttribute('y1', String(p1.y));
-            e.setAttribute('x2', String(p2.x));
-            e.setAttribute('y2', String(p2.y));
-            e.setAttribute('stroke', 'var(--border-color)');
-        });
-        edgeIdx += 3;
-    });
-}
-</script>
 {% endblock %}

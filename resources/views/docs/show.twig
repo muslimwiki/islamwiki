@@ -2,258 +2,166 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block content %}
-<div class="docs-layout" style="display:flex; gap: 24px;">
-  <aside class="docs-sidebar" style="flex: 0 0 420px; max-width: 420px;">
-    <div class="card">
-      <div class="card-header"><h2 class="card-title">Documentation</h2></div>
-      <div class="card-body">
-        <input type="text" id="docs-search" class="input" placeholder="Search docs..." oninput="filterDocsTree(this.value)">
-        <ul id="docs-tree" class="docs-tree" style="margin-top:12px; list-style:none; padding-left:0;">
-          {% macro render_node(node, current) %}
-            {% if node.type == 'dir' %}
-              {% if node.name %}
-                <li class="tree-dir" data-name="{{ node.name|lower }}">
-                  <button class="tree-toggle" aria-expanded="{{ node.open ? 'true' : 'false' }}" data-path="{{ node.path }}">{{ node.open ? '▼' : '▶' }}</button>
-                  <a href="/docs/{{ node.path }}">📁 {{ node.name }}</a>
-                  <ul class="tree-children" style="list-style:none; margin-left: 1rem; display: {{ node.open ? 'block' : 'none' }};">
-                    {% for child in node.children %}
-                      {{ _self.render_node(child, current) }}
-                    {% endfor %}
-                  </ul>
-                </li>
-              {% else %}
-                {# synthetic root: render children only #}
-                {% for child in node.children %}
-                  {{ _self.render_node(child, current) }}
-                {% endfor %}
-              {% endif %}
-            {% else %}
-              <li class="tree-file" data-name="{{ node.name|lower }}">
-                <a href="/docs/{{ node.path }}" class="{{ current == node.path ? 'active' : '' }}">📄 {{ node.name }}</a>
-              </li>
-            {% endif %}
-          {% endmacro %}
-          {{ _self.render_node({ type: 'dir', path: '', name: '', children: tree, open: true }, current) }}
-        </ul>
-        <hr/>
-        <h3 style="margin:10px 0 6px; font-size: 1rem;">Project Files</h3>
-        <ul id="root-tree" class="docs-tree" style="list-style:none; padding-left:0;">
-          {% for file in rootMd|default([]) %}
-            {% set lower = file|lower %}
-            <li class="tree-file" data-name="{{ lower }}">
-              <a href="/docs/_root/{{ file }}" class="{{ (currentRoot|default('') == file) ? 'active' : '' }}">📄 {{ file }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </aside>
+{% block body_class %}docs-page{% endblock %}
 
-  <section class="docs-content" style="flex: 1; min-width:0;">
-    <article class="card">
-      <div class="card-body">
-        <div class="markdown-body">
-          {{ content|raw }}
+{% block content %}
+<div class="docs-layout">
+    <!-- Docs Sidebar -->
+    <div class="docs-sidebar">
+        <div class="docs-sidebar-header">
+            <h2 class="docs-sidebar-title">
+                <span>📚</span>
+                Documentation
+            </h2>
         </div>
-      </div>
-    </article>
-  </section>
+        <div class="docs-sidebar-content">
+            <!-- Docs Search -->
+            <div class="docs-search">
+                <input type="text" class="docs-search-input" placeholder="Search documentation..." id="docs-search">
+            </div>
+            
+            <!-- Docs Navigation -->
+            <nav class="docs-nav">
+                <div class="docs-nav-section">
+                    <h3 class="docs-nav-section-title">Getting Started</h3>
+                    <ul class="docs-nav-list">
+                        <li class="docs-nav-item">
+                            <a href="/docs/introduction" class="docs-nav-link">Introduction</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/installation" class="docs-nav-link">Installation</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/quick-start" class="docs-nav-link">Quick Start</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="docs-nav-section">
+                    <h3 class="docs-nav-section-title">Core Features</h3>
+                    <ul class="docs-nav-list">
+                        <li class="docs-nav-item">
+                            <a href="/docs/authentication" class="docs-nav-link">Authentication</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/database" class="docs-nav-link">Database</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/routing" class="docs-nav-link">Routing</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/views" class="docs-nav-link">Views & Templates</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="docs-nav-section">
+                    <h3 class="docs-nav-section-title">Advanced</h3>
+                    <ul class="docs-nav-list">
+                        <li class="docs-nav-item">
+                            <a href="/docs/extensions" class="docs-nav-link">Extensions</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/skins" class="docs-nav-link">Skins & Themes</a>
+                        </li>
+                        <li class="docs-nav-item">
+                            <a href="/docs/api" class="docs-nav-link">API Reference</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Docs Main Content -->
+    <div class="docs-main">
+        <!-- Docs Header -->
+        <div class="docs-header">
+            <h1 class="docs-title">{{ title }}</h1>
+            {% if subtitle %}
+            <p class="docs-subtitle">{{ subtitle }}</p>
+            {% endif %}
+            
+            <div class="docs-meta">
+                <div class="docs-meta-item">
+                    <span class="docs-meta-icon">📅</span>
+                    <span>Last updated: {{ "now"|date("M j, Y") }}</span>
+                </div>
+                <div class="docs-meta-item">
+                    <span class="docs-meta-icon">👁️</span>
+                    <span>Reading time: 5 min</span>
+                </div>
+                <div class="docs-meta-item">
+                    <span class="docs-meta-icon">🏷️</span>
+                    <span>Category: {{ category|default('General') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Docs Breadcrumbs -->
+        <div class="docs-breadcrumbs">
+            <nav aria-label="Breadcrumb">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="/docs" class="breadcrumb-link">Documentation</a>
+                    </li>
+                    {% if category %}
+                    <li class="breadcrumb-item">
+                        <a href="/docs/{{ category|lower }}" class="breadcrumb-link">{{ category }}</a>
+                    </li>
+                    {% endif %}
+                    <li class="breadcrumb-item">
+                        <span class="breadcrumb-current">{{ title }}</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Docs Content -->
+        <div class="docs-content">
+            <div class="markdown-body">
+                {{ content|raw }}
+            </div>
+        </div>
+
+        <!-- Docs Footer -->
+        <div class="docs-footer">
+            <div class="docs-footer-content">
+                <nav class="docs-footer-nav">
+                    {% if prev_page %}
+                    <a href="{{ prev_page.url }}" class="docs-footer-link">← {{ prev_page.title }}</a>
+                    {% endif %}
+                    {% if next_page %}
+                    <a href="{{ next_page.url }}" class="docs-footer-link">{{ next_page.title }} →</a>
+                    {% endif %}
+                </nav>
+                <div class="docs-footer-info">
+                    <span>📚 IslamWiki Documentation</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- Search Functionality -->
 <script>
-function filterDocsTree(q) {
-  const term = (q||'').toLowerCase().trim();
-  document.querySelectorAll('#docs-tree li, #root-tree li').forEach(li => {
-    const name = li.getAttribute('data-name') || '';
-    li.style.display = !term || name.includes(term) ? '' : 'none';
-  });
-}
-
-// Toggle hide/show directories
-document.addEventListener('click', function(e) {
-  const toggle = e.target.closest('.tree-toggle');
-  if (!toggle) return;
-  e.preventDefault();
-  const li = toggle.closest('.tree-dir');
-  const children = li.querySelector(':scope > .tree-children');
-  const expanded = toggle.getAttribute('aria-expanded') === 'true';
-  toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggle.textContent = expanded ? '▶' : '▼';
-  children.style.display = expanded ? 'none' : 'block';
-});
-
-// Helpers
-function looksLikeTree(text) {
-  return text && (text.includes('├──') || text.includes('└──') || text.includes('│'));
-}
-
-// Add copy buttons and per-block ASCII toggles where relevant
-function enhanceCodeBlocks() {
-  document.querySelectorAll('.markdown-body pre').forEach(pre => {
-    if (pre.dataset.enhanced) return;
-    pre.dataset.enhanced = '1';
-    pre.style.position = 'relative';
-
-    const code = pre.querySelector('code');
-    const isTree = code && (code.classList.contains('lang-tree') || code.classList.contains('language-tree') || looksLikeTree(code.textContent));
-
-    // Copy button
-    const btn = document.createElement('button');
-    btn.className = 'copy-btn';
-    btn.textContent = 'Copy';
-    btn.style.position = 'absolute';
-    btn.style.right = isTree ? '60px' : '8px';
-    btn.style.top = '8px';
-    btn.style.padding = '4px 8px';
-    btn.style.fontSize = '12px';
-    btn.style.cursor = 'pointer';
-    btn.addEventListener('click', () => {
-      const c = pre.querySelector('code');
-      const text = c ? c.textContent : pre.textContent;
-      navigator.clipboard.writeText(text || '').then(() => {
-        btn.textContent = 'Copied!';
-        setTimeout(() => (btn.textContent = 'Copy'), 1200);
-      });
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('docs-search');
+    const navLinks = document.querySelectorAll('.docs-nav-link');
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        navLinks.forEach(link => {
+            const text = link.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                link.style.display = 'block';
+            } else {
+                link.style.display = 'none';
+            }
+        });
     });
-    pre.appendChild(btn);
-
-    // ASCII toggle for tree-like blocks
-    if (isTree) {
-      const asciiBtn = document.createElement('button');
-      asciiBtn.className = 'ascii-btn';
-      asciiBtn.textContent = 'ASCII';
-      asciiBtn.style.position = 'absolute';
-      asciiBtn.style.right = '8px';
-      asciiBtn.style.top = '8px';
-      asciiBtn.style.padding = '4px 8px';
-      asciiBtn.style.fontSize = '12px';
-      asciiBtn.style.cursor = 'pointer';
-
-      const c = code;
-      c.dataset.treeOriginal = c.textContent;
-      let ascii = c.textContent
-        .replaceAll('├──', '+--')
-        .replaceAll('└──', '`--')
-        .replaceAll('│',  '|')
-        .replaceAll('─',  '-')
-        .replace(/\u00A0/g, ' ');
-      c.dataset.treeAscii = ascii;
-      c.dataset.treeAsciiOn = '0';
-
-      asciiBtn.addEventListener('click', () => {
-        const on = c.dataset.treeAsciiOn === '1';
-        if (on) {
-          c.textContent = c.dataset.treeOriginal || c.textContent;
-          c.dataset.treeAsciiOn = '0';
-          asciiBtn.textContent = 'ASCII';
-        } else {
-          c.textContent = c.dataset.treeAscii || c.textContent;
-          c.dataset.treeAsciiOn = '1';
-          asciiBtn.textContent = 'Unicode';
-        }
-      });
-      pre.appendChild(asciiBtn);
-    }
-  });
-}
-
-enhanceCodeBlocks();
-
-// Normalize ordered lists numbering across separated blocks
-function normalizeOrderedLists() {
-  const container = document.querySelector('.markdown-body');
-  if (!container) return;
-  const ols = Array.from(container.querySelectorAll('ol.md-list'));
-  let running = 0;
-  let prev = null;
-  const isReset = (el) => el && (/^H[1-6]$/.test(el.tagName) || el.tagName === 'HR' || el.tagName === 'PRE' || el.tagName === 'BLOCKQUOTE');
-  ols.forEach((ol) => {
-    // reset if there's a reset element between previous list and this one
-    if (prev) {
-      let s = prev.nextElementSibling;
-      let resetFound = false;
-      while (s && s !== ol) {
-        if (isReset(s)) { resetFound = true; break; }
-        s = s.nextElementSibling;
-      }
-      if (resetFound) running = 0;
-    }
-    const items = ol.querySelectorAll(':scope > li').length;
-    const start = running + 1;
-    if (start !== 1) ol.setAttribute('start', String(start));
-    running += items;
-    prev = ol;
-  });
-}
-
-normalizeOrderedLists();
-
-// If an unordered list follows an ordered list, nest it under the last item
-function nestFollowingUnorderedLists() {
-  const container = document.querySelector('.markdown-body');
-  if (!container) return;
-  let el = container.firstElementChild;
-  while (el) {
-    if (el.tagName === 'UL' && el.classList.contains('md-list')) {
-      const prev = el.previousElementSibling;
-      if (prev && prev.tagName === 'OL' && prev.classList.contains('md-list')) {
-        const lastLi = prev.querySelector(':scope > li:last-child');
-        if (lastLi) {
-          lastLi.appendChild(el);
-          // adjust pointer since el is now child of lastLi
-          el = lastLi; // continue traversal
-        }
-      }
-    }
-    el = el.nextElementSibling || (el.parentElement === container ? null : el.parentElement.nextElementSibling);
-  }
-}
-
-nestFollowingUnorderedLists();
-
-// Render color boxes next to hex/rgb/hsl color references
-function enhanceColorSwatches() {
-  const container = document.querySelector('.markdown-body');
-  if (!container) return;
-
-  const HEX_RE = /#(?:[A-Fa-f0-9]{3,4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})\b/g;
-  const RGB_RE = /\brgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*(?:0?\.\d+|1|0))?\s*\)/gi;
-  const HSL_RE = /\bhsla?\(\s*\d+\s*,\s*\d+%\s*,\s*\d+%(?:\s*,\s*(?:0?\.\d+|1|0))?\s*\)/gi;
-
-  const isExcluded = (node) => {
-    if (!node || !node.parentElement) return true;
-    const p = node.parentElement;
-    const tag = p.tagName;
-    return tag === 'CODE' || tag === 'PRE' || tag === 'A' || p.closest('pre, code, a');
-  };
-
-  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
-  const texts = [];
-  let n;
-  while ((n = walker.nextNode())) {
-    if (n.nodeValue && /#|rgb|hsl/i.test(n.nodeValue) && !isExcluded(n)) {
-      texts.push(n);
-    }
-  }
-
-  texts.forEach(tn => {
-    const raw = tn.nodeValue;
-    const replaced = raw
-      .replace(HEX_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m.toUpperCase()}</span>`)
-      .replace(RGB_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m}</span>`)
-      .replace(HSL_RE, (m) => `<span class="color-swatch" style="background:${m}"></span><span class="color-text">${m}</span>`);
-    if (replaced !== raw) {
-      const span = document.createElement('span');
-      span.innerHTML = replaced;
-      tn.parentNode.replaceChild(span, tn);
-    }
-  });
-}
-
-enhanceColorSwatches();
-
-// Remove global toggle wiring since we now offer per-block toggles
+});
 </script>
 {% endblock %}
 

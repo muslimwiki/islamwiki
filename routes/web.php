@@ -32,11 +32,18 @@ $router->get('/about', 'IslamWiki\Http\Controllers\PageController@about');
 // Authentication Routes
 $router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
 $router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
+$router->get('/auth/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
+$router->post('/auth/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
 
 $router->get('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
 $router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
+$router->get('/auth/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
+$router->post('/auth/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
 
 $router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->get('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->post('/auth/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->get('/auth/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
 
 // Password Reset Routes
 $router->get('/forgot-password', 'IslamWiki\Http\Controllers\Auth\AuthController@showForgotPassword');
@@ -82,6 +89,9 @@ $router->get('/assets/js/{filename}', 'IslamWiki\\Http\\Controllers\\AssetContro
 // Skin asset routes
 $router->get('/skins/{skin}/css/{filename}', 'IslamWiki\\Http\\Controllers\\AssetController@serveSkinCss');
 $router->get('/skins/{skin}/js/{filename}', 'IslamWiki\\Http\\Controllers\\AssetController@serveSkinJs');
+
+// Iqra Search Route
+$router->get('/iqra-search', 'IslamWiki\\Http\\Controllers\\IqraSearchController@index');
 
 // Dashboard
 $router->get('/dashboard', 'IslamWiki\\Http\\Controllers\\DashboardController@index');
@@ -430,10 +440,21 @@ $router->get('/quran-debug', function($request) {
     return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/plain'], 'Debug route is working!');
 });
 
-// Catch-all legacy wiki routes (must be last)
-$router->get('/{slug}', 'IslamWiki\\Http\\Controllers\\WikiController@show');
-$router->get('/{slug}/edit', 'IslamWiki\\Http\\Controllers\\WikiController@edit');
-$router->put('/{slug}', 'IslamWiki\\Http\\Controllers\\WikiController@update');
-$router->delete('/{slug}', 'IslamWiki\\Http\\Controllers\\WikiController@destroy');
-$router->get('/{slug}/history', 'IslamWiki\\Http\\Controllers\\WikiController@history');
-// Note: Watch/unwatch routes are handled by the wiki routes above
+
+
+// Wiki routes - only for actual wiki pages, not system paths
+// Note: These are more specific and won't interfere with auth/system routes
+
+// Auth routes must come after catch-all to override wiki routing
+$router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
+$router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
+$router->get('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
+$router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
+$router->get('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->get('/auth/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
+$router->post('/auth/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
+$router->get('/auth/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
+$router->post('/auth/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
+$router->get('/auth/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+$router->post('/auth/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');

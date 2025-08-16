@@ -1,146 +1,196 @@
-{% extends "layouts/app.twig" %}
+{% extends 'layouts/app.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Quran & Tafsir - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="quran-section">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="quran-header">
-            <h1 class="quran-title">القرآن الكريم</h1>
-            <h2 class="quran-subtitle">The Holy Quran</h2>
-            <p class="quran-description">Explore the divine revelation with search, study, and reflection tools</p>
-        </div>
+<div class="quran-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">📖 Quran & Tafsir</h1>
+        <p class="page-subtitle">The Holy Quran with translations, commentary, and scholarly interpretations</p>
+    </div>
 
-        <!-- Controls -->
-        <form method="get" class="quran-search-form">
-            <label class="quran-language-selector">Translation</label>
-            <select name="translator" class="quran-search-select" onchange="this.form.submit()">
-                {% for t in translators %}
-                    <option value="{{ t.translator|default(t.name) }}" {% if translator == (t.translator|default(t.name)) %}selected{% endif %}>
-                        {{ t.name }} ({{ t.language|upper }})
-                    </option>
-                {% endfor %}
-            </select>
-            <input type="hidden" name="lang" value="{{ language|default('en') }}" />
-        </form>
-
-        <!-- Statistics -->
-        {% if stats %}
-        <div class="quran-stats">
-            <h3>Quran Statistics</h3>
-            <div class="quran-stats-grid">
-                <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.total_chapters }}</span>
-                    <div class="quran-stat-label">Surahs</div>
-                </div>
-                <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.total_ayahs }}</span>
-                    <div class="quran-stat-label">Ayahs</div>
-                </div>
-                <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.max_chapter }}</span>
-                    <div class="quran-stat-label">Last Surah</div>
-                </div>
-                <div class="quran-stat-item">
-                    <span class="quran-stat-number">{{ stats.max_ayah }}</span>
-                    <div class="quran-stat-label">Max Ayahs in Surah</div>
-                </div>
+    <!-- Quran Stats -->
+    <div class="quran-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+                <div class="stat-number">114</div>
+                <div class="stat-label">Surahs</div>
             </div>
         </div>
-        {% endif %}
+        <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-content">
+                <div class="stat-number">6,236</div>
+                <div class="stat-label">Verses</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-content">
+                <div class="stat-number">47</div>
+                <div class="stat-label">Languages</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-content">
+                <div class="stat-number">9</div>
+                <div class="stat-label">Translators</div>
+            </div>
+        </div>
+    </div>
 
-        <!-- Surah List -->
-        {% if surahs %}
-        <div class="quran-content-section">
-            <h3 class="quran-section-title">Surahs</h3>
-            <div class="quran-grid">
-                {% for s in surahs %}
-                <a href="/quran/surah/{{ s.surah_number }}" class="quran-nav-item">
-                    <div class="quran-nav-title">
-                        {{ s.surah_number }}. {{ s.name_english }} — {{ s.name_translation }}
+    <!-- Main Content Grid -->
+    <div class="quran-content-grid">
+        <!-- Left Column: Surah List -->
+        <div class="surah-list-section">
+            <div class="section-card">
+                <div class="card-header">
+                    <h2>📚 All Surahs</h2>
+                    <div class="search-box">
+                        <input type="text" id="surah-search" placeholder="Search surahs..." class="search-input">
                     </div>
-                    <div class="quran-nav-subtitle">
-                        {{ s.revelation_type }} • {{ s.verses_count }} ayahs
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Juz Overview -->
-        {% if juz_stats %}
-        <div class="quran-content-section">
-            <h3 class="quran-section-title">Juz (30 Parts)</h3>
-            <div class="quran-grid">
-                {% for j in juz_stats %}
-                <a href="/quran/juz/{{ j.juz }}" class="quran-nav-item">
-                    <div class="quran-nav-title">Juz {{ j.juz }}</div>
-                    <div class="quran-nav-subtitle">{{ j.ayah_count }} ayahs</div>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Random Ayah -->
-        {% if random_ayah %}
-        <div class="quran-ayah-section">
-            <div class="quran-ayah-header">
-                <h3 class="quran-ayah-title">Ayah of the Day</h3>
-            </div>
-            <div class="quran-ayah-content">
-                <div class="quran-ayah-arabic">{{ random_ayah.arabic_text }}</div>
-                {% if random_ayah.translation_text %}
-                <div class="quran-ayah-translation">
-                    <div class="quran-translation-label">Translation:</div>
-                    <div class="quran-translation-text">{{ random_ayah.translation_text }}</div>
                 </div>
-                {% endif %}
-            </div>
-            <div class="quran-ayah-meta">
-                <a href="/quran/{{ random_ayah.chapter_number }}/{{ random_ayah.ayah_number }}" 
-                   class="quran-ayah-chapter">
-                    Quran {{ random_ayah.chapter_number }}:{{ random_ayah.ayah_number }}
-                </a>
-                {% if random_ayah.translator_name %}
-                <span class="quran-ayah-number">- {{ random_ayah.translator_name }}</span>
-                {% endif %}
+                
+                <div class="surah-list" id="surah-list">
+                    {% for surah in surahs %}
+                    <div class="surah-item" data-surah="{{ surah.number }}">
+                        <div class="surah-number">{{ surah.number }}</div>
+                        <div class="surah-info">
+                            <div class="surah-name">{{ surah.name_arabic }}</div>
+                            <div class="surah-details">
+                                <span class="surah-name-english">{{ surah.name_english }}</span>
+                                <span class="surah-verse-count">{{ surah.verse_count }} verses</span>
+                            </div>
+                        </div>
+                        <div class="surah-type">{{ surah.revelation_type }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-        {% endif %}
 
-        <!-- Features -->
-        <div class="quran-features">
-            <div class="quran-feature-item">
-                <div class="bismillah-quran-icon">📖</div>
-                <h3 class="quran-feature-title">Study</h3>
-                <p class="quran-feature-description">Read and study Quran ayahs with translations and interpretations</p>
+        <!-- Right Column: Featured Content -->
+        <div class="featured-content-section">
+            <!-- Random Ayah -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3>🌟 Verse of the Day</h3>
+                </div>
+                <div class="random-ayah">
+                    {% if random_ayah %}
+                    <div class="arabic-text">
+                        {{ random_ayah.arabic_text }}
+                    </div>
+                    <div class="translation">
+                        "{{ random_ayah.translation }}"
+                    </div>
+                    <div class="ayah-meta">
+                        <span class="surah-name">{{ random_ayah.surah_name }}</span>
+                        <span class="ayah-number">Verse {{ random_ayah.ayah_number }}</span>
+                    </div>
+                    {% else %}
+                    <div class="placeholder-text">
+                        <div class="placeholder-icon">📖</div>
+                        <p>Loading verse of the day...</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="quran-feature-item">
-                <div class="bismillah-quran-icon">🔍</div>
-                <h3 class="quran-feature-title">Search</h3>
-                <p class="quran-feature-description">Search through the entire Quran by keywords and topics</p>
+
+            <!-- Quick Actions -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3>⚡ Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="/quran/search" class="action-btn">
+                        <span class="action-icon">🔍</span>
+                        Search Quran
+                    </a>
+                    <a href="/quran/translations" class="action-btn">
+                        <span class="action-icon">🌍</span>
+                        Translations
+                    </a>
+                    <a href="/quran/tafsir" class="action-btn">
+                        <span class="action-icon">📚</span>
+                        Tafsir
+                    </a>
+                    <a href="/quran/recitations" class="action-btn">
+                        <span class="action-icon">🎵</span>
+                        Recitations
+                    </a>
+                </div>
             </div>
-            <div class="quran-feature-item">
-                <div class="bismillah-quran-icon">🎧</div>
-                <h3 class="quran-feature-title">Listen</h3>
-                <p class="quran-feature-description">Listen to beautiful recitations of Quran ayahs</p>
+
+            <!-- Recent Activity -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3>📊 Recent Activity</h3>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">👁️</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Surah Al-Fatiha viewed</div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">📖</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Surah Al-Baqarah read</div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block styles %}
-{{ parent() }}
-<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
-<style>
-    .font-arabic {
-        font-family: 'Amiri', 'Scheherazade', serif;
-    }
-    /* Test style - should make background red if CSS is loading */
-    body { background-color: red !important; }
-</style>
+{% block head %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Surah search functionality
+    document.getElementById('surah-search')?.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        const surahItems = document.querySelectorAll('.surah-item');
+        
+        surahItems.forEach(item => {
+            const surahName = item.querySelector('.surah-name').textContent.toLowerCase();
+            const surahNameEnglish = item.querySelector('.surah-name-english').textContent.toLowerCase();
+            
+            if (surahName.includes(query) || surahNameEnglish.includes(query)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Surah item click handlers
+    document.querySelectorAll('.surah-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const surahNumber = this.dataset.surah;
+            window.location.href = `/quran/surah/${surahNumber}`;
+        });
+    });
+
+    // Add hover effects
+    document.querySelectorAll('.surah-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+        });
+    });
+</script>
 {% endblock %} 

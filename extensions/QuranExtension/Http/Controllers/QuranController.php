@@ -18,9 +18,9 @@ use Exception;
  */
 class QuranController extends Controller
 {
-    private QuranAyahRepository $ayahRepository;
-    private QuranAyahRepository $quranAyah; // backward-compat alias for older references
-    private QuranSurahRepository $surahRepository;
+    private ?QuranAyahRepository $ayahRepository;
+    private ?QuranAyahRepository $quranAyah; // backward-compat alias for older references
+    private ?QuranSurahRepository $surahRepository;
     private ?\Psr\Log\LoggerInterface $logger;
 
     public function __construct(
@@ -29,14 +29,28 @@ class QuranController extends Controller
     ) {
         parent::__construct($db, $container);
         
+        // Initialize properties to null
+        $this->ayahRepository = null;
+        $this->quranAyah = null;
+        $this->surahRepository = null;
+        $this->logger = null;
+        
         try {
             $this->logger = $container->has('logger') ? $container->get('logger') : null;
+            
+            // Establish the database connection before creating repositories
+            $db->getPdo();
+            
             $this->ayahRepository = new QuranAyahRepository($db, [], $this->logger);
             $this->quranAyah = $this->ayahRepository; // alias
             $this->surahRepository = new QuranSurahRepository($db, $this->logger);
         } catch (\Exception $e) {
             $this->logger?->error('Failed to initialize QuranController: ' . $e->getMessage());
-            throw new \RuntimeException('Failed to initialize QuranController', 0, $e);
+            
+            // Log the error but don't crash the controller
+            error_log('QuranController initialization failed: ' . $e->getMessage());
+            
+            // Properties are already null, so no need to set them again
         }
     }
 
@@ -51,6 +65,24 @@ class QuranController extends Controller
      */
     public function indexPage(Request $request): Response
     {
+        // Check if repositories are available
+        if (!$this->ayahRepository || !$this->surahRepository) {
+            return $this->view('quran/error', [
+                'title' => 'Quran System Error',
+                'error' => 'The Quran system is currently unavailable. Please try again later.',
+                'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                'request_ip' => $this->getClientIp(),
+                'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'php_version' => PHP_VERSION,
+                'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                'memory_usage' => $this->formatBytes(memory_get_usage()),
+                'memory_limit' => ini_get('memory_limit') ?: 'Unknown'
+            ]);
+        }
+        
         try {
             $language = $request->getQueryParam('lang', 'en');
             $translator = $request->getQueryParam('translator', 'Saheeh International');
@@ -166,7 +198,17 @@ class QuranController extends Controller
             error_log("Quran index page error: " . $e->getMessage());
             return $this->view('quran/error', [
                 'title' => 'Quran Error',
-                'error' => 'Unable to load Quran data. Please try again later.'
+                'error' => 'Unable to load Quran data. Please try again later.',
+                'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                'request_ip' => $this->getClientIp(),
+                'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'php_version' => PHP_VERSION,
+                'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                'memory_usage' => $this->formatBytes(memory_get_usage()),
+                'memory_limit' => ini_get('memory_limit') ?: 'Unknown'
             ]);
         }
     }
@@ -209,7 +251,17 @@ class QuranController extends Controller
             error_log("Quran search page error: " . $e->getMessage());
             return $this->view('quran/error', [
                 'title' => 'Quran Search Error',
-                'error' => 'Unable to perform search. Please try again later.'
+                'error' => 'Unable to perform search. Please try again later.',
+                'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                'request_ip' => $this->getClientIp(),
+                'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'php_version' => PHP_VERSION,
+                'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                'memory_usage' => $this->formatBytes(memory_get_usage()),
+                'memory_limit' => ini_get('memory_limit') ?: 'Unknown'
             ]);
         }
     }
@@ -219,6 +271,24 @@ class QuranController extends Controller
      */
     public function ayahPage(Request $request, $surah, $ayah)
     {
+        // Check if repositories are available
+        if (!$this->quranAyah || !$this->surahRepository) {
+            return $this->view('quran/error', [
+                'title' => 'Quran System Error',
+                'error' => 'The Quran system is currently unavailable. Please try again later.',
+                'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                'request_ip' => $this->getClientIp(),
+                'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'php_version' => PHP_VERSION,
+                'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                'memory_usage' => $this->formatBytes(memory_get_usage()),
+                'memory_limit' => ini_get('memory_limit') ?: 'Unknown'
+            ]);
+        }
+        
         try {
             $language = $request->getQueryParam('lang', 'en');
             $translator = $request->getQueryParam('translator', 'Saheeh International');
@@ -285,7 +355,17 @@ class QuranController extends Controller
             error_log("Quran ayah page error: " . $e->getMessage());
             return $this->view('quran/error', [
                 'title' => 'Quran Ayah Error',
-                'error' => 'Unable to load ayah. Please try again later.'
+                'error' => 'Unable to load ayah. Please try again later.',
+                'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                'request_ip' => $this->getClientIp(),
+                'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'php_version' => PHP_VERSION,
+                'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                'memory_usage' => $this->formatBytes(memory_get_usage()),
+                'memory_limit' => ini_get('memory_limit') ?: 'Unknown'
             ]);
         }
     }
@@ -803,6 +883,39 @@ class QuranController extends Controller
                 'error' => 'Internal server error',
             ]));
         }
+    }
+
+    /**
+     * Get client IP address
+     */
+    private function getClientIp(): string
+    {
+        $forwardedFor = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+        if ($forwardedFor) {
+            $ips = explode(',', $forwardedFor);
+            return trim($ips[0]);
+        }
+
+        $realIp = $_SERVER['HTTP_X_REAL_IP'] ?? '';
+        if ($realIp) {
+            return $realIp;
+        }
+
+        return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    }
+
+    /**
+     * Format bytes to human readable format
+     */
+    private function formatBytes(int $bytes, int $precision = 2): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     /**

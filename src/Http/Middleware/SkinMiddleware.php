@@ -168,6 +168,15 @@ class SkinMiddleware
                     'config' => $activeSkin->getConfig()
                 ];
 
+                // Set the active skin layout path for TwigRenderer
+                $skinLayoutPath = dirname(dirname(dirname(__DIR__))) . '/skins/' . $activeSkin->getName() . '/views';
+                if (is_dir($skinLayoutPath)) {
+                    $viewRenderer->setActiveSkinLayoutPath($skinLayoutPath);
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Set active skin layout path: " . $skinLayoutPath);
+                } else {
+                    error_log("SkinMiddleware::updateSkinDataForCurrentUser - Skin layout path not found: " . $skinLayoutPath);
+                }
+
                 $viewRenderer->addGlobals([
                     'skin_css' => $skinData['css'],
                     'skin_js' => $skinData['js'],

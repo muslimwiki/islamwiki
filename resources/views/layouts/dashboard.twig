@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}IslamWiki Dashboard{% endblock %}</title>
+    
+    <!-- Safa CSS Framework -->
+    <link rel="stylesheet" href="/assets/css/safa.css">
+    
+    <!-- Bismillah Skin CSS -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css">
+    
+    <!-- Dashboard CSS -->
+    <style>
+        :root {
+            --islamic-green: #2d5016;
+            --islamic-gold: #d4af37;
+            --islamic-dark-green: #1a3009;
+            --islamic-light-green: #4a8029;
+            --islamic-cream: #f8f6f0;
+            --islamic-white: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --border-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: var(--islamic-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Islamic Pattern Background */
+        .islamic-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(45, 80, 22, 0.05) 0%, transparent 50%);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(135deg, var(--islamic-dark-green) 0%, var(--islamic-green) 100%);
+            color: var(--islamic-white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--islamic-dark-green);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--islamic-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-dark-green);
+            font-weight: 900;
+        }
+
+        .site-tagline {
+            font-size: 12px;
+            opacity: 0.8;
+            font-style: italic;
+            color: var(--islamic-gold);
+        }
+
+        .user-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 8px;
+            border-left: 3px solid var(--islamic-gold);
+        }
+
+        .user-role {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--islamic-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .prayer-reminder {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .prayer-time {
+            font-weight: 600;
+            color: var(--islamic-gold);
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.7;
+            font-weight: 700;
+            color: var(--islamic-gold);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: var(--islamic-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            padding-left: 28px;
+            border-right: 3px solid var(--islamic-gold);
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.25);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            opacity: 0.9;
+        }
+
+        .nav-badge {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 0;
+            width: calc(100% - 300px);
+            background: var(--islamic-cream);
+        }
+
+        .header {
+            background: var(--islamic-white);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--islamic-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .islamic-date {
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .hijri-date {
+            color: var(--islamic-green);
+            font-weight: 600;
+        }
+
+        .gregorian-date {
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 12px 45px 12px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 25px;
+            width: 350px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--islamic-white);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--islamic-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 50%;
+            background: var(--islamic-cream);
+            transition: background 0.3s ease;
+        }
+
+        .notifications:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-white);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="islamic-pattern">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">☪</div>
+                    <div>
+                        <div>IslamWiki</div>
+                        <div class="site-tagline">Knowledge for the Ummah</div>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-role" id="userRole">
+                        {% if user and user.role %}
+                            {{ user.role }}
+                        {% else %}
+                            Contributor
+                        {% endif %}
+                    </div>
+                    <div class="user-name">
+                        {% if user and user.username %}
+                            {{ user.username }}
+                        {% else %}
+                            Guest User
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="prayer-reminder">
+                    Next Prayer: <span class="prayer-time">Asr - 3:45 PM</span>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <!-- Dashboard Overview -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="/dashboard" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="/analytics" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        Analytics
+                        <span class="nav-badge">New</span>
+                    </a>
+                </div>
+
+                <!-- Islamic Content -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Islamic Content</div>
+                    <a href="/quran" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                        </svg>
+                        Quran & Tafsir
+                        <span class="nav-badge">6,236</span>
+                    </a>
+                    <a href="/hadith" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2Z"/>
+                        </svg>
+                        Hadith Collections
+                        <span class="nav-badge">12,847</span>
+                    </a>
+                    <a href="/scholars" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
+                        </svg>
+                        Scholars & Biography
+                    </a>
+                    <a href="/fiqh" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"/>
+                        </svg>
+                        Fiqh & Jurisprudence
+                    </a>
+                    <a href="/history" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                        </svg>
+                        Islamic History
+                    </a>
+                </div>
+
+                <!-- Content Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Content Management</div>
+                    <a href="/wiki" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Articles
+                        <span class="nav-badge">2,847</span>
+                    </a>
+                    <a href="/categories" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5,9V21H1V9H5M9,21A2,2 0 0,1 7,19V9C7,8.45 7.22,7.95 7.59,7.59L14.17,1L15.23,2.06C15.5,2.33 15.67,2.7 15.67,3.11L15.64,3.43L14.69,8H21C21.53,8 22,8.2 22,8.66V10.66C22,10.9 21.95,11.13 21.88,11.34L19.31,18.32C19.1,18.75 18.68,19 18.2,19H9M9,17H18.2L20.77,10H8.77L9,17Z"/>
+                        </svg>
+                        Categories
+                    </a>
+                    <a href="/wiki/create" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5,3C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19H5V5H12V3H5Z"/>
+                        </svg>
+                        Create Article
+                    </a>
+                </div>
+
+                <!-- Tools & Utilities -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Tools</div>
+                    <a href="/salah" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                        </svg>
+                        Prayer Times
+                    </a>
+                    <a href="/qibla" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,11A1,1 0 0,0 11,12A1,1 0 0,0 12,13A1,1 0 0,0 13,12A1,1 0 0,0 12,11M18,12C18,12.58 17.95,13.13 17.86,13.67L16.36,12.96C16.44,12.65 16.5,12.33 16.5,12C16.5,11.67 16.44,11.35 16.36,11.04L17.86,10.33C17.95,10.87 18,11.42 18,12Z"/>
+                        </svg>
+                        Qibla Direction
+                    </a>
+                </div>
+
+                <!-- My Workspace -->
+                <div class="nav-section">
+                    <div class="nav-section-title">My Workspace</div>
+                    <a href="/profile" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                        Profile
+                    </a>
+                    <a href="/settings" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                        </svg>
+                        Settings
+                    </a>
+                    <a href="/logout" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1>{% block header_title %}IslamWiki Dashboard{% endblock %}</h1>
+                    <div class="header-subtitle">Knowledge Management for the Global Muslim Community</div>
+                </div>
+                <div class="header-right">
+                    <div class="islamic-date">
+                        <div class="hijri-date">15 Rabi' al-Awwal 1446</div>
+                        <div class="gregorian-date">{{ "now"|date("F j, Y") }}</div>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" placeholder="Search Quran, Hadith, Scholars, Articles...">
+                        <svg style="position:absolute;right:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#999;" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </div>
+                    <div class="notifications">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7A7,7 0 0,1 20,14V16A1,1 0 0,0 21,17H22V19H2V17H3A1,1 0 0,0 4,16V14A7,7 0 0,1 11,7V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M9,21H15A3,3 0 0,1 12,24A3,3 0 0,1 9,21Z"/>
+                        </svg>
+                        <div class="notification-badge">3</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- ZamZam JavaScript Framework -->
+    <script src="/assets/js/zamzam.js"></script>
+    
+    <!-- Bismillah Skin JavaScript -->
+    <script src="/skins/Bismillah/js/bismillah.js"></script>
+
+    <script>
+        // Dashboard functionality
+        function updatePrayerTimes() {
+            const prayerElement = document.querySelector('.prayer-time');
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            const times = ['5:30 AM', '12:45 PM', '3:45 PM', '6:15 PM', '7:45 PM'];
+            
+            const now = new Date();
+            const hour = now.getHours();
+            
+            let nextPrayer = 'Fajr - 5:30 AM';
+            if (hour >= 5 && hour < 12) nextPrayer = 'Dhuhr - 12:45 PM';
+            else if (hour >= 12 && hour < 15) nextPrayer = 'Asr - 3:45 PM';
+            else if (hour >= 15 && hour < 18) nextPrayer = 'Maghrib - 6:15 PM';
+            else if (hour >= 18 && hour < 19) nextPrayer = 'Isha - 7:45 PM';
+            
+            if (prayerElement) {
+                prayerElement.textContent = nextPrayer;
+            }
+        }
+
+        // Mobile responsive sidebar
+        function initMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Search functionality
+        function initSearch() {
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const query = e.target.value.toLowerCase();
+                    // Implement search functionality
+                    console.log('Searching for:', query);
+                });
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePrayerTimes();
+            initMobileMenu();
+            initSearch();
+            
+            // Update prayer times every minute
+            setInterval(updatePrayerTimes, 60000);
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', initMobileMenu);
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

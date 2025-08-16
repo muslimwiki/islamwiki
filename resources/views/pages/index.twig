@@ -1,4 +1,4 @@
-{% extends "layouts/app.twig" %}
+{% extends 'layouts/app.twig' %}
 
 {% block title %}All Pages - IslamWiki{% endblock %}
 
@@ -98,359 +98,87 @@
                             <h3>
                                 <a href="/wiki/{{ displaySlug }}" class="page-title">
                                     <span class="page-icon">
-                                        {% if page.namespace == 'help' %}❓
-                                        {% elseif page.namespace == 'user' %}👤
-                                        {% else %}📄{% endif %}
+                                        📄
                                     </span>
                                     {{ page.title }}
                                 </a>
                             </h3>
-                            <span class="page-namespace">{{ page.namespace }}</span>
+                            <span class="page-namespace">{{ page.namespace|default('Main') }}</span>
                         </div>
                         
                         <div class="page-meta">
-                            {# removed view count per request #}
                             <div class="meta-item">
                                 <span class="label">📝 Revisions:</span>
-                                <span class="value">{{ page.revision_count }}</span>
+                                <span class="value">{{ page.revision_count|default(0) }}</span>
                             </div>
                             <div class="meta-item">
                                 <span class="label">🕒 Updated:</span>
-                                <span class="value">{{ page.updated_at|date('M j, Y') }}</span>
+                                <span class="value">{{ page.updated_at|default('Never')|date('M j, Y') }}</span>
                             </div>
-                            {% if page.author_name %}
                             <div class="meta-item">
                                 <span class="label">👤 Author:</span>
-                                <span class="value">{{ page.author_name }}</span>
+                                <span class="value">{{ page.author|default('Unknown') }}</span>
                             </div>
-                            {% endif %}
+                            <div class="meta-item">
+                                <span class="label">📊 Views:</span>
+                                <span class="value">{{ page.view_count|default(0) }}</span>
                         </div>
-                        
-                        <div class="page-actions">
-                            <a href="/wiki/{{ displaySlug }}" class="btn btn-small btn-primary">
-                                <span>👁️</span> View
-                            </a>
-                            <a href="/wiki/{{ displaySlug }}/edit" class="btn btn-small btn-secondary">
-                                <span>✏️</span> Edit
-                            </a>
-                            <a href="/wiki/{{ displaySlug }}/history" class="btn btn-small btn-outline">
-                                <span>📜</span> History
-                            </a>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-                
-                <!-- Pagination -->
-                {% if pagination.last_page > 1 %}
-                <div class="pagination-section">
-                    <div class="pagination">
-                        {% if pagination.current_page > 1 %}
-                            <a href="?page={{ pagination.current_page - 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" 
-                               class="btn btn-small">
-                                <span>⬅️</span> Previous
-                            </a>
-                        {% endif %}
-                        
-                        <span class="pagination-info">
-                            📄 Page {{ pagination.current_page }} of {{ pagination.last_page }}
-                            <br>
-                            <small>({{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }} pages)</small>
-                        </span>
-                        
-                        {% if pagination.current_page < pagination.last_page %}
-                            <a href="?page={{ pagination.current_page + 1 }}&q={{ filters.search }}&namespace={{ filters.namespace }}&sort={{ filters.sort }}&order={{ filters.order }}" 
-                               class="btn btn-small">
-                                Next <span>➡️</span>
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
             {% endif %}
         </div>
     </div>
 
-    <!-- Right Column: Search and Filter (2/10) -->
-    <div class="sidebar-column">
+    <!-- Right Column: Filters & Actions (2/10) -->
+    <div class="filters-column">
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">🔍 Search & Filter</h2>
+                <h2 class="card-title">🔍 Filters</h2>
             </div>
             <div class="card-body">
                 <form method="GET" action="/wiki" class="filters-form">
                     <div class="filter-group">
-                        <label for="search" class="form-label">Search Pages:</label>
-                        <input type="text" id="search" name="q" value="{{ filters.search }}" 
-                               placeholder="Search pages by title..." class="form-control">
+                        <label class="form-label">Search Pages</label>
+                        <input type="text" name="search" value="{{ filters.search|default('') }}" 
+                               class="form-control" placeholder="Search page titles...">
                     </div>
                     
                     <div class="filter-group">
-                        <label for="namespace" class="form-label">Namespace:</label>
-                        <select id="namespace" name="namespace" class="form-control">
+                        <label class="form-label">Namespace</label>
+                        <select name="namespace" class="form-control">
                             <option value="">All Namespaces</option>
-                            <option value="main" {{ filters.namespace == 'main' ? 'selected' : '' }}>📚 Main</option>
-                            <option value="help" {{ filters.namespace == 'help' ? 'selected' : '' }}>❓ Help</option>
-                            <option value="user" {{ filters.namespace == 'user' ? 'selected' : '' }}>👤 User</option>
+                            <option value="Main" {{ filters.namespace == 'Main' ? 'selected' : '' }}>Main</option>
+                            <option value="User" {{ filters.namespace == 'User' ? 'selected' : '' }}>User</option>
+                            <option value="Talk" {{ filters.namespace == 'Talk' ? 'selected' : '' }}>Talk</option>
+                            <option value="Help" {{ filters.namespace == 'Help' ? 'selected' : '' }}>Help</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label for="sort" class="form-label">Sort by:</label>
-                        <select id="sort" name="sort" class="form-control">
-                            <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>📝 Title</option>
-                            <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>🕒 Last Updated</option>
-                            {# removed view_count sort option per request #}
+                        <label class="form-label">Sort By</label>
+                        <select name="sort" class="form-control">
+                            <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>Title</option>
+                            <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
+                            <option value="created_at" {{ filters.sort == 'created_at' ? 'selected' : '' }}>Created Date</option>
+                            <option value="view_count" {{ filters.sort == 'view_count' ? 'selected' : '' }}>View Count</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label for="order" class="form-label">Order:</label>
-                        <select id="order" name="order" class="form-control">
-                            <option value="asc" {{ filters.order == 'asc' ? 'selected' : '' }}>⬆️ Ascending</option>
-                            <option value="desc" {{ filters.order == 'desc' ? 'selected' : '' }}>⬇️ Descending</option>
+                        <label class="form-label">Order</label>
+                        <select name="order" class="form-control">
+                            <option value="asc" {{ filters.order == 'asc' ? 'selected' : '' }}>Ascending</option>
+                            <option value="desc" {{ filters.order == 'desc' ? 'selected' : '' }}>Descending</option>
                         </select>
                     </div>
                     
-                    <div class="filter-group">
-                        <button type="submit" class="btn btn-primary">
-                            <span>🔍</span> Apply Filters
-                        </button>
-                        <a href="/wiki" class="btn btn-secondary">
-                            <span>🔄</span> Clear
-                        </a>
-                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Apply Filters</button>
+                    <a href="/wiki" class="btn btn-outline w-full">Clear All</a>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* Enhanced Pages List Styling */
-.pages-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
-}
-
-.page-card {
-    background: var(--card-background);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.page-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.page-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.page-card:hover::before {
-    opacity: 1;
-}
-
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.page-title {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.3s ease;
-}
-
-.page-title:hover {
-    color: var(--primary-hover);
-    text-decoration: none;
-}
-
-.page-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.page-namespace {
-    background: var(--background-color);
-    color: var(--text-secondary);
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-.page-meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.75rem;
-    margin: 1rem 0;
-    padding: 1rem;
-    background: var(--background-color);
-    border-radius: 0.5rem;
-}
-
-.meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.meta-item .label {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.meta-item .value {
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.page-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-}
-
-.page-actions .btn {
-    flex: 1;
-    min-width: 80px;
-    justify-content: center;
-}
-
-/* Filter Form Styling */
-.filters-form {
-    background: var(--background-color);
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.filter-group .form-label {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.filter-group .form-control {
-    border: 2px solid var(--border-color);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.filter-group .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-/* Pagination Styling */
-.pagination-section {
-    margin: 2rem 0;
-    display: flex;
-    justify-content: center;
-}
-
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--card-background);
-    padding: 1rem 1.5rem;
-    border-radius: 1rem;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
-
-.pagination-info {
-    text-align: center;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.pagination-info small {
-    color: var(--text-secondary);
-    opacity: 0.8;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .pages-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .page-meta {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .page-actions {
-        flex-direction: column;
-    }
-    
-    .pagination {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-    }
-    
-    .hero h1 {
-        font-size: 2rem;
-    }
-    
-    .hero p {
-        font-size: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .page-meta {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
 {% endblock %} 

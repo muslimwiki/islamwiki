@@ -1,6 +1,7 @@
 # IslamWiki Development Roadmap
 
 ## Overview
+
 This document provides a comprehensive overview of the current state of IslamWiki development, completed features, and future development plans. It serves as the central reference for understanding the project's progress and direction.
 
 **Current Version:** 0.0.50  
@@ -14,6 +15,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ### ✅ **COMPLETED SYSTEMS**
 
 #### 1. Core Architecture ✅
+
 - **Asas Container (أساس)**: Dependency injection container (Foundation)
 - **Aman Security (أمان)**: Comprehensive security, authentication, and authorization system (Security)
 - **Siraj API (سراج)**: API management and routing system (Light/Lamp)
@@ -30,6 +32,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Tadbir Configuration (تدبير)**: Configuration management system (Management/Planning)
 
 #### 2. Frontend Framework ✅
+
 - **Safa CSS Framework (صافا)**: Structural CSS framework (3.5KB) - Clean, Islamic-themed styling
 - **ZamZam.js Framework (زمزم)**: Custom JavaScript framework (6KB) - Reactive data binding with Islamic directives
 - **Template System**: Twig template engine with inheritance
@@ -38,22 +41,25 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Accessibility**: WCAG compliant accessibility features
 
 #### 3. Skin System ✅
+
 - **Skin Management**: Dynamic skin loading and switching
 - **Bismillah Skin**: Primary Islamic-themed skin
-- **Muslim Skin**: Alternative skin (currently disabled)
+- **Muslim Skin**: Alternative skin
 - **Asset Serving**: Secure asset serving via AssetController
 - **Skin Configuration**: JSON-based skin configuration
 - **User Skin Preferences**: Database-driven user skin settings
 
 #### 4. Islamic Features ✅
-- **Prayer Times**: Accurate prayer time calculations
-- **Islamic Calendar**: Hijri calendar implementation
+
+- **Salah Times**: Accurate prayer time calculations
+- **Hijri Calendar**: Hijri calendar implementation
 - **Quran Integration**: Quran text and translation system
 - **Hadith Integration**: Hadith collection and search
 - **Scholar Verification**: Scholar verification system
 - **Islamic Content**: Islamic content management system
 
 #### 5. Content Management ✅
+
 - **Page System**: Wiki-style page creation and editing
 - **Revision System**: Page revision history
 - **Iqra Search Engine (اقرأ)**: Intelligent search with Islamic content focus
@@ -62,6 +68,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Content Moderation**: Content moderation and approval system
 
 #### 6. User System ✅
+
 - **Authentication**: Complete user authentication system
 - **User Profiles**: User profile management
 - **User Settings**: Database-driven user settings
@@ -69,6 +76,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **User Dashboard**: User dashboard with Islamic features
 
 #### 7. API System ✅
+
 - **RESTful API**: Complete API system with authentication
 - **API Versioning**: Versioned API endpoints
 - **Rate Limiting**: API rate limiting and throttling
@@ -76,6 +84,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **API Testing**: API testing and validation
 
 #### 8. Extension System ✅
+
 - **Extension Framework**: Complete extension system
 - **Extension Management**: Extension loading and management
 - **Hook System**: Event-driven hook system
@@ -83,6 +92,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Extension Documentation**: Extension development guides
 
 #### 9. Database System ✅
+
 - **Multi-Database**: Support for multiple databases
 - **Migration System**: Database migration system
 - **Query Builder**: Advanced query builder
@@ -90,6 +100,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Backup System**: Database backup and restore
 
 #### 10. Development Tools ✅
+
 - **Debug System**: Comprehensive debugging tools
 - **Testing Framework**: Unit and integration testing
 - **Logging System**: Advanced logging with multiple levels
@@ -101,6 +112,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ## 🚧 **IN PROGRESS**
 
 ### Version 0.0.51: Advanced Configuration System
+
 - **Configuration API**: RESTful API for configuration management
 - **Configuration UI**: Web interface for configuration management
 - **Configuration Validation**: Enhanced validation with detailed errors
@@ -108,6 +120,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Configuration Categories**: Organized configuration management
 
 ### Version 0.0.52: Enhanced Security
+
 - **Configuration Encryption**: Encrypt sensitive configuration values
 - **Advanced Authentication**: Multi-factor authentication
 - **Security Audit**: Comprehensive security auditing
@@ -121,6 +134,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ### Phase 1: Advanced Features (Versions 0.0.53 - 0.0.60)
 
 #### Version 0.0.53: Advanced Islamic Features
+
 - **Advanced Prayer Times**: Multiple calculation methods
 - **Islamic Calendar Widget**: Interactive Hijri calendar
 - **Quran Search**: Advanced Quran search with tafsir
@@ -128,6 +142,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Scholar Database**: Comprehensive scholar database
 
 #### Version 0.0.54: Content Enhancement
+
 - **Rich Text Editor**: Islamic-themed rich text editor
 - **Media Management**: Image and file management
 - **Content Templates**: Pre-built content templates
@@ -135,6 +150,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Content Analytics**: Content performance analytics
 
 #### Version 0.0.55: Community Features
+
 - **Discussion Forums**: Islamic discussion forums
 - **User Groups**: Community user groups
 - **Event System**: Islamic event management
@@ -142,6 +158,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Messaging System**: Private messaging system
 
 #### Version 0.0.56: Mobile Application
+
 - **Mobile API**: Mobile-optimized API endpoints
 - **Push Notifications**: Prayer time notifications
 - **Offline Support**: Offline content caching
@@ -149,6 +166,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Mobile Testing**: Comprehensive mobile testing
 
 #### Version 0.0.57: Performance Optimization
+
 - **Caching System**: Advanced caching implementation
 - **CDN Integration**: Content delivery network
 - **Database Optimization**: Query optimization
@@ -156,6 +174,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Performance Monitoring**: Real-time performance tracking
 
 #### Version 0.0.58: Internationalization
+
 - **Multi-language Support**: Arabic, English, Urdu, etc.
 - **RTL Support**: Right-to-left text support
 - **Cultural Adaptation**: Cultural-specific features
@@ -163,6 +182,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Localization Testing**: Multi-language testing
 
 #### Version 0.0.59: Advanced Analytics
+
 - **User Analytics**: Comprehensive user analytics
 - **Content Analytics**: Content performance tracking
 - **Islamic Analytics**: Islamic-specific metrics
@@ -170,6 +190,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Analytics Dashboard**: Analytics visualization
 
 #### Version 0.0.60: AI Integration
+
 - **Content Recommendation**: AI-powered content recommendations
 - **Search Enhancement**: ML-enhanced search
 - **User Behavior Analysis**: AI user behavior analysis
@@ -179,6 +200,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ### Phase 2: Enterprise Features (Versions 0.0.61 - 0.0.70)
 
 #### Version 0.0.61: Multi-site Support
+
 - **Site Management**: Multi-site administration
 - **Shared Content**: Cross-site content sharing
 - **Site Templates**: Pre-built site templates
@@ -186,6 +208,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Site Backup**: Automated site backups
 
 #### Version 0.0.62: Advanced API
+
 - **GraphQL API**: GraphQL API implementation
 - **API Gateway**: API gateway and management
 - **API Analytics**: API usage analytics
@@ -193,6 +216,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **API Testing**: Automated API testing
 
 #### Version 0.0.63: Advanced Security
+
 - **Zero Trust Security**: Zero trust security model
 - **Advanced Encryption**: End-to-end encryption
 - **Security Compliance**: SOC 2 compliance
@@ -200,6 +224,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Security Training**: Security awareness training
 
 #### Version 0.0.64: Machine Learning
+
 - **Content Recommendation**: AI-powered content recommendations
 - **Search Enhancement**: ML-enhanced search
 - **User Behavior Analysis**: AI user behavior analysis
@@ -207,6 +232,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Predictive Analytics**: Predictive user analytics
 
 #### Version 0.0.65: Blockchain Integration
+
 - **Content Verification**: Blockchain content verification
 - **Digital Signatures**: Digital signature system
 - **Decentralized Storage**: IPFS integration
@@ -216,6 +242,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ### Phase 3: Innovation Features (Versions 0.0.66 - 0.0.70)
 
 #### Version 0.0.66: Virtual Reality
+
 - **VR Prayer Spaces**: Virtual prayer environments
 - **VR Islamic Tours**: Virtual Islamic site tours
 - **VR Education**: VR Islamic education
@@ -223,6 +250,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **VR Analytics**: VR usage analytics
 
 #### Version 0.0.67: Augmented Reality
+
 - **AR Prayer Guidance**: AR prayer direction
 - **AR Islamic Art**: AR Islamic art display
 - **AR Education**: AR Islamic education
@@ -230,6 +258,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **AR Analytics**: AR usage analytics
 
 #### Version 0.0.68: Voice Integration
+
 - **Voice Commands**: Voice-controlled interface
 - **Voice Prayer**: Voice prayer recitation
 - **Voice Search**: Voice search functionality
@@ -237,6 +266,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Voice Analytics**: Voice usage analytics
 
 #### Version 0.0.69: IoT Integration
+
 - **Smart Prayer Mats**: IoT prayer mat integration
 - **Smart Qibla**: IoT qibla direction devices
 - **Smart Lighting**: IoT lighting for prayer times
@@ -244,6 +274,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **IoT Analytics**: IoT device analytics
 
 #### Version 0.0.70: AI Assistant
+
 - **Islamic AI Assistant**: AI-powered Islamic assistant
 - **Personalized Guidance**: Personalized Islamic guidance
 - **Learning Paths**: AI-driven learning paths
@@ -255,6 +286,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ## 🎯 **STRATEGIC GOALS**
 
 ### Short-term Goals (Next 6 Months)
+
 1. **Complete Configuration System**: Advanced configuration management
 2. **Enhanced Security**: Multi-factor authentication and security auditing
 3. **Mobile Optimization**: Mobile-first design and performance
@@ -262,6 +294,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 5. **Community Features**: Forums, groups, and messaging
 
 ### Medium-term Goals (6-12 Months)
+
 1. **Multi-language Support**: Arabic, English, Urdu support
 2. **Performance Optimization**: Advanced caching and CDN
 3. **Analytics System**: Comprehensive analytics
@@ -269,6 +302,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 5. **Enterprise Features**: Multi-site and advanced security
 
 ### Long-term Goals (1-2 Years)
+
 1. **AI Integration**: Machine learning and AI features
 2. **Blockchain Integration**: Decentralized features
 3. **VR/AR Support**: Virtual and augmented reality
@@ -280,6 +314,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ## 📊 **SUCCESS METRICS**
 
 ### Technical Metrics
+
 - **Performance**: < 2 second page load times
 - **Uptime**: 99.9% availability
 - **Security**: Zero critical security vulnerabilities
@@ -287,6 +322,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Documentation**: 100% API and feature documentation
 
 ### User Metrics
+
 - **User Engagement**: Daily active users
 - **Content Creation**: User-generated content
 - **Community Growth**: Active community members
@@ -294,6 +330,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **International Usage**: Multi-language user adoption
 
 ### Islamic Metrics
+
 - **Prayer Time Accuracy**: 99.9% accurate prayer times
 - **Content Authenticity**: Verified Islamic content
 - **Scholar Verification**: Authenticated scholar information
@@ -305,6 +342,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 ## 🔧 **DEVELOPMENT PROCESS**
 
 ### Version Release Cycle
+
 1. **Planning Phase**: Feature planning and requirements
 2. **Development Phase**: Agile development with sprints
 3. **Testing Phase**: Comprehensive testing and QA
@@ -312,6 +350,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 5. **Release Phase**: Production deployment and monitoring
 
 ### Quality Assurance
+
 - **Automated Testing**: Unit, integration, and end-to-end tests
 - **Code Review**: Peer review for all changes
 - **Security Testing**: Regular security audits
@@ -319,6 +358,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **User Testing**: User acceptance testing
 
 ### Documentation Standards
+
 - **Technical Documentation**: API docs, code comments
 - **User Documentation**: User guides and tutorials
 - **Developer Documentation**: Development guides
@@ -332,6 +372,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 IslamWiki aims to be the world's leading Islamic knowledge platform, providing accurate, authentic, and accessible Islamic content through modern technology while maintaining the highest standards of Islamic scholarship and cultural sensitivity.
 
 ### Core Values
+
 - **Islamic Authenticity**: Accurate and verified Islamic content
 - **Cultural Sensitivity**: Respect for diverse Islamic traditions
 - **Technical Excellence**: Modern, secure, and scalable technology

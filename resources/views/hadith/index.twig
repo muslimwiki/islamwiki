@@ -1,161 +1,265 @@
-{% extends "layouts/app.twig" %}
+{% extends 'layouts/app.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Hadith Collections - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="hadith-section">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="hadith-header">
-            <h1 class="hadith-title">Hadith Collection</h1>
-            <p class="hadith-description">Explore authentic Hadiths from various collections</p>
-        </div>
+<div class="hadith-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">📚 Hadith Collections</h1>
+        <p class="page-subtitle">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him)</p>
+    </div>
 
-        <!-- Statistics -->
-        {% if stats %}
-        <div class="hadith-stats">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Statistics</h2>
-            <div class="hadith-stats-grid">
-                <div class="hadith-stat-item">
-                    <span class="hadith-stat-number">{{ stats.total_hadiths|default(0) }}</span>
-                    <div class="hadith-stat-label">Total Hadiths</div>
-                </div>
-                <div class="hadith-stat-item">
-                    <span class="hadith-stat-number">{{ stats.total_collections|default(0) }}</span>
-                    <div class="hadith-stat-label">Collections</div>
-                </div>
-                <div class="hadith-stat-item">
-                    <span class="hadith-stat-number">{{ stats.total_narrators|default(0) }}</span>
-                    <div class="hadith-stat-label">Narrators</div>
-                </div>
-                <div class="hadith-stat-item">
-                    <span class="hadith-stat-number">{{ stats.max_hadith_number|default(0) }}</span>
-                    <div class="hadith-stat-label">Max Number</div>
-                </div>
+    <!-- Hadith Stats -->
+    <div class="hadith-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+                <div class="stat-number">12,847</div>
+                <div class="stat-label">Total Hadith</div>
             </div>
         </div>
-        {% endif %}
-
-        <!-- Search Section -->
-        <div class="hadith-search-section">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Hadiths</h2>
-            <form action="/hadith/search" method="GET" class="hadith-search-form">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="query" class="block text-sm font-medium text-gray-700 mb-2">Search Query</label>
-                        <input type="text" id="query" name="q" placeholder="Enter search terms..." 
-                               class="hadith-search-input">
-                    </div>
-                    <div>
-                        <label for="collection" class="block text-sm font-medium text-gray-700 mb-2">Collection</label>
-                        <select id="collection" name="collection" class="hadith-search-select">
-                            <option value="">All Collections</option>
-                            {% for collection in collections %}
-                            <option value="{{ collection.id }}">{{ collection.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label for="language" class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                        <select id="language" name="lang" class="hadith-search-select">
-                            <option value="en">English</option>
-                            <option value="ar">Arabic</option>
-                            <option value="ur">Urdu</option>
-                            <option value="tr">Turkish</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="hadith-search-btn">
-                        Search Hadiths
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Collections -->
-        {% if collections %}
-        <div class="hadith-collections">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith Collections</h2>
-            <div class="hadith-collection-grid">
-                {% for collection in collections %}
-                <a href="/hadith/collection/{{ collection.id }}" class="hadith-collection-item">
-                    <h3 class="hadith-collection-title">{{ collection.name }}</h3>
-                    {% if collection.arabic_name %}
-                    <p class="hadith-collection-arabic">{{ collection.arabic_name }}</p>
-                    {% endif %}
-                    <p class="hadith-collection-count">{{ collection.hadith_count|default(0) }} Hadiths</p>
-                    {% if collection.description %}
-                    <p class="hadith-collection-description">{{ collection.description }}</p>
-                    {% endif %}
-                </a>
-                {% endfor %}
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <div class="stat-number">8,234</div>
+                <div class="stat-label">Sahih (Authentic)</div>
             </div>
         </div>
-        {% endif %}
-
-    <!-- Random Hadith -->
-    {% if random_hadith %}
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hadith of the Day</h2>
-        <div class="border-l-4 border-green-500 pl-4">
-            <div class="mb-4">
-                <span class="text-sm text-gray-500">{{ random_hadith.collection_name }} {{ random_hadith.hadith_number }}</span>
+        <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-content">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Major Collections</div>
             </div>
-            {% if random_hadith.arabic_text %}
-            <div class="mb-4" dir="rtl">
-                <p class="text-lg text-gray-800 leading-relaxed">{{ random_hadith.arabic_text }}</p>
-            </div>
-            {% endif %}
-            {% if random_hadith.english_text %}
-            <div class="mb-4">
-                <p class="text-gray-700 leading-relaxed">{{ random_hadith.english_text }}</p>
-            </div>
-            {% endif %}
-            {% if random_hadith.translation %}
-            <div class="mb-4">
-                <p class="text-gray-600 italic">{{ random_hadith.translation }}</p>
-            </div>
-            {% endif %}
-            <div class="text-right">
-                <a href="/hadith/{{ random_hadith.collection_id }}/{{ random_hadith.hadith_number }}" 
-                   class="text-green-600 hover:text-green-700 text-sm">
-                    Read Full Hadith →
-                </a>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🏫</div>
+            <div class="stat-content">
+                <div class="stat-number">47</div>
+                <div class="stat-label">Scholars</div>
             </div>
         </div>
     </div>
-    {% endif %}
 
-    <!-- Quick Links -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Quick Links</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="/hadith/search" 
-               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
-                <div class="text-green-600 text-2xl mb-2">🔍</div>
-                <div class="font-semibold text-gray-800">Search Hadiths</div>
-                <div class="text-sm text-gray-600">Find specific Hadiths</div>
-            </a>
-            <a href="/api/hadith/random" 
-               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
-                <div class="text-blue-600 text-2xl mb-2">🎲</div>
-                <div class="font-semibold text-gray-800">Random Hadith</div>
-                <div class="text-sm text-gray-600">Discover new Hadiths</div>
-            </a>
-            <a href="/api/hadith/collections" 
-               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
-                <div class="text-purple-600 text-2xl mb-2">📚</div>
-                <div class="font-semibold text-gray-800">Collections</div>
-                <div class="text-sm text-gray-600">Browse by collection</div>
-            </a>
-            <a href="/api/hadith/statistics" 
-               class="block p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow text-center">
-                <div class="text-orange-600 text-2xl mb-2">📊</div>
-                <div class="font-semibold text-gray-800">Statistics</div>
-                <div class="text-sm text-gray-600">View detailed stats</div>
-            </a>
+    <!-- Main Content Grid -->
+    <div class="hadith-content-grid">
+        <!-- Left Column: Collections List -->
+        <div class="collections-section">
+            <div class="section-card">
+                <div class="card-header">
+                    <h2>📚 Major Collections</h2>
+                    <div class="search-box">
+                        <input type="text" id="collection-search" placeholder="Search collections..." class="search-input">
+                    </div>
+                </div>
+                
+                <div class="collections-list">
+                    <div class="collection-item" data-collection="bukhari">
+                        <div class="collection-icon">📖</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Sahih Bukhari</div>
+                            <div class="collection-details">
+                                <span>Imam Bukhari</span>
+                                <span>7,563 hadith</span>
+                            </div>
+                            <div class="collection-description">The most authentic collection of hadith, compiled by Imam Muhammad ibn Ismail al-Bukhari.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">7,563 hadith</span>
+                                <span class="authenticity">Sahih</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collection-item" data-collection="muslim">
+                        <div class="collection-icon">📚</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Sahih Muslim</div>
+                            <div class="collection-details">
+                                <span>Imam Muslim</span>
+                                <span>7,563 hadith</span>
+                            </div>
+                            <div class="collection-description">Second most authentic collection, compiled by Imam Muslim ibn al-Hajjaj.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">7,563 hadith</span>
+                                <span class="authenticity">Sahih</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collection-item" data-collection="abudawud">
+                        <div class="collection-icon">📖</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Sunan Abu Dawud</div>
+                            <div class="collection-details">
+                                <span>Imam Abu Dawud</span>
+                                <span>5,274 hadith</span>
+                            </div>
+                            <div class="collection-description">Focuses on legal hadith, compiled by Imam Abu Dawud al-Sijistani.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">5,274 hadith</span>
+                                <span class="authenticity">Hasan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collection-item" data-collection="tirmidhi">
+                        <div class="collection-icon">📚</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Jami' at-Tirmidhi</div>
+                            <div class="collection-details">
+                                <span>Imam Tirmidhi</span>
+                                <span>3,956 hadith</span>
+                            </div>
+                            <div class="collection-description">Comprehensive collection with commentary, compiled by Imam Abu Isa at-Tirmidhi.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">3,956 hadith</span>
+                                <span class="authenticity">Hasan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collection-item" data-collection="nasai">
+                        <div class="collection-icon">📖</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Sunan an-Nasai</div>
+                            <div class="collection-details">
+                                <span>Imam Nasai</span>
+                                <span>5,662 hadith</span>
+                            </div>
+                            <div class="collection-description">Focuses on legal and ritual hadith, compiled by Imam Ahmad ibn Shu'ayb an-Nasai.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">5,662 hadith</span>
+                                <span class="authenticity">Hasan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collection-item" data-collection="ibnmajah">
+                        <div class="collection-icon">📚</div>
+                        <div class="collection-info">
+                            <div class="collection-name">Sunan Ibn Majah</div>
+                            <div class="collection-details">
+                                <span>Imam Ibn Majah</span>
+                                <span>4,341 hadith</span>
+                            </div>
+                            <div class="collection-description">Comprehensive collection covering various topics, compiled by Imam Muhammad ibn Yazid ibn Majah.</div>
+                            <div class="collection-meta">
+                                <span class="hadith-count">4,341 hadith</span>
+                                <span class="authenticity">Mixed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Categories & Quick Actions -->
+        <div class="sidebar-section">
+            <!-- Categories -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3>🏷️ Categories</h3>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-item" data-category="worship">
+                        <div class="category-icon">🕌</div>
+                        <div class="category-name">Worship (Ibadah)</div>
+                        <div class="category-count">2,847</div>
+                    </div>
+                    <div class="category-item" data-category="morals">
+                        <div class="category-icon">❤️</div>
+                        <div class="category-name">Morals & Ethics</div>
+                        <div class="category-count">1,923</div>
+                    </div>
+                    <div class="category-item" data-category="family">
+                        <div class="category-icon">👨‍👩‍👧‍👦</div>
+                        <div class="category-name">Family & Society</div>
+                        <div class="category-count">1,456</div>
+                    </div>
+                    <div class="category-item" data-category="business">
+                        <div class="category-icon">💰</div>
+                        <div class="category-name">Business & Trade</div>
+                        <div class="category-count">987</div>
+                    </div>
+                    <div class="category-item" data-category="politics">
+                        <div class="category-icon">🏛️</div>
+                        <div class="category-name">Politics & Governance</div>
+                        <div class="category-count">756</div>
+                    </div>
+                    <div class="category-item" data-category="knowledge">
+                        <div class="category-icon">🎓</div>
+                        <div class="category-name">Knowledge & Education</div>
+                        <div class="category-count">1,234</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3>⚡ Quick Actions</h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="/hadith/search" class="action-btn">
+                        <span class="action-icon">🔍</span>
+                        Search Hadith
+                    </a>
+                    <a href="/hadith/random" class="action-btn">
+                        <span class="action-icon">🎲</span>
+                        Random Hadith
+                    </a>
+                    <a href="/hadith/study" class="action-btn">
+                        <span class="action-icon">📚</span>
+                        Study Guide
+                    </a>
+                    <a href="/hadith/contribute" class="action-btn">
+                        <span class="action-icon">✍️</span>
+                        Contribute
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Collection search functionality
+    document.getElementById('collection-search')?.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        const collectionItems = document.querySelectorAll('.collection-item');
+        
+        collectionItems.forEach(item => {
+            const collectionName = item.querySelector('.collection-name').textContent.toLowerCase();
+            const collector = item.querySelector('.collection-details').textContent.toLowerCase();
+            
+            if (collectionName.includes(query) || collector.includes(query)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Collection item click handlers
+    document.querySelectorAll('.collection-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const collection = this.dataset.collection;
+            window.location.href = `/hadith/collection/${collection}`;
+        });
+    });
+
+    // Category item click handlers
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const categoryName = this.querySelector('.category-name').textContent;
+            window.location.href = `/hadith/category/${categoryName.toLowerCase().replace(/\s+/g, '-')}`;
+        });
+    });
+</script>
 {% endblock %} 

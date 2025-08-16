@@ -1,15 +1,259 @@
-{% extends "layouts/app.twig" %}
-
-{% block title %}{{ title|default('Quran Error') }}{% endblock %}
-
-{% block content %}
-<div class="max-w-3xl mx-auto py-10">
-  <div class="bg-red-50 border border-red-200 text-red-800 rounded-md p-6">
-    <h1 class="text-2xl font-semibold mb-2">Quran Error</h1>
-    <p class="mb-4">{{ error|default('An unexpected error occurred while loading Quran content. Please try again later.') }}</p>
-    <div class="mt-6">
-      <a href="/quran" class="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Back to Quran</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title|default('Quran Error') }} - IslamWiki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        .error-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .error-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .error-icon {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .error-code {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-content {
+            padding: 40px;
+        }
+        
+        .suggestions {
+            background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-left: 4px solid #10b981;
+        }
+        
+        .suggestions h3 {
+            color: #059669;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .suggestions h3::before {
+            content: "💡";
+            font-size: 1.1rem;
+        }
+        
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .suggestions li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .suggestions li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 0 10px;
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .error-header {
+                padding: 40px 20px;
+            }
+            
+            .error-code {
+                font-size: 3rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-content {
+                padding: 20px;
+            }
+            
+            .actions .btn {
+                display: block;
+                margin: 10px auto;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-header">
+            <span class="error-icon">📖</span>
+            <h1 class="error-code">Quran</h1>
+            <h2 class="error-title">{{ title|default('Quran Error') }}</h2>
+            <p class="error-message">{{ error|default('An unexpected error occurred while loading Quran content. Please try again later.') }}</p>
+        </div>
+        
+        <div class="error-content">
+            <div class="suggestions">
+                <h3>What you can do:</h3>
+                <ul>
+                    <li>Try refreshing the page</li>
+                    <li>Go back to the <a href="/quran" style="color: #059669; text-decoration: underline;">main Quran page</a></li>
+                    <li>Check your internet connection</li>
+                    <li>Try again in a few minutes</li>
+                    <li>Contact support if the problem persists</li>
+                </ul>
     </div>
+            
+            <div class="actions">
+                <a href="/quran" class="btn">📖 Return to Quran</a>
+                <a href="/" class="btn btn-secondary">🏠 Go to Homepage</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">⬅️ Go Back</a>
   </div>
 </div>
-{% endblock %}
+        
+        <div class="footer">
+            <p>IslamWiki - Islamic Knowledge Platform</p>
+            <p>If you continue to experience issues with Quran content, please contact our support team.</p>
+        </div>
+    </div>
+</body>
+</html>

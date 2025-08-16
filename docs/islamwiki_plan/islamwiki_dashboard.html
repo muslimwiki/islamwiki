@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamWiki Dashboard - muslim.wiki</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --islamic-green: #2d5016;
+            --islamic-gold: #d4af37;
+            --islamic-dark-green: #1a3009;
+            --islamic-light-green: #4a8029;
+            --islamic-cream: #f8f6f0;
+            --islamic-white: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --border-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: var(--islamic-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Islamic Pattern Background */
+        .islamic-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(45, 80, 22, 0.05) 0%, transparent 50%);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(135deg, var(--islamic-dark-green) 0%, var(--islamic-green) 100%);
+            color: var(--islamic-white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--islamic-dark-green);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--islamic-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-dark-green);
+            font-weight: 900;
+        }
+
+        .site-tagline {
+            font-size: 12px;
+            opacity: 0.8;
+            font-style: italic;
+            color: var(--islamic-gold);
+        }
+
+        .user-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 8px;
+            border-left: 3px solid var(--islamic-gold);
+        }
+
+        .user-role {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--islamic-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .prayer-reminder {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .prayer-time {
+            font-weight: 600;
+            color: var(--islamic-gold);
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.7;
+            font-weight: 700;
+            color: var(--islamic-gold);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: var(--islamic-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            padding-left: 28px;
+            border-right: 3px solid var(--islamic-gold);
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.25);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            opacity: 0.9;
+        }
+
+        .nav-badge {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 0;
+            width: calc(100% - 300px);
+            background: var(--islamic-cream);
+        }
+
+        .header {
+            background: var(--islamic-white);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--islamic-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .islamic-date {
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .hijri-date {
+            color: var(--islamic-green);
+            font-weight: 600;
+        }
+
+        .gregorian-date {
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 12px 45px 12px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 25px;
+            width: 350px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--islamic-white);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--islamic-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 50%;
+            background: var(--islamic-cream);
+            transition: background 0.3s ease;
+        }
+
+        .notifications:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-white);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+        }
+
+        /* Islamic Greeting */
+        .islamic-greeting {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .islamic-greeting::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(212,175,55,0.1)"/></svg>') repeat;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .greeting-text {
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .greeting-arabic {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: var(--islamic-white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--islamic-green), var(--islamic-gold));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--islamic-green);
+            margin: 10px 0;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-change.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stat-change.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--islamic-cream), var(--islamic-white));
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        /* Islamic Content Sections */
+        .islamic-content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .content-category {
+            background: var(--islamic-white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--islamic-gold);
+        }
+
+        .content-category:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 8px;
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .category-progress {
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--islamic-green), var(--islamic-gold));
+            transition: width 0.3s ease;
+        }
+
+        /* Recent Activity */
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-action {
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 5px;
+        }
+
+        .activity-target {
+            color: var(--islamic-gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .activity-target:hover {
+            text-decoration: underline;
+        }
+
+        .activity-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            text-decoration: none;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            text-decoration: none;
+            color: var(--islamic-white);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--islamic-gold), #f4d03f);
+            color: var(--islamic-dark-green);
+        }
+
+        .action-btn.secondary:hover {
+            color: var(--islamic-dark-green);
+        }
+
+        .action-btn.tertiary {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+
+        .action-icon {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--islamic-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        .data-table tr:hover {
+            background: var(--islamic-cream);
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge.published {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.review {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.featured {
+            background: linear-gradient(135deg, var(--islamic-gold), #f4d03f);
+            color: var(--islamic-dark-green);
+        }
+
+        /* Role Management */
+        .role-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .role-indicator.scholar {
+            background: linear-gradient(135deg, var(--islamic-gold), #f4d03f);
+            color: var(--islamic-dark-green);
+        }
+
+        .role-indicator.editor {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+        }
+
+        .role-indicator.contributor {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* Islamic Theme Toggle */
+        .theme-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toggle-btn:hover {
+            background: var(--islamic-dark-green);
+            color: var(--islamic-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .islamic-content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
+
+        /* Arabic/RTL Support */
+        [dir="rtl"] .sidebar {
+            right: 0;
+            left: auto;
+        }
+
+        [dir="rtl"] .main-content {
+            margin-right: 300px;
+            margin-left: 0;
+        }
+
+        [dir="rtl"] .nav-item:hover, 
+        [dir="rtl"] .nav-item.active {
+            padding-right: 28px;
+            padding-left: 20px;
+            border-left: 3px solid var(--islamic-gold);
+            border-right: none;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-light);
+            border-top: 4px solid var(--islamic-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--islamic-dark-green);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--islamic-gold);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #f4d03f;
+        }
+    </style>
+</head>
+<body class="islamic-pattern">
+    <div class="dashboard-container">
+        <!-- Theme Controls -->
+        <div class="theme-controls">
+            <button class="toggle-btn" onclick="toggleUserMode()">👤 User View</button>
+            <button class="toggle-btn" onclick="toggleDirection()" title="Toggle RTL">🔄 عربي</button>
+        </div>
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">☪</div>
+                    <div>
+                        <div>IslamWiki</div>
+                        <div class="site-tagline">Knowledge for the Ummah</div>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-role" id="userRole">Islamic Scholar</div>
+                    <div class="user-name">Dr. Ahmed Al-Mahmoud</div>
+                </div>
+
+                <div class="prayer-reminder">
+                    Next Prayer: <span class="prayer-time">Asr - 3:45 PM</span>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <!-- Dashboard Overview -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="#dashboard" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="#analytics" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        Analytics
+                        <span class="nav-badge">New</span>
+                    </a>
+                </div>
+
+                <!-- Islamic Content -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Islamic Content</div>
+                    <a href="#quran" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                        </svg>
+                        Quran & Tafsir
+                        <span class="nav-badge">6,236</span>
+                    </a>
+                    <a href="#hadith" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2Z"/>
+                        </svg>
+                        Hadith Collections
+                        <span class="nav-badge">12,847</span>
+                    </a>
+                    <a href="#scholars" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
+                        </svg>
+                        Scholars & Biography
+                    </a>
+                    <a href="#fiqh" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
+                        </svg>
+                        Fiqh & Jurisprudence
+                    </a>
+                    <a href="#history" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4Z"/>
+                        </svg>
+                        Islamic History
+                    </a>
+                </div>
+
+                <!-- Content Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Content Management</div>
+                    <a href="#articles" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Articles
+                        <span class="nav-badge">2,847</span>
+                    </a>
+                    <a href="#categories" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5,9V21H1V9H5M9,21A2,2 0 0,1 7,19V9C7,8.45 7.22,7.95 7.59,7.59L14.17,1L15.23,2.06C15.5,2.33 15.67,2.7 15.67,3.11L15.64,3.43L14.69,8H21C21.53,8 22,8.2 22,8.66V10.66C22,10.9 21.95,11.13 21.88,11.34L19.31,18.32C19.1,18.75 18.68,19 18.2,19H9M9,17H18.2L20.77,10H8.77L9,17Z"/>
+                        </svg>
+                        Categories
+                    </a>
+                    <a href="#templates" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5,3C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19H5V5H12V3H5Z"/>
+                        </svg>
+                        Templates & Infoboxes
+                    </a>
+                    <a href="#translations" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                        </svg>
+                        Translations
+                        <span class="nav-badge">15</span>
+                    </a>
+                    <a href="#media" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z"/>
+                        </svg>
+                        Media Library
+                    </a>
+                </div>
+
+                <!-- Community Management (Admin Only) -->
+                <div class="nav-section admin-only">
+                    <div class="nav-section-title">Community</div>
+                    <a href="#users" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 6.5A3.5 3.5 0 0 1 16.93 10A3.39 3.39 0 0 0 19 7.5A3.5 3.5 0 0 0 15 4Z"/>
+                        </svg>
+                        Users & Scholars
+                        <span class="nav-badge">1,247</span>
+                    </a>
+                    <a href="#permissions" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11H16V16H8V11H9.2V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,10V11H13.5V10C13.5,8.7 12.8,8.2 12,8.2Z"/>
+                        </svg>
+                        Roles & Permissions
+                    </a>
+                    <a href="#moderation" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,1L13.5,2.5L16.17,5.17L10.58,10.76C10.22,10.5 9.78,10.36 9.31,10.36C8.22,10.36 7.35,11.23 7.35,12.32C7.35,13.41 8.22,14.28 9.31,14.28C10.4,14.28 11.27,13.41 11.27,12.32C11.27,11.85 11.13,11.41 10.87,11.05L16.46,5.46L19.24,8.24L21,9M4,10.5V12.5H9V10.5H4M4,13.5V15.5H7V13.5H4M4,16.5V18.5H6V16.5H4Z"/>
+                        </svg>
+                        Content Moderation
+                    </a>
+                </div>
+
+                <!-- Tools & Utilities -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Tools</div>
+                    <a href="#prayer-times" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                        </svg>
+                        Prayer Times
+                    </a>
+                    <a href="#qibla" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,11A1,1 0 0,0 11,12A1,1 0 0,0 12,13A1,1 0 0,0 13,12A1,1 0 0,0 12,11M18,12C18,12.58 17.95,13.13 17.86,13.67L16.36,12.96C16.44,12.65 16.5,12.33 16.5,12C16.5,11.67 16.44,11.35 16.36,11.04L17.86,10.33C17.95,10.87 18,11.42 18,12Z"/>
+                        </svg>
+                        Qibla Direction
+                    </a>
+                    <a href="#arabic-tools" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                        </svg>
+                        Arabic Text Tools
+                    </a>
+                    <a href="#references" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9,3V4H4V6H5L6,10V14A3,3 0 0,0 9,17H15A3,3 0 0,0 18,14V10L19,6H20V4H15V3H9M7,6H17L16.2,9H7.8L7,6Z"/>
+                        </svg>
+                        Reference Manager
+                    </a>
+                    <a href="#export" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23,12L19,8V11H10V13H19V16M1,18V6C1,4.89 1.89,4 3,4H15A2,2 0 0,1 17,6V9H15V6H3V18H15V15H17V18A2,2 0 0,1 15,20H3C1.89,20 1,19.11 1,18Z"/>
+                        </svg>
+                        Export Tools
+                    </a>
+                </div>
+
+                <!-- My Workspace (User Mode) -->
+                <div class="nav-section user-only">
+                    <div class="nav-section-title">My Workspace</div>
+                    <a href="#my-articles" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        My Articles
+                        <span class="nav-badge">23</span>
+                    </a>
+                    <a href="#watchlist" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,6.42 3.42,5 5.5,5C7.24,5 8.91,5.81 10,7.08C11.09,5.81 12.76,5 14.5,5C16.58,5 18,6.42 18,8.5C18,12.27 14.6,15.36 9.45,20.04L12,21.35Z"/>
+                        </svg>
+                        Watchlist
+                        <span class="nav-badge">156</span>
+                    </a>
+                    <a href="#contributions" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M19,19V5H5V19H19Z"/>
+                        </svg>
+                        My Contributions
+                    </a>
+                    <a href="#drafts" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                        </svg>
+                        Draft Articles
+                        <span class="nav-badge">7</span>
+                    </a>
+                </div>
+
+                <!-- System (Admin Only) -->
+                <div class="nav-section admin-only">
+                    <div class="nav-section-title">System</div>
+                    <a href="#settings" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                        </svg>
+                        IslamWiki Settings
+                    </a>
+                    <a href="#extensions" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10.5,17L9.5,16L12.5,13L9.5,10L10.5,9L14.5,13L10.5,17M7,7H17V9H17V15H17V17H7V15H7V9H7V7M8,8V16H16V8H8Z"/>
+                        </svg>
+                        Islamic Extensions
+                    </a>
+                    <a href="#backup" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17,9H7V7A5,5 0 0,1 12,2A5,5 0 0,1 17,7V9M20,9A2,2 0 0,1 22,11V21A2,2 0 0,1 20,23H4A2,2 0 0,1 2,21V11A2,2 0 0,1 4,9H6V7A6,6 0 0,1 12,1A6,6 0 0,1 18,7V9H20Z"/>
+                        </svg>
+                        Backup & Security
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1>IslamWiki Dashboard</h1>
+                    <div class="header-subtitle">Knowledge Management for the Global Muslim Community</div>
+                </div>
+                <div class="header-right">
+                    <div class="islamic-date">
+                        <div class="hijri-date">15 Rabi' al-Awwal 1446</div>
+                        <div class="gregorian-date">September 18, 2024</div>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" placeholder="Search Quran, Hadith, Scholars, Articles...">
+                        <svg style="position:absolute;right:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#999;" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </div>
+                    <div class="notifications">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7A7,7 0 0,1 20,14V16A1,1 0 0,0 21,17H22V19H2V17H3A1,1 0 0,0 4,16V14A7,7 0 0,1 11,7V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M9,21H15A3,3 0 0,1 12,24A3,3 0 0,1 9,21Z"/>
+                        </svg>
+                        <div class="notification-badge">5</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Islamic Greeting -->
+                <div class="islamic-greeting">
+                    <div class="greeting-arabic">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+                    <div class="greeting-text">Welcome to IslamWiki - Preserving and Sharing Islamic Knowledge</div>
+                </div>
+
+                <!-- Dashboard Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-title">Total Articles</div>
+                        </div>
+                        <div class="stat-value">2,847</div>
+                        <div class="stat-change positive">+127 this month</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5Z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-title">Active Contributors</div>
+                        </div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-change positive">+89 this week</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12H7A5,5 0 0,0 12,17A5,5 0 0,0 17,12H19Z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-title">Verified Scholars</div>
+                        </div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-change positive">+12 verified</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-title">Languages</div>
+                        </div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-change positive">+3 new languages</div>
+                    </div>
+                </div>
+
+                <!-- Islamic Content Categories -->
+                <div class="islamic-content-grid">
+                    <div class="content-category">
+                        <div class="category-icon">📖</div>
+                        <div class="category-title">Quran & Tafsir</div>
+                        <div class="category-count">6,236 verses with commentary</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-category">
+                        <div class="category-icon">📚</div>
+                        <div class="category-title">Hadith Collections</div>
+                        <div class="category-count">12,847 authenticated hadith</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-category">
+                        <div class="category-icon">🕌</div>
+                        <div class="category-title">Islamic History</div>
+                        <div class="category-count">1,456 historical articles</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-category">
+                        <div class="category-icon">⚖️</div>
+                        <div class="category-title">Fiqh & Jurisprudence</div>
+                        <div class="category-count">3,289 rulings & opinions</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 68%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-category">
+                        <div class="category-icon">👨‍🏫</div>
+                        <div class="category-title">Scholars & Biographies</div>
+                        <div class="category-count">892 scholar profiles</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 58%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-category">
+                        <div class="category-icon">🌙</div>
+                        <div class="category-title">Islamic Practices</div>
+                        <div class="category-count">567 practice guides</div>
+                        <div class="category-progress">
+                            <div class="progress-bar" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="content-grid">
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                Recent Activity
+                            </div>
+                            <span style="font-size:12px;color:var(--text-secondary);">Last 24 hours</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-item">
+                                <div class="activity-avatar">AH</div>
+                                <div class="activity-content">
+                                    <div class="activity-action">Dr. Ahmed Hassan added new tafsir commentary</div>
+                                    <a href="#" class="activity-target">Surah Al-Fatiha: Verse 1-7</a>
+                                    <div class="activity-description">Comprehensive explanation of the opening chapter</div>
+                                    <div class="activity-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                        2 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-avatar">MK</div>
+                                <div class="activity-content">
+                                    <div class="activity-action">Maryam Khan created new biography</div>
+                                    <a href="#" class="activity-target">Imam Abu Hanifa</a>
+                                    <div class="activity-description">Detailed life story of the great jurist</div>
+                                    <div class="activity-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                        4 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-avatar">OS</div>
+                                <div class="activity-content">
+                                    <div class="activity-action">Omar Salim verified hadith authenticity</div>
+                                    <a href="#" class="activity-target">Sahih Bukhari #1234</a>
+                                    <div class="activity-description">Added chain of narration analysis</div>
+                                    <div class="activity-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                        6 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-avatar">FZ</div>
+                                <div class="activity-content">
+                                    <div class="activity-action">Fatima Zahra translated article</div>
+                                    <a href="#" class="activity-target">Five Pillars of Islam</a>
+                                    <div class="activity-description">Arabic to Urdu translation completed</div>
+                                    <div class="activity-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                        8 hours ago
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-avatar">AS</div>
+                                <div class="activity-content">
+                                    <div class="activity-action">Ali Shaikh updated fiqh ruling</div>
+                                    <a href="#" class="activity-target">Prayer Times During Travel</a>
+                                    <div class="activity-description">Added contemporary scholarly opinions</div>
+                                    <div class="activity-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                        12 hours ago
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Tools -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M19,19V5H5V19H19Z"/>
+                                </svg>
+                                Quick Actions
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions">
+                                <a href="#new-article" class="action-btn">
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                                    </svg>
+                                    Create Article
+                                </a>
+                                
+                                <a href="#upload-media" class="action-btn secondary">
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                    </svg>
+                                    Upload Media
+                                </a>
+
+                                <a href="#verify-content" class="action-btn tertiary">
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                                    </svg>
+                                    Verify Content
+                                </a>
+
+                                <a href="#translate" class="action-btn">
+                                    <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                                    </svg>
+                                    Translate
+                                </a>
+                            </div>
+
+                            <!-- Islamic Tools Section -->
+                            <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
+                                <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Islamic Tools</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Next Prayer</div>
+                                        <div style="font-size: 12px;">Asr - 3:45 PM</div>
+                                    </div>
+                                    <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Qibla</div>
+                                        <div style="font-size: 12px;">285° NW</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Featured Content -->
+                            <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
+                                <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Featured Content</h4>
+                                <div style="background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green)); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                    <div style="font-weight: 600; margin-bottom: 5px;">Article of the Day</div>
+                                    <div style="font-size: 14px; opacity: 0.9;">The Night Journey (Isra and Mi'raj)</div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, var(--islamic-gold), #f4d03f); color: var(--islamic-dark-green); padding: 15px; border-radius: 8px;">
+                                    <div style="font-weight: 600; margin-bottom: 5px;">Verse of the Day</div>
+                                    <div style="font-size: 14px;">Surah Al-Baqarah, Verse 255 (Ayat al-Kursi)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Management Tables -->
+                <div style="margin-top: 30px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                </svg>
+                                Recent Articles Pending Review
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button style="background: var(--islamic-green); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">View All</button>
+                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">Filter</button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th>Submitted</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight: 600;">The Companions of the Cave (Ashab al-Kahf)</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 30px; height: 30px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">YA</div>
+                                                <div>
+                                                    <div style="font-weight: 500;">Yusuf Ahmad</div>
+                                                    <div class="role-indicator scholar">Scholar</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Quranic Stories</td>
+                                        <td><span class="status-badge review">Under Review</span></td>
+                                        <td>2 hours ago</td>
+                                        <td>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Review</button>
+                                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Edit</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600;">Principles of Islamic Banking</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 30px; height: 30px; background: var(--islamic-light-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">LH</div>
+                                                <div>
+                                                    <div style="font-weight: 500;">Layla Hassan</div>
+                                                    <div class="role-indicator editor">Editor</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Islamic Finance</td>
+                                        <td><span class="status-badge draft">Draft</span></td>
+                                        <td>5 hours ago</td>
+                                        <td>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Review</button>
+                                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Edit</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600;">Ramadan: Spiritual and Social Benefits</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 30px; height: 30px; background: var(--islamic-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--islamic-dark-green); font-size: 12px; font-weight: 600;">KM</div>
+                                                <div>
+                                                    <div style="font-weight: 500;">Khalid Mahmoud</div>
+                                                    <div class="role-indicator contributor">Contributor</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Islamic Practices</td>
+                                        <td><span class="status-badge published">Published</span></td>
+                                        <td>1 day ago</td>
+                                        <td>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">View</button>
+                                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Feature</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600;">Ibn Sina: The Great Physician</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <div style="width: 30px; height: 30px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">SA</div>
+                                                <div>
+                                                    <div style="font-weight: 500;">Sarah Abdullah</div>
+                                                    <div class="role-indicator scholar">Scholar</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Scholars</td>
+                                        <td><span class="status-badge featured">Featured</span></td>
+                                        <td>3 days ago</td>
+                                        <td>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">View</button>
+                                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Edit</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // IslamWiki Framework JavaScript
+        let isUserMode = false;
+        let isRTL = false;
+
+        function toggleUserMode() {
+            isUserMode = !isUserMode;
+            const body = document.body;
+            const userRoleElement = document.getElementById('userRole');
+            const toggleBtn = document.querySelector('.toggle-btn');
+
+            if (isUserMode) {
+                body.classList.add('user-mode');
+                userRoleElement.textContent = 'Contributor';
+                toggleBtn.textContent = '👨‍💼 Admin View';
+            } else {
+                body.classList.remove('user-mode');
+                userRoleElement.textContent = 'Islamic Scholar';
+                toggleBtn.textContent = '👤 User View';
+            }
+        }
+
+        function toggleDirection() {
+            isRTL = !isRTL;
+            const html = document.documentElement;
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+
+            if (isRTL) {
+                html.setAttribute('dir', 'rtl');
+                sidebar.style.right = '0';
+                sidebar.style.left = 'auto';
+                mainContent.style.marginLeft = '0';
+                mainContent.style.marginRight = '300px';
+            } else {
+                html.setAttribute('dir', 'ltr');
+                sidebar.style.left = '0';
+                sidebar.style.right = 'auto';
+                mainContent.style.marginRight = '0';
+                mainContent.style.marginLeft = '300px';
+            }
+        }
+
+        // Auto-update prayer times (demo)
+        function updatePrayerTimes() {
+            const prayerElement = document.querySelector('.prayer-time');
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            const times = ['5:30 AM', '12:45 PM', '3:45 PM', '6:15 PM', '7:45 PM'];
+            
+            const now = new Date();
+            const hour = now.getHours();
+            
+            let nextPrayer = 'Fajr - 5:30 AM';
+            if (hour >= 5 && hour < 12) nextPrayer = 'Dhuhr - 12:45 PM';
+            else if (hour >= 12 && hour < 15) nextPrayer = 'Asr - 3:45 PM';
+            else if (hour >= 15 && hour < 18) nextPrayer = 'Maghrib - 6:15 PM';
+            else if (hour >= 18 && hour < 19) nextPrayer = 'Isha - 7:45 PM';
+            
+            if (prayerElement) {
+                prayerElement.textContent = nextPrayer;
+            }
+        }
+
+        // Update Islamic date
+        function updateIslamicDate() {
+            // This would integrate with a proper Hijri calendar API
+            const hijriMonths = [
+                'Muharram', "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
+                'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
+                'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah'
+            ];
+            
+            // Demo date - in production, this would use a Hijri calendar library
+            const hijriDate = document.querySelector('.hijri-date');
+            if (hijriDate) {
+                hijriDate.textContent = `15 Rabi' al-Awwal 1446`;
+            }
+        }
+
+        // Mobile responsive sidebar
+        function initMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Search functionality
+        function initSearch() {
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const query = e.target.value.toLowerCase();
+                    // Implement search functionality
+                    console.log('Searching for:', query);
+                });
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePrayerTimes();
+            updateIslamicDate();
+            initMobileMenu();
+            initSearch();
+            
+            // Update prayer times every minute
+            setInterval(updatePrayerTimes, 60000);
+            
+            // Update dates daily
+            setInterval(updateIslamicDate, 86400000);
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', initMobileMenu);
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--islamic-green)' : 'var(--islamic-gold)'};
+                color: ${type === 'success' ? 'white' : 'var(--islamic-dark-green)'};
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: var(--shadow-hover);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Demo notification
+        setTimeout(() => {
+            showNotification('Welcome to IslamWiki! New features have been added.', 'success');
+        }, 2000);
+    </script>
+</body>
+</html>

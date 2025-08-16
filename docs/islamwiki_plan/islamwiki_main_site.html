@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamWiki - Authentic Islamic Knowledge | muslim.wiki</title>
+    <meta name="description" content="The comprehensive Islamic knowledge repository. Explore Quran, Hadith, Islamic history, scholars, and authentic religious guidance for the global Muslim community.">
+    <style>
+        :root {
+            --islamic-green: #2d5016;
+            --islamic-gold: #d4af37;
+            --islamic-dark-green: #1a3009;
+            --islamic-light-green: #4a8029;
+            --islamic-cream: #f8f6f0;
+            --islamic-white: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --border-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: var(--islamic-white);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .main-header {
+            background: linear-gradient(135deg, var(--islamic-dark-green) 0%, var(--islamic-green) 100%);
+            color: var(--islamic-white);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: var(--islamic-dark-green);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .islamic-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .prayer-info, .date-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-main {
+            padding: 15px 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--islamic-white);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--islamic-gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-dark-green);
+            font-size: 24px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-name {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .site-tagline {
+            font-size: 12px;
+            opacity: 0.8;
+            color: var(--islamic-gold);
+            font-style: italic;
+        }
+
+        .main-search {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            font-size: 16px;
+            background: var(--islamic-white);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--islamic-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--islamic-gold);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #f4d03f;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lang-toggle, .user-menu {
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: var(--islamic-white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .lang-toggle:hover, .user-menu:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: var(--islamic-green);
+            padding: 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 20px;
+            color: var(--islamic-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-bottom-color: var(--islamic-gold);
+            color: var(--islamic-white);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Dropdown Menus */
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--islamic-white);
+            min-width: 250px;
+            box-shadow: var(--shadow-hover);
+            border-radius: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--islamic-cream);
+            color: var(--islamic-green);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--islamic-cream) 0%, var(--islamic-white) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(45,80,22,0.05)"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-bismillah {
+            font-size: 32px;
+            color: var(--islamic-green);
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--islamic-green);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Featured Content */
+        .featured-section {
+            padding: 80px 20px;
+            background: var(--islamic-white);
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .featured-card {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--islamic-gold);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-size: 48px;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-category {
+            font-size: 12px;
+            color: var(--islamic-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .card-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .card-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--islamic-green);
+            color: var(--islamic-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            padding: 80px 20px;
+            background: var(--islamic-cream);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            background: var(--islamic-white);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--islamic-gold);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-size: 32px;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 10px;
+        }
+
+        .category-description {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: var(--islamic-gold);
+            font-weight: 600;
+        }
+
+        /* Article Content Area */
+        .article-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+        }
+
+        .article-main {
+            background: var(--islamic-white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .article-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .article-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .article-content h2 {
+            color: var(--islamic-green);
+            font-size: 24px;
+            margin: 30px 0 15px;
+        }
+
+        .article-content h3 {
+            color: var(--islamic-green);
+            font-size: 20px;
+            margin: 25px 0 12px;
+        }
+
+        .arabic-text {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            text-align: center;
+            background: var(--islamic-cream);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid var(--islamic-gold);
+        }
+
+        .translation {
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-widget {
+            background: var(--islamic-white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc-item {
+            margin-bottom: 8px;
+        }
+
+        .toc-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .toc-link:hover {
+            color: var(--islamic-green);
+        }
+
+        /* Prayer Times Widget */
+        .prayer-times {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            text-align: center;
+        }
+
+        .prayer-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .prayer-item:last-child {
+            border-bottom: none;
+        }
+
+        .prayer-item.current {
+            background: rgba(212, 175, 55, 0.2);
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: var(--islamic-dark-green);
+            color: var(--islamic-white);
+            padding: 60px 20px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--islamic-gold);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--islamic-white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--islamic-gold);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .main-search {
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-bismillah {
+                font-size: 24px;
+            }
+
+            .featured-grid, .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .article-main {
+                padding: 25px;
+            }
+
+            .section-title h2 {
+                font-size: 28px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-light);
+            border-top: 4px solid var(--islamic-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Utility Classes */
+        .btn-primary {
+            background: var(--islamic-green);
+            color: var(--islamic-white);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--islamic-light-green);
+            transform: translateY(-2px);
+            color: var(--islamic-white);
+        }
+
+        .btn-secondary {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #f4d03f;
+            transform: translateY(-2px);
+            color: var(--islamic-dark-green);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <!-- Header Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="islamic-info">
+                    <div class="prayer-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                        </svg>
+                        Next Prayer: Asr - 3:45 PM
+                    </div>
+                    <div class="date-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2Z"/>
+                        </svg>
+                        15 Rabi' al-Awwal 1446 | September 18, 2024
+                    </div>
+                </div>
+                <div>
+                    <a href="/dashboard" class="user-menu">Scholar Dashboard</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="header-main">
+            <div class="header-content">
+                <a href="/" class="site-logo">
+                    <div class="logo-icon">☪</div>
+                    <div class="logo-text">
+                        <div class="site-name">IslamWiki</div>
+                        <div class="site-tagline">Authentic Islamic Knowledge</div>
+                    </div>
+                </a>
+
+                <div class="main-search">
+                    <input type="text" class="search-input" placeholder="Search Quran, Hadith, Scholars, Articles...">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="header-actions">
+                    <button class="lang-toggle" onclick="toggleLanguage()">🌐 العربية</button>
+                    <a href="/contribute" class="user-menu">Contribute</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link active">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
+                            </svg>
+                            Home
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/quran" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                            </svg>
+                            Quran & Tafsir
+                        </a>
+                        <div class="dropdown">
+                            <a href="/quran/arabic" class="dropdown-item">Arabic Text</a>
+                            <a href="/quran/translations" class="dropdown-item">Translations</a>
+                            <a href="/quran/tafsir" class="dropdown-item">Tafsir & Commentary</a>
+                            <a href="/quran/recitations" class="dropdown-item">Recitations</a>
+                            <a href="/quran/topics" class="dropdown-item">Topical Study</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/hadith" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2Z"/>
+                            </svg>
+                            Hadith
+                        </a>
+                        <div class="dropdown">
+                            <a href="/hadith/sahih-bukhari" class="dropdown-item">Sahih Bukhari</a>
+                            <a href="/hadith/sahih-muslim" class="dropdown-item">Sahih Muslim</a>
+                            <a href="/hadith/abu-dawud" class="dropdown-item">Sunan Abu Dawud</a>
+                            <a href="/hadith/tirmidhi" class="dropdown-item">Jami' at-Tirmidhi</a>
+                            <a href="/hadith/search" class="dropdown-item">Advanced Search</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/scholars" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2Z"/>
+                            </svg>
+                            Scholars
+                        </a>
+                        <div class="dropdown">
+                            <a href="/scholars/companions" class="dropdown-item">Companions (Sahaba)</a>
+                            <a href="/scholars/classical" class="dropdown-item">Classical Scholars</a>
+                            <a href="/scholars/contemporary" class="dropdown-item">Contemporary Scholars</a>
+                            <a href="/scholars/biographies" class="dropdown-item">Biographies</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/fiqh" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"/>
+                            </svg>
+                            Fiqh
+                        </a>
+                        <div class="dropdown">
+                            <a href="/fiqh/worship" class="dropdown-item">Acts of Worship</a>
+                            <a href="/fiqh/transactions" class="dropdown-item">Transactions</a>
+                            <a href="/fiqh/family" class="dropdown-item">Family Law</a>
+                            <a href="/fiqh/contemporary" class="dropdown-item">Contemporary Issues</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/history" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z"/>
+                            </svg>
+                            History
+                        </a>
+                        <div class="dropdown">
+                            <a href="/history/prophetic" class="dropdown-item">Prophetic Era</a>
+                            <a href="/history/caliphate" class="dropdown-item">Caliphate Periods</a>
+                            <a href="/history/civilizations" class="dropdown-item">Islamic Civilizations</a>
+                            <a href="/history/timeline" class="dropdown-item">Historical Timeline</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/tools" class="nav-link">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M22.7 19L13.6 9.9C14.5 7.6 14 4.9 12.1 3C10.1 1 7.1 1 5.1 3S1 8.9 3 10.9C4.9 12.8 7.6 13.3 9.9 12.4L19 21.7C19.4 22.1 19.9 22.1 20.3 21.7L22.6 19.4C23.1 19 23.1 18.5 22.7 19Z"/>
+                            </svg>
+                            Tools
+                        </a>
+                        <div class="dropdown">
+                            <a href="/tools/prayer-times" class="dropdown-item">Prayer Times</a>
+                            <a href="/tools/qibla" class="dropdown-item">Qibla Direction</a>
+                            <a href="/tools/calendar" class="dropdown-item">Islamic Calendar</a>
+                            <a href="/tools/arabic" class="dropdown-item">Arabic Text Tools</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+                <h1 class="hero-title">Welcome to IslamWiki</h1>
+                <p class="hero-subtitle">The world's most comprehensive source of authentic Islamic knowledge, built by scholars for the global Muslim community.</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="stat-number">6,236</div>
+                        <div class="stat-label">Quranic Verses</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-number">12,847</div>
+                        <div class="stat-label">Authentic Hadith</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-number">2,847</div>
+                        <div class="stat-label">Articles</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-number">47</div>
+                        <div class="stat-label">Languages</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Articles -->
+        <section class="featured-section">
+            <div class="section-container">
+                <div class="section-title">
+                    <h2>Featured Content</h2>
+                    <p class="section-subtitle">Carefully curated articles reviewed by our panel of Islamic scholars</p>
+                </div>
+
+                <div class="featured-grid">
+                    <article class="featured-card">
+                        <div class="card-image">📖</div>
+                        <div class="card-content">
+                            <div class="card-category">Quranic Studies</div>
+                            <h3 class="card-title">Understanding Surah Al-Fatiha: The Opening</h3>
+                            <p class="card-excerpt">A comprehensive analysis of the opening chapter of the Quran, its meanings, and significance in Islamic worship and daily life.</p>
+                            <div class="card-meta">
+                                <div class="card-author">
+                                    <div class="author-avatar">AH</div>
+                                    <span>Dr. Ahmed Hassan</span>
+                                </div>
+                                <span>2 hours ago</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="featured-card">
+                        <div class="card-image">🕌</div>
+                        <div class="card-content">
+                            <div class="card-category">Islamic History</div>
+                            <h3 class="card-title">The Golden Age of Islamic Science</h3>
+                            <p class="card-excerpt">Explore the remarkable contributions of Muslim scholars to mathematics, astronomy, medicine, and philosophy during the Islamic Golden Age.</p>
+                            <div class="card-meta">
+                                <div class="card-author">
+                                    <div class="author-avatar">LM</div>
+                                    <span>Dr. Layla Mahmoud</span>
+                                </div>
+                                <span>5 hours ago</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="featured-card">
+                        <div class="card-image">📚</div>
+                        <div class="card-content">
+                            <div class="card-category">Hadith Studies</div>
+                            <h3 class="card-title">The Science of Hadith Authentication</h3>
+                            <p class="card-excerpt">Learn about the rigorous methodology used by Islamic scholars to verify and authenticate prophetic traditions throughout history.</p>
+                            <div class="card-meta">
+                                <div class="card-author">
+                                    <div class="author-avatar">OS</div>
+                                    <span>Prof. Omar Salim</span>
+                                </div>
+                                <span>1 day ago</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="section-container">
+                <div class="section-title">
+                    <h2>Explore Islamic Knowledge</h2>
+                    <p class="section-subtitle">Browse our comprehensive collection of Islamic content organized by category</p>
+                </div>
+
+                <div class="categories-grid">
+                    <div class="category-card" onclick="location.href='/quran'">
+                        <div class="category-icon">📖</div>
+                        <h3 class="category-title">Quran & Tafsir</h3>
+                        <p class="category-description">Complete Quranic text with translations, commentary, and scholarly interpretations.</p>
+                        <div class="category-count">6,236 verses • 47 translations</div>
+                    </div>
+
+                    <div class="category-card" onclick="location.href='/hadith'">
+                        <div class="category-icon">📚</div>
+                        <h3 class="category-title">Hadith Collections</h3>
+                        <p class="category-description">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him).</p>
+                        <div class="category-count">12,847 authenticated hadith</div>
+                    </div>
+
+                    <div class="category-card" onclick="location.href='/scholars'">
+                        <div class="category-icon">👨‍🏫</div>
+                        <h3 class="category-title">Islamic Scholars</h3>
+                        <p class="category-description">Biographies and works of influential Islamic scholars throughout history.</p>
+                        <div class="category-count">892 scholar profiles</div>
+                    </div>
+
+                    <div class="category-card" onclick="location.href='/fiqh'">
+                        <div class="category-icon">⚖️</div>
+                        <h3 class="category-title">Fiqh & Jurisprudence</h3>
+                        <p class="category-description">Islamic law, jurisprudence, and contemporary legal rulings.</p>
+                        <div class="category-count">3,289 rulings & opinions</div>
+                    </div>
+
+                    <div class="category-card" onclick="location.href='/history'">
+                        <div class="category-icon">🕌</div>
+                        <h3 class="category-title">Islamic History</h3>
+                        <p class="category-description">Chronicles of Islamic civilization, events, and historical analysis.</p>
+                        <div class="category-count">1,456 historical articles</div>
+                    </div>
+
+                    <div class="category-card" onclick="location.href='/practices'">
+                        <div class="category-icon">🌙</div>
+                        <h3 class="category-title">Islamic Practices</h3>
+                        <p class="category-description">Guidance on worship, rituals, and daily Islamic practices.</p>
+                        <div class="category-count">567 practice guides</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sample Article View (when clicked on an article) -->
+        <div id="article-view" style="display: none;">
+            <div class="article-container">
+                <article class="article-main">
+                    <header class="article-header">
+                        <h1 class="article-title">Understanding Surah Al-Fatiha: The Opening</h1>
+                        <div class="article-meta">
+                            <span>By Dr. Ahmed Hassan</span>
+                            <span>•</span>
+                            <span>Islamic Scholar</span>
+                            <span>•</span>
+                            <span>September 18, 2024</span>
+                            <span>•</span>
+                            <span>12 min read</span>
+                        </div>
+                    </header>
+
+                    <div class="article-content">
+                        <div class="arabic-text">
+                            بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ<br>
+                            الْحَمْدُ لِلّهِ رَبِّ الْعَالَمِيْنَ<br>
+                            الرَّحْمٰنِ الرَّحِيْمِ<br>
+                            مَالِكِ يَوْمِ الدِّيْنِ<br>
+                            إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِيْنُ<br>
+                            اهْدِنَا الصِّرَاطَ الْمُسْتَقِيْمَ<br>
+                            صِرَاطَ الَّذِيْنَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوْبِ عَلَيْهِمْ وَلَا الضَّالِّيْنَ
+                        </div>
+                        <div class="translation">
+                            "In the name of Allah, the Most Gracious, the Most Merciful. All praise is due to Allah, Lord of all the worlds. The Most Gracious, the Most Merciful. Master of the Day of Judgment. You alone we worship, and You alone we ask for help. Guide us on the Straight Path. The path of those You have blessed, not of those who have incurred Your wrath, nor of those who have gone astray."
+                        </div>
+
+                        <h2>Introduction</h2>
+                        <p>Surah Al-Fatiha, known as "The Opening," is the first chapter of the Holy Quran and holds a position of unparalleled significance in Islamic worship and spirituality. This seven-verse chapter serves as the foundation of Muslim prayer and contains within it the essence of the entire Quran.</p>
+
+                        <h2>The Name and Its Significance</h2>
+                        <p>The chapter is called "Al-Fatiha" because it opens the Quran. It is also known by several other names, including "Umm al-Kitab" (Mother of the Book), "As-Sab' al-Mathani" (The Seven Oft-Repeated Verses), and "Al-Hamd" (The Praise), each highlighting different aspects of its importance.</p>
+
+                        <h3>Verse-by-Verse Analysis</h3>
+                        <p>Let us examine each verse of this profound chapter:</p>
+
+                        <p><strong>Bismillah (In the name of Allah):</strong> This opening phrase, known as the Basmala, is a declaration of beginning any action with the remembrance of Allah. It encompasses both of Allah's primary attributes of mercy: Ar-Rahman (The Most Gracious) and Ar-Raheem (The Most Merciful).</p>
+
+                        <p><strong>Al-Hamdulillahi Rabbil Alameen:</strong> This verse establishes the concept of gratitude and praise to Allah as the Lord of all worlds. The word "Rabb" signifies not just lordship but also nourishment, sustenance, and guidance.</p>
+
+                        <h2>Spiritual and Practical Applications</h2>
+                        <p>Surah Al-Fatiha is recited in every unit (rak'ah) of the five daily prayers, making it the most frequently recited chapter of the Quran. Its recitation serves multiple purposes:</p>
+
+                        <ul style="margin: 20px 0; padding-left: 30px;">
+                            <li>Establishing a connection with Allah</li>
+                            <li>Seeking guidance and direction</li>
+                            <li>Expressing gratitude and submission</li>
+                            <li>Requesting divine mercy and forgiveness</li>
+                        </ul>
+
+                        <h2>Contemporary Relevance</h2>
+                        <p>In our modern world, the teachings of Al-Fatiha remain profoundly relevant. The chapter's emphasis on seeking guidance, acknowledging Allah's sovereignty, and striving for the straight path provides Muslims with a framework for navigating contemporary challenges while maintaining their spiritual foundation.</p>
+
+                        <h2>Conclusion</h2>
+                        <p>Surah Al-Fatiha encapsulates the essence of Islamic belief and practice in just seven verses. It serves as a complete prayer, a statement of faith, and a request for divine guidance. For Muslims worldwide, it represents the beginning of their spiritual journey and the foundation of their daily worship.</p>
+                    </div>
+                </article>
+
+                <aside class="sidebar">
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3,9H17V7H3V9M3,13H17V11H3V13M3,17H17V15H3V17Z"/>
+                            </svg>
+                            Table of Contents
+                        </h3>
+                        <ul class="toc-list">
+                            <li class="toc-item"><a href="#introduction" class="toc-link">Introduction</a></li>
+                            <li class="toc-item"><a href="#name-significance" class="toc-link">The Name and Its Significance</a></li>
+                            <li class="toc-item"><a href="#verse-analysis" class="toc-link">Verse-by-Verse Analysis</a></li>
+                            <li class="toc-item"><a href="#spiritual-applications" class="toc-link">Spiritual and Practical Applications</a></li>
+                            <li class="toc-item"><a href="#contemporary-relevance" class="toc-link">Contemporary Relevance</a></li>
+                            <li class="toc-item"><a href="#conclusion" class="toc-link">Conclusion</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-widget prayer-times">
+                        <h3 class="widget-title" style="color: white;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                            </svg>
+                            Today's Prayer Times
+                        </h3>
+                        <div class="prayer-item">
+                            <span>Fajr</span>
+                            <span>5:30 AM</span>
+                        </div>
+                        <div class="prayer-item">
+                            <span>Dhuhr</span>
+                            <span>12:45 PM</span>
+                        </div>
+                        <div class="prayer-item current">
+                            <span>Asr</span>
+                            <span>3:45 PM</span>
+                        </div>
+                        <div class="prayer-item">
+                            <span>Maghrib</span>
+                            <span>6:15 PM</span>
+                        </div>
+                        <div class="prayer-item">
+                            <span>Isha</span>
+                            <span>7:45 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L20.29,9.12L22,10.83V6H16Z"/>
+                            </svg>
+                            Related Articles
+                        </h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 15px;">
+                                <a href="#" style="color: var(--islamic-green); text-decoration: none; font-size: 14px; line-height: 1.4;">The Importance of Recitation in Islamic Prayer</a>
+                            </li>
+                            <li style="margin-bottom: 15px;">
+                                <a href="#" style="color: var(--islamic-green); text-decoration: none; font-size: 14px; line-height: 1.4;">Understanding the 99 Names of Allah</a>
+                            </li>
+                            <li style="margin-bottom: 15px;">
+                                <a href="#" style="color: var(--islamic-green); text-decoration: none; font-size: 14px; line-height: 1.4;">The Concept of Guidance in Islam</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
+                            </svg>
+                            Share Article
+                        </h3>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button class="btn-secondary" style="padding: 8px 12px; font-size: 12px;">Facebook</button>
+                            <button class="btn-secondary" style="padding: 8px 12px; font-size: 12px;">Twitter</button>
+                            <button class="btn-secondary" style="padding: 8px 12px; font-size: 12px;">WhatsApp</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>IslamWiki</h3>
+                <p>Authentic Islamic knowledge for the global Muslim community. Built by scholars, for scholars and seekers of knowledge.</p>
+                <div style="margin-top: 20px;">
+                    <a href="/contribute" class="btn-primary">Contribute Content</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Islamic Content</h3>
+                <ul class="footer-links">
+                    <li><a href="/quran">Quran & Tafsir</a></li>
+                    <li><a href="/hadith">Hadith Collections</a></li>
+                    <li><a href="/scholars">Islamic Scholars</a></li>
+                    <li><a href="/fiqh">Fiqh & Jurisprudence</a></li>
+                    <li><a href="/history">Islamic History</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Tools & Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="/tools/prayer-times">Prayer Times</a></li>
+                    <li><a href="/tools/qibla">Qibla Direction</a></li>
+                    <li><a href="/tools/calendar">Islamic Calendar</a></li>
+                    <li><a href="/tools/arabic">Arabic Text Tools</a></li>
+                    <li><a href="/api">Developer API</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Community</h3>
+                <ul class="footer-links">
+                    <li><a href="/about">About IslamWiki</a></li>
+                    <li><a href="/scholars/join">Join as Scholar</a></li>
+                    <li><a href="/guidelines">Content Guidelines</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 IslamWiki (muslim.wiki). All rights reserved. | Built with respect for Islamic scholarship and authentic knowledge.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Main site JavaScript functionality
+        let currentLanguage = 'en';
+
+        function toggleLanguage() {
+            const langToggle = document.querySelector('.lang-toggle');
+            const html = document.documentElement;
+            
+            if (currentLanguage === 'en') {
+                currentLanguage = 'ar';
+                langToggle.textContent = '🌐 English';
+                html.setAttribute('dir', 'rtl');
+                html.setAttribute('lang', 'ar');
+            } else {
+                currentLanguage = 'en';
+                langToggle.textContent = '🌐 العربية';
+                html.setAttribute('dir', 'ltr');
+                html.setAttribute('lang', 'en');
+            }
+        }
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 2) {
+                // Simulate search suggestions
+                console.log('Searching for:', query);
+                // In production, this would trigger real-time search suggestions
+            }
+        });
+
+        // Category card click handlers
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const href = this.getAttribute('onclick')?.match(/location\.href='([^']+)'/);
+                if (href) {
+                    window.location.href = href[1];
+                }
+            });
+        });
+
+        // Article card click handlers
+        document.querySelectorAll('.featured-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Hide main content and show article view
+                document.querySelector('main > section:not(#article-view)').forEach(section => {
+                    section.style.display = 'none';
+                });
+                document.getElementById('article-view').style.display = 'block';
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // Prayer times update (demo)
+        function updatePrayerTimes() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // Remove current class from all prayer items
+            document.querySelectorAll('.prayer-item').forEach(item => {
+                item.classList.remove('current');
+            });
+            
+            // Add current class to appropriate prayer
+            let currentPrayerIndex = 0;
+            if (hour >= 5 && hour < 12) currentPrayerIndex = 1;
+            else if (hour >= 12 && hour < 15) currentPrayerIndex = 2;
+            else if (hour >= 15 && hour < 18) currentPrayerIndex = 2; // Asr is current
+            else if (hour >= 18 && hour < 19) currentPrayerIndex = 3;
+            else if (hour >= 19) currentPrayerIndex = 4;
+            
+            const prayerItems = document.querySelectorAll('.prayer-item');
+            if (prayerItems[currentPrayerIndex]) {
+                prayerItems[currentPrayerIndex].classList.add('current');
+            }
+        }
+
+        // Mobile menu toggle
+        function initMobileMenu() {
+            const navMenu = document.querySelector('.nav-menu');
+            if (window.innerWidth <= 768) {
+                // Create mobile menu button if it doesn't exist
+                if (!document.querySelector('.mobile-menu-btn')) {
+                    const mobileBtn = document.createElement('button');
+                    mobileBtn.className = 'mobile-menu-btn';
+                    mobileBtn.innerHTML = '☰';
+                    mobileBtn.style.cssText = `
+                        background: var(--islamic-gold);
+                        color: var(--islamic-dark-green);
+                        border: none;
+                        padding: 10px 15px;
+                        border-radius: 5px;
+                        font-size: 18px;
+                        cursor: pointer;
+                        display: block;
+                        margin-left: auto;
+                    `;
+                    
+                    document.querySelector('.nav-content').appendChild(mobileBtn);
+                    
+                    mobileBtn.addEventListener('click', function() {
+                        navMenu.style.display = navMenu.style.display === 'none' ? 'flex' : 'none';
+                    });
+                }
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                const mobileBtn = document.querySelector('.mobile-menu-btn');
+                if (mobileBtn) mobileBtn.remove();
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePrayerTimes();
+            initMobileMenu();
+            
+            // Update prayer times every minute
+            setInterval(updatePrayerTimes, 60000);
+            
+            // Add intersection observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            document.querySelectorAll('.featured-card, .category-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', initMobileMenu);
+
+        // Advanced search functionality
+        function performAdvancedSearch(query) {
+            const searchResults = {
+                quran: [
+                    { title: 'Surah Al-Fatiha', type: 'Quran', excerpt: 'The Opening chapter...' },
+                    { title: 'Verse of the Throne (Ayat al-Kursi)', type: 'Quran', excerpt: 'Allah - there is no deity except Him...' }
+                ],
+                hadith: [
+                    { title: 'The importance of prayer', type: 'Hadith', excerpt: 'Prayer is the pillar of religion...' },
+                    { title: 'Kindness to parents', type: 'Hadith', excerpt: 'Paradise lies at the feet of your mother...' }
+                ],
+                articles: [
+                    { title: 'Understanding Islamic Ethics', type: 'Article', excerpt: 'Islamic ethics provide a comprehensive framework...' },
+                    { title: 'The History of Islamic Civilization', type: 'Article', excerpt: 'From the 7th century onwards...' }
+                ]
+            };
+            
+            return searchResults;
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--islamic-green)' : 'var(--islamic-gold)'};
+                color: ${type === 'success' ? 'white' : 'var(--islamic-dark-green)'};
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: var(--shadow-hover);
+                z-index: 10000;
+                font-weight: 500;
+                max-width: 300px;
+                animation: slideInRight 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Add CSS animations for notifications
+        const notificationStyles = document.createElement('style');
+        notificationStyles.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            .featured-card:hover, .category-card:hover {
+                cursor: pointer;
+            }
+            
+            .dropdown {
+                z-index: 1001;
+            }
+            
+            @media (max-width: 768px) {
+                .hero-title { font-size: 32px !important; }
+                .hero-bismillah { font-size: 20px !important; }
+                .hero-subtitle { font-size: 16px !important; }
+                .section-title h2 { font-size: 28px !important; }
+                .nav-menu {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: var(--islamic-green);
+                    flex-direction: column;
+                    box-shadow: var(--shadow-hover);
+                }
+                .nav-link {
+                    border-bottom: 1px solid rgba(255,255,255,0.1);
+                }
+                .dropdown {
+                    position: static;
+                    opacity: 1;
+                    visibility: visible;
+                    transform: none;
+                    box-shadow: none;
+                    background: rgba(255,255,255,0.1);
+                    margin: 0;
+                    border-radius: 0;
+                }
+                .dropdown-item {
+                    color: rgba(255,255,255,0.8);
+                    padding-left: 40px;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                }
+                .header-actions {
+                    gap: 10px;
+                }
+                .lang-toggle, .user-menu {
+                    padding: 6px 12px;
+                    font-size: 11px;
+                }
+            }
+        `;
+        document.head.appendChild(notificationStyles);
+
+        // Demo: Show welcome notification after page load
+        setTimeout(() => {
+            showNotification('Welcome to IslamWiki! Explore authentic Islamic knowledge.', 'success');
+        }, 2000);
+
+        // Handle article clicks more specifically
+        document.addEventListener('click', function(e) {
+            const articleCard = e.target.closest('.featured-card');
+            if (articleCard && !e.target.closest('a')) {
+                // Hide main sections
+                const mainSections = document.querySelectorAll('main > section');
+                mainSections.forEach(section => {
+                    if (section.id !== 'article-view') {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                // Show article view
+                const articleView = document.getElementById('article-view');
+                if (articleView) {
+                    articleView.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        });
+
+        // Back to home functionality
+        function goBackToHome() {
+            const mainSections = document.querySelectorAll('main > section');
+            mainSections.forEach(section => {
+                if (section.id !== 'article-view') {
+                    section.style.display = 'block';
+                }
+            });
+            document.getElementById('article-view').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add back button to article view
+        const backButton = document.createElement('button');
+        backButton.textContent = '← Back to Home';
+        backButton.className = 'btn-secondary';
+        backButton.style.cssText = 'margin-bottom: 20px; cursor: pointer;';
+        backButton.addEventListener('click', goBackToHome);
+
+        // Insert back button into article view when it exists
+        const articleView = document.getElementById('article-view');
+        if (articleView) {
+            const articleContainer = articleView.querySelector('.article-container');
+            if (articleContainer) {
+                articleContainer.insertBefore(backButton, articleContainer.firstChild);
+            }
+        }
+    </script>
+</body>
+</html> 

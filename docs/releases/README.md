@@ -1,145 +1,122 @@
-# IslamWiki Release Notes
+# Release Notes
 
-This directory contains release notes for all versions of IslamWiki.
+This directory contains detailed release notes for each version of IslamWiki.
 
-## Release Notes Index
+## 📋 Latest Releases
 
-### Version 0.0.54 (Latest)
-- **[RELEASE-0.0.54.md](RELEASE-0.0.54.md)** - Quran Data Model, Salah Times, and Extensions
-- **Date**: 2025-08-12
-- **Status**: Feature + Infrastructure Release
-- **Focus**: Quran data model refactor, Salah Times system, modular extensions, routes/views
+### [Release 0.0.58](RELEASE-0.0.58.md) - Navigation System & UI Improvements
+*January 15, 2025*
 
-### Version 0.0.53
-- **[RELEASE-0.0.53.md](RELEASE-0.0.53.md)** - Docs Viewer and Enhanced Markdown
-- **Date**: 2025-08-09
-- **Status**: Feature Release
-- **Focus**: Docs viewer, folder-aware nav, progress bars, TOC, improved Markdown
+**Major Features:**
+- 🧭 Enhanced Navigation System with full-width layout
+- 🎯 Complete page coverage in organized dropdown menus
+- 🎨 Professional design with Islamic green theme
+- 📱 Responsive layout for all devices
+- 🔧 Fixed dropdown visibility and click functionality
 
-### Version 0.0.52
-- **[RELEASE-0.0.52.md](RELEASE-0.0.52.md)** - Namespaces and Special Pages
-- **Date**: 2025-08-09
-- **Status**: Feature Release
-- **Focus**: MediaWiki-style namespaces (Special:, Quran:, Hadith:), Special Pages, redirects
+**Key Improvements:**
+- Full-width header, navigation, and footer
+- Comprehensive dropdown navigation for all pages
+- Mobile-optimized touch navigation
+- Resolved CSS conflicts and overflow issues
+- Professional navigation appearance
 
-### Version 0.0.46
-- **[RELEASE-NOTES-0.0.46](RELEASE-NOTES-0.0.46)** - Critical Session Persistence Fix
-- **Date**: 2025-08-03
-- **Status**: Critical Bug Fix Release
-- **Focus**: Fixed session data not being written to disk and authentication persistence issues
+### [Release 0.0.57](RELEASE-0.0.57.md) - Authentication System & RTL Support
+*January 15, 2025*
 
-### Version 0.0.38
-- **[RELEASE-NOTES-0.0.38](RELEASE-NOTES-0.0.38)** - Error Fixes & Code Quality Improvements
-- **Date**: 2025-08-02
-- **Status**: Bug Fix Release
-- **Focus**: Fixed PHP syntax errors and achieved 100% error-free codebase
+**Major Features:**
+- 🔐 Fixed Authentication System (login/register working)
+- 🌐 Complete RTL (Right-to-Left) Language Support
+- 🎨 Language Toggle Button in header
+- 🛠️ Service Provider Architecture improvements
 
-### Version 0.0.37
-- **[RELEASE-NOTES-0.0.37](RELEASE-NOTES-0.0.37)** - UI/UX Improvements & Three-Column Layout
-- **[VERSION_0.0.37_SUMMARY.md](VERSION_0.0.37_SUMMARY.md)** - Detailed Implementation Summary
-- **Date**: 2025-08-02
-- **Status**: Feature Release
-- **Focus**: Enhanced header navigation, three-column layout, and improved styling
+**Key Improvements:**
+- Fixed critical authentication issues
+- Added Arabic RTL layout support
+- Resolved service container problems
+- Improved error handling and recovery
 
-### Version 0.0.36
-- **[RELEASE-NOTES-0.0.36](RELEASE-NOTES-0.0.36)** - Search Functionality & Bismillah Skin
-- **[VERSION_0.0.36_SUMMARY.md](VERSION_0.0.36_SUMMARY.md)** - Detailed Implementation Summary
-- **Date**: 2025-08-02
-- **Status**: Feature Release
-- **Focus**: Complete search system overhaul with Bismillah skin styling
+### [Release 0.0.56](RELEASE-0.0.56.md) - Hadith Extension Implementation
+*August 13, 2024*
 
-### Version 0.0.35
-- **[RELEASE-NOTES-0.0.35](RELEASE-NOTES-0.0.35)** - Enhanced Search Interfaces
-- **[VERSION_0.0.35_SUMMARY.md](VERSION_0.0.35_SUMMARY.md)** - Detailed Implementation Summary
-- **Date**: 2025-08-02
-- **Status**: Feature Release
-- **Focus**: Modern search interfaces and improved user experience
+**Major Features:**
+- 📜 HadithExtension initial implementation
+- 🔍 Hadith browsing and search functionality
+- 📚 Collection and book support
+- 👤 Narrator information and linking
 
-### Version 0.0.34
-- **[RELEASE-NOTES-0.0.34](RELEASE-NOTES-0.0.34)** - Enhanced Profile System with Privacy Controls
-- **[VERSION_0.0.34_SUMMARY.md](VERSION_0.0.34_SUMMARY.md)** - Detailed Implementation Summary
-- **Date**: 2025-01-02
-- **Status**: Feature Release
-- **Focus**: Complete profile system overhaul with privacy controls and customization options
+### [Release 0.0.55](RELEASE-0.0.55.md) - Enhanced Quran Ayah Pages
+*August 13, 2024*
 
-### Version 0.0.33
-- **[RELEASE-NOTES-0.0.33](RELEASE-NOTES-0.0.33)** - Skin Selection Fix
-- **Date**: 2025-08-01
-- **Status**: Development Release
-- **Focus**: Fixed critical skin selection display issue in settings page
+**Major Features:**
+- 📖 Improved Quran ayah page layout
+- 🌐 Enhanced RTL layout and Arabic numeral support
+- 🔍 Translation dropdown for ayahs
+- 🧭 Breadcrumb navigation for Quran
 
-### Version 0.0.12
-- **[RELEASE-NOTES-0.0.12](RELEASE-NOTES-0.0.12)** - Islamic Database, Authentication & Content Management
-- **Date**: 2025-07-30
-- **Status**: Development Release
-- **Focus**: Islamic database implementation and authentication
+### [Release 0.0.54](RELEASE-0.0.54.md) - Salah Times & Quran Data Models
+*August 12, 2024*
 
-### Version 0.0.11
-- **[RELEASE-NOTES-0.0.11](RELEASE-NOTES-0.0.11)** - Database Connection Strategy Research
-- **Date**: 2025-07-30
-- **Status**: Research Release
-- **Focus**: Database architecture research for Islamic content
+**Major Features:**
+- 🕌 Salah Times system implementation
+- 📖 Quran data models and views
+- 🔧 New extensions scaffolding
+- 📄 Error pages and tooling
 
-### Version 0.0.10
-- **[RELEASE-NOTES-0.0.10](RELEASE-NOTES-0.0.10)** - MediaWiki-Inspired Root Structure
-- **Date**: 2025-07-30
-- **Status**: Development Release
-- **Focus**: Root structure implementation and documentation
+## 📚 Release Categories
 
-## Version Summaries
+### 🚀 Major Releases
+Major feature releases with significant new functionality:
+- [0.0.58](RELEASE-0.0.58.md) - Navigation System & UI Improvements
+- [0.0.57](RELEASE-0.0.57.md) - Authentication System & RTL Support
+- [0.0.56](RELEASE-0.0.56.md) - Hadith Extension Implementation
 
-Detailed implementation summaries for recent versions:
+### 🔧 Feature Releases
+Feature-focused releases with new capabilities:
+- [0.0.55](RELEASE-0.0.55.md) - Enhanced Quran Ayah Pages
+- [0.0.54](RELEASE-0.0.54.md) - Salah Times & Quran Data Models
+- [0.0.53](RELEASE-0.0.53.md) - Bug Fixes & Improvements
 
-- **[VERSION_0.0.37_SUMMARY.md](VERSION_0.0.37_SUMMARY.md)** - UI/UX Improvements & Three-Column Layout
-- **[VERSION_0.0.36_SUMMARY.md](VERSION_0.0.36_SUMMARY.md)** - Search Functionality & Bismillah Skin
-- **[VERSION_0.0.35_SUMMARY.md](VERSION_0.0.35_SUMMARY.md)** - Enhanced Search Interfaces
-- **[VERSION_0.0.34_SUMMARY.md](VERSION_0.0.34_SUMMARY.md)** - Enhanced Profile System
+### 🐛 Bug Fix Releases
+Stability and bug fix focused releases:
+- [0.0.52](RELEASE-0.0.52.md) - Bug Fixes & Stability
+- [0.0.51](RELEASE-0.0.51.md) - Security & Performance
+- [0.0.50](RELEASE-0.0.50.md) - Bug Fixes & Improvements
 
-## Release Categories
+## 🔍 Finding Specific Information
 
-### Development Releases (0.0.x)
-- **0.0.11**: Database Connection Strategy Research
-- **0.0.12**: Islamic Database, Authentication & Content Management
-- **0.0.13**: Quran Integration Complete, Phase 4 In Progress
-- **0.0.14**: Hadith System Implementation (Planned)
-- **0.0.15**: Islamic Calendar Integration (Planned)
-- **0.0.16**: Prayer Times System (Planned)
+### By Feature
+- **Authentication**: [0.0.57](RELEASE-0.0.57.md)
+- **Navigation**: [0.0.58](RELEASE-0.0.58.md)
+- **RTL Support**: [0.0.57](RELEASE-0.0.57.md)
+- **Quran Features**: [0.0.55](RELEASE-0.0.55.md), [0.0.54](RELEASE-0.0.54.md)
+- **Hadith System**: [0.0.56](RELEASE-0.0.56.md)
+- **Salah Times**: [0.0.54](RELEASE-0.0.54.md)
 
-### Development Releases (0.1.x)
-- **0.1.0**: Core Structure Implementation (Planned)
-- **0.1.1**: Islamic Integration (Planned)
-- **0.1.2**: Documentation (Planned)
+### By Date
+- **January 2025**: [0.0.58](RELEASE-0.0.58.md), [0.0.57](RELEASE-0.0.57.md)
+- **August 2024**: [0.0.56](RELEASE-0.0.56.md), [0.0.55](RELEASE-0.0.55.md), [0.0.54](RELEASE-0.0.54.md)
 
-### Feature Releases (0.2.x)
-- **0.2.0**: Major Features (Planned)
-- **0.2.1**: Advanced Features (Planned)
+### By Type
+- **UI/UX**: [0.0.58](RELEASE-0.0.58.md)
+- **Authentication**: [0.0.57](RELEASE-0.0.57.md)
+- **Content**: [0.0.56](RELEASE-0.0.56.md), [0.0.55](RELEASE-0.0.55.md)
+- **Infrastructure**: [0.0.54](RELEASE-0.0.54.md)
 
-### Production Releases (1.0.x)
-- **1.0.0**: Production Ready (Planned)
+## 📖 Reading Release Notes
 
-## Release Notes Format
-
-Each release notes file follows this structure:
+Each release note contains:
 - **Overview**: Summary of the release
-- **New Features**: What's new in this version
-- **Technical Improvements**: Technical changes and improvements
-- **Islamic Content Features**: Islamic-specific features
-- **Security Enhancements**: Security improvements
-- **Breaking Changes**: Any breaking changes
-- **Known Issues**: Known problems or limitations
-- **Future Plans**: Upcoming releases and features
+- **New Features**: What was added
+- **Bug Fixes**: What was fixed
+- **Technical Improvements**: Code and architecture changes
+- **Documentation**: User and developer guides
+- **Dependencies**: Required software versions
 
-## Versioning Strategy
+## 🔄 Version History
 
-IslamWiki follows semantic versioning with development phases:
-- **0.0.x**: Research and planning phase
-- **0.1.x**: Core implementation phase
-- **0.2.x**: Feature implementation phase
-- **1.0.x**: Production-ready releases
-
-For detailed versioning information, see [Versioning Strategy](../guides/versioning.md).
+For a complete chronological list of all changes, see the main [CHANGELOG.md](../../CHANGELOG.md) file.
 
 ---
 
-**Last Updated**: 2025-08-12  
-**Current Version**: 0.0.54
+*Release notes are updated with each new version to provide comprehensive information about changes, improvements, and new features.*

@@ -130,17 +130,23 @@ class IqraSearch
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildRelevanceConditions($words);
 
-        $sql = "SELECT p.*, u.username as author_name,
+        $sql = "SELECT p.*, '' as author_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
                 FROM pages p 
-                LEFT JOIN users u ON p.created_by = u.id
                 WHERE {$relevanceConditions['where']}
                 ORDER BY relevance_score DESC, p.updated_at DESC
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -182,7 +188,14 @@ class IqraSearch
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch()) {
@@ -225,7 +238,14 @@ class IqraSearch
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch()) {
@@ -268,7 +288,14 @@ class IqraSearch
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch()) {
@@ -300,7 +327,7 @@ class IqraSearch
         $words = $this->tokenizeQuery($query);
         $relevanceConditions = $this->buildSalahRelevanceConditions($words);
 
-        $sql = "SELECT pt.*, pt.location as location_name,
+        $sql = "SELECT pt.*, pt.location_name as location_name,
                        {$relevanceConditions['score']} as relevance_score,
                        {$relevanceConditions['match_count']} as match_count
                 FROM salah_times pt
@@ -309,7 +336,14 @@ class IqraSearch
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch()) {
@@ -328,7 +362,7 @@ class IqraSearch
                 'isha' => $row['isha'],
                 'relevance' => $row['relevance_score'],
                 'match_count' => $row['match_count'],
-                'url' => "/salah/show/{$row['salah_date']}/{$row['location_id']}"
+                'url' => "/salah/show/{$row['date']}/{$row['location_id']}"
             ];
         }
 
@@ -352,7 +386,14 @@ class IqraSearch
                 LIMIT ? OFFSET ?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(array_merge($relevanceConditions['params'], [$limit, $offset]));
+        $params = array_merge($relevanceConditions['params'], [$limit, $offset]);
+        
+        // Bind parameters with proper types
+        foreach ($params as $i => $param) {
+            $stmt->bindValue($i + 1, $param, is_int($param) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
 
         $results = [];
         while ($row = $stmt->fetch()) {
@@ -592,13 +633,13 @@ class IqraSearch
 
         foreach ($words as $i => $word) {
             $param = "word_{$i}";
-            $conditions[] = "(pt.location LIKE ?)";
+            $conditions[] = "(pt.location_name LIKE ?)";
             $params[] = "%{$word}%";
 
-            $scoreParts[] = "CASE WHEN pt.location LIKE ? THEN 10 ELSE 0 END";
+            $scoreParts[] = "CASE WHEN pt.location_name LIKE ? THEN 10 ELSE 0 END";
             $params[] = "%{$word}%";
 
-            $matchCountParts[] = "CASE WHEN pt.location LIKE ? THEN 1 ELSE 0 END";
+            $matchCountParts[] = "CASE WHEN pt.location_name LIKE ? THEN 1 ELSE 0 END";
             $params[] = "%{$word}%";
         }
 
@@ -967,7 +1008,7 @@ class IqraSearch
         $params = [];
 
         foreach ($words as $word) {
-            $conditions[] = "(pt.location LIKE ?)";
+            $conditions[] = "(pt.location_name LIKE ?)";
             $params[] = "%{$word}%";
         }
 

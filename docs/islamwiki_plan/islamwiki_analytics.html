@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - IslamWiki Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --islamic-green: #2d5016;
+            --islamic-gold: #d4af37;
+            --islamic-dark-green: #1a3009;
+            --islamic-light-green: #4a8029;
+            --islamic-cream: #f8f6f0;
+            --islamic-white: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --border-light: #e9ecef;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: var(--islamic-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Islamic Pattern Background */
+        .islamic-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(45, 80, 22, 0.05) 0%, transparent 50%);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(135deg, var(--islamic-dark-green) 0%, var(--islamic-green) 100%);
+            color: var(--islamic-white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--islamic-dark-green);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--islamic-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-dark-green);
+            font-weight: 900;
+        }
+
+        .site-tagline {
+            font-size: 12px;
+            opacity: 0.8;
+            font-style: italic;
+            color: var(--islamic-gold);
+        }
+
+        .user-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 8px;
+            border-left: 3px solid var(--islamic-gold);
+        }
+
+        .user-role {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--islamic-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .prayer-reminder {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .prayer-time {
+            font-weight: 600;
+            color: var(--islamic-gold);
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.7;
+            font-weight: 700;
+            color: var(--islamic-gold);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: var(--islamic-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            padding-left: 28px;
+            border-right: 3px solid var(--islamic-gold);
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.25);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 14px;
+            opacity: 0.9;
+        }
+
+        .nav-badge {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 0;
+            width: calc(100% - 300px);
+            background: var(--islamic-cream);
+        }
+
+        .header {
+            background: var(--islamic-white);
+            padding: 20px 30px;
+            border-bottom: 3px solid var(--islamic-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .islamic-date {
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .hijri-date {
+            color: var(--islamic-green);
+            font-weight: 600;
+        }
+
+        .gregorian-date {
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .date-range-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-range-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--islamic-gold);
+            background: transparent;
+            color: var(--islamic-green);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .date-range-btn.active,
+        .date-range-btn:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-dark-green);
+        }
+
+        .content-area {
+            padding: 30px;
+        }
+
+        /* Analytics Cards */
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analytics-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(212,175,55,0.1)"/></svg>') repeat;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .analytics-title {
+            position: relative;
+            z-index: 1;
+        }
+
+        .analytics-title h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .analytics-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .kpi-card {
+            background: var(--islamic-white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--islamic-green), var(--islamic-gold));
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .kpi-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+        }
+
+        .kpi-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--islamic-green);
+            margin: 10px 0;
+        }
+
+        .kpi-change {
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .kpi-change.positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .kpi-change.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .kpi-trend {
+            margin-top: 15px;
+            height: 40px;
+            background: var(--islamic-cream);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .chart-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--islamic-cream), var(--islamic-white));
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-body {
+            padding: 30px;
+        }
+
+        .chart-placeholder {
+            height: 400px;
+            background: linear-gradient(135deg, 
+                rgba(45, 80, 22, 0.05) 0%, 
+                rgba(212, 175, 55, 0.05) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(45, 80, 22, 0.2);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--islamic-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        .data-table tr:hover {
+            background: var(--islamic-cream);
+        }
+
+        .progress-bar-small {
+            height: 8px;
+            background: var(--border-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--islamic-green), var(--islamic-gold));
+            transition: width 0.3s ease;
+        }
+
+        /* Islamic Analytics Specific */
+        .content-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .content-type-card {
+            background: var(--islamic-white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--islamic-gold);
+        }
+
+        .content-type-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .content-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .geographic-card {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .geographic-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .geographic-item:last-child {
+            border-bottom: none;
+        }
+
+        .country-flag {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 15px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .geographic-stats {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .geographic-name {
+            font-weight: 600;
+            color: var(--islamic-green);
+        }
+
+        .geographic-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Time-based Analytics */
+        .time-analysis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .time-card {
+            background: var(--islamic-white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .time-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--islamic-green);
+            margin: 10px 0;
+        }
+
+        .time-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Islamic Content Insights */
+        .islamic-insights {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, var(--islamic-white), var(--islamic-cream));
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--islamic-gold);
+        }
+
+        .insight-emoji {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .insight-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 8px;
+        }
+
+        .insight-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .islamic-insights {
+                grid-template-columns: 1fr;
+            }
+
+            .time-analysis {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--islamic-dark-green);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--islamic-gold);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #f4d03f;
+        }
+    </style>
+</head>
+<body class="islamic-pattern">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">☪</div>
+                    <div>
+                        <div>IslamWiki</div>
+                        <div class="site-tagline">Knowledge for the Ummah</div>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-role">Islamic Scholar</div>
+                    <div class="user-name">Dr. Ahmed Al-Mahmoud</div>
+                </div>
+
+                <div class="prayer-reminder">
+                    Next Prayer: <span class="prayer-time">Asr - 3:45 PM</span>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <!-- Dashboard Overview -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="#dashboard" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="#analytics" class="nav-item active">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        Analytics
+                        <span class="nav-badge">New</span>
+                    </a>
+                </div>
+
+                <!-- Islamic Content -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Islamic Content</div>
+                    <a href="#quran" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                        </svg>
+                        Quran & Tafsir
+                        <span class="nav-badge">6,236</span>
+                    </a>
+                    <a href="#hadith" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2Z"/>
+                        </svg>
+                        Hadith Collections
+                        <span class="nav-badge">12,847</span>
+                    </a>
+                    <a href="#scholars" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
+                        </svg>
+                        Scholars & Biography
+                    </a>
+                </div>
+
+                <!-- Content Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Content Management</div>
+                    <a href="#articles" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Articles
+                        <span class="nav-badge">2,847</span>
+                    </a>
+                    <a href="#translations" class="nav-item">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                        </svg>
+                        Translations
+                        <span class="nav-badge">15</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1>Analytics Dashboard</h1>
+                    <div class="header-subtitle">Comprehensive insights into Islamic knowledge dissemination</div>
+                </div>
+                <div class="header-right">
+                    <div class="date-range-selector">
+                        <button class="date-range-btn">7 Days</button>
+                        <button class="date-range-btn active">30 Days</button>
+                        <button class="date-range-btn">3 Months</button>
+                        <button class="date-range-btn">1 Year</button>
+                    </div>
+                    <div class="islamic-date">
+                        <div class="hijri-date">15 Rabi' al-Awwal 1446</div>
+                        <div class="gregorian-date">September 18, 2024</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Analytics Header -->
+                <div class="analytics-header">
+                    <div class="analytics-title">
+                        <h2>Knowledge Impact Overview</h2>
+                        <div class="analytics-subtitle">Tracking the spread of Islamic knowledge across the global Ummah</div>
+                    </div>
+                </div>
+
+                <!-- Key Performance Indicators -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2Z"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-title">Daily Active Scholars</div>
+                        </div>
+                        <div class="kpi-value">1,847</div>
+                        <div class="kpi-change positive">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L20.71,8.71L23,11V6H16Z"/>
+                            </svg>
+                            +12.5% from last month
+                        </div>
+                        <div class="kpi-trend"></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,6V9L16,14H8L12,6M2,17H22L12,2L2,17Z"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-title">Knowledge Seekers</div>
+                        </div>
+                        <div class="kpi-value">284,592</div>
+                        <div class="kpi-change positive">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L20.71,8.71L23,11V6H16Z"/>
+                            </svg>
+                            +18.7% new visitors
+                        </div>
+                        <div class="kpi-trend"></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-title">Articles Read</div>
+                        </div>
+                        <div class="kpi-value">1.2M</div>
+                        <div class="kpi-change positive">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L20.71,8.71L23,11V6H16Z"/>
+                            </svg>
+                            +24.3% engagement
+                        </div>
+                        <div class="kpi-trend"></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                                </svg>
+                            </div>
+                            <div class="kpi-title">Global Reach</div>
+                        </div>
+                        <div class="kpi-value">127</div>
+                        <div class="kpi-change positive">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L20.71,8.71L23,11V6H16Z"/>
+                            </svg>
+                            Countries served
+                        </div>
+                        <div class="kpi-trend"></div>
+                    </div>
+                </div>
+
+                <!-- Islamic Content Insights -->
+                <div class="islamic-insights">
+                    <div class="insight-card">
+                        <div class="insight-emoji">📖</div>
+                        <div class="insight-title">Most Read</div>
+                        <div class="insight-subtitle">Ayat al-Kursi Commentary</div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-emoji">🌙</div>
+                        <div class="insight-title">Peak Hours</div>
+                        <div class="insight-subtitle">After Maghrib Prayer</div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-emoji">🕌</div>
+                        <div class="insight-title">Top Category</div>
+                        <div class="insight-subtitle">Fiqh & Jurisprudence</div>
+                    </div>
+                </div>
+
+                <!-- Content Type Performance -->
+                <div class="content-type-grid">
+                    <div class="content-type-card">
+                        <div class="content-icon">📖</div>
+                        <div class="category-title">Quran & Tafsir</div>
+                        <div class="kpi-value" style="font-size: 24px; margin: 10px 0;">456,892</div>
+                        <div class="category-count">Total views this month</div>
+                        <div class="progress-bar-small">
+                            <div class="progress-fill" style="width: 92%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-type-card">
+                        <div class="content-icon">📚</div>
+                        <div class="category-title">Hadith Collections</div>
+                        <div class="kpi-value" style="font-size: 24px; margin: 10px 0;">342,167</div>
+                        <div class="category-count">Total views this month</div>
+                        <div class="progress-bar-small">
+                            <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-type-card">
+                        <div class="content-icon">⚖️</div>
+                        <div class="category-title">Fiqh & Jurisprudence</div>
+                        <div class="kpi-value" style="font-size: 24px; margin: 10px 0;">289,543</div>
+                        <div class="category-count">Total views this month</div>
+                        <div class="progress-bar-small">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-type-card">
+                        <div class="content-icon">🕌</div>
+                        <div class="category-title">Islamic History</div>
+                        <div class="kpi-value" style="font-size: 24px; margin: 10px 0;">156,234</div>
+                        <div class="category-count">Total views this month</div>
+                        <div class="progress-bar-small">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Grid -->
+                <div class="analytics-grid">
+                    <!-- Main Chart -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                                </svg>
+                                Knowledge Engagement Trends
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button style="background: var(--islamic-green); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">Views</button>
+                                <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">Engagement</button>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="chart-placeholder">
+                                <div>
+                                    <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.3; margin-bottom: 15px;">
+                                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                                    </svg>
+                                    <div>Interactive engagement chart showing daily article views,<br>time spent reading, and knowledge retention metrics</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Geographic Distribution -->
+                    <div class="geographic-card">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4Z"/>
+                                </svg>
+                                Global Ummah Reach
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <div class="geographic-item">
+                                <div class="country-flag">ID</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Indonesia</div>
+                                    <div class="geographic-value">127,892</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">SA</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Saudi Arabia</div>
+                                    <div class="geographic-value">98,745</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">TR</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Turkey</div>
+                                    <div class="geographic-value">76,234</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">EG</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Egypt</div>
+                                    <div class="geographic-value">65,123</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">PK</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Pakistan</div>
+                                    <div class="geographic-value">54,987</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">IN</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">India</div>
+                                    <div class="geographic-value">43,765</div>
+                                </div>
+                            </div>
+                            <div class="geographic-item">
+                                <div class="country-flag">MY</div>
+                                <div class="geographic-stats">
+                                    <div class="geographic-name">Malaysia</div>
+                                    <div class="geographic-value">32,456</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prayer Time Analytics -->
+                <div class="time-analysis">
+                    <div class="time-card">
+                        <div class="time-label">Peak Engagement Time</div>
+                        <div class="time-value">7:30 PM</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">After Maghrib Prayer</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-label">Most Active Day</div>
+                        <div class="time-value">Friday</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Jumu'ah Day</div>
+                    </div>
+                </div>
+
+                <!-- Top Content Performance -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                            </svg>
+                            Most Impactful Content
+                        </div>
+                        <span style="font-size:12px;color:var(--text-secondary);">Last 30 days</span>
+                    </div>
+                    <div class="chart-body" style="padding: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Content Title</th>
+                                    <th>Category</th>
+                                    <th>Views</th>
+                                    <th>Engagement</th>
+                                    <th>Shares</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: 600;">The 99 Names of Allah (Asma al-Husna)</td>
+                                    <td><span style="padding: 4px 8px; background: var(--islamic-cream); border-radius: 12px; font-size: 11px; color: var(--islamic-green); font-weight: 600;">Theology</span></td>
+                                    <td><strong>45,892</strong></td>
+                                    <td>
+                                        <div>92%</div>
+                                        <div class="progress-bar-small">
+                                            <div class="progress-fill" style="width: 92%"></div>
+                                        </div>
+                                    </td>
+                                    <td><strong>2,847</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">Prayer in Islam: Complete Guide</td>
+                                    <td><span style="padding: 4px 8px; background: var(--islamic-cream); border-radius: 12px; font-size: 11px; color: var(--islamic-green); font-weight: 600;">Practices</span></td>
+                                    <td><strong>38,456</strong></td>
+                                    <td>
+                                        <div>88%</div>
+                                        <div class="progress-bar-small">
+                                            <div class="progress-fill" style="width: 88%"></div>
+                                        </div>
+                                    </td>
+                                    <td><strong>2,234</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">Life of Prophet Muhammad (PBUH)</td>
+                                    <td><span style="padding: 4px 8px; background: var(--islamic-cream); border-radius: 12px; font-size: 11px; color: var(--islamic-green); font-weight: 600;">Biography</span></td>
+                                    <td><strong>34,789</strong></td>
+                                    <td>
+                                        <div>85%</div>
+                                        <div class="progress-bar-small">
+                                            <div class="progress-fill" style="width: 85%"></div>
+                                        </div>
+                                    </td>
+                                    <td><strong>1,987</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">Understanding Zakat: Principles & Practice</td>
+                                    <td><span style="padding: 4px 8px; background: var(--islamic-cream); border-radius: 12px; font-size: 11px; color: var(--islamic-green); font-weight: 600;">Fiqh</span></td>
+                                    <td><strong>29,567</strong></td>
+                                    <td>
+                                        <div>81%</div>
+                                        <div class="progress-bar-small">
+                                            <div class="progress-fill" style="width: 81%"></div>
+                                        </div>
+                                    </td>
+                                    <td><strong>1,654</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">Quranic Arabic: Beginner's Guide</td>
+                                    <td><span style="padding: 4px 8px; background: var(--islamic-cream); border-radius: 12px; font-size: 11px; color: var(--islamic-green); font-weight: 600;">Language</span></td>
+                                    <td><strong>25,234</strong></td>
+                                    <td>
+                                        <div>79%</div>
+                                        <div class="progress-bar-small">
+                                            <div class="progress-fill" style="width: 79%"></div>
+                                        </div>
+                                    </td>
+                                    <td><strong>1,456</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Scholar Contribution Analytics -->
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
+                                </svg>
+                                Scholar Contributions
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 40px; height: 40px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">AM</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: var(--islamic-green);">Dr. Ahmed Al-Mahmoud</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">Islamic Jurisprudence</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 700; color: var(--islamic-green);">247</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">Articles</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 40px; height: 40px; background: var(--islamic-light-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">FA</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: var(--islamic-green);">Dr. Fatima Al-Zahra</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">Quranic Studies</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 700; color: var(--islamic-green);">189</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">Articles</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 40px; height: 40px; background: var(--islamic-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--islamic-dark-green); font-weight: 600;">YH</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: var(--islamic-green);">Sheikh Yusuf Hassan</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">Hadith Sciences</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 700; color: var(--islamic-green);">156</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">Articles</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 40px; height: 40px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">LK</div>
+                                        <div>
+                                            <div style="font-weight: 600; color: var(--islamic-green);">Dr. Layla Khattab</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">Islamic History</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 700; color: var(--islamic-green);">134</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">Articles</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                Reading Patterns
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div style="text-align: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="font-size: 24px; font-weight: 800; color: var(--islamic-green); margin-bottom: 5px;">8.4</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Avg Minutes</div>
+                                </div>
+                                <div style="text-align: center; padding: 15px; background: var(--islamic-cream); border-radius: 8px;">
+                                    <div style="font-size: 24px; font-weight: 800; color: var(--islamic-green); margin-bottom: 5px;">73%</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Completion Rate</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green)); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Peak Learning Hours</div>
+                                <div style="font-size: 14px; opacity: 0.9;">19:00 - 22:00 (After Maghrib)</div>
+                            </div>
+
+                            <div style="background: linear-gradient(135deg, var(--islamic-gold), #f4d03f); color: var(--islamic-dark-green); padding: 15px; border-radius: 8px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Most Engaged Day</div>
+                                <div style="font-size: 14px;">Friday (Jumu'ah)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language & Translation Analytics -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                            </svg>
+                            Language Distribution & Translation Impact
+                        </div>
+                    </div>
+                    <div class="chart-body" style="padding: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Language</th>
+                                    <th>Articles</th>
+                                    <th>Readers</th>
+                                    <th>Growth</th>
+                                    <th>Translation Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: 600;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 16px; background: linear-gradient(135deg, #006c35, #00a651); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">AR</div>
+                                            Arabic (العربية)
+                                        </div>
+                                    </td>
+                                    <td><strong>2,847</strong></td>
+                                    <td><strong>284,592</strong></td>
+                                    <td><span class="kpi-change positive" style="font-size: 11px; padding: 3px 8px;">+24.5%</span></td>
+                                    <td><span style="padding: 4px 8px; background: #d4edda; color: #155724; border-radius: 12px; font-size: 10px; font-weight: 600;">Complete</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 16px; background: linear-gradient(135deg, #01411C, #0F5132); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">UR</div>
+                                            Urdu (اردو)
+                                        </div>
+                                    </td>
+                                    <td><strong>1,923</strong></td>
+                                    <td><strong>156,734</strong></td>
+                                    <td><span class="kpi-change positive" style="font-size: 11px; padding: 3px 8px;">+31.2%</span></td>
+                                    <td><span style="padding: 4px 8px; background: #fff3cd; color: #856404; border-radius: 12px; font-size: 10px; font-weight: 600;">75% Complete</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 16px; background: linear-gradient(135deg, #DC3545, #C82333); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">TR</div>
+                                            Turkish (Türkçe)
+                                        </div>
+                                    </td>
+                                    <td><strong>1,456</strong></td>
+                                    <td><strong>98,567</strong></td>
+                                    <td><span class="kpi-change positive" style="font-size: 11px; padding: 3px 8px;">+18.7%</span></td>
+                                    <td><span style="padding: 4px 8px; background: #fff3cd; color: #856404; border-radius: 12px; font-size: 10px; font-weight: 600;">68% Complete</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 16px; background: linear-gradient(135deg, #198754, #20C997); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">ID</div>
+                                            Bahasa Indonesia
+                                        </div>
+                                    </td>
+                                    <td><strong>1,234</strong></td>
+                                    <td><strong>127,892</strong></td>
+                                    <td><span class="kpi-change positive" style="font-size: 11px; padding: 3px 8px;">+42.3%</span></td>
+                                    <td><span style="padding: 4px 8px; background: #f8d7da; color: #721c24; border-radius: 12px; font-size: 10px; font-weight: 600;">45% Complete</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: 600;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 16px; background: linear-gradient(135deg, #0D6EFD, #6610F2); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">FR</div>
+                                            French (Français)
+                                        </div>
+                                    </td>
+                                    <td><strong>867</strong></td>
+                                    <td><strong>67,234</strong></td>
+                                    <td><span class="kpi-change positive" style="font-size: 11px; padding: 3px 8px;">+15.4%</span></td>
+                                    <td><span style="padding: 4px 8px; background: #f8d7da; color: #721c24; border-radius: 12px; font-size: 10px; font-weight: 600;">32% Complete</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // IslamWiki Analytics JavaScript
+        let selectedTimeRange = '30 Days';
+
+        // Initialize Analytics
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDateRangeButtons();
+            updateAnalyticsData();
+            initializeInteractiveElements();
+            
+            // Auto-refresh analytics every 5 minutes
+            setInterval(updateAnalyticsData, 300000);
+        });
+
+        function initializeDateRangeButtons() {
+            const buttons = document.querySelectorAll('.date-range-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    buttons.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    selectedTimeRange = this.textContent;
+                    updateAnalyticsData();
+                    showNotification(`Analytics updated for ${selectedTimeRange}`, 'success');
+                });
+            });
+        }
+
+        function updateAnalyticsData() {
+            // Simulate real-time data updates
+            updateKPIValues();
+            updateChartData();
+            updateGeographicData();
+            console.log(`Analytics refreshed for ${selectedTimeRange}`);
+        }
+
+        function updateKPIValues() {
+            // Simulate dynamic KPI updates based on time range
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            const timeMultipliers = {
+                '7 Days': 0.25,
+                '30 Days': 1,
+                '3 Months': 3.2,
+                '1 Year': 12.5
+            };
+            
+            const baseValues = [1847, 284592, 1200000, 127];
+            const multiplier = timeMultipliers[selectedTimeRange] || 1;
+            
+            kpiValues.forEach((element, index) => {
+                if (baseValues[index]) {
+                    const newValue = Math.round(baseValues[index] * multiplier);
+                    const formattedValue = formatNumber(newValue);
+                    
+                    // Animate value change
+                    animateValue(element, element.textContent, formattedValue, 1000);
+                }
+            });
+        }
+
+        function updateChartData() {
+            // In a real implementation, this would fetch new chart data
+            // and update the chart visualizations
+            console.log('Chart data updated for:', selectedTimeRange);
+        }
+
+        function updateGeographicData() {
+            // Update geographic distribution based on time range
+            console.log('Geographic data updated for:', selectedTimeRange);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(num >= 100000 ? 0 : 1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function animateValue(element, start, end, duration) {
+            const startNum = parseFloat(start.replace(/[KM]/g, '')) || 0;
+            const endNum = parseFloat(end.replace(/[KM]/g, '')) || 0;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const currentValue = startNum + (endNum - startNum) * progress;
+                const suffix = end.includes('K') ? 'K' : end.includes('M') ? 'M' : '';
+                element.textContent = currentValue.toFixed(1) + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = end;
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        function initializeInteractiveElements() {
+            // Add hover effects to charts
+            const chartContainers = document.querySelectorAll('.chart-container');
+            chartContainers.forEach(container => {
+                container.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                container.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add click handlers for content type cards
+            const contentCards = document.querySelectorAll('.content-type-card');
+            contentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.querySelector('.category-title').textContent;
+                    showDetailedAnalytics(category);
+                });
+            });
+
+            // Add interactive table row highlighting
+            const tableRows = document.querySelectorAll('.data-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    // Remove previous selection
+                    tableRows.forEach(r => r.classList.remove('selected'));
+                    // Add selection to clicked row
+                    this.classList.add('selected');
+                    
+                    const contentTitle = this.querySelector('td').textContent;
+                    showContentDetails(contentTitle);
+                });
+            });
+        }
+
+        function showDetailedAnalytics(category) {
+            showNotification(`Loading detailed analytics for ${category}...`, 'info');
+            // In a real implementation, this would navigate to detailed view
+            console.log('Showing detailed analytics for:', category);
+        }
+
+        function showContentDetails(title) {
+            showNotification(`Loading details for: ${title}`, 'info');
+            console.log('Showing content details for:', title);
+        }
+
+        // Prayer time integration for analytics correlation
+        function getPrayerTimeAnalytics() {
+            const prayerTimes = {
+                'Fajr': { time: '5:30', engagement: '12%' },
+                'Dhuhr': { time: '12:45', engagement: '18%' },
+                'Asr': { time: '15:45', engagement: '22%' },
+                'Maghrib': { time: '18:15', engagement: '35%' },
+                'Isha': { time: '19:45', engagement: '28%' }
+            };
+            
+            return prayerTimes;
+        }
+
+        // Export analytics data
+        function exportAnalytics(format = 'pdf') {
+            showNotification(`Exporting analytics as ${format.toUpperCase()}...`, 'info');
+            
+            // Simulate export process
+            setTimeout(() => {
+                showNotification(`Analytics exported successfully as ${format.toUpperCase()}!`, 'success');
+            }, 2000);
+        }
+
+        // Islamic calendar integration
+        function getIslamicDateAnalytics() {
+            // In a real implementation, this would integrate with Islamic calendar
+            // to show engagement patterns during Islamic months/events
+            const islamicEvents = {
+                'Ramadan': { engagement: '+87%', period: '30 days' },
+                'Hajj Season': { engagement: '+45%', period: '10 days' },
+                'Muharram': { engagement: '+23%', period: '30 days' }
+            };
+            
+            return islamicEvents;
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--islamic-green)' : 
+                           type === 'error' ? '#dc3545' : 'var(--islamic-gold)'};
+                color: ${type === 'success' ? 'white' : 
+                        type === 'error' ? 'white' : 'var(--islamic-dark-green)'};
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: var(--shadow-hover);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .selected {
+                background: var(--islamic-cream) !important;
+                border-left: 4px solid var(--islamic-gold) !important;
+            }
+            .content-type-card {
+                cursor: pointer;
+            }
+            .data-table tbody tr {
+                cursor: pointer;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Real-time updates simulation
+        function simulateRealTimeUpdates() {
+            const indicators = [
+                { selector: '.kpi-value', increment: [1, 15, 50, 0] },
+                { selector: '.geographic-value', increment: [5, 12, 8, 3, 7, 4, 2] }
+            ];
+            
+            indicators.forEach(indicator => {
+                const elements = document.querySelectorAll(indicator.selector);
+                elements.forEach((element, index) => {
+                    if (indicator.increment[index]) {
+                        setInterval(() => {
+                            const currentValue = parseInt(element.textContent.replace(/[^\d]/g, ''));
+                            const newValue = currentValue + Math.floor(Math.random() * indicator.increment[index]);
+                            element.textContent = formatNumber(newValue);
+                        }, 30000 + Math.random() * 30000); // Random interval between 30-60 seconds
+                    }
+                });
+            });
+        }
+
+        // Initialize real-time updates after 5 seconds
+        setTimeout(simulateRealTimeUpdates, 5000);
+
+        // Welcome message
+        setTimeout(() => {
+            showNotification('Analytics Dashboard loaded successfully. Showing data for the global Ummah.', 'success');
+        }, 1500);
+    </script>
+</body>
+</html>
