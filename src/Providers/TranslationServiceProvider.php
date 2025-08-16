@@ -23,8 +23,7 @@ class TranslationServiceProvider
         // Register TranslationService
         $container->singleton(TranslationService::class, function (AsasContainer $container) {
             $logger = $container->get(\Psr\Log\LoggerInterface::class);
-            $cache = $container->get(\IslamWiki\Core\Caching\RihlahCaching::class);
-            return new TranslationService($logger, $cache);
+            return new TranslationService($logger);
         });
 
         // Register SubdomainLanguageMiddleware

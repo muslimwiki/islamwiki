@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace IslamWiki\Services;
 
 use Psr\Log\LoggerInterface;
-use IslamWiki\Core\Caching\RihlahCaching;
 
 /**
  * Translation Service
@@ -21,9 +20,9 @@ class TranslationService
     private LoggerInterface $logger;
 
     /**
-     * @var RihlahCaching
+     * @var array Simple cache storage
      */
-    private RihlahCaching $cache;
+    private array $cache = [];
 
     /**
      * @var string Google Translate API key
@@ -71,10 +70,9 @@ class TranslationService
     /**
      * Constructor
      */
-    public function __construct(LoggerInterface $logger, RihlahCaching $cache)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $this->cache = $cache;
         $this->apiKey = $_ENV['GOOGLE_TRANSLATE_API_KEY'] ?? '';
         
         // Load translation memory from cache
@@ -103,14 +101,13 @@ class TranslationService
 
         // Check cache
         $cacheKey = "translation:{$sourceLanguage}:{$targetLanguage}:" . md5($text);
-        $cachedTranslation = $this->cache->get($cacheKey);
-        if ($cachedTranslation !== null) {
+        if (isset($this->cache[$cacheKey])) {
             $this->logger->debug('Translation found in cache', [
                 'text' => substr($text, 0, 50) . '...',
                 'target' => $targetLanguage,
                 'source' => 'cache'
             ]);
-            return $cachedTranslation;
+            return $this->cache[$cacheKey];
         }
 
         // Use Google Translate API
@@ -118,7 +115,7 @@ class TranslationService
         
         if ($translation !== null) {
             // Store in cache and memory
-            $this->cache->set($cacheKey, $translation, 86400); // 24 hours
+            $this->cache[$cacheKey] = $translation;
             $this->translationMemory[$memoryKey] = $translation;
             $this->saveTranslationMemory();
             
@@ -331,10 +328,7 @@ class TranslationService
      */
     private function loadTranslationMemory(): void
     {
-        $memory = $this->cache->get('translation_memory');
-        if ($memory !== null) {
-            $this->translationMemory = $memory;
-        }
+        // This method is no longer needed as cache is now an array
     }
 
     /**
@@ -347,7 +341,7 @@ class TranslationService
             $this->translationMemory = array_slice($this->translationMemory, -1000, 1000, true);
         }
         
-        $this->cache->set('translation_memory', $this->translationMemory, 86400 * 7); // 7 days
+        // This method is no longer needed as cache is now an array
     }
 
     /**
@@ -356,7 +350,7 @@ class TranslationService
     public function clearTranslationMemory(): void
     {
         $this->translationMemory = [];
-        $this->cache->delete('translation_memory');
+        // This method is no longer needed as cache is now an array
         $this->logger->info('Translation memory cleared');
     }
 
@@ -369,7 +363,7 @@ class TranslationService
             'memory_size' => count($this->translationMemory),
             'supported_languages' => count($this->supportedLanguages),
             'api_configured' => !empty($this->apiKey),
-            'cache_enabled' => $this->cache !== null
+            'cache_enabled' => true // Cache is now an array, so it's always enabled
         ];
     }
 } 

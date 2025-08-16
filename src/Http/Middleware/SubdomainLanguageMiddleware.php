@@ -62,7 +62,7 @@ class SubdomainLanguageMiddleware
     {
         $this->logger = $logger;
         $this->translationService = $translationService;
-        $this->baseDomain = $this->getBaseDomain();
+        // Don't call getBaseDomain() here - defer until needed
     }
 
     /**
@@ -141,25 +141,30 @@ class SubdomainLanguageMiddleware
      */
     public function getBaseDomain(): string
     {
-        $host = $_SERVER['HTTP_HOST'] ?? 'local.islam.wiki';
-        
-        // Remove port if present
-        $host = preg_replace('/:\d+$/', '', $host);
-        
-        // Remove language subdomain if present
-        foreach ($this->supportedLanguages as $code => $name) {
-            if (strpos($host, $code . '.') === 0) {
-                $host = substr($host, strlen($code) + 1);
-                break;
+        // Lazy load the base domain
+        if (!isset($this->baseDomain)) {
+            $host = $_SERVER['HTTP_HOST'] ?? 'local.islam.wiki';
+            
+            // Remove port if present
+            $host = preg_replace('/:\d+$/', '', $host);
+            
+            // Remove language subdomain if present
+            foreach ($this->supportedLanguages as $code => $name) {
+                if (strpos($host, $code . '.') === 0) {
+                    $host = substr($host, strlen($code) + 1);
+                    break;
+                }
             }
+            
+            // Remove www prefix if present
+            if (strpos($host, 'www.') === 0) {
+                $host = substr($host, 4);
+            }
+            
+            $this->baseDomain = $host;
         }
         
-        // Remove www prefix if present
-        if (strpos($host, 'www.') === 0) {
-            $host = substr($host, 4);
-        }
-        
-        return $host;
+        return $this->baseDomain;
     }
 
     /**

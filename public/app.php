@@ -238,6 +238,9 @@ $container->instance('controller.factory', $controllerFactory);
 // Initialize router
 $router = new SabilRouting($container);
 
+// Initialize global middleware
+$router->initializeGlobalMiddleware();
+
 // Load routes
 require_once BASE_PATH . '/routes/web.php';
 

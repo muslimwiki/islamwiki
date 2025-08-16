@@ -71,11 +71,11 @@ class AsasContainer implements ContainerInterface
     }
 
     /**
-     * Alias a type to a different name.
+     * Register an alias with the container.
      */
     public function alias(string $abstract, string $alias): void
     {
-        $this->aliases[$alias] = $abstract;
+        $this->aliases[$abstract] = $alias;
     }
 
     /**
