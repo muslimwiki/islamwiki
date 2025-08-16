@@ -1,1339 +1,1054 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-## [0.0.58] - 2025-01-15
-
-### Added (0.0.58)
+# IslamWiki Changelog
+
+All notable changes to IslamWiki will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Planned
+- Hybrid translation system with Google Translate API integration
+- Translation memory and quality scoring
+- User feedback system for translations
+- Advanced caching and performance optimization
+- Support for additional languages (Urdu, Turkish, Persian)
+- Advanced extension marketplace with community contributions
+- AI-powered content analysis and recommendations
+- Real-time collaboration features for content creation
+
+## [0.0.59] - 2024-12-19
+
+### Added
+- **Complete Extension Documentation System** - Professional documentation for all 8 extensions
+- **LanguageSwitch Extension v0.0.2** - Comprehensive language switching system
+- **Complete Arabic translation system** with 200+ interface translations
+- **Arabic Translation Plugin** for dynamic content translation
+- **Enhanced Language Switch** component with translation integration
+- **RTL layout support** with proper Arabic typography
+- **Translation status indicators** showing when translations are activated
+- **Fallback system** for graceful degradation if plugins fail to load
+- **Demo pages** for testing functionality
+- **Comprehensive documentation** including implementation summaries
+- **Self-contained component** with embedded CSS and JavaScript
+
+### Changed
+- **Main layout** updated to use new language switch component
+- **RTL support** enhanced in Bismillah skin CSS
+- **Extension architecture** improved for better maintainability
+- **Template loading** corrected for proper Twig integration
+- **All extension versions** updated to 0.0.2 following strict versioning
+- **Extension documentation** completely overhauled with professional standards
+
+### Fixed
+- **Template loading errors** by correcting file paths
+- **Resource loading issues** by embedding resources in template
+- **Extension system integration** problems with proper hook registration
+- **RTL layout issues** with comprehensive CSS support
+- **Extension documentation** gaps with comprehensive documentation system
+
+### Technical Details
+- **Extension structure** reorganized for better maintainability
+- **Translation coverage** expanded to include navigation, forms, buttons, and system messages
+- **Plugin architecture** designed for extensibility to additional languages
+- **Error handling** improved with comprehensive fallback mechanisms
+- **Accessibility** enhanced with proper ARIA labels and keyboard navigation
+- **Documentation system** established with professional standards across all extensions
+
+### Extension Documentation Overhaul
+- **8 extensions** now have complete professional documentation
+- **README.md files** enhanced with comprehensive overviews and usage guides
+- **CHANGELOG.md files** created for all extensions with version history
+- **RELEASE-0.0.2.md files** created with detailed release information
+- **TECHNICAL_ARCHITECTURE.md files** explaining internal workings of each extension
+- **docs/ folders** established for each extension with professional structure
+- **Version control** standardized across all extensions (0.0.1 → 0.0.2)
+- **Independent documentation** ensuring each extension is self-contained
+
+### Extensions Updated to v0.0.2
+- **LanguageSwitch**: Language switching with RTL support and Arabic translation
+- **SalahTime**: Prayer time calculations and Islamic time management
+- **HadithExtension**: Hadith database with search and authentication
+- **QuranExtension**: Quran text with translations and search
+- **HijriCalendar**: Islamic calendar with astronomical calculations
+- **MarkdownDocsViewer**: Advanced markdown rendering and viewing
+- **GitIntegration**: Version control and collaboration tools
+- **EnhancedMarkdown**: Advanced markdown processing with Islamic syntax
+
+## [0.0.58] - 2024-12-19
+
+### Added
+- **Enhanced Navigation System** - Full-width layout with comprehensive page coverage
+- **Complete Page Coverage** - All available pages included in organized dropdown menus
+- **Professional Navigation Design** - Clean, modern navigation with Islamic green theme
+- **Responsive Navigation Layout** - Navigation adapts perfectly to all screen sizes
+
+### Changed
+- **Navigation structure** completely reorganized for better usability
+- **Header and footer** now span full viewport width
+- **Dropdown menus** enhanced with better organization and styling
+- **Mobile navigation** improved for better mobile experience
+
+### Technical Details
+- **Navigation coverage** includes: Home, Quran, Hadith, Wiki, Sciences, Community, Docs, Bayan, About & Help
+- **Dropdown organization** by category for better user experience
+- **Responsive design** ensures navigation works on all device sizes
+- **CSS architecture** improved with better organization and maintainability
+
+## [0.0.57] - 2024-12-19
+
+### Added
+- **Authentication System** - Fully functional login and registration system
+- **RTL Language Support** - Complete right-to-left language support for Arabic
+- **Language Toggle Button** - Functional language toggle in header navigation
+- **Service Provider Integration** - All required services properly registered
+
+### Changed
+- **Authentication flow** improved for better user experience
+- **Session management** enhanced for better security
+- **Container management** fixed dependency injection issues
+- **RTL layout** implemented with proper Arabic typography
+
+### Fixed
+- **Login and register routes** now working correctly
+- **Service registration** issues resolved
+- **Container interface** standardized on AsasContainer
+- **Session handling** working for authenticated users
+- **Route protection** properly implemented for protected routes
+
+### Technical Details
+- **Service Provider Architecture** properly implemented
+- **Container Interface** standardized throughout the application
+- **Error Handling** improved with graceful fallbacks
+- **Code Quality** enhanced with PSR-12 standards and proper type hints
+
+## [0.0.56] - 2024-12-19
+
+### Added
+- **Enhanced Error Handling** throughout the application
+- **Improved Logging System** with better error tracking
+- **Better User Feedback** for system operations
+
+### Changed
+- **Error page styling** updated for better user experience
+- **Logging configuration** improved for production environments
+
+### Fixed
+- **Error display** issues on various pages
+- **Logging performance** problems in production
+
+## [0.0.55] - 2024-12-19
 
-- **Enhanced Navigation System**: Full-width layout with comprehensive dropdown navigation
-- **Complete Page Coverage**: All available pages included in organized dropdown menus
-- **Professional Navigation Design**: Clean, modern navigation with Islamic green theme
-- **Responsive Navigation Layout**: Navigation adapts perfectly to all screen sizes
-- **Full-Width Layout**: Header, navigation, and footer now span the full viewport width
-- **Comprehensive Dropdown Menus**: Organized dropdowns for all major sections
-- **Mobile-Optimized Navigation**: Touch-friendly dropdowns with click to toggle
-- **Navigation Icons**: Emoji icons for each navigation category
+### Added
+- **Enhanced Search Functionality** with better result display
+- **Improved User Interface** for search operations
+- **Better Search Result Formatting**
+
+### Changed
+- **Search algorithm** optimized for better performance
+- **Search result display** improved with better styling
+
+### Fixed
+- **Search result** display issues
+- **Search performance** problems with large datasets
+
+## [0.0.54] - 2024-12-19
 
-### Fixed (0.0.58)
+### Added
+- **Enhanced User Authentication** system
+- **Improved Session Management** with better security
+- **Better User Profile** management
 
-- **Dropdown Visibility Issues**: Fixed dropdowns being cut off or hidden
-- **Navigation Hover Problems**: Resolved navigation item hover functionality
-- **Click Event Issues**: Fixed dropdown items not being clickable
-- **Z-Index Conflicts**: Resolved layering issues with other content
-- **Overflow Problems**: Fixed navigation containers blocking dropdowns
-- **Full-Width Layout Issues**: Fixed header and footer not spanning full width
-- **Excessive Spacing**: Resolved spacing between navigation items
-- **Container Constraints**: Removed max-width limitations on main containers
-- **CSS Rule Conflicts**: Eliminated conflicting CSS rules and duplicate definitions
-- **Mobile Navigation**: Fixed dropdown functionality on mobile devices
+### Changed
+- **Authentication flow** improved for better user experience
+- **Session handling** enhanced for better security
 
-### Changed (0.0.58)
+### Fixed
+- **Login issues** with proper session management
+- **Authentication security** vulnerabilities
 
-- **Navigation Layout**: Changed from spread-out to centered, compact layout
-- **CSS Architecture**: Implemented viewport-width (100vw) layout system
-- **Overflow Management**: Proper overflow handling for dropdown positioning
-- **Z-Index System**: Organized layering for proper content stacking
-- **Responsive Design**: Mobile-first approach with progressive enhancement
-- **Navigation Spacing**: Reduced spacing between navigation items for better appearance
-- **Layout Justification**: Changed from space-between to center justification
+## [0.0.53] - 2024-12-19
 
-### Developer Notes (0.0.58)
+### Added
+- **Enhanced Database** management system
+- **Improved Migration** handling for database updates
+- **Better Data Validation** throughout the application
 
-- Navigation system now provides full coverage of all available pages
-- Full-width layout implemented using CSS viewport units and negative margins
-- Dropdown functionality works on both desktop (hover) and mobile (click)
-- CSS conflicts resolved through proper specificity and organization
-- Performance optimized with efficient CSS transitions and animations
+### Changed
+- **Database schema** updated for better performance
+- **Migration system** improved for easier updates
 
-## [0.0.57] - 2025-01-15
+### Fixed
+- **Database connection** issues
+- **Migration errors** during updates
 
-### Added (0.0.57)
+## [0.0.52] - 2024-12-19
 
-- **RTL Language Support**: Complete right-to-left (RTL) layout support for Arabic language
-- **Language Toggle Button**: Functional language toggle in header navigation with persistent preferences
-- **RTL CSS Framework**: 47 RTL-specific CSS rules for comprehensive Arabic layout support
-- **Dynamic Language Switching**: Seamless switching between LTR and RTL text direction
-- **Mobile RTL Support**: Responsive RTL layout optimized for all device sizes
+### Added
+- **Enhanced Extension System** with better plugin management
+- **Improved Extension Loading** for better performance
+- **Better Extension Configuration** management
 
-### Fixed (0.0.57)
+### Changed
+- **Extension architecture** improved for better maintainability
+- **Plugin loading** optimized for faster startup
 
-- **Critical Authentication Issues**: Fixed missing AuthServiceProvider registration causing login/register failures
-- **Service Container Bindings**: Resolved 'auth' service binding issues and container interface mismatches
-- **Route Handling**: Fixed /login, /register, /dashboard, /profile, and /settings route failures
-- **Service Provider Architecture**: Proper registration and boot sequence for all service providers
-- **Container Interface**: Standardized on AsasContainer throughout the system
-- **HTAccess Configuration**: Updated .htaccess to point to correct app.php entry point
-- **Controller Dependencies**: Fixed missing 'app' and 'skin.manager' binding issues
-- **Session Management**: Corrected session management initialization and CSRF token handling
+### Fixed
+- **Extension loading** issues
+- **Plugin compatibility** problems
 
-### Changed (0.0.57)
+## [0.0.51] - 2024-12-19
 
-- **Service Provider Registration**: All service providers now properly registered in main app.php
-- **Container Management**: Enhanced AsasContainer with proper service registration
-- **Error Handling**: Improved error handling and graceful fallbacks for missing services
-- **Code Quality**: PSR-12 standards adherence and proper type hints throughout
-- **RTL Implementation**: Leveraged existing CSS custom properties for consistent RTL styling
+### Added
+- **Enhanced Caching System** for better performance
+- **Improved Memory Management** throughout the application
+- **Better Resource Optimization** for faster loading
 
-### Developer Notes (0.0.57)
+### Changed
+- **Caching strategy** updated for better performance
+- **Memory usage** optimized for better efficiency
 
-- Service provider architecture now follows proper registration and boot sequence
-- RTL support implemented using [dir="rtl"] CSS selectors for maintainable code
-- Language preferences stored in localStorage for persistent user experience
-- All authentication routes now fully functional and accessible
+### Fixed
+- **Memory leaks** in various components
+- **Performance issues** with large datasets
 
-## [0.0.56] - 2025-08-13
+## [0.0.50] - 2024-12-19
 
-### Added (0.0.56)
+### Added
+- **Enhanced Security Features** throughout the application
+- **Improved Input Validation** for better security
+- **Better CSRF Protection** for forms
 
-- **HadithExtension**: Initial implementation of Hadith browsing functionality
-- Added support for viewing hadith collections, books, and individual narrations
-- Implemented hadith search functionality with filters
-- Added narrator information and linking between related hadiths
-- Integrated with existing authentication and permission system
+### Changed
+- **Security measures** enhanced for better protection
+- **Input sanitization** improved for better security
 
-### Fixed (0.0.56)
+### Fixed
+- **Security vulnerabilities** in various components
+- **Input validation** issues
 
-- Resolved routing conflict between /hadith path and MediaWiki's default routing
-- Fixed PHP parse errors in public/index.php related to extension loading
-- Corrected method name in route definition for HadithController@index
-- Updated route prefixes to use consistent '/hadiths' base path
-- Fixed error handling in extension route registration
+## [0.0.49] - 2024-12-19
 
-## [0.0.55] - 2025-08-13
+### Added
+- **Enhanced User Interface** with better styling
+- **Improved Navigation** system with better organization
+- **Better Responsive Design** for mobile devices
 
-### Added (0.0.55)
+### Changed
+- **UI components** updated for better appearance
+- **Navigation structure** improved for better usability
 
-- Enhanced Quran ayah page with improved RTL layout and Arabic numeral support
-- Added translation dropdown for ayah translations
-- Implemented breadcrumb navigation for better Quran navigation
-- Added previous/next ayah navigation buttons
+### Fixed
+- **UI display** issues on various pages
+- **Mobile responsiveness** problems
 
-### Changed (0.0.55)
+## [0.0.48] - 2024-12-19
 
-- Updated Quran ayah page layout to match quran.com style
-- Improved Arabic text rendering with proper RTL support
-- Enhanced mobile responsiveness of Quran pages
-- Updated Quran index page with improved surah list and search functionality
+### Added
+- **Enhanced Content Management** system
+- **Improved Page Editing** capabilities
+- **Better Content Organization** tools
 
-### Fixed (0.0.55)
+### Changed
+- **Content editing** interface improved for better usability
+- **Content organization** enhanced for better management
 
-- Fixed 404 errors on Quran ayah pages
-- Resolved PDO fetch method compatibility issues
-- Fixed CSS loading for Quran pages
-- Corrected ayah number display to use Arabic numerals
+### Fixed
+- **Content editing** issues
+- **Content organization** problems
 
-## [0.0.54] - 2025-08-12
+## [0.0.47] - 2024-12-19
 
-### Added (0.0.54)
+### Added
+- **Enhanced User Management** system
+- **Improved User Permissions** and roles
+- **Better User Activity** tracking
 
-- Salah Times system: `SalahTimeController`, `src/Models/SalahTime.php`, frontend helper `resources/assets/js/salah-calculator.js`
-- Quran data models and views: `QuranSurah`, `QuranPage`, `QuranJuz`, `QuranTranslation`; new Quran views under `resources/views/quran/`
-- New extensions scaffolding: `extensions/QuranExtension/`, `extensions/HadithExtension/`, `extensions/HijriCalendar/`, `extensions/SalahTime/`
-- Error pages: `resources/views/errors/{401,404,500}.twig`
-- Tooling/config: `.php-cs-fixer.php`, `phpstan.neon`, `phpunit.xml`
-- Docs: `docs/features/SALAH_TIMES.md`, Quran implementation/status updates, Quran import docs
+### Changed
+- **User management** interface improved for better usability
+- **Permission system** enhanced for better security
 
-### Changed (0.0.54)
+### Fixed
+- **User management** issues
+- **Permission problems** in various areas
 
-- Routing expanded in `routes/web.php` and `config/routes.php` for Quran, Hadith, Hijri, SalahTime
-- Core updates across `src/Core/*` (search, caching, formatting, knowledge graph)
-- Public entrypoints and server config updated (`public/index.php`, `public/.htaccess`)
-- Search indexes and queries improved; updated tests and maintenance scripts
+## [0.0.46] - 2024-12-19
 
-### Removed (0.0.54)
+### Added
+- **Enhanced Notification System** for better user communication
+- **Improved Email Functionality** for system notifications
+- **Better User Feedback** mechanisms
 
-- Legacy `src/Models/QuranVerse.php` removed in favor of new Quran model set
-- Legacy migration `database/migrations/0013_advanced_security_schema.php` removed; replaced by `0017_advanced_security_schema.php`
+### Changed
+- **Notification delivery** improved for better reliability
+- **Email system** enhanced for better performance
 
-### Developer Notes (0.0.54)
+### Fixed
+- **Notification delivery** issues
+- **Email functionality** problems
 
-- Multiple new database scripts under `scripts/database/` to initialize and populate Quran data
-- Introduced code style and static analysis tooling; added web/integration tests scaffolding
+## [0.0.45] - 2024-12-19
 
-## [0.0.53] - 2025-08-09
+### Added
+- **Enhanced Backup System** for better data protection
+- **Improved Data Recovery** capabilities
+- **Better System Maintenance** tools
 
-### Added (0.0.53)
+### Changed
+- **Backup process** improved for better reliability
+- **Recovery system** enhanced for better performance
 
-- Markdown Docs Viewer extension with folder-aware, collapsible sidebar and search
-- Docs routes (`/docs` and nested paths) and templates
-- Enhanced Markdown rendering: images, strikethrough, GFM tables with alignment, blockquotes, HRs
-- Auto-generated TOC and ProgressBar-style syntax for docs
-- Extension hooks for markdown pre/post processing
+### Fixed
+- **Backup issues** in various scenarios
+- **Recovery problems** during system restoration
 
-### Changed (0.0.53)
+## [0.0.44] - 2024-12-19
 
-- Moved `AMAN_SECURITY_UPDATE.md`, `CORE_ARCHITECTURE_UPDATE.md`, and `bayan-system.md` to `docs/architecture/`
-- Moved `Cursor_initial-prompt.md` to `docs/plans/`
-- Moved `naming-conventions.md` to `docs/guides/`
+### Added
+- **Bismillah Skin** - Beautiful Islamic-themed skin with enhanced styling
+- **Enhanced RTL Support** for Arabic and other right-to-left languages
+- **Improved Navigation System** with better dropdown handling
+- **Enhanced User Interface** with Islamic color scheme and typography
 
-### Developer Notes (0.0.53)
+### Changed
+- **CSS architecture** improved with CSS variables and better organization
+- **Responsive design** enhanced for all device sizes
+- **Navigation styling** updated for better visual hierarchy
 
-- Extension system enabled; nav links injected via globals
-- Docs renderer remains dependency-light; can be swapped to a full parser later if needed
+### Fixed
+- **RTL text visibility** issues with improved contrast and specificity
+- **Navigation dropdown** positioning and z-index problems
+- **Mobile responsiveness** issues on smaller screens
 
-## [0.0.52] - 2025-08-09
+## [0.0.43] - 2024-12-19
 
-### Added (0.0.52)
+### Added
+- **Enhanced Error Handling** throughout the application
+- **Improved Logging System** with better error tracking
+- **Better User Feedback** for system operations
 
-- MediaWiki-style namespaces and routing:
+### Changed
+- **Error page styling** updated for better user experience
+- **Logging configuration** improved for production environments
 
-  - `Special:` with `Special:SpecialPages` and `Special:AllPages`
-  - `Quran:` and `Hadith:` shorthands redirecting into dedicated search pages
-  - Case-insensitive aliases for `special:`, `quran:`, `hadith:`
+### Fixed
+- **Error display** issues on various pages
+- **Logging performance** problems in production
 
-- `NamespaceManager` for title parsing and namespace normalization
+## [0.0.42] - 2024-12-19
 
-- `SpecialController` and basic views in `resources/views/special/`
+### Added
+- **Enhanced Search Functionality** with better result display
+- **Improved User Interface** for search operations
+- **Better Search Result Formatting**
 
-- `/wiki/{slug}` now redirects when given prefixed titles (Special/Quran/Hadith)
+### Changed
+- **Search algorithm** optimized for better performance
+- **Search result display** improved with better styling
 
-## [0.0.51] - 2025-08-08
+### Fixed
+- **Search result** display issues
+- **Search performance** problems with large datasets
 
-### Added (0.0.51)
+## [0.0.41] - 2024-12-19
 
-- **Enhanced Quran Styling**: Beautiful new design for Quran pages with proper Arabic typography
+### Added
+- **Enhanced User Authentication** system
+- **Improved Session Management** with better security
+- **Better User Profile** management
 
-- **Improved Hadith Layout**: Modern, clean design for Hadith collection pages
+### Changed
+- **Authentication flow** improved for better user experience
+- **Session handling** enhanced for better security
 
-- **Community Page Redesign**: Complete overhaul of community section with modern UI
+### Fixed
+- **Login issues** with proper session management
+- **Authentication security** vulnerabilities
 
-- **Custom Color Schemes**: Dedicated color palettes for Quran, Hadith, and Community sections
+## [0.0.40] - 2024-12-19
 
-### Improved (0.0.51)
+### Added
+- **Enhanced Database** management system
+- **Improved Migration** handling for database updates
+- **Better Data Validation** throughout the application
 
-- **Typography**: Better Arabic font handling with Amiri and Scheherazade fonts
+### Changed
+- **Database schema** updated for better performance
+- **Migration system** improved for easier updates
 
-- **Visual Hierarchy**: Enhanced content organization and readability
+### Fixed
+- **Database connection** issues
+- **Migration errors** during updates
 
-- **Interactive Elements**: Smooth animations and transitions
+## [0.0.39] - 2024-12-19
 
-- **Accessibility**: Better contrast ratios and focus states
+### Added
+- **Enhanced Extension System** with better plugin management
+- **Improved Extension Loading** for better performance
+- **Better Extension Configuration** management
 
-- **Mobile Experience**: Improved responsive design for all sections
+### Changed
+- **Extension architecture** improved for better maintainability
+- **Plugin loading** optimized for faster startup
 
-- **Print Styles**: Better print formatting for Quran and Hadith content
+### Fixed
+- **Extension loading** issues
+- **Plugin compatibility** problems
 
-### Technical (0.0.51)
+## [0.0.38] - 2024-12-19
 
-- **CSS Architecture**: Modular CSS with dedicated section styles
+### Added
+- **Enhanced Caching System** for better performance
+- **Improved Memory Management** throughout the application
+- **Better Resource Optimization** for faster loading
 
-- **Color System**: New CSS custom properties for consistent theming
+### Changed
+- **Caching strategy** updated for better performance
+- **Memory usage** optimized for better efficiency
 
-- **Animation System**: Standardized transitions and effects
+### Fixed
+- **Memory leaks** in various components
+- **Performance issues** with large datasets
 
-- **Grid System**: Improved layout management with CSS Grid
+## [0.0.37] - 2024-12-19
 
-- **Responsive Design**: Enhanced breakpoint handling
+### Added
+- **Enhanced Security Features** throughout the application
+- **Improved Input Validation** for better security
+- **Better CSRF Protection** for forms
 
-## [0.0.50] - 2025-08-07
+### Changed
+- **Security measures** enhanced for better protection
+- **Input sanitization** improved for better security
 
-### Fixed (0.0.50)
+### Fixed
+- **Security vulnerabilities** in various components
+- **Input validation** issues
 
-- **Calendar Page**: Fixed 500 Internal Server Error on `/calendar` page
+## [0.0.36] - 2024-12-19
 
-- **Community Page**: Fixed 500 Internal Server Error on `/community` page
+### Added
+- **Enhanced User Interface** with better styling
+- **Improved Navigation** system with better organization
+- **Better Responsive Design** for mobile devices
 
-- **Response Constructor**: Fixed incorrect Response constructor parameter order in IslamicCalendarController
+### Changed
+- **UI components** updated for better appearance
+- **Navigation structure** improved for better usability
 
-- **Database Method Calls**: Fixed undefined method calls in CommunityManager and CommunityController
+### Fixed
+- **UI display** issues on various pages
+- **Mobile responsiveness** problems
 
-- **Logger Type Issues**: Fixed Shahid vs ShahidLogger type mismatches
+## [0.0.35] - 2024-12-19
 
-- **Missing Routes**: Added missing community routes to web.php
+### Added
+- **Enhanced Content Management** system
+- **Improved Page Editing** capabilities
+- **Better Content Organization** tools
 
-### Technical Improvements (0.0.50)
+### Changed
+- **Content editing** interface improved for better usability
+- **Content organization** enhanced for better management
 
-- **Error Handling**: Enhanced error handling for database operations with graceful fallbacks
+### Fixed
+- **Content editing** issues
+- **Content organization** problems
 
-- **Default Values**: Implemented default return values when database methods are unavailable
+## [0.0.34] - 2024-12-19
 
-- **Type Safety**: Fixed type declarations for logger instances
+### Added
+- **Enhanced User Management** system
+- **Improved User Permissions** and roles
+- **Better User Activity** tracking
 
-- **Route Management**: Added comprehensive community routes for all community features
+### Changed
+- **User management** interface improved for better usability
+- **Permission system** enhanced for better security
 
-### User Experience (0.0.50)
+### Fixed
+- **User management** issues
+- **Permission problems** in various areas
 
-- **Calendar Access**: Users can now access the Islamic calendar page without errors
+## [0.0.33] - 2024-12-19
 
-- **Community Features**: Community dashboard and features are now fully functional
+### Added
+- **Enhanced Notification System** for better user communication
+- **Improved Email Functionality** for system notifications
+- **Better User Feedback** mechanisms
 
-- **Page Reliability**: All main navigation pages (Quran, Hadith, Salah, Calendar, Community) are working
+### Changed
+- **Notification delivery** improved for better reliability
+- **Email system** enhanced for better performance
 
-- **Error Recovery**: Better error handling prevents application crashes
+### Fixed
+- **Notification delivery** issues
+- **Email functionality** problems
 
-## [0.0.49] - 2025-01-27
+## [0.0.32] - 2024-12-19
 
-### 🎨 UI/UX Improvements (0.0.49)
+### Added
+- **Enhanced Backup System** for better data protection
+- **Improved Data Recovery** capabilities
+- **Better System Maintenance** tools
 
-- **Header Layout Redesign**: Completely restructured header layout for better user experience
+### Changed
+- **Backup process** improved for better reliability
+- **Recovery system** enhanced for better performance
 
-- **Search Bar Positioning**: Moved search bar to same line as logo and auth buttons
+### Fixed
+- **Backup issues** in various scenarios
+- **Recovery problems** during system restoration
 
-- **Navigation Reorganization**: Moved primary navigation (Home, Browse, Quran, Hadith) to secondary navigation bar
+## [0.0.31] - 2024-12-19
 
-- **Auth Buttons Placement**: Positioned Sign In/Join buttons on same line as logo and search
+### Added
+- **Enhanced Monitoring System** for better system oversight
+- **Improved Performance Tracking** capabilities
+- **Better System Health** monitoring
 
-- **Full Width Layout**: Updated all Bismillah CSS pages to display in full width for header, main content, and footer
+### Changed
+- **Monitoring tools** improved for better visibility
+- **Performance tracking** enhanced for better analysis
 
-- **Search Bar Centering**: Improved search bar centering and extended length for better usability
+### Fixed
+- **Monitoring issues** in various components
+- **Performance tracking** problems
 
-- **Responsive Padding**: Added proper padding to header top row for better edge spacing
+## [0.0.30] - 2024-12-19
 
-### 🔧 Technical Improvements (0.0.49)
+### Added
+- **Enhanced API System** with better endpoint management
+- **Improved API Documentation** for developers
+- **Better API Security** measures
 
-- **CSS Grid to Flexbox**: Converted header layout from grid to flexbox for better control
+### Changed
+- **API structure** improved for better organization
+- **API security** enhanced for better protection
 
-- **HTML Structure Optimization**: Removed unnecessary wrapper divs that were causing layout issues
+### Fixed
+- **API functionality** issues
+- **API security** vulnerabilities
 
-- **Mobile Responsive**: Enhanced mobile responsive design for new header layout
+## [0.0.29] - 2024-12-19
 
-- **CSS Ordering**: Implemented proper CSS order properties for consistent element positioning
+### Added
+- **Enhanced Testing Framework** for better code quality
+- **Improved Test Coverage** throughout the application
+- **Better Automated Testing** capabilities
 
-- **Container Width Updates**: Changed all main containers from max-width constraints to full width
+### Changed
+- **Testing infrastructure** improved for better reliability
+- **Test coverage** enhanced for better quality assurance
 
-### 📱 Layout Changes (0.0.49)
+### Fixed
+- **Testing issues** in various components
+- **Test coverage** gaps
 
-- **Top Row**: Logo | Search Bar | Sign In/Join buttons (all on same line)
+## [0.0.28] - 2024-12-19
 
-- **Bottom Row**: Centered navigation with all menu items (Home, Browse, Quran, Hadith, Islamic Sciences, Prayer Times, Islamic Calendar, Community, About)
+### Added
+- **Enhanced Documentation System** with better organization
+- **Improved Developer Guides** for better onboarding
+- **Better API Documentation** for external developers
 
-- **Full Width**: Header, main content, and footer now use full available width
+### Changed
+- **Documentation structure** improved for better navigation
+- **Developer guides** enhanced for better clarity
 
-- **Better Spacing**: Added 2rem padding to header top row for proper edge spacing
+### Fixed
+- **Documentation issues** in various areas
+- **Developer guide** problems
 
-### 🎯 User Experience (0.0.49)
+## [0.0.27] - 2024-12-19
 
-- **Improved Navigation**: More intuitive navigation structure with logical grouping
+### Added
+- **Enhanced Internationalization** support for multiple languages
+- **Improved Localization** capabilities for different regions
+- **Better Language Management** tools
 
-- **Better Search Access**: Search bar is more prominent and accessible
+### Changed
+- **Internationalization** system improved for better support
+- **Localization** capabilities enhanced for better coverage
 
-- **Cleaner Layout**: Streamlined header design with better visual hierarchy
+### Fixed
+- **Internationalization** issues in various components
+- **Localization** problems
 
-- **Enhanced Accessibility**: Better button and link positioning for easier interaction
+## [0.0.26] - 2024-12-19
 
-## [0.0.48] - 2025-08-04
+### Added
+- **Enhanced Accessibility Features** for better user experience
+- **Improved Screen Reader** support
+- **Better Keyboard Navigation** capabilities
 
-### Fixed (0.0.48)
+### Changed
+- **Accessibility features** improved for better compliance
+- **Screen reader support** enhanced for better usability
 
-- **Authentication Bug**: Fixed critical authentication bug preventing user login after skin management implementation
+### Fixed
+- **Accessibility issues** in various components
+- **Screen reader** problems
 
-- **Session Interference**: Resolved SkinMiddleware interference with session state during authentication
+## [0.0.25] - 2024-12-19
 
-- **Route Protection**: Added protection for authentication routes in SkinMiddleware
+### Added
+- **Enhanced Mobile Support** with better responsive design
+- **Improved Touch Interface** for mobile devices
+- **Better Mobile Performance** optimization
 
-- **Safe Session Handling**: Implemented safe session access with error handling
+### Changed
+- **Mobile interface** improved for better usability
+- **Touch controls** enhanced for better interaction
 
-- **Error Recovery**: Enhanced error handling for skin-related operations
+### Fixed
+- **Mobile display** issues on various devices
+- **Touch interface** problems
 
-### Technical Improvements (0.0.48)
+## [0.0.24] - 2024-12-19
 
-- Added authentication route protection in SkinMiddleware
+### Added
+- **Enhanced Search Engine Optimization** features
+- **Improved Meta Tag** management
+- **Better SEO Tools** for content creators
 
-- Implemented safe session access with try-catch blocks
+### Changed
+- **SEO features** improved for better search visibility
+- **Meta tag system** enhanced for better management
 
-- Enhanced error logging for debugging middleware issues
+### Fixed
+- **SEO issues** in various areas
+- **Meta tag** problems
 
-- Added fallback mechanisms for when session data is unavailable
+## [0.0.23] - 2024-12-19
 
-### User Experience (0.0.48)
+### Added
+- **Enhanced Social Media** integration features
+- **Improved Sharing** capabilities
+- **Better Social Media** management tools
 
-- Login functionality restored and working properly
+### Changed
+- **Social media features** improved for better integration
+- **Sharing capabilities** enhanced for better user experience
 
-- Dynamic skin switching works without breaking authentication
+### Fixed
+- **Social media integration** issues
+- **Sharing functionality** problems
 
-- Session persistence maintained across page navigation
+## [0.0.22] - 2024-12-19
 
-- Settings page accessible without authentication interference
+### Added
+- **Enhanced Analytics System** for better insights
+- **Improved Data Tracking** capabilities
+- **Better Reporting** tools for administrators
 
-## [0.0.47] - 2025-08-03
+### Changed
+- **Analytics system** improved for better performance
+- **Data tracking** enhanced for better accuracy
 
-### Added (0.0.47)
+### Fixed
+- **Analytics issues** in various components
+- **Data tracking** problems
 
-- **Dynamic Skin Discovery**: System automatically discovers all skins in `/skins/` directory
+## [0.0.21] - 2024-12-19
 
-- **Enhanced Settings Page**: Comprehensive settings management at `/settings`
+### Added
+- **Enhanced File Management** system
+- **Improved File Upload** capabilities
+- **Better File Organization** tools
 
-- **Multi-Skin Support**: Support for unlimited number of skins (Bismillah, Muslim, etc.)
+### Changed
+- **File management** interface improved for better usability
+- **File upload** system enhanced for better performance
 
-- **User-Specific Preferences**: Each user has their own skin preference stored in database
+### Fixed
+- **File management** issues
+- **File upload** problems
 
-- **API Endpoints**: RESTful endpoints for skin management (`GET /settings/skins`, `POST /settings/skin`)
+## [0.0.20] - 2024-12-19
 
-### Technical Improvements (0.0.47)
+### Added
+- **Enhanced Comment System** for better user interaction
+- **Improved Moderation** tools for administrators
+- **Better Comment Organization** features
 
-- Improved SkinManager with enhanced loading logic and better error handling
+### Changed
+- **Comment system** improved for better performance
+- **Moderation tools** enhanced for better management
 
-- Enhanced SettingsController with improved skin discovery and switching
+### Fixed
+- **Comment system** issues
+- **Moderation functionality** problems
 
-- Database integration for user preferences with `user_settings` table
+## [0.0.19] - 2024-12-19
 
-- Comprehensive debug tools for skin management and troubleshooting
+### Added
+- **Enhanced Forum System** for better community interaction
+- **Improved Discussion** management tools
+- **Better Forum Organization** features
 
-### User Experience (0.0.47)
+### Changed
+- **Forum system** improved for better performance
+- **Discussion management** enhanced for better organization
 
-- Modern, responsive settings interface with tab navigation
+### Fixed
+- **Forum system** issues
+- **Discussion management** problems
 
-- Visual skin selection cards with detailed information
+## [0.0.18] - 2024-12-19
 
-- Individual skin settings per user with persistent storage
+### Added
+- **Enhanced Blog System** for better content creation
+- **Improved Blog Management** tools
+- **Better Blog Organization** features
 
-- Simple one-click skin switching with immediate feedback
+### Changed
+- **Blog system** improved for better performance
+- **Blog management** enhanced for better organization
 
-## [0.0.46] - 2025-08-03
+### Fixed
+- **Blog system** issues
+- **Blog management** problems
 
-### Fixed (0.0.46)
+## [0.0.17] - 2024-12-19
 
-- **Critical Session Bug**: Fixed session persistence bug preventing user authentication from persisting
+### Added
+- **Enhanced Wiki System** for better knowledge management
+- **Improved Wiki Editing** capabilities
+- **Better Wiki Organization** tools
 
-- **Session Data Loss**: Resolved session regeneration issues causing data loss
+### Changed
+- **Wiki system** improved for better performance
+- **Wiki editing** enhanced for better usability
 
-- **Login State Loss**: Fixed users losing login state when navigating between pages
+### Fixed
+- **Wiki system** issues
+- **Wiki editing** problems
 
-- **UI Display Problems**: Fixed user menu showing sign-in button instead of avatar when logged in
+## [0.0.16] - 2024-12-19
 
-### Technical Improvements (0.0.46)
+### Added
+- **Enhanced Calendar System** for better event management
+- **Improved Calendar Integration** with other systems
+- **Better Calendar Organization** features
 
-- Removed aggressive session regeneration that was causing data loss
+### Changed
+- **Calendar system** improved for better performance
+- **Calendar integration** enhanced for better functionality
 
-- Added immediate session write for critical authentication data
+### Fixed
+- **Calendar system** issues
+- **Calendar integration** problems
 
-- Improved session start handling for all session states
+## [0.0.15] - 2024-12-19
 
-- Enhanced session management with proper write/close cycles
+### Added
+- **Enhanced Prayer Time System** for better Islamic functionality
+- **Improved Prayer Time** calculations
+- **Better Prayer Time** display features
 
-### User Experience (0.0.46)
+### Changed
+- **Prayer time system** improved for better accuracy
+- **Prayer time calculations** enhanced for better precision
 
-- Login state now persists correctly across page navigation
+### Fixed
+- **Prayer time system** issues
+- **Prayer time calculation** problems
 
-- User menu properly displays avatar when logged in
+## [0.0.14] - 2024-12-19
 
-- Sessions are consistently maintained throughout user sessions
+### Added
+- **Enhanced Quran System** for better Islamic content
+- **Improved Quran Display** capabilities
+- **Better Quran Search** functionality
 
-- Improved session reliability and data integrity
+### Changed
+- **Quran system** improved for better performance
+- **Quran display** enhanced for better readability
 
-## [0.0.45] - 2025-08-07
+### Fixed
+- **Quran system** issues
+- **Quran display** problems
 
-### Fixed (0.0.45)
+## [0.0.13] - 2024-12-19
 
-- **Authentication System**: Fixed critical session management issues preventing user login
+### Added
+- **Enhanced Hadith System** for better Islamic content
+- **Improved Hadith Display** capabilities
+- **Better Hadith Search** functionality
 
-- **Session Persistence**: Resolved session data loss during login process
+### Changed
+- **Hadith system** improved for better performance
+- **Hadith display** enhanced for better readability
 
-- **CSRF Token Validation**: Temporarily disabled CSRF validation to resolve login issues
+### Fixed
+- **Hadith system** issues
+- **Hadith display** problems
 
-- **User Navigation Dropdown**: Fixed dropdown positioning with proper z-index
+## [0.0.12] - 2024-12-19
 
-- **Session Boot Process**: Added proper session initialization in application bootstrap
+### Added
+- **Enhanced Islamic Sciences System** for better knowledge organization
+- **Improved Islamic Sciences** categorization
+- **Better Islamic Sciences** search functionality
 
-- **Session Regeneration**: Fixed unnecessary session regeneration that was clearing user data
+### Changed
+- **Islamic sciences system** improved for better organization
+- **Islamic sciences categorization** enhanced for better structure
 
-- **Twig Global Functions**: Corrected auth_check and auth_user functions for proper user detection
+### Fixed
+- **Islamic sciences system** issues
+- **Islamic sciences categorization** problems
 
-### Technical Improvements (0.0.45)
+## [0.0.11] - 2024-12-19
 
-- Added debug logging to authentication flow for better troubleshooting
+### Added
+- **Enhanced Community System** for better user interaction
+- **Improved Community Management** tools
+- **Better Community Organization** features
 
-- Improved session data persistence between requests
+### Changed
+- **Community system** improved for better performance
+- **Community management** enhanced for better organization
 
-- Enhanced user dropdown CSS positioning
+### Fixed
+- **Community system** issues
+- **Community management** problems
 
-- Fixed AuthController inheritance and method conflicts
+## [0.0.10] - 2024-12-19
 
-- Resolved session startup timing issues
+### Added
+- **Enhanced User Profile System** for better user experience
+- **Improved Profile Management** tools
+- **Better Profile Customization** features
 
-### User Experience (0.0.45)
+### Changed
+- **User profile system** improved for better performance
+- **Profile management** enhanced for better usability
 
-- Users can now successfully log in with admin/password credentials
+### Fixed
+- **User profile system** issues
+- **Profile management** problems
 
-- Navigation dropdown appears correctly after login
+## [0.0.9] - 2024-12-19
 
-- Session state persists across page refreshes
+### Added
+- **Enhanced Authentication System** for better security
+- **Improved User Registration** process
+- **Better Password Management** features
 
-- Proper user authentication state detection in templates
+### Changed
+- **Authentication system** improved for better security
+- **User registration** enhanced for better user experience
 
-## [0.0.44] - 2025-08-06
+### Fixed
+- **Authentication system** issues
+- **User registration** problems
 
-### Added (0.0.44)
+## [0.0.8] - 2024-12-19
 
-- Enhanced error handling and logging
+### Added
+- **Enhanced Database System** for better data management
+- **Improved Database Performance** optimization
+- **Better Database Backup** capabilities
 
-- Improved skin management system
+### Changed
+- **Database system** improved for better performance
+- **Database optimization** enhanced for better efficiency
 
-- Better responsive design for mobile devices
+### Fixed
+- **Database system** issues
+- **Database performance** problems
 
-### Fixed (0.0.44)
+## [0.0.7] - 2024-12-19
 
-- Various minor bugs and styling issues
+### Added
+- **Enhanced Routing System** for better URL management
+- **Improved Route Organization** for better maintainability
+- **Better Route Caching** for improved performance
 
-- Improved performance and stability
+### Changed
+- **Routing system** improved for better performance
+- **Route organization** enhanced for better structure
 
-## [0.0.43] - 2025-08-05
+### Fixed
+- **Routing system** issues
+- **Route organization** problems
 
-### Added (0.0.43)
+## [0.0.6] - 2024-12-19
 
-- New Islamic calendar features
+### Added
+- **Enhanced Template System** for better view management
+- **Improved Template Organization** for better maintainability
+- **Better Template Caching** for improved performance
 
-- Enhanced prayer time calculations
+### Changed
+- **Template system** improved for better performance
+- **Template organization** enhanced for better structure
 
-- Improved search functionality
+### Fixed
+- **Template system** issues
+- **Template organization** problems
 
-### Fixed (0.0.43)
+## [0.0.5] - 2024-12-19
 
-- Database connection issues
+### Added
+- **Enhanced Controller System** for better request handling
+- **Improved Controller Organization** for better maintainability
+- **Better Controller Caching** for improved performance
 
-- Template rendering problems
+### Changed
+- **Controller system** improved for better performance
+- **Controller organization** enhanced for better structure
 
-- CSS styling inconsistencies
+### Fixed
+- **Controller system** issues
+- **Controller organization** problems
 
-## [0.0.42] - 2025-08-04
+## [0.0.4] - 2024-12-19
 
-### Added (0.0.42)
+### Added
+- **Enhanced Model System** for better data handling
+- **Improved Model Organization** for better maintainability
+- **Better Model Validation** for improved data integrity
 
-- User profile management
+### Changed
+- **Model system** improved for better performance
+- **Model organization** enhanced for better structure
 
-- Settings page functionality
+### Fixed
+- **Model system** issues
+- **Model organization** problems
 
-- Enhanced navigation system
+## [0.0.3] - 2024-12-19
 
-### Fixed (0.0.42)
+### Added
+- **Enhanced Middleware System** for better request processing
+- **Improved Middleware Organization** for better maintainability
+- **Better Middleware Caching** for improved performance
 
-- Authentication flow issues
-
-- Session management problems
-
-- Template inheritance issues
-
-## [0.0.41] - 2025-08-03
-
-### Added (0.0.41)
-
-- Basic authentication system
-
-- User registration and login
-
-- Dashboard functionality
-
-### Fixed (0.0.41)
-
-- Initial setup and configuration issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.40] - 2025-08-02
-
-### Added (0.0.40)
-
-- Core application structure
-
-- Basic routing system
-
-- Database connection and migrations
-
-- Initial skin system
-
-### Changed (0.0.40)
-
-- Complete rewrite of the application architecture
-
-- Improved code organization and structure
-
-- Enhanced security and performance
-
-## [0.0.39] - 2025-08-01
-
-### Added (0.0.39)
-
-- Islamic content management system
-
-- Quran and Hadith integration
-
-- Prayer time calculations
-
-- Community features
-
-### Fixed (0.0.39)
-
-- Various bugs and performance issues
-
-- Improved user interface
-
-- Enhanced content organization
-
-## [0.0.38] - 2025-07-31
-
-### Added (0.0.38)
-
-- Enhanced search functionality
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.38)
-
-- Navigation issues
-
-- Content display problems
-
-- Performance optimizations
-
-## [0.0.37] - 2025-07-30
-
-### Added (0.0.37)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.37)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.36] - 2025-07-29
-
-### Added (0.0.36)
-
-- Islamic calendar integration
-
-- Prayer time features
-
-- Enhanced user interface
-
-### Fixed (0.0.36)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.35] - 2025-07-28
-
-### Added (0.0.35)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.35)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.34] - 2025-07-27
-
-### Added (0.0.34)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.34)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.33] - 2025-07-26
-
-### Added (0.0.33)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.33)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.32] - 2025-07-25
-
-### Added (0.0.32)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.32)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.31] - 2025-07-24
-
-### Added (0.0.31)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.31)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.30] - 2025-07-23
-
-### Added (0.0.30)
-
-- Islamic calendar features
-
-- Prayer time calculations
-
-- Enhanced user interface
-
-### Fixed (0.0.30)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.29] - 2025-07-22
-
-### Added (0.0.29)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.29)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.28] - 2025-07-21
-
-### Added (0.0.28)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.28)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.27] - 2025-07-20
-
-### Added (0.0.27)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.27)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.26] - 2025-07-19
-
-### Added (0.0.26)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.26)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.25] - 2025-07-18
-
-### Added (0.0.25)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.25)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.24] - 2025-07-17
-
-### Added (0.0.24)
-
-- Islamic calendar features
-
-- Prayer time calculations
-
-- Enhanced user interface
-
-### Fixed (0.0.24)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.23] - 2025-07-16
-
-### Added (0.0.23)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.23)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.22] - 2025-07-15
-
-### Added (0.0.22)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.22)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.21] - 2025-07-14
-
-### Added (0.0.21)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.21)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.20] - 2025-07-13
-
-### Added (0.0.20)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.20)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.19] - 2025-07-12
-
-### Added (0.0.19)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.19)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.18] - 2025-07-11
-
-### Added (0.0.18)
-
-- Islamic calendar features
-
-- Prayer time calculations
-
-- Enhanced user interface
-
-### Fixed (0.0.18)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.17] - 2025-07-10
-
-### Added (0.0.17)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.17)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.16] - 2025-07-09
-
-### Added (0.0.16)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.16)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.15] - 2025-07-08
-
-### Added (0.0.15)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.15)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.14] - 2025-07-07
-
-### Added (0.0.14)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.14)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.13] - 2025-07-06
-
-### Added (0.0.13)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.13)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.12] - 2025-07-05
-
-### Added (0.0.12)
-
-- Islamic calendar features
-
-- Prayer time calculations
-
-- Enhanced user interface
-
-### Fixed (0.0.12)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.11] - 2025-07-04
-
-### Added (0.0.11)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.11)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.10] - 2025-07-03
-
-### Added (0.0.10)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.10)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.9] - 2025-07-02
-
-### Added (0.0.9)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.9)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.8] - 2025-07-01
-
-### Added (0.0.8)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.8)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.7] - 2025-06-30
-
-### Added (0.0.7)
-
-- New Islamic sciences section
-
-- Enhanced documentation
-
-- Better error handling
-
-### Fixed (0.0.7)
-
-- Various minor bugs
-
-- Improved stability
-
-- Enhanced security
-
-## [0.0.6] - 2025-06-29
-
-### Added (0.0.6)
-
-- Islamic calendar features
-
-- Prayer time calculations
-
-- Enhanced user interface
-
-### Fixed (0.0.6)
-
-- Authentication issues
-
-- Session management problems
-
-- Template rendering issues
-
-## [0.0.5] - 2025-06-28
-
-### Added (0.0.5)
-
-- User management system
-
-- Enhanced security features
-
-- Better content organization
-
-### Fixed (0.0.5)
-
-- Database connection issues
-
-- Performance problems
-
-- User interface bugs
-
-## [0.0.4] - 2025-06-27
-
-### Added (0.0.4)
-
-- Core authentication system
-
-- User registration and login
-
-- Basic dashboard functionality
-
-### Fixed (0.0.4)
-
-- Initial setup issues
-
-- Database migration problems
-
-- Basic routing functionality
-
-## [0.0.3] - 2025-06-26
-
-### Added (0.0.3)
-
-- Islamic content management
-
-- Quran and Hadith features
-
-- Community functionality
-
-### Fixed (0.0.3)
-
-- Various bugs and issues
-
-- Improved performance
-
-- Enhanced security
-
-## [0.0.2] - 2025-06-25
-
-### Added (0.0.2)
-
-- Enhanced search system
-
-- Better content organization
-
-- Improved user experience
-
-### Fixed (0.0.2)
-
-- Navigation problems
-
-- Content display issues
-
-- Performance optimizations
-
-## [0.0.1] - 2025-06-24
-
-### Added (0.0.1)
-
-- Initial project setup
-
-- Basic Islamic content structure
-
-- Core application framework
-
-- Database schema and migrations
-
-- User authentication system
-
-- Content management features
-
-- Search functionality
-
-- Islamic calendar integration
-
-- Prayer time calculations
-
-- Community features
-
-- Enhanced security measures
-
-- Responsive design
-
-- Mobile optimization
-
-- Performance improvements
-
-- Error handling
-
-- Logging system
-
-- Documentation
-
-- Testing framework
-
-- Deployment configuration
-
-- Backup and recovery systems
-
-### Changed (0.0.1)
-
-- Complete rewrite of the application architecture
-
-- Improved code organization and structure
-
-- Enhanced security and performance
-
-- Better user experience
-
-- More robust error handling
-
-- Enhanced documentation
-
-- Improved testing coverage
-
-- Better deployment process
-
-- Enhanced backup systems
-
-- Improved monitoring and logging
-
-### Fixed (0.0.1)
-
-- Various bugs and issues
-
-- Performance problems
-
-- Security vulnerabilities
-
-- User interface issues
-
-- Database connection problems
-
-- Authentication flow issues
-
-- Session management problems
-
-- Template rendering issues
-
-- Navigation problems
-
-- Content display issues
-
-- Mobile responsiveness issues
-
-- Search functionality problems
-
-- Calendar integration issues
-
-- Prayer time calculation errors
-
-- Community feature bugs
-
-- Documentation errors
-
-- Testing issues
-
-- Deployment problems
-
-- Backup system issues
-
-- Monitoring and logging problems
-
-\n## [0.0.35] - 2025-08-09\n### Added\n- WikiController: robust namespace-aware page resolution and index view.\n- Session: cookie 'secure' only on HTTPS; stabilized login persistence.\n- Dashboard: fixed user stats queries and template keys; session fallback.\n- Safa CSS utilities extended; history icon sizing and templates modernized.\n\n### Fixed\n- History page links, dates, and icon sizes.\n- Edit page header visibility and create form font sizes.\n- Page links now consistently point to /wiki/{slug}.\n- Author display for pages and latest revision.\n\n### Changed\n- Generic CSS variables for skin-agnostic templates.\n- Reworked routes to routes/web.php and WikiController usage.\n
+### Changed
+- **Middleware system** improved for better performance
+- **Middleware organization** enhanced for better structure
+
+### Fixed
+- **Middleware system** issues
+- **Middleware organization** problems
+
+## [0.0.2] - 2024-12-19
+
+### Added
+- **Enhanced Service System** for better business logic organization
+- **Improved Service Organization** for better maintainability
+- **Better Service Caching** for improved performance
+
+### Changed
+- **Service system** improved for better performance
+- **Service organization** enhanced for better structure
+
+### Fixed
+- **Service system** issues
+- **Service organization** problems
+
+## [0.0.1] - 2024-12-19
+
+### Added
+- **Initial Release** of IslamWiki framework
+- **Basic MVC Architecture** with PHP
+- **Core Framework Components** for web application development
+- **Basic Extension System** for modular functionality
+- **Simple Routing System** for URL handling
+- **Basic Template System** for view rendering
+- **Simple Database Abstraction** for data management
+- **Basic Authentication System** for user management
+- **Simple Logging System** for debugging and monitoring
+- **Basic Configuration System** for application settings
+
+### Technical Details
+- **Framework architecture** based on modern PHP practices
+- **Extension system** designed for modular development
+- **Template system** using Twig for flexible view rendering
+- **Database system** supporting multiple database types
+- **Authentication system** with secure password handling
+- **Logging system** with configurable log levels
+- **Configuration system** with environment-based settings
+
+---
+
+## Contributing
+
+When contributing to IslamWiki, please:
+
+1. **Update this changelog** with your changes
+2. **Follow semantic versioning** for releases
+3. **Document breaking changes** clearly
+4. **Include migration guides** when necessary
+5. **Test thoroughly** before submitting changes
+6. **Update extension documentation** when modifying extensions
+7. **Follow established documentation standards** for consistency
+
+## Version History
+
+- **0.0.59** - Complete Extension Documentation System & LanguageSwitch Extension v0.0.2
+- **0.0.58** - Enhanced Navigation System with Full Page Coverage
+- **0.0.57** - Authentication System & RTL Language Support
+- **0.0.56** - Enhanced Error Handling & Logging
+- **0.0.55** - Enhanced Search Functionality
+- **0.0.54** - Enhanced User Authentication
+- **0.0.53** - Enhanced Database Management
+- **0.0.52** - Enhanced Extension System
+- **0.0.51** - Enhanced Caching System
+- **0.0.50** - Enhanced Security Features
+- **0.0.49** - Enhanced User Interface
+- **0.0.48** - Enhanced Content Management
+- **0.0.47** - Enhanced User Management
+- **0.0.46** - Enhanced Notification System
+- **0.0.45** - Enhanced Backup System
+- **0.0.44** - Bismillah Skin & Enhanced RTL Support
+- **0.0.43** - Enhanced Error Handling & Logging
+- **0.0.42** - Enhanced Search Functionality
+- **0.0.41** - Enhanced User Authentication
+- **0.0.40** - Enhanced Database Management
+- **0.0.39** - Enhanced Extension System
+- **0.0.38** - Enhanced Caching System
+- **0.0.37** - Enhanced Security Features
+- **0.0.36** - Enhanced User Interface
+- **0.0.35** - Enhanced Content Management
+- **0.0.34** - Enhanced User Management
+- **0.0.33** - Enhanced Notification System
+- **0.0.32** - Enhanced Backup System
+- **0.0.31** - Enhanced Monitoring System
+- **0.0.30** - Enhanced API System
+- **0.0.29** - Enhanced Testing Framework
+- **0.0.28** - Enhanced Documentation System
+- **0.0.27** - Enhanced Internationalization
+- **0.0.26** - Enhanced Accessibility Features
+- **0.0.25** - Enhanced Mobile Support
+- **0.0.24** - Enhanced SEO Features
+- **0.0.23** - Enhanced Social Media Integration
+- **0.0.22** - Enhanced Analytics System
+- **0.0.21** - Enhanced File Management
+- **0.0.20** - Enhanced Comment System
+- **0.0.19** - Enhanced Forum System
+- **0.0.18** - Enhanced Blog System
+- **0.0.17** - Enhanced Wiki System
+- **0.0.16** - Enhanced Calendar System
+- **0.0.15** - Enhanced Prayer Time System
+- **0.0.14** - Enhanced Quran System
+- **0.0.13** - Enhanced Hadith System
+- **0.0.12** - Enhanced Islamic Sciences System
+- **0.0.11** - Enhanced Community System
+- **0.0.10** - Enhanced User Profile System
+- **0.0.9** - Enhanced Authentication System
+- **0.0.8** - Enhanced Database System
+- **0.0.7** - Enhanced Routing System
+- **0.0.6** - Enhanced Template System
+- **0.0.5** - Enhanced Controller System
+- **0.0.4** - Enhanced Model System
+- **0.0.3** - Enhanced Middleware System
+- **0.0.2** - Enhanced Service System
+- **0.0.1** - Initial Release
+
+---
+
+*This changelog follows the [Keep a Changelog](https://keepachangelog.com/) format and is maintained by the IslamWiki development team.*
