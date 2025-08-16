@@ -549,6 +549,7 @@
             try {
                 // Get current path before calling the API
                 const currentPath = window.location.pathname;
+                console.log(`Switching to ${languageCode}, current path: ${currentPath}`);
                 
                 // First, call the API to switch language with current path
                 const response = await fetch(`/language/switch/${languageCode}?current_path=${encodeURIComponent(currentPath)}`, {
@@ -560,6 +561,7 @@
 
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('API response:', result);
                     
                     if (result.success && result.redirect_url) {
                         console.log(`Language switched successfully to ${languageCode}`);
@@ -567,16 +569,17 @@
                         
                         // Redirect to the language-specific URL
                         window.location.href = result.redirect_url;
+                        return; // Exit early on success
                     } else {
                         console.error('Language switch failed:', result);
-                        // Fallback to manual URL generation
-                        this.fallbackLanguageSwitch(languageCode);
                     }
                 } else {
                     console.error('Language switch API call failed:', response.status);
-                    // Fallback to manual URL generation
-                    this.fallbackLanguageSwitch(languageCode);
                 }
+                
+                // If we reach here, the API failed, use fallback
+                console.log('Using fallback language switching');
+                this.fallbackLanguageSwitch(languageCode);
                 
             } catch (error) {
                 console.error('Failed to switch language via API:', error);
@@ -592,6 +595,7 @@
             try {
                 // Get current path
                 const currentPath = window.location.pathname;
+                console.log(`Fallback: Switching to ${languageCode}, current path: ${currentPath}`);
                 
                 // Generate language-specific URL
                 let newUrl;
@@ -614,7 +618,12 @@
                         cleanPath = '/' + cleanPath;
                     }
                     
-                    newUrl = `${window.location.protocol}//${baseDomain}${cleanPath}`;
+                    // Handle root path specially
+                    if (cleanPath === '/') {
+                        newUrl = `${window.location.protocol}//${baseDomain}/`;
+                    } else {
+                        newUrl = `${window.location.protocol}//${baseDomain}${cleanPath}`;
+                    }
                 } else {
                     // For other languages, use path-based approach: /{language}{currentPath}
                     const currentHost = window.location.host;
@@ -634,7 +643,12 @@
                         cleanPath = '/' + cleanPath;
                     }
                     
-                    newUrl = `${window.location.protocol}//${baseDomain}/${languageCode}${cleanPath}`;
+                    // Handle root path specially
+                    if (cleanPath === '/') {
+                        newUrl = `${window.location.protocol}//${baseDomain}/${languageCode}/`;
+                    } else {
+                        newUrl = `${window.location.protocol}//${baseDomain}/${languageCode}${cleanPath}`;
+                    }
                 }
 
                 console.log(`Fallback: Switching to ${newUrl}`);
