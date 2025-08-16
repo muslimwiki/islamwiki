@@ -1,8 +1,60 @@
 {
   "name": "MarkdownDocsViewer",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "main": "MarkdownDocsViewer.php",
   "class": "IslamWiki\\Extensions\\MarkdownDocsViewer\\MarkdownDocsViewer",
-  "description": "Adds a Docs link and renders /docs Markdown with left nav and search."
+  "description": "Advanced markdown rendering system with custom extensions, syntax highlighting, and comprehensive documentation viewing capabilities",
+  "author": "IslamWiki Team",
+  "url": "https://islamwiki.org/extensions/MarkdownDocsViewer",
+  "type": "content",
+  "requires": {
+    "IslamWiki": ">= 0.0.18"
+  },
+  "config": {
+    "enableMarkdownRendering": true,
+    "enableSyntaxHighlighting": true,
+    "enableRealTimePreview": true,
+    "enableSearchFunctionality": true,
+    "enableExportFeatures": true,
+    "enableTemplateSystem": true,
+    "defaultMarkdownProcessor": "parsedown",
+    "supportedProcessors": ["parsedown", "commonmark", "markdown"],
+    "enableCodeHighlighting": true,
+    "supportedLanguages": ["php", "javascript", "python", "sql", "html", "css"],
+    "enableCustomExtensions": true,
+    "enableAdminInterface": true,
+    "enableAPIEndpoints": true,
+    "enableCaching": true,
+    "defaultTheme": "default",
+    "supportedThemes": ["default", "dark", "light", "islamic"]
+  },
+  "hooks": {
+    "ContentParse": "onContentParse",
+    "PageDisplay": "onPageDisplay",
+    "SearchIndex": "onSearchIndex",
+    "WidgetRender": "onWidgetRender",
+    "TemplateLoad": "onTemplateLoad",
+    "AdminMenu": "onAdminMenu",
+    "MarkdownRender": "onMarkdownRender"
+  },
+  "resources": {
+    "css": [
+      "assets/css/markdown-viewer.css",
+      "assets/css/syntax-highlighting.css",
+      "assets/css/markdown-themes.css"
+    ],
+    "js": [
+      "assets/js/markdown-viewer.js",
+      "assets/js/syntax-highlighting.js",
+      "assets/js/real-time-preview.js",
+      "assets/js/search-functionality.js"
+    ]
+  },
+  "templates": {
+    "markdown-viewer": "templates/markdown-viewer.twig",
+    "markdown-editor": "templates/markdown-editor.twig",
+    "syntax-highlighting": "templates/syntax-highlighting.twig",
+    "search-interface": "templates/search-interface.twig"
+  }
 }
 

@@ -1,6 +1,6 @@
 {
     "name": "QuranExtension",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Comprehensive Quran system with ayahs, surahs, and Juz management",
     "author": "IslamWiki Team",
     "main": "QuranExtension.php",

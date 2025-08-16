@@ -1,6 +1,6 @@
 {
     "name": "GitIntegration",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Git repository integration for automatic version control and backup",
     "author": "IslamWiki Team",
     "url": "https://islamwiki.org/extensions/GitIntegration",

@@ -1,0 +1,38 @@
+{
+    "name": "LanguageSwitch",
+    "version": "0.0.2",
+    "description": "Language switching system with support for Arabic and other languages",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/LanguageSwitch",
+    "main": "LanguageSwitch.php",
+    "class": "IslamWiki\\Extensions\\LanguageSwitch\\LanguageSwitch",
+    "type": "content",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "defaultLanguage": "en",
+        "supportedLanguages": ["en", "ar"],
+        "enableLanguageDetection": true,
+        "enableLanguagePersistence": true,
+        "enableRTLSupport": true,
+        "enableLanguageMenu": true,
+        "enableLanguageIcons": true
+    },
+    "hooks": {
+        "ContentParse": "onContentParse",
+        "PageDisplay": "onPageDisplay",
+        "ComposeViewGlobals": "onComposeViewGlobals"
+    },
+    "resources": {
+        "css": [
+            "assets/css/language-switch.css"
+        ],
+        "js": [
+            "assets/js/language-switch.js"
+        ]
+    },
+    "templates": {
+        "language-switch": "templates/language-switch.twig"
+    }
+} 
