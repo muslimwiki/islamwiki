@@ -381,8 +381,7 @@
             native: 'English',
             flag: '🇺🇸',
             direction: 'ltr',
-            isRTL: false,
-            subdomain: null // No subdomain for default language
+            isRTL: false
         },
         ar: {
             code: 'ar',
@@ -390,8 +389,7 @@
             native: 'العربية',
             flag: '🇸🇦',
             direction: 'rtl',
-            isRTL: true,
-            subdomain: 'ar'
+            isRTL: true
         },
         ur: {
             code: 'ur',
@@ -399,8 +397,7 @@
             native: 'اردو',
             flag: '🇵🇰',
             direction: 'rtl',
-            isRTL: true,
-            subdomain: 'ur'
+            isRTL: true
         },
         tr: {
             code: 'tr',
@@ -408,8 +405,7 @@
             native: 'Türkçe',
             flag: '🇹🇷',
             direction: 'ltr',
-            isRTL: false,
-            subdomain: 'tr'
+            isRTL: false
         },
         id: {
             code: 'id',
@@ -417,8 +413,7 @@
             native: 'Bahasa Indonesia',
             flag: '🇮🇩',
             direction: 'ltr',
-            isRTL: false,
-            subdomain: 'id'
+            isRTL: false
         },
         ms: {
             code: 'ms',
@@ -426,8 +421,7 @@
             native: 'Bahasa Melayu',
             flag: '🇲🇾',
             direction: 'ltr',
-            isRTL: false,
-            subdomain: 'ms'
+            isRTL: false
         },
         fa: {
             code: 'fa',
@@ -435,8 +429,7 @@
             native: 'فارسی',
             flag: '🇮🇷',
             direction: 'rtl',
-            isRTL: true,
-            subdomain: 'fa'
+            isRTL: true
         },
         he: {
             code: 'he',
@@ -444,8 +437,7 @@
             native: 'עברית',
             flag: '🇮🇱',
             direction: 'rtl',
-            isRTL: true,
-            subdomain: 'he'
+            isRTL: true
         }
     };
 
@@ -657,25 +649,40 @@
                 // Get current path
                 const currentPath = window.location.pathname;
                 
-                // Generate language-specific URL
+                // Generate language-specific URL using path-based approach
                 let newUrl;
-                if (language.subdomain) {
-                    // For non-default languages, use subdomain
-                    const currentHost = window.location.host;
-                    const baseDomain = this.extractBaseDomain(currentHost);
-                    newUrl = `${window.location.protocol}//${language.subdomain}.${baseDomain}${currentPath}`;
-                } else {
-                    // For default language (English), use base domain
+                if (languageCode === 'en') {
+                    // For default language (English), use base domain without language prefix
                     const currentHost = window.location.host;
                     const baseDomain = this.extractBaseDomain(currentHost);
                     newUrl = `${window.location.protocol}//${baseDomain}${currentPath}`;
+                } else {
+                    // For other languages, use path-based approach: /{language}{currentPath}
+                    const currentHost = window.location.host;
+                    const baseDomain = this.extractBaseDomain(currentHost);
+                    
+                    // Remove existing language prefix if present
+                    let cleanPath = currentPath;
+                    for (const [code, lang] of Object.entries(LANGUAGES)) {
+                        if (code !== 'en' && currentPath.startsWith(`/${code}/`)) {
+                            cleanPath = currentPath.substring(code.length + 1);
+                            break;
+                        }
+                    }
+                    
+                    // Ensure path starts with /
+                    if (!cleanPath.startsWith('/')) {
+                        cleanPath = '/' + cleanPath;
+                    }
+                    
+                    newUrl = `${window.location.protocol}//${baseDomain}/${languageCode}${cleanPath}`;
                 }
 
                 // Redirect to new URL
                 window.location.href = newUrl;
                 
             } catch (error) {
-                console.error('Failed to switch to language subdomain:', error);
+                console.error('Failed to switch to language path:', error);
                 throw error;
             }
         }
@@ -686,13 +693,6 @@
         extractBaseDomain(host) {
             // Remove port if present
             host = host.replace(/:\d+$/, '');
-            
-            // Remove language subdomain if present
-            for (const [code, lang] of Object.entries(LANGUAGES)) {
-                if (lang.subdomain && host.startsWith(lang.subdomain + '.')) {
-                    return host.substring(lang.subdomain.length + 1);
-                }
-            }
             
             // Remove www prefix if present
             if (host.startsWith('www.')) {
@@ -847,11 +847,14 @@
                 return htmlLang;
             }
 
-            // Check URL subdomain
-            const host = window.location.host;
-            for (const [code, language] of Object.entries(LANGUAGES)) {
-                if (language.subdomain && host.startsWith(language.subdomain + '.')) {
-                    return code;
+            // Check URL path for language prefix
+            const path = window.location.pathname;
+            const pathSegments = path.split('/').filter(segment => segment.length > 0);
+            
+            if (pathSegments.length > 0) {
+                const firstSegment = pathSegments[0];
+                if (LANGUAGES[firstSegment]) {
+                    return firstSegment;
                 }
             }
 
