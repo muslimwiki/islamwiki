@@ -7,7 +7,7 @@ namespace IslamWiki\Http\Controllers;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use Psr\Log\LoggerInterface;
-use IslamWiki\Http\Middleware\SubdomainLanguageMiddleware;
+use IslamWiki\Http\Middleware\PathLanguageMiddleware;
 use IslamWiki\Services\TranslationService;
 
 /**
@@ -23,9 +23,9 @@ class LanguageController
     private LoggerInterface $logger;
 
     /**
-     * @var SubdomainLanguageMiddleware
+     * @var PathLanguageMiddleware
      */
-    private SubdomainLanguageMiddleware $languageMiddleware;
+    private PathLanguageMiddleware $languageMiddleware;
 
     /**
      * @var TranslationService
@@ -37,7 +37,7 @@ class LanguageController
      */
     public function __construct(
         LoggerInterface $logger,
-        SubdomainLanguageMiddleware $languageMiddleware,
+        PathLanguageMiddleware $languageMiddleware,
         TranslationService $translationService
     ) {
         $this->logger = $logger;
@@ -95,7 +95,7 @@ class LanguageController
             'direction' => $direction,
             'is_rtl' => $isRTL,
             'name' => $this->languageMiddleware->getSupportedLanguages()[$language] ?? 'Unknown',
-            'base_domain' => $this->languageMiddleware->getBaseDomain()
+            'current_host' => $_SERVER['HTTP_HOST'] ?? 'localhost'
         ];
 
         return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));

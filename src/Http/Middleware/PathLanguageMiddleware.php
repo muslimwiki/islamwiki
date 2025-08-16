@@ -10,16 +10,19 @@ use Psr\Log\LoggerInterface;
 use IslamWiki\Services\TranslationService;
 
 /**
- * Subdomain Language Middleware
+ * Path Language Middleware
  * 
- * Handles subdomain-based language switching and routing.
+ * Handles path-based language switching and routing.
  * Supports patterns like:
- * - en.local.islam.wiki (default English)
- * - ar.local.islam.wiki (Arabic)
- * - ur.local.islam.wiki (Urdu)
+ * - local.islam.wiki/ (default English)
+ * - local.islam.wiki/ar (Arabic)
+ * - local.islam.wiki/ur (Urdu)
  * - etc.
+ * 
+ * This approach is much easier for users as it doesn't require
+ * DNS configuration for each language.
  */
-class SubdomainLanguageMiddleware
+class PathLanguageMiddleware
 {
     /**
      * @var LoggerInterface
@@ -32,7 +35,7 @@ class SubdomainLanguageMiddleware
     private TranslationService $translationService;
 
     /**
-     * @var array Supported language subdomains
+     * @var array Supported language paths
      */
     private array $supportedLanguages = [
         'en' => 'English',
@@ -51,18 +54,12 @@ class SubdomainLanguageMiddleware
     private string $defaultLanguage = 'en';
 
     /**
-     * @var string Base domain (without language subdomain)
-     */
-    private string $baseDomain;
-
-    /**
      * Constructor
      */
     public function __construct(LoggerInterface $logger, TranslationService $translationService)
     {
         $this->logger = $logger;
         $this->translationService = $translationService;
-        // Don't call getBaseDomain() here - defer until needed
     }
 
     /**
@@ -70,8 +67,8 @@ class SubdomainLanguageMiddleware
      */
     public function process(Request $request, callable $next): Response
     {
-        $host = $request->getHeaderLine('Host');
-        $language = $this->extractLanguageFromHost($host);
+        $uri = $request->getUri()->getPath();
+        $language = $this->extractLanguageFromPath($uri);
         
         // Set language in request attributes
         $request = $request->withAttribute('language', $language);
@@ -82,8 +79,8 @@ class SubdomainLanguageMiddleware
         $this->setLanguageInSession($language);
         
         // Log language detection
-        $this->logger->debug('Language detected from subdomain', [
-            'host' => $host,
+        $this->logger->debug('Language detected from path', [
+            'uri' => $uri,
             'language' => $language,
             'is_rtl' => $this->translationService->isRTL($language)
         ]);
@@ -108,75 +105,23 @@ class SubdomainLanguageMiddleware
     }
 
     /**
-     * Extract language from host
+     * Extract language from URI path
      */
-    private function extractLanguageFromHost(string $host): string
+    private function extractLanguageFromPath(string $uri): string
     {
-        // Remove port if present
-        $host = preg_replace('/:\d+$/', '', $host);
+        // Remove leading slash
+        $uri = ltrim($uri, '/');
         
-        // Check if host contains language subdomain
-        foreach ($this->supportedLanguages as $code => $name) {
-            if (strpos($host, $code . '.') === 0) {
-                return $code;
-            }
+        // Split path into segments
+        $segments = explode('/', $uri);
+        
+        // Check if first segment is a language code
+        if (!empty($segments[0]) && array_key_exists($segments[0], $this->supportedLanguages)) {
+            return $segments[0];
         }
         
-        // Check for www prefix
-        if (strpos($host, 'www.') === 0) {
-            $host = substr($host, 4);
-            foreach ($this->supportedLanguages as $code => $name) {
-                if (strpos($host, $code . '.') === 0) {
-                    return $code;
-                }
-            }
-        }
-        
-        // Default to English if no language subdomain found
+        // Default to English if no language path found
         return $this->defaultLanguage;
-    }
-
-    /**
-     * Get base domain without language subdomain
-     */
-    public function getBaseDomain(): string
-    {
-        // Lazy load the base domain
-        if (!isset($this->baseDomain)) {
-            $host = $_SERVER['HTTP_HOST'] ?? 'local.islam.wiki';
-            
-            // Remove port if present
-            $host = preg_replace('/:\d+$/', '', $host);
-            
-            // Remove language subdomain if present
-            foreach ($this->supportedLanguages as $code => $name) {
-                if (strpos($host, $code . '.') === 0) {
-                    $host = substr($host, strlen($code) + 1);
-                    break;
-                }
-            }
-            
-            // Remove www prefix if present
-            if (strpos($host, 'www.') === 0) {
-                $host = substr($host, 4);
-            }
-            
-            $this->baseDomain = $host;
-        }
-        
-        return $this->baseDomain;
-    }
-
-    /**
-     * Set language in session
-     */
-    private function setLanguageInSession(string $language): void
-    {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $_SESSION['language'] = $language;
-            $_SESSION['language_direction'] = $this->translationService->getLanguageDirection($language);
-            $_SESSION['is_rtl'] = $this->translationService->isRTL($language);
-        }
     }
 
     /**
@@ -188,8 +133,8 @@ class SubdomainLanguageMiddleware
             return $_SESSION['language'];
         }
         
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        return $this->extractLanguageFromHost($host);
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        return $this->extractLanguageFromPath($uri);
     }
 
     /**
@@ -216,14 +161,15 @@ class SubdomainLanguageMiddleware
     public function generateLanguageUrl(string $language, string $path = '/'): string
     {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'local.islam.wiki';
         
         if ($language === $this->defaultLanguage) {
             // For default language, use base domain
-            return $protocol . '://' . $this->baseDomain . $path;
+            return $protocol . '://' . $host . $path;
         }
         
-        // For other languages, use language subdomain
-        return $protocol . '://' . $language . '.' . $this->baseDomain . $path;
+        // For other languages, use language path
+        return $protocol . '://' . $host . '/' . $language . $path;
     }
 
     /**
@@ -248,39 +194,6 @@ class SubdomainLanguageMiddleware
     }
 
     /**
-     * Redirect to language-specific subdomain if needed
-     */
-    public function shouldRedirectToLanguageSubdomain(): bool
-    {
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $currentLanguage = $this->getCurrentLanguage();
-        
-        // If we're on the base domain but have a language preference, redirect
-        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
-            $preferredLanguage = $_SESSION['language'];
-            if ($preferredLanguage !== $this->defaultLanguage) {
-                // Check if we're not already on the language subdomain
-                if (strpos($host, $preferredLanguage . '.') !== 0) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
-    /**
-     * Get redirect URL for language subdomain
-     */
-    public function getLanguageRedirectUrl(): string
-    {
-        $language = $_SESSION['language'] ?? $this->defaultLanguage;
-        $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
-        
-        return $this->generateLanguageUrl($language, $currentPath);
-    }
-
-    /**
      * Get supported languages
      */
     public function getSupportedLanguages(): array
@@ -293,8 +206,63 @@ class SubdomainLanguageMiddleware
      */
     public function isLanguageSupported(string $language): bool
     {
-        return isset($this->supportedLanguages[$language]);
+        return array_key_exists($language, $this->supportedLanguages);
     }
 
+    /**
+     * Get language name by code
+     */
+    public function getLanguageName(string $language): string
+    {
+        return $this->supportedLanguages[$language] ?? 'Unknown';
+    }
 
+    /**
+     * Get default language
+     */
+    public function getDefaultLanguage(): string
+    {
+        return $this->defaultLanguage;
+    }
+
+    /**
+     * Set language in session
+     */
+    private function setLanguageInSession(string $language): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['language'] = $language;
+            $_SESSION['language_direction'] = $this->translationService->getLanguageDirection($language);
+            $_SESSION['is_rtl'] = $this->translationService->isRTL($language);
+        }
+    }
+
+    /**
+     * Remove language prefix from path for internal routing
+     */
+    public function removeLanguagePrefix(string $path): string
+    {
+        $path = ltrim($path, '/');
+        $segments = explode('/', $path);
+        
+        // If first segment is a language code, remove it
+        if (!empty($segments[0]) && array_key_exists($segments[0], $this->supportedLanguages)) {
+            array_shift($segments);
+            return '/' . implode('/', $segments);
+        }
+        
+        return '/' . $path;
+    }
+
+    /**
+     * Add language prefix to path for external links
+     */
+    public function addLanguagePrefix(string $path, string $language): string
+    {
+        if ($language === $this->defaultLanguage) {
+            return $path;
+        }
+        
+        return '/' . $language . $path;
+    }
 } 

@@ -182,6 +182,41 @@ class SimpleLanguageController
     }
 
     /**
+     * Handle language-specific home page
+     */
+    public function languageHome(Request $request, string $language): Response
+    {
+        if (!isset($this->supportedLanguages[$language])) {
+            return new Response(404, ['Content-Type' => 'application/json'], json_encode([
+                'error' => 'Language not supported',
+                'supported_languages' => array_keys($this->supportedLanguages)
+            ]));
+        }
+
+        // Set language in session
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['language'] = $language;
+            $_SESSION['language_direction'] = $this->supportedLanguages[$language]['direction'];
+            $_SESSION['is_rtl'] = $this->supportedLanguages[$language]['isRTL'];
+        }
+
+        $languageData = $this->supportedLanguages[$language];
+        
+        $data = [
+            'language' => $language,
+            'direction' => $languageData['direction'],
+            'is_rtl' => $languageData['isRTL'],
+            'name' => $languageData['name'],
+            'native' => $languageData['native'],
+            'flag' => $languageData['flag'],
+            'message' => 'Language-specific home page',
+            'current_host' => $_SERVER['HTTP_HOST'] ?? $this->baseDomain
+        ];
+
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));
+    }
+
+    /**
      * Detect language from request
      */
     private function detectLanguageFromRequest(Request $request): string
@@ -194,7 +229,17 @@ class SimpleLanguageController
             }
         }
 
-        // Check hostname for subdomain
+        // Check URI path for language prefix
+        $uri = $request->getUri()->getPath();
+        $uri = ltrim($uri, '/');
+        $segments = explode('/', $uri);
+        
+        // Check if first segment is a language code
+        if (!empty($segments[0]) && isset($this->supportedLanguages[$segments[0]])) {
+            return $segments[0];
+        }
+
+        // Check hostname for subdomain (legacy support)
         $host = $request->getHeaderLine('Host');
         if ($host) {
             foreach (array_keys($this->supportedLanguages) as $code) {
@@ -225,11 +270,16 @@ class SimpleLanguageController
      */
     private function generateLanguageUrl(string $language, string $path): string
     {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? $this->baseDomain;
+        
         if ($language === $this->defaultLanguage) {
-            return "http://{$this->baseDomain}{$path}";
+            // For default language, use base domain
+            return "{$protocol}://{$host}{$path}";
         }
 
-        return "http://{$language}.{$this->baseDomain}{$path}";
+        // For other languages, use language path
+        return "{$protocol}://{$host}/{$language}{$path}";
     }
 
     /**

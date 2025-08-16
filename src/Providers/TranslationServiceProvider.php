@@ -6,7 +6,7 @@ namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Services\TranslationService;
-use IslamWiki\Http\Middleware\SubdomainLanguageMiddleware;
+use IslamWiki\Http\Middleware\PathLanguageMiddleware;
 
 /**
  * Translation Service Provider
@@ -26,16 +26,16 @@ class TranslationServiceProvider
             return new TranslationService($logger);
         });
 
-        // Register SubdomainLanguageMiddleware
-        $container->singleton(SubdomainLanguageMiddleware::class, function (AsasContainer $container) {
+        // Register PathLanguageMiddleware
+        $container->singleton(PathLanguageMiddleware::class, function (AsasContainer $container) {
             $logger = $container->get(\Psr\Log\LoggerInterface::class);
             $translationService = $container->get(TranslationService::class);
-            return new SubdomainLanguageMiddleware($logger, $translationService);
+            return new PathLanguageMiddleware($logger, $translationService);
         });
 
         // Register aliases
         $container->alias('translation', TranslationService::class);
-        $container->alias('language.middleware', SubdomainLanguageMiddleware::class);
+        $container->alias('language.middleware', PathLanguageMiddleware::class);
     }
 
     /**

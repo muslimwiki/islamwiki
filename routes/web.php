@@ -447,6 +447,15 @@ $router->get('/language/switch/{language}', 'IslamWiki\Http\Controllers\SimpleLa
 $router->post('/language/translate', 'IslamWiki\Http\Controllers\SimpleLanguageController@translateText');
 $router->get('/language/stats', 'IslamWiki\Http\Controllers\SimpleLanguageController@getTranslationStats');
 
+// Language-specific routes for path-based language switching
+// These routes allow users to access content in different languages via URLs like /ar/, /ur/, etc.
+$router->get('/{language}/', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageHome');
+$router->get('/{language}/language/current', 'IslamWiki\Http\Controllers\SimpleLanguageController@getCurrentLanguage');
+$router->get('/{language}/language/available', 'IslamWiki\Http\Controllers\SimpleLanguageController@getAvailableLanguages');
+$router->get('/{language}/language/switch/{targetLanguage}', 'IslamWiki\Http\Controllers\SimpleLanguageController@switchLanguage');
+$router->post('/{language}/language/translate', 'IslamWiki\Http\Controllers\SimpleLanguageController@translateText');
+$router->get('/{language}/language/stats', 'IslamWiki\Http\Controllers\SimpleLanguageController@getTranslationStats');
+
 
 
 // Wiki routes - only for actual wiki pages, not system paths
