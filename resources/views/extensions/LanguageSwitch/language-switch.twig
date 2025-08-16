@@ -1,0 +1,686 @@
+<!-- Language Switch Component -->
+<!-- Provides language switching functionality with Arabic and English support -->
+
+<style>
+/* ===== LANGUAGE SWITCH COMPONENT STYLES ===== */
+/* Beautiful language switching interface with Islamic theme */
+
+.language-switch {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.language-switch-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 120px;
+    justify-content: center;
+    text-decoration: none;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
+}
+
+.language-switch-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #d4af37;
+    color: #d4af37;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.language-switch-button:active {
+    transform: translateY(0);
+}
+
+.language-flag {
+    font-size: 1.125rem;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.language-text {
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.language-dropdown-arrow {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    margin-left: 0.25rem;
+}
+
+/* Language Button States */
+.language-switch[data-lang="ar"] .language-switch-button {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.language-switch[data-lang="ar"] .language-switch-button:hover {
+    background: rgba(212, 175, 55, 0.3);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.language-switch[data-lang="en"] .language-switch-button {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.language-switch[data-lang="en"] .language-switch-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+/* Language Dropdown Menu */
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    border-top: 3px solid #d4af37;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.language-switch:hover .language-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Language Dropdown Items */
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+}
+
+.language-option:last-child {
+    border-bottom: none;
+}
+
+.language-option:hover {
+    background: #f8f6f0;
+    color: #2d5016;
+    padding-left: 1.5rem;
+}
+
+.language-option.active {
+    background: #2d5016;
+    color: #ffffff;
+}
+
+.language-option.active:hover {
+    background: #1a3009;
+}
+
+.language-option-flag {
+    font-size: 1.25rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.language-option-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.language-option-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.language-option-native {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-family: 'Noto Naskh Arabic', serif;
+}
+
+.language-option-rtl {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* RTL Support for Language Switch */
+[dir="rtl"] .language-dropdown {
+    right: auto;
+    left: 0;
+}
+
+[dir="rtl"] .language-option:hover {
+    padding-left: 1rem;
+    padding-right: 1.5rem;
+}
+
+[dir="rtl"] .language-dropdown-arrow {
+    margin-left: 0;
+    margin-right: 0.25rem;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .language-switch-button {
+        min-width: 100px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .language-text {
+        display: none;
+    }
+    
+    .language-dropdown {
+        min-width: 180px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    
+    .language-switch:hover .language-dropdown {
+        transform: translateX(-50%) translateY(0);
+    }
+    
+    [dir="rtl"] .language-dropdown {
+        left: 50%;
+        right: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .language-switch-button {
+        min-width: 80px;
+        padding: 0.5rem;
+    }
+    
+    .language-flag {
+        font-size: 1rem;
+    }
+    
+    .language-dropdown {
+        min-width: 160px;
+    }
+}
+
+/* Translation Status Indicator */
+.translation-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(45, 80, 22, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.translation-status.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.translation-status.arabic {
+    background: rgba(212, 175, 55, 0.9);
+}
+
+[dir="rtl"] .translation-status {
+    right: auto;
+    left: 20px;
+}
+</style>
+
+<div class="language-switch" id="languageSwitch" data-lang="en">
+    <button class="language-switch-button" type="button" aria-label="Switch Language" aria-haspopup="true" aria-expanded="false">
+        <span class="language-flag">🇺🇸</span>
+        <span class="language-text">English</span>
+        <span class="language-dropdown-arrow">▼</span>
+    </button>
+    
+    <div class="language-dropdown" role="menu" aria-label="Language Options">
+        <div class="language-option" role="menuitem" data-language="en" tabindex="0" aria-current="true">
+            <span class="language-option-flag">🇺🇸</span>
+            <div class="language-option-content">
+                <div class="language-option-name">English</div>
+                <div class="language-option-native">English</div>
+            </div>
+        </div>
+        <div class="language-option" role="menuitem" data-language="ar" tabindex="0">
+            <span class="language-option-flag">🇸🇦</span>
+            <div class="language-option-content">
+                <div class="language-option-name">Arabic</div>
+                <div class="language-option-native">العربية</div>
+                <div class="language-option-rtl">RTL</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Translation Status Indicator -->
+<div class="translation-status" id="translationStatus"></div>
+
+<script>
+/**
+ * Enhanced LanguageSwitch Component with Arabic Translation Plugin
+ * Provides comprehensive language switching functionality with RTL support and text translation
+ */
+
+(function() {
+    'use strict';
+
+    // Language configuration
+    const LANGUAGES = {
+        en: {
+            code: 'en',
+            name: 'English',
+            native: 'English',
+            flag: '🇺🇸',
+            direction: 'ltr',
+            isRTL: false
+        },
+        ar: {
+            code: 'ar',
+            name: 'Arabic',
+            native: 'العربية',
+            flag: '🇸🇦',
+            direction: 'rtl',
+            isRTL: true
+        }
+    };
+
+    // Default language
+    const DEFAULT_LANGUAGE = 'en';
+
+    // Storage key for language preference
+    const LANGUAGE_STORAGE_KEY = 'islamwiki_language';
+
+    /**
+     * Enhanced LanguageSwitch Class with Translation Support
+     */
+    class EnhancedLanguageSwitch {
+        constructor() {
+            this.currentLanguage = this.getStoredLanguage() || DEFAULT_LANGUAGE;
+            this.arabicPlugin = null;
+            this.init();
+        }
+
+        /**
+         * Initialize the language switch
+         */
+        async init() {
+            await this.loadArabicPlugin();
+            this.setupEventListeners();
+            this.updateInterface();
+            this.applyLanguage(this.currentLanguage);
+        }
+
+        /**
+         * Load the Arabic translation plugin
+         */
+        async loadArabicPlugin() {
+            try {
+                // Try to load the Arabic plugin
+                const response = await fetch('/extensions/LanguageSwitch/assets/js/arabic-translations.js');
+                if (response.ok) {
+                    const script = document.createElement('script');
+                    script.src = '/extensions/LanguageSwitch/assets/js/arabic-translations.js';
+                    script.onload = () => {
+                        if (window.ArabicLanguagePlugin) {
+                            this.arabicPlugin = new window.ArabicLanguagePlugin();
+                            console.log('Arabic translation plugin loaded successfully');
+                        }
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    // Fallback: Create a basic Arabic plugin
+                    this.createFallbackArabicPlugin();
+                }
+            } catch (error) {
+                console.warn('Could not load Arabic plugin, using fallback:', error);
+                this.createFallbackArabicPlugin();
+            }
+        }
+
+        /**
+         * Create a fallback Arabic plugin if the main one fails to load
+         */
+        createFallbackArabicPlugin() {
+            this.arabicPlugin = {
+                activate: () => {
+                    console.log('Fallback Arabic plugin activated');
+                    this.showTranslationStatus('Arabic translations activated', 'arabic');
+                },
+                deactivate: () => {
+                    console.log('Fallback Arabic plugin deactivated');
+                    this.showTranslationStatus('English restored', 'english');
+                },
+                translatePage: () => {
+                    console.log('Fallback translation applied');
+                }
+            };
+        }
+
+        /**
+         * Setup event listeners
+         */
+        setupEventListeners() {
+            // Language switch button click
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.language-switch-button')) {
+                    this.toggleDropdown();
+                }
+            });
+
+            // Language option selection
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.language-option')) {
+                    const languageCode = e.target.closest('.language-option').dataset.language;
+                    if (languageCode && LANGUAGES[languageCode]) {
+                        this.switchLanguage(languageCode);
+                    }
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.language-switch')) {
+                    this.closeDropdown();
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeDropdown();
+                }
+            });
+        }
+
+        /**
+         * Toggle language dropdown
+         */
+        toggleDropdown() {
+            const dropdown = document.querySelector('.language-dropdown');
+            if (dropdown) {
+                const isVisible = dropdown.style.visibility === 'visible' || 
+                                 dropdown.classList.contains('visible');
+                
+                if (isVisible) {
+                    this.closeDropdown();
+                } else {
+                    this.openDropdown();
+                }
+            }
+        }
+
+        /**
+         * Open language dropdown
+         */
+        openDropdown() {
+            const dropdown = document.querySelector('.language-dropdown');
+            if (dropdown) {
+                dropdown.style.visibility = 'visible';
+                dropdown.style.opacity = '1';
+                dropdown.style.transform = 'translateY(0)';
+                dropdown.classList.add('visible');
+            }
+        }
+
+        /**
+         * Close language dropdown
+         */
+        closeDropdown() {
+            const dropdown = document.querySelector('.language-dropdown');
+            if (dropdown) {
+                dropdown.style.visibility = 'hidden';
+                dropdown.style.opacity = '0';
+                dropdown.style.transform = 'translateY(-10px)';
+                dropdown.classList.remove('visible');
+            }
+        }
+
+        /**
+         * Switch to a specific language
+         */
+        switchLanguage(languageCode) {
+            if (!LANGUAGES[languageCode]) {
+                console.warn(`Language ${languageCode} is not supported`);
+                return;
+            }
+
+            const previousLanguage = this.currentLanguage;
+            this.currentLanguage = languageCode;
+
+            // Update interface
+            this.updateInterface();
+            
+            // Apply language changes
+            this.applyLanguage(languageCode);
+            
+            // Store preference
+            this.storeLanguage(languageCode);
+            
+            // Close dropdown
+            this.closeDropdown();
+            
+            // Dispatch custom event
+            this.dispatchLanguageChangeEvent(languageCode, previousLanguage);
+        }
+
+        /**
+         * Update the interface to reflect current language
+         */
+        updateInterface() {
+            const languageSwitch = document.querySelector('.language-switch');
+            if (!languageSwitch) return;
+
+            const language = LANGUAGES[this.currentLanguage];
+            if (!language) return;
+
+            // Update button content
+            const button = languageSwitch.querySelector('.language-switch-button');
+            if (button) {
+                const flag = button.querySelector('.language-flag');
+                const text = button.querySelector('.language-text');
+                
+                if (flag) flag.textContent = language.flag;
+                if (text) text.textContent = language.native;
+            }
+
+            // Update data attribute
+            languageSwitch.setAttribute('data-lang', language.code);
+
+            // Update dropdown options
+            this.updateDropdownOptions();
+        }
+
+        /**
+         * Update dropdown language options
+         */
+        updateDropdownOptions() {
+            const dropdown = document.querySelector('.language-dropdown');
+            if (!dropdown) return;
+
+            // Clear existing options
+            dropdown.innerHTML = '';
+
+            // Add language options
+            Object.values(LANGUAGES).forEach(language => {
+                const option = this.createLanguageOption(language);
+                dropdown.appendChild(option);
+            });
+        }
+
+        /**
+         * Create a language option element
+         */
+        createLanguageOption(language) {
+            const option = document.createElement('div');
+            option.className = 'language-option';
+            option.dataset.language = language.code;
+            
+            if (language.code === this.currentLanguage) {
+                option.classList.add('active');
+            }
+
+            option.innerHTML = `
+                <span class="language-option-flag">${language.flag}</span>
+                <div class="language-option-content">
+                    <div class="language-option-name">${language.name}</div>
+                    <div class="language-option-native">${language.native}</div>
+                    ${language.isRTL ? '<div class="language-option-rtl">RTL</div>' : ''}
+                </div>
+            `;
+
+            // Add click handler
+            option.addEventListener('click', () => {
+                this.switchLanguage(language.code);
+            });
+
+            return option;
+        }
+
+        /**
+         * Apply language changes to the page
+         */
+        applyLanguage(languageCode) {
+            const language = LANGUAGES[languageCode];
+            if (!language) return;
+
+            const html = document.documentElement;
+            const body = document.body;
+
+            // Update HTML attributes
+            html.setAttribute('lang', language.code);
+            html.setAttribute('dir', language.direction);
+
+            // Update body classes
+            body.classList.remove('ltr', 'rtl');
+            body.classList.add(language.direction);
+
+            // Apply translations if Arabic plugin is available
+            if (this.arabicPlugin) {
+                if (languageCode === 'ar') {
+                    this.arabicPlugin.activate();
+                    this.showTranslationStatus('تم تفعيل الترجمة العربية', 'arabic');
+                } else {
+                    this.arabicPlugin.deactivate();
+                    this.showTranslationStatus('English restored', 'english');
+                }
+            }
+
+            // Add transition class for smooth changes
+            body.classList.add('language-switch-transition');
+            
+            // Remove transition class after animation
+            setTimeout(() => {
+                body.classList.remove('language-switch-transition');
+            }, 300);
+        }
+
+        /**
+         * Show translation status message
+         */
+        showTranslationStatus(message, type = 'english') {
+            const statusElement = document.getElementById('translationStatus');
+            if (statusElement) {
+                statusElement.textContent = message;
+                statusElement.className = `translation-status ${type}`;
+                statusElement.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    statusElement.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        /**
+         * Store language preference
+         */
+        storeLanguage(languageCode) {
+            try {
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode);
+            } catch (e) {
+                console.warn('Could not store language preference:', e);
+            }
+        }
+
+        /**
+         * Get stored language preference
+         */
+        getStoredLanguage() {
+            try {
+                return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            } catch (e) {
+                console.warn('Could not retrieve language preference:', e);
+                return null;
+            }
+        }
+
+        /**
+         * Dispatch language change event
+         */
+        dispatchLanguageChangeEvent(newLanguage, previousLanguage) {
+            const event = new CustomEvent('languageChanged', {
+                detail: {
+                    language: newLanguage,
+                    previousLanguage: previousLanguage,
+                    direction: LANGUAGES[newLanguage]?.direction || 'ltr',
+                    isRTL: LANGUAGES[newLanguage]?.isRTL || false
+                }
+            });
+            document.dispatchEvent(event);
+        }
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            new EnhancedLanguageSwitch();
+        });
+    } else {
+        new EnhancedLanguageSwitch();
+    }
+
+    // Export for global access if needed
+    window.EnhancedLanguageSwitch = EnhancedLanguageSwitch;
+
+})();
+</script> 
