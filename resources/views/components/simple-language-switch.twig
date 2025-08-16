@@ -547,8 +547,11 @@
             if (!language) return;
 
             try {
-                // First, call the API to switch language
-                const response = await fetch(`/language/switch/${languageCode}`, {
+                // Get current path before calling the API
+                const currentPath = window.location.pathname;
+                
+                // First, call the API to switch language with current path
+                const response = await fetch(`/language/switch/${languageCode}?current_path=${encodeURIComponent(currentPath)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

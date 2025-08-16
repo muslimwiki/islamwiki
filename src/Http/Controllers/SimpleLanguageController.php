@@ -104,8 +104,39 @@ class SimpleLanguageController
             ]));
         }
 
-        // Get current path
-        $currentPath = $request->getAttribute('params')['path'] ?? '/';
+        // Get current path from query parameter if provided, otherwise from request URI
+        $currentPath = $request->getQueryParams()['current_path'] ?? $request->getUri()->getPath();
+        
+        // If we're on a language switching page and no current_path was provided, 
+        // try to get the actual content path from the referrer header or use the home page as fallback
+        if (strpos($currentPath, '/language/switch/') === 0 && !isset($request->getQueryParams()['current_path'])) {
+            $referer = $request->getHeaderLine('Referer');
+            if ($referer) {
+                // Parse the referer URL to get the path
+                $refererUrl = parse_url($referer);
+                if (isset($refererUrl['path'])) {
+                    $currentPath = $refererUrl['path'];
+                } else {
+                    $currentPath = '/';
+                }
+            } else {
+                // No referer, use home page
+                $currentPath = '/';
+            }
+        }
+        
+        // Remove any existing language prefix from the current path
+        foreach (array_keys($this->supportedLanguages) as $langCode) {
+            if ($langCode !== 'en' && strpos($currentPath, "/{$langCode}/") === 0) {
+                $currentPath = substr($currentPath, strlen($langCode) + 1);
+                break;
+            }
+        }
+        
+        // Ensure path starts with /
+        if (empty($currentPath) || $currentPath[0] !== '/') {
+            $currentPath = '/' . $currentPath;
+        }
         
         // Generate language-specific URL
         $languageUrl = $this->generateLanguageUrl($language, $currentPath);
@@ -122,7 +153,9 @@ class SimpleLanguageController
             'success' => true,
             'language' => $language,
             'redirect_url' => $languageUrl,
-            'message' => 'Language switched successfully'
+            'message' => 'Language switched successfully',
+            'current_path' => $currentPath,
+            'generated_url' => $languageUrl
         ];
 
         return new Response(200, ['Content-Type' => 'application/json'], json_encode($response));
