@@ -524,6 +524,7 @@ $router->get('/{language}/special:{page}', 'IslamWiki\Http\Controllers\SimpleLan
 
 // Catch-all route for language-specific paths that aren't explicitly defined
 // This allows any /{language}/{path} to be handled by the languageContent method
+// IMPORTANT: This must come AFTER all specific language routes to avoid conflicts
 $router->get('/{language}/{path:.*}', 'IslamWiki\Http\Controllers\SimpleLanguageController@languageContent');
 
 // Wiki routes - only for actual wiki pages, not system paths
