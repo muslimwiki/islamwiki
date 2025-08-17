@@ -37,7 +37,7 @@
                     </div>
                 {% endif %}
 
-                <form class="login-form" action="/login" method="POST">
+                <form class="login-form" action="/auth/login" method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     
                     <div class="form-group">
@@ -114,7 +114,7 @@
                 <div class="login-footer">
                     <p class="footer-text">
                         Don't have an account? 
-                        <a href="/register" class="link">
+                        <a href="/auth/register" class="link">
                             Create one now
                         </a>
                     </p>

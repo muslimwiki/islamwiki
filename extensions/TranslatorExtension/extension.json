@@ -1,0 +1,49 @@
+{
+    "name": "TranslatorExtension",
+    "version": "0.0.1",
+    "description": "Provides translation functionality between different language versions of content",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/TranslatorExtension",
+    "main": "TranslatorExtension.php",
+    "class": "IslamWiki\\Extensions\\TranslatorExtension\\TranslatorExtension",
+    "type": "content",
+    "requires": {
+        "IslamWiki": ">= 0.0.59"
+    },
+    "config": {
+        "enableAutoTranslation": true,
+        "enableTranslationMemory": true,
+        "enableQualityScoring": true,
+        "defaultSourceLanguage": "en",
+        "supportedTargetLanguages": ["ar", "tr", "ur", "id", "ms", "fa", "he"],
+        "translationMemorySize": 1000,
+        "qualityThreshold": 0.8,
+        "enableUserFeedback": true,
+        "enableTranslationHistory": true
+    },
+    "hooks": {
+        "PageDisplay": "onPageDisplay",
+        "ContentParse": "onContentParse",
+        "SidebarRender": "onSidebarRender",
+        "UserProfile": "onUserProfile",
+        "AdminMenu": "onAdminMenu"
+    },
+    "resources": {
+        "css": [
+            "assets/css/translator.css"
+        ],
+        "js": [
+            "assets/js/translator.js"
+        ]
+    },
+    "templates": {
+        "translator-sidebar": "templates/translator-sidebar.twig",
+        "translation-form": "templates/translation-form.twig",
+        "translation-history": "templates/translation-history.twig"
+    },
+    "permissions": {
+        "translate": "Can translate content between languages",
+        "review_translations": "Can review and approve translations",
+        "manage_translations": "Can manage translation settings"
+    }
+} 

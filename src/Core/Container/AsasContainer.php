@@ -75,7 +75,7 @@ class AsasContainer implements ContainerInterface
      */
     public function alias(string $abstract, string $alias): void
     {
-        $this->aliases[$abstract] = $alias;
+        $this->aliases[$alias] = $abstract;
     }
 
     /**

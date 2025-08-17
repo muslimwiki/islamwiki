@@ -1,0 +1,278 @@
+<div class="translator-widget">
+    <div class="translator-header">
+        <h3>🌍 Translation</h3>
+        <p>Translate this page to other languages</p>
+    </div>
+
+    <div class="translator-content">
+        <div class="current-language">
+            <span class="language-flag">{{ language_urls[current_language].flag }}</span>
+            <span class="language-name">{{ language_urls[current_language].name }}</span>
+            <span class="language-native">({{ language_urls[current_language].native }})</span>
+        </div>
+
+        <div class="translation-options">
+            <h4>Available Languages</h4>
+            
+            {% for code, language in language_urls %}
+                {% if code != current_language %}
+                    <div class="language-option">
+                        <a href="{{ language.url }}" class="language-link">
+                            <span class="language-flag">{{ language.flag }}</span>
+                            <span class="language-name">{{ language.name }}</span>
+                            <span class="language-native">{{ language.native }}</span>
+                        </a>
+                        
+                        {% if can_translate %}
+                            <button class="translate-btn" 
+                                    data-source="{{ current_language }}" 
+                                    data-target="{{ code }}"
+                                    data-page-path="{{ page_path }}">
+                                Translate
+                            </button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if can_translate %}
+            <div class="translation-actions">
+                <button class="btn btn-primary translate-page-btn" 
+                        data-page-path="{{ page_path }}"
+                        data-current-language="{{ current_language }}">
+                    📝 Translate This Page
+                </button>
+                
+                <div class="translation-tools">
+                    <button class="btn btn-secondary suggest-translation-btn">
+                        💡 Suggest Translation
+                    </button>
+                    <button class="btn btn-secondary review-translations-btn">
+                        🔍 Review Translations
+                    </button>
+                </div>
+            </div>
+        {% else %}
+            <div class="login-prompt">
+                <p>💡 Want to help translate?</p>
+                <a href="/login" class="btn btn-primary">Login to Translate</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="translation-status">
+        <h4>Translation Status</h4>
+        <div class="status-grid">
+            {% for code, language in language_urls %}
+                {% if code != current_language %}
+                    <div class="status-item">
+                        <span class="status-flag">{{ language.flag }}</span>
+                        <span class="status-language">{{ language.name }}</span>
+                        <span class="status-indicator incomplete">⏳</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+.translator-widget {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.translator-header h3 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.translator-header p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.current-language {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: #e3f2fd;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.language-flag {
+    font-size: 1.5rem;
+}
+
+.language-name {
+    font-weight: 600;
+    color: #1976d2;
+}
+
+.language-native {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.translation-options h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.language-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: white;
+}
+
+.language-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+}
+
+.language-link:hover {
+    text-decoration: none;
+}
+
+.translate-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.translate-btn:hover {
+    background: #218838;
+}
+
+.translation-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.translate-page-btn {
+    width: 100%;
+    margin-bottom: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.translate-page-btn:hover {
+    background: #0056b3;
+}
+
+.translation-tools {
+    display: flex;
+    gap: 10px;
+}
+
+.translation-tools .btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.8rem;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 20px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+}
+
+.login-prompt p {
+    margin-bottom: 15px;
+    color: #856404;
+}
+
+.translation-status {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.translation-status h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.status-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.status-flag {
+    font-size: 1.2rem;
+}
+
+.status-language {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    font-size: 1.2rem;
+}
+
+.status-indicator.incomplete {
+    color: #ffc107;
+}
+
+.status-indicator.complete {
+    color: #28a745;
+}
+
+.status-indicator.in-progress {
+    color: #17a2b8;
+}
+</style> 

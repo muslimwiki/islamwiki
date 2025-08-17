@@ -79,6 +79,16 @@ class TwigRenderer
             ],
             'user' => null // Will be updated by middleware
         ]);
+
+        // Always add translation extension to ensure it works
+        try {
+            $translationService = new \IslamWiki\Core\Language\TranslationService('en');
+            $translationExtension = new \IslamWiki\Core\View\TwigTranslationExtension($translationService);
+            $this->_twig->addExtension($translationExtension);
+            error_log("TwigRenderer: Successfully added TwigTranslationExtension");
+        } catch (\Exception $e) {
+            error_log("TwigRenderer: Could not add translation extension: " . $e->getMessage());
+        }
     }
 
     /**
@@ -121,16 +131,22 @@ class TwigRenderer
     }
 
     /**
-     * Render a template with the given data.
-     *
-     * @param string $template The template name
-     * @param array  $data     The data to pass to the template
-     *
-     * @return string
+     * Render a template with data
      */
     public function render(string $template, array $data = []): string
     {
-        return $this->_twig->render($template, $data);
+        try {
+            // Check if we need to update the translation language from session
+            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+                $sessionLanguage = $_SESSION['language'];
+                $this->updateTranslationLanguage($sessionLanguage);
+            }
+            
+            return $this->_twig->render($template, $data);
+        } catch (\Exception $e) {
+            error_log("TwigRenderer::render error: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -221,6 +237,67 @@ class TwigRenderer
             $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
             return $currentPath === $path;
         }));
+
+        $this->_twig->addFunction(new TwigFunction('lang_url', function ($path) {
+            // Get current language from session or URI
+            $currentLanguage = 'en';
+            
+            // Try to get from session first
+            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+                $currentLanguage = $_SESSION['language'];
+            } else {
+                // Try to extract from current URI
+                $uri = $_SERVER['REQUEST_URI'] ?? '/';
+                $uri = ltrim($uri, '/');
+                $segments = explode('/', $uri);
+                
+                $supportedLanguages = ['en', 'ar', 'ur', 'tr', 'id', 'ms', 'fa', 'he'];
+                
+                if (!empty($segments[0]) && in_array($segments[0], $supportedLanguages, true)) {
+                    $currentLanguage = $segments[0];
+                }
+            }
+            
+            // Always include language prefix for consistency
+            // This makes switching between languages symmetrical
+            $path = ltrim($path, '/');
+            $langPath = $currentLanguage . '/' . $path;
+            
+            return url($langPath);
+        }));
+
+        $this->_twig->addFunction(new TwigFunction('current_language', function () {
+            // Try to get from session first
+            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+                return $_SESSION['language'];
+            }
+            
+            // Try to extract from current URI
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
+            $uri = ltrim($uri, '/');
+            $segments = explode('/', $uri);
+            
+            $supportedLanguages = ['en', 'ar', 'ur', 'tr', 'id', 'ms', 'fa', 'he'];
+            
+            if (!empty($segments[0]) && in_array($segments[0], $supportedLanguages, true)) {
+                return $segments[0];
+            }
+            
+            // Default to English if no language detected
+            return 'en';
+        }));
+    }
+
+    /**
+     * Add a Twig extension.
+     *
+     * @param \Twig\Extension\ExtensionInterface $extension The extension to add
+     *
+     * @return void
+     */
+    public function addExtension(\Twig\Extension\ExtensionInterface $extension): void
+    {
+        $this->_twig->addExtension($extension);
     }
 
     /**
@@ -238,12 +315,30 @@ class TwigRenderer
     }
 
     /**
-     * Get the Twig environment instance.
-     *
-     * @return Environment
+     * Get the Twig environment
      */
-    public function getTwig(): Environment
+    public function getTwig(): \Twig\Environment
     {
         return $this->_twig;
+    }
+
+    /**
+     * Update the translation service language
+     */
+    public function updateTranslationLanguage(string $language): void
+    {
+        try {
+            // Find the TwigTranslationExtension and update its language
+            $extensions = $this->_twig->getExtensions();
+            foreach ($extensions as $extension) {
+                if ($extension instanceof \IslamWiki\Core\View\TwigTranslationExtension) {
+                    $extension->updateLanguage($language);
+                    error_log("TwigRenderer: Updated translation language to: $language");
+                    break;
+                }
+            }
+        } catch (\Exception $e) {
+            error_log("TwigRenderer: Error updating translation language: " . $e->getMessage());
+        }
     }
 }

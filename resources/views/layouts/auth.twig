@@ -86,7 +86,7 @@
                                     Settings
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <form action="/logout" method="POST" class="dropdown-form">
+                                <form action="/auth/logout" method="POST" class="dropdown-form">
                                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                                     <button type="submit" class="dropdown-item logout-item">
                                         <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,11 +98,10 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="/login" class="btn btn-primary sign-in-btn">
-                            <span class="btn-icon">🔐</span>
-                            Sign In
+                        <a href="/auth/login" class="btn btn-primary sign-in-btn">
+                            <span>🔑</span> Sign In
                         </a>
-                        <a href="/register" class="btn btn-small">Get Started</a>
+                        <a href="/auth/register" class="btn btn-small">Get Started</a>
                     {% endif %}
                 </div>
             </div>

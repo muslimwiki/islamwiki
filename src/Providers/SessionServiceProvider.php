@@ -58,7 +58,19 @@ class SessionServiceProvider
      */
     public function boot(AsasContainer $container): void
     {
-        // Session boot disabled to prevent hanging
-        // Sessions will be started when needed during request handling
+        // Start the session when the provider boots, but only if not already started
+        try {
+            $session = $container->get('session');
+            
+            // Check if session is already started to avoid conflicts
+            if (session_status() === PHP_SESSION_NONE) {
+                $session->start();
+                error_log("SessionServiceProvider: Session started successfully");
+            } else {
+                error_log("SessionServiceProvider: Session already active, skipping start");
+            }
+        } catch (\Exception $e) {
+            error_log("SessionServiceProvider: Error starting session: " . $e->getMessage());
+        }
     }
 }

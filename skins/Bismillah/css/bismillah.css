@@ -4919,3 +4919,119 @@ main,
     transform: translateY(0) !important;
     pointer-events: auto !important;
 }
+
+/* ===== USER DROPDOWN MENU STYLING ===== */
+/* Enhanced user dropdown with better visibility and Islamic theme */
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--islamic-white);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 120px;
+    justify-content: center;
+    text-decoration: none;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
+}
+
+.user-dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--islamic-gold);
+    color: var(--islamic-gold);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.user-dropdown-toggle:active {
+    transform: translateY(0);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--islamic-dark-green);
+    border: 1px solid var(--islamic-gold);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    border-top: 3px solid var(--islamic-gold);
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.user-dropdown:hover .user-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--islamic-white);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.user-dropdown-menu .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--islamic-gold);
+    padding-left: 1.5rem;
+}
+
+.user-dropdown-menu .dropdown-item:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* RTL Support for User Dropdown */
+[dir="rtl"] .user-dropdown-menu {
+    right: auto;
+    left: 0;
+}
+
+[dir="rtl"] .user-dropdown-menu .dropdown-item:hover {
+    padding-left: 1rem;
+    padding-right: 1.5rem;
+}
+
+/* Mobile Responsiveness for User Dropdown */
+@media (max-width: 768px) {
+    .user-dropdown-menu {
+        right: auto;
+        left: 0;
+        min-width: 180px;
+    }
+    
+    [dir="rtl"] .user-dropdown-menu {
+        left: auto;
+        right: 0;
+    }
+}

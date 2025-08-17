@@ -40,6 +40,14 @@ require_once BASE_PATH . '/src/helpers.php';
 // Load LocalSettings.php for configuration
 require_once BASE_PATH . '/LocalSettings.php';
 
+// Configure session settings BEFORE any session operations
+ini_set('session.save_handler', 'files');
+ini_set('session.use_strict_mode', '1');
+ini_set('session.use_cookies', '1');
+ini_set('session.use_only_cookies', '1');
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'Lax');
+
 // Include necessary files
 require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
 require_once BASE_PATH . '/src/Core/Database/Connection.php';

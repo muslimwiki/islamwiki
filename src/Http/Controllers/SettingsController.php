@@ -1,566 +1,447 @@
 <?php
 
-/**
- * Settings Controller
- *
- * Handles user settings and skin management.
- *
- * @package IslamWiki\Http\Controllers
- * @version 0.0.28
- * @license AGPL-3.0-only
- */
-
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\NizamApplication;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\WisalSession;
-use IslamWiki\Skins\SkinManager;
+use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Language\LanguageService;
 
+/**
+ * Settings Controller
+ * 
+ * Handles user settings including language preferences
+ */
 class SettingsController extends Controller
 {
-    private WisalSession $session;
+    /**
+     * @var Connection
+     */
+    private Connection $database;
 
-    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
+    /**
+     * @var LanguageService
+     */
+    private LanguageService $languageService;
+
+    /**
+     * Constructor
+     */
+    public function __construct(Connection $database, \IslamWiki\Core\Container\AsasContainer $container, LanguageService $languageService)
     {
-        parent::__construct($db, $container);
-        $this->session = $container->get('session');
+        parent::__construct($database, $container);
+        $this->languageService = $languageService;
     }
 
     /**
-     * Display the settings page
+     * Show settings page
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // Check if user is logged in
-        if (!$this->session->isLoggedIn()) {
-            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
-        }
-
-        $userId = $this->session->getUserId();
-
-        // Get user settings using the application's database connection
-        $userSettings = $this->getUserSettings($userId);
-        $userActiveSkin = $userSettings['skin'] ?? 'Bismillah'; // Default to Bismillah
-
-        // Get current user from session
-        $user = null;
+        error_log("SettingsController::index - Starting settings page load");
+        
         try {
-            $user = \IslamWiki\Models\User::find($userId, $this->db);
-        } catch (\Exception $e) {
-            // User not found, continue with null user
-        }
-
-        // Dynamically discover available skins from the skins directory
-        $availableSkins = $this->discoverAvailableSkins();
-
-        // For now, provide basic skin information without the skin manager
-        $skinOptions = [];
-        $skinPreviewCss = [];
-
-        // Process discovered skins with basic information
-        foreach ($availableSkins as $skinKey => $skinData) {
-            $lowerSkinName = strtolower($skinData['name']);
-            $isActive = $lowerSkinName === strtolower($userActiveSkin);
-
-            $skinOptions[$skinData['name']] = [
-                'name' => $skinData['name'],
-                'version' => $skinData['version'] ?? '0.0.1',
-                'author' => $skinData['author'] ?? 'Unknown',
-                'description' => $skinData['description'] ?? '',
-                'active' => $isActive,
-                'css_key' => $lowerSkinName,
-                'directory' => $skinData['directory'],
-                'features' => $skinData['features'] ?? [],
-                'config' => $skinData['config'] ?? []
-            ];
-
-            // Generate preview CSS for this skin
-            $skinPreviewCss[$lowerSkinName] = $this->createPreviewCss($skinData);
-        }
-
-        return $this->view('settings/index.twig', [
-            'title' => 'Settings - IslamWiki',
-            'user' => $user,
-            'skinOptions' => $skinOptions,
-            'activeSkin' => $userActiveSkin,
-            'availableSkins' => $availableSkins,
-            'userSettings' => $userSettings,
-            'skinPreviewCss' => $skinPreviewCss
-        ], 200, [
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0'
-        ]);
-    }
-
-    /**
-     * Dynamically discover available skins from the skins directory
-     */
-    private function discoverAvailableSkins(): array
-    {
-        // Use a more reliable path calculation
-        $skinsDir = dirname(__DIR__, 3) . '/skins';
-        $availableSkins = [];
-
-        if (!is_dir($skinsDir)) {
-            return $availableSkins;
-        }
-
-        $skinDirs = glob($skinsDir . '/*', GLOB_ONLYDIR);
-
-        foreach ($skinDirs as $skinDir) {
-            $skinName = basename($skinDir);
-            $skinConfigFile = $skinDir . '/skin.json';
-
-            if (file_exists($skinConfigFile)) {
-                try {
-                    $config = json_decode(file_get_contents($skinConfigFile), true);
-
-                    if ($config && isset($config['name'])) {
-                        $availableSkins[strtolower($skinName)] = [
-                            'name' => $config['name'],
-                            'version' => $config['version'] ?? '0.0.1',
-                            'author' => $config['author'] ?? 'Unknown',
-                            'description' => $config['description'] ?? '',
-                            'directory' => $skinName,
-                            'features' => $config['features'] ?? [],
-                            'config' => $config['config'] ?? [],
-                            'dependencies' => $config['dependencies'] ?? []
-                        ];
-                    }
-                } catch (\Exception $e) {
-                    // Log error but continue loading other skins
-                    error_log("Failed to load skin config for {$skinName}: " . $e->getMessage());
-                }
-            }
-        }
-
-        return $availableSkins;
-    }
-
-    /**
-     * Update user's skin setting
-     */
-    public function updateSkin(): Response
-    {
-        // Check if user is logged in
-        if (!$this->session->isLoggedIn()) {
-            return $this->renderErrorPage(
-                401,
-                'Authentication Required',
-                'You need to be logged in to update settings.'
-            );
-        }
-
-        $userId = $this->session->getUserId();
-
-        try {
-            // Try to get request from container first, fallback to capture
-            $request = null;
-            if ($this->container->has('request')) {
-                $request = $this->container->get('request');
-            } else {
-                $request = \IslamWiki\Core\Http\Request::capture();
+            // Check if user is logged in
+            if (!isset($_SESSION['user_id'])) {
+                error_log("SettingsController::index - User not logged in, redirecting to login");
+                return new Response(302, ['Location' => '/login'], '');
             }
 
-            // Get the raw body content
-            $body = $request->getBody()->getContents();
-
-            // Check if this is a JSON request
-            $contentType = $request->getHeaderLine('Content-Type');
-            $isJson = strpos($contentType, 'application/json') !== false;
-
-            $skinName = null;
-
-            if ($isJson && !empty($body)) {
-                // Parse JSON body
-                $parsedBody = json_decode($body, true);
-                $skinName = $parsedBody['skin'] ?? null;
-            } else {
-                // Try regular POST data
-                $parsedBody = $request->getParsedBody();
-                $skinName = $parsedBody['skin'] ?? null;
-            }
-
-            // Fallback to $_POST
-            if (!$skinName && isset($_POST['skin'])) {
-                $skinName = $_POST['skin'];
-            }
-
-            if (!$skinName) {
-                return $this->json(['error' => 'Skin name is required'], 400);
-            }
-
-            // Validate that the skin exists in our discovered skins
-            $availableSkins = $this->discoverAvailableSkins();
-            $skinExists = false;
-
-            foreach ($availableSkins as $skinData) {
-                if (strtolower($skinData['name']) === strtolower($skinName)) {
-                    $skinExists = true;
-                    break;
-                }
-            }
-
-            if (!$skinExists) {
-                return $this->json(['error' => 'Invalid skin selected'], 400);
-            }
-
-            // Set the active skin using standardized approach
-            // For now, use a fallback since we don't have the 'app' binding
-            $skinSetResult = true; // Assume success for now
+            $userId = $_SESSION['user_id'];
+            error_log("SettingsController::index - User ID: $userId");
             
-            // TODO: Once the full application system is implemented, this can be updated to:
-            // $app = $this->container->get('app');
-            // $skinSetResult = SkinManager::setActiveSkinStatic($app, $skinName);
+            $currentLanguage = $this->getUserLanguage($userId);
+            error_log("SettingsController::index - Current language: $currentLanguage");
 
-            // Update user's skin preference in database
-            $updateResult = $this->updateUserSkin($userId, $skinName);
+            // Debug: Check if LanguageService is working
+            try {
+                $supportedLanguages = $this->languageService->getSupportedLanguages();
+                error_log("SettingsController::index - Supported languages: " . print_r($supportedLanguages, true));
+                
+                // Transform the supported languages data to match template expectations
+                $transformedLanguages = [];
+                foreach ($supportedLanguages as $code => $info) {
+                    $transformedLanguages[] = [
+                        'code' => $code,
+                        'name' => $info['name'],
+                        'native_name' => $info['native'],
+                        'flag' => $info['flag'],
+                        'direction' => $info['direction'],
+                        'isRTL' => $info['isRTL'],
+                        'locale' => $info['locale']
+                    ];
+                }
+                error_log("SettingsController::index - Transformed languages: " . print_r($transformedLanguages, true));
+            } catch (\Exception $e) {
+                error_log("SettingsController::index - Error getting supported languages: " . $e->getMessage());
+                error_log("SettingsController::index - LanguageService class: " . get_class($this->languageService));
+                throw $e;
+            }
 
-            return $this->json([
-                'success' => $updateResult,
-                'message' => "Skin updated to $skinName successfully",
-                'activeSkin' => $skinName,
-                'userId' => $userId
+            try {
+                $currentLanguageDirection = $this->languageService->getCurrentLanguageDirection();
+                error_log("SettingsController::index - Current language direction: $currentLanguageDirection");
+            } catch (\Exception $e) {
+                error_log("SettingsController::index - Error getting language direction: " . $e->getMessage());
+                throw $e;
+            }
+
+            error_log("SettingsController::index - About to render template");
+            
+            return $this->view('settings/index.twig', [
+                'user_id' => $userId,
+                'current_language' => $currentLanguage,
+                'current_language_direction' => $currentLanguageDirection,
+                'supported_languages' => $transformedLanguages,
+                'page_title' => 'Settings - Language Preference'
             ]);
-        } catch (\Throwable $e) {
-            return $this->json(['error' => 'Internal server error: ' . $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            // Log the actual error for debugging
+            error_log("SettingsController::index - CRITICAL ERROR: " . $e->getMessage());
+            error_log("SettingsController::index - Error file: " . $e->getFile());
+            error_log("SettingsController::index - Error line: " . $e->getLine());
+            error_log("SettingsController::index - Stack trace: " . $e->getTraceAsString());
+            
+            // Return a detailed error response for debugging
+            return new Response(500, ['Content-Type' => 'text/html'], '
+                <h1>Error Loading Settings</h1>
+                <p>Sorry, there was an error loading the settings page.</p>
+                <h2>Error Details:</h2>
+                <p><strong>Message:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>
+                <p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . '</p>
+                <p><strong>Line:</strong> ' . htmlspecialchars($e->getLine()) . '</p>
+                <h2>Stack Trace:</h2>
+                <pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>
+                <p><a href="/">Return to Homepage</a></p>
+            ');
         }
     }
 
     /**
-     * Get all available skins for the current user
+     * Update user language preference
      */
-    public function getAvailableSkins(): Response
+    public function updateLanguage(Request $request): Response
+    {
+        error_log("SettingsController::updateLanguage - Starting language update");
+        
+        try {
+            // Check if user is logged in
+            if (!isset($_SESSION['user_id'])) {
+                error_log("SettingsController::updateLanguage - User not logged in, redirecting to login");
+                return new Response(302, ['Location' => '/login'], '');
+            }
+
+            $userId = $_SESSION['user_id'];
+            $language = $_POST['language'] ?? 'en';
+            
+            error_log("SettingsController::updateLanguage - User ID: $userId, Language: $language");
+
+            // Validate language
+            if (!$this->languageService->isLanguageSupported($language)) {
+                error_log("SettingsController::updateLanguage - Invalid language: $language");
+                $translationService = $this->languageService->getTranslationService();
+                $errorMessage = $translationService ? $translationService->translate('messages.error.invalid_language') : 'Invalid language selected';
+                
+                return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                    'success' => false,
+                    'message' => $errorMessage
+                ]));
+            }
+
+            error_log("SettingsController::updateLanguage - Language validated, updating user preference");
+
+            // Update user language preference
+            $this->updateUserLanguage($userId, $language);
+
+            error_log("SettingsController::updateLanguage - User language updated in database");
+
+            // Set session language using LanguageService
+            $this->languageService->setCurrentLanguage($language);
+
+            error_log("SettingsController::updateLanguage - Session language updated");
+
+            // Update TwigRenderer translation language
+            try {
+                $twigRenderer = $this->container->get(\IslamWiki\Core\View\TwigRenderer::class);
+                $twigRenderer->updateTranslationLanguage($language);
+                error_log("SettingsController::updateLanguage - TwigRenderer translation language updated");
+            } catch (\Exception $e) {
+                error_log("SettingsController::updateLanguage - Error updating TwigRenderer: " . $e->getMessage());
+            }
+
+            // Get success message from translation service
+            $translationService = $this->languageService->getTranslationService();
+            $successMessage = $translationService ? $translationService->translate('messages.success.language_updated') : 'Language updated successfully';
+
+            // Return success response without redirect - user stays on settings page
+            error_log("SettingsController::updateLanguage - Language update successful, staying on settings page");
+            
+            return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'success' => true,
+                'message' => $successMessage,
+                'language' => $language
+            ]));
+        } catch (\Exception $e) {
+            error_log("SettingsController::updateLanguage - ERROR: " . $e->getMessage());
+            error_log("SettingsController::updateLanguage - Stack trace: " . $e->getTraceAsString());
+            
+            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'An error occurred while updating language: ' . $e->getMessage()
+            ]));
+        }
+    }
+
+    /**
+     * API endpoint for switching language
+     */
+    public function switchLanguage(Request $request): Response
     {
         // Check if user is logged in
-        if (!$this->session->isLoggedIn()) {
-            return $this->renderErrorPage(401, 'Authentication Required', 'You need to be logged in to view settings.');
+        if (!isset($_SESSION['user_id'])) {
+            return new Response(401, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'User not authenticated'
+            ]));
         }
 
-        $userId = $this->session->getUserId();
-        $userSettings = $this->getUserSettings($userId);
-        $userActiveSkin = $userSettings['skin'] ?? 'muslim';
+        $userId = $_SESSION['user_id'];
+        $language = $_POST['language'] ?? 'en';
 
-        $availableSkins = $this->discoverAvailableSkins();
-
-        $skins = [];
-        foreach ($availableSkins as $key => $skinData) {
-            $skins[$skinData['name']] = [
-                'name' => $skinData['name'],
-                'version' => $skinData['version'],
-                'author' => $skinData['author'],
-                'description' => $skinData['description'],
-                'active' => strtolower($skinData['name']) === strtolower($userActiveSkin),
-                'features' => $skinData['features'],
-                'config' => $skinData['config']
-            ];
+        // Validate language
+        if (!$this->languageService->isLanguageSupported($language)) {
+            return new Response(400, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'Invalid language selected'
+            ]));
         }
 
-        return $this->json($skins);
+        // Update user language preference
+        $this->updateUserLanguage($userId, $language);
+
+        // Set session language using LanguageService
+        $this->languageService->setCurrentLanguage($language);
+
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'success' => true,
+            'message' => 'Language updated successfully',
+            'language' => $language
+        ]));
+    }
+
+    /**
+     * Get user's preferred language
+     */
+    private function getUserLanguage(int $userId): string
+    {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT settings 
+                FROM user_settings 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch();
+
+            if ($result && $result['settings']) {
+                $settings = json_decode($result['settings'], true);
+                if ($settings && isset($settings['language_preference'])) {
+                    return $settings['language_preference'];
+                }
+            }
+        } catch (\Exception $e) {
+            // Log error but continue with default
+            error_log("Error getting user language: " . $e->getMessage());
+        }
+
+        // Default to English
+        return 'en';
+    }
+
+    /**
+     * Update user's language preference
+     */
+    private function updateUserLanguage(int $userId, string $language): void
+    {
+        try {
+            // First, try to get existing settings
+            $stmt = $this->db->prepare("
+                SELECT settings 
+                FROM user_settings 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch();
+
+            if ($result) {
+                // Update existing record
+                $settings = json_decode($result['settings'], true) ?: [];
+                $settings['language_preference'] = $language;
+                $settings['updated_at'] = date('Y-m-d H:i:s');
+                
+                $stmt = $this->db->prepare("
+                    UPDATE user_settings 
+                    SET settings = ?, updated_at = NOW() 
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([json_encode($settings), $userId]);
+            } else {
+                // Insert new record
+                $settings = [
+                    'language_preference' => $language,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $stmt = $this->db->prepare("
+                    INSERT INTO user_settings (user_id, settings, created_at, updated_at) 
+                    VALUES (?, ?, NOW(), NOW())
+                ");
+                $stmt->execute([$userId, json_encode($settings)]);
+            }
+            
+            error_log("SettingsController::updateUserLanguage - Language preference updated successfully for user $userId to $language");
+        } catch (\Exception $e) {
+            error_log("Error updating user language: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Get current language from session or user preference
+     */
+    public function getCurrentLanguage(): string
+    {
+        return $this->languageService->getCurrentLanguage();
+    }
+
+    /**
+     * Check if current language is RTL
+     */
+    public function isCurrentLanguageRTL(): bool
+    {
+        return $this->languageService->isCurrentLanguageRTL();
+    }
+
+    /**
+     * Get current language direction
+     */
+    public function getCurrentLanguageDirection(): string
+    {
+        return $this->languageService->getCurrentLanguageDirection();
+    }
+
+    /**
+     * Update user skin preference
+     */
+    public function updateSkin(Request $request): Response
+    {
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            return new Response(302, ['Location' => '/login'], '');
+        }
+
+        $userId = $_SESSION['user_id'];
+        $skin = $_POST['skin'] ?? 'Bismillah';
+
+        // Update user skin preference
+        $this->updateUserSkin($userId, $skin);
+
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'success' => true,
+            'message' => 'Skin updated successfully',
+            'skin' => $skin
+        ]));
+    }
+
+    /**
+     * Get available skins
+     */
+    public function getAvailableSkins(Request $request): Response
+    {
+        $skins = [
+            'Bismillah' => [
+                'name' => 'Bismillah',
+                'description' => 'Beautiful Islamic-themed skin with enhanced styling',
+                'version' => '1.0.0',
+                'author' => 'IslamWiki Team'
+            ],
+            'Muslim' => [
+                'name' => 'Muslim',
+                'description' => 'Clean and modern skin with Islamic elements',
+                'version' => '1.0.0',
+                'author' => 'IslamWiki Team'
+            ]
+        ];
+
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'success' => true,
+            'skins' => $skins
+        ]));
     }
 
     /**
      * Get skin information
      */
-    public function getSkinInfo($request, string $skinName): Response
+    public function getSkinInfo(Request $request, string $skinName): Response
     {
-        // Check if user is logged in
-        if (!$this->session->isLoggedIn()) {
-            return $this->renderErrorPage(
-                401,
-                'Authentication Required',
-                'You need to be logged in to view skin information.'
-            );
+        $skins = [
+            'Bismillah' => [
+                'name' => 'Bismillah',
+                'description' => 'Beautiful Islamic-themed skin with enhanced styling',
+                'version' => '1.0.0',
+                'author' => 'IslamWiki Team',
+                'features' => ['RTL Support', 'Islamic Colors', 'Responsive Design']
+            ],
+            'Muslim' => [
+                'name' => 'Muslim',
+                'description' => 'Clean and modern skin with Islamic elements',
+                'version' => '1.0.0',
+                'author' => 'IslamWiki Team',
+                'features' => ['Modern Design', 'Fast Loading', 'Mobile Optimized']
+            ]
+        ];
+
+        if (!isset($skins[$skinName])) {
+            return new Response(404, ['Content-Type' => 'application/json'], json_encode([
+                'success' => false,
+                'message' => 'Skin not found'
+            ]));
         }
 
-        $availableSkins = $this->discoverAvailableSkins();
-        $skinData = null;
-
-        // Find the skin data
-        foreach ($availableSkins as $skinInfo) {
-            if (strtolower($skinInfo['name']) === strtolower($skinName)) {
-                $skinData = $skinInfo;
-                break;
-            }
-        }
-
-        if (!$skinData) {
-            return $this->json(['error' => 'Skin not found'], 404);
-        }
-
-        return $this->json([
-            'name' => $skinData['name'],
-            'version' => $skinData['version'],
-            'author' => $skinData['author'],
-            'description' => $skinData['description'],
-            'config' => $skinData['config'],
-            'features' => $skinData['features'],
-            'dependencies' => $skinData['dependencies'],
-            'hasCustomCss' => true, // All skins have CSS
-            'hasCustomJs' => true,  // All skins have JS
-            'hasCustomLayout' => true // All skins have layout
-        ]);
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'success' => true,
+            'skin' => $skins[$skinName]
+        ]));
     }
 
     /**
-     * Get user settings from database
+     * Update user skin preference
      */
-    private function getUserSettings(int $userId): array
+    private function updateUserSkin(int $userId, string $skin): void
     {
         try {
-            $result = $this->db->first("
-                SELECT settings FROM user_settings 
+            // Try to update existing record
+            $stmt = $this->db->prepare("
+                UPDATE user_settings 
+                SET skin_preference = ?, updated_at = NOW() 
                 WHERE user_id = ?
-            ", [$userId]);
+            ");
+            $stmt->execute([$skin, $userId]);
 
-            if ($result) {
-                $settings = json_decode($result->settings, true) ?? [];
-                return $settings;
+            // If no rows were affected, insert new record
+            if ($stmt->rowCount() === 0) {
+                $stmt = $this->db->prepare("
+                    INSERT INTO user_settings (user_id, skin_preference, created_at, updated_at) 
+                    VALUES (?, ?, NOW(), NOW())
+                ");
+                $stmt->execute([$userId, $skin]);
             }
-
-            return [];
-        } catch (\Throwable $e) {
-            return [];
+        } catch (\Exception $e) {
+            error_log("Error updating user skin: " . $e->getMessage());
+            throw $e;
         }
-    }
-
-    /**
-     * Update user's skin preference in database
-     */
-    private function updateUserSkin(int $userId, string $skinName): bool
-    {
-        try {
-            // Get current settings using the application's database connection
-            $currentSettings = $this->getUserSettings($userId);
-
-            // Update skin setting - store in lowercase for consistency
-            $currentSettings['skin'] = strtolower($skinName);
-            $currentSettings['updated_at'] = date('Y-m-d H:i:s');
-
-            // Insert or update user settings using the application's database connection
-            $settingsJson = json_encode($currentSettings);
-
-            $result = $this->db->statement("
-                INSERT INTO user_settings (user_id, settings, created_at, updated_at) 
-                VALUES (?, ?, NOW(), NOW())
-                ON DUPLICATE KEY UPDATE 
-                settings = VALUES(settings), 
-                updated_at = VALUES(updated_at)
-            ", [$userId, $settingsJson]);
-
-            return $result;
-        } catch (\Throwable $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Render an error page for authentication failures
-     */
-    private function renderErrorPage(int $statusCode, string $title, string $message): Response
-    {
-        // Check if this is an AJAX request
-        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-
-        // Check if this is an API request (JSON expected)
-        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
-        $isApiRequest = strpos($acceptHeader, 'application/json') !== false;
-
-        // If it's an AJAX or API request, return JSON
-        if ($isAjax || $isApiRequest) {
-            return $this->json(['error' => $message], $statusCode);
-        }
-
-        // Otherwise, render the HTML error page
-        $errorPagePath = dirname(__DIR__, 3) . '/resources/views/errors/401.php';
-
-        if (file_exists($errorPagePath)) {
-            ob_start();
-            include $errorPagePath;
-            $content = ob_get_clean();
-
-            return new Response($statusCode, ['Content-Type' => 'text/html'], $content);
-        }
-
-        // Fallback to simple HTML if error page doesn't exist
-        $fallbackHtml = "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>{$title}</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
-                .error { color: #e74c3c; font-size: 2em; margin-bottom: 20px; }
-                .message { color: #333; font-size: 1.2em; margin-bottom: 30px; }
-                .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; 
-                       text-decoration: none; border-radius: 5px; margin: 10px; }
-            </style>
-        </head>
-        <body>
-            <div class='error'>{$title}</div>
-            <div class='message'>{$message}</div>
-            <a href='/login' class='btn'>Log In</a>
-            <a href='/' class='btn'>Go Home</a>
-        </body>
-        </html>";
-
-        return new Response($statusCode, ['Content-Type' => 'text/html'], $fallbackHtml);
-    }
-
-    /**
-     * Create preview CSS for a skin
-     */
-    private function createPreviewCss(array $skinData): string
-    {
-        $cssVariables = $this->extractCssVariables($skinData);
-        return $this->generatePreviewStyles($cssVariables, $skinData['name']);
-    }
-
-    /**
-     * Extract CSS variables from skin configuration
-     */
-    private function extractCssVariables(array $skinData): array
-    {
-        $variables = [];
-        
-        // Extract colors from skin config
-        if (isset($skinData['config'])) {
-            $config = $skinData['config'];
-            
-            // Map config colors to CSS variables
-            $variables['primary'] = $config['primary_color'] ?? '#4F46E5';
-            $variables['secondary'] = $config['secondary_color'] ?? '#7C3AED';
-            $variables['accent'] = $config['accent_color'] ?? '#A855F7';
-            
-            // Generate additional colors based on primary
-            $variables['primary-light'] = $this->lightenColor($variables['primary'], 0.2);
-            $variables['primary-dark'] = $this->darkenColor($variables['primary'], 0.2);
-            $variables['secondary-light'] = $this->lightenColor($variables['secondary'], 0.2);
-            $variables['secondary-dark'] = $this->darkenColor($variables['secondary'], 0.2);
-        }
-        
-        // Default fallback colors if no config
-        if (empty($variables)) {
-            $variables = [
-                'primary' => '#4F46E5',
-                'secondary' => '#7C3AED',
-                'accent' => '#A855F7',
-                'primary-light' => '#6366F1',
-                'primary-dark' => '#3730A3',
-                'secondary-light' => '#8B5CF6',
-                'secondary-dark' => '#5B21B6'
-            ];
-        }
-        
-        return $variables;
-    }
-
-    /**
-     * Generate preview styles using CSS variables
-     */
-    private function generatePreviewStyles(array $variables, string $skinName): string
-    {
-        $css = "/* Preview styles for {$skinName} skin */
-.skin-preview-{$skinName} {
-    --preview-primary: {$variables['primary']};
-    --preview-secondary: {$variables['secondary']};
-    --preview-accent: {$variables['accent']};
-    --preview-primary-light: {$variables['primary-light']};
-    --preview-primary-dark: {$variables['primary-dark']};
-    --preview-secondary-light: {$variables['secondary-light']};
-    --preview-secondary-dark: {$variables['secondary-dark']};
-}
-
-.skin-preview-{$skinName} .preview-header {
-    background: linear-gradient(135deg, var(--preview-primary) 0%, var(--preview-secondary) 100%);
-    color: white;
-    padding: 1rem;
-    border-radius: 0.5rem 0.5rem 0 0;
-    text-align: center;
-}
-
-.skin-preview-{$skinName} .preview-content {
-    background: white;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-top: none;
-    border-radius: 0 0 0.5rem 0.5rem;
-}
-
-.skin-preview-{$skinName} .preview-title {
-    color: var(--preview-primary);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.skin-preview-{$skinName} .preview-text {
-    color: #6b7280;
-    font-size: 0.875rem;
-    line-height: 1.4;
-}
-
-.skin-preview-{$skinName} .preview-button {
-    background: var(--preview-primary);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background-color 0.2s;
-}
-
-.skin-preview-{$skinName} .preview-button:hover {
-    background: var(--preview-primary-dark);
-}
-
-.skin-preview-{$skinName} .preview-accent {
-    color: var(--preview-accent);
-    font-weight: 500;
-}";
-
-        return $css;
-    }
-
-    /**
-     * Lighten a hex color by a percentage
-     */
-    private function lightenColor(string $hex, float $percent): string
-    {
-        $hex = ltrim($hex, '#');
-        $r = hexdec(substr($hex, 0, 2));
-        $g = hexdec(substr($hex, 2, 2));
-        $b = hexdec(substr($hex, 4, 2));
-        
-        $r = min(255, $r + (255 - $r) * $percent);
-        $g = min(255, $g + (255 - $g) * $percent);
-        $b = min(255, $b + (255 - $b) * $percent);
-        
-        return sprintf("#%02x%02x%02x", round($r), round($g), round($b));
-    }
-
-    /**
-     * Darken a hex color by a percentage
-     */
-    private function darkenColor(string $hex, float $percent): string
-    {
-        $hex = ltrim($hex, '#');
-        $r = hexdec(substr($hex, 0, 2));
-        $g = hexdec(substr($hex, 2, 2));
-        $b = hexdec(substr($hex, 4, 2));
-        
-        $r = max(0, $r - $r * $percent);
-        $g = max(0, $g - $g * $percent);
-        $b = max(0, $b - $b * $percent);
-        
-        return sprintf("#%02x%02x%02x", round($r), round($g), round($b));
     }
 }

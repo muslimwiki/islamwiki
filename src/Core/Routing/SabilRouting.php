@@ -429,19 +429,29 @@ class SabilRouting implements RequestHandlerInterface
             return null;
         }
 
-        $next = function (ServerRequestInterface $request) {
-            return null; // Continue to handler
+        // Create a final next function that will execute the route handler
+        $finalNext = function (ServerRequestInterface $request) {
+            // This will be called by the last middleware
+            // Return null to indicate we should continue to the route handler
+            return null;
         };
 
-        // Build middleware chain
+        // Build middleware chain from last to first
+        $next = $finalNext;
         for ($i = count($this->_middlewareStack) - 1; $i >= 0; $i--) {
             $middleware = $this->_middlewareStack[$i];
-            $next = function (ServerRequestInterface $request) use ($middleware, $next) {
-                return $middleware($request, $next);
+            $currentNext = $next;
+            $next = function (ServerRequestInterface $request) use ($middleware, $currentNext) {
+                return $middleware($request, $currentNext);
             };
         }
 
-        return $next($request);
+        // Execute the first middleware in the chain
+        $response = $next($request);
+        
+        // If middleware returns null, continue to route handler
+        // If middleware returns a response, return it immediately
+        return $response;
     }
 
     /**
@@ -453,32 +463,7 @@ class SabilRouting implements RequestHandlerInterface
     {
         if ($this->_middlewareStack === null) {
             $this->_middlewareStack = [];
-            
-            // Add global middleware
-            $this->addGlobalMiddleware();
         }
-    }
-
-    /**
-     * Public method to initialize the middleware stack.
-     *
-     * @return void
-     */
-    public function initializeGlobalMiddleware(): void
-    {
-        $this->initializeMiddlewareStack();
-    }
-
-    /**
-     * Add global middleware to the stack.
-     *
-     * @return void
-     */
-    private function addGlobalMiddleware(): void
-    {
-        // SubdomainLanguageMiddleware is used as a service by controllers
-        // and doesn't need to be in the router middleware stack
-        error_log("SabilRouting: No global middleware needed - using service-based approach");
     }
 
     /**

@@ -199,7 +199,7 @@
             <div class="border border-gray-200 rounded-lg p-4">
                 <h4 class="font-semibold text-gray-800 mb-2">From Same Collection</h4>
                 <p class="text-sm text-gray-600">Browse other Hadiths from {{ hadith.collection_name }}</p>
-                <a href="/hadith/collection/{{ collection_id }}" 
+                <a href="{{ lang_url('hadith/collection/' ~ collection_id) }}" 
                    class="text-green-600 hover:text-green-700 text-sm">
                     View Collection →
                 </a>
@@ -207,7 +207,7 @@
             <div class="border border-gray-200 rounded-lg p-4">
                 <h4 class="font-semibold text-gray-800 mb-2">Similar Topics</h4>
                 <p class="text-sm text-gray-600">Find Hadiths on similar topics</p>
-                <a href="/hadith/search?q={{ hadith.topic|default('') }}" 
+                <a href="{{ lang_url('hadith/search?q=' ~ (hadith.topic|default(''))) }}" 
                    class="text-green-600 hover:text-green-700 text-sm">
                     Search Similar →
                 </a>

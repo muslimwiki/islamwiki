@@ -8,6 +8,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
 use IslamWiki\Http\Controllers\PageController;
 use IslamWiki\Http\Controllers\UserController;
+use IslamWiki\Http\Controllers\Auth\AuthController;
 use IslamWiki\Http\Controllers\ApiController;
 use IslamWiki\Http\Controllers\ConfigurationController;
 use IslamWiki\Http\Controllers\SearchController;
@@ -26,6 +27,7 @@ use IslamWiki\Http\Controllers\SettingsController;
 use IslamWiki\Http\Controllers\QueueController;
 use IslamWiki\Http\Controllers\SciencesController;
 use IslamWiki\Http\Middleware\AuthenticationMiddleware;
+use IslamWiki\Core\Language\LanguageService;
 
 return function (\IslamWiki\Core\Application $app) {
     $container = $app->getContainer();
@@ -34,6 +36,7 @@ return function (\IslamWiki\Core\Application $app) {
     // Create controller instances
     $pageController = new PageController($db, $container);
     $userController = new UserController($db, $container);
+    $authController = new AuthController($db, $container);
     $apiController = new ApiController($db, $container);
     $configController = new ConfigurationController($container);
     $searchController = new SearchController($db, $container);
@@ -48,14 +51,21 @@ return function (\IslamWiki\Core\Application $app) {
     $homeController = new HomeController($db, $container);
     $dashboardController = new DashboardController($db, $container);
     $profileController = new ProfileController($db, $container);
-    $settingsController = new SettingsController($db, $container);
+    $settingsController = new SettingsController(
+        $container->get('view'),
+        $db,
+        $container->get(LanguageService::class)
+    );
     $queueController = new QueueController($db, $container);
     $sciencesController = new SciencesController($db, $container);
 
     // Create middleware instances
     $authMiddleware = new AuthenticationMiddleware($container->get('session'));
 
-    // Homepage
+    // Language-specific routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}', [$homeController, 'index']);
+    
+    // Homepage (default English)
     $app->get('/', [$homeController, 'index']);
 
     // Documentation routes (placed early to avoid any catch-alls)
@@ -68,6 +78,7 @@ return function (\IslamWiki\Core\Application $app) {
 
     // Dashboard
     $app->get('/dashboard', [$dashboardController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/dashboard', [$dashboardController, 'index']);
 
     // Page routes
     $app->get('/wiki', [$pageController, 'index']);
@@ -82,23 +93,57 @@ return function (\IslamWiki\Core\Application $app) {
     $app->post('/wiki/{slug:.+}/lock', [$pageController, 'lock']);
     $app->post('/wiki/{slug:.+}/unlock', [$pageController, 'unlock']);
 
+    // Language-specific page routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki', [$pageController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}', [$pageController, 'show']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/history', [$pageController, 'history']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/history/{revisionId:\d+}', [$pageController, 'showRevision']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/revert/{revisionId:\d+}', [$pageController, 'revert']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/edit', [$pageController, 'edit']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}', [$pageController, 'update']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/create', [$pageController, 'create']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/create', [$pageController, 'store']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/lock', [$pageController, 'lock']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/unlock', [$pageController, 'unlock']);
+
     // User authentication routes
-    $app->get('/login', [$userController, 'showLoginForm']);
-    $app->post('/login', [$userController, 'login']);
-    $app->get('/logout', [$userController, 'logout']);
-    $app->get('/register', [$userController, 'showRegistrationForm']);
-    $app->post('/register', [$userController, 'register']);
+    $app->get('/login', [$authController, 'showLogin']);
+    $app->post('/login', [$authController, 'login']);
+    $app->get('/logout', [$authController, 'logout']);
+    $app->get('/register', [$authController, 'showRegister']);
+    $app->post('/register', [$authController, 'register']);
+    
+    // Language-specific authentication routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|tr|ur|id|ms|fa|he}/login', [$authController, 'showLogin']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/login', [$authController, 'login']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/register', [$authController, 'showRegister']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/register', [$authController, 'register']);
+    
     // Protected routes (require authentication)
     $app->get('/profile', [$profileController, 'index'])->middleware($authMiddleware);
     $app->post('/profile', [$profileController, 'update'])->middleware($authMiddleware);
     $app->get('/profile/edit', [$profileController, 'edit'])->middleware($authMiddleware);
     $app->post('/profile/password', [$profileController, 'updatePassword'])->middleware($authMiddleware);
 
+    // Language-specific profile routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/profile', [$profileController, 'index'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/profile', [$profileController, 'update'])->middleware($authMiddleware);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/profile/edit', [$profileController, 'edit'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/profile/password', [$profileController, 'updatePassword'])->middleware($authMiddleware);
+
     // Settings routes
     $app->get('/settings', [$settingsController, 'index'])->middleware($authMiddleware);
+    $app->post('/settings/language', [$settingsController, 'updateLanguage'])->middleware($authMiddleware);
     $app->post('/settings/skin', [$settingsController, 'updateSkin'])->middleware($authMiddleware);
     $app->get('/settings/skins', [$settingsController, 'getAvailableSkins'])->middleware($authMiddleware);
     $app->get('/settings/skin/{skinName}', [$settingsController, 'getSkinInfo'])->middleware($authMiddleware);
+
+    // Language-specific settings routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/settings', [$settingsController, 'index'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/settings/language', [$settingsController, 'updateLanguage'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/settings/skin', [$settingsController, 'updateSkin'])->middleware($authMiddleware);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/settings/skins', [$settingsController, 'getAvailableSkins'])->middleware($authMiddleware);
+    $app->get('/{language:en|tr|ur|id|ms|fa|he}/settings/skin/{skinName}', [$settingsController, 'getSkinInfo'])->middleware($authMiddleware);
 
     // Queue management routes
     $app->get('/queue', [$queueController, 'index'])->middleware($authMiddleware);
@@ -148,6 +193,13 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/hadith/{id}', [$hadithController, 'show']);
     $app->get('/hadith/search', [$hadithController, 'search']);
     $app->get('/hadith/widget', [$hadithController, 'widget']);
+
+    // Language-specific Hadith routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith', [$hadithController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/collection/{collection}', [$hadithController, 'collection']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/{id}', [$hadithController, 'show']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/search', [$hadithController, 'search']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/widget', [$hadithController, 'widget']);
 
     // Quran routes - Handled by QuranExtension
     // Note: Quran routes are now registered by the QuranExtension

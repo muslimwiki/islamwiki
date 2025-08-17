@@ -8,7 +8,6 @@
  *
  * @category  Application
  * @package   IslamWiki
- * @author    IslamWiki Development Team
  * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
  * @link      https://islam.wiki
  * @since     0.0.34
@@ -59,8 +58,11 @@ $container->instance('connection', $db);
 $sessionManager = new \IslamWiki\Core\Session\WisalSession();
 $container->instance('session', $sessionManager);
 
+// Session will be started by SessionServiceProvider during boot
+error_log("MAIN ENTRY POINT: Session manager created and registered");
+
 // Create a simple logger (since we don't have a proper logger yet)
-$logger = new class implements \Psr\Log\LoggerInterface
+$simpleLogger = new class implements \Psr\Log\LoggerInterface
 {
     /**
      * Log emergency message
@@ -181,28 +183,38 @@ $logger = new class implements \Psr\Log\LoggerInterface
     }
 };
 
+// Create proper ShahidLogger instance
+$shahidLogger = new \IslamWiki\Core\Logging\ShahidLogger(BASE_PATH . '/storage/logs');
+
 // Register logger in container
-$container->instance(\Psr\Log\LoggerInterface::class, $logger);
+$container->instance(\Psr\Log\LoggerInterface::class, $simpleLogger);
+$container->instance('logger', $simpleLogger);
+$container->instance(\IslamWiki\Core\Logging\ShahidLogger::class, $shahidLogger);
 
 // Register service providers
 error_log("MAIN ENTRY POINT: Registering service providers");
 
-// Register LoggingServiceProvider first
-require_once BASE_PATH . '/src/Providers/LoggingServiceProvider.php';
-$loggingProvider = new \IslamWiki\Providers\LoggingServiceProvider();
-$loggingProvider->register($container);
+// Register DatabaseServiceProvider first (needed by other services)
+require_once BASE_PATH . '/src/Providers/DatabaseServiceProvider.php';
+$databaseProvider = new \IslamWiki\Providers\DatabaseServiceProvider();
+$databaseProvider->register($container);
 
-// Register AuthServiceProvider
-require_once BASE_PATH . '/src/Providers/AuthServiceProvider.php';
-$authProvider = new \IslamWiki\Providers\AuthServiceProvider();
-$authProvider->register($container);
-
-// Register SessionServiceProvider
+// Register SessionServiceProvider (needed by AuthServiceProvider)
 require_once BASE_PATH . '/src/Providers/SessionServiceProvider.php';
 $sessionProvider = new \IslamWiki\Providers\SessionServiceProvider();
 $sessionProvider->register($container);
 
-// Register ViewServiceProvider
+// Register AuthServiceProvider (needs session and db)
+require_once BASE_PATH . '/src/Providers/AuthServiceProvider.php';
+$authProvider = new \IslamWiki\Providers\AuthServiceProvider();
+$authProvider->register($container);
+
+// Register LanguageServiceProvider BEFORE ViewServiceProvider (needed for TwigTranslationExtension)
+require_once BASE_PATH . '/src/Providers/LanguageServiceProvider.php';
+$languageProvider = new \IslamWiki\Providers\LanguageServiceProvider();
+$languageProvider->register($container);
+
+// Register ViewServiceProvider (needs TwigTranslationExtension from LanguageServiceProvider)
 require_once BASE_PATH . '/src/Providers/ViewServiceProvider.php';
 $viewProvider = new \IslamWiki\Providers\ViewServiceProvider();
 $viewProvider->register($container);
@@ -217,32 +229,37 @@ require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
 $skinProvider = new \IslamWiki\Providers\SkinServiceProvider();
 $skinProvider->register($container);
 
-// Register TranslationServiceProvider
-require_once BASE_PATH . '/src/Providers/TranslationServiceProvider.php';
-$translationProvider = new \IslamWiki\Providers\TranslationServiceProvider();
-$translationProvider->register($container);
-
 // Boot all service providers
 error_log("MAIN ENTRY POINT: Booting service providers");
-$loggingProvider->boot($container);
-$authProvider->boot($container);
 $sessionProvider->boot($container);
+$authProvider->boot($container);
+$viewProvider->boot($container);
 $staticDataProvider->boot($container);
 $skinProvider->boot($container);
-$translationProvider->boot($container);
+$languageProvider->boot($container);
 
 // Initialize and register controller factory
-$controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $container);
+$controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $simpleLogger, $container);
 $container->instance('controller.factory', $controllerFactory);
 
 // Initialize router
 $router = new SabilRouting($container);
 
-// Initialize global middleware
-$router->initializeGlobalMiddleware();
+// Temporarily disable LanguageMiddleware to get the system working
+// TODO: Fix middleware system and re-enable
+/*
+// Add LanguageMiddleware to handle language detection and context
+try {
+    $languageMiddleware = $container->get(\IslamWiki\Core\Http\Middleware\LanguageMiddleware::class);
+    $router->addMiddleware($languageMiddleware);
+    error_log("Successfully added LanguageMiddleware to router");
+} catch (\Exception $e) {
+    error_log("Could not add LanguageMiddleware: " . $e->getMessage());
+}
+*/
 
 // Load routes
-require_once BASE_PATH . '/routes/web.php';
+require_once BASE_PATH . '/public/routes.php';
 
 // Get current request
 $request = Request::capture();

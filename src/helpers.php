@@ -174,6 +174,40 @@ if (!function_exists('url')) {
     }
 }
 
+
+
+if (!function_exists('is_rtl')) {
+    /**
+     * Check if the current language is RTL.
+     *
+     * @return bool
+     */
+    function is_rtl(): bool
+    {
+        // Try to get from session first
+        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+            $language = $_SESSION['language'];
+        } else {
+            // Try to extract from current URI
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
+            $uri = ltrim($uri, '/');
+            $segments = explode('/', $uri);
+            
+            $supportedLanguages = ['en', 'ar', 'ur', 'tr', 'id', 'ms', 'fa', 'he'];
+            
+            if (!empty($segments[0]) && in_array($segments[0], $supportedLanguages, true)) {
+                $language = $segments[0];
+            } else {
+                $language = 'en';
+            }
+        }
+        
+        $rtlLanguages = ['ar', 'ur', 'fa', 'he'];
+        
+        return in_array($language, $rtlLanguages);
+    }
+}
+
 if (!function_exists('abort')) {
     /**
      * Throw an HttpException with the given data.
@@ -185,7 +219,7 @@ if (!function_exists('abort')) {
      */
     function abort(int $code, string $message = '', array $headers = []): void
     {
-        throw new \IslamWiki\Core\Http\Exceptions\HttpException($message, $code, $headers);
+        throw new \IslamWiki\Core\Http\Exceptions\HttpException($code, $message, null, $headers);
     }
 }
 

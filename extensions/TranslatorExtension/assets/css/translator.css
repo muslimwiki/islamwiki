@@ -1,0 +1,425 @@
+/* Translator Extension Styles */
+
+/* Main Widget Container */
+.translator-widget {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Widget Header */
+.translator-header h3 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.translator-header p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+/* Current Language Display */
+.current-language {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: #e3f2fd;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border-left: 4px solid #1976d2;
+}
+
+.language-flag {
+    font-size: 1.5rem;
+}
+
+.language-name {
+    font-weight: 600;
+    color: #1976d2;
+}
+
+.language-native {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Translation Options */
+.translation-options h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.language-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.language-option:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.language-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+    transition: color 0.2s ease;
+}
+
+.language-link:hover {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.translate-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+}
+
+.translate-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* Translation Actions */
+.translation-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.translate-page-btn {
+    width: 100%;
+    margin-bottom: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.translate-page-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.translation-tools {
+    display: flex;
+    gap: 10px;
+}
+
+.translation-tools .btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    transform: translateY(-1px);
+}
+
+/* Login Prompt */
+.login-prompt {
+    text-align: center;
+    padding: 20px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    border-left: 4px solid #ffc107;
+}
+
+.login-prompt p {
+    margin-bottom: 15px;
+    color: #856404;
+    font-weight: 500;
+}
+
+/* Translation Status */
+.translation-status {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.translation-status h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.status-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.status-item:hover {
+    border-color: #007bff;
+    background: #f8f9ff;
+}
+
+.status-flag {
+    font-size: 1.2rem;
+}
+
+.status-language {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-indicator {
+    font-size: 1.2rem;
+}
+
+.status-indicator.incomplete {
+    color: #ffc107;
+}
+
+.status-indicator.complete {
+    color: #28a745;
+}
+
+.status-indicator.in-progress {
+    color: #17a2b8;
+}
+
+/* Translatable Terms */
+.translatable-term {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.translatable-term:hover {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.translatable-term::after {
+    content: '🌍';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.translatable-term:hover::after {
+    opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .translator-widget {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .language-option {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .translation-tools {
+        flex-direction: column;
+    }
+    
+    .current-language {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .translator-widget {
+    text-align: right;
+}
+
+[dir="rtl"] .language-option {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .language-link {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .translation-tools {
+    flex-direction: row-reverse;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .translator-widget {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .translator-header h3 {
+        color: #f7fafc;
+    }
+    
+    .translator-header p {
+        color: #a0aec0;
+    }
+    
+    .current-language {
+        background: #2c5282;
+        border-left-color: #63b3ed;
+    }
+    
+    .language-name {
+        color: #63b3ed;
+    }
+    
+    .language-option {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .language-option:hover {
+        border-color: #63b3ed;
+        background: #2d3748;
+    }
+    
+    .translation-status h4 {
+        color: #f7fafc;
+    }
+    
+    .status-item {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .status-item:hover {
+        background: #2d3748;
+        border-color: #63b3ed;
+    }
+}
+
+/* Animation Classes */
+.translator-widget {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.language-option {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Focus States for Accessibility */
+.translate-btn:focus,
+.translate-page-btn:focus,
+.btn-secondary:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.language-link:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Loading States */
+.translator-widget.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.translator-widget.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

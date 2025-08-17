@@ -242,7 +242,7 @@ class NizamApplication
         // Initialize Connection (Database)
         $this->connection = new Connection([]);
 
-        // Initialize Wisal (Session)
+        // Initialize Wisal (Session) - will be replaced by container's session
         $this->_session = new WisalSession([]);
 
         // Initialize Aman (Security)
@@ -281,15 +281,10 @@ class NizamApplication
             \IslamWiki\Providers\LoggingServiceProvider::class,
             \IslamWiki\Providers\SessionServiceProvider::class,
             \IslamWiki\Providers\AuthServiceProvider::class,
+            \IslamWiki\Providers\LanguageServiceProvider::class,
             \IslamWiki\Providers\ViewServiceProvider::class,
             \IslamWiki\Providers\SkinServiceProvider::class,
             \IslamWiki\Providers\StaticDataServiceProvider::class,
-            \IslamWiki\Providers\TranslationServiceProvider::class,
-            // Temporarily disable non-essential providers
-            // \IslamWiki\Providers\RihlahServiceProvider::class,
-            // \IslamWiki\Providers\SabrServiceProvider::class,
-            // \IslamWiki\Providers\UsulServiceProvider::class,
-            // \IslamWiki\Providers\SirajServiceProvider::class,
             \IslamWiki\Providers\BayanServiceProvider::class,
             \IslamWiki\Providers\ExtensionServiceProvider::class,
         ];
@@ -589,6 +584,15 @@ class NizamApplication
      */
     public function boot(): void
     {
+        // Get the session from the container instead of using the local one
+        try {
+            if ($this->container && $this->container->has('session')) {
+                $this->_session = $this->container->get('session');
+            }
+        } catch (\Exception $e) {
+            error_log("Could not get session from container: " . $e->getMessage());
+        }
+        
         // Start session immediately to prevent "headers already sent" errors
         if (isset($this->_session) && $this->_session) {
             $this->_session->start();

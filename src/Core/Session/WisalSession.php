@@ -23,208 +23,185 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Session;
 
+use IslamWiki\Core\Error\ErrorHandler;
+
 /**
- * Wisal (وصال) - Connection Manager
- *
- * Handles secure session management and user connection state.
- * Wisal means "connection" or "link" in Arabic, representing the
- * persistent connection between users and the application.
+ * WisalSession - Session Management System (وصال)
+ * 
+ * Handles user sessions, authentication state, and session security.
+ * 
+ * @package IslamWiki\Core\Session
+ * @version 0.0.1
+ * @author IslamWiki Development Team
+ * @license MIT
  */
 class WisalSession
 {
     /**
-     * @var string Session name
+     * @var array Session configuration
      */
-    private string $sessionName = 'islamwiki_session';
+    private array $config;
 
     /**
-     * @var int Session lifetime in seconds (24 hours)
+     * @var bool Whether the session has been started
      */
-    private int $sessionLifetime = 86400;
+    private bool $started = false;
 
     /**
-     * @var string Session cookie path
+     * @var array Session data cache
      */
-    private string $cookiePath = '/';
+    private array $data = [];
 
     /**
-     * @var bool Whether to use secure cookies
-     */
-    private bool $secure = false;
-
-    /**
-     * @var bool Whether to use HTTP only cookies
-     */
-    private bool $httpOnly = true;
-
-    /**
-     * @var string SameSite cookie attribute
-     */
-    private string $sameSite = 'Lax';
-
-    /**
-     * Create a new Wisal connection manager instance.
+     * Constructor.
+     * 
+     * @param array $config Session configuration
      */
     public function __construct(array $config = [])
     {
-        $this->sessionName = $config['name'] ?? $this->sessionName;
-        $this->sessionLifetime = $config['lifetime'] ?? $this->sessionLifetime;
-        $this->cookiePath = $config['path'] ?? $this->cookiePath;
-        $this->secure = $config['secure'] ?? $this->secure;
-        $this->httpOnly = $config['http_only'] ?? $this->httpOnly;
-        $this->sameSite = $config['same_site'] ?? $this->sameSite;
+        $this->config = array_merge([
+            'name' => 'islamwiki_session',
+            'lifetime' => 3600, // 1 hour
+            'path' => '/',
+            'domain' => '',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Lax',
+            'save_path' => __DIR__ . '/../../../storage/sessions'
+        ], $config);
+
+        // Configure session settings BEFORE any session operations
+        $this->configureSession();
     }
 
     /**
-     * Start the session with secure configuration.
+     * Configure session settings.
+     * This must be called before any session operations.
      */
-    public function start(): void
+    private function configureSession(): void
     {
-        // If session is already active, don't reconfigure it
+        // If session is already active, sync with it instead of reconfiguring
         if (session_status() === PHP_SESSION_ACTIVE) {
+            $this->started = true;
+            $this->data = $_SESSION;
+            error_log("WisalSession: Session already active, syncing with existing session");
             return;
         }
 
-        // Set session save path to our custom directory
-        $sessionPath = __DIR__ . '/../../../storage/sessions';
-        if (!is_dir($sessionPath)) {
-            mkdir($sessionPath, 0777, true);
-        }
-        session_save_path($sessionPath);
+        // Only configure if session hasn't been started yet
+        if (session_status() === PHP_SESSION_NONE) {
+            // Set session save path
+            if (!is_dir($this->config['save_path'])) {
+                mkdir($this->config['save_path'], 0777, true);
+            }
+            session_save_path($this->config['save_path']);
 
-        // Set secure session configuration
-        ini_set('session.use_strict_mode', '1');
+            // Set session name
+            session_name($this->config['name']);
 
-        // Handle CLI vs web environment
-        if (php_sapi_name() === 'cli') {
-            // For CLI, disable cookies and enable trans_sid
-            ini_set('session.use_cookies', '0');
-            ini_set('session.use_only_cookies', '0');
-            ini_set('session.use_trans_sid', '1');
-        } else {
-            // For web, use secure cookie configuration
+            // Set secure session configuration
+            ini_set('session.use_strict_mode', '1');
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '1');
-            ini_set('session.cookie_httponly', $this->httpOnly ? '1' : '0');
-            // Only set Secure when the request is HTTPS or explicitly configured
-            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
-                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
-            $useSecure = $this->secure && $isHttps;
-            ini_set('session.cookie_secure', $useSecure ? '1' : '0');
-            ini_set('session.cookie_samesite', $this->sameSite);
-            ini_set('session.cookie_path', $this->cookiePath);
-            ini_set('session.cookie_lifetime', (string) $this->sessionLifetime);
-        }
-
-        ini_set('session.gc_maxlifetime', (string) $this->sessionLifetime);
-
-        // Set session name BEFORE starting session
-        session_name($this->sessionName);
-
-        // Start session
-        session_start();
-
-        // Only regenerate session ID if this is a completely new session
-        // Don't regenerate if there's a session cookie (indicating an existing session)
-        if (
-            empty($_SESSION)
-            && !isset($_SESSION['last_regeneration'])
-            && !isset($_COOKIE[$this->sessionName])
-        ) {
-            $this->regenerate();
-        } elseif (
-            isset($_SESSION['last_regeneration'])
-            && (time() - $_SESSION['last_regeneration'] > 1800) // 30 minutes
-        ) {
-            $this->regenerate();
-        }
-
-        // Don't write close here as it can clear session data
-        // The session will be written when the request ends
-    }
-
-    /**
-     * Boot the session system.
-     */
-    public function boot(): void
-    {
-        // Start the session if not already started
-        if (session_status() === PHP_SESSION_NONE) {
-            $this->start();
+            ini_set('session.cookie_httponly', '1');
+            ini_set('session.cookie_samesite', $this->config['samesite']);
+            ini_set('session.gc_maxlifetime', (string) $this->config['lifetime']);
+            ini_set('session.cookie_lifetime', '0'); // Session cookie
+            ini_set('session.use_trans_sid', '0');
+            ini_set('session.cache_limiter', 'nocache');
         }
     }
 
     /**
-     * Shutdown the session system.
+     * Start the session.
      */
-    public function shutdown(): void
+    public function start(): void
     {
-        // Close the session if it's active
+        // If session is already active, sync with it
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
+            $this->started = true;
+            $this->data = $_SESSION;
+            error_log("WisalSession: Session already active, syncing with existing session");
+            return;
+        }
+
+        // Configure session if not already done
+        $this->configureSession();
+
+        // Start the session
+        if (session_start()) {
+            $this->started = true;
+            $this->data = $_SESSION;
+            
+            // Regenerate session ID periodically for security
+            if (!isset($this->data['last_regeneration']) || 
+                (time() - $this->data['last_regeneration']) > 300) { // 5 minutes
+                $this->regenerateId();
+            }
+        } else {
+            throw new \RuntimeException('Failed to start session');
         }
     }
 
     /**
-     * Regenerate the session ID.
-     */
-    public function regenerate(): void
-    {
-        error_log("WisalSession::regenerate - Regenerating session ID");
-        error_log("WisalSession::regenerate - Session data before regeneration: " . print_r($_SESSION, true));
-
-        session_regenerate_id(true);
-        // Directly set the value to avoid triggering the put() method's write logic
-        $_SESSION['last_regeneration'] = time();
-
-        error_log("WisalSession::regenerate - Session data after regeneration: " . print_r($_SESSION, true));
-    }
-
-    /**
-     * Get a value from the session.
+     * Get session data.
+     * 
+     * @param string $key Session key
+     * @param mixed $default Default value if key doesn't exist
+     * @return mixed Session value
      */
     public function get(string $key, $default = null)
     {
-        return $_SESSION[$key] ?? $default;
-    }
-
-    /**
-     * Set a value in the session.
-     */
-    public function put(string $key, $value): void
-    {
-        error_log("WisalSession::put - Setting $key = " . print_r($value, true));
-
-        // Start session if not already started
-        if (session_status() === PHP_SESSION_NONE) {
+        if (!$this->started) {
             $this->start();
         }
 
-        $_SESSION[$key] = $value;
-        error_log("WisalSession::put - Session data after setting $key: " . print_r($_SESSION, true));
-
-        // Ensure session data is written immediately for critical operations
-        if (in_array($key, ['user_id', 'username', 'is_admin', 'logged_in_at'])) {
-            if (session_status() === PHP_SESSION_ACTIVE) {
-                session_write_close();
-                // Don't restart session here as it can cause infinite loops
-            }
-        }
+        return $this->data[$key] ?? $default;
     }
 
     /**
-     * Check if a key exists in the session.
+     * Set session data.
+     * 
+     * @param string $key Session key
+     * @param mixed $value Session value
+     */
+    public function set(string $key, $value): void
+    {
+        if (!$this->started) {
+            $this->start();
+        }
+
+        $this->data[$key] = $value;
+        $_SESSION[$key] = $value;
+    }
+
+    /**
+     * Check if session has a key.
+     * 
+     * @param string $key Session key
+     * @return bool True if key exists
      */
     public function has(string $key): bool
     {
-        return isset($_SESSION[$key]);
+        if (!$this->started) {
+            $this->start();
+        }
+
+        return isset($this->data[$key]);
     }
 
     /**
-     * Remove a value from the session.
+     * Remove session data.
+     * 
+     * @param string $key Session key
      */
-    public function forget(string $key): void
+    public function remove(string $key): void
     {
+        if (!$this->started) {
+            $this->start();
+        }
+
+        unset($this->data[$key]);
         unset($_SESSION[$key]);
     }
 
@@ -233,67 +210,28 @@ class WisalSession
      */
     public function clear(): void
     {
-        session_unset();
-        session_destroy();
-    }
-
-    /**
-     * Set user authentication data.
-     */
-    public function login(int $userId, string $username, bool $isAdmin = false): void
-    {
-        error_log("WisalSession::login - Starting login with userId: $userId, username: $username, isAdmin: " . ($isAdmin ? 'true' : 'false'));
-
-        // Start session if not already started
-        if (session_status() === PHP_SESSION_NONE) {
+        if (!$this->started) {
             $this->start();
         }
 
-        $this->put('user_id', $userId);
-        $this->put('username', $username);
-        $this->put('is_admin', $isAdmin);
-        $this->put('logged_in_at', time());
-
-        error_log("WisalSession::login - Session data after setting: " . print_r($_SESSION, true));
-
-        // Ensure session data is written immediately
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
-            session_start();
-        }
-
-        error_log("WisalSession::login - Session data after restart: " . print_r($_SESSION, true));
-    }
-
-    /**
-     * Log out the current user.
-     */
-    public function logout(): void
-    {
-        $this->forget('user_id');
-        $this->forget('username');
-        $this->forget('is_admin');
-        $this->forget('logged_in_at');
-
-        // Ensure session data is written immediately
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
-            session_start();
-        }
+        $this->data = [];
+        $_SESSION = [];
     }
 
     /**
      * Check if user is logged in.
+     * 
+     * @return bool True if user is logged in
      */
     public function isLoggedIn(): bool
     {
-        // Consider logged in if we have a user_id. Username is optional for
-        // backward compatibility with controllers that only set user_id.
-        return $this->has('user_id');
+        return $this->has('user_id') && $this->has('user_authenticated');
     }
 
     /**
-     * Get the current user ID.
+     * Get current user ID.
+     * 
+     * @return int|null User ID or null if not logged in
      */
     public function getUserId(): ?int
     {
@@ -301,72 +239,248 @@ class WisalSession
     }
 
     /**
-     * Get the current username.
+     * Get current user data.
+     * 
+     * @return array|null User data or null if not logged in
      */
-    public function getUsername(): ?string
+    public function getUserData(): ?array
     {
-        return $this->get('username');
+        if (!$this->isLoggedIn()) {
+            return null;
+        }
+
+        return [
+            'id' => $this->get('user_id'),
+            'username' => $this->get('username'),
+            'email' => $this->get('email'),
+            'role' => $this->get('user_role'),
+            'authenticated' => $this->get('user_authenticated')
+        ];
     }
 
     /**
-     * Check if current user is admin.
+     * Set user as logged in.
+     * 
+     * @param array $userData User data
      */
-    public function isAdmin(): bool
+    public function setUserLoggedIn(array $userData): void
     {
-        return (bool) $this->get('is_admin', false);
+        // Ensure session is started
+        if (!$this->started) {
+            $this->start();
+        }
+
+        // Set user data in both local cache and global session
+        $this->set('user_id', $userData['id']);
+        $this->set('username', $userData['username']);
+        $this->set('email', $userData['email']);
+        $this->set('user_role', $userData['role'] ?? 'user');
+        $this->set('user_authenticated', true);
+        $this->set('login_time', time());
+        $this->set('last_activity', time());
+
+        // Force write to global session array to ensure persistence
+        $_SESSION['user_id'] = $userData['id'];
+        $_SESSION['username'] = $userData['username'];
+        $_SESSION['email'] = $userData['email'];
+        $_SESSION['user_role'] = $userData['role'] ?? 'user';
+        $_SESSION['user_authenticated'] = true;
+        $_SESSION['login_time'] = time();
+        $_SESSION['last_activity'] = time();
+
+        // Force session write to ensure data is persisted
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+            // Restart session to ensure data is properly loaded
+            session_start();
+            $this->data = $_SESSION;
+        }
+
+        error_log("WisalSession: User logged in - ID: {$userData['id']}, Username: {$userData['username']}");
+        error_log("WisalSession: Session data after login: " . print_r($_SESSION, true));
+    }
+
+    /**
+     * Set user as logged out.
+     */
+    public function setUserLoggedOut(): void
+    {
+        $this->clear();
+        $this->regenerateId();
+    }
+
+    /**
+     * Update last activity time.
+     */
+    public function updateActivity(): void
+    {
+        $this->set('last_activity', time());
+    }
+
+    /**
+     * Check if session has expired.
+     * 
+     * @return bool True if session has expired
+     */
+    public function isExpired(): bool
+    {
+        if (!$this->has('last_activity')) {
+            return true;
+        }
+
+        $lastActivity = $this->get('last_activity');
+        $maxLifetime = $this->config['lifetime'];
+        
+        return (time() - $lastActivity) > $maxLifetime;
+    }
+
+    /**
+     * Regenerate session ID.
+     */
+    public function regenerateId(): void
+    {
+        if ($this->started) {
+            session_regenerate_id(true);
+            $this->set('last_regeneration', time());
+        }
+    }
+
+    /**
+     * Destroy the session.
+     */
+    public function destroy(): void
+    {
+        if ($this->started) {
+            $this->clear();
+            session_destroy();
+            $this->started = false;
+        }
+    }
+
+    /**
+     * Get session ID.
+     * 
+     * @return string|null Session ID or null if not started
+     */
+    public function getId(): ?string
+    {
+        return session_id() ?: null;
+    }
+
+    /**
+     * Get session name.
+     * 
+     * @return string Session name
+     */
+    public function getName(): string
+    {
+        return session_name();
+    }
+
+    /**
+     * Get session status.
+     * 
+     * @return int Session status constant
+     */
+    public function getStatus(): int
+    {
+        return session_status();
+    }
+
+    /**
+     * Check if session is started.
+     * 
+     * @return bool True if session is started
+     */
+    public function isStarted(): bool
+    {
+        return $this->started;
+    }
+
+    /**
+     * Get all session data.
+     * 
+     * @return array All session data
+     */
+    public function getAll(): array
+    {
+        if (!$this->started) {
+            $this->start();
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * Flash a message to the session.
+     * 
+     * @param string $key Message key
+     * @param string $message Message content
+     */
+    public function flash(string $key, string $message): void
+    {
+        $this->set("flash_{$key}", $message);
+    }
+
+    /**
+     * Get and remove a flashed message.
+     * 
+     * @param string $key Message key
+     * @param mixed $default Default value if no message
+     * @return mixed Message content or default
+     */
+    public function getFlash(string $key, $default = null)
+    {
+        $message = $this->get("flash_{$key}", $default);
+        $this->remove("flash_{$key}");
+        return $message;
+    }
+
+    /**
+     * Check if a flashed message exists.
+     * 
+     * @param string $key Message key
+     * @return bool True if message exists
+     */
+    public function hasFlash(string $key): bool
+    {
+        return $this->has("flash_{$key}");
     }
 
     /**
      * Generate a CSRF token.
-     */
-    public function generateCsrfToken(): string
-    {
-        $token = bin2hex(random_bytes(32));
-        $this->put('csrf_token', $token);
-        error_log("WisalSession::generateCsrfToken - Generated token: $token");
-        return $token;
-    }
-
-    /**
-     * Get the current CSRF token.
+     * 
+     * @return string CSRF token
      */
     public function getCsrfToken(): string
     {
         if (!$this->has('csrf_token')) {
-            error_log("WisalSession::getCsrfToken - No token found, generating new one");
-            return $this->generateCsrfToken();
+            $token = bin2hex(random_bytes(32));
+            $this->set('csrf_token', $token);
         }
-        $token = $this->get('csrf_token');
-        error_log("WisalSession::getCsrfToken - Retrieved token: $token");
-        return $token;
+        return $this->get('csrf_token');
     }
 
     /**
      * Verify a CSRF token.
+     * 
+     * @param string $token Token to verify
+     * @return bool True if token is valid
      */
     public function verifyCsrfToken(string $token): bool
     {
         $storedToken = $this->getCsrfToken();
-        $isValid = hash_equals($storedToken, $token);
-        error_log("WisalSession::verifyCsrfToken - Input token: $token");
-        error_log("WisalSession::verifyCsrfToken - Stored token: $storedToken");
-        error_log("WisalSession::verifyCsrfToken - Is valid: " . ($isValid ? 'true' : 'false'));
-        return $isValid;
+        return hash_equals($storedToken, $token);
     }
 
     /**
-     * Set remember me token.
+     * Validate a CSRF token (alias for verifyCsrfToken).
+     * 
+     * @param string $token Token to validate
+     * @return bool True if token is valid
      */
-    public function setRememberToken(string $token): void
+    public function validateCsrfToken(string $token): bool
     {
-        $this->put('remember_token', $token);
-    }
-
-    /**
-     * Get remember me token.
-     */
-    public function getRememberToken(): ?string
-    {
-        return $this->get('remember_token');
+        return $this->verifyCsrfToken($token);
     }
 }

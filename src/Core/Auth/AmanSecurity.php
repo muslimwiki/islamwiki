@@ -65,12 +65,13 @@ class AmanSecurity
 
             error_log("AmanSecurity::attempt - Password verified, logging in user");
 
-            // Login the user
-            $this->session->login(
-                $userData['id'],
-                $userData['username'],
-                (bool) $userData['is_admin']
-            );
+            // Login the user using new session method
+            $this->session->setUserLoggedIn([
+                'id' => $userData['id'],
+                'username' => $userData['username'],
+                'email' => $userData['email'],
+                'role' => $userData['is_admin'] ? 'admin' : 'user'
+            ]);
 
             // Update last login
             $this->db->update(
@@ -132,7 +133,12 @@ class AmanSecurity
 
             // Auto-login after registration
             if ($userId) {
-                $this->session->login($userId, $userData['username'], false);
+                $this->session->setUserLoggedIn([
+                    'id' => $userId,
+                    'username' => $userData['username'],
+                    'email' => $userData['email'],
+                    'role' => 'user'
+                ]);
                 $this->currentUser = array_merge($userData, ['id' => $userId]);
             }
 
@@ -148,7 +154,7 @@ class AmanSecurity
      */
     public function logout(): void
     {
-        $this->session->logout();
+        $this->session->setUserLoggedOut();
         $this->currentUser = null;
     }
 

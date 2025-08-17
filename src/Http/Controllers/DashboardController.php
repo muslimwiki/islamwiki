@@ -210,8 +210,10 @@ class DashboardController extends Controller
         // $app = $this->container->get('app');
         // $activeSkinName = SkinManager::getActiveSkinNameStatic($app);
 
+        // Prepare data for the view
         $data = [
-            'title' => 'Dashboard - IslamWiki',
+            'title' => 'Dashboard',
+            'user' => $user,
             'userStats' => $userStats,
             'recentActivity' => $recentActivity,
             'watchlist' => $watchlist,
@@ -222,7 +224,9 @@ class DashboardController extends Controller
             'isLoggedIn' => $this->_session->isLoggedIn(),
             // Provide user to view when available (either from auth or fallback)
             'user' => $user,
-            'bayan' => $dataBayan
+            'bayan' => $dataBayan,
+            // Add current language from session
+            'current_language' => $_SESSION['language'] ?? 'en'
         ];
 
         return $this->view('dashboard/index', $data);

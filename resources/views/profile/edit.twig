@@ -9,7 +9,7 @@
     <div class="container">
         <!-- Edit Profile Header -->
         <div class="edit-header">
-            <h1 class="edit-title">✏️ Edit Profile</h1>
+            <h1 class="edit-title">{{ __('profile.edit_title') }}</h1>
             <p class="edit-subtitle">Update your personal information and preferences</p>
         </div>
 
@@ -22,11 +22,9 @@
                         <h2 class="section-title">👤 Personal Information</h2>
                         
                         <div class="form-group">
-                            <label class="form-label">Display Name</label>
-                            <input type="text" class="form-control" name="display_name" 
-                                   value="{{ user.display_name ?? '' }}" 
-                                   placeholder="Enter your display name">
-                            <small class="form-help">This name will be shown on your profile</small>
+                            <label class="form-label">{{ __('profile.display_name') }}</label>
+                            <input type="text" name="display_name" value="{{ user.display_name|default('') }}" class="form-input" required>
+                            <small class="form-help">{{ __('profile.display_name_help') }}</small>
                         </div>
                         
                         <div class="form-group">
@@ -63,23 +61,23 @@
 
                     <!-- Appearance Settings Section -->
                     <div class="form-section">
-                        <h2 class="section-title">🎨 Appearance Settings</h2>
+                        <h2 class="section-title">{{ __('profile.appearance_title') }}</h2>
                         
                         <div class="form-group">
-                            <label class="form-label">Active Skin</label>
-                            <select class="form-control" name="skin">
-                                <option value="Bismillah" {% if userSettings.skin == 'Bismillah' %}selected{% endif %}>Bismillah</option>
-                                <option value="Muslim" {% if userSettings.skin == 'Muslim' %}selected{% endif %}>Muslim</option>
+                            <label class="form-label">{{ __('profile.skin') }}</label>
+                            <select name="skin" class="form-select">
+                                <option value="Bismillah" {% if userSettings.skin == 'Bismillah' %}selected{% endif %}>{{ __('settings.skins.bismillah.name') }}</option>
+                                <option value="Muslim" {% if userSettings.skin == 'Muslim' %}selected{% endif %}>{{ __('settings.skins.muslim.name') }}</option>
                             </select>
                             <small class="form-help">Choose the visual theme for your experience</small>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Theme</label>
-                            <select class="form-control" name="theme">
-                                <option value="light" {% if userSettings.theme == 'light' %}selected{% endif %}>Light</option>
-                                <option value="dark" {% if userSettings.theme == 'dark' %}selected{% endif %}>Dark</option>
-                                <option value="auto" {% if userSettings.theme == 'auto' %}selected{% endif %}>Auto</option>
+                            <label class="form-label">{{ __('profile.theme') }}</label>
+                            <select name="theme" class="form-select">
+                                <option value="light" {% if userSettings.theme == 'light' %}selected{% endif %}>{{ __('profile.light') }}</option>
+                                <option value="dark" {% if userSettings.theme == 'dark' %}selected{% endif %}>{{ __('profile.dark') }}</option>
+                                <option value="auto" {% if userSettings.theme == 'auto' %}selected{% endif %}>{{ __('profile.auto') }}</option>
                             </select>
                             <small class="form-help">Choose your preferred color scheme</small>
                         </div>

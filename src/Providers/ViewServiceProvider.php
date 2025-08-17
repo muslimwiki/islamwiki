@@ -6,6 +6,7 @@ namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\View\TwigRenderer;
+use IslamWiki\Core\View\TwigTranslationExtension;
 
 /**
  * ViewServiceProvider registers view-related services with the container.
@@ -54,6 +55,16 @@ class ViewServiceProvider
             $isDebug
         );
 
+        // Add translation extension directly to ensure it works
+        try {
+            $translationService = new \IslamWiki\Core\Language\TranslationService('en');
+            $translationExtension = new \IslamWiki\Core\View\TwigTranslationExtension($translationService);
+            $twigRenderer->addExtension($translationExtension);
+            error_log("ViewServiceProvider: Successfully added TwigTranslationExtension directly");
+        } catch (\Exception $e) {
+            error_log("ViewServiceProvider: Could not add translation extension directly: " . $e->getMessage());
+        }
+
         // Add CSRF token as a global variable
         try {
             if ($container->has('session')) {
@@ -69,6 +80,31 @@ class ViewServiceProvider
         // Register the Twig renderer instance with the container
         $container->instance('view', $twigRenderer);
         $container->instance(TwigRenderer::class, $twigRenderer);
+    }
+
+    /**
+     * Boot the view services.
+     *
+     * @param AsasContainer $container The dependency injection container
+     */
+    public function boot(AsasContainer $container): void
+    {
+        // Add translation extension if available (after all services are registered)
+        try {
+            error_log("ViewServiceProvider: Checking for TwigTranslationExtension");
+            if ($container->has(TwigTranslationExtension::class)) {
+                error_log("ViewServiceProvider: Found TwigTranslationExtension, adding to TwigRenderer");
+                $translationExtension = $container->get(TwigTranslationExtension::class);
+                $twigRenderer = $container->get(TwigRenderer::class);
+                $twigRenderer->addExtension($translationExtension);
+                error_log("ViewServiceProvider: Successfully added TwigTranslationExtension to TwigRenderer");
+            } else {
+                error_log("ViewServiceProvider: TwigTranslationExtension not found in container");
+            }
+        } catch (\Exception $e) {
+            // If translation extension is not available, skip it
+            error_log("ViewServiceProvider: Could not add translation extension: " . $e->getMessage());
+        }
     }
 
     /**

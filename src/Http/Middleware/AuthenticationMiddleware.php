@@ -35,14 +35,14 @@ use IslamWiki\Core\Session\WisalSession;
 class AuthenticationMiddleware
 {
     /**
-     * @var Wisal Session manager instance
+     * @var WisalSession Session manager instance
      */
-    private Wisal $session;
+    private WisalSession $session;
 
     /**
      * Create a new authentication middleware instance.
      */
-    public function __construct(Wisal $session)
+    public function __construct(WisalSession $session)
     {
         $this->session = $session;
     }

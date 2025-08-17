@@ -41,6 +41,38 @@ class HomeController extends Controller
     }
 
     /**
+     * Redirect to user's preferred language or English default
+     */
+    public function redirectToPreferredLanguage(Request $request): Response
+    {
+        // Check if user is logged in and has a language preference
+        if (isset($_SESSION['user_id'])) {
+            try {
+                // Get user's language preference from database
+                $stmt = $this->db->prepare("
+                    SELECT language_preference 
+                    FROM user_settings 
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([$_SESSION['user_id']]);
+                $result = $stmt->fetch();
+
+                if ($result && $result['language_preference']) {
+                    $preferredLanguage = $result['language_preference'];
+                    // Redirect to preferred language
+                    return new Response(302, ['Location' => '/' . $preferredLanguage], '');
+                }
+            } catch (\Exception $e) {
+                // Log error but continue with default
+                error_log("Error getting user language preference: " . $e->getMessage());
+            }
+        }
+
+        // Default to English
+        return new Response(302, ['Location' => '/en'], '');
+    }
+
+    /**
      * Show the application home page.
      *
      * @param Request $request The HTTP request

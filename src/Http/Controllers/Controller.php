@@ -78,9 +78,6 @@ abstract class Controller
             // Ensure the view has the correct file extension
             $template = str_ends_with($view, '.twig') ? $view : "{$view}.twig";
 
-            // Debug: Log the template being requested
-            error_log("Attempting to render template: " . $template);
-
             // Automatically include user data in all views
             if (!isset($data['user'])) {
                 try {
@@ -89,6 +86,23 @@ abstract class Controller
                 } catch (\Exception $e) {
                     error_log('Error getting user for view: ' . $e->getMessage());
                     $data['user'] = null;
+                }
+            }
+
+            // Automatically include current language in all views
+            if (!isset($data['current_language'])) {
+                try {
+                    // First try to get language from session
+                    if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+                        $data['current_language'] = $_SESSION['language'];
+                    } else {
+                        // Fallback to LanguageService if session doesn't have language
+                        $languageService = $this->container->get(\IslamWiki\Core\Language\LanguageService::class);
+                        $data['current_language'] = $languageService->getCurrentLanguage();
+                    }
+                } catch (\Exception $e) {
+                    error_log('Error getting current language for view: ' . $e->getMessage());
+                    $data['current_language'] = 'en';
                 }
             }
 
