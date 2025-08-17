@@ -4,22 +4,22 @@ This directory contains detailed release notes for each version of IslamWiki.
 
 ## 📋 Latest Releases
 
-### [Release 0.0.58](RELEASE-0.0.58.md) - Navigation System & UI Improvements
-*January 15, 2025*
+### [Release 0.0.61](RELEASE-NOTES-0.0.61.md) - DashboardExtension Release
+*September 18, 2024*
 
 **Major Features:**
-- 🧭 Enhanced Navigation System with full-width layout
-- 🎯 Complete page coverage in organized dropdown menus
-- 🎨 Professional design with Islamic green theme
-- 📱 Responsive layout for all devices
-- 🔧 Fixed dropdown visibility and click functionality
+- 🎯 Complete role-based dashboard system with personalized user experiences
+- 👥 Admin, Scholar, Contributor, and User dashboards
+- 🧠 Smart role detection and appropriate dashboard rendering
+- 📱 Responsive design with Islamic-themed styling
+- ⚡ Interactive widgets for different purposes
+- 🔒 Granular permission system based on user roles
 
 **Key Improvements:**
-- Full-width header, navigation, and footer
-- Comprehensive dropdown navigation for all pages
-- Mobile-optimized touch navigation
-- Resolved CSS conflicts and overflow issues
-- Professional navigation appearance
+- Role-specific dashboard templates with consistent design
+- Service architecture with clean separation of concerns
+- Comprehensive hook system integration
+- Performance optimizations with caching support
 
 ### [Release 0.0.57](RELEASE-0.0.57.md) - Authentication System & RTL Support
 *January 15, 2025*
@@ -67,7 +67,7 @@ This directory contains detailed release notes for each version of IslamWiki.
 
 ### 🚀 Major Releases
 Major feature releases with significant new functionality:
-- [0.0.58](RELEASE-0.0.58.md) - Navigation System & UI Improvements
+- [0.0.61](RELEASE-NOTES-0.0.61.md) - DashboardExtension Release
 - [0.0.57](RELEASE-0.0.57.md) - Authentication System & RTL Support
 - [0.0.56](RELEASE-0.0.56.md) - Hadith Extension Implementation
 
@@ -86,19 +86,21 @@ Stability and bug fix focused releases:
 ## 🔍 Finding Specific Information
 
 ### By Feature
+- **Dashboard System**: [0.0.61](RELEASE-NOTES-0.0.61.md)
 - **Authentication**: [0.0.57](RELEASE-0.0.57.md)
-- **Navigation**: [0.0.58](RELEASE-0.0.58.md)
+- **Navigation**: [0.0.57](RELEASE-0.0.57.md)
 - **RTL Support**: [0.0.57](RELEASE-0.0.57.md)
 - **Quran Features**: [0.0.55](RELEASE-0.0.55.md), [0.0.54](RELEASE-0.0.54.md)
 - **Hadith System**: [0.0.56](RELEASE-0.0.56.md)
 - **Salah Times**: [0.0.54](RELEASE-0.0.54.md)
 
 ### By Date
-- **January 2025**: [0.0.58](RELEASE-0.0.58.md), [0.0.57](RELEASE-0.0.57.md)
-- **August 2024**: [0.0.56](RELEASE-0.0.56.md), [0.0.55](RELEASE-0.0.55.md), [0.0.54](RELEASE-0.0.54.md)
+- **September 2024**: [0.0.61](RELEASE-NOTES-0.0.61.md) - DashboardExtension Release
+- **January 2025**: [0.0.57](RELEASE-0.0.57.md) - Authentication System & RTL Support
+- **August 2024**: [0.0.56](RELEASE-0.0.56.md) - Hadith Extension Implementation
 
 ### By Type
-- **UI/UX**: [0.0.58](RELEASE-0.0.58.md)
+- **UI/UX**: [0.0.61](RELEASE-NOTES-0.0.61.md)
 - **Authentication**: [0.0.57](RELEASE-0.0.57.md)
 - **Content**: [0.0.56](RELEASE-0.0.56.md), [0.0.55](RELEASE-0.0.55.md)
 - **Infrastructure**: [0.0.54](RELEASE-0.0.54.md)

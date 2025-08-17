@@ -22,6 +22,7 @@
             --islamic-white: #ffffff;
             --text-primary: #2c3e50;
             --text-secondary: #666;
+            --text-light: #999;
             --border-light: #e9ecef;
             --shadow: 0 4px 6px rgba(0,0,0,0.07);
             --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
@@ -42,7 +43,8 @@
 
         .dashboard-container {
             display: flex;
-            min-height: 100vh;
+            min-height: calc(100vh - 200px); /* Account for header and footer */
+            margin-top: 0;
         }
 
         /* Islamic Pattern Background */
@@ -55,61 +57,29 @@
         /* Sidebar */
         .sidebar {
             width: 300px;
-            background: var(--islamic-white);
-            border-right: 1px solid var(--border-light);
+            background: var(--islamic-green);
+            border-right: 1px solid var(--islamic-dark-green);
             box-shadow: var(--shadow);
             overflow-y: auto;
-            position: fixed;
-            height: 100vh;
+            position: sticky;
+            top: 200px; /* Position below the global header */
+            height: calc(100vh - 200px);
             z-index: 1000;
         }
 
         .sidebar-header {
-            padding: 2rem 1.5rem;
-            border-bottom: 1px solid var(--border-light);
-            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            padding: 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--islamic-dark-green);
+            background: var(--islamic-green);
             color: var(--islamic-white);
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-            color: inherit;
-            margin-bottom: 1.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.02);
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--islamic-gold);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--islamic-dark-green);
-            font-weight: 900;
-        }
-
-        .site-tagline {
-            font-size: 12px;
-            opacity: 0.8;
-            font-style: italic;
-            color: var(--islamic-gold);
-        }
-
         .user-info {
-            margin-top: 12px;
-            padding: 12px;
-            background: rgba(212, 175, 55, 0.15);
-            border-radius: 8px;
-            border-left: 3px solid var(--islamic-gold);
+            margin-top: 0;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .user-role {
@@ -118,26 +88,31 @@
             color: var(--islamic-gold);
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .user-islamic-role {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--islamic-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+            margin-bottom: 0;
         }
 
         .user-name {
             font-size: 14px;
             font-weight: 500;
-            margin-top: 4px;
+            margin-bottom: 8px;
+            color: var(--islamic-white);
         }
 
-        .prayer-reminder {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(212, 175, 55, 0.2);
-            border-radius: 6px;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .prayer-time {
-            font-weight: 600;
+        .user-current-role {
+            font-size: 12px;
+            font-weight: 500;
             color: var(--islamic-gold);
+            opacity: 0.9;
         }
 
         .nav-menu {
@@ -149,34 +124,37 @@
         }
 
         .nav-section-title {
-            padding: 0 20px 10px;
-            font-size: 10px;
+            padding: 0 20px 8px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.7;
-            font-weight: 700;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            font-weight: 600;
             color: var(--islamic-gold);
+            margin-top: 20px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 14px 20px;
+            padding: 12px 20px;
             color: var(--islamic-white);
             text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
             font-weight: 500;
+            border-radius: 8px;
+            margin: 0 12px 4px 12px;
         }
 
         .nav-item:hover, .nav-item.active {
-            background: rgba(212, 175, 55, 0.15);
-            padding-left: 28px;
-            border-right: 3px solid var(--islamic-gold);
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 24px;
+            border-left: 3px solid var(--islamic-gold);
         }
 
         .nav-item.active {
-            background: rgba(212, 175, 55, 0.25);
+            background: rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
@@ -203,6 +181,7 @@
             padding: 0;
             width: calc(100% - 300px);
             background: var(--islamic-cream);
+            min-height: calc(100vh - 200px); /* Account for header and footer */
         }
 
         .header {
@@ -214,7 +193,7 @@
             align-items: center;
             box-shadow: var(--shadow);
             position: sticky;
-            top: 0;
+            top: 200px; /* Position below the global header */
             z-index: 100;
         }
 
@@ -304,35 +283,667 @@
 
         /* Content Area */
         .content-area {
+            padding: 40px;
+        }
+
+        /* Dashboard Content Styles */
+        .islamic-greeting {
+            text-align: center;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            color: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .greeting-arabic {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--islamic-gold);
+        }
+
+        .greeting-text {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--islamic-white);
             padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--islamic-gold);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: #27ae60;
+        }
+
+        .stat-change.negative {
+            color: #e74c3c;
+        }
+
+        .islamic-content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-category {
+            background: var(--islamic-white);
+            padding: 35px 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .content-category:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--islamic-gold);
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--islamic-green);
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .category-progress {
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--islamic-gold), var(--islamic-green));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            }
+
+        .activity-section {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .activity-header {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            color: var(--islamic-white);
+            border-bottom: 1px solid var(--islamic-dark-green);
+        }
+
+        .activity-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .activity-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.3s ease;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: rgba(45, 80, 22, 0.05);
+            }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--islamic-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-dark-green);
+            font-weight: 700;
+            margin-right: 15px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-action {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .activity-target {
+            color: var(--islamic-green);
+            text-decoration: none;
+            font-weight: 500;
+            }
+
+        .activity-target:hover {
+            text-decoration: underline;
+        }
+
+        .activity-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+                padding: 15px 20px;
+            background: var(--islamic-white);
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            }
+
+        .action-btn:hover {
+            border-color: var(--islamic-gold);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-btn.secondary {
+            background: var(--islamic-cream);
+            border-color: var(--islamic-gold);
+        }
+
+        .action-btn.tertiary {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green));
+            color: var(--islamic-white);
+            border-color: var(--islamic-green);
+        }
+
+        .action-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Dashboard Content Layout */
+        .dashboard-content {
+            padding: 0;
+            width: 100%;
+        }
+
+        /* Welcome Header */
+        .welcome-header {
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            color: var(--islamic-white);
+            padding: 40px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-content h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: var(--islamic-white);
+        }
+
+        .welcome-content p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .welcome-date {
+            text-align: right;
+        }
+
+        .hijri-date {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--islamic-gold);
+            margin-bottom: 5px;
+        }
+
+        .gregorian-date {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Statistics Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card.primary {
+            background: var(--islamic-white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-card.primary:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--islamic-gold);
+        }
+
+        .stat-card.primary .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--islamic-white);
+            flex-shrink: 0;
+        }
+
+        .stat-card.primary .stat-content {
+            flex: 1;
+        }
+
+        .stat-card.primary .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--islamic-green);
+            margin-bottom: 5px;
+        }
+
+        .stat-card.primary .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card.primary .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: #27ae60;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--islamic-white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--islamic-gold);
+        }
+
+        .content-card .card-header {
+            padding: 25px 25px 20px 25px;
+            background: linear-gradient(135deg, var(--islamic-green), var(--islamic-dark-green));
+            color: var(--islamic-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-card .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .content-card .card-icon {
+            font-size: 20px;
+            opacity: 0.8;
+        }
+
+        /* Quick Actions */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 25px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+            background: var(--islamic-cream);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--islamic-dark-green);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .action-btn:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-white);
+            transform: translateY(-2px);
+            border-color: var(--islamic-gold);
+        }
+
+        .action-icon {
+                font-size: 24px;
+            margin-bottom: 10px;
+            }
+
+        .action-text {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            padding: 0 25px 25px 25px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--islamic-cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .activity-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Content Overview */
+        .overview-grid {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .overview-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--islamic-cream);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .overview-item:hover {
+            background: var(--islamic-gold);
+            color: var(--islamic-white);
+        }
+
+        .overview-icon {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .overview-content {
+            flex: 1;
+        }
+
+        .overview-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .overview-count {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .overview-progress {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--islamic-gold), var(--islamic-green));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* System Status */
+        .status-list {
+            padding: 0 25px 25px 25px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-indicator.online {
+            background: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+        }
+
+        .status-content {
+            flex: 1;
+        }
+
+        .status-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .status-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
+            .welcome-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
             }
-
-            .sidebar.open {
-                transform: translateX(0);
+            
+            .stats-row {
+                grid-template-columns: 1fr;
             }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .header {
-                padding: 15px 20px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .search-box input {
-                width: 200px;
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -340,26 +951,246 @@
     {% block head %}{% endblock %}
 </head>
 <body class="islamic-pattern">
+    <!-- Top Bar with Islamic Info -->
+    <div class="bismillah-top-bar">
+        <div class="bismillah-top-bar-content">
+            <div class="bismillah-islamic-info">
+                <div class="bismillah-prayer-info">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                    </svg>
+                    Next Prayer: Asr - 3:45 PM
+                </div>
+                <div class="bismillah-date-info">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2Z"/>
+                    </svg>
+                    15 Rabi' al-Awwal 1446 | September 18, 2024
+                </div>
+            </div>
+            <div class="bismillah-user-actions">
+                {% if user %}
+                    <div class="user-dropdown">
+                        <button class="bismillah-user-menu user-dropdown-toggle">
+                            <span>👤 {{ user.username }}</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7,10L12,15L17,10H7Z"/>
+                            </svg>
+                        </button>
+                        <div class="user-dropdown-menu">
+                            <a href="/dashboard" class="dropdown-item">📊 {{ __('nav.dashboard') }}</a>
+                            <a href="/profile" class="dropdown-item">👤 {{ __('nav.profile') }}</a>
+                            <a href="/settings" class="dropdown-item">⚙️ {{ __('nav.settings') }}</a>
+                            <a href="/auth/logout" class="dropdown-item">🚪 {{ __('nav.logout') }}</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="/auth/login" class="bismillah-user-menu">🔑 {{ __('nav.login') }}</a>
+                    <a href="/auth/register" class="bismillah-user-menu">📝 {{ __('nav.register') }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Bar with Logo and Search -->
+    <div class="bismillah-main-bar">
+        <div class="bismillah-main-bar-content">
+            <a href="/" class="bismillah-site-logo">
+                <div class="bismillah-logo-icon">☪</div>
+                <div class="bismillah-logo-text">
+                    <div class="bismillah-site-name">IslamWiki</div>
+                    <div class="bismillah-site-tagline">Authentic Islamic Knowledge</div>
+                </div>
+            </a>
+
+            <div class="bismillah-main-search">
+                <form action="/iqra-search" method="GET" class="bismillah-search-form">
+                    <input type="text" name="q" class="bismillah-search-input" placeholder="{{ __('nav.search') }}..." value="{{ app.request.query.get('q', '') }}">
+                    <button type="submit" class="bismillah-search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="bismillah-header-actions">
+                <a href="/contribute" class="bismillah-contribute-btn">{{ __('nav.contribute') }}</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bismillah-main-nav">
+        <div class="bismillah-nav-content">
+            <ul class="bismillah-nav-menu">
+                <div class="nav-item">
+                    <a href="/" class="nav-link">{{ __('nav.home') }}</a>
+                </div>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/quran" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">📖</span>
+                        {{ __('nav.quran') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/quran" class="dropdown-item">
+                            <span class="dropdown-icon">📖</span>
+                            Browse Quran
+                        </a>
+                        <a href="/quran/search" class="dropdown-item">
+                            <span class="dropdown-icon">🔍</span>
+                            {{ __('nav.search') }} Quran
+                        </a>
+                        <a href="/quran/juz/1" class="dropdown-item">
+                            <span class="dropdown-icon">📚</span>
+                            Juz View
+                        </a>
+                        <a href="/quran/page/1" class="dropdown-item">
+                            <span class="dropdown-icon">📄</span>
+                            Page View
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/hadith" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">📜</span>
+                        {{ __('nav.hadith') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/hadith" class="dropdown-item">
+                            <span class="dropdown-icon">📜</span>
+                            Browse Hadith
+                        </a>
+                        <a href="/hadith/search" class="dropdown-item">
+                            <span class="dropdown-icon">🔍</span>
+                            Search Hadith
+                        </a>
+                        <a href="/hadith/collection/1" class="dropdown-item">
+                            <span class="dropdown-icon">📚</span>
+                            Collections
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/wiki" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">📝</span>
+                        {{ __('nav.wiki') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/wiki" class="dropdown-item">
+                            <span class="dropdown-icon">📝</span>
+                            All Pages
+                        </a>
+                        <a href="/wiki/create" class="dropdown-item">
+                            <span class="dropdown-icon">✏️</span>
+                            Create Page
+                        </a>
+                        <a href="/special:RecentChanges" class="dropdown-item">
+                            <span class="dropdown-icon">🕒</span>
+                            Recent Changes
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/sciences" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">🔬</span>
+                        {{ __('nav.sciences') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/wiki" class="dropdown-item">
+                            <span class="dropdown-icon">🔬</span>
+                            All Sciences
+                        </a>
+                        <a href="/sciences/fiqh" class="dropdown-item">
+                            <span class="dropdown-icon">⚖️</span>
+                            Fiqh
+                        </a>
+                        <a href="/sciences/aqeedah" class="dropdown-item">
+                            <span class="dropdown-icon">💭</span>
+                            Aqeedah
+                        </a>
+                        <a href="/sciences/tasawwuf" class="dropdown-item">
+                            <span class="dropdown-icon">🕊️</span>
+                            Tasawwuf
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/community" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">👥</span>
+                        {{ __('nav.community') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/community" class="dropdown-item">
+                            <span class="dropdown-icon">👥</span>
+                            Community Hub
+                        </a>
+                        <a href="/community/users" class="dropdown-item">
+                            <span class="dropdown-icon">👤</span>
+                            Users
+                        </a>
+                        <a href="/community/discussions" class="dropdown-item">
+                            <span class="dropdown-icon">💬</span>
+                            Discussions
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/prayer-times" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">🕌</span>
+                        {{ __('nav.prayer') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/prayer-times" class="dropdown-item">
+                            <span class="dropdown-icon">🕌</span>
+                            Prayer Times
+                        </a>
+                        <a href="/prayer-times/qibla" class="dropdown-item">
+                            <span class="dropdown-icon">🧭</span>
+                            Qibla Direction
+                        </a>
+                        <a href="/prayer-times/calendar" class="dropdown-item">
+                            <span class="dropdown-icon">📅</span>
+                            Islamic Calendar
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="bismillah-nav-item has-dropdown">
+                    <a href="/about" class="bismillah-nav-link">
+                        <span class="bismillah-nav-icon">ℹ️</span>
+                        {{ __('nav.about') }}
+                    </a>
+                    <div class="nav-dropdown">
+                        <a href="/about" class="dropdown-item">
+                            <span class="dropdown-icon">ℹ️</span>
+                            About Us
+                        </a>
+                        <a href="/about/mission" class="dropdown-item">
+                            <span class="dropdown-icon">🎯</span>
+                            Our Mission
+                        </a>
+                        <a href="/about/team" class="dropdown-item">
+                            <span class="dropdown-icon">👥</span>
+                            Our Team
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="dashboard-container">
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <a href="/" class="logo">
-                    <div class="logo-icon">☪</div>
-                    <div>
-                        <div>IslamWiki</div>
-                        <div class="site-tagline">Knowledge for the Ummah</div>
-                    </div>
-                </a>
-                
                 <div class="user-info">
-                    <div class="user-role" id="userRole">
-                        {% if user and user.role %}
-                            {{ user.role }}
-                        {% else %}
-                            Contributor
-                        {% endif %}
-                    </div>
                     <div class="user-name">
                         {% if user and user.username %}
                             {{ user.username }}
@@ -367,10 +1198,33 @@
                             Guest User
                         {% endif %}
                     </div>
+                    {% if user and user.is_admin %}
+                        <div class="user-role">
+                            Admin
                 </div>
-
-                <div class="prayer-reminder">
-                    Next Prayer: <span class="prayer-time">Asr - 3:45 PM</span>
+                        {% if user.islamic_role and user.islamic_role != 'user' %}
+                            <div class="user-islamic-role">
+                                {{ user.islamic_role|title }}
+                            </div>
+                        {% endif %}
+                    {% elseif user and user.role and user.role != 'user' %}
+                        <div class="user-role">
+                            {{ user.role|title }}
+                        </div>
+                        {% if user.islamic_role and user.islamic_role != 'user' %}
+                            <div class="user-islamic-role">
+                                {{ user.islamic_role|title }}
+                            </div>
+                        {% endif %}
+                    {% elseif user and user.islamic_role and user.islamic_role != 'user' %}
+                        <div class="user-role">
+                            {{ user.islamic_role|title }}
+                        </div>
+                    {% else %}
+                        <div class="user-role">
+                            Contributor
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -388,43 +1242,6 @@
                         </svg>
                         Analytics
                         <span class="nav-badge">New</span>
-                    </a>
-                </div>
-
-                <!-- Islamic Content -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Islamic Content</div>
-                    <a href="/quran" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
-                        </svg>
-                        Quran & Tafsir
-                        <span class="nav-badge">6,236</span>
-                    </a>
-                    <a href="/hadith" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2Z"/>
-                        </svg>
-                        Hadith Collections
-                        <span class="nav-badge">12,847</span>
-                    </a>
-                    <a href="/scholars" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12V10H7V12A5,5 0 0,0 12,17A5,5 0 0,0 17,12V10H19V12Z"/>
-                        </svg>
-                        Scholars & Biography
-                    </a>
-                    <a href="/fiqh" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"/>
-                        </svg>
-                        Fiqh & Jurisprudence
-                    </a>
-                    <a href="/history" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
-                        </svg>
-                        Islamic History
                     </a>
                 </div>
 
@@ -452,23 +1269,6 @@
                     </a>
                 </div>
 
-                <!-- Tools & Utilities -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Tools</div>
-                    <a href="/salah" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                        </svg>
-                        Prayer Times
-                    </a>
-                    <a href="/qibla" class="nav-item">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,11A1,1 0 0,0 11,12A1,1 0 0,0 12,13A1,1 0 0,0 13,12A1,1 0 0,0 12,11M18,12C18,12.58 17.95,13.13 17.86,13.67L16.36,12.96C16.44,12.65 16.5,12.33 16.5,12C16.5,11.67 16.44,11.35 16.36,11.04L17.86,10.33C17.95,10.87 18,11.42 18,12Z"/>
-                        </svg>
-                        Qibla Direction
-                    </a>
-                </div>
-
                 <!-- My Workspace -->
                 <div class="nav-section">
                     <div class="nav-section-title">My Workspace</div>
@@ -492,25 +1292,13 @@
         <main class="main-content">
             <header class="header">
                 <div class="header-left">
-                    <h1>{% block header_title %}{{ __('dashboard.title') }}{% endblock %}</h1>
-                    <div class="header-subtitle">Knowledge Management for the Global Muslim Community</div>
+                    <h1>Assalamu Alaikum, {{ user.username|default('User') }}! 👋</h1>
+                    <div class="header-subtitle">Welcome to your personalized Islamic knowledge journey</div>
                 </div>
                 <div class="header-right">
                     <div class="islamic-date">
                         <div class="hijri-date">15 Rabi' al-Awwal 1446</div>
                         <div class="gregorian-date">{{ "now"|date("F j, Y") }}</div>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="Search Quran, Hadith, Scholars, Articles...">
-                        <svg style="position:absolute;right:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#999;" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
-                        </svg>
-                    </div>
-                    <div class="notifications">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7A7,7 0 0,1 20,14V16A1,1 0 0,0 21,17H22V19H2V17H3A1,1 0 0,0 4,16V14A7,7 0 0,1 11,7V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M9,21H15A3,3 0 0,1 12,24A3,3 0 0,1 9,21Z"/>
-                        </svg>
-                        <div class="notification-badge">3</div>
                     </div>
                 </div>
             </header>
@@ -521,68 +1309,46 @@
         </main>
     </div>
 
-    <!-- ZamZam JavaScript Framework -->
-    <script src="/assets/js/zamzam.js"></script>
+    <!-- Bismillah Footer -->
+    <footer class="bismillah-footer">
+        <div class="bismillah-footer-content">
+            <div class="bismillah-footer-section">
+                <h3>About IslamWiki</h3>
+                <p>Dedicated to preserving and sharing authentic Islamic knowledge for the global Muslim community.</p>
+                <a href="/about">Learn More</a>
+            </div>
+            <div class="bismillah-footer-section">
+                <h3>Quick Links</h3>
+                <ul class="bismillah-footer-links">
+                    <li><a href="/quran">Quran & Tafsir</a></li>
+                    <li><a href="/hadith">Hadith Collections</a></li>
+                    <li><a href="/wiki">Wiki Articles</a></li>
+                    <li><a href="/community">Community</a></li>
+                </ul>
+            </div>
+            <div class="bismillah-footer-section">
+                <h3>Support</h3>
+                <ul class="bismillah-footer-links">
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/help">Help Center</a></li>
+                    <li><a href="/contribute">{{ __('nav.contribute') }}</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Copyright -->
+    <div class="bismillah-copyright">
+        <div class="bismillah-copyright-content">
+            <p>&copy; 2024 IslamWiki. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- ZamZam.js for frontend interactivity -->
+    <script defer src="/assets/js/zamzam.js"></script>
     
     <!-- Bismillah Skin JavaScript -->
     <script src="/skins/Bismillah/js/bismillah.js"></script>
-
-    <script>
-        // Dashboard functionality
-        function updatePrayerTimes() {
-            const prayerElement = document.querySelector('.prayer-time');
-            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            const times = ['5:30 AM', '12:45 PM', '3:45 PM', '6:15 PM', '7:45 PM'];
-            
-            const now = new Date();
-            const hour = now.getHours();
-            
-            let nextPrayer = 'Fajr - 5:30 AM';
-            if (hour >= 5 && hour < 12) nextPrayer = 'Dhuhr - 12:45 PM';
-            else if (hour >= 12 && hour < 15) nextPrayer = 'Asr - 3:45 PM';
-            else if (hour >= 15 && hour < 18) nextPrayer = 'Maghrib - 6:15 PM';
-            else if (hour >= 18 && hour < 19) nextPrayer = 'Isha - 7:45 PM';
-            
-            if (prayerElement) {
-                prayerElement.textContent = nextPrayer;
-            }
-        }
-
-        // Mobile responsive sidebar
-        function initMobileMenu() {
-            const sidebar = document.querySelector('.sidebar');
-            const mainContent = document.querySelector('.main-content');
-            
-            if (window.innerWidth <= 768) {
-                sidebar.classList.remove('open');
-            }
-        }
-
-        // Search functionality
-        function initSearch() {
-            const searchInput = document.querySelector('.search-box input');
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    const query = e.target.value.toLowerCase();
-                    // Implement search functionality
-                    console.log('Searching for:', query);
-                });
-            }
-        }
-
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePrayerTimes();
-            initMobileMenu();
-            initSearch();
-            
-            // Update prayer times every minute
-            setInterval(updatePrayerTimes, 60000);
-        });
-
-        // Responsive handling
-        window.addEventListener('resize', initMobileMenu);
-    </script>
 
     {% block scripts %}{% endblock %}
 </body>

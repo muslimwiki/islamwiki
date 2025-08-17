@@ -1,0 +1,132 @@
+{
+    "name": "DashboardExtension",
+    "version": "0.0.1",
+    "description": "Enhanced dashboard system with Islamic-themed widgets, analytics, and user management",
+    "author": "IslamWiki Team",
+    "url": "https://islamwiki.org/extensions/DashboardExtension",
+    "main": "DashboardExtension.php",
+    "class": "IslamWiki\\Extensions\\DashboardExtension\\DashboardExtension",
+    "type": "dashboard",
+    "requires": {
+        "IslamWiki": ">= 0.0.18"
+    },
+    "config": {
+        "enableAnalytics": true,
+        "enableWidgets": true,
+        "enableNotifications": true,
+        "enableUserStats": true,
+        "enableContentOverview": true,
+        "enableSystemStatus": true,
+        "defaultLayout": "islamic",
+        "widgetRefreshInterval": 300,
+        "maxNotifications": 50,
+        "enableHijriCalendar": true,
+        "enablePrayerTimes": true,
+        "enableQuranVerse": true,
+        "enableHadithQuote": true
+    },
+    "hooks": {
+        "DashboardInit": "onDashboardInit",
+        "DashboardRender": "onDashboardRender",
+        "DashboardWidget": "onDashboardWidget",
+        "UserStats": "onUserStats",
+        "ContentStats": "onContentStats",
+        "SystemStatus": "onSystemStatus",
+        "NotificationCreate": "onNotificationCreate",
+        "NotificationDisplay": "onNotificationDisplay"
+    },
+    "resources": {
+        "css": [
+            "assets/css/dashboard.css",
+            "assets/css/widgets.css",
+            "assets/css/analytics.css",
+            "assets/css/notifications.css"
+        ],
+        "js": [
+            "assets/js/dashboard.js",
+            "assets/js/widgets.js",
+            "assets/js/analytics.js",
+            "assets/js/notifications.js"
+        ]
+    },
+    "widgets": {
+        "user-overview": {
+            "name": "User Overview",
+            "description": "Display user information and role",
+            "size": "small",
+            "refreshable": false
+        },
+        "content-stats": {
+            "name": "Content Statistics",
+            "description": "Show article and content counts",
+            "size": "medium",
+            "refreshable": true
+        },
+        "recent-activity": {
+            "name": "Recent Activity",
+            "description": "Display recent user activities",
+            "size": "large",
+            "refreshable": true
+        },
+        "system-status": {
+            "name": "System Status",
+            "description": "Show system health and status",
+            "size": "small",
+            "refreshable": true
+        },
+        "islamic-calendar": {
+            "name": "Islamic Calendar",
+            "description": "Display Hijri date and Islamic events",
+            "size": "small",
+            "refreshable": false
+        },
+        "prayer-times": {
+            "name": "Prayer Times",
+            "description": "Show current prayer times",
+            "size": "small",
+            "refreshable": true
+        },
+        "quran-verse": {
+            "name": "Quran Verse of the Day",
+            "description": "Display a random Quran verse",
+            "size": "medium",
+            "refreshable": true
+        },
+        "hadith-quote": {
+            "name": "Hadith of the Day",
+            "description": "Show a daily hadith quote",
+            "size": "medium",
+            "refreshable": true
+        },
+        "quick-actions": {
+            "name": "Quick Actions",
+            "description": "Common action buttons",
+            "size": "small",
+            "refreshable": false
+        },
+        "notifications": {
+            "name": "Notifications",
+            "description": "User notifications and alerts",
+            "size": "medium",
+            "refreshable": true
+        }
+    },
+    "permissions": {
+        "view_dashboard": {
+            "description": "View the main dashboard",
+            "default": true
+        },
+        "view_analytics": {
+            "description": "View analytics and statistics",
+            "default": false
+        },
+        "manage_widgets": {
+            "description": "Customize dashboard widgets",
+            "default": false
+        },
+        "view_system_status": {
+            "description": "View system status information",
+            "default": false
+        }
+    }
+} 

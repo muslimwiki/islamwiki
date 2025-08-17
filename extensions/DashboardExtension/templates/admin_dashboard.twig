@@ -1,0 +1,307 @@
+{% extends "layouts/dashboard.twig" %}
+
+{% block title %}Admin Dashboard - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-extension admin-dashboard">
+    <!-- Admin Dashboard Header -->
+    <div class="dashboard-header admin-header">
+        <h1>🛡️ Admin Dashboard</h1>
+        <p>System administration and monitoring for IslamWiki</p>
+        <div class="admin-controls">
+            <button class="btn btn-primary" onclick="refreshAllWidgets()">🔄 Refresh All</button>
+            <button class="btn btn-secondary" onclick="exportDashboard('json')">📊 Export Data</button>
+            <button class="btn btn-warning" onclick="showSystemLogs()">📋 System Logs</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Grid -->
+    <div class="dashboard-grid admin-grid">
+        <!-- System Overview Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="system-overview">
+            <div class="widget-header">
+                <h3>📊 System Overview</h3>
+                <span class="widget-icon">⚙️</span>
+            </div>
+            <div class="widget-content">
+                <div class="system-metrics">
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.total_users|default(0) }}</span>
+                            <span class="metric-label">Total Users</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.active_users|default(0) }}</span>
+                            <span class="metric-label">Active Users</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.total_articles|default(0) }}</span>
+                            <span class="metric-label">Total Articles</span>
+                        </div>
+                    </div>
+                    <div class="system-health">
+                        <div class="health-indicator {{ data.system_overview.system_health|default('excellent') }}">
+                            <span class="health-label">System Health:</span>
+                            <span class="health-value">{{ data.system_overview.system_health|default('excellent')|title }}</span>
+                        </div>
+                        <div class="uptime-info">
+                            <span class="uptime-label">Uptime:</span>
+                            <span class="uptime-value">{{ data.system_overview.uptime|default('99.9%') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="user-management">
+            <div class="widget-header">
+                <h3>👥 User Management</h3>
+                <span class="widget-icon">👤</span>
+            </div>
+            <div class="widget-content">
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.total_users|default(0) }}</span>
+                        <span class="stat-text">Total Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.new_users_today|default(0) }}</span>
+                        <span class="stat-text">New Today</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.pending_approvals|default(0) }}</span>
+                        <span class="stat-text">Pending</span>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="btn btn-sm btn-primary" onclick="manageUsers()">Manage Users</button>
+                    <button class="btn btn-sm btn-secondary" onclick="viewUserReports()">View Reports</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Moderation Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="content-moderation">
+            <div class="widget-header">
+                <h3>📝 Content Moderation</h3>
+                <span class="widget-icon">🔍</span>
+            </div>
+            <div class="widget-content">
+                <div class="moderation-queue">
+                    <div class="queue-item">
+                        <span class="queue-label">Pending Reviews:</span>
+                        <span class="queue-count">{{ data.content_moderation.pending_reviews|default(0) }}</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="queue-label">Flagged Content:</span>
+                        <span class="queue-count">{{ data.content_moderation.flagged_content|default(0) }}</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="queue-label">Queue Size:</span>
+                        <span class="queue-count">{{ data.content_moderation.moderation_queue_size|default(0) }}</span>
+                    </div>
+                </div>
+                <div class="moderation-actions">
+                    <button class="btn btn-sm btn-primary" onclick="reviewContent()">Review Content</button>
+                    <button class="btn btn-sm btn-warning" onclick="viewFlagged()">View Flagged</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="system-status">
+            <div class="widget-header">
+                <h3>🟢 System Status</h3>
+                <span class="widget-icon">📡</span>
+            </div>
+            <div class="widget-content">
+                <div class="status-list">
+                    {% for service, status in data.system_status %}
+                    <div class="status-item">
+                        <span class="status-indicator {{ status }}"></span>
+                        <span class="status-name">{{ service|title }}</span>
+                        <span class="status-detail">{{ status|title }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="last-check">
+                    Last Check: {{ data.system_status.last_check|default('Unknown') }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Dashboard Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="analytics">
+            <div class="widget-header">
+                <h3>📈 Analytics Dashboard</h3>
+                <span class="widget-icon">📊</span>
+            </div>
+            <div class="widget-content">
+                <div class="analytics-overview">
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.page_views_today|default(0) }}</span>
+                        <span class="metric-label">Page Views Today</span>
+                    </div>
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.unique_visitors|default(0) }}</span>
+                        <span class="metric-label">Unique Visitors</span>
+                    </div>
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.content_growth|default('0%') }}</span>
+                        <span class="metric-label">Content Growth</span>
+                    </div>
+                </div>
+                <div class="analytics-chart">
+                    <div class="chart-placeholder">
+                        📊 Analytics Chart Placeholder
+                        <br><small>Real-time charts would be displayed here</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Overview Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="security">
+            <div class="widget-header">
+                <h3>🔒 Security Overview</h3>
+                <span class="widget-icon">🛡️</span>
+            </div>
+            <div class="widget-content">
+                <div class="security-metrics">
+                    <div class="security-item">
+                        <span class="security-label">Failed Logins:</span>
+                        <span class="security-value">{{ data.security.failed_logins|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Suspicious Activity:</span>
+                        <span class="security-value">{{ data.security.suspicious_activity|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Security Alerts:</span>
+                        <span class="security-value">{{ data.security.security_alerts|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Threat Level:</span>
+                        <span class="security-value threat-{{ data.security.threat_level|default('low') }}">
+                            {{ data.security.threat_level|default('low')|title }}
+                        </span>
+                    </div>
+                </div>
+                <div class="security-actions">
+                    <button class="btn btn-sm btn-warning" onclick="runSecurityScan()">🔍 Run Scan</button>
+                    <button class="btn btn-sm btn-danger" onclick="viewSecurityLogs()">📋 Security Logs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Quick Actions -->
+    <div class="admin-quick-actions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="action-grid">
+            <button class="action-btn" onclick="backupSystem()">
+                <span class="action-icon">💾</span>
+                <span class="action-text">Backup System</span>
+            </button>
+            <button class="action-btn" onclick="clearCache()">
+                <span class="action-icon">🧹</span>
+                <span class="action-text">Clear Cache</span>
+            </button>
+            <button class="action-btn" onclick="updateSystem()">
+                <span class="action-icon">🔄</span>
+                <span class="action-text">Check Updates</span>
+            </button>
+            <button class="action-btn" onclick="viewLogs()">
+                <span class="action-icon">📋</span>
+                <span class="action-text">View Logs</span>
+            </button>
+            <button class="action-btn" onclick="manageExtensions()">
+                <span class="action-icon">🔌</span>
+                <span class="action-text">Extensions</span>
+            </button>
+            <button class="action-btn" onclick="systemSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Admin-specific JavaScript -->
+<script>
+// Admin dashboard functionality
+function refreshAllWidgets() {
+    const widgets = document.querySelectorAll('.dashboard-widget');
+    widgets.forEach(widget => {
+        const widgetId = widget.dataset.widgetId;
+        refreshWidget(widgetId);
+    });
+}
+
+function manageUsers() {
+    window.location.href = '/admin/users';
+}
+
+function viewUserReports() {
+    window.location.href = '/admin/reports';
+}
+
+function reviewContent() {
+    window.location.href = '/admin/moderation';
+}
+
+function viewFlagged() {
+    window.location.href = '/admin/flagged';
+}
+
+function runSecurityScan() {
+    // Implement security scan functionality
+    console.log('Running security scan...');
+}
+
+function viewSecurityLogs() {
+    window.location.href = '/admin/security/logs';
+}
+
+function backupSystem() {
+    // Implement backup functionality
+    console.log('Starting system backup...');
+}
+
+function clearCache() {
+    // Implement cache clearing
+    console.log('Clearing system cache...');
+}
+
+function updateSystem() {
+    // Implement update check
+    console.log('Checking for system updates...');
+}
+
+function viewLogs() {
+    window.location.href = '/admin/logs';
+}
+
+function manageExtensions() {
+    window.location.href = '/admin/extensions';
+}
+
+function systemSettings() {
+    window.location.href = '/admin/settings';
+}
+
+function exportDashboard(format) {
+    window.location.href = `/admin/dashboard/export?format=${format}`;
+}
+
+function showSystemLogs() {
+    window.location.href = '/admin/logs';
+}
+
+// Auto-refresh for admin dashboard (more frequent updates)
+setInterval(() => {
+    refreshAllWidgets();
+}, {{ config.refresh_interval * 1000 }});
+</script>
+{% endblock %} 

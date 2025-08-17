@@ -1,0 +1,833 @@
+{% extends "layouts/dashboard.twig" %}
+
+{% block title %}Admin Dashboard - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-extension admin-dashboard">
+    <!-- Admin Dashboard Header -->
+    <div class="dashboard-header admin-header">
+        <h1>🛡️ Admin Dashboard</h1>
+        <p>System administration and monitoring for IslamWiki</p>
+        <div class="admin-controls">
+            <button class="btn btn-primary" onclick="refreshAllWidgets()">🔄 Refresh All</button>
+            <button class="btn btn-secondary" onclick="exportDashboard('json')">📊 Export Data</button>
+            <button class="btn btn-warning" onclick="showSystemLogs()">📋 System Logs</button>
+        </div>
+    </div>
+
+    <!-- Admin Quick Actions -->
+    <div class="admin-quick-actions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="action-grid">
+            <button class="action-btn" onclick="backupSystem()">
+                <span class="action-icon">💾</span>
+                <span class="action-text">Backup System</span>
+            </button>
+            <button class="action-btn" onclick="clearCache()">
+                <span class="action-icon">🧹</span>
+                <span class="action-text">Clear Cache</span>
+            </button>
+            <button class="action-btn" onclick="updateSystem()">
+                <span class="action-icon">🔄</span>
+                <span class="action-text">Check Updates</span>
+            </button>
+            <button class="action-btn" onclick="viewLogs()">
+                <span class="action-icon">📋</span>
+                <span class="action-text">View Logs</span>
+            </button>
+            <button class="action-btn" onclick="manageExtensions()">
+                <span class="action-icon">🔌</span>
+                <span class="action-text">Extensions</span>
+            </button>
+            <button class="action-btn" onclick="systemSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Grid -->
+    <div class="dashboard-grid admin-grid">
+        <!-- System Overview Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="system-overview">
+            <div class="widget-header">
+                <h3>📊 System Overview</h3>
+                <span class="widget-icon">⚙️</span>
+            </div>
+            <div class="widget-content">
+                <div class="system-metrics">
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.total_users|default(0) }}</span>
+                            <span class="metric-label">Total Users</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.active_users|default(0) }}</span>
+                            <span class="metric-label">Active Users</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">{{ data.system_overview.total_articles|default(0) }}</span>
+                            <span class="metric-label">Total Articles</span>
+                        </div>
+                    </div>
+                    <div class="system-health">
+                        <div class="health-indicator {{ data.system_overview.system_health|default('excellent') }}">
+                            <span class="health-label">System Health:</span>
+                            <span class="health-value">{{ data.system_overview.system_health|default('excellent')|title }}</span>
+                        </div>
+                        <div class="uptime-info">
+                            <span class="uptime-label">Uptime:</span>
+                            <span class="uptime-value">{{ data.system_overview.uptime|default('99.9%') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="user-management">
+            <div class="widget-header">
+                <h3>👥 User Management</h3>
+                <span class="widget-icon">👤</span>
+            </div>
+            <div class="widget-content">
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.total_users|default(0) }}</span>
+                        <span class="stat-text">Total Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.new_users_today|default(0) }}</span>
+                        <span class="stat-text">New Today</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.user_management.pending_approvals|default(0) }}</span>
+                        <span class="stat-text">Pending</span>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="btn btn-sm btn-primary" onclick="manageUsers()">Manage Users</button>
+                    <button class="btn btn-sm btn-secondary" onclick="viewUserReports()">View Reports</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Moderation Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="content-moderation">
+            <div class="widget-header">
+                <h3>📝 Content Moderation</h3>
+                <span class="widget-icon">🔍</span>
+            </div>
+            <div class="widget-content">
+                <div class="moderation-queue">
+                    <div class="queue-item">
+                        <span class="queue-label">Pending Reviews:</span>
+                        <span class="queue-count">{{ data.content_moderation.pending_reviews|default(0) }}</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="queue-label">Flagged Content:</span>
+                        <span class="queue-count">{{ data.content_moderation.flagged_content|default(0) }}</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="queue-label">Queue Size:</span>
+                        <span class="queue-count">{{ data.content_moderation.moderation_queue_size|default(0) }}</span>
+                    </div>
+                </div>
+                <div class="moderation-actions">
+                    <button class="btn btn-sm btn-primary" onclick="reviewContent()">Review Content</button>
+                    <button class="btn btn-sm btn-warning" onclick="viewFlagged()">View Flagged</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="system-status">
+            <div class="widget-header">
+                <h3>🟢 System Status</h3>
+                <span class="widget-icon">📡</span>
+            </div>
+            <div class="widget-content">
+                <div class="status-list">
+                    {% for service, status in data.system_status %}
+                    <div class="status-item">
+                        <span class="status-indicator {{ status }}"></span>
+                        <span class="status-name">{{ service|title }}</span>
+                        <span class="status-detail">{{ status|title }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="last-check">
+                    Last Check: {{ data.system_status.last_check|default('Unknown') }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Dashboard Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="analytics">
+            <div class="widget-header">
+                <h3>📈 Analytics Dashboard</h3>
+                <span class="widget-icon">📊</span>
+            </div>
+            <div class="widget-content">
+                <div class="analytics-overview">
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.page_views_today|default(0) }}</span>
+                        <span class="metric-label">Page Views Today</span>
+                    </div>
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.unique_visitors|default(0) }}</span>
+                        <span class="metric-label">Unique Visitors</span>
+                    </div>
+                    <div class="analytics-metric">
+                        <span class="metric-value">{{ data.analytics.content_growth|default('0%') }}</span>
+                        <span class="metric-label">Content Growth</span>
+                    </div>
+                </div>
+                <div class="analytics-chart">
+                    <div class="chart-placeholder">
+                        📊 Analytics Chart Placeholder
+                        <br><small>Real-time charts would be displayed here</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Overview Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="security">
+            <div class="widget-header">
+                <h3>🔒 Security Overview</h3>
+                <span class="widget-icon">🛡️</span>
+            </div>
+            <div class="widget-content">
+                <div class="security-metrics">
+                    <div class="security-item">
+                        <span class="security-label">Failed Logins:</span>
+                        <span class="security-value">{{ data.security.failed_logins|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Suspicious Activity:</span>
+                        <span class="security-value">{{ data.security.suspicious_activity|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Security Alerts:</span>
+                        <span class="security-value">{{ data.security.security_alerts|default(0) }}</span>
+                    </div>
+                    <div class="security-item">
+                        <span class="security-label">Threat Level:</span>
+                        <span class="security-value threat-{{ data.security.threat_level|default('low') }}">
+                            {{ data.security.threat_level|default('low')|title }}
+                        </span>
+                    </div>
+                </div>
+                <div class="security-actions">
+                    <button class="btn btn-sm btn-warning" onclick="runSecurityScan()">🔍 Run Scan</button>
+                    <button class="btn btn-sm btn-danger" onclick="viewSecurityLogs()">📋 Security Logs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<!-- Custom CSS for Admin Dashboard -->
+<style>
+.admin-dashboard {
+    padding: 0;
+    max-width: 100%;
+}
+
+/* Admin Header */
+.admin-header {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 50%, #6ba53a 100%);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+}
+
+.admin-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.admin-header p {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.admin-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Dashboard Grid */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+/* Widget Sizes */
+.widget-large {
+    grid-column: span 2;
+}
+
+.widget-medium {
+    grid-column: span 1;
+}
+
+.widget-small {
+    grid-column: span 1;
+}
+
+/* Dashboard Widgets */
+.dashboard-widget {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.widget-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px 25px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.widget-icon {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.widget-content {
+    padding: 25px;
+}
+
+/* System Metrics */
+.system-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.metric-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.metric-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d5016;
+    margin-bottom: 8px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* User Stats */
+.user-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d5016;
+    margin-bottom: 8px;
+}
+
+.stat-text {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* System Health */
+.system-health {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.health-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.health-indicator.excellent {
+    background: #d5f4e6;
+    color: #27ae60;
+}
+
+.health-indicator.good {
+    background: #fef9e7;
+    color: #f39c12;
+}
+
+.health-indicator.poor {
+    background: #fadbd8;
+    color: #e74c3c;
+}
+
+.uptime-info {
+    text-align: right;
+}
+
+.uptime-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.uptime-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d5016;
+}
+
+/* Moderation Queue */
+.moderation-queue {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.queue-label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.queue-count {
+    background: #2d5016;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Status List */
+.status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-indicator.online {
+    background: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+}
+
+.status-indicator.offline {
+    background: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.status-indicator.warning {
+    background: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+}
+
+.status-name {
+    font-weight: 600;
+    color: #2c3e50;
+    flex: 1;
+}
+
+.status-detail {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.last-check {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+/* Analytics */
+.analytics-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.analytics-metric {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.analytics-metric .metric-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d5016;
+    margin-bottom: 8px;
+}
+
+.analytics-metric .metric-label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.analytics-chart {
+    margin-top: 20px;
+}
+
+.chart-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #e9ecef;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* User Actions */
+.user-actions, .moderation-actions, .analytics-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: #2d5016;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #4a8029;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e67e22;
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+/* Admin Quick Actions */
+.admin-quick-actions {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.admin-quick-actions h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.action-btn {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.action-btn:hover {
+    background: #2d5016;
+    color: white;
+    border-color: #2d5016;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+.action-text {
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .widget-large {
+        grid-column: span 1;
+    }
+    
+    .metric-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header h1 {
+        font-size: 2rem;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-stats, .analytics-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-actions, .moderation-actions, .analytics-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- JavaScript for Admin Dashboard -->
+<script>
+// Admin dashboard functions
+function refreshAllWidgets() {
+    location.reload();
+}
+
+function exportDashboard(format) {
+    if (format === 'json') {
+        alert('Dashboard data export feature coming soon!');
+    }
+}
+
+function showSystemLogs() {
+    alert('System logs viewer coming soon!');
+}
+
+function manageUsers() {
+    window.location.href = '/admin/users';
+}
+
+function viewUserReports() {
+    window.location.href = '/admin/reports';
+}
+
+function reviewContent() {
+    window.location.href = '/admin/moderation';
+}
+
+function viewFlagged() {
+    window.location.href = '/admin/flagged';
+}
+
+function backupSystem() {
+    alert('System backup feature coming soon!');
+}
+
+function clearCache() {
+    alert('Cache clearing feature coming soon!');
+}
+
+function updateSystem() {
+    alert('System update checker coming soon!');
+}
+
+function viewLogs() {
+    window.location.href = '/admin/logs';
+}
+
+function manageExtensions() {
+    window.location.href = '/admin/extensions';
+}
+
+function systemSettings() {
+    window.location.href = '/admin/settings';
+}
+
+function runSecurityScan() {
+    alert('Security scan feature coming soon!');
+}
+
+function viewSecurityLogs() {
+    window.location.href = '/admin/security/logs';
+}
+
+// Auto-refresh dashboard data every 5 minutes
+setInterval(function() {
+    console.log('Admin dashboard auto-refresh triggered');
+}, 300000);
+
+// Add smooth scrolling for better UX
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll to top when clicking on navigation
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
+    
+    // Add click event to logo or home button if exists
+    const homeButton = document.querySelector('.bismillah-site-logo');
+    if (homeButton) {
+        homeButton.addEventListener('click', scrollToTop);
+    }
+});
+</script>
+{% endblock %} 

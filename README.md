@@ -1,277 +1,235 @@
-# IslamWiki - Islamic Knowledge Platform
+# IslamWiki
 
-[![Version](https://img.shields.io/badge/version-0.0.60-brightgreen.svg)](https://github.com/islamwiki/islamwiki)
-[![Status](https://img.shields.io/badge/status-production%20ready-brightgreen.svg)](https://islamwiki.org)
-[![Languages](https://img.shields.io/badge/languages-English%20%7C%20Arabic-blue.svg)](https://islamwiki.org)
-[![RTL Support](https://img.shields.io/badge/RTL-Arabic%20Support-orange.svg)](https://islamwiki.org)
+**Version**: 0.0.61  
+**Status**: DashboardExtension Release  
+**Last Updated**: 2024-08-17
 
-**A comprehensive Islamic knowledge platform with complete Arabic language support and RTL layout**
+A comprehensive Islamic knowledge platform built with modern web technologies, featuring Quran and Hadith management, Islamic calendar integration, prayer times, and a role-based dashboard system.
 
----
+## 🚀 **Latest Release (v0.0.61) - DashboardExtension**
 
-## 🌟 **NEW IN VERSION 0.0.60**
+### **New Features**
+- **🎯 DashboardExtension**: Complete role-based dashboard system with personalized user experiences
+- **👥 Role-Based Dashboards**: Admin, Scholar, Contributor, and User dashboards
+- **🧠 Smart Role Detection**: Automatic user role identification and appropriate dashboard rendering
+- **📱 Responsive Design**: Mobile-first approach with Islamic-themed styling
+- **⚡ Interactive Widgets**: 10+ pre-built widgets for different purposes
+- **🔒 Permission System**: Granular access control based on user roles
 
-### 🎉 **Complete Arabic Language System**
-- **100% Arabic UI Translation** - Full interface in Arabic with Islamic terminology
-- **Professional RTL Support** - Right-to-left layout for Arabic text
-- **Cultural Authenticity** - Respectful Islamic cultural adaptation
-- **Seamless Language Switching** - English ↔ Arabic without page refresh
+### **Dashboard System Features**
+- **Admin Dashboard**: System administration, user management, content moderation
+- **Scholar Dashboard**: Academic tools, research resources, scholarly content
+- **Contributor Dashboard**: Content creation tools, contribution tracking
+- **User Dashboard**: Learning progress, personalized recommendations, community updates
 
-### 🌍 **Internationalization (i18n) & Localization (l10n)**
-- **Modern Translation System** - JSON-based translation files
-- **Multi-Language Foundation** - Ready for Urdu, Turkish, Indonesian, Malay, Persian, Hebrew
-- **Language Service Architecture** - Centralized language management
-- **Session-Based Persistence** - User language preference maintained
+### **Technical Improvements**
+- **Twig Templates**: Role-specific dashboard templates with consistent design
+- **Service Architecture**: Clean separation of business logic and presentation
+- **Hook System**: Comprehensive integration with IslamWiki framework
+- **Performance**: Optimized queries, caching support, and lazy loading
 
----
+## ✨ **Core Features**
 
-## 🎯 **Overview**
+### **Islamic Content Management**
+- **📖 Quran Integration**: Complete Quran verse management with translations
+- **📜 Hadith Collections**: Comprehensive Hadith management system
+- **📅 Islamic Calendar**: Hijri date system with event management
+- **🕌 Prayer Times**: Accurate prayer time calculations with astronomical algorithms
+- **🔍 Search & Discovery**: Advanced search across all Islamic content types
 
-IslamWiki is a comprehensive Islamic knowledge platform designed to serve the global Muslim community. Built with modern web technologies and Islamic cultural sensitivity, it provides a robust foundation for Islamic content, education, and community engagement.
+### **User Management & Authentication**
+- **🔐 Islamic Authentication**: Enhanced authentication with scholar verification
+- **👥 Role-Based Access**: Admin, Scholar, Contributor, and User roles
+- **📊 User Profiles**: Comprehensive user profiles with Islamic information
+- **🔒 Security**: Advanced security features and permission management
 
-### **Key Features**
-- **📚 Islamic Content Management** - Quran, Hadith, Islamic sciences, and community content
-- **🌍 Multi-Language Support** - English and Arabic with RTL support
-- **🔐 Secure Authentication** - User management with Islamic cultural considerations
-- **📱 Responsive Design** - Mobile-first approach for global accessibility
-- **⚡ Modern Architecture** - PHP 8+, Twig templates, modern CSS framework
-- **🛡️ Security First** - Comprehensive security and privacy protection
+### **Content & Wiki System**
+- **📝 Wiki Pages**: Complete wiki system with Islamic content support
+- **🌐 Multi-language**: Arabic and English support with RTL layout
+- **📚 Content Categories**: Organized Islamic sciences and topics
+- **🤝 Community**: User collaboration and content contribution
 
----
+## 🏗️ **Architecture**
 
-## 🌍 **Language Support**
+### **Modern Framework**
+- **PHP 8.0+**: Modern PHP with type hints and PSR-12 standards
+- **Twig Templates**: Powerful templating engine for views
+- **Service Providers**: Clean dependency injection and service management
+- **Hook System**: Extensible architecture for plugins and extensions
 
-### **Currently Available**
-| Language | Code | RTL | Status | Coverage |
-|----------|------|-----|--------|----------|
-| **English** | `en` | ❌ | ✅ **100%** | Complete UI |
-| **Arabic** | `ar` | ✅ | ✅ **100%** | Complete UI |
+### **Database Design**
+- **Islamic Database**: 39+ tables across 4 specialized databases
+- **Content Management**: Efficient storage and retrieval of Islamic content
+- **User Management**: Comprehensive user data and relationship management
+- **Performance**: Optimized queries and indexing strategies
 
-### **Coming Soon**
-- **Urdu** (اردو) - RTL support
-- **Turkish** (Türkçe) - LTR support  
-- **Indonesian** (Bahasa Indonesia) - LTR support
-- **Malay** (Bahasa Melayu) - LTR support
-- **Persian** (فارسی) - RTL support
-- **Hebrew** (עברית) - RTL support
-
----
+### **Extension System**
+- **DashboardExtension**: Role-based dashboard system (v0.0.1)
+- **QuranExtension**: Quran content management and display
+- **HadithExtension**: Hadith collections and management
+- **EnhancedMarkdown**: Islamic content formatting support
+- **GitIntegration**: Version control for content collaboration
 
 ## 🚀 **Quick Start**
-
-### **Prerequisites**
-- PHP 8.0 or higher
-- MySQL 8.0 or higher
-- Composer
-- Apache/Nginx web server
 
 ### **Installation**
 ```bash
 # Clone the repository
-git clone https://github.com/islamwiki/islamwiki.git
+git clone https://github.com/your-org/islamwiki.git
 cd islamwiki
 
 # Install dependencies
 composer install
 
-# Set up environment
+# Configure database
 cp .env.example .env
 # Edit .env with your database credentials
 
 # Run migrations
-php scripts/database/migrate.php
+php artisan migrate
 
 # Create admin user
 php scripts/create_admin_user.php
-
-# Start the application
-php -S localhost:8000 -t public/
 ```
 
-### **Language Configuration**
-1. **Access Settings** → Language Preference
-2. **Select Language** (English/Arabic)
-3. **Update Language** - Changes apply immediately
-4. **RTL Support** - Arabic automatically switches to right-to-left layout
-
----
-
-## 🔧 **Architecture**
-
-### **Core Systems**
-- **Asas Container** - Dependency injection container (أساس - Foundation)
-- **Aman Security** - Authentication and authorization (أمان - Security)
-- **Wisal Session** - Session management (وصال - Connection)
-- **Siraj API** - API management and routing (سراج - Light/Lamp)
-- **Shahid Logging** - Comprehensive logging (شاهد - Witness)
-
-### **Language System**
-- **LanguageServiceProvider** - Core language services
-- **TranslationService** - JSON-based translation management
-- **TwigTranslationExtension** - Template translation functions
-- **RTL Support** - Professional right-to-left layout
-
-### **Frontend Framework**
-- **Safa CSS** - Islamic-themed CSS framework (صافا - Pure)
-- **ZamZam.js** - Reactive JavaScript framework (زمزم - Sacred Well)
-- **Twig Templates** - Flexible templating with inheritance
-- **Responsive Design** - Mobile-first approach
-
----
+### **Accessing Dashboards**
+- **Admin**: `/dashboard` (full system access)
+- **Scholar**: `/dashboard` (academic tools)
+- **Contributor**: `/dashboard` (content creation)
+- **User**: `/dashboard` (learning progress)
 
 ## 📚 **Documentation**
 
 ### **User Guides**
-- [Language Settings](docs/user-guide/language-settings.md)
-- [Getting Started](docs/user-guide/getting-started.md)
-- [Content Creation](docs/user-guide/content-creation.md)
-- [Community Features](docs/user-guide/community-features.md)
+- **[Dashboard System](docs/extensions/DashboardExtension.md)** - Complete dashboard usage guide
+- **[Quran Features](docs/features/quran.md)** - Quran browsing and search
+- **[Hadith Collections](docs/features/hadith.md)** - Hadith study and research
+- **[Prayer Times](docs/features/prayer-times.md)** - Prayer time calculations
 
 ### **Developer Documentation**
-- [Architecture Overview](docs/architecture/README.md)
-- [Extension Development](docs/developer/extension-system.md)
-- [Translation Guide](docs/developer/translation-guide.md)
-- [API Reference](docs/api/README.md)
+- **[Architecture Overview](docs/architecture/overview.md)** - System design and patterns
+- **[Extension Development](docs/developer/extension-system.md)** - Building extensions
+- **[API Reference](docs/api/README.md)** - REST API documentation
+- **[Database Schema](docs/database/README.md)** - Database structure and relationships
 
-### **Release Notes**
-- [Version 0.0.60](docs/releases/RELEASE_NOTES_0.0.60.md) - Arabic i18n/l10n System
-- [Version 0.0.50](docs/releases/RELEASE_NOTES_0.0.50.md) - Core Systems
-- [Complete History](CHANGELOG.md)
+### **Extension Documentation**
+- **[DashboardExtension](docs/extensions/DashboardExtension.md)** - Role-based dashboard system
+- **[QuranExtension](docs/extensions/QuranExtension.md)** - Quran management system
+- **[HadithExtension](docs/extensions/HadithExtension.md)** - Hadith management system
 
----
+## 🔧 **Configuration**
 
-## 🌟 **Features**
+### **Dashboard Configuration**
+```php
+// Role-based dashboard settings
+'admin' => [
+    'template' => 'admin_dashboard',
+    'widgets' => ['system_overview', 'user_management', 'content_moderation'],
+    'permissions' => ['full_access']
+],
+'scholar' => [
+    'template' => 'scholar_dashboard',
+    'widgets' => ['academic_tools', 'research_resources'],
+    'permissions' => ['content_management', 'academic_features']
+]
+```
 
-### **Content Management**
-- **Quran Integration** - Complete Quran text with translations
-- **Hadith Collection** - Authentic Hadith with verification
-- **Islamic Sciences** - Comprehensive Islamic knowledge base
-- **Community Wiki** - User-generated Islamic content
-- **Scholar Profiles** - Islamic scholar information and verification
+### **Islamic Content Settings**
+- **Quran Translations**: Multiple language support
+- **Hadith Collections**: Various authentic collections
+- **Prayer Times**: Location-based calculations
+- **Calendar Events**: Islamic holidays and events
 
-### **User Experience**
-- **Multi-Language Interface** - English and Arabic with RTL support
-- **Responsive Design** - Works on all devices and screen sizes
-- **Islamic Design Theme** - Culturally appropriate visual design
-- **Accessibility** - WCAG compliant for inclusive access
-- **Performance** - Fast loading and smooth user experience
+## 🎨 **Themes & Styling**
 
-### **Security & Privacy**
-- **User Authentication** - Secure login and registration
-- **Role-Based Access** - Granular permission system
-- **Content Moderation** - Community-driven content quality
-- **Privacy Protection** - User data protection and control
-- **CSRF Protection** - Cross-site request forgery prevention
+### **Islamic Design**
+- **Color Scheme**: Green (#2d5016), Gold (#d4af37), Cream (#f8f6f0)
+- **Typography**: Arabic and Latin font support
+- **Layouts**: RTL and LTR layout support
+- **Responsive**: Mobile-first design approach
 
----
+### **Dashboard Themes**
+- **Admin Theme**: Professional and functional
+- **Scholar Theme**: Academic and research-focused
+- **Contributor Theme**: Creative and collaborative
+- **User Theme**: Learning and community-oriented
 
-## 🤝 **Contributing**
+## 🚀 **Development**
 
-We welcome contributions from the global Muslim community and developers worldwide.
+### **Contributing**
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Make changes and test thoroughly
+4. Submit pull request with detailed description
 
-### **How to Contribute**
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Make** your changes
-4. **Test** thoroughly
-5. **Submit** a pull request
+### **Code Standards**
+- **PHP**: PSR-12 coding standards
+- **Twig**: Consistent template structure
+- **CSS**: BEM methodology for class naming
+- **JavaScript**: ES6+ with proper error handling
 
-### **Translation Contributions**
-- **Arabic**: Complete and verified
-- **Other Languages**: Welcome community contributions
-- **Cultural Sensitivity**: Islamic cultural authenticity required
-- **Quality Standards**: Professional translation quality
+### **Testing**
+- **Unit Tests**: Test individual components
+- **Integration Tests**: Test dashboard workflows
+- **Browser Tests**: Test across different browsers
+- **Performance Tests**: Monitor dashboard performance
 
-### **Development Areas**
-- **New Languages** - Translation and RTL support
-- **Features** - Islamic content and community tools
-- **Documentation** - User guides and developer docs
-- **Testing** - Quality assurance and bug reports
+## 📊 **Performance & Security**
 
----
+### **Performance Features**
+- **Lazy Loading**: Widgets load data on demand
+- **Caching**: Dashboard data caching for performance
+- **Minimal Queries**: Efficient database queries
+- **Responsive Images**: Optimized image loading
 
-## 📊 **Project Status**
+### **Security Features**
+- **Role-Based Access**: Different dashboards for different user levels
+- **Data Isolation**: Users only see authorized data
+- **Input Validation**: All user inputs properly validated
+- **XSS Protection**: Output properly escaped and sanitized
 
-### **Completed Systems** ✅
-- **Core Architecture** - Complete foundation
-- **Authentication System** - User management and security
-- **Content Management** - Wiki, Quran, Hadith integration
-- **Multi-Language Support** - English and Arabic with RTL
-- **Extension Framework** - Plugin system for features
-- **Skin System** - Islamic-themed visual designs
-- **API System** - RESTful API with authentication
-- **Database System** - Migration and management tools
+## 🌟 **Roadmap**
 
-### **In Progress** 🔄
-- **Additional Languages** - Urdu, Turkish, Indonesian support
-- **Advanced RTL** - Complex RTL layout improvements
-- **Content Localization** - Multi-language content management
+### **Upcoming Features**
+- **Advanced Analytics**: User behavior tracking and insights
+- **Custom Widgets**: User-configurable dashboard layouts
+- **Mobile App**: Native mobile dashboard application
+- **AI Recommendations**: Machine learning-based content suggestions
+- **Real-time Updates**: WebSocket-based live dashboard updates
 
-### **Planned** 📋
-- **AI Integration** - Machine learning for Islamic content
-- **Mobile Applications** - Native mobile apps
-- **Voice Interface** - Spoken language support
-- **Advanced Analytics** - Islamic-specific metrics
+### **Performance Improvements**
+- **Progressive Web App**: Offline dashboard functionality
+- **Advanced Caching**: Redis-based dashboard data caching
+- **CDN Integration**: Global content delivery for dashboard assets
+- **Asset Bundling**: Optimized CSS and JavaScript delivery
 
----
+## 🤝 **Community**
 
-## 🌍 **Community**
+### **Support Channels**
+- **Documentation**: Comprehensive guides and tutorials
+- **Community Forum**: User discussions and support
+- **Issue Tracker**: Bug reports and feature requests
+- **Developer Chat**: Technical discussions and help
 
-### **Global Reach**
-- **Muslim Community** - Serving Muslims worldwide
-- **Islamic Scholars** - Academic and religious expertise
-- **Developers** - Open source contribution
-- **Content Creators** - Islamic knowledge sharing
-
-### **Cultural Values**
-- **Islamic Authenticity** - Accurate and verified content
-- **Cultural Respect** - Sensitivity to diverse traditions
-- **Community Focus** - User-driven development
-- **Global Accessibility** - Worldwide access and support
-
----
+### **Contributors**
+- **Core Team**: IslamWiki development team
+- **Community Contributors**: Open source contributors
+- **Islamic Scholars**: Content verification and guidance
+- **Users**: Feedback and feature suggestions
 
 ## 📄 **License**
 
-This project is licensed under the **AGPL-3.0 License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
 
-### **Open Source**
-- **Free to Use** - No licensing fees
-- **Community Driven** - Open development process
-- **Islamic Values** - Aligned with Islamic principles
-- **Global Impact** - Serving the worldwide Muslim community
+## 🙏 **Acknowledgments**
 
----
-
-## 📞 **Contact & Support**
-
-### **Community Support**
-- **GitHub Issues** - Bug reports and feature requests
-- **Discussions** - Community questions and answers
-- **Documentation** - Comprehensive guides and tutorials
-- **Contributing** - How to get involved
-
-### **Development Team**
-- **Core Team** - IslamWiki Development Team
-- **Contributors** - Global developer community
-- **Islamic Scholars** - Content verification and guidance
-- **Community Members** - User feedback and testing
+- **Islamic Scholars**: For content verification and guidance
+- **Open Source Community**: For the amazing tools and libraries
+- **Contributors**: For their time and expertise
+- **Users**: For feedback and continuous improvement
 
 ---
 
-## 🎉 **Acknowledgments**
+**IslamWiki** - Empowering the global Muslim community with authentic Islamic knowledge 🚀
 
-- **Islamic Scholars** - For content verification and guidance
-- **Open Source Community** - For tools and frameworks
-- **Global Muslim Community** - For feedback and support
-- **Contributors** - For code, translations, and documentation
-
----
-
-**IslamWiki** - Knowledge for the Ummah  
-**Version:** 0.0.60  
-**Status:** ✅ **Production Ready**  
-**Languages:** English, Arabic (RTL)  
-**License:** AGPL-3.0
-
-*"Seek knowledge from the cradle to the grave" - Prophet Muhammad ﷺ*
+*Built with ❤️ for the Ummah*

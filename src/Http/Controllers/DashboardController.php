@@ -21,8 +21,9 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Session\WisalSession;
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Skins\SkinManager;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use IslamWiki\Core\Http\Request;
+use IslamWiki\Http\Controllers\Controller;
+use IslamWiki\Extensions\DashboardExtension\DashboardExtension;
 
 /**
  * DashboardController - Main dashboard functionality for IslamWiki
@@ -36,7 +37,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class DashboardController extends Controller
 {
-    private WisalSession $_session;
+    private WisalSession $session;
 
     /**
      * Create a new controller instance.
@@ -47,7 +48,7 @@ class DashboardController extends Controller
     public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
         parent::__construct($db, $container);
-        $this->_session = $container->get('session');
+        $this->session = $container->get('session');
     }
 
     /**
@@ -111,8 +112,9 @@ class DashboardController extends Controller
                 $quickStats = $this->getQuickStats($userId);
             } else {
                 // Fallback: compute stats if we have a session user ID, even if auth is null
-                $fallbackUserId = $this->_session->getUserId();
-                $fallbackUsername = $this->_session->getUsername() ?? 'User';
+                $fallbackUserId = $this->session->getUserId();
+                $userData = $this->session->getUserData();
+                $fallbackUsername = $userData['username'] ?? 'User';
                 error_log("DashboardController::index - No auth user. Session fallback user ID: " . ($fallbackUserId ?? 'null'));
 
                 if ($fallbackUserId) {
@@ -126,15 +128,23 @@ class DashboardController extends Controller
                     $user = [
                         'id' => $fallbackUserId,
                         'username' => $fallbackUsername,
-                        'is_admin' => $this->_session->isAdmin(),
+                        'is_admin' => ($userData['role'] ?? '') === 'admin',
                     ];
                 } else {
                     error_log("DashboardController::index - No user found");
                 }
             }
 
-            // Get site statistics (available for all users)
-            $siteStats = $this->getSiteStatistics();
+                    // Get site statistics (available for all users)
+        $siteStats = $this->getSiteStatistics();
+
+        // Determine user role and select appropriate template
+        $userRole = $this->determineUserRole($user);
+        $templatePath = $this->getRoleBasedTemplate($userRole);
+        
+        // Log role detection for debugging
+        error_log("DashboardController::index - User role detected: $userRole");
+        error_log("DashboardController::index - Template selected: $templatePath");
 
             // Try to get Bayan (Knowledge Graph) stats
             try {
@@ -153,7 +163,7 @@ class DashboardController extends Controller
                 $maxHubs = min(3, count($hub));
                 for ($i = 0; $i < $maxHubs; $i++) {
                     $hubNode = $hub[$i];
-                    $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
+                    $hubId = (int)($hubNode['id'] ?? 0);
                     if ($hubId === 0) { continue; }
                     if (!isset($nodeIndexById[$hubId])) {
                         $nodeIndexById[$hubId] = true;
@@ -166,7 +176,7 @@ class DashboardController extends Controller
                     }
                     $neighbors = $queryManager->getRelatedNodes($hubId, null, 3);
                     foreach ($neighbors as $neighbor) {
-                        $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
+                        $neighborId = (int)($neighbor['id'] ?? 0);
                         if ($neighborId === 0) { continue; }
                         if (!isset($nodeIndexById[$neighborId])) {
                             $nodeIndexById[$neighborId] = true;
@@ -221,7 +231,7 @@ class DashboardController extends Controller
             'siteStats' => $siteStats,
             'activeSkin' => $activeSkinName,
             'currentTime' => date('Y-m-d H:i:s'),
-            'isLoggedIn' => $this->_session->isLoggedIn(),
+                            'isLoggedIn' => $this->session->isLoggedIn(),
             // Provide user to view when available (either from auth or fallback)
             'user' => $user,
             'bayan' => $dataBayan,
@@ -229,7 +239,7 @@ class DashboardController extends Controller
             'current_language' => $_SESSION['language'] ?? 'en'
         ];
 
-        return $this->view('dashboard/index', $data);
+        return $this->view($templatePath, $data);
     }
 
     /**
@@ -287,10 +297,10 @@ class DashboardController extends Controller
             $watchlist = $this->db->query($watchlistQuery, [$userId])->fetch();
 
             $result = [
-                'total_pages' => $contributions->total_pages ?? $contributions['total_pages'] ?? 0,
-                'total_edits' => $edits->total_edits ?? $edits['total_edits'] ?? 0,
-                'recent_activity' => $recent->recent_activity ?? $recent['recent_activity'] ?? 0,
-                'watchlist_count' => $watchlist->watchlist_count ?? $watchlist['watchlist_count'] ?? 0,
+                'total_pages' => $contributions['total_pages'] ?? 0,
+                'total_edits' => $edits['total_edits'] ?? 0,
+                'recent_activity' => $recent['recent_activity'] ?? 0,
+                'watchlist_count' => $watchlist['watchlist_count'] ?? 0,
                 'member_since' => $this->getMemberSince($userId)
             ];
 
@@ -345,18 +355,18 @@ class DashboardController extends Controller
                     $displaySlug = $parts[1];
                 }
                 return [
-                    'id' => $activity->id ?? $activity['id'],
-                    'page_id' => $activity->page_id ?? $activity['page_id'],
-                    'page_title' => $activity->page_title ?? $activity['page_title'],
+                    'id' => $activity['id'],
+                    'page_id' => $activity['page_id'],
+                    'page_title' => $activity['page_title'],
                     'page_slug' => $displaySlug,
-                    'version_number' => $activity->version_number ?? $activity['version_number'],
-                    'change_summary' => $activity->change_summary ?? $activity['change_summary'],
-                    'created_at' => $activity->created_at ?? $activity['created_at'],
-                    'timestamp' => $activity->created_at ?? $activity['created_at'],
-                    'activity_type' => $activity->activity_type ?? $activity['activity_type'],
-                    'type' => $activity->activity_type ?? $activity['activity_type'],
+                    'version_number' => $activity['version_number'],
+                    'change_summary' => $activity['change_summary'],
+                    'created_at' => $activity['created_at'],
+                    'timestamp' => $activity['created_at'],
+                    'activity_type' => $activity['activity_type'],
+                    'type' => $activity['activity_type'],
                     'action' => 'EDIT',
-                    'time_ago' => $this->getTimeAgo($activity->created_at ?? $activity['created_at'])
+                    'time_ago' => $this->getTimeAgo($activity['created_at'])
                 ];
             }, $activities);
         } catch (\Exception $e) {
@@ -386,10 +396,10 @@ class DashboardController extends Controller
             $rows = $this->db->query($query, [$userId])->fetchAll();
             return array_map(function ($row) {
                 return [
-                    'id' => $row->page_id ?? $row['page_id'],
-                    'title' => $row->title ?? $row['title'],
-                    'slug' => $row->slug ?? $row['slug'],
-                    'watch_date' => $row->watch_date ?? $row['watch_date'],
+                    'id' => $row['page_id'],
+                    'title' => $row['title'],
+                    'slug' => $row['slug'],
+                    'watch_date' => $row['watch_date'],
                 ];
             }, $rows);
         } catch (\Exception $e) {
@@ -451,10 +461,10 @@ class DashboardController extends Controller
             $pages = $this->db->query($pagesQuery, [$userId])->fetch();
 
             return [
-                'today_edits' => $today->today_edits ?? $today['today_edits'] ?? 0,
-                'week_edits' => $week->week_edits ?? $week['week_edits'] ?? 0,
-                'month_edits' => $month->month_edits ?? $month['month_edits'] ?? 0,
-                'month_pages' => $pages->month_pages ?? $pages['month_pages'] ?? 0
+                'today_edits' => $today['today_edits'] ?? 0,
+                'week_edits' => $week['week_edits'] ?? 0,
+                'month_edits' => $month['month_edits'] ?? 0,
+                'month_pages' => $pages['month_pages'] ?? 0
             ];
         } catch (\Exception $e) {
             error_log('DashboardController::getQuickStats - Error: ' . $e->getMessage());
@@ -496,10 +506,10 @@ class DashboardController extends Controller
             $recent = $this->db->query($recentQuery)->fetch();
 
             return [
-                'total_pages' => $pages->total_pages ?? $pages['total_pages'] ?? 0,
-                'total_edits' => $edits->total_edits ?? $edits['total_edits'] ?? 0,
-                'total_users' => $users->total_users ?? $users['total_users'] ?? 0,
-                'recent_activity' => $recent->recent_activity ?? $recent['recent_activity'] ?? 0
+                'total_pages' => $pages['total_pages'] ?? 0,
+                'total_edits' => $edits['total_edits'] ?? 0,
+                'total_users' => $users['total_users'] ?? 0,
+                'recent_activity' => $recent['recent_activity'] ?? 0
             ];
         } catch (\Exception $e) {
             error_log('DashboardController::getSiteStatistics - Error: ' . $e->getMessage());
@@ -524,7 +534,7 @@ class DashboardController extends Controller
         try {
             $query = "SELECT created_at FROM users WHERE id = ?";
             $user = $this->db->query($query, [$userId])->fetch();
-            return $user->created_at ?? $user['created_at'] ?? null;
+            return $user['created_at'] ?? null;
         } catch (\Exception $e) {
             error_log('DashboardController::getMemberSince - Error: ' . $e->getMessage());
             return null;
@@ -558,6 +568,81 @@ class DashboardController extends Controller
         } else {
             $months = floor($diff / 2592000);
             return $months . ' month' . ($months > 1 ? 's' : '') . ' ago';
+        }
+    }
+
+    /**
+     * Determine user role based on user data and database
+     *
+     * @param array|null $user User data
+     * @return string User role
+     */
+    private function determineUserRole(?array $user): string
+    {
+        if (!$user) {
+            return 'user';
+        }
+
+        $userId = $user['id'] ?? null;
+        if (!$userId) {
+            return 'user';
+        }
+
+        try {
+            // Query database for detailed user role information
+            $userQuery = "SELECT role, is_admin, islamic_role FROM users WHERE id = ?";
+            $userData = $this->db->query($userQuery, [$userId])->fetch();
+            
+            if ($userData) {
+                // Check if user is admin
+                if (($userData['is_admin'] ?? false) || ($userData['role'] ?? '') === 'admin') {
+                    return 'admin';
+                }
+
+                // Check for Islamic roles
+                if (isset($userData['islamic_role']) && $userData['islamic_role'] !== 'user') {
+                    return $userData['islamic_role'];
+                }
+
+                // Check for regular roles
+                if (isset($userData['role']) && $userData['role'] !== 'user') {
+                    return $userData['role'];
+                }
+            }
+        } catch (\Exception $e) {
+            error_log('DashboardController::determineUserRole - Error querying user role: ' . $e->getMessage());
+        }
+
+        // Fallback to basic user data
+        if (($user['is_admin'] ?? false)) {
+            return 'admin';
+        }
+
+        if (isset($user['role']) && $user['role'] !== 'user') {
+            return $user['role'];
+        }
+
+        // Default to user role
+        return 'user';
+    }
+
+    /**
+     * Get role-based template path
+     *
+     * @param string $role User role
+     * @return string Template path
+     */
+    private function getRoleBasedTemplate(string $role): string
+    {
+        switch ($role) {
+            case 'admin':
+                return 'dashboard/admin_dashboard';
+            case 'scholar':
+                return 'dashboard/scholar_dashboard';
+            case 'contributor':
+                return 'dashboard/contributor_dashboard';
+            default:
+                return 'dashboard/user_dashboard';
         }
     }
 }

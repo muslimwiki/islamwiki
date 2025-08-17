@@ -1,0 +1,296 @@
+{% extends "layouts/dashboard.twig" %}
+
+{% block title %}Contributor Dashboard - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-extension contributor-dashboard">
+    <!-- Contributor Dashboard Header -->
+    <div class="dashboard-header contributor-header">
+        <h1>✏️ Contributor Dashboard</h1>
+        <p>Content creation and contribution management tools</p>
+        <div class="contributor-controls">
+            <button class="btn btn-primary" onclick="refreshContributorData()">🔄 Refresh</button>
+            <button class="btn btn-secondary" onclick="createNewArticle()">📝 New Article</button>
+            <button class="btn btn-warning" onclick="viewDrafts()">📋 View Drafts</button>
+        </div>
+    </div>
+
+    <!-- Contributor Dashboard Grid -->
+    <div class="dashboard-grid contributor-grid">
+        <!-- Contributor Overview Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="contributor-overview">
+            <div class="widget-header">
+                <h3>👤 Contributor Overview</h3>
+                <span class="widget-icon">✏️</span>
+            </div>
+            <div class="widget-content">
+                <div class="contributor-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.contributor_overview.articles_created|default(0) }}</span>
+                        <span class="stat-text">Articles Created</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.contributor_overview.articles_edited|default(0) }}</span>
+                        <span class="stat-text">Articles Edited</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.contributor_overview.total_contributions|default(0) }}</span>
+                        <span class="stat-text">Total Contributions</span>
+                    </div>
+                </div>
+                <div class="contributor-info">
+                    <div class="approval-rate">
+                        <span class="info-label">Approval Rate:</span>
+                        <span class="info-value">{{ data.contributor_overview.approval_rate|default('0%') }}</span>
+                    </div>
+                    <div class="last-contribution">
+                        <span class="info-label">Last Contribution:</span>
+                        <span class="info-value">{{ data.contributor_overview.last_contribution|default('None') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Articles Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="my-articles">
+            <div class="widget-header">
+                <h3>📚 My Articles</h3>
+                <span class="widget-icon">📖</span>
+            </div>
+            <div class="widget-content">
+                <div class="articles-overview">
+                    <div class="article-metric">
+                        <span class="metric-value">{{ data.my_articles.published|default(0) }}</span>
+                        <span class="metric-label">Published</span>
+                    </div>
+                    <div class="article-metric">
+                        <span class="metric-value">{{ data.my_articles.draft|default(0) }}</span>
+                        <span class="metric-label">Drafts</span>
+                    </div>
+                    <div class="article-metric">
+                        <span class="metric-value">{{ data.my_articles.under_review|default(0) }}</span>
+                        <span class="metric-label">Under Review</span>
+                    </div>
+                </div>
+                <div class="articles-actions">
+                    <button class="btn btn-primary" onclick="viewAllArticles()">View All Articles</button>
+                    <button class="btn btn-secondary" onclick="createArticle()">Create New</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draft Manager Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="draft-manager">
+            <div class="widget-header">
+                <h3>📋 Draft Manager</h3>
+                <span class="widget-icon">📝</span>
+            </div>
+            <div class="widget-content">
+                <div class="draft-info">
+                    <div class="draft-count">
+                        <span class="info-label">Total Drafts:</span>
+                        <span class="info-value">{{ data.draft_manager.total_drafts|default(0) }}</span>
+                    </div>
+                    <div class="last-modified">
+                        <span class="info-label">Last Modified:</span>
+                        <span class="info-value">{{ data.draft_manager.last_modified|default('None') }}</span>
+                    </div>
+                </div>
+                <div class="draft-actions">
+                    <button class="btn btn-primary" onclick="continueDraft()">Continue Draft</button>
+                    <button class="btn btn-secondary" onclick="submitDraft()">Submit Draft</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Statistics Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="content-stats">
+            <div class="widget-header">
+                <h3>📊 Content Statistics</h3>
+                <span class="widget-icon">📈</span>
+            </div>
+            <div class="widget-content">
+                <div class="content-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.content_stats.total_words|default(0) }}</span>
+                        <span class="stat-text">Total Words</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.content_stats.total_characters|default(0) }}</span>
+                        <span class="stat-text">Total Characters</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.content_stats.average_article_length|default(0) }}</span>
+                        <span class="stat-text">Avg Article Length</span>
+                    </div>
+                </div>
+                <div class="popular-article">
+                    <span class="info-label">Most Popular Article:</span>
+                    <span class="info-value">{{ data.content_stats.most_popular_article|default('None') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="recent-activity">
+            <div class="widget-header">
+                <h3>🕒 Recent Activity</h3>
+                <span class="widget-icon">📅</span>
+            </div>
+            <div class="widget-content">
+                <div class="activity-summary">
+                    <div class="activity-item">
+                        <span class="activity-label">Recent Edits:</span>
+                        <span class="activity-count">{{ data.recent_activity.recent_edits|length|default(0) }}</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-label">Recent Articles:</span>
+                        <span class="activity-count">{{ data.recent_activity.recent_articles|length|default(0) }}</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-label">Recent Comments:</span>
+                        <span class="activity-count">{{ data.recent_activity.recent_comments|length|default(0) }}</span>
+                    </div>
+                </div>
+                <div class="activity-score">
+                    <span class="score-label">Activity Score:</span>
+                    <span class="score-value">{{ data.recent_activity.activity_score|default(0) }}</span>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn btn-sm btn-primary" onclick="viewFullActivity()">View Full Activity</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Calendar Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="islamic-calendar">
+            <div class="widget-header">
+                <h3>📅 Islamic Calendar</h3>
+                <span class="widget-icon">🕌</span>
+            </div>
+            <div class="widget-content">
+                <div class="islamic-calendar">
+                    <div class="hijri-date">{{ data.islamic_calendar.day }} {{ data.islamic_calendar.month_name }}</div>
+                    <div class="gregorian-date">{{ data.islamic_calendar.gregorian_date }}</div>
+                    <div class="islamic-year">{{ data.islamic_calendar.year }} AH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="quick-actions">
+            <div class="widget-header">
+                <h3>⚡ Quick Actions</h3>
+                <span class="widget-icon">🚀</span>
+            </div>
+            <div class="widget-content">
+                <div class="quick-actions">
+                    {% for action in data.quick_actions %}
+                    <a href="{{ action.url }}" class="action-link">
+                        <span class="action-icon">{{ action.icon }}</span>
+                        <span class="action-text">{{ action.title }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contributor Quick Actions -->
+    <div class="contributor-quick-actions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="action-grid">
+            <button class="action-btn" onclick="createNewArticle()">
+                <span class="action-icon">📝</span>
+                <span class="action-text">Create New Article</span>
+            </button>
+            <button class="action-btn" onclick="editExistingArticle()">
+                <span class="action-icon">✏️</span>
+                <span class="action-text">Edit Article</span>
+            </button>
+            <button class="action-btn" onclick="submitForReview()">
+                <span class="action-icon">📤</span>
+                <span class="action-text">Submit for Review</span>
+            </button>
+            <button class="action-btn" onclick="viewFeedback()">
+                <span class="action-icon">💬</span>
+                <span class="action-text">View Feedback</span>
+            </button>
+            <button class="action-btn" onclick="contributionHistory()">
+                <span class="action-icon">📊</span>
+                <span class="action-text">Contribution History</span>
+            </button>
+            <button class="action-btn" onclick="contributorSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Contributor-specific JavaScript -->
+<script>
+// Contributor dashboard functionality
+function refreshContributorData() {
+    const widgets = document.querySelectorAll('.dashboard-widget');
+    widgets.forEach(widget => {
+        const widgetId = widget.dataset.widgetId;
+        refreshWidget(widgetId);
+    });
+}
+
+function createNewArticle() {
+    window.location.href = '/wiki/create';
+}
+
+function viewDrafts() {
+    window.location.href = '/contributor/drafts';
+}
+
+function viewAllArticles() {
+    window.location.href = '/contributor/articles';
+}
+
+function createArticle() {
+    window.location.href = '/wiki/create';
+}
+
+function continueDraft() {
+    window.location.href = '/contributor/drafts';
+}
+
+function submitDraft() {
+    // Implement draft submission
+    console.log('Submitting draft...');
+}
+
+function viewFullActivity() {
+    window.location.href = '/contributor/activity';
+}
+
+function editExistingArticle() {
+    window.location.href = '/contributor/articles';
+}
+
+function submitForReview() {
+    window.location.href = '/contributor/submit';
+}
+
+function viewFeedback() {
+    window.location.href = '/contributor/feedback';
+}
+
+function contributionHistory() {
+    window.location.href = '/contributor/history';
+}
+
+function contributorSettings() {
+    window.location.href = '/contributor/settings';
+}
+
+// Auto-refresh for contributor dashboard
+setInterval(() => {
+    refreshContributorData();
+}, {{ config.refresh_interval * 1000 }});
+</script>
+{% endblock %} 

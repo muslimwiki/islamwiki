@@ -1,0 +1,284 @@
+{% extends "layouts/dashboard.twig" %}
+
+{% block title %}User Dashboard - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-extension user-dashboard">
+    <!-- User Dashboard Header -->
+    <div class="dashboard-header user-header">
+        <h1>👤 User Dashboard</h1>
+        <p>Welcome to your personalized IslamWiki experience</p>
+        <div class="user-controls">
+            <button class="btn btn-primary" onclick="refreshUserData()">🔄 Refresh</button>
+            <button class="btn btn-secondary" onclick="customizeDashboard()">⚙️ Customize</button>
+        </div>
+    </div>
+
+    <!-- User Dashboard Grid -->
+    <div class="dashboard-grid user-grid">
+        <!-- User Overview Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="user-overview">
+            <div class="widget-header">
+                <h3>👤 User Overview</h3>
+                <span class="widget-icon">👤</span>
+            </div>
+            <div class="widget-content">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        {{ data.user_overview.username|first|upper }}
+                    </div>
+                    <div class="user-name">{{ data.user_overview.username|default('User') }}</div>
+                    <div class="user-role">{{ data.user_overview.role|default('user')|title }}</div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Join Date</span>
+                        <span class="stat-value">{{ data.user_overview.join_date|default('Unknown') }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Last Login</span>
+                        <span class="stat-value">{{ data.user_overview.last_login|default('Unknown') }}</span>
+                    </div>
+                </div>
+                <div class="profile-completion">
+                    <span class="completion-label">Profile Completion:</span>
+                    <div class="completion-bar">
+                        <div class="completion-fill" style="width: {{ data.user_overview.profile_completion|default('0%') }}"></div>
+                    </div>
+                    <span class="completion-value">{{ data.user_overview.profile_completion|default('0%') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Content Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="recent-content">
+            <div class="widget-header">
+                <h3>📚 Recent Content</h3>
+                <span class="widget-icon">📖</span>
+            </div>
+            <div class="widget-content">
+                <div class="content-sections">
+                    <div class="content-section">
+                        <h4>📰 Recent Articles</h4>
+                        <div class="content-list">
+                            {% if data.recent_content.recent_articles|length > 0 %}
+                                {% for article in data.recent_content.recent_articles[:3] %}
+                                <div class="content-item">
+                                    <span class="content-title">{{ article.title }}</span>
+                                    <span class="content-date">{{ article.date }}</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="no-content">No recent articles</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <h4>🔥 Trending Topics</h4>
+                        <div class="trending-topics">
+                            {% if data.recent_content.trending_topics|length > 0 %}
+                                {% for topic in data.recent_content.trending_topics[:3] %}
+                                <div class="topic-item">
+                                    <span class="topic-name">{{ topic.name }}</span>
+                                    <span class="topic-views">{{ topic.views }} views</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="no-content">No trending topics</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="content-actions">
+                    <button class="btn btn-sm btn-primary" onclick="browseContent()">Browse Content</button>
+                    <button class="btn btn-sm btn-secondary" onclick="viewTrending()">View Trending</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Calendar Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="islamic-calendar">
+            <div class="widget-header">
+                <h3>📅 Islamic Calendar</h3>
+                <span class="widget-icon">🕌</span>
+            </div>
+            <div class="widget-content">
+                <div class="islamic-calendar">
+                    <div class="hijri-date">{{ data.islamic_calendar.day }} {{ data.islamic_calendar.month_name }}</div>
+                    <div class="gregorian-date">{{ data.islamic_calendar.gregorian_date }}</div>
+                    <div class="islamic-year">{{ data.islamic_calendar.year }} AH</div>
+                </div>
+                <div class="calendar-actions">
+                    <button class="btn btn-sm btn-primary" onclick="viewFullCalendar()">Full Calendar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prayer Times Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="prayer-times">
+            <div class="widget-header">
+                <h3>🕌 Prayer Times</h3>
+                <span class="widget-icon">⏰</span>
+            </div>
+            <div class="widget-content">
+                <div class="prayer-times">
+                    <div class="prayer-time">
+                        <span class="prayer-name">Fajr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.fajr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Dhuhr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.dhuhr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Asr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.asr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Maghrib</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.maghrib }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Isha</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.isha }}</span>
+                    </div>
+                </div>
+                <div class="next-prayer">
+                    Next: {{ data.prayer_times.next_prayer }} ({{ data.prayer_times.next_prayer_time }})
+                </div>
+                <div class="prayer-actions">
+                    <button class="btn btn-sm btn-primary" onclick="viewPrayerTimes()">Full Schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="quick-actions">
+            <div class="widget-header">
+                <h3>⚡ Quick Actions</h3>
+                <span class="widget-icon">🚀</span>
+            </div>
+            <div class="widget-content">
+                <div class="quick-actions">
+                    {% for action in data.quick_actions %}
+                    <a href="{{ action.url }}" class="action-link">
+                        <span class="action-icon">{{ action.icon }}</span>
+                        <span class="action-text">{{ action.title }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Quick Actions -->
+    <div class="user-quick-actions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="action-grid">
+            <button class="action-btn" onclick="browseWiki()">
+                <span class="action-icon">📚</span>
+                <span class="action-text">Browse Wiki</span>
+            </button>
+            <button class="action-btn" onclick="searchContent()">
+                <span class="action-icon">🔍</span>
+                <span class="action-text">Search Content</span>
+            </button>
+            <button class="action-btn" onclick="viewQuran()">
+                <span class="action-icon">🕋</span>
+                <span class="action-text">Read Quran</span>
+            </button>
+            <button class="action-btn" onclick="viewHadith()">
+                <span class="action-icon">📜</span>
+                <span class="action-text">Read Hadith</span>
+            </button>
+            <button class="action-btn" onclick="editProfile()">
+                <span class="action-icon">👤</span>
+                <span class="action-text">Edit Profile</span>
+            </button>
+            <button class="action-btn" onclick="userSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="welcome-message">
+        <h3>🌟 Welcome to IslamWiki!</h3>
+        <p>Discover authentic Islamic knowledge, explore the Quran and Hadith, and connect with the global Muslim community.</p>
+        <div class="welcome-actions">
+            <button class="btn btn-primary" onclick="getStarted()">Get Started</button>
+            <button class="btn btn-secondary" onclick="learnMore()">Learn More</button>
+        </div>
+    </div>
+</div>
+
+<!-- User-specific JavaScript -->
+<script>
+// User dashboard functionality
+function refreshUserData() {
+    const widgets = document.querySelectorAll('.dashboard-widget');
+    widgets.forEach(widget => {
+        const widgetId = widget.dataset.widgetId;
+        refreshWidget(widgetId);
+    });
+}
+
+function customizeDashboard() {
+    window.location.href = '/user/dashboard/customize';
+}
+
+function browseContent() {
+    window.location.href = '/wiki';
+}
+
+function viewTrending() {
+    window.location.href = '/wiki/trending';
+}
+
+function viewFullCalendar() {
+    window.location.href = '/islamic-calendar';
+}
+
+function viewPrayerTimes() {
+    window.location.href = '/prayer-times';
+}
+
+function browseWiki() {
+    window.location.href = '/wiki';
+}
+
+function searchContent() {
+    window.location.href = '/search';
+}
+
+function viewQuran() {
+    window.location.href = '/quran';
+}
+
+function viewHadith() {
+    window.location.href = '/hadith';
+}
+
+function editProfile() {
+    window.location.href = '/profile/edit';
+}
+
+function userSettings() {
+    window.location.href = '/user/settings';
+}
+
+function getStarted() {
+    window.location.href = '/wiki/getting-started';
+}
+
+function learnMore() {
+    window.location.href = '/about';
+}
+
+// Auto-refresh for user dashboard (less frequent updates)
+setInterval(() => {
+    refreshUserData();
+}, {{ config.refresh_interval * 1000 }});
+</script>
+{% endblock %} 

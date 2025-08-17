@@ -1,21 +1,20 @@
 # IslamWiki Documentation
 
-**Version**: 0.0.57  
-**Status**: Authentication System & RTL Support Release  
-**Last Updated**: 2025-01-15
+**Version**: 0.0.61  
+**Status**: DashboardExtension Release  
+**Last Updated**: 2024-09-18
 
 Welcome to the comprehensive documentation for the Islam Wiki project. This documentation covers all aspects of the application architecture, components, and development guidelines.
 
-### ✅ **Latest Updates (v0.0.57)**
-- **Authentication System Fixed**: ✅ All login, register, dashboard, profile, and settings routes now working
-- **RTL Language Support**: ✅ Complete right-to-left layout support for Arabic language content
-- **Language Toggle Button**: ✅ Functional language toggle in header with persistent preferences
-- **Service Provider Architecture**: ✅ Proper registration and boot sequence for all services
-- **Container Management**: ✅ Fixed dependency injection container issues and interface mismatches
-- **Route Protection**: ✅ Proper access control and authentication for protected routes
-- **Mobile RTL Support**: ✅ Responsive RTL layout optimized for all device sizes
-- **Error-Free Codebase**: ✅ Maintained 100% error-free status across all file types
-- **Code Quality Improvements**: ✅ PSR-12 standards and proper type hints throughout
+### ✅ **Latest Updates (v0.0.61)**
+- **🎯 DashboardExtension**: ✅ Complete role-based dashboard system with personalized user experiences
+- **👥 Role-Based Dashboards**: ✅ Admin, Scholar, Contributor, and User dashboards
+- **🧠 Smart Role Detection**: ✅ Automatic user role identification and appropriate dashboard rendering
+- **📱 Responsive Design**: ✅ Mobile-first approach with Islamic-themed styling
+- **⚡ Interactive Widgets**: ✅ 10+ pre-built widgets for different purposes
+- **🔒 Permission System**: ✅ Granular access control based on user roles
+- **🎨 Islamic Themes**: ✅ Beautiful Islamic-themed design with consistent styling
+- **📊 Performance**: ✅ Optimized queries, caching support, and lazy loading
 
 ### 📋 **Development Status**
 - **Database Connection Strategy**: ✅ **COMPLETED** (0.0.11) - Separate connections recommended
@@ -38,6 +37,7 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **View Templates Implementation**: ✅ **COMPLETED** (0.0.26) - Complete Twig template system for all routes and features
 - **Database Integration & Authentication**: ✅ **COMPLETED** (0.0.27) - Complete database integration and authentication systems
 - **Code Quality & Error Resolution**: ✅ **COMPLETED** (0.0.38) - Achieved 100% error-free codebase with comprehensive syntax validation
+- **DashboardExtension System**: ✅ **COMPLETED** (0.0.61) - Complete role-based dashboard system with personalized user experiences
 
 ### 🚧 **Next Phase**
 - **Configuration Marketplace**: Centralized configuration distribution system (0.0.25)
@@ -57,6 +57,7 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **[Controllers](controllers/README.md)** - Controller documentation and patterns
 - **[Models](models/README.md)** - Data models and database structure
 - **[Views](views/README.md)** - Template system and view rendering
+- **[Layouts](layouts/README.md)** - Layout system and dashboard interface
 
 ### Development Guides
 - **[Style Guide](guides/style-guide.md)** - Coding standards and conventions
@@ -70,17 +71,26 @@ Welcome to the comprehensive documentation for the Islam Wiki project. This docu
 - **[Authentication](features/auth.md)** - User authentication and authorization
 - **[Content Rendering](features/content-rendering.md)** - Content processing and display
 - **[Search & Discovery](features/search.md)** - Comprehensive search system documentation
+- **[Dashboard System](extensions/DashboardExtension.md)** - Role-based dashboard system with personalized user experiences
 
-### Release Documentation
+### **Release Documentation**
 - **[Release Notes](releases/README.md)** - All version release notes and changelog
+- **[Version 0.0.61](releases/RELEASE-NOTES-0.0.61.md)** - DashboardExtension Release
+- **[Version 0.0.59](releases/RELEASE-0.0.59.md)** - Recent Updates
+- **[Version 0.0.57](releases/RELEASE-0.0.57.md)** - Authentication System & RTL Support
+- **[Version 0.0.56](releases/RELEASE-0.0.56.md)** - Hadith Extension Implementation
+- **[Version 0.0.55](releases/RELEASE-0.0.55.md)** - Enhanced Quran Ayah Pages
+- **[Version 0.0.54](releases/RELEASE-0.0.54.md)** - Salah Times & Quran Data Models
+- **[Version 0.0.53](releases/RELEASE-0.0.53.md)** - Bug Fixes & Improvements
+- **[Version 0.0.52](releases/RELEASE-0.0.52.md)** - Bug Fixes & Stability
+- **[Version 0.0.51](releases/RELEASE-0.0.51.md)** - Security & Performance
+- **[Version 0.0.50](releases/RELEASE-0.0.50.md)** - Bug Fixes & Improvements
+- **[Version 0.0.49](releases/RELEASE-0.0.49.md)** - Feature Updates
+- **[Version 0.0.48](releases/RELEASE-0.0.48.md)** - System Improvements
+- **[Version 0.0.47](releases/RELEASE-0.0.47.md)** - Content Management
+- **[Version 0.0.44](releases/RELEASE-0.0.44.md)** - Core Features
 - **[Version 0.0.27](releases/RELEASE-NOTES-0.0.27)** - Database Integration & Authentication
-- **[Version 0.0.26](releases/RELEASE-NOTES-0.0.26)** - View Templates Implementation
-- **[Version 0.0.25](releases/RELEASE-NOTES-0.0.25)** - Comprehensive Routing System
 - **[Version 0.0.24](releases/RELEASE-NOTES-0.0.24)** - Enhanced Configuration System
-- **[Version 0.0.23](releases/RELEASE-NOTES-0.0.23)** - Advanced Islamic Features
-- **[Version 0.0.22](releases/RELEASE-NOTES-0.0.22)** - Advanced Islamic Features
-- **[Version 0.0.21](releases/RELEASE-NOTES-0.0.21)** - Advanced Security Features
-- **[Version 0.0.20](releases/RELEASE-NOTES-0.0.20)** - Configuration System Enhancement
 - **[Version 0.0.19](releases/RELEASE-NOTES-0.0.19)** - Extension System
 - **[Version 0.0.18](releases/RELEASE-NOTES-0.0.18)** - Configuration System
 - **[Version 0.0.17](releases/RELEASE-NOTES-0.0.17)** - Search & Discovery System

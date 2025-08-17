@@ -1,0 +1,557 @@
+/* Dashboard Extension - Main Dashboard Styles */
+
+:root {
+    --dashboard-primary: #2d5016;
+    --dashboard-secondary: #d4af37;
+    --dashboard-accent: #1a3009;
+    --dashboard-light: #4a8029;
+    --dashboard-cream: #f8f6f0;
+    --dashboard-white: #ffffff;
+    --dashboard-text: #2c3e50;
+    --dashboard-text-light: #666;
+    --dashboard-border: #e9ecef;
+    --dashboard-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    --dashboard-shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Dashboard Container */
+.dashboard-extension {
+    background: var(--dashboard-cream);
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--dashboard-primary), var(--dashboard-accent));
+    color: var(--dashboard-white);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="islamic" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="0" cy="0" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23islamic)"/></svg>');
+    opacity: 0.3;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Widget Cards */
+.dashboard-widget {
+    background: var(--dashboard-white);
+    border-radius: 15px;
+    box-shadow: var(--dashboard-shadow);
+    border: 1px solid var(--dashboard-border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--dashboard-shadow-hover);
+    border-color: var(--dashboard-secondary);
+}
+
+.widget-header {
+    background: linear-gradient(135deg, var(--dashboard-primary), var(--dashboard-light));
+    color: var(--dashboard-white);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.widget-icon {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.widget-content {
+    padding: 1.5rem;
+}
+
+/* Widget Sizes */
+.widget-small .widget-content {
+    padding: 1rem;
+}
+
+.widget-medium .widget-content {
+    padding: 1.5rem;
+}
+
+.widget-large .widget-content {
+    padding: 2rem;
+}
+
+/* User Overview Widget */
+.user-overview {
+    text-align: center;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    background: var(--dashboard-secondary);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--dashboard-accent);
+}
+
+.user-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dashboard-text);
+    margin-bottom: 0.5rem;
+}
+
+.user-role {
+    font-size: 0.9rem;
+    color: var(--dashboard-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.user-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.user-stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dashboard-primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--dashboard-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Content Stats Widget */
+.content-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.content-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--dashboard-cream);
+    border-radius: 10px;
+}
+
+.content-stat .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dashboard-primary);
+    margin-bottom: 0.5rem;
+}
+
+.content-stat .stat-label {
+    font-size: 0.9rem;
+    color: var(--dashboard-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Recent Activity Widget */
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--dashboard-border);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--dashboard-cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--dashboard-text);
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+}
+
+.activity-meta {
+    font-size: 0.8rem;
+    color: var(--dashboard-text-light);
+}
+
+/* Islamic Calendar Widget */
+.islamic-calendar {
+    text-align: center;
+}
+
+.hijri-date {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dashboard-primary);
+    margin-bottom: 0.5rem;
+}
+
+.gregorian-date {
+    font-size: 1rem;
+    color: var(--dashboard-text-light);
+    margin-bottom: 1rem;
+}
+
+.islamic-month {
+    font-size: 1.2rem;
+    color: var(--dashboard-secondary);
+    font-weight: 600;
+}
+
+/* Prayer Times Widget */
+.prayer-times {
+    text-align: center;
+}
+
+.prayer-times-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.prayer-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--dashboard-border);
+}
+
+.prayer-time:last-child {
+    border-bottom: none;
+}
+
+.prayer-name {
+    font-weight: 500;
+    color: var(--dashboard-text);
+}
+
+.prayer-time-value {
+    font-weight: 600;
+    color: var(--dashboard-primary);
+}
+
+.next-prayer {
+    background: var(--dashboard-secondary);
+    color: var(--dashboard-white);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: inline-block;
+}
+
+/* Quran Verse Widget */
+.quran-verse {
+    text-align: center;
+}
+
+.verse-text {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--dashboard-text);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.verse-reference {
+    font-size: 0.9rem;
+    color: var(--dashboard-secondary);
+    font-weight: 600;
+}
+
+.verse-translation {
+    font-size: 0.9rem;
+    color: var(--dashboard-text-light);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Hadith Widget */
+.hadith-quote {
+    text-align: center;
+}
+
+.hadith-text {
+    font-size: 1rem;
+    color: var(--dashboard-text);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.hadith-narrator {
+    font-size: 0.9rem;
+    color: var(--dashboard-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.hadith-reference {
+    font-size: 0.8rem;
+    color: var(--dashboard-text-light);
+}
+
+/* Quick Actions Widget */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    background: var(--dashboard-cream);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--dashboard-text);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.action-btn:hover {
+    background: var(--dashboard-secondary);
+    color: var(--dashboard-white);
+    transform: translateY(-2px);
+    border-color: var(--dashboard-secondary);
+}
+
+.action-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.action-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Notifications Widget */
+.notifications-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--dashboard-border);
+    transition: background 0.3s ease;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background: var(--dashboard-cream);
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: var(--dashboard-text);
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: var(--dashboard-text-light);
+}
+
+.notification-message {
+    font-size: 0.9rem;
+    color: var(--dashboard-text-light);
+    line-height: 1.4;
+}
+
+.notification-unread {
+    background: rgba(45, 80, 22, 0.1);
+    border-left: 3px solid var(--dashboard-secondary);
+}
+
+/* System Status Widget */
+.status-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--dashboard-border);
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-indicator.online {
+    background: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+}
+
+.status-indicator.offline {
+    background: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.status-indicator.warning {
+    background: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+}
+
+.status-content {
+    flex: 1;
+}
+
+.status-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dashboard-text);
+    margin-bottom: 0.2rem;
+}
+
+.status-detail {
+    font-size: 0.8rem;
+    color: var(--dashboard-text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .dashboard-header {
+        padding: 1.5rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .content-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .widget-header {
+        padding: 1rem;
+    }
+    
+    .widget-content {
+        padding: 1rem;
+    }
+} 

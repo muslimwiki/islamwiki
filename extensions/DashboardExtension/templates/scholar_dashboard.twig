@@ -1,0 +1,326 @@
+{% extends "layouts/dashboard.twig" %}
+
+{% block title %}Scholar Dashboard - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-extension scholar-dashboard">
+    <!-- Scholar Dashboard Header -->
+    <div class="dashboard-header scholar-header">
+        <h1>🎓 Scholar Dashboard</h1>
+        <p>Academic content review and Islamic scholarship tools</p>
+        <div class="scholar-controls">
+            <button class="btn btn-primary" onclick="refreshScholarData()">🔄 Refresh</button>
+            <button class="btn btn-secondary" onclick="viewAcademicResources()">📚 Resources</button>
+            <button class="btn btn-warning" onclick="viewReviewQueue()">📋 Review Queue</button>
+        </div>
+    </div>
+
+    <!-- Scholar Dashboard Grid -->
+    <div class="dashboard-grid scholar-grid">
+        <!-- Scholar Overview Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="scholar-overview">
+            <div class="widget-header">
+                <h3>🎓 Scholar Overview</h3>
+                <span class="widget-icon">👨‍🎓</span>
+            </div>
+            <div class="widget-content">
+                <div class="scholar-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.scholar_overview.articles_reviewed|default(0) }}</span>
+                        <span class="stat-text">Articles Reviewed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.scholar_overview.pending_reviews|default(0) }}</span>
+                        <span class="stat-text">Pending Reviews</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ data.scholar_overview.approval_rate|default('0%') }}</span>
+                        <span class="stat-text">Approval Rate</span>
+                    </div>
+                </div>
+                <div class="scholar-info">
+                    <div class="specialization">
+                        <span class="info-label">Specialization:</span>
+                        <span class="info-value">{{ data.scholar_overview.specialization|default('General') }}</span>
+                    </div>
+                    <div class="last-review">
+                        <span class="info-label">Last Review:</span>
+                        <span class="info-value">{{ data.scholar_overview.last_review|default('None') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Review Queue Widget -->
+        <div class="dashboard-widget widget-large" data-widget-id="content-review">
+            <div class="widget-header">
+                <h3>📋 Content Review Queue</h3>
+                <span class="widget-icon">🔍</span>
+            </div>
+            <div class="widget-content">
+                <div class="review-queue-overview">
+                    <div class="queue-metric">
+                        <span class="metric-value">{{ data.content_review.pending_articles|default(0) }}</span>
+                        <span class="metric-label">Pending Articles</span>
+                    </div>
+                    <div class="queue-metric">
+                        <span class="metric-value">{{ data.content_review.pending_edits|default(0) }}</span>
+                        <span class="metric-label">Pending Edits</span>
+                    </div>
+                    <div class="queue-metric">
+                        <span class="metric-value">{{ data.content_review.priority_items|default(0) }}</span>
+                        <span class="metric-label">Priority Items</span>
+                    </div>
+                </div>
+                <div class="review-estimate">
+                    <span class="estimate-label">Estimated Review Time:</span>
+                    <span class="estimate-value">{{ data.content_review.estimated_review_time|default('Unknown') }}</span>
+                </div>
+                <div class="review-actions">
+                    <button class="btn btn-primary" onclick="startReview()">Start Review</button>
+                    <button class="btn btn-secondary" onclick="viewQueue()">View Full Queue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Calendar Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="islamic-calendar">
+            <div class="widget-header">
+                <h3>📅 Islamic Calendar</h3>
+                <span class="widget-icon">🕌</span>
+            </div>
+            <div class="widget-content">
+                <div class="islamic-calendar">
+                    <div class="hijri-date">{{ data.islamic_calendar.day }} {{ data.islamic_calendar.month_name }}</div>
+                    <div class="gregorian-date">{{ data.islamic_calendar.gregorian_date }}</div>
+                    <div class="islamic-year">{{ data.islamic_calendar.year }} AH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prayer Times Widget -->
+        <div class="dashboard-widget widget-small" data-widget-id="prayer-times">
+            <div class="widget-header">
+                <h3>🕌 Prayer Times</h3>
+                <span class="widget-icon">⏰</span>
+            </div>
+            <div class="widget-content">
+                <div class="prayer-times">
+                    <div class="prayer-time">
+                        <span class="prayer-name">Fajr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.fajr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Dhuhr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.dhuhr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Asr</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.asr }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Maghrib</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.maghrib }}</span>
+                    </div>
+                    <div class="prayer-time">
+                        <span class="prayer-name">Isha</span>
+                        <span class="prayer-time-value">{{ data.prayer_times.isha }}</span>
+                    </div>
+                </div>
+                <div class="next-prayer">
+                    Next: {{ data.prayer_times.next_prayer }} ({{ data.prayer_times.next_prayer_time }})
+                </div>
+            </div>
+        </div>
+
+        <!-- Quran Verse Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="quran-verse">
+            <div class="widget-header">
+                <h3>📖 Quran Verse of the Day</h3>
+                <span class="widget-icon">🕋</span>
+            </div>
+            <div class="widget-content">
+                <div class="quran-verse">
+                    <div class="verse-text">{{ data.quran_verse.text }}</div>
+                    <div class="verse-reference">{{ data.quran_verse.reference }}</div>
+                    <div class="verse-translation">{{ data.quran_verse.translation }}</div>
+                </div>
+                <div class="verse-actions">
+                    <button class="btn btn-sm btn-primary" onclick="viewFullVerse()">View Full Verse</button>
+                    <button class="btn btn-sm btn-secondary" onclick="getNewVerse()">New Verse</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hadith Quote Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="hadith-quote">
+            <div class="widget-header">
+                <h3>📜 Hadith of the Day</h3>
+                <span class="widget-icon">📚</span>
+            </div>
+            <div class="widget-content">
+                <div class="hadith-quote">
+                    <div class="hadith-text">{{ data.hadith_quote.text }}</div>
+                    <div class="hadith-narrator">Narrated by: {{ data.hadith_quote.narrator }}</div>
+                    <div class="hadith-reference">{{ data.hadith_quote.reference }}</div>
+                </div>
+                <div class="hadith-actions">
+                    <button class="btn btn-sm btn-primary" onclick="viewFullHadith()">View Full Hadith</button>
+                    <button class="btn btn-sm btn-secondary" onclick="getNewHadith()">New Hadith</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Resources Widget -->
+        <div class="dashboard-widget widget-medium" data-widget-id="academic-resources">
+            <div class="widget-header">
+                <h3>📚 Academic Resources</h3>
+                <span class="widget-icon">🎓</span>
+            </div>
+            <div class="widget-content">
+                <div class="academic-resources">
+                    <div class="resource-item">
+                        <span class="resource-label">Research Papers:</span>
+                        <span class="resource-count">{{ data.academic_resources.research_papers|default(0) }}</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-label">Scholarly Books:</span>
+                        <span class="resource-count">{{ data.academic_resources.scholarly_books|default(0) }}</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-label">Academic Journals:</span>
+                        <span class="resource-count">{{ data.academic_resources.academic_journals|default(0) }}</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-label">Conference Proceedings:</span>
+                        <span class="resource-count">{{ data.academic_resources.conference_proceedings|default(0) }}</span>
+                    </div>
+                </div>
+                <div class="resource-actions">
+                    <button class="btn btn-sm btn-primary" onclick="browseResources()">Browse Resources</button>
+                    <button class="btn btn-sm btn-secondary" onclick="addResource()">Add Resource</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scholar Quick Actions -->
+    <div class="scholar-quick-actions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="action-grid">
+            <button class="action-btn" onclick="reviewNextArticle()">
+                <span class="action-icon">📝</span>
+                <span class="action-text">Review Next Article</span>
+            </button>
+            <button class="action-btn" onclick="approveContent()">
+                <span class="action-icon">✅</span>
+                <span class="action-text">Approve Content</span>
+            </button>
+            <button class="action-btn" onclick="requestRevision()">
+                <span class="action-icon">📋</span>
+                <span class="action-text">Request Revision</span>
+            </button>
+            <button class="action-btn" onclick="addComment()">
+                <span class="action-icon">💬</span>
+                <span class="action-text">Add Comment</span>
+            </button>
+            <button class="action-btn" onclick="viewHistory()">
+                <span class="action-icon">📊</span>
+                <span class="action-text">Review History</span>
+            </button>
+            <button class="action-btn" onclick="scholarSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Scholar-specific JavaScript -->
+<script>
+// Scholar dashboard functionality
+function refreshScholarData() {
+    const widgets = document.querySelectorAll('.dashboard-widget');
+    widgets.forEach(widget => {
+        const widgetId = widget.dataset.widgetId;
+        refreshWidget(widgetId);
+    });
+}
+
+function viewAcademicResources() {
+    window.location.href = '/scholar/resources';
+}
+
+function viewReviewQueue() {
+    window.location.href = '/scholar/review-queue';
+}
+
+function startReview() {
+    window.location.href = '/scholar/review/next';
+}
+
+function viewQueue() {
+    window.location.href = '/scholar/review-queue';
+}
+
+function viewFullVerse() {
+    const reference = '{{ data.quran_verse.reference }}';
+    window.location.href = `/quran/${reference}`;
+}
+
+function getNewVerse() {
+    // Implement new verse functionality
+    console.log('Getting new Quran verse...');
+}
+
+function viewFullHadith() {
+    const reference = '{{ data.hadith_quote.reference }}';
+    window.location.href = `/hadith/${reference}`;
+}
+
+function getNewHadith() {
+    // Implement new hadith functionality
+    console.log('Getting new hadith...');
+}
+
+function browseResources() {
+    window.location.href = '/scholar/resources';
+}
+
+function addResource() {
+    window.location.href = '/scholar/resources/add';
+}
+
+function reviewNextArticle() {
+    window.location.href = '/scholar/review/next';
+}
+
+function approveContent() {
+    // Implement content approval
+    console.log('Approving content...');
+}
+
+function requestRevision() {
+    // Implement revision request
+    console.log('Requesting revision...');
+}
+
+function addComment() {
+    // Implement comment addition
+    console.log('Adding comment...');
+}
+
+function viewHistory() {
+    window.location.href = '/scholar/review/history';
+}
+
+function scholarSettings() {
+    window.location.href = '/scholar/settings';
+}
+
+// Auto-refresh for scholar dashboard
+setInterval(() => {
+    refreshScholarData();
+}, {{ config.refresh_interval * 1000 }});
+</script>
+{% endblock %} 
