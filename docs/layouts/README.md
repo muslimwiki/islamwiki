@@ -5,6 +5,7 @@
 IslamWiki uses a flexible layout system that provides both consistency and customization:
 
 - **`app.twig`** - General layout for all pages (default)
+- **`dashboard.twig`** - Dashboard-specific layout with sidebar navigation
 - **`auth.twig`** - Authentication pages layout
 - **`PAGENAME.twig`** - Page-specific layouts for custom styling (future)
 
@@ -26,12 +27,60 @@ IslamWiki uses a flexible layout system that provides both consistency and custo
 ```
 
 **Used by**:
-- Dashboard pages
 - Content pages (Quran, Hadith, etc.)
 - Settings and profile pages
 - Most application pages
 
+### `dashboard.twig` - Dashboard Layout
 
+**Purpose**: Specialized layout for dashboard and administrative pages with sidebar navigation.
+
+**Features**:
+- **Global Header & Footer**: Consistent with main site branding and navigation
+- **Sidebar Navigation**: Fixed sidebar with dashboard-specific navigation
+- **User Information**: Displays username, role, and Islamic role
+- **Content Management**: Quick access to content creation and management tools
+- **Responsive Design**: Mobile-friendly with collapsible sidebar
+- **Islamic Theme**: Green skin styling consistent with Bismillah theme
+
+**Usage**:
+```twig
+{% extends "layouts/dashboard.twig" %}
+```
+
+**Used by**:
+- Dashboard pages
+- Content management pages
+- Administrative interfaces
+- User workspace pages
+
+**Sidebar Structure**:
+```
+📊 Overview
+├── 📊 Dashboard
+└── 📈 Analytics
+
+📄 Content Management  
+├── 📄 Articles
+├── 🏷️ Categories
+└── ✏️ Create Article
+
+👤 My Workspace
+├── 👤 Profile
+├── ⚙️ Settings
+└── 🚪 Logout
+```
+
+**User Information Display**:
+- **Username**: Primary user identifier
+- **Primary Role**: Administrative role (Admin, Moderator, etc.)
+- **Islamic Role**: Islamic knowledge role (Scholar, Verified Scholar, etc.)
+
+**Global Navigation Integration**:
+- **Top Bar**: Prayer times, Islamic date, user actions
+- **Main Bar**: Logo, search, contribute button
+- **Main Navigation**: Site-wide navigation with dropdowns
+- **Footer**: About, quick links, support information
 
 ### `auth.twig` - Authentication Layout
 
@@ -57,6 +106,7 @@ IslamWiki uses a flexible layout system that provides both consistency and custo
 ```
 layouts/
 ├── app.twig          # General layout (default)
+├── dashboard.twig    # Dashboard with sidebar navigation
 ├── auth.twig         # Authentication specific
 └── [future layouts]  # Page-specific layouts as needed
 ```

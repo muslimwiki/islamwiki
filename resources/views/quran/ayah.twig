@@ -2,10 +2,10 @@
 
 {% block title %}{{ surah_name ?? 'Surah' }} {{ surah }}:{{ ayah_number }} - Quran - IslamWiki{% endblock %}
 
-{% block styles %}
-{{ parent() }}
-<link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css">
-<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
+{% block head %}
+<!-- Quran-specific CSS -->
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css?v={{ 'now'|date('U') }}">
+<link rel="stylesheet" href="/skins/Bismillah/css/quran-extension.css?v={{ 'now'|date('U') }}">
 <style>
 /* Ayah Page Specific Styles with Beautiful Islamic Theme */
 .ayah-container {
@@ -233,104 +233,7 @@
     transition: all 0.3s ease;
 }
 
-/* Enhanced Quran Breadcrumbs */
-.quran-breadcrumbs {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
-    border-radius: 1rem;
-    border: 2px solid rgba(45, 80, 22, 0.2);
-    box-shadow: 0 4px 20px rgba(45, 80, 22, 0.1);
-    transition: all 0.3s ease;
-}
 
-.quran-breadcrumbs:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(45, 80, 22, 0.15);
-    border-color: rgba(45, 80, 22, 0.3);
-}
-
-.breadcrumb-container {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.breadcrumb-link {
-    color: #2d5016;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: rgba(45, 80, 22, 0.1);
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-.breadcrumb-link:hover {
-    background: rgba(45, 80, 22, 0.2);
-    color: #4a8029;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.2);
-    border-color: rgba(45, 80, 22, 0.3);
-}
-
-.breadcrumb-link:active {
-    transform: translateY(0);
-    transition: all 0.1s ease;
-}
-
-.breadcrumb-separator {
-    color: #4a8029;
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-.breadcrumb-current {
-    color: #2d5016;
-    font-weight: 700;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
-    color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.3);
-}
-
-/* Legacy breadcrumb styles for compatibility */
-.ayah-breadcrumbs {
-    font-size: 0.95rem;
-    color: #4a5568;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
-    border-radius: 0.5rem;
-    border: 1px solid rgba(45, 80, 22, 0.2);
-    transition: all 0.3s ease;
-}
-
-.ayah-breadcrumbs:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(45, 80, 22, 0.15);
-    border-color: rgba(45, 80, 22, 0.3);
-}
-
-.ayah-breadcrumbs:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.1);
-    transition: all 0.1s ease;
-}
-
-.ayah-breadcrumbs:hover .separator {
-    opacity: 1;
-    color: #4a8029;
-    transition: all 0.3s ease;
-}
-
-.ayah-breadcrumbs:hover {
-    background: linear-gradient(135deg, #f0ede6 0%, #f8f6f0 100%);
-    transition: all 0.3s ease;
-}
 
 .ayah-breadcrumbs:hover {
     transform: translateY(-1px);
@@ -679,11 +582,12 @@
 .translation-meta {
     margin-top: 1.5rem;
     padding: 1rem;
-    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
     border-radius: 0.5rem;
-    color: white;
+    color: #495057;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
 
@@ -711,7 +615,9 @@
 }
 
 .translation-meta:hover {
-    background: linear-gradient(135deg, #4a8029 0%, #2d5016 100%);
+    background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+    border-color: #2d5016;
+    color: #2d5016;
     transition: all 0.3s ease;
 }
 
@@ -728,12 +634,14 @@
 .meta-separator {
     font-size: 1.5rem;
     margin-right: 0.5rem;
-    opacity: 0.8;
+    opacity: 0.6;
+    color: #6c757d;
 }
 
 .translator-name {
     font-weight: 600;
     font-size: 1.1rem;
+    color: inherit;
 }
 
 /* Error Message Styling */
@@ -883,93 +791,6 @@
         font-size: 1rem;
     }
     
-    .quran-page-footer {
-        margin-top: 2rem;
-    padding: 1.5rem;
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-    
-    .footer-section h4 {
-        font-size: 1rem;
-    }
-    
-    .footer-section a {
-        font-size: 0.9rem;
-    }
-    
-    /* Quran Page Footer */
-    .quran-page-footer {
-        margin-top: 3rem;
-        padding: 2rem;
-        background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
-        border-radius: 1rem;
-        border: 2px solid rgba(45, 80, 22, 0.2);
-        box-shadow: 0 4px 20px rgba(45, 80, 22, 0.1);
-    }
-    
-    .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-    
-    .footer-section h4 {
-        color: #2d5016;
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        font-weight: 600;
-    }
-    
-    .footer-section ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .footer-section li {
-        margin-bottom: 0.5rem;
-    }
-    
-    .footer-section a {
-        color: #4a5568;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        padding: 0.25rem 0;
-        display: inline-block;
-    }
-    
-    .footer-section a:hover {
-        color: #2d5016;
-        transform: translateX(5px);
-        text-shadow: 0 1px 2px rgba(45, 80, 22, 0.2);
-    }
-    
-    .footer-bottom {
-    text-align: center;
-    padding-top: 1.5rem;
-    border-top: 2px solid rgba(45, 80, 22, 0.2);
-    color: #2d5016;
-    font-weight: 600;
-    font-style: italic;
-}
-
-.quran-page-footer:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(45, 80, 22, 0.15);
-    border-color: rgba(45, 80, 22, 0.3);
-    transition: all 0.3s ease;
-}
-
-.footer-section:hover h4 {
-    color: #4a8029;
-    transition: all 0.3s ease;
-}
-    
     .ayah-container {
         padding: 1rem;
     }
@@ -1057,163 +878,64 @@
     font-size: 1.1rem;
 }
 
-.translation-selector {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
-    border-radius: 0.5rem;
-    border: 1px solid rgba(45, 80, 22, 0.2);
-    transition: all 0.3s ease;
-}
 
-.translation-selector:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(45, 80, 22, 0.15);
-    border-color: rgba(45, 80, 22, 0.3);
-}
-
-.translation-selector:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.1);
-    transition: all 0.1s ease;
-}
-
-.translation-selector:hover .translation-dropdown {
-    border-color: #4a8029;
-    transition: all 0.3s ease;
-}
-
-.translation-selector:hover {
-    background: linear-gradient(135deg, #f0ede6 0%, #f8f6f0 100%);
-    transition: all 0.3s ease;
-}
-
-.translation-selector:hover {
-    transform: translateY(-1px);
-    transition: all 0.3s ease;
-}
-
-.translation-dropdown {
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    border: 2px solid #2d5016;
-    border-radius: 0.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f6f0 100%);
-    color: #2d5016;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%232d5016' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
-    width: 100%;
-    max-width: 300px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.1);
-}
-
-.translation-dropdown:focus {
-    outline: none;
-    border-color: #4a8029;
-    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.3);
-    transform: translateY(-1px);
-}
-
-.translation-dropdown:hover {
-    border-color: #4a8029;
-    box-shadow: 0 2px 15px rgba(45, 80, 22, 0.2);
-    transform: translateY(-1px);
-    transition: all 0.3s ease;
-}
-
-.translation-dropdown:active {
-    border-color: #2d5016;
-    transform: translateY(0);
-    transition: all 0.1s ease;
-}
-
-.translation-dropdown:hover {
-    background: linear-gradient(135deg, #ffffff 0%, #f0ede6 100%);
-    transition: all 0.3s ease;
-}
-
-.translation-dropdown:hover {
-    transform: translateY(-1px);
-    transition: all 0.3s ease;
-}
-
-.translation-dropdown:hover {
-    border-color: #4a8029;
-    transition: all 0.3s ease;
-}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="ayah-container">
-    <!-- Quran Navigation Bar -->
-    <div class="quran-nav-bar">
-        <div class="quran-nav-container">
-            <div class="quran-nav-left">
-                <a href="/quran" class="quran-nav-link">📖 Quran Home</a>
-                <a href="/quran/1" class="quran-nav-link">Surah Al-Fatiha</a>
-                <a href="/quran/2" class="quran-nav-link">Surah Al-Baqarah</a>
-                <a href="/quran/3" class="quran-nav-link">Surah Al-Imran</a>
-            </div>
-            <div class="quran-nav-right">
-                <a href="/quran/search" class="quran-nav-link">🔍 Search</a>
-                <a href="/quran/juz" class="quran-nav-link">📚 Juz</a>
-                <a href="/quran/surah" class="quran-nav-link">📖 Surah List</a>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Beautiful Islamic Page Header -->
     <div class="quran-page-header">
         <div class="header-content">
             <h1 class="page-title">📖 القرآن الكريم</h1>
             <p class="page-subtitle">The Noble Quran</p>
+            {% if surah == 1 and ayah_number == 1 %}
+            <div class="bismillah-inline">
+                <div class="bismillah-text-inline">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                <div class="bismillah-translation-inline">In the name of Allah, the Entirely Merciful, the Especially Merciful</div>
+            </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Translation Selector -->
-    <div class="translation-selector">
-        <form method="get" action="" class="translation-form">
-            <select name="translator" id="translator" onchange="this.form.submit()" class="translation-dropdown">
-                {% for trans in translators %}
-                    <option value="{{ trans.translator|default(trans.name) }}" {% if (translator ?? 'Saheeh International') == (trans.translator|default(trans.name)) %}selected{% endif %}>
-                        {{ trans.name|default(trans.translator) }}
-                        {% if trans.language_name %}({{ trans.language_name }}){% endif %}
-                    </option>
-                {% endfor %}
-            </select>
-            <input type="hidden" name="surah" value="{{ surah }}">
-            <input type="hidden" name="ayah" value="{{ ayah_number }}">
-        </form>
-    </div>
-
-    <!-- Enhanced Quran Breadcrumbs -->
+    <!-- Enhanced Quran Breadcrumbs with Translation Selector -->
     <div class="quran-breadcrumbs">
         <div class="breadcrumb-container">
-            <a href="/" class="breadcrumb-link">🏠 Home</a>
-            <span class="breadcrumb-separator">›</span>
-            <a href="/quran" class="breadcrumb-link">📖 Quran</a>
-            <span class="breadcrumb-separator">›</span>
-            <a href="/quran/{{ surah }}" class="breadcrumb-link">📚 {{ surah_name ?? 'Surah ' ~ surah }}</a>
-            <span class="breadcrumb-separator">›</span>
-            <span class="breadcrumb-current">🎯 Ayah {{ ayah_number }}</span>
+            <div class="breadcrumb-left">
+                <a href="/" class="breadcrumb-link">🏠 Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="/quran" class="breadcrumb-link">📖 Quran</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="/quran/{{ surah }}" class="breadcrumb-link">📚 {{ surah_name ?? 'Surah ' ~ surah }}</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">🎯 Ayah {{ ayah_number }}</span>
+            </div>
+            <div class="breadcrumb-center">
+                <a href="/quran/search" class="breadcrumb-nav-link">🔍 Search</a>
+                <a href="/quran/juz" class="breadcrumb-nav-link">📚 Juz</a>
+                <a href="/quran" class="breadcrumb-nav-link">📖 Surah List</a>
+            </div>
+            <div class="breadcrumb-right">
+                <form method="get" action="" class="translation-form-inline">
+                    <label for="translator" class="translation-label">Translation:</label>
+                    <select name="translator" id="translator" onchange="this.form.submit()" class="translation-dropdown-inline">
+                        {% for trans in translators %}
+                            <option value="{{ trans.translator|default(trans.name) }}" {% if (translator ?? 'Saheeh International') == (trans.translator|default(trans.name)) %}selected{% endif %}>
+                                {{ trans.name|default(trans.translator) }}
+                                {% if trans.language_name %}({{ trans.language_name }}){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="surah" value="{{ surah }}">
+                    <input type="hidden" name="ayah" value="{{ ayah_number }}">
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Beautiful Bismillah Display -->
-    {% if surah == 1 and ayah_number == 1 %}
-    <div class="bismillah-display">
-        <div class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-        <div class="bismillah-translation">In the name of Allah, the Entirely Merciful, the Especially Merciful</div>
-    </div>
-    {% endif %}
+
 
     {% if ayah %}
         <div class="ayah-content">

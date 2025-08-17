@@ -1,20 +1,25 @@
 # IslamWiki
 
-**Version**: 0.0.61  
-**Status**: DashboardExtension Release  
-**Last Updated**: 2024-08-17
+**Version**: 0.0.62  
+**Status**: QuranUI Enhancement Release  
+**Last Updated**: 2025-01-15
 
 A comprehensive Islamic knowledge platform built with modern web technologies, featuring Quran and Hadith management, Islamic calendar integration, prayer times, and a role-based dashboard system.
 
-## 🚀 **Latest Release (v0.0.61) - DashboardExtension**
+## 🚀 **Latest Release (v0.0.62) - QuranUI Enhancement**
 
 ### **New Features**
+- **🎨 Unified Quran Design**: Consistent styling across all Quran pages for better user experience
+- **📖 Enhanced Surah Pages**: Improved layout with integrated Bismillah and unified ayah display
+- **🎯 Enhanced Ayah Pages**: Better styling, improved translator display, and consistent navigation
+- **🚀 Space Optimization**: Eliminated redundant sections and improved layout efficiency
+- **📱 Responsive Navigation**: Combined navigation elements with breadcrumbs for better UX
+- **🔧 Improved Maintainability**: Better code organization and CSS structure
+
+### **Previous Release (v0.0.61) - DashboardExtension**
 - **🎯 DashboardExtension**: Complete role-based dashboard system with personalized user experiences
 - **👥 Role-Based Dashboards**: Admin, Scholar, Contributor, and User dashboards
 - **🧠 Smart Role Detection**: Automatic user role identification and appropriate dashboard rendering
-- **📱 Responsive Design**: Mobile-first approach with Islamic-themed styling
-- **⚡ Interactive Widgets**: 10+ pre-built widgets for different purposes
-- **🔒 Permission System**: Granular access control based on user roles
 
 ### **Dashboard System Features**
 - **Admin Dashboard**: System administration, user management, content moderation

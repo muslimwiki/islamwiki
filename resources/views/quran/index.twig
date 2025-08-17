@@ -56,13 +56,13 @@
                 
                 <div class="surah-list" id="surah-list">
                     {% for surah in surahs %}
-                    <div class="surah-item" data-surah="{{ surah.number }}">
-                        <div class="surah-number">{{ surah.number }}</div>
+                    <div class="surah-item" data-surah="{{ surah.surah_number }}">
+                        <div class="surah-number">{{ surah.surah_number }}</div>
                         <div class="surah-info">
                             <div class="surah-name">{{ surah.name_arabic }}</div>
                             <div class="surah-details">
                                 <span class="surah-name-english">{{ surah.name_english }}</span>
-                                <span class="surah-verse-count">{{ surah.verse_count }} verses</span>
+                                <span class="surah-verse-count">{{ surah.verses_count }} verses</span>
                             </div>
                         </div>
                         <div class="surah-type">{{ surah.revelation_type }}</div>
@@ -85,10 +85,10 @@
                         {{ random_ayah.arabic_text }}
                     </div>
                     <div class="translation">
-                        "{{ random_ayah.translation }}"
+                        "{{ random_ayah.translation_text }}"
                     </div>
                     <div class="ayah-meta">
-                        <span class="surah-name">{{ random_ayah.surah_name }}</span>
+                        <span class="surah-name">Surah {{ random_ayah.chapter_number }}</span>
                         <span class="ayah-number">Verse {{ random_ayah.ayah_number }}</span>
                     </div>
                     {% else %}
@@ -153,6 +153,9 @@
 {% endblock %}
 
 {% block head %}
+<!-- Quran-specific CSS -->
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css?v={{ 'now'|date('U') }}">
+<link rel="stylesheet" href="/skins/Bismillah/css/quran-extension.css?v={{ 'now'|date('U') }}">
 {% endblock %}
 
 {% block scripts %}
@@ -178,7 +181,7 @@
     document.querySelectorAll('.surah-item').forEach(item => {
         item.addEventListener('click', function() {
             const surahNumber = this.dataset.surah;
-            window.location.href = `/quran/surah/${surahNumber}`;
+            window.location.href = `/quran/${surahNumber}`;
         });
     });
 

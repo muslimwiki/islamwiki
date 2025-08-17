@@ -3878,6 +3878,173 @@ body {
     font-size: 0.875rem;
 }
 
+/* Homepage Specific Styles */
+.hero-bismillah {
+    font-size: 2rem;
+    color: var(--islamic-gold);
+    margin-bottom: var(--spacing-md);
+    font-family: 'Noto Naskh Arabic', serif;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: var(--islamic-green);
+    opacity: 0.8;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.featured-section, .categories-section {
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-xl) 0;
+}
+
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+    font-size: 1.125rem;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.featured-card {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(45, 80, 22, 0.1);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+.featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.card-image {
+    font-size: 3rem;
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: rgba(45, 80, 22, 0.05);
+    border-bottom: 1px solid rgba(45, 80, 22, 0.1);
+}
+
+.card-content {
+    padding: var(--spacing-lg);
+}
+
+.card-category {
+    color: var(--islamic-green);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-excerpt {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(45, 80, 22, 0.1);
+}
+
+.card-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.category-card {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(45, 80, 22, 0.1);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--islamic-green);
+}
+
+.category-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.category-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--islamic-green);
+    margin-bottom: var(--spacing-sm);
+}
+
+.category-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.category-count {
+    color: var(--islamic-green);
+    font-size: 0.875rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
 /* Button Styling for All Pages */
 .btn {
     display: inline-flex;
@@ -4016,6 +4183,32 @@ body {
     .mission-stats {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    /* Homepage responsive styles */
+    .hero-bismillah {
+        font-size: 1.5rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-container {
+        padding: 0 var(--spacing-md);
+    }
 }
 
 @media (max-width: 480px) {
@@ -4036,6 +4229,29 @@ body {
     
     .mission-stats {
         grid-template-columns: 1fr;
+    }
+    
+    /* Homepage small screen responsive styles */
+    .hero-bismillah {
+        font-size: 1.25rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.75rem;
+    }
+    
+    .hero-stats {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .featured-card, .category-card {
+        padding: var(--spacing-md);
+    }
+    
+    .card-image {
+        font-size: 2rem;
+        padding: var(--spacing-md);
     }
 }
 
@@ -4933,19 +5149,14 @@ main,
     align-items: center;
     gap: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
-    color: var(--islamic-white);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
     padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
+    color: var(--islamic-white);
     cursor: pointer;
     transition: var(--transition);
-    font-size: 0.875rem;
     font-weight: 500;
-    min-width: 120px;
-    justify-content: center;
-    text-decoration: none;
-    font-family: inherit;
-    backdrop-filter: blur(10px);
+    font-size: 0.9rem;
 }
 
 .user-dropdown-toggle:hover {
@@ -4953,7 +5164,7 @@ main,
     border-color: var(--islamic-gold);
     color: var(--islamic-gold);
     transform: translateY(-1px);
-    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .user-dropdown-toggle:active {
@@ -4964,10 +5175,10 @@ main,
     position: absolute;
     top: 100%;
     right: 0;
-    background: var(--islamic-dark-green);
-    border: 1px solid var(--islamic-gold);
+    background: var(--islamic-white);
+    border: 2px solid var(--islamic-gold);
     border-radius: var(--radius-md);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     min-width: 200px;
     z-index: 99999;
     opacity: 0;
@@ -4989,12 +5200,14 @@ main,
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: var(--islamic-white);
+    padding: 0.875rem 1rem;
+    color: var(--islamic-dark-green);
     text-decoration: none;
     transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .user-dropdown-menu .dropdown-item:last-child {
@@ -5002,13 +5215,15 @@ main,
 }
 
 .user-dropdown-menu .dropdown-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(212, 175, 55, 0.15);
     color: var(--islamic-gold);
     padding-left: 1.5rem;
+    border-left: 3px solid var(--islamic-gold);
 }
 
 .user-dropdown-menu .dropdown-item:active {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(212, 175, 55, 0.25);
+    transform: translateX(2px);
 }
 
 /* RTL Support for User Dropdown */

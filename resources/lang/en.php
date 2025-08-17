@@ -22,6 +22,13 @@ return [
         'settings' => 'Settings',
     ],
 
+    // Dashboard
+    'dashboard' => [
+        'title' => 'Dashboard',
+        'current_role' => 'Current Role',
+        'islamic_role' => 'Islamic Role',
+    ],
+
     // Common Actions
     'actions' => [
         'save' => 'Save',

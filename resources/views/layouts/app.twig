@@ -695,26 +695,26 @@
                 </div>
             </div>
             <div class="bismillah-user-actions">
-                    {% if user %}
+                {% if user %}
                     <div class="user-dropdown">
                         <button class="bismillah-user-menu user-dropdown-toggle">
-                            <span>👤 {{ user.name|default('User') }}</span>
+                            <span>👤 {{ user.username }}</span>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7,10L12,15L17,10H7Z"/>
-                                </svg>
-                            </button>
+                            </svg>
+                        </button>
                         <div class="user-dropdown-menu">
                             <a href="/dashboard" class="dropdown-item">📊 {{ __('nav.dashboard') }}</a>
                             <a href="/profile" class="dropdown-item">👤 {{ __('nav.profile') }}</a>
                             <a href="/settings" class="dropdown-item">⚙️ {{ __('nav.settings') }}</a>
                             <a href="/auth/logout" class="dropdown-item">🚪 {{ __('nav.logout') }}</a>
-                                </div>
-                            </div>
-                        {% else %}
+                        </div>
+                    </div>
+                {% else %}
                     <a href="/auth/login" class="bismillah-user-menu">🔑 {{ __('nav.login') }}</a>
                     <a href="/auth/register" class="bismillah-user-menu">📝 {{ __('nav.register') }}</a>
-                        {% endif %}
-                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -943,9 +943,11 @@
 
         <!-- Main Content Area -->
         <main class="bismillah-main">
-            {% block main_wrapper_start %}<div class="bismillah-container">{% endblock %}
+            {% block main_wrapper_start %}<div class="bismillah-container">
+            {% endblock %}
             {% block content %}{% endblock %}
-            {% block main_wrapper_end %}</div>{% endblock %}
+            {% block main_wrapper_end %}
+            </div>{% endblock %}
         </main>
 
         <!-- Bismillah Footer -->

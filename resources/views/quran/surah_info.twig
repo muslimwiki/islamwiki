@@ -2,6 +2,12 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block head %}
+<!-- Quran-specific CSS -->
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css?v={{ 'now'|date('U') }}">
+<link rel="stylesheet" href="/skins/Bismillah/css/quran-extension.css?v={{ 'now'|date('U') }}">
+{% endblock %}
+
 {% block content %}
 <div class="quran-section">
     <div class="max-w-3xl mx-auto">

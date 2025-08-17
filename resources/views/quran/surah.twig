@@ -2,62 +2,170 @@
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block styles %}
-{{ parent() }}
-<link rel="stylesheet" href="/skins/Bismillah/css/quran.css">
+{% block head %}
+<!-- Quran-specific CSS -->
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css?v={{ 'now'|date('U') }}">
+<link rel="stylesheet" href="/skins/Bismillah/css/quran-extension.css?v={{ 'now'|date('U') }}">
 {% endblock %}
 
 {% block content %}
-<div class="quran-section">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex items-center justify-between mb-4">
-            <h1 class="text-2xl font-semibold">Surah {{ surah.surah_number }}</h1>
-            <form method="get" class="flex items-center space-x-2">
-                <input type="hidden" name="lang" value="{{ language|default('en') }}" />
-                <label class="text-sm">Translation</label>
-                <select name="translator" class="quran-search-select" onchange="this.form.submit()">
-                    {% for t in translators %}
-                        <option value="{{ t.translator|default(t.name) }}" {% if translator == (t.translator|default(t.name)) %}selected{% endif %}>
-                            {{ t.name }} ({{ t.language|upper }})
-                        </option>
-                    {% endfor %}
-                </select>
-            </form>
-        </div>
+<div class="ayah-container">
 
-        {% if surah %}
-        <div class="bg-white rounded-lg shadow p-4 mb-6">
-            <div class="text-xl">{{ surah.surah_name_arabic }} — {{ surah.surah_name_english }} ({{ surah.surah_name_translation }})</div>
-            <div class="text-sm text-gray-600">{{ surah.revelation_type }} • {{ surah.ayah_count }} ayahs</div>
-            <div class="mt-2 text-gray-700">{{ surah.description }}</div>
-            <div class="mt-2 text-sm">
-                <a href="/quran/surah/{{ surah.surah_number }}/info" class="text-blue-600 hover:text-blue-700">More info</a>
+
+    <!-- Beautiful Islamic Page Header -->
+    <div class="quran-page-header">
+        <div class="header-content">
+            <h1 class="page-title">📖 القرآن الكريم</h1>
+            <p class="page-subtitle">The Noble Quran</p>
+            {% if surah.surah_number == 1 %}
+            <div class="bismillah-inline">
+                <div class="bismillah-text-inline">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                <div class="bismillah-translation-inline">In the name of Allah, the Entirely Merciful, the Especially Merciful</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Enhanced Quran Breadcrumbs with Translation Selector -->
+    <div class="quran-breadcrumbs">
+        <div class="breadcrumb-container">
+            <div class="breadcrumb-left">
+                <a href="/" class="breadcrumb-link">🏠 Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="/quran" class="breadcrumb-link">📖 Quran</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">📚 {{ surah.surah_name_english ?? 'Surah ' ~ surah.surah_number }}</span>
+            </div>
+            <div class="breadcrumb-center">
+                <a href="/quran/search" class="breadcrumb-nav-link">🔍 Search</a>
+                <a href="/quran/juz" class="breadcrumb-nav-link">📚 Juz</a>
+                <a href="/quran" class="breadcrumb-nav-link">📖 Surah List</a>
+            </div>
+            <div class="breadcrumb-right">
+                <form method="get" action="" class="translation-form-inline">
+                    <label for="translator" class="translation-label">Translation:</label>
+                    <select name="translator" id="translator" onchange="this.form.submit()" class="translation-dropdown-inline">
+                        {% for t in translators %}
+                            <option value="{{ t.translator|default(t.name) }}" {% if (translator ?? 'Saheeh International') == (t.translator|default(t.name)) %}selected{% endif %}>
+                                {{ t.name|default(t.translator) }}
+                                {% if t.language %}({{ t.language|upper }}){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="lang" value="{{ language|default('en') }}" />
+                </form>
             </div>
         </div>
-        {% endif %}
+    </div>
 
-        <div class="space-y-6">
+
+
+    <!-- Ayahs List -->
+    {% if ayahs %}
+    <div class="ayahs-container">
+        <div class="ayahs-header">
+            <div class="ayahs-header-top">
+                <h2 class="ayahs-title">Ayahs in {{ surah.surah_name_english ?? 'Surah ' ~ surah.surah_number }}</h2>
+                <div class="ayahs-meta">
+                    {% if surah %}
+                    <span class="surah-type-badge">{{ surah.revelation_type }}</span>
+                    <span class="surah-count-badge">{{ surah.verses_count }} ayahs</span>
+                    <a href="/quran/{{ surah.surah_number }}/info" class="surah-info-link">📋 More Info</a>
+                    {% endif %}
+                </div>
+            </div>
+            <p class="ayahs-subtitle">Click on any ayah to view it in detail</p>
+        </div>
+        
+        <div class="ayahs-list">
             {% for v in ayahs %}
-            <div class="border-b border-gray-200 pb-6 last:border-b-0">
-                <div class="flex justify-between items-start mb-3">
-                    <div class="text-sm text-gray-500">
-                        <a href="/quran/{{ v.surah_number }}/{{ v.ayah_number }}"
-                           class="text-green-600 hover:text-green-700 font-medium">
-                            {{ surah.surah_number }}:{{ v.ayah_number }}
-                        </a>
+            <div class="ayah-content">
+                <!-- Header Row with Surah Name -->
+                <div class="ayah-header-row">
+                    <div class="ayah-surah-name">
+                        {{ surah.surah_name_english ?? 'Surah' }} {{ surah.surah_number }}:{{ v.ayah_number }}
                     </div>
                 </div>
-                <div class="text-right mb-3">
-                    <div class="text-lg font-arabic text-gray-800 leading-relaxed">{{ v.text_arabic }}</div>
+
+                <!-- Arabic Text with Ayah Number -->
+                <div class="ayah-arabic-container">
+                    <div style="display: flex; align-items: center; width: 100%; direction: rtl;">
+                        <span style="text-align: right; flex-grow: 1;">
+                            {{ v.text_arabic|raw }}
+                        </span>
+                        <span class="ayah-number-badge" style="margin-right: 10px; margin-left: 0; display: inline-flex; align-items: center; justify-content: center; font-family: 'Traditional Arabic', 'Amiri', 'Traditional Naskh', 'Scheherazade', 'KFGQPC Uthmanic Script HAFS', 'KFGQPC Uthman Taha Naskh', 'UthmanicHafs', 'UthmanicHafs1 Ver18', sans-serif;">
+                            {{ v.ayah_number|replace({'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'}) }}
+                        </span>
+                    </div>
                 </div>
+
+                <!-- Translation -->
                 {% if v.translation_text %}
-                <div class="text-gray-700">
-                    <div class="italic">{{ v.translation_text }}</div>
-                </div>
+                    <div class="ayah-translation-container">
+                        {{ v.translation_text|raw }}
+                        {% if v.translator_name %}
+                            <div class="translation-meta">
+                                <span class="meta-separator">—</span>
+                                <span class="translator-name">{{ v.translator_name }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
                 {% endif %}
+
+                <!-- Actions -->
+                <div class="ayah-actions">
+                    <a href="/quran/{{ v.surah_number }}/{{ v.ayah_number }}" class="view-ayah-btn">View Full Ayah →</a>
+                </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    {% endif %}
+    
+    <!-- Quran Page Footer -->
+    <div class="quran-page-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>📚 Quran Resources</h4>
+                <ul>
+                    <li><a href="/quran/search">Search Quran</a></li>
+                    <li><a href="/quran/juz">Juz Navigation</a></li>
+                    <li><a href="/quran">Surah List</a></li>
+                    <li><a href="/quran/translations">Translations</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>🕌 Islamic Knowledge</h4>
+                <ul>
+                    <li><a href="/hadith">Hadith Collection</a></li>
+                    <li><a href="/sciences">Islamic Sciences</a></li>
+                    <li><a href="/salah">Prayer Times</a></li>
+                    <li><a href="/calendar">Islamic Calendar</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>🔍 Quick Actions</h4>
+                <ul>
+                    <li><a href="/quran/{{ surah.surah_number }}/1">First Ayah</a></li>
+                    <li><a href="/quran/{{ surah.surah_number }}/{{ surah.verses_count }}">Last Ayah</a></li>
+                    <li><a href="/quran/{{ surah.surah_number }}/info">Surah Info</a></li>
+                    <li><a href="/quran">Quran Home</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>📖 Study Tools</h4>
+                <ul>
+                    <li><a href="/quran/bookmark">Bookmark Surah</a></li>
+                    <li><a href="/quran/notes">Personal Notes</a></li>
+                    <li><a href="/quran/recitation">Audio Recitation</a></li>
+                    <li><a href="/quran/tajweed">Tajweed Rules</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>📖 May Allah guide us to the straight path. آمين</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
+

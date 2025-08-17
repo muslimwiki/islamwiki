@@ -2,127 +2,181 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block head %}
+<!-- Quran-specific CSS -->
+<link rel="stylesheet" href="/skins/Bismillah/css/quran.css?v={{ 'now'|date('U') }}">
+<link rel="stylesheet" href="/skins/Bismillah/css/quran-extension.css?v={{ 'now'|date('U') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-4">Search Quran</h1>
-            <p class="text-gray-600">Find ayahs by keywords, topics, or specific references</p>
-        </div>
-
-        <!-- Search Form -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <form method="GET" action="/quran/search" class="space-y-4">
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                        <input type="text" name="q" value="{{ query }}" placeholder="Search for ayahs, topics, or keywords..." 
-                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                    </div>
-                    <div class="flex gap-2">
-                        <select name="lang" class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                            <option value="english" {{ language == 'english' ? 'selected' : '' }}>English</option>
-                            <option value="en" {{ language == 'en' ? 'selected' : '' }}>English (Alternative)</option>
-                            <option value="arabic" {{ language == 'arabic' ? 'selected' : '' }}>Arabic</option>
-                        </select>
-                        <select name="translator" class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                            {% for t in translators %}
-                                <option value="{{ t.translator }}" {{ translator == t.translator ? 'selected' : '' }}>
-                                    {{ t.name }} ({{ t.language }})
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition duration-200 font-medium">
-                            🔍 Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Search Results -->
-        {% if query and results %}
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                    Search Results for "{{ query }}" ({{ total_results }} found)
-                </h2>
-                
-                <div class="space-y-6">
-                    {% for ayah in results %}
-                        <div class="border-b border-gray-200 pb-4 last:border-b-0">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-lg font-semibold text-green-600">
-                                    Surah {{ ayah.surah_number }}, Ayah {{ ayah.ayah_number }}
-                                </h3>
-                                <span class="text-sm text-gray-500">{{ ayah.translator }}</span>
-                            </div>
-                            
-                            {% if ayah.text_arabic %}
-                                <div class="text-right mb-3">
-                                    <p class="text-xl font-arabic leading-relaxed">{{ ayah.text_arabic }}</p>
-                                </div>
-                            {% endif %}
-                            
-                            {% if ayah.translation_text %}
-                                <div class="mb-3">
-                                    <p class="text-gray-700 leading-relaxed">{{ ayah.translation_text }}</p>
-                                </div>
-                            {% endif %}
-                            
-                            <div class="flex gap-2">
-                                <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" 
-                                   class="text-green-600 hover:text-green-700 text-sm font-medium">
-                                    View Full Ayah →
-                                </a>
-                                <a href="/quran/{{ ayah.surah_number }}" 
-                                   class="text-gray-600 hover:text-gray-700 text-sm">
-                                    View Surah
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+<div class="ayah-container">
+    <!-- Quran Navigation Bar -->
+    <div class="quran-nav-bar">
+        <div class="quran-nav-container">
+            <div class="quran-nav-left">
+                <a href="/quran" class="quran-nav-link">📖 Quran Home</a>
+                <a href="/quran/1" class="quran-nav-link">Surah Al-Fatiha</a>
+                <a href="/quran/2" class="quran-nav-link">Surah Al-Baqarah</a>
+                <a href="/quran/3" class="quran-nav-link">Surah Al-Imran</a>
             </div>
-        {% elseif query %}
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">No Results Found</h2>
-                <p class="text-gray-600">No ayahs found for "{{ query }}". Try different keywords or check your spelling.</p>
-            </div>
-        {% endif %}
-
-
-
-        <!-- Search Tips -->
-        <div class="bg-gray-50 rounded-lg p-6 mt-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Search Tips</h3>
-            <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
-                <div>
-                    <h4 class="font-medium text-gray-800 mb-2">Keywords</h4>
-                    <ul class="space-y-1">
-                        <li>• Use specific terms like "mercy", "salah", "charity"</li>
-                        <li>• Search for names like "Muhammad", "Ibrahim", "Maryam"</li>
-                        <li>• Try Arabic terms like "رحمة", "صلاة", "زكاة"</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-medium text-gray-800 mb-2">Topics</h4>
-                    <ul class="space-y-1">
-                        <li>• Family and relationships</li>
-                        <li>• Business and trade</li>
-                        <li>• Social justice and charity</li>
-                        <li>• Worship and creed</li>
-                    </ul>
-                </div>
+            <div class="quran-nav-right">
+                <a href="/quran/search" class="quran-nav-link">🔍 Search</a>
+                <a href="/quran/juz" class="quran-nav-link">📚 Juz</a>
+                <a href="/quran" class="quran-nav-link">📖 Surah List</a>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 
-{% block styles %}
-<style>
-    .font-arabic {
-        font-family: 'Amiri', 'Scheherazade', serif;
-    }
-</style>
+    <!-- Beautiful Islamic Page Header -->
+    <div class="quran-page-header">
+        <div class="header-content">
+            <h1 class="page-title">🔍 Search Quran</h1>
+            <p class="page-subtitle">Find ayahs by keywords, topics, or specific references</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Quran Breadcrumbs -->
+    <div class="quran-breadcrumbs">
+        <div class="breadcrumb-container">
+            <a href="/" class="breadcrumb-link">🏠 Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="/quran" class="breadcrumb-link">📖 Quran</a>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-current">🔍 Search</span>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-form-container">
+        <form method="GET" action="/quran/search" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search for ayahs, topics, or keywords..." 
+                       class="search-input">
+                <div class="search-options">
+                    <select name="lang" class="search-select">
+                        <option value="english" {{ language == 'english' ? 'selected' : '' }}>English</option>
+                        <option value="en" {{ language == 'en' ? 'selected' : '' }}>English (Alternative)</option>
+                        <option value="arabic" {{ language == 'arabic' ? 'selected' : '' }}>Arabic</option>
+                    </select>
+                    <select name="translator" class="search-select">
+                        {% for t in translators %}
+                            <option value="{{ t.translator }}" {{ translator == t.translator ? 'selected' : '' }}>
+                                {{ t.name }} ({{ t.language }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="search-button">
+                        🔍 Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if query and results %}
+        <div class="search-results-container">
+            <div class="results-header">
+                <h2 class="results-title">Search Results for "{{ query }}"</h2>
+                <p class="results-count">{{ total_results }} ayahs found</p>
+            </div>
+            
+            <div class="results-list">
+                {% for ayah in results %}
+                    <div class="result-item">
+                        <div class="result-header">
+                            <h3 class="result-title">
+                                <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="result-link">
+                                    Surah {{ ayah.surah_number }}, Ayah {{ ayah.ayah_number }}
+                                </a>
+                            </h3>
+                            <span class="result-translator">{{ ayah.translator }}</span>
+                        </div>
+                        
+                        {% if ayah.text_arabic %}
+                            <div class="result-arabic">
+                                {{ ayah.text_arabic }}
+                            </div>
+                        {% endif %}
+                        
+                        {% if ayah.translation_text %}
+                            <div class="result-translation">
+                                {{ ayah.translation_text }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="result-actions">
+                            <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="action-btn primary">
+                                View Full Ayah →
+                            </a>
+                            <a href="/quran/{{ ayah.surah_number }}" class="action-btn secondary">
+                                View Surah
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% elseif query %}
+        <div class="no-results-container">
+            <div class="no-results-icon">🔍</div>
+            <h2 class="no-results-title">No Results Found</h2>
+            <p class="no-results-message">No ayahs found for "{{ query }}". Try different keywords or check your spelling.</p>
+            <div class="no-results-suggestions">
+                <h3>Search Tips:</h3>
+                <ul>
+                    <li>Try using different keywords or synonyms</li>
+                    <li>Check your spelling</li>
+                    <li>Use English or Arabic terms</li>
+                    <li>Try broader or more specific terms</li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Quran Page Footer -->
+    <div class="quran-page-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>📚 Quran Resources</h4>
+                <ul>
+                    <li><a href="/quran/search">Search Quran</a></li>
+                    <li><a href="/quran/juz">Juz Navigation</a></li>
+                    <li><a href="/quran">Surah List</a></li>
+                    <li><a href="/quran/translations">Translations</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>🕌 Islamic Knowledge</h4>
+                <ul>
+                    <li><a href="/hadith">Hadith Collection</a></li>
+                    <li><a href="/sciences">Islamic Sciences</a></li>
+                    <li><a href="/salah">Prayer Times</a></li>
+                    <li><a href="/calendar">Islamic Calendar</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>🔍 Quick Actions</h4>
+                <ul>
+                    <li><a href="/quran/1">First Surah</a></li>
+                    <li><a href="/quran/114">Last Surah</a></li>
+                    <li><a href="/quran/juz">Browse by Juz</a></li>
+                    <li><a href="/quran">Quran Home</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>📖 Study Tools</h4>
+                <ul>
+                    <li><a href="/quran/bookmark">Bookmark Ayahs</a></li>
+                    <li><a href="/quran/notes">Personal Notes</a></li>
+                    <li><a href="/quran/recitation">Audio Recitation</a></li>
+                    <li><a href="/quran/tajweed">Tajweed Rules</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>📖 May Allah guide us to the straight path. آمين</p>
+        </div>
+    </div>
+</div>
 {% endblock %} 

@@ -60,8 +60,8 @@ $router->post('/create', [$pageController, 'store']);
 
 // Quran routes
 $router->get('/quran', [$quranController, 'indexPage']);
-$router->get('/quran/surah/{surah:\d+}', [$quranController, 'surahPage']);
-$router->get('/quran/ayah/{surah:\d+}/{ayah:\d+}', [$quranController, 'ayahPage']);
+$router->get('/quran/{surah:\d+}', [$quranController, 'surahPage']);
+$router->get('/quran/{surah:\d+}/{ayah:\d+}', [$quranController, 'ayahPage']);
 $router->get('/quran/juz/{juz:\d+}', [$quranController, 'juzPage']);
 $router->get('/quran/search', [$quranController, 'searchPage']);
 

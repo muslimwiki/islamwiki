@@ -350,7 +350,7 @@ class QuranController extends Controller
                 'tafsir' => $tafsir,
             ];
 
-            return $this->view('quran/ayah_new', $data);
+            return $this->view('quran/ayah', $data);
         } catch (Exception $e) {
             error_log("Quran ayah page error: " . $e->getMessage());
             return $this->view('quran/error', [

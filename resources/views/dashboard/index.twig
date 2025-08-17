@@ -3,324 +3,206 @@
 {% block title %}IslamWiki Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Islamic Greeting -->
-    <div class="islamic-greeting">
-        <div class="greeting-arabic">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
-        <div class="greeting-text">Welcome to IslamWiki - Preserving and Sharing Islamic Knowledge</div>
-    </div>
+<div class="dashboard-content">
 
-    <!-- Dashboard Statistics -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
-                    </svg>
-                </div>
-                <div class="stat-title">Total Articles</div>
+    <!-- Key Statistics Row -->
+    <div class="stats-row">
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z"/>
+                </svg>
             </div>
-            <div class="stat-value">{{ stats.total_articles|default(2847) }}</div>
-            <div class="stat-change positive">+127 this month</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5Z"/>
-                    </svg>
-                </div>
-                <div class="stat-title">Active Contributors</div>
-            </div>
-            <div class="stat-value">{{ stats.active_contributors|default(1247) }}</div>
-            <div class="stat-change positive">+89 this week</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12H7A5,5 0 0,0 12,17A5,5 0 0,0 17,12H19Z"/>
-                    </svg>
-                </div>
-                <div class="stat-title">Verified Scholars</div>
-            </div>
-            <div class="stat-value">{{ stats.verified_scholars|default(156) }}</div>
-            <div class="stat-change positive">+12 verified</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
-                    </svg>
-                </div>
-                <div class="stat-title">Languages</div>
-            </div>
-            <div class="stat-value">{{ stats.languages|default(47) }}</div>
-            <div class="stat-change positive">+3 new languages</div>
-        </div>
-    </div>
-
-    <!-- Islamic Content Categories -->
-    <div class="islamic-content-grid">
-        <div class="content-category">
-            <div class="category-icon">📖</div>
-            <div class="category-title">Quran & Tafsir</div>
-            <div class="category-count">6,236 verses with commentary</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 100%"></div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.total_articles|default(2847) }}</div>
+                <div class="stat-label">Total Articles</div>
+                <div class="stat-change positive">+127 this month</div>
             </div>
         </div>
 
-        <div class="content-category">
-            <div class="category-icon">📚</div>
-            <div class="category-title">Hadith Collections</div>
-            <div class="category-count">12,847 authenticated hadith</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 85%"></div>
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 4A3.5 3.5 0 0 0 12.5 7.5Z"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.active_contributors|default(1247) }}</div>
+                <div class="stat-label">Active Contributors</div>
+                <div class="stat-change positive">+89 this week</div>
             </div>
         </div>
 
-        <div class="content-category">
-            <div class="category-icon">🕌</div>
-            <div class="category-title">Islamic History</div>
-            <div class="category-count">1,456 historical articles</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 72%"></div>
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,12A7,7 0 0,1 12,19A7,7 0 0,1 5,12H7A5,5 0 0,0 12,17A5,5 0 0,0 17,12H19Z"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.verified_scholars|default(156) }}</div>
+                <div class="stat-label">Verified Scholars</div>
+                <div class="stat-change positive">+12 verified</div>
             </div>
         </div>
 
-        <div class="content-category">
-            <div class="category-icon">⚖️</div>
-            <div class="category-title">Fiqh & Jurisprudence</div>
-            <div class="category-count">3,289 rulings & opinions</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 68%"></div>
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
+                </svg>
             </div>
-        </div>
-
-        <div class="content-category">
-            <div class="category-icon">👨‍🏫</div>
-            <div class="category-title">Scholars & Biographies</div>
-            <div class="category-count">892 scholar profiles</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 58%"></div>
-            </div>
-        </div>
-
-        <div class="content-category">
-            <div class="category-icon">🌙</div>
-            <div class="category-title">Islamic Practices</div>
-            <div class="category-count">567 practice guides</div>
-            <div class="category-progress">
-                <div class="progress-bar" style="width: 45%"></div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.languages|default(47) }}</div>
+                <div class="stat-label">Languages</div>
+                <div class="stat-change positive">+3 new languages</div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Grid -->
+    <!-- Content Grid -->
     <div class="content-grid">
-        <!-- Recent Activity -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                    </svg>
-                    Recent Activity
+        <!-- Left Column -->
+        <div class="content-column">
+            <!-- Quick Actions -->
+            <div class="content-card quick-actions">
+                <div class="card-header">
+                    <h3>Quick Actions</h3>
+                    <span class="card-icon">⚡</span>
                 </div>
-                <span style="font-size:12px;color:var(--text-secondary);">Last 24 hours</span>
-            </div>
-            <div class="card-body">
-                {% if recent_activity %}
-                    {% for activity in recent_activity %}
-                    <div class="activity-item">
-                        <div class="activity-avatar">{{ activity.user_initials|default('U') }}</div>
-                        <div class="activity-content">
-                            <div class="activity-action">{{ activity.action|default('User performed action') }}</div>
-                            <a href="{{ activity.target_url|default('#') }}" class="activity-target">{{ activity.target|default('Target item') }}</a>
-                            <div class="activity-description">{{ activity.description|default('Activity description') }}</div>
-                            <div class="activity-time">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                                </svg>
-                                {{ activity.time_ago|default('2 hours ago') }}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <!-- Default activity items -->
-                    <div class="activity-item">
-                        <div class="activity-avatar">AH</div>
-                        <div class="activity-content">
-                            <div class="activity-action">Dr. Ahmed Hassan added new tafsir commentary</div>
-                            <a href="#" class="activity-target">Surah Al-Fatiha: Verse 1-7</a>
-                            <div class="activity-description">Comprehensive explanation of the opening chapter</div>
-                            <div class="activity-time">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                                </svg>
-                                2 hours ago
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-avatar">MK</div>
-                        <div class="activity-content">
-                            <div class="activity-action">Maryam Khan created new biography</div>
-                            <a href="#" class="activity-target">Imam Abu Hanifa</a>
-                            <div class="activity-description">Detailed life story of the great jurist</div>
-                            <div class="activity-time">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                                </svg>
-                                4 hours ago
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Quick Actions & Tools -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3H19M19,19V5H5V19H19Z"/>
-                    </svg>
-                    Quick Actions
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="quick-actions">
+                <div class="quick-actions-grid">
                     <a href="/wiki/create" class="action-btn">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                        </svg>
-                        Create Article
+                        <span class="action-icon">✍️</span>
+                        <span class="action-text">Create Article</span>
                     </a>
-                    
-                    <a href="/media/upload" class="action-btn secondary">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                        </svg>
-                        Upload Media
+                    <a href="/quran" class="action-btn">
+                        <span class="action-icon">📖</span>
+                        <span class="action-text">Browse Quran</span>
                     </a>
-
-                    <a href="/content/verify" class="action-btn tertiary">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
-                        </svg>
-                        Verify Content
+                    <a href="/hadith" class="action-btn">
+                        <span class="action-icon">📜</span>
+                        <span class="action-text">Search Hadith</span>
                     </a>
-
-                    <a href="/content/translate" class="action-btn">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07Z"/>
-                        </svg>
-                        Translate
+                    <a href="/contribute" class="action-btn">
+                        <span class="action-icon">🤝</span>
+                        <span class="action-text">Contribute</span>
                     </a>
                 </div>
+            </div>
 
-                <!-- Islamic Tools Section -->
-                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
-                    <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Islamic Tools</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
-                            <div style="font-weight: 600; margin-bottom: 4px;">Next Prayer</div>
-                            <div style="font-size: 12px;">Asr - 3:45 PM</div>
-                        </div>
-                        <div style="background: var(--islamic-cream); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='var(--islamic-gold)'; this.style.color='var(--islamic-dark-green)'" onmouseout="this.style.background='var(--islamic-cream)'; this.style.color='inherit'">
-                            <div style="font-weight: 600; margin-bottom: 4px;">Qibla</div>
-                            <div style="font-size: 12px;">285° NW</div>
-                        </div>
-                    </div>
+            <!-- Recent Activity -->
+            <div class="content-card recent-activity">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                    <span class="card-icon">📊</span>
                 </div>
-
-                <!-- Featured Content -->
-                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-light);">
-                    <h4 style="color: var(--islamic-green); margin-bottom: 15px; font-size: 16px;">Featured Content</h4>
-                    <div style="background: linear-gradient(135deg, var(--islamic-green), var(--islamic-light-green)); color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                        <div style="font-weight: 600; margin-bottom: 5px;">Article of the Day</div>
-                        <div style="font-size: 14px; opacity: 0.9;">The Night Journey (Isra and Mi'raj)</div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-avatar">👤</div>
+                        <div class="activity-content">
+                            <div class="activity-text">New article published: "Islamic Ethics in Modern Times"</div>
+                            <div class="activity-meta">by Ahmed Hassan • 2 hours ago</div>
+                        </div>
                     </div>
-                    <div style="background: linear-gradient(135deg, var(--islamic-gold), #f4d03f); color: var(--islamic-dark-green); padding: 15px; border-radius: 8px;">
-                        <div style="font-weight: 600; margin-bottom: 5px;">Verse of the Day</div>
-                        <div style="font-size: 14px;">Surah Al-Baqarah, Verse 255 (Ayat al-Kursi)</div>
+                    <div class="activity-item">
+                        <div class="activity-avatar">📚</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Hadith collection updated with 15 new entries</div>
+                            <div class="activity-meta">by Fatima Al-Zahra • 4 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar">🌍</div>
+                        <div class="activity-content">
+                            <div class="activity-text">New language support added: Turkish</div>
+                            <div class="activity-meta">by Translation Team • 6 hours ago</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Content Management Tables -->
-    <div style="margin-top: 30px;">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                    </svg>
-                    Recent Articles Pending Review
+        <!-- Right Column -->
+        <div class="content-column">
+            <!-- Content Overview -->
+            <div class="content-card content-overview">
+                <div class="card-header">
+                    <h3>Content Overview</h3>
+                    <span class="card-icon">📊</span>
                 </div>
-                <div style="display: flex; gap: 10px;">
-                    <a href="/wiki" style="background: var(--islamic-green); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none;">View All</a>
-                    <button style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; cursor: pointer;">Filter</button>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-icon">📖</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Quran & Tafsir</div>
+                            <div class="overview-count">6,236 verses</div>
+                            <div class="overview-progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">📚</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Hadith Collections</div>
+                            <div class="overview-count">12,847 hadith</div>
+                            <div class="overview-progress">
+                                <div class="progress-bar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">🕌</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Islamic History</div>
+                            <div class="overview-count">1,456 articles</div>
+                            <div class="overview-progress">
+                                <div class="progress-bar" style="width: 72%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">⚖️</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Fiqh & Jurisprudence</div>
+                            <div class="overview-count">3,289 rulings</div>
+                            <div class="overview-progress">
+                                <div class="progress-bar" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body" style="padding: 0;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if recent_pages %}
-                            {% for page in recent_pages %}
-                            <tr>
-                                <td style="font-weight: 600;">{{ page.title }}</td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div style="width: 30px; height: 30px; background: var(--islamic-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">{{ page.author_initials|default('U') }}</div>
-                                        <div>
-                                            <div style="font-weight: 500;">{{ page.author|default('Unknown') }}</div>
-                                            <div class="role-indicator contributor">Contributor</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{ page.category|default('General') }}</td>
-                                <td><span class="status-badge draft">Draft</span></td>
-                                <td>{{ page.created_at|date('M j, Y') }}</td>
-                                <td>
-                                    <div style="display: flex; gap: 8px;">
-                                        <a href="/{{ page.slug }}" style="background: var(--islamic-green); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; text-decoration: none;">View</a>
-                                        <a href="/{{ page.slug }}/edit" style="background: var(--islamic-gold); color: var(--islamic-dark-green); border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; text-decoration: none;">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                                    No articles pending review at the moment.
-                                </td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+
+            <!-- System Status -->
+            <div class="content-card system-status">
+                <div class="card-header">
+                    <h3>System Status</h3>
+                    <span class="card-icon">🔧</span>
+                </div>
+                <div class="status-list">
+                    <div class="status-item">
+                        <div class="status-indicator online"></div>
+                        <div class="status-content">
+                            <div class="status-name">Database</div>
+                            <div class="status-detail">All systems operational</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator online"></div>
+                        <div class="status-content">
+                            <div class="status-name">Search Engine</div>
+                            <div class="status-detail">Indexing 99.8% complete</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator online"></div>
+                        <div class="status-content">
+                            <div class="status-name">API Services</div>
+                            <div class="status-detail">Response time: 45ms</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

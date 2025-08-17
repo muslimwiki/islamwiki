@@ -5,6 +5,40 @@ All notable changes to the QuranExtension will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2025-01-15
+
+### Added
+- **Unified Quran page design** with consistent styling across all pages
+- **Enhanced surah pages** with integrated Bismillah and unified ayah display
+- **Improved ayah pages** with better styling and consistent navigation
+- **Combined navigation system** merging top navigation with breadcrumbs
+- **Space-optimized layouts** eliminating redundant sections
+- **Enhanced translator display** with better contrast and readability
+- **Arabic numeral support** for ayah numbers (١, ٢, ٣, etc.)
+- **Professional card-based ayah display** for better visual hierarchy
+
+### Changed
+- **Template structure** unified across all Quran pages for consistency
+- **CSS organization** improved with better maintainability and reduced conflicts
+- **Navigation layout** combined for space efficiency and better UX
+- **Bismillah display** integrated into page headers instead of separate sections
+- **Translation selector** positioned within breadcrumbs for space optimization
+- **Ayah styling** unified between surah list and individual ayah pages
+
+### Fixed
+- **Database field references** corrected (ayah_count → verses_count)
+- **CSS conflicts** eliminated by removing conflicting inline styles
+- **HTML structure** corrected for better semantic markup
+- **Styling inconsistencies** resolved across all Quran pages
+- **Navigation duplication** eliminated for cleaner user experience
+- **Responsive design** improved for mobile and desktop viewing
+
+### Technical Details
+- **New CSS classes** added for unified ayah content styling
+- **Template structure** standardized across surah and ayah pages
+- **CSS organization** improved with better maintainability
+- **Performance optimization** through reduced CSS conflicts and redundancy
+
 ## [Unreleased]
 
 ### Planned
@@ -78,6 +112,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## Release Notes
+
+### Version 0.0.3 - QuranUI Enhancement
+This release introduces comprehensive improvements to the Quran user interface, creating a more consistent, beautiful, and user-friendly experience across all Quran-related pages. The focus is on visual consistency, space optimization, and enhanced readability.
+
+**Key Improvements:**
+- Unified design language across all Quran pages
+- Space-optimized layouts eliminating redundant sections
+- Enhanced navigation combining top navigation with breadcrumbs
+- Professional card-based ayah display with Arabic numerals
+- Improved translator display with better contrast and readability
+- Integrated Bismillah in page headers for space efficiency
+
+**Breaking Changes:**
+- None - this is a backward-compatible release
+
+**Migration Guide:**
+No migration required. Existing Quran data and settings will be automatically upgraded.
 
 ### Version 0.0.2 - Enhanced Quran System
 This release introduces significant improvements to Quran search, display, and management capabilities. The extension now provides advanced search algorithms, better audio integration, and comprehensive tafsir system.
