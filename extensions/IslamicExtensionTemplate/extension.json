@@ -1,0 +1,62 @@
+{
+    "name": "IslamicExtensionTemplate",
+    "version": "0.0.1.1",
+    "description": "Template extension demonstrating integration with the new Islamic architecture",
+    "author": "IslamWiki Development Team",
+    "url": "https://islam.wiki",
+    "license": "AGPL-3.0-only",
+    "layer": "user_interface",
+    "requires": {
+        "islamwiki": "0.0.1.1",
+        "php": "8.0.0"
+    },
+    "dependencies": [
+        "iqra.search",
+        "bayan.formatter",
+        "siraj.api",
+        "rihlah.caching"
+    ],
+    "hooks": {
+        "TemplateInit": {
+            "callback": "onTemplateInit",
+            "priority": 10,
+            "description": "Template initialization hook"
+        },
+        "TemplateRender": {
+            "callback": "onTemplateRender",
+            "priority": 10,
+            "description": "Template rendering hook"
+        },
+        "IslamicSystemReady": {
+            "callback": "onIslamicSystemReady",
+            "priority": 5,
+            "description": "Islamic system ready hook"
+        }
+    },
+    "config": {
+        "template_enabled": true,
+        "islamic_integration": true,
+        "hook_priority": 10,
+        "debug_mode": false
+    },
+    "services": {
+        "template_service": {
+            "class": "TemplateService",
+            "description": "Template extension service"
+        },
+        "islamic_integration": {
+            "class": "IslamicIntegrationService",
+            "description": "Islamic architecture integration service"
+        }
+    },
+    "statistics": {
+        "enabled": true,
+        "track_performance": true,
+        "log_integration": true
+    },
+    "compatibility": {
+        "islamic_architecture": "0.0.1.1",
+        "extension_system": "modernized",
+        "hook_system": "enhanced"
+    }
+} 

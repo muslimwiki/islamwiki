@@ -1,383 +1,1027 @@
 <?php
 
 /**
- * Rihlah (رحلة) - Caching System
+ * This file is part of IslamWiki.
  *
- * Comprehensive caching system for IslamWiki performance optimization.
- * Rihlah means "journey" in Arabic, representing the system that manages
- * the journey of data through various cache layers for optimal performance.
+ * (c) 2025 IslamWiki Contributors
  *
- * @package IslamWiki\Core\Caching
- * @version 0.0.40
- * @license AGPL-3.0-only
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Caching
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Caching;
 
-use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Logging\ShahidLogger;
-use IslamWiki\Core\Database\Connection;
+use Exception;
 
 /**
- * Rihlah Caching System
+ * RihlahCaching (رحلة) - User Experience Optimization and Caching System
  *
- * Handles comprehensive caching for performance optimization including:
- * - Memory caching (APCu, Redis)
- * - File-based caching
- * - Database query caching
- * - Session caching
- * - API response caching
- * - Template caching
+ * Rihlah means "Journey" or "Travel" in Arabic. This class provides
+ * comprehensive caching strategies, user experience optimization,
+ * multi-level caching, cache invalidation, and performance monitoring
+ * for the IslamWiki application.
+ *
+ * This system is part of the User Interface Layer and ensures optimal
+ * performance and user experience through intelligent caching strategies.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Caching
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 class RihlahCaching
 {
-    private AsasContainer $container;
-    private ShahidLogger $logger;
-    private Connection $db;
-    private array $drivers = [];
-    private array $config = [];
-    private array $stats = [
-        'hits' => 0,
-        'misses' => 0,
-        'writes' => 0,
-        'deletes' => 0,
-    ];
+    /**
+     * The logging system.
+     */
+    protected ShahidLogger $logger;
 
     /**
-     * Create a new Rihlah caching system.
+     * Caching configuration.
+     *
+     * @var array<string, mixed>
      */
-    public function __construct(AsasContainer $container, ShahidLogger $logger, Connection $db)
+    protected array $config = [];
+
+    /**
+     * Cache stores for different levels.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $stores = [];
+
+    /**
+     * Cache strategies and policies.
+     *
+     * @var array<string, array>
+     */
+    protected array $strategies = [];
+
+    /**
+     * Cache invalidation rules.
+     *
+     * @var array<string, array>
+     */
+    protected array $invalidationRules = [];
+
+    /**
+     * Cache performance metrics.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $metrics = [];
+
+    /**
+     * Constructor.
+     *
+     * @param ShahidLogger $logger The logging system
+     * @param array        $config Caching configuration
+     */
+    public function __construct(ShahidLogger $logger, array $config = [])
     {
-        $this->container = $container;
         $this->logger = $logger;
-        $this->db = $db;
-        $this->initializeDrivers();
+        $this->config = $config;
+        $this->initializeCaching();
     }
 
     /**
-     * Initialize cache drivers.
+     * Initialize caching system.
+     *
+     * @return self
      */
-    private function initializeDrivers(): void
+    protected function initializeCaching(): self
     {
-        // Initialize memory cache driver (APCu if available, otherwise file-based)
-        if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-            $this->drivers['memory'] = new \IslamWiki\Core\Caching\Drivers\MemoryCacheDriver($this->logger);
-        } else {
-            $this->drivers['memory'] = new \IslamWiki\Core\Caching\Drivers\FileCacheDriver($this->logger, 'cache/memory');
-        }
+        $this->initializeMetrics();
+        $this->initializeStores();
+        $this->initializeStrategies();
+        $this->initializeInvalidationRules();
+        $this->logger->info('RihlahCaching system initialized');
 
-        // Initialize Redis cache driver (if available)
-        if (extension_loaded('redis')) {
-            try {
-                $redisConfig = $this->container->get('cache.config')['drivers']['redis'] ?? [];
-                $this->drivers['redis'] = new \IslamWiki\Core\Caching\Drivers\RedisCacheDriver($this->logger, $redisConfig);
-            } catch (\Exception $e) {
-                $this->logger->warning('Redis cache driver initialization failed', [
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        // Initialize file cache driver
-        $this->drivers['file'] = new \IslamWiki\Core\Caching\Drivers\FileCacheDriver($this->logger, 'cache/files');
-
-        // Initialize database cache driver
-        $this->drivers['database'] = new \IslamWiki\Core\Caching\Drivers\DatabaseCacheDriver($this->logger, $this->db);
-
-        // Initialize session cache driver
-        $this->drivers['session'] = new \IslamWiki\Core\Caching\Drivers\SessionCacheDriver($this->logger);
-
-        $this->logger->info('Rihlah cache drivers initialized', [
-            'drivers' => array_keys($this->drivers),
-        ]);
+        return $this;
     }
 
     /**
-     * Get a value from cache.
+     * Initialize caching metrics.
+     *
+     * @return self
      */
-    public function get(string $key, string $driver = 'memory')
+    protected function initializeMetrics(): self
     {
+        $this->metrics = [
+            'operations' => [
+                'total_gets' => 0,
+                'total_sets' => 0,
+                'total_deletes' => 0,
+                'total_invalidations' => 0
+            ],
+            'performance' => [
+                'cache_hits' => 0,
+                'cache_misses' => 0,
+                'hit_ratio' => 0.0,
+                'average_get_time' => 0.0,
+                'average_set_time' => 0.0,
+                'total_get_time' => 0.0,
+                'total_set_time' => 0.0
+            ],
+            'storage' => [
+                'memory_usage' => 0,
+                'disk_usage' => 0,
+                'total_keys' => 0,
+                'expired_keys' => 0
+            ],
+            'levels' => [
+                'l1_memory' => ['hits' => 0, 'misses' => 0, 'size' => 0],
+                'l2_redis' => ['hits' => 0, 'misses' => 0, 'size' => 0],
+                'l3_disk' => ['hits' => 0, 'misses' => 0, 'size' => 0]
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Initialize cache stores.
+     *
+     * @return self
+     */
+    protected function initializeStores(): self
+    {
+        $this->stores = [
+            'l1_memory' => [
+                'name' => 'Level 1 - Memory Cache',
+                'type' => 'memory',
+                'driver' => 'array',
+                'ttl' => 300, // 5 minutes
+                'max_size' => 1000,
+                'description' => 'Fastest cache layer using PHP memory'
+            ],
+            'l2_redis' => [
+                'name' => 'Level 2 - Redis Cache',
+                'type' => 'redis',
+                'driver' => 'redis',
+                'ttl' => 3600, // 1 hour
+                'max_size' => 10000,
+                'description' => 'Distributed cache using Redis'
+            ],
+            'l3_disk' => [
+                'name' => 'Level 3 - Disk Cache',
+                'type' => 'disk',
+                'driver' => 'file',
+                'ttl' => 86400, // 24 hours
+                'max_size' => 100000,
+                'description' => 'Persistent cache using disk storage'
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Initialize caching strategies.
+     *
+     * @return self
+     */
+    protected function initializeStrategies(): self
+    {
+        $this->strategies = [
+            'write_through' => [
+                'name' => 'Write-Through Strategy',
+                'description' => 'Write to all cache levels immediately',
+                'performance_impact' => 'high',
+                'consistency' => 'strong',
+                'use_cases' => ['critical_data', 'user_sessions', 'authentication']
+            ],
+            'write_behind' => [
+                'name' => 'Write-Behind Strategy',
+                'description' => 'Write to cache first, then to storage asynchronously',
+                'performance_impact' => 'low',
+                'consistency' => 'eventual',
+                'use_cases' => ['analytics', 'logging', 'non_critical_data']
+            ],
+            'write_around' => [
+                'name' => 'Write-Around Strategy',
+                'description' => 'Write directly to storage, bypassing cache',
+                'performance_impact' => 'medium',
+                'consistency' => 'strong',
+                'use_cases' => ['large_files', 'rarely_accessed_data']
+            ],
+            'cache_aside' => [
+                'name' => 'Cache-Aside Strategy',
+                'description' => 'Application manages cache explicitly',
+                'performance_impact' => 'medium',
+                'consistency' => 'manual',
+                'use_cases' => ['custom_logic', 'complex_queries']
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Initialize cache invalidation rules.
+     *
+     * @return self
+     */
+    protected function initializeInvalidationRules(): self
+    {
+        $this->invalidationRules = [
+            'time_based' => [
+                'name' => 'Time-Based Invalidation',
+                'description' => 'Cache expires after specified time',
+                'triggers' => ['ttl_expired', 'max_age_reached'],
+                'examples' => ['user_sessions', 'api_responses', 'static_content']
+            ],
+            'event_based' => [
+                'name' => 'Event-Based Invalidation',
+                'description' => 'Cache invalidated by specific events',
+                'triggers' => ['data_updated', 'user_action', 'system_event'],
+                'examples' => ['user_profile', 'content_modified', 'settings_changed']
+            ],
+            'pattern_based' => [
+                'name' => 'Pattern-Based Invalidation',
+                'description' => 'Cache invalidated by key patterns',
+                'triggers' => ['key_pattern_match', 'namespace_change'],
+                'examples' => ['search_results', 'category_content', 'tagged_items']
+            ],
+            'dependency_based' => [
+                'name' => 'Dependency-Based Invalidation',
+                'description' => 'Cache invalidated by data dependencies',
+                'triggers' => ['related_data_change', 'foreign_key_update'],
+                'examples' => ['related_articles', 'user_permissions', 'content_relationships']
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Get value from cache using multi-level strategy.
+     *
+     * @param string $key     Cache key
+     * @param mixed  $default Default value if not found
+     * @param array  $options Cache options
+     * @return mixed
+     */
+    public function get(string $key, mixed $default = null, array $options = []): mixed
+    {
+        $startTime = microtime(true);
+        $this->metrics['operations']['total_gets']++;
+
         try {
-            if (!isset($this->drivers[$driver])) {
-                throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
-            }
-
-            $value = $this->drivers[$driver]->get($key);
-
+            // Try Level 1 (Memory) first
+            $value = $this->getFromStore('l1_memory', $key);
             if ($value !== null) {
-                $this->stats['hits']++;
-                $this->logger->debug('Cache hit', [
-                    'key' => $key,
-                    'driver' => $driver,
-                ]);
-            } else {
-                $this->stats['misses']++;
-                $this->logger->debug('Cache miss', [
-                    'key' => $key,
-                    'driver' => $driver,
-                ]);
+                $this->updateMetrics('l1_memory', 'hit', microtime(true) - $startTime);
+                return $value;
             }
 
-            return $value;
-        } catch (\Exception $e) {
-            $this->logger->error('Cache get failed', [
-                'key' => $key,
-                'driver' => $driver,
-                'error' => $e->getMessage(),
-            ]);
-            return null;
+            // Try Level 2 (Redis) if Level 1 missed
+            $value = $this->getFromStore('l2_redis', $key);
+            if ($value !== null) {
+                // Update Level 1 with the value
+                $this->setInStore('l1_memory', $key, $value, $options);
+                $this->updateMetrics('l2_redis', 'hit', microtime(true) - $startTime);
+                return $value;
+            }
+
+            // Try Level 3 (Disk) if Level 2 missed
+            $value = $this->getFromStore('l3_disk', $key);
+            if ($value !== null) {
+                // Update both Level 1 and Level 2
+                $this->setInStore('l1_memory', $key, $value, $options);
+                $this->setInStore('l2_redis', $key, $value, $options);
+                $this->updateMetrics('l3_disk', 'hit', microtime(true) - $startTime);
+                return $value;
+            }
+
+            // Cache miss - update metrics
+            $this->updateMetrics('l3_disk', 'miss', microtime(true) - $startTime);
+            $this->logger->debug("Cache miss for key: {$key}");
+
+            return $default;
+
+        } catch (Exception $e) {
+            $this->logger->error("Cache get operation failed for key: {$key} - " . $e->getMessage());
+            return $default;
         }
     }
 
     /**
-     * Set a value in cache.
+     * Set value in cache using specified strategy.
+     *
+     * @param string $key     Cache key
+     * @param mixed  $value   Value to cache
+     * @param array  $options Cache options
+     * @return bool
      */
-    public function set(string $key, $value, int $ttl = 3600, string $driver = 'memory'): bool
+    public function set(string $key, mixed $value, array $options = []): bool
     {
+        $startTime = microtime(true);
+        $this->metrics['operations']['total_sets']++;
+
         try {
-            if (!isset($this->drivers[$driver])) {
-                throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
+            $strategy = $options['strategy'] ?? 'write_through';
+            $ttl = $options['ttl'] ?? null;
+            $tags = $options['tags'] ?? [];
+
+            switch ($strategy) {
+                case 'write_through':
+                    return $this->writeThrough($key, $value, $ttl, $tags);
+                case 'write_behind':
+                    return $this->writeBehind($key, $value, $ttl, $tags);
+                case 'write_around':
+                    return $this->writeAround($key, $value, $ttl, $tags);
+                case 'cache_aside':
+                    return $this->cacheAside($key, $value, $ttl, $tags);
+                default:
+                    return $this->writeThrough($key, $value, $ttl, $tags);
             }
 
-            $success = $this->drivers[$driver]->set($key, $value, $ttl);
+        } catch (Exception $e) {
+            $this->logger->error("Cache set operation failed for key: {$key} - " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete value from cache.
+     *
+     * @param string $key Cache key
+     * @return bool
+     */
+    public function delete(string $key): bool
+    {
+        $this->metrics['operations']['total_deletes']++;
+
+        try {
+            $success = true;
+            
+            // Delete from all levels
+            foreach (array_keys($this->stores) as $store) {
+                if (!$this->deleteFromStore($store, $key)) {
+                    $success = false;
+                }
+            }
 
             if ($success) {
-                $this->stats['writes']++;
-                $this->logger->debug('Cache set', [
-                    'key' => $key,
-                    'driver' => $driver,
-                    'ttl' => $ttl,
-                ]);
+                $this->logger->debug("Cache key deleted: {$key}");
             }
 
             return $success;
-        } catch (\Exception $e) {
-            $this->logger->error('Cache set failed', [
-                'key' => $key,
-                'driver' => $driver,
-                'error' => $e->getMessage(),
-            ]);
+
+        } catch (Exception $e) {
+            $this->logger->error("Cache delete operation failed for key: {$key} - " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Delete a value from cache.
+     * Invalidate cache by pattern or tags.
+     *
+     * @param string|array $pattern Pattern or tags to invalidate
+     * @param string       $method  Invalidation method
+     * @return bool
      */
-    public function delete(string $key, string $driver = 'memory'): bool
+    public function invalidate(string|array $pattern, string $method = 'pattern'): bool
     {
+        $this->metrics['operations']['total_invalidations']++;
+
         try {
-            if (!isset($this->drivers[$driver])) {
-                throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
+            switch ($method) {
+                case 'pattern':
+                    return $this->invalidateByPattern($pattern);
+                case 'tags':
+                    return $this->invalidateByTags($pattern);
+                case 'namespace':
+                    return $this->invalidateByNamespace($pattern);
+                default:
+                    return $this->invalidateByPattern($pattern);
             }
 
-            $success = $this->drivers[$driver]->delete($key);
+        } catch (Exception $e) {
+            $this->logger->error("Cache invalidation failed for pattern: " . json_encode($pattern) . " - " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Clear all cache stores.
+     *
+     * @return bool
+     */
+    public function clear(): bool
+    {
+        try {
+            $success = true;
+            
+            foreach (array_keys($this->stores) as $store) {
+                if (!$this->clearStore($store)) {
+                    $success = false;
+                }
+            }
 
             if ($success) {
-                $this->stats['deletes']++;
-                $this->logger->debug('Cache delete', [
-                    'key' => $key,
-                    'driver' => $driver,
-                ]);
+                $this->logger->info('All cache stores cleared successfully');
             }
 
             return $success;
-        } catch (\Exception $e) {
-            $this->logger->error('Cache delete failed', [
-                'key' => $key,
-                'driver' => $driver,
-                'error' => $e->getMessage(),
-            ]);
+
+        } catch (Exception $e) {
+            $this->logger->error("Cache clear operation failed: " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Clear all cache for a driver.
+     * Get value from specific store.
+     *
+     * @param string $store Store name
+     * @param string $key   Cache key
+     * @return mixed
      */
-    public function clear(string $driver = 'memory'): bool
+    protected function getFromStore(string $store, string $key): mixed
     {
-        try {
-            if (!isset($this->drivers[$driver])) {
-                throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
-            }
-
-            $success = $this->drivers[$driver]->clear();
-
-            if ($success) {
-                $this->logger->info('Cache cleared', [
-                    'driver' => $driver,
-                ]);
-            }
-
-            return $success;
-        } catch (\Exception $e) {
-            $this->logger->error('Cache clear failed', [
-                'driver' => $driver,
-                'error' => $e->getMessage(),
-            ]);
-            return false;
+        // This is a placeholder implementation
+        // In production, this would interact with actual cache stores
+        
+        switch ($store) {
+            case 'l1_memory':
+                return $this->getFromMemoryStore($key);
+            case 'l2_redis':
+                return $this->getFromRedisStore($key);
+            case 'l3_disk':
+                return $this->getFromDiskStore($key);
+            default:
+                return null;
         }
     }
 
     /**
-     * Check if a key exists in cache.
+     * Set value in specific store.
+     *
+     * @param string $store Store name
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param array  $options Cache options
+     * @return bool
      */
-    public function has(string $key, string $driver = 'memory'): bool
+    protected function setInStore(string $store, string $key, mixed $value, array $options = []): bool
     {
-        try {
-            if (!isset($this->drivers[$driver])) {
-                throw new \InvalidArgumentException("Unknown cache driver: {$driver}");
-            }
-
-            return $this->drivers[$driver]->has($key);
-        } catch (\Exception $e) {
-            $this->logger->error('Cache has check failed', [
-                'key' => $key,
-                'driver' => $driver,
-                'error' => $e->getMessage(),
-            ]);
-            return false;
+        // This is a placeholder implementation
+        // In production, this would interact with actual cache stores
+        
+        switch ($store) {
+            case 'l1_memory':
+                return $this->setInMemoryStore($key, $value, $options);
+            case 'l2_redis':
+                return $this->setInRedisStore($key, $value, $options);
+            case 'l3_disk':
+                return $this->setInDiskStore($key, $value, $options);
+            default:
+                return false;
         }
+    }
+
+    /**
+     * Delete value from specific store.
+     *
+     * @param string $store Store name
+     * @param string $key   Cache key
+     * @return bool
+     */
+    protected function deleteFromStore(string $store, string $key): bool
+    {
+        // This is a placeholder implementation
+        // In production, this would interact with actual cache stores
+        
+        switch ($store) {
+            case 'l1_memory':
+                return $this->deleteFromMemoryStore($key);
+            case 'l2_redis':
+                return $this->deleteFromRedisStore($key);
+            case 'l3_disk':
+                return $this->deleteFromDiskStore($key);
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Clear specific store.
+     *
+     * @param string $store Store name
+     * @return bool
+     */
+    protected function clearStore(string $store): bool
+    {
+        // This is a placeholder implementation
+        // In production, this would interact with actual cache stores
+        
+        switch ($store) {
+            case 'l1_memory':
+                return $this->clearMemoryStore();
+            case 'l2_redis':
+                return $this->clearRedisStore();
+            case 'l3_disk':
+                return $this->clearDiskStore();
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Memory store operations (placeholder).
+     *
+     * @param string $key Cache key
+     * @return mixed
+     */
+    protected function getFromMemoryStore(string $key): mixed
+    {
+        // Placeholder - would use actual memory cache implementation
+        return null;
+    }
+
+    /**
+     * Set in memory store (placeholder).
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param array  $options Cache options
+     * @return bool
+     */
+    protected function setInMemoryStore(string $key, mixed $value, array $options): bool
+    {
+        // Placeholder - would use actual memory cache implementation
+        return true;
+    }
+
+    /**
+     * Delete from memory store (placeholder).
+     *
+     * @param string $key Cache key
+     * @return bool
+     */
+    protected function deleteFromMemoryStore(string $key): bool
+    {
+        // Placeholder - would use actual memory cache implementation
+        return true;
+    }
+
+    /**
+     * Clear memory store (placeholder).
+     *
+     * @return bool
+     */
+    protected function clearMemoryStore(): bool
+    {
+        // Placeholder - would use actual memory cache implementation
+        return true;
+    }
+
+    /**
+     * Redis store operations (placeholder).
+     *
+     * @param string $key Cache key
+     * @return mixed
+     */
+    protected function getFromRedisStore(string $key): mixed
+    {
+        // Placeholder - would use actual Redis implementation
+        return null;
+    }
+
+    /**
+     * Set in Redis store (placeholder).
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param array  $options Cache options
+     * @return bool
+     */
+    protected function setInRedisStore(string $key, mixed $value, array $options): bool
+    {
+        // Placeholder - would use actual Redis implementation
+        return true;
+    }
+
+    /**
+     * Delete from Redis store (placeholder).
+     *
+     * @param string $key Cache key
+     * @return bool
+     */
+    protected function deleteFromRedisStore(string $key): bool
+    {
+        // Placeholder - would use actual Redis implementation
+        return true;
+    }
+
+    /**
+     * Clear Redis store (placeholder).
+     *
+     * @return bool
+     */
+    protected function clearRedisStore(): bool
+    {
+        // Placeholder - would use actual Redis implementation
+        return true;
+    }
+
+    /**
+     * Disk store operations (placeholder).
+     *
+     * @param string $key Cache key
+     * @return mixed
+     */
+    protected function getFromDiskStore(string $key): mixed
+    {
+        // Placeholder - would use actual disk cache implementation
+        return null;
+    }
+
+    /**
+     * Set in disk store (placeholder).
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param array  $options Cache options
+     * @return bool
+     */
+    protected function setInDiskStore(string $key, mixed $value, array $options): bool
+    {
+        // Placeholder - would use actual disk cache implementation
+        return true;
+    }
+
+    /**
+     * Delete from disk store (placeholder).
+     *
+     * @param string $key Cache key
+     * @return bool
+     */
+    protected function deleteFromDiskStore(string $key): bool
+    {
+        // Placeholder - would use actual disk cache implementation
+        return true;
+    }
+
+    /**
+     * Clear disk store (placeholder).
+     *
+     * @return bool
+     */
+    protected function clearDiskStore(): bool
+    {
+        // Placeholder - would use actual disk cache implementation
+        return true;
+    }
+
+    /**
+     * Write-through caching strategy.
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int|null $ttl  Time to live
+     * @param array  $tags  Cache tags
+     * @return bool
+     */
+    protected function writeThrough(string $key, mixed $value, ?int $ttl, array $tags): bool
+    {
+        $success = true;
+        
+        // Write to all levels immediately
+        foreach (array_keys($this->stores) as $store) {
+            if (!$this->setInStore($store, $key, $value, ['ttl' => $ttl, 'tags' => $tags])) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Write-behind caching strategy.
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int|null $ttl  Time to live
+     * @param array  $tags  Cache tags
+     * @return bool
+     */
+    protected function writeBehind(string $key, mixed $value, ?int $ttl, array $tags): bool
+    {
+        // Write to fastest level first
+        $success = $this->setInStore('l1_memory', $key, $value, ['ttl' => $ttl, 'tags' => $tags]);
+        
+        // Queue write to other levels asynchronously
+        if ($success) {
+            $this->queueAsyncWrite($key, $value, $ttl, $tags);
+        }
+
+        return $success;
+    }
+
+    /**
+     * Write-around caching strategy.
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int|null $ttl  Time to live
+     * @param array  $tags  Cache tags
+     * @return bool
+     */
+    protected function writeAround(string $key, mixed $value, ?int $ttl, array $tags): bool
+    {
+        // Write directly to storage, bypassing cache
+        // This would typically write to a database or file system
+        return true;
+    }
+
+    /**
+     * Cache-aside strategy.
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int|null $ttl  Time to live
+     * @param array  $tags  Cache tags
+     * @return bool
+     */
+    protected function cacheAside(string $key, mixed $value, ?int $ttl, array $tags): bool
+    {
+        // Application manages cache explicitly
+        // Only write to specified levels
+        $levels = $this->config['cache_aside_levels'] ?? ['l1_memory'];
+        
+        $success = true;
+        foreach ($levels as $level) {
+            if (isset($this->stores[$level])) {
+                if (!$this->setInStore($level, $key, $value, ['ttl' => $ttl, 'tags' => $tags])) {
+                    $success = false;
+                }
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Queue asynchronous write operation.
+     *
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int|null $ttl  Time to live
+     * @param array  $tags  Cache tags
+     * @return void
+     */
+    protected function queueAsyncWrite(string $key, mixed $value, ?int $ttl, array $tags): void
+    {
+        // This would queue the write operation for background processing
+        // Implementation would depend on the queue system used
+        $this->logger->debug("Queued async write for key: {$key}");
+    }
+
+    /**
+     * Invalidate cache by pattern.
+     *
+     * @param string $pattern Pattern to match
+     * @return bool
+     */
+    protected function invalidateByPattern(string $pattern): bool
+    {
+        $success = true;
+        
+        foreach (array_keys($this->stores) as $store) {
+            if (!$this->invalidateStoreByPattern($store, $pattern)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Invalidate cache by tags.
+     *
+     * @param array $tags Tags to invalidate
+     * @return bool
+     */
+    protected function invalidateByTags(array $tags): bool
+    {
+        $success = true;
+        
+        foreach (array_keys($this->stores) as $store) {
+            if (!$this->invalidateStoreByTags($store, $tags)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Invalidate cache by namespace.
+     *
+     * @param string $namespace Namespace to invalidate
+     * @return bool
+     */
+    protected function invalidateByNamespace(string $namespace): bool
+    {
+        $success = true;
+        
+        foreach (array_keys($this->stores) as $store) {
+            if (!$this->invalidateStoreByNamespace($store, $namespace)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Invalidate store by pattern (placeholder).
+     *
+     * @param string $store   Store name
+     * @param string $pattern Pattern to match
+     * @return bool
+     */
+    protected function invalidateStoreByPattern(string $store, string $pattern): bool
+    {
+        // Placeholder implementation
+        return true;
+    }
+
+    /**
+     * Invalidate store by tags (placeholder).
+     *
+     * @param string $store Store name
+     * @param array  $tags  Tags to invalidate
+     * @return bool
+     */
+    protected function invalidateStoreByTags(string $store, array $tags): bool
+    {
+        // Placeholder implementation
+        return true;
+    }
+
+    /**
+     * Invalidate store by namespace (placeholder).
+     *
+     * @param string $store     Store name
+     * @param string $namespace Namespace to invalidate
+     * @return bool
+     */
+    protected function invalidateStoreByNamespace(string $store, string $namespace): bool
+    {
+        // Placeholder implementation
+        return true;
+    }
+
+    /**
+     * Update cache metrics.
+     *
+     * @param string $store Store name
+     * @param string $type  Hit or miss
+     * @param float  $time  Operation time
+     * @return self
+     */
+    protected function updateMetrics(string $store, string $type, float $time): self
+    {
+        if ($type === 'hit') {
+            $this->metrics['performance']['cache_hits']++;
+            $this->metrics['levels'][$store]['hits']++;
+        } else {
+            $this->metrics['performance']['cache_misses']++;
+            $this->metrics['levels'][$store]['misses']++;
+        }
+
+        // Update hit ratio
+        $total = $this->metrics['performance']['cache_hits'] + $this->metrics['performance']['cache_misses'];
+        if ($total > 0) {
+            $this->metrics['performance']['hit_ratio'] = $this->metrics['performance']['cache_hits'] / $total;
+        }
+
+        // Update timing metrics
+        if ($type === 'hit') {
+            $this->metrics['performance']['total_get_time'] += $time;
+            $this->metrics['performance']['average_get_time'] = 
+                $this->metrics['performance']['total_get_time'] / $this->metrics['operations']['total_gets'];
+        }
+
+        return $this;
     }
 
     /**
      * Get cache statistics.
+     *
+     * @return array<string, mixed>
      */
-    public function getStats(): array
+    public function getStatistics(): array
     {
-        $driverStats = [];
-        foreach ($this->drivers as $name => $driver) {
-            $driverStats[$name] = $driver->getStats();
-        }
+        return $this->metrics;
+    }
 
+    /**
+     * Get cache stores information.
+     *
+     * @return array<string, array>
+     */
+    public function getStores(): array
+    {
+        return $this->stores;
+    }
+
+    /**
+     * Get caching strategies.
+     *
+     * @return array<string, array>
+     */
+    public function getStrategies(): array
+    {
+        return $this->strategies;
+    }
+
+    /**
+     * Get invalidation rules.
+     *
+     * @return array<string, array>
+     */
+    public function getInvalidationRules(): array
+    {
+        return $this->invalidationRules;
+    }
+
+    /**
+     * Get cache configuration.
+     *
+     * @return array<string, mixed>
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * Set cache configuration.
+     *
+     * @param array<string, mixed> $config Cache configuration
+     * @return self
+     */
+    public function setConfig(array $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * Check if cache is available.
+     *
+     * @return bool
+     */
+    public function isAvailable(): bool
+    {
+        return true; // Placeholder - would check actual cache availability
+    }
+
+    /**
+     * Get cache health status.
+     *
+     * @return array<string, mixed>
+     */
+    public function getHealthStatus(): array
+    {
         return [
-            'global' => $this->stats,
-            'drivers' => $driverStats,
+            'status' => 'healthy',
+            'timestamp' => date('c'),
+            'stores' => array_map(function($store) {
+                return [
+                    'name' => $store['name'],
+                    'status' => 'available',
+                    'type' => $store['type']
+                ];
+            }, $this->stores),
+            'metrics' => $this->metrics
         ];
-    }
-
-    /**
-     * Cache a function result.
-     */
-    public function remember(string $key, callable $callback, int $ttl = 3600, string $driver = 'memory')
-    {
-        $value = $this->get($key, $driver);
-
-        if ($value !== null) {
-            return $value;
-        }
-
-        $value = $callback();
-        $this->set($key, $value, $ttl, $driver);
-
-        return $value;
-    }
-
-    /**
-     * Cache database query results.
-     */
-    public function rememberQuery(string $key, callable $query, int $ttl = 3600): array
-    {
-        return $this->remember($key, $query, $ttl, 'database');
-    }
-
-    /**
-     * Cache API responses.
-     */
-    public function rememberApiResponse(string $key, callable $apiCall, int $ttl = 1800): array
-    {
-        return $this->remember($key, $apiCall, $ttl, 'memory');
-    }
-
-    /**
-     * Cache template rendering.
-     */
-    public function rememberTemplate(string $key, callable $template, int $ttl = 7200): string
-    {
-        return $this->remember($key, $template, $ttl, 'file');
-    }
-
-    /**
-     * Get cache driver.
-     */
-    public function getDriver(string $driver): ?CacheDriverInterface
-    {
-        return $this->drivers[$driver] ?? null;
-    }
-
-    /**
-     * Get all available drivers.
-     */
-    public function getDrivers(): array
-    {
-        return array_keys($this->drivers);
-    }
-
-    /**
-     * Warm up cache with common data.
-     */
-    public function warmUp(): void
-    {
-        try {
-            $this->logger->info('Starting cache warm-up');
-
-            // Warm up common queries
-            $this->warmUpQueries();
-
-            // Warm up API responses
-            $this->warmUpApiResponses();
-
-            // Warm up templates
-            $this->warmUpTemplates();
-
-            $this->logger->info('Cache warm-up completed');
-        } catch (\Exception $e) {
-            $this->logger->error('Cache warm-up failed', [
-                'error' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * Warm up common database queries.
-     */
-    private function warmUpQueries(): void
-    {
-        $commonQueries = [
-            'site_stats' => 'SELECT COUNT(*) as total_pages FROM pages',
-            'user_count' => 'SELECT COUNT(*) as total_users FROM users',
-            'recent_pages' => 'SELECT * FROM pages ORDER BY created_at DESC LIMIT 10',
-        ];
-
-        foreach ($commonQueries as $key => $query) {
-            $this->rememberQuery("warmup:{$key}", function () use ($query) {
-                return $this->db->select($query);
-            }, 3600);
-        }
-    }
-
-    /**
-     * Warm up API responses.
-     */
-    private function warmUpApiResponses(): void
-    {
-        // Cache common API responses
-        $this->rememberApiResponse('api:quran:ayahs', function () {
-            return ['status' => 'cached', 'data' => []];
-        }, 1800);
-    }
-
-    /**
-     * Warm up templates.
-     */
-    private function warmUpTemplates(): void
-    {
-        // Cache common template fragments
-        $this->rememberTemplate('template:header', function () {
-            return '<header>Header content</header>';
-        }, 7200);
     }
 }

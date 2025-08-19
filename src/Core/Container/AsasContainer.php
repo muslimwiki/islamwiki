@@ -1,433 +1,423 @@
 <?php
 
+/**
+ * This file is part of IslamWiki.
+ *
+ * (c) 2025 IslamWiki Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Container
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
+ */
+
+declare(strict_types=1);
+
 namespace IslamWiki\Core\Container;
 
-// PSR-11 ContainerInterface should be available via Composer autoload
-
 use Psr\Container\ContainerInterface;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionParameter;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
+use InvalidArgumentException;
+use Exception;
 
 /**
- * AsasContainer (أساس) - Foundation Container
+ * AsasContainer (أساس) - Foundation Container System
  *
- * Dependency injection container for IslamWiki.
- * Asas means "foundation" or "base" in Arabic, representing the
- * foundational layer that holds and manages all application services.
+ * Asas means "Foundation" in Arabic. This is the dependency injection container
+ * that provides the foundation for all Islamic-named systems in IslamWiki.
+ *
+ * This container implements the PSR-11 Container interface and provides advanced
+ * features for service management, dependency resolution, and lifecycle management.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Container
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 class AsasContainer implements ContainerInterface
 {
     /**
-     * The container's bindings.
+     * Registered services and their definitions.
+     *
+     * @var array<string, mixed>
      */
-    protected array $bindings = [];
+    protected array $services = [];
 
     /**
-     * The container's shared instances.
+     * Service instances that have been resolved.
+     *
+     * @var array<string, object>
      */
     protected array $instances = [];
 
     /**
-     * The container's aliases.
+     * Service aliases for easier access.
+     *
+     * @var array<string, string>
      */
     protected array $aliases = [];
 
     /**
-     * The container's resolving callbacks.
-     */
-    protected array $resolvingCallbacks = [];
-
-    /**
-     * The container's parameter overrides.
-     */
-    protected array $with = [];
-
-    /**
-     * Register a binding with the container.
-     */
-    public function bind(string $abstract, $concrete = null, bool $shared = false): void
-    {
-        $this->bindings[$abstract] = [
-            'concrete' => $concrete ?: $abstract,
-            'shared' => $shared,
-        ];
-    }
-
-    /**
-     * Register a shared binding in the container.
-     */
-    public function singleton(string $abstract, $concrete = null): void
-    {
-        $this->bind($abstract, $concrete, true);
-    }
-
-    /**
-     * Register an existing instance as shared in the container.
-     */
-    public function instance(string $abstract, $instance): void
-    {
-        $this->instances[$abstract] = $instance;
-    }
-
-    /**
-     * Register an alias with the container.
-     */
-    public function alias(string $abstract, string $alias): void
-    {
-        $this->aliases[$alias] = $abstract;
-    }
-
-    /**
-     * Remove a binding/instance/alias from the container.
+     * Service tags for grouped access.
      *
-     * This allows systems like the skin manager to invalidate cached
-     * instances safely (e.g., 'skin.data').
+     * @var array<string, array<string>>
      */
-    public function forget(string $abstract): void
+    protected array $tagged = [];
+
+    /**
+     * Service providers for automatic registration.
+     *
+     * @var array<string, string>
+     */
+    protected array $providers = [];
+
+    /**
+     * Whether the container has been booted.
+     *
+     * @var bool
+     */
+    protected bool $booted = false;
+
+    /**
+     * Constructor.
+     *
+     * @param array<string, mixed> $services Initial services to register
+     */
+    public function __construct(array $services = [])
     {
-        $abstract = $this->getAlias($abstract);
-        if (isset($this->instances[$abstract])) {
-            unset($this->instances[$abstract]);
-        }
-        if (isset($this->bindings[$abstract])) {
-            unset($this->bindings[$abstract]);
-        }
-        // Remove any aliases that point to this abstract
-        foreach ($this->aliases as $alias => $target) {
-            if ($target === $abstract) {
-                unset($this->aliases[$alias]);
-            }
-        }
+        $this->registerServices($services);
     }
 
     /**
-     * Resolve the given type from the container.
+     * Register multiple services at once.
+     *
+     * @param array<string, mixed> $services Services to register
+     * @return self
      */
-    public function get($id)
+    public function registerServices(array $services): self
     {
-        try {
-            $result = $this->resolve($id);
-
-            // Call any resolving callbacks
-            $this->fireResolvingCallbacks($id, $result);
-
-            return $result;
-        } catch (\Exception $e) {
-            if ($this->has($id)) {
-                throw $e;
-            }
-
-            throw new \InvalidArgumentException("No binding found for [{$id}].");
+        foreach ($services as $id => $service) {
+            $this->set($id, $service);
         }
+
+        return $this;
     }
 
     /**
-     * Determine if the given abstract type has been bound.
+     * Register a service with the container.
+     *
+     * @param string $id Service identifier
+     * @param mixed  $service Service definition or instance
+     * @return self
+     */
+    public function set(string $id, mixed $service): self
+    {
+        $this->services[$id] = $service;
+        unset($this->instances[$id]);
+
+        return $this;
+    }
+
+    /**
+     * Register a service alias.
+     *
+     * @param string $alias Alias name
+     * @param string $id    Service identifier
+     * @return self
+     */
+    public function alias(string $alias, string $id): self
+    {
+        $this->aliases[$alias] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Tag a service for grouped access.
+     *
+     * @param string $tag     Tag name
+     * @param string $service Service identifier
+     * @return self
+     */
+    public function tag(string $tag, string $service): self
+    {
+        if (!isset($this->tagged[$tag])) {
+            $this->tagged[$tag] = [];
+        }
+
+        $this->tagged[$tag][] = $service;
+
+        return $this;
+    }
+
+    /**
+     * Get all services with a specific tag.
+     *
+     * @param string $tag Tag name
+     * @return array<object> Array of service instances
+     */
+    public function tagged(string $tag): array
+    {
+        if (!isset($this->tagged[$tag])) {
+            return [];
+        }
+
+        $services = [];
+        foreach ($this->tagged[$tag] as $serviceId) {
+            if ($this->has($serviceId)) {
+                $services[] = $this->get($serviceId);
+            }
+        }
+
+        return $services;
+    }
+
+    /**
+     * Register a service provider.
+     *
+     * @param string $provider Provider class name
+     * @return self
+     */
+    public function register(string $provider): self
+    {
+        $this->providers[] = $provider;
+
+        return $this;
+    }
+
+    /**
+     * Boot all registered service providers.
+     *
+     * @return self
+     */
+    public function boot(): self
+    {
+        if ($this->booted) {
+            return $this;
+        }
+
+        foreach ($this->providers as $providerClass) {
+            if (class_exists($providerClass)) {
+                $provider = new $providerClass();
+                if (method_exists($provider, 'register')) {
+                    $provider->register($this);
+                }
+                if (method_exists($provider, 'boot')) {
+                    $provider->boot($this);
+                }
+            }
+        }
+
+        $this->booted = true;
+
+        return $this;
+    }
+
+    /**
+     * Check if a service is registered.
+     *
+     * @param string $id Service identifier
+     * @return bool
      */
     public function has(string $id): bool
     {
-        return isset($this->bindings[$id]) ||
-               isset($this->instances[$id]) ||
-               isset($this->aliases[$id]);
+        return isset($this->services[$id]) || isset($this->aliases[$id]);
     }
 
     /**
-     * Resolve the given type from the container.
-     */
-    protected function resolve(string $abstract, array $parameters = [])
-    {
-        return $this->resolveWithStack($abstract, $parameters, []);
-    }
-
-    /**
-     * Resolve the given type from the container with resolution stack tracking.
-     */
-    protected function resolveWithStack(string $abstract, array $parameters = [], array $resolutionStack = [])
-    {
-        // Prevent excessive recursion depth
-        if (count($resolutionStack) > 100) {
-            throw new \RuntimeException("Maximum dependency resolution depth exceeded (100). Possible circular dependency: " . implode(' -> ', $resolutionStack));
-        }
-
-        $abstract = $this->getAlias($abstract);
-
-        // Check for circular dependencies
-        if (in_array($abstract, $resolutionStack)) {
-            throw new \RuntimeException("Circular dependency detected: " . implode(' -> ', $resolutionStack) . " -> {$abstract}");
-        }
-
-        // Add current abstract to resolution stack
-        $resolutionStack[] = $abstract;
-
-        // If an instance of the type is currently being managed as a singleton, return it
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
-        }
-
-        // Get the concrete implementation for the given abstract type
-        $concrete = $this->getConcrete($abstract);
-
-        // If the concrete is a closure or doesn't match the abstract, we'll build it
-        if ($concrete !== $abstract && ! $concrete instanceof \Closure) {
-            $concrete = $this->getConcrete($concrete);
-        }
-
-        // If the type is a closure, execute it
-        if ($concrete instanceof \Closure) {
-            return $concrete($this, $parameters);
-        }
-
-        // If the concrete is the same as the abstract, we'll try to resolve it
-        if ($concrete === $abstract) {
-            $object = $this->build($concrete, $parameters);
-        } else {
-            $object = $this->resolveWithStack($concrete, $parameters, $resolutionStack);
-        }
-
-        // If the type is a shared binding, store the instance
-        if ($this->isShared($abstract)) {
-            $this->instances[$abstract] = $object;
-        }
-
-        return $object;
-    }
-
-    /**
-     * Get the concrete type for a given abstract.
-     */
-    protected function getConcrete(string $abstract)
-    {
-        if (isset($this->bindings[$abstract])) {
-            return $this->bindings[$abstract]['concrete'];
-        }
-
-        return $abstract;
-    }
-
-    /**
-     * Determine if a given type is shared.
-     */
-    protected function isShared(string $abstract): bool
-    {
-        return isset($this->instances[$abstract]) ||
-               (isset($this->bindings[$abstract]['shared']) &&
-                $this->bindings[$abstract]['shared'] === true);
-    }
-
-    /**
-     * Get the alias for an abstract if available.
-     */
-    protected function getAlias(string $abstract): string
-    {
-        return $this->aliases[$abstract] ?? $abstract;
-    }
-
-    /**
-     * Instantiate a concrete instance of the given type.
-     */
-    public function build(string $concrete, array $parameters = [])
-    {
-        // If the concrete is a closure, execute it
-        if ($concrete instanceof \Closure) {
-            return $concrete($this, $parameters);
-        }
-
-        try {
-            $reflector = new ReflectionClass($concrete);
-        } catch (ReflectionException $e) {
-            throw new \InvalidArgumentException("Target class [$concrete] does not exist.", 0, $e);
-        }
-
-        // If the type is not instantiable, the developer is attempting to resolve
-        // an abstract type such as an Interface or Abstract Class
-        if (! $reflector->isInstantiable()) {
-            $this->notInstantiable($concrete);
-        }
-
-        $constructor = $reflector->getConstructor();
-
-        // If there are no constructors, that means there are no dependencies
-        // and we can just resolve the instances of the objects right away.
-        if (is_null($constructor)) {
-            return new $concrete();
-        }
-
-        $dependencies = $constructor->getParameters();
-
-        // Once we have all the constructor's parameters we can create each of the
-        // dependency instances and then use the reflection instances to make a
-        // new instance of this class, injecting the created dependencies in.
-        $instances = $this->resolveDependencies(
-            $dependencies,
-            $parameters
-        );
-
-        return $reflector->newInstanceArgs($instances);
-    }
-
-    /**
-     * Resolve all of the dependencies from the ReflectionParameters.
-     */
-    protected function resolveDependencies(array $dependencies, array $parameters = []): array
-    {
-        $results = [];
-
-        foreach ($dependencies as $dependency) {
-            // If the parameter has a type-hint, we will resolve that type from the container.
-            // Otherwise, we'll check if the parameter has a default value.
-            if (array_key_exists($dependency->name, $parameters)) {
-                $results[] = $parameters[$dependency->name];
-            } elseif ($this->hasParameterOverride($dependency)) {
-                $results[] = $this->getParameterOverride($dependency);
-            } elseif ($dependency->getType() && ! $dependency->getType()->isBuiltin()) {
-                $results[] = $this->resolveClass($dependency);
-            } elseif ($dependency->isDefaultValueAvailable()) {
-                $results[] = $dependency->getDefaultValue();
-            } else {
-                $declaringClass = $dependency->getDeclaringClass();
-                $className = $declaringClass ? $declaringClass->getName() : 'unknown';
-                $message = 'Unresolvable dependency resolving [' . $dependency->getName() . '] in class ' . $className;
-                throw new \RuntimeException($message);
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Determine if the given dependency has a parameter override.
-     */
-    protected function hasParameterOverride(ReflectionParameter $dependency): bool
-    {
-        return array_key_exists(
-            $dependency->name,
-            $this->getLastParameterOverride()
-        );
-    }
-
-    /**
-     * Get a parameter override for a dependency.
-     */
-    protected function getParameterOverride(ReflectionParameter $dependency)
-    {
-        return $this->getLastParameterOverride()[$dependency->name];
-    }
-
-    /**
-     * Get the last parameter override.
-     */
-    protected function getLastParameterOverride(): array
-    {
-        return end($this->with) ?: [];
-    }
-
-    /**
-     * Resolve a class based dependency from the container.
-     */
-    protected function resolveClass(ReflectionParameter $parameter)
-    {
-        try {
-            return $this->make($parameter->getType()->getName());
-        } catch (\Exception $e) {
-            if ($parameter->isOptional()) {
-                return $parameter->getDefaultValue();
-            }
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Throw an exception that the concrete is not instantiable.
-     */
-    protected function notInstantiable(string $concrete): void
-    {
-        throw new \RuntimeException("Target [$concrete] is not instantiable.");
-    }
-
-    /**
-     * Resolve the given type from the container.
-     */
-    public function make(string $abstract, array $parameters = [])
-    {
-        return $this->resolve($abstract, $parameters);
-    }
-
-    /**
-     * Register a new resolving callback for a type.
+     * Get a service from the container.
      *
-     * @param  string  $abstract
-     * @param  \Closure|string|null  $callback
-     * @return void
+     * @param string $id Service identifier
+     * @return mixed
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
      */
-    public function afterResolving($abstract, $callback = null)
+    public function get(string $id): mixed
     {
-        if (is_string($callback)) {
-            $callback = function ($object, $container) use ($callback) {
-                return $container->$callback($object);
+        // Check aliases first
+        if (isset($this->aliases[$id])) {
+            $id = $this->aliases[$id];
+        }
+
+        // Return cached instance if available
+        if (isset($this->instances[$id])) {
+            return $this->instances[$id];
+        }
+
+        // Check if service exists
+        if (!isset($this->services[$id])) {
+            throw new class extends Exception implements NotFoundExceptionInterface {
+                public function __construct(string $id) {
+                    parent::__construct("Service '{$id}' not found in container");
+                }
             };
         }
 
-        if ($abstract instanceof \Closure && $callback === null) {
-            $this->resolvingCallbacks['*'][] = $abstract;
-        } else {
-            $this->resolvingCallbacks[$this->getAlias($abstract)][] = $callback;
+        try {
+            $service = $this->resolveService($id, $this->services[$id]);
+            $this->instances[$id] = $service;
+
+            return $service;
+        } catch (Exception $e) {
+            throw new class($e->getMessage(), 0, $e) extends Exception implements ContainerExceptionInterface {
+            };
         }
     }
 
     /**
-     * Fire all of the resolving callbacks.
+     * Resolve a service definition to an instance.
      *
-     * @param  string  $abstract
-     * @param  mixed   $object
-     * @return void
+     * @param string $id      Service identifier
+     * @param mixed  $service Service definition
+     * @return object
+     * @throws Exception
      */
-    protected function fireResolvingCallbacks($abstract, $object)
+    protected function resolveService(string $id, mixed $service): object
     {
-        $this->fireCallbackArray(
-            $object,
-            $this->getCallbacksForType($abstract, $object, $this->resolvingCallbacks)
-        );
+        if (is_object($service)) {
+            return $service;
+        }
 
-        $this->fireCallbackArray(
-            $object,
-            $this->getCallbacksForType('*', $object, $this->resolvingCallbacks)
-        );
+        if (is_string($service)) {
+            if (!class_exists($service)) {
+                throw new Exception("Class '{$service}' not found for service '{$id}'");
+            }
+
+            return new $service();
+        }
+
+        if (is_callable($service)) {
+            return $service($this);
+        }
+
+        if (is_array($service)) {
+            return $this->resolveArrayService($id, $service);
+        }
+
+        throw new Exception("Unable to resolve service '{$id}'");
     }
 
     /**
-     * Get all callbacks for a given type.
+     * Resolve an array-based service definition.
      *
-     * @param  string  $abstract
-     * @param  mixed   $object
-     * @param  array   $callbacks
+     * @param string $id      Service identifier
+     * @param array  $service Service definition array
+     * @return object
+     * @throws Exception
+     */
+    protected function resolveArrayService(string $id, array $service): object
+    {
+        if (!isset($service['class'])) {
+            throw new Exception("Service '{$id}' missing 'class' definition");
+        }
+
+        $class = $service['class'];
+        if (!class_exists($class)) {
+            throw new Exception("Class '{$class}' not found for service '{$id}'");
+        }
+
+        $arguments = $service['arguments'] ?? [];
+        $arguments = $this->resolveArguments($arguments);
+
+        return new $class(...$arguments);
+    }
+
+    /**
+     * Resolve service arguments.
+     *
+     * @param array $arguments Arguments to resolve
      * @return array
      */
-    protected function getCallbacksForType($abstract, $object, array $callbacks)
+    protected function resolveArguments(array $arguments): array
     {
-        $results = [];
+        $resolved = [];
 
-        foreach ($callbacks as $type => $typeCallbacks) {
-            if ($type === $abstract || $type === get_class($object)) {
-                $results = array_merge($results, $typeCallbacks);
+        foreach ($arguments as $argument) {
+            if (is_string($argument) && $this->has($argument)) {
+                $resolved[] = $this->get($argument);
+            } else {
+                $resolved[] = $argument;
             }
         }
 
-        return $results;
+        return $resolved;
     }
 
     /**
-     * Fire an array of callbacks with an object.
+     * Remove a service from the container.
      *
-     * @param  mixed  $object
-     * @param  array  $callbacks
-     * @return void
+     * @param string $id Service identifier
+     * @return self
      */
-    protected function fireCallbackArray($object, array $callbacks)
+    public function remove(string $id): self
     {
-        foreach ($callbacks as $callback) {
-            $callback($object, $this);
-        }
+        unset($this->services[$id], $this->instances[$id], $this->aliases[$id]);
+
+        return $this;
+    }
+
+    /**
+     * Clear all services from the container.
+     *
+     * @return self
+     */
+    public function clear(): self
+    {
+        $this->services = [];
+        $this->instances = [];
+        $this->aliases = [];
+        $this->tagged = [];
+        $this->providers = [];
+        $this->booted = false;
+
+        return $this;
+    }
+
+    /**
+     * Get all registered service identifiers.
+     *
+     * @return array<string>
+     */
+    public function keys(): array
+    {
+        return array_keys($this->services);
+    }
+
+    /**
+     * Check if the container has been booted.
+     *
+     * @return bool
+     */
+    public function isBooted(): bool
+    {
+        return $this->booted;
+    }
+
+    /**
+     * Get the number of registered services.
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->services);
     }
 }

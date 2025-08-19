@@ -3,7 +3,7 @@
 /**
  * This file is part of IslamWiki.
  *
- * Copyright (C) 2025 IslamWiki Contributors
+ * (c) 2025 IslamWiki Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,470 +17,676 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Session
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Session;
 
-use IslamWiki\Core\Error\ErrorHandler;
+use IslamWiki\Core\Logging\ShahidLogger;
+use Exception;
 
 /**
- * WisalSession - Session Management System (وصال)
- * 
- * Handles user sessions, authentication state, and session security.
- * 
- * @package IslamWiki\Core\Session
- * @version 0.0.1
- * @author IslamWiki Development Team
- * @license MIT
+ * WisalSession (وصل) - Session Management System
+ *
+ * Wisal means "Connection" in Arabic. This class provides comprehensive
+ * session management including user session tracking, multi-device support,
+ * session security, analytics, and lifecycle management for the IslamWiki
+ * application.
+ *
+ * This system is part of the Application Layer and manages all user
+ * connections and session data throughout the application.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Session
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 class WisalSession
 {
     /**
-     * @var array Session configuration
+     * The logging system.
      */
-    private array $config;
+    protected ShahidLogger $logger;
 
     /**
-     * @var bool Whether the session has been started
+     * Session configuration.
+     *
+     * @var array<string, mixed>
      */
-    private bool $started = false;
+    protected array $config = [];
 
     /**
-     * @var array Session data cache
+     * Active sessions.
+     *
+     * @var array<string, array>
      */
-    private array $data = [];
+    protected array $sessions = [];
+
+    /**
+     * Session statistics.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $statistics = [];
+
+    /**
+     * Session encryption key.
+     */
+    protected string $encryptionKey;
 
     /**
      * Constructor.
-     * 
-     * @param array $config Session configuration
+     *
+     * @param ShahidLogger $logger The logging system
+     * @param array        $config Session configuration
      */
-    public function __construct(array $config = [])
+    public function __construct(ShahidLogger $logger, array $config = [])
     {
-        $this->config = array_merge([
-            'name' => 'islamwiki_session',
-            'lifetime' => 3600, // 1 hour
-            'path' => '/',
-            'domain' => '',
-            'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Lax',
-            'save_path' => __DIR__ . '/../../../storage/sessions'
-        ], $config);
-
-        // Configure session settings BEFORE any session operations
-        $this->configureSession();
+        $this->logger = $logger;
+        $this->config = $config;
+        $this->initializeSession();
     }
 
     /**
-     * Configure session settings.
-     * This must be called before any session operations.
+     * Initialize session system.
+     *
+     * @return self
      */
-    private function configureSession(): void
+    protected function initializeSession(): self
     {
-        // If session is already active, sync with it instead of reconfiguring
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $this->started = true;
-            $this->data = $_SESSION;
-            error_log("WisalSession: Session already active, syncing with existing session");
-            return;
-        }
-
-        // Only configure if session hasn't been started yet
+        $this->initializeStatistics();
+        $this->encryptionKey = $this->config['encryption_key'] ?? $this->generateEncryptionKey();
+        
+        // Start PHP session if not already started
         if (session_status() === PHP_SESSION_NONE) {
-            // Set session save path
-            if (!is_dir($this->config['save_path'])) {
-                mkdir($this->config['save_path'], 0777, true);
+            $this->startPhpSession();
+        }
+
+        $this->logger->info('WisalSession system initialized');
+
+        return $this;
+    }
+
+    /**
+     * Initialize session statistics.
+     *
+     * @return self
+     */
+    protected function initializeStatistics(): self
+    {
+        $this->statistics = [
+            'sessions' => [
+                'total_created' => 0,
+                'total_destroyed' => 0,
+                'active_sessions' => 0,
+                'expired_sessions' => 0
+            ],
+            'users' => [
+                'unique_users' => 0,
+                'concurrent_users' => 0,
+                'multi_device_users' => 0
+            ],
+            'security' => [
+                'sessions_encrypted' => 0,
+                'suspicious_activities' => 0,
+                'session_hijacking_attempts' => 0
+            ],
+            'performance' => [
+                'session_creation_time' => 0.0,
+                'session_validation_time' => 0.0,
+                'average_session_duration' => 0.0
+            ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Start PHP session.
+     *
+     * @return self
+     */
+    protected function startPhpSession(): self
+    {
+        $sessionConfig = $this->config['php_session'] ?? [];
+        
+        // Set session configuration
+        if (isset($sessionConfig['lifetime'])) {
+            ini_set('session.gc_maxlifetime', $sessionConfig['lifetime']);
+        }
+        
+        if (isset($sessionConfig['cookie_lifetime'])) {
+            ini_set('session.cookie_lifetime', $sessionConfig['cookie_lifetime']);
+        }
+        
+        if (isset($sessionConfig['cookie_secure'])) {
+            ini_set('session.cookie_secure', $sessionConfig['cookie_secure'] ? '1' : '0');
+        }
+        
+        if (isset($sessionConfig['cookie_httponly'])) {
+            ini_set('session.cookie_httponly', $sessionConfig['cookie_httponly'] ? '1' : '0');
+        }
+
+        session_start();
+
+        return $this;
+    }
+
+    /**
+     * Generate encryption key.
+     *
+     * @return string
+     */
+    protected function generateEncryptionKey(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+    /**
+     * Create a new session.
+     *
+     * @param int    $userId     User ID
+     * @param array  $userData   User data
+     * @param array  $options    Session options
+     * @return array<string, mixed>
+     */
+    public function createSession(int $userId, array $userData, array $options = []): array
+    {
+        $startTime = microtime(true);
+
+        try {
+            $sessionId = $this->generateSessionId();
+            $expiresAt = time() + ($options['lifetime'] ?? $this->config['default_lifetime'] ?? 3600);
+
+            $session = [
+                'id' => $sessionId,
+                'user_id' => $userId,
+                'user_data' => $userData,
+                'created_at' => time(),
+                'expires_at' => $expiresAt,
+                'last_activity' => time(),
+                'ip_address' => $this->getClientIp(),
+                'user_agent' => $this->getUserAgent(),
+                'device_id' => $options['device_id'] ?? $this->generateDeviceId(),
+                'is_encrypted' => $options['encrypt'] ?? $this->config['encrypt_sessions'] ?? true,
+                'metadata' => $options['metadata'] ?? []
+            ];
+
+            // Encrypt session data if enabled
+            if ($session['is_encrypted']) {
+                $session['user_data'] = $this->encryptData($session['user_data']);
+                $this->updateStatistics('security', 'sessions_encrypted', 1);
             }
-            session_save_path($this->config['save_path']);
 
-            // Set session name
-            session_name($this->config['name']);
+            $this->sessions[$sessionId] = $session;
+            $this->updateStatistics('sessions', 'total_created', 1);
+            $this->updateStatistics('sessions', 'active_sessions', 1);
 
-            // Set secure session configuration
-            ini_set('session.use_strict_mode', '1');
-            ini_set('session.use_cookies', '1');
-            ini_set('session.use_only_cookies', '1');
-            ini_set('session.cookie_httponly', '1');
-            ini_set('session.cookie_samesite', $this->config['samesite']);
-            ini_set('session.gc_maxlifetime', (string) $this->config['lifetime']);
-            ini_set('session.cookie_lifetime', '0'); // Session cookie
-            ini_set('session.use_trans_sid', '0');
-            ini_set('session.cache_limiter', 'nocache');
+            // Update unique users count
+            $this->updateUniqueUsersCount($userId);
+
+            $creationTime = microtime(true) - $startTime;
+            $this->updateStatistics('performance', 'session_creation_time', $creationTime);
+
+            $this->logger->info("Session created for user {$userId}: {$sessionId}");
+
+            return [
+                'session_id' => $sessionId,
+                'expires_at' => $expiresAt,
+                'device_id' => $session['device_id']
+            ];
+
+        } catch (Exception $e) {
+            $this->logger->error("Failed to create session for user {$userId}: " . $e->getMessage());
+            throw $e;
         }
     }
 
     /**
-     * Start the session.
+     * Generate unique session ID.
+     *
+     * @return string
      */
-    public function start(): void
+    protected function generateSessionId(): string
     {
-        // If session is already active, sync with it
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $this->started = true;
-            $this->data = $_SESSION;
-            error_log("WisalSession: Session already active, syncing with existing session");
-            return;
-        }
+        do {
+            $sessionId = bin2hex(random_bytes(16));
+        } while (isset($this->sessions[$sessionId]));
 
-        // Configure session if not already done
-        $this->configureSession();
+        return $sessionId;
+    }
 
-        // Start the session
-        if (session_start()) {
-            $this->started = true;
-            $this->data = $_SESSION;
-            
-            // Regenerate session ID periodically for security
-            if (!isset($this->data['last_regeneration']) || 
-                (time() - $this->data['last_regeneration']) > 300) { // 5 minutes
-                $this->regenerateId();
+    /**
+     * Generate device ID.
+     *
+     * @return string
+     */
+    protected function generateDeviceId(): string
+    {
+        $userAgent = $this->getUserAgent();
+        $ipAddress = $this->getClientIp();
+        
+        return hash('sha256', $userAgent . $ipAddress . time());
+    }
+
+    /**
+     * Get client IP address.
+     *
+     * @return string
+     */
+    protected function getClientIp(): string
+    {
+        $ipKeys = ['HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'];
+        
+        foreach ($ipKeys as $key) {
+            if (isset($_SERVER[$key])) {
+                $ip = $_SERVER[$key];
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    return $ip;
+                }
             }
-        } else {
-            throw new \RuntimeException('Failed to start session');
-        }
-    }
-
-    /**
-     * Get session data.
-     * 
-     * @param string $key Session key
-     * @param mixed $default Default value if key doesn't exist
-     * @return mixed Session value
-     */
-    public function get(string $key, $default = null)
-    {
-        if (!$this->started) {
-            $this->start();
         }
 
-        return $this->data[$key] ?? $default;
+        return '127.0.0.1';
     }
 
     /**
-     * Set session data.
-     * 
-     * @param string $key Session key
-     * @param mixed $value Session value
+     * Get user agent.
+     *
+     * @return string
      */
-    public function set(string $key, $value): void
+    protected function getUserAgent(): string
     {
-        if (!$this->started) {
-            $this->start();
-        }
-
-        $this->data[$key] = $value;
-        $_SESSION[$key] = $value;
+        return $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
     }
 
     /**
-     * Check if session has a key.
-     * 
-     * @param string $key Session key
-     * @return bool True if key exists
+     * Encrypt data.
+     *
+     * @param mixed $data Data to encrypt
+     * @return string
      */
-    public function has(string $key): bool
+    protected function encryptData($data): string
     {
-        if (!$this->started) {
-            $this->start();
-        }
+        $jsonData = json_encode($data);
+        $iv = random_bytes(16);
+        
+        $encrypted = openssl_encrypt(
+            $jsonData,
+            'AES-256-CBC',
+            $this->encryptionKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
 
-        return isset($this->data[$key]);
+        return base64_encode($iv . $encrypted);
     }
 
     /**
-     * Remove session data.
-     * 
-     * @param string $key Session key
+     * Decrypt data.
+     *
+     * @param string $encryptedData Encrypted data
+     * @return mixed
      */
-    public function remove(string $key): void
+    protected function decryptData(string $encryptedData)
     {
-        if (!$this->started) {
-            $this->start();
-        }
+        $data = base64_decode($encryptedData);
+        $iv = substr($data, 0, 16);
+        $encrypted = substr($data, 16);
 
-        unset($this->data[$key]);
-        unset($_SESSION[$key]);
+        $decrypted = openssl_decrypt(
+            $encrypted,
+            'AES-256-CBC',
+            $this->encryptionKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+
+        return json_decode($decrypted, true);
     }
 
     /**
-     * Clear all session data.
+     * Validate session.
+     *
+     * @param string $sessionId Session ID
+     * @return array<string, mixed>|null
      */
-    public function clear(): void
+    public function validateSession(string $sessionId): ?array
     {
-        if (!$this->started) {
-            $this->start();
-        }
+        $startTime = microtime(true);
 
-        $this->data = [];
-        $_SESSION = [];
-    }
-
-    /**
-     * Check if user is logged in.
-     * 
-     * @return bool True if user is logged in
-     */
-    public function isLoggedIn(): bool
-    {
-        return $this->has('user_id') && $this->has('user_authenticated');
-    }
-
-    /**
-     * Get current user ID.
-     * 
-     * @return int|null User ID or null if not logged in
-     */
-    public function getUserId(): ?int
-    {
-        return $this->get('user_id');
-    }
-
-    /**
-     * Get current user data.
-     * 
-     * @return array|null User data or null if not logged in
-     */
-    public function getUserData(): ?array
-    {
-        if (!$this->isLoggedIn()) {
+        if (!isset($this->sessions[$sessionId])) {
             return null;
         }
 
+        $session = $this->sessions[$sessionId];
+
+        // Check if session has expired
+        if (time() > $session['expires_at']) {
+            $this->destroySession($sessionId);
+            $this->updateStatistics('sessions', 'expired_sessions', 1);
+            return null;
+        }
+
+        // Check for suspicious activity
+        if ($this->isSuspiciousActivity($session)) {
+            $this->updateStatistics('security', 'suspicious_activities', 1);
+            $this->logger->warning("Suspicious activity detected in session: {$sessionId}");
+        }
+
+        // Update last activity
+        $session['last_activity'] = time();
+        $this->sessions[$sessionId] = $session;
+
+        $validationTime = microtime(true) - $startTime;
+        $this->updateStatistics('performance', 'session_validation_time', $validationTime);
+
+        // Return session data
+        $result = [
+            'user_id' => $session['user_id'],
+            'device_id' => $session['device_id'],
+            'last_activity' => $session['last_activity'],
+            'metadata' => $session['metadata']
+        ];
+
+        // Decrypt user data if encrypted
+        if ($session['is_encrypted']) {
+            $result['user_data'] = $this->decryptData($session['user_data']);
+        } else {
+            $result['user_data'] = $session['user_data'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check for suspicious activity.
+     *
+     * @param array $session Session data
+     * @return bool
+     */
+    protected function isSuspiciousActivity(array $session): bool
+    {
+        $currentIp = $this->getClientIp();
+        $currentUserAgent = $this->getUserAgent();
+
+        // Check if IP address changed
+        if ($session['ip_address'] !== $currentIp) {
+            return true;
+        }
+
+        // Check if user agent changed
+        if ($session['user_agent'] !== $currentUserAgent) {
+            return true;
+        }
+
+        // Check for rapid activity
+        $timeSinceLastActivity = time() - $session['last_activity'];
+        if ($timeSinceLastActivity < 1) { // Less than 1 second
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Destroy session.
+     *
+     * @param string $sessionId Session ID
+     * @return bool
+     */
+    public function destroySession(string $sessionId): bool
+    {
+        if (!isset($this->sessions[$sessionId])) {
+            return false;
+        }
+
+        $session = $this->sessions[$sessionId];
+        unset($this->sessions[$sessionId]);
+
+        $this->updateStatistics('sessions', 'total_destroyed', 1);
+        $this->updateStatistics('sessions', 'active_sessions', -1);
+
+        $this->logger->info("Session destroyed: {$sessionId}");
+
+        return true;
+    }
+
+    /**
+     * Get user sessions.
+     *
+     * @param int $userId User ID
+     * @return array<string, array>
+     */
+    public function getUserSessions(int $userId): array
+    {
+        $userSessions = [];
+
+        foreach ($this->sessions as $sessionId => $session) {
+            if ($session['user_id'] === $userId) {
+                $userSessions[$sessionId] = [
+                    'device_id' => $session['device_id'],
+                    'created_at' => $session['created_at'],
+                    'last_activity' => $session['last_activity'],
+                    'ip_address' => $session['ip_address'],
+                    'user_agent' => $session['user_agent']
+                ];
+            }
+        }
+
+        return $userSessions;
+    }
+
+    /**
+     * Destroy all user sessions.
+     *
+     * @param int $userId User ID
+     * @return int Number of sessions destroyed
+     */
+    public function destroyUserSessions(int $userId): int
+    {
+        $destroyedCount = 0;
+
+        foreach ($this->sessions as $sessionId => $session) {
+            if ($session['user_id'] === $userId) {
+                $this->destroySession($sessionId);
+                $destroyedCount++;
+            }
+        }
+
+        $this->logger->info("Destroyed {$destroyedCount} sessions for user {$userId}");
+
+        return $destroyedCount;
+    }
+
+    /**
+     * Clean up expired sessions.
+     *
+     * @return int Number of sessions cleaned up
+     */
+    public function cleanupExpiredSessions(): int
+    {
+        $cleanedCount = 0;
+        $currentTime = time();
+
+        foreach ($this->sessions as $sessionId => $session) {
+            if ($currentTime > $session['expires_at']) {
+                $this->destroySession($sessionId);
+                $cleanedCount++;
+            }
+        }
+
+        if ($cleanedCount > 0) {
+            $this->logger->info("Cleaned up {$cleanedCount} expired sessions");
+        }
+
+        return $cleanedCount;
+    }
+
+    /**
+     * Update session metadata.
+     *
+     * @param string $sessionId Session ID
+     * @param array  $metadata  New metadata
+     * @return bool
+     */
+    public function updateSessionMetadata(string $sessionId, array $metadata): bool
+    {
+        if (!isset($this->sessions[$sessionId])) {
+            return false;
+        }
+
+        $this->sessions[$sessionId]['metadata'] = array_merge(
+            $this->sessions[$sessionId]['metadata'],
+            $metadata
+        );
+
+        return true;
+    }
+
+    /**
+     * Get session analytics.
+     *
+     * @return array<string, mixed>
+     */
+    public function getSessionAnalytics(): array
+    {
+        $currentTime = time();
+        $totalSessions = count($this->sessions);
+        $activeSessions = 0;
+        $totalDuration = 0;
+
+        foreach ($this->sessions as $session) {
+            if ($currentTime <= $session['expires_at']) {
+                $activeSessions++;
+                $duration = $currentTime - $session['created_at'];
+                $totalDuration += $duration;
+            }
+        }
+
+        $averageDuration = $activeSessions > 0 ? $totalDuration / $activeSessions : 0;
+
         return [
-            'id' => $this->get('user_id'),
-            'username' => $this->get('username'),
-            'email' => $this->get('email'),
-            'role' => $this->get('user_role'),
-            'authenticated' => $this->get('user_authenticated')
+            'total_sessions' => $totalSessions,
+            'active_sessions' => $activeSessions,
+            'expired_sessions' => $this->statistics['sessions']['expired_sessions'],
+            'average_session_duration' => $averageDuration,
+            'unique_users' => $this->statistics['users']['unique_users'],
+            'concurrent_users' => $activeSessions,
+            'sessions_encrypted' => $this->statistics['security']['sessions_encrypted'],
+            'suspicious_activities' => $this->statistics['security']['suspicious_activities']
         ];
     }
 
     /**
-     * Set user as logged in.
-     * 
-     * @param array $userData User data
+     * Update unique users count.
+     *
+     * @param int $userId User ID
+     * @return self
      */
-    public function setUserLoggedIn(array $userData): void
+    protected function updateUniqueUsersCount(int $userId): self
     {
-        // Ensure session is started
-        if (!$this->started) {
-            $this->start();
-        }
-
-        // Set user data in both local cache and global session
-        $this->set('user_id', $userData['id']);
-        $this->set('username', $userData['username']);
-        $this->set('email', $userData['email']);
-        $this->set('user_role', $userData['role'] ?? 'user');
-        $this->set('user_authenticated', true);
-        $this->set('login_time', time());
-        $this->set('last_activity', time());
-
-        // Force write to global session array to ensure persistence
-        $_SESSION['user_id'] = $userData['id'];
-        $_SESSION['username'] = $userData['username'];
-        $_SESSION['email'] = $userData['email'];
-        $_SESSION['user_role'] = $userData['role'] ?? 'user';
-        $_SESSION['user_authenticated'] = true;
-        $_SESSION['login_time'] = time();
-        $_SESSION['last_activity'] = time();
-
-        // Force session write to ensure data is persisted
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
-            // Restart session to ensure data is properly loaded
-            session_start();
-            $this->data = $_SESSION;
-        }
-
-        error_log("WisalSession: User logged in - ID: {$userData['id']}, Username: {$userData['username']}");
-        error_log("WisalSession: Session data after login: " . print_r($_SESSION, true));
-    }
-
-    /**
-     * Set user as logged out.
-     */
-    public function setUserLoggedOut(): void
-    {
-        $this->clear();
-        $this->regenerateId();
-    }
-
-    /**
-     * Update last activity time.
-     */
-    public function updateActivity(): void
-    {
-        $this->set('last_activity', time());
-    }
-
-    /**
-     * Check if session has expired.
-     * 
-     * @return bool True if session has expired
-     */
-    public function isExpired(): bool
-    {
-        if (!$this->has('last_activity')) {
-            return true;
-        }
-
-        $lastActivity = $this->get('last_activity');
-        $maxLifetime = $this->config['lifetime'];
+        $existingUsers = [];
         
-        return (time() - $lastActivity) > $maxLifetime;
-    }
-
-    /**
-     * Regenerate session ID.
-     */
-    public function regenerateId(): void
-    {
-        if ($this->started) {
-            session_regenerate_id(true);
-            $this->set('last_regeneration', time());
-        }
-    }
-
-    /**
-     * Destroy the session.
-     */
-    public function destroy(): void
-    {
-        if ($this->started) {
-            $this->clear();
-            session_destroy();
-            $this->started = false;
-        }
-    }
-
-    /**
-     * Get session ID.
-     * 
-     * @return string|null Session ID or null if not started
-     */
-    public function getId(): ?string
-    {
-        return session_id() ?: null;
-    }
-
-    /**
-     * Get session name.
-     * 
-     * @return string Session name
-     */
-    public function getName(): string
-    {
-        return session_name();
-    }
-
-    /**
-     * Get session status.
-     * 
-     * @return int Session status constant
-     */
-    public function getStatus(): int
-    {
-        return session_status();
-    }
-
-    /**
-     * Check if session is started.
-     * 
-     * @return bool True if session is started
-     */
-    public function isStarted(): bool
-    {
-        return $this->started;
-    }
-
-    /**
-     * Get all session data.
-     * 
-     * @return array All session data
-     */
-    public function getAll(): array
-    {
-        if (!$this->started) {
-            $this->start();
+        foreach ($this->sessions as $session) {
+            $existingUsers[] = $session['user_id'];
         }
 
-        return $this->data;
-    }
+        $uniqueUsers = count(array_unique($existingUsers));
+        $this->statistics['users']['unique_users'] = $uniqueUsers;
 
-    /**
-     * Flash a message to the session.
-     * 
-     * @param string $key Message key
-     * @param string $message Message content
-     */
-    public function flash(string $key, string $message): void
-    {
-        $this->set("flash_{$key}", $message);
-    }
-
-    /**
-     * Get and remove a flashed message.
-     * 
-     * @param string $key Message key
-     * @param mixed $default Default value if no message
-     * @return mixed Message content or default
-     */
-    public function getFlash(string $key, $default = null)
-    {
-        $message = $this->get("flash_{$key}", $default);
-        $this->remove("flash_{$key}");
-        return $message;
-    }
-
-    /**
-     * Check if a flashed message exists.
-     * 
-     * @param string $key Message key
-     * @return bool True if message exists
-     */
-    public function hasFlash(string $key): bool
-    {
-        return $this->has("flash_{$key}");
-    }
-
-    /**
-     * Generate a CSRF token.
-     * 
-     * @return string CSRF token
-     */
-    public function getCsrfToken(): string
-    {
-        if (!$this->has('csrf_token')) {
-            $token = bin2hex(random_bytes(32));
-            $this->set('csrf_token', $token);
+        // Check for multi-device users
+        $userDeviceCounts = [];
+        foreach ($this->sessions as $session) {
+            $uid = $session['user_id'];
+            if (!isset($userDeviceCounts[$uid])) {
+                $userDeviceCounts[$uid] = [];
+            }
+            $userDeviceCounts[$uid][] = $session['device_id'];
         }
-        return $this->get('csrf_token');
+
+        $multiDeviceUsers = 0;
+        foreach ($userDeviceCounts as $devices) {
+            if (count(array_unique($devices)) > 1) {
+                $multiDeviceUsers++;
+            }
+        }
+
+        $this->statistics['users']['multi_device_users'] = $multiDeviceUsers;
+
+        return $this;
     }
 
     /**
-     * Verify a CSRF token.
-     * 
-     * @param string $token Token to verify
-     * @return bool True if token is valid
+     * Update statistics.
+     *
+     * @param string $category Statistics category
+     * @param string $metric   Metric name
+     * @param mixed  $value    Value to add
+     * @return self
      */
-    public function verifyCsrfToken(string $token): bool
+    protected function updateStatistics(string $category, string $metric, mixed $value): self
     {
-        $storedToken = $this->getCsrfToken();
-        return hash_equals($storedToken, $token);
+        if (isset($this->statistics[$category][$metric])) {
+            if (is_numeric($this->statistics[$category][$metric])) {
+                $this->statistics[$category][$metric] += $value;
+            } else {
+                $this->statistics[$category][$metric] = $value;
+            }
+        }
+
+        return $this;
     }
 
     /**
-     * Validate a CSRF token (alias for verifyCsrfToken).
-     * 
-     * @param string $token Token to validate
-     * @return bool True if token is valid
+     * Get session statistics.
+     *
+     * @return array<string, mixed>
      */
-    public function validateCsrfToken(string $token): bool
+    public function getStatistics(): array
     {
-        return $this->verifyCsrfToken($token);
+        return $this->statistics;
+    }
+
+    /**
+     * Get session configuration.
+     *
+     * @return array<string, mixed>
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * Set session configuration.
+     *
+     * @param array<string, mixed> $config Session configuration
+     * @return self
+     */
+    public function setConfig(array $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * Get all active sessions.
+     *
+     * @return array<string, array>
+     */
+    public function getActiveSessions(): array
+    {
+        return $this->sessions;
     }
 }

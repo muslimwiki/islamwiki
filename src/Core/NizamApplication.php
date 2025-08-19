@@ -55,15 +55,16 @@ use IslamWiki\Core\Configuration\TadbirConfiguration;
  * framework that orchestrates all Islamic-named systems and provides the
  * foundation for the entire IslamWiki application.
  *
- * This class combines the functionality of the original Application.php and Nizam.php
- * into a single, comprehensive application system.
+ * This system is part of the Infrastructure Layer and serves as the central
+ * orchestrator for all Islamic systems, managing their lifecycle, dependencies,
+ * and coordination.
  *
  * @category  Core
  * @package   IslamWiki\Core
  * @author    IslamWiki Development Team
  * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
  * @link      https://islam.wiki
- * @since     0.0.1
+ * @since     0.0.1.1
  */
 class NizamApplication
 {
@@ -173,8 +174,8 @@ class NizamApplication
         $this->container = new \IslamWiki\Core\Container\AsasContainer();
 
         // Bind the application instance to the container
-        $this->container->instance(self::class, $this);
-        $this->container->instance('app', $this);
+        $this->container->set(self::class, $this);
+        $this->container->set('app', $this);
 
         // Register core bindings
         $this->registerCoreContainerAliases();
@@ -193,8 +194,8 @@ class NizamApplication
 
         // Create and bind the database connection
         $db = new \IslamWiki\Core\Database\Connection($dbConfig);
-        $this->container->instance('db', $db);
-        $this->container->instance(\IslamWiki\Core\Database\Connection::class, $db);
+        $this->container->set('db', $db);
+        $this->container->set(\IslamWiki\Core\Database\Connection::class, $db);
 
         // Bind Shahid
         $logDir = $this->basePath('storage/logs');
@@ -202,8 +203,8 @@ class NizamApplication
             mkdir($logDir, 0755, true);
         }
         $logger = new \IslamWiki\Core\Logging\ShahidLogger($logDir);
-        $this->container->instance('logger', $logger);
-        $this->container->instance(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
+        $this->container->set('logger', $logger);
+        $this->container->set(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
 
         // Register service providers first
         $this->registerServiceProviders();
@@ -218,7 +219,7 @@ class NizamApplication
         $db = $this->container->get('db');
         $logger = $this->container->get('logger');
         $controllerFactory = new \IslamWiki\Core\Routing\ControllerFactory($db, $logger, $this->container);
-        $this->container->instance('controller.factory', $controllerFactory);
+        $this->container->set('controller.factory', $controllerFactory);
     }
 
     /**
@@ -226,48 +227,53 @@ class NizamApplication
      */
     private function initializeSystems(): void
     {
-        // Initialize SabilRouting (Routing)
-        $this->_sabilRouter = new SabilRouting($this->container);
+        // Get logger from container
+        $this->_logger = $this->container->get('logger');
 
-        // Add SkinMiddleware to the router
-        $skinMiddleware = new \IslamWiki\Http\Middleware\SkinMiddleware($this);
-        $this->_sabilRouter->addMiddleware([$skinMiddleware, 'handle']);
+        // Initialize SabilRouting (Routing) with proper parameters
+        $this->_sabilRouter = new SabilRouting($this->container, $this->_logger);
 
-        // Initialize Shahid (Logging)
-        $this->_logger = new ShahidLogger($this->basePath('storage/logs'));
-
-        // Initialize Mizan (Database)
+        // Initialize Mizan (Database) with proper parameters
         $this->database = new MizanDatabase($this->_logger, []);
 
         // Initialize Connection (Database)
         $this->connection = new Connection([]);
 
-        // Initialize Wisal (Session) - will be replaced by container's session
-        $this->_session = new WisalSession([]);
+        // Initialize Wisal (Session) with proper parameters
+        $this->_session = new WisalSession($this->_logger, []);
 
-        // Initialize Aman (Security)
-        $this->_auth = new AmanSecurity($this->_session, $this->connection);
+        // Initialize Aman (Security) with proper parameters
+        $this->_auth = new AmanSecurity($this->_logger, []);
 
-        // Initialize Rihlah (Caching)
-        $this->_cache = new RihlahCaching($this->container, $this->_logger, $this->connection);
+        // Initialize Sabr (Queue) with proper parameters
+        $this->_queue = new SabrQueue($this->_logger, []);
 
-        // Initialize Sabr (Queue)
-        $this->_queue = new SabrQueue($this->container, $this->_logger, $this->connection);
+        // Initialize Usul (Knowledge) with proper parameters
+        $this->knowledge = new UsulKnowledge($this->_logger, []);
 
-        // Initialize Usul (Knowledge)
-        $this->knowledge = new UsulKnowledge($this->container, $this->_logger, $this->connection);
-
-        // Initialize Iqra (Search)
-        $this->search = new IqraSearch($this->connection);
-
-        // Initialize Bayan (Formatter)
-        $this->formatter = new BayanFormatter($this->connection, $this->_logger);
-
-        // Initialize Siraj (API) - temporarily disabled due to GuzzleHttp StreamFactory issue
-        // $this->api = new SirajAPI($this->container, $this->logger, $this->session);
-
-        // Initialize Tadbir (Configuration)
+        // Initialize Tadbir (Configuration) with proper parameters
         $this->config = new TadbirConfiguration($this->_logger);
+
+        // Initialize User Interface Layer components
+        $this->search = new IqraSearch($this->_logger, []);
+        $this->formatter = new BayanFormatter($this->_logger, []);
+        $this->api = new SirajAPI($this->_logger, []);
+        $this->_cache = new RihlahCaching($this->_logger, []);
+
+        // Store all systems in container for easy access
+        $this->container->set('sabil.routing', $this->_sabilRouter);
+        $this->container->set('mizan.database', $this->database);
+        $this->container->set('wisal.session', $this->_session);
+        $this->container->set('aman.security', $this->_auth);
+        $this->container->set('sabr.queue', $this->_queue);
+        $this->container->set('usul.knowledge', $this->knowledge);
+        $this->container->set('tadbir.config', $this->config);
+        $this->container->set('iqra.search', $this->search);
+        $this->container->set('bayan.formatter', $this->formatter);
+        $this->container->set('siraj.api', $this->api);
+        $this->container->set('rihlah.caching', $this->_cache);
+
+        $this->_logger->info('All Islamic systems initialized successfully');
     }
 
     /**
@@ -390,10 +396,10 @@ class NizamApplication
     public function environment(string $environment = null): string|bool
     {
         if ($environment !== null) {
-            return appenv('APP_ENV') === $environment;
+            return getenv('APP_ENV') === $environment;
         }
 
-        return appenv('APP_ENV') ?: 'production';
+        return getenv('APP_ENV') ?: 'production';
     }
 
     /**
@@ -410,7 +416,8 @@ class NizamApplication
     public function run(): void
     {
         try {
-            $request = Request::createFromGlobals();
+            // Create a simple request object for now
+            $request = new Request('GET', '/', [], [], [], []);
             $response = $this->handleRequest($request);
             $this->sendResponse($response);
         } catch (\Exception $e) {
@@ -478,7 +485,7 @@ class NizamApplication
     /**
      * Get the router instance.
      */
-    public function getRouter(): IslamRouter
+    public function getRouter(): mixed
     {
         return $this->router;
     }
@@ -594,7 +601,7 @@ class NizamApplication
         }
         
         // Start session immediately to prevent "headers already sent" errors
-        if (isset($this->_session) && $this->_session) {
+        if (isset($this->_session) && $this->_session && method_exists($this->_session, 'start')) {
             $this->_session->start();
         }
         

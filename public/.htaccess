@@ -1,31 +1,5 @@
-# Test directive - if this causes a 500 error, .htaccess is being processed
-# If you see this comment in the browser, .htaccess is NOT being processed
-# <IfModule !mod_headers.c>
-#     # This will cause a 500 error if .htaccess is being processed
-#     InvalidDirective test
-# </IfModule>
-
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
-    RewriteEngine On
-
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ app.php [L]
-</IfModule>
+# IslamWiki .htaccess Configuration
+# This file handles routing for the main application
 
 # Enable gzip compression
 <IfModule mod_deflate.c>
@@ -45,6 +19,25 @@ AddDefaultCharset UTF-8
 
 # Disable directory listing
 Options -Indexes
+
+# Enable rewrite engine for routing
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Allow direct access to specific files
+    RewriteRule ^(islamic_demo\.php|test\.html)$ - [L]
+    
+    # Allow direct access to scripts directory
+    RewriteRule ^scripts/ - [L]
+    
+    # Allow direct access to assets
+    RewriteRule ^(assets|css|js|images)/ - [L]
+    
+    # Route everything else to app.php (main application)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ app.php [QSA,L]
+</IfModule>
 
 # Set timezone (adjust as needed)
 # php_value date.timezone UTC

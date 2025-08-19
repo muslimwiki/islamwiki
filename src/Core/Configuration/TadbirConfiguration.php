@@ -12,13 +12,22 @@ if (!defined('LOCAL_SETTINGS_PATH')) {
 use IslamWiki\Core\Logging\ShahidLogger;
 
 /**
- * Tadbir (تدبير) - Configuration Management System
+ * TadbirConfiguration (تدبير) - Configuration Management System
  *
- * Tadbir means "Management" or "Planning" in Arabic. This system provides
+ * Tadbir means "Management" or "Planning" in Arabic. This class provides
  * comprehensive configuration management, settings organization, and planning
  * capabilities for the IslamWiki application.
  *
- * @package IslamWiki\Core\Configuration
+ * This system is part of the Infrastructure Layer and manages all configuration
+ * aspects including Islamic system settings, database configurations, security
+ * policies, and performance tuning.
+ *
+ * @category  Core
+ * @package   IslamWiki\Core\Configuration
+ * @author    IslamWiki Development Team
+ * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
+ * @link      https://islam.wiki
+ * @since     0.0.1.1
  */
 class TadbirConfiguration
 {
@@ -44,11 +53,33 @@ class TadbirConfiguration
     private array $validationRules = [];
 
     /**
-     * Configuration categories.
+     * Configuration categories aligned with Islamic architecture.
      *
-     * @var array
+     * @var array<string, string>
      */
     private array $categories = [
+        // Foundation Layer (أساس)
+        'asas' => 'Foundation layer settings',
+        
+        // Infrastructure Layer (سبيل, نظام, ميزان, تدبير)
+        'sabil' => 'Routing and navigation settings',
+        'nizam' => 'System organization settings',
+        'mizan' => 'Database and performance settings',
+        'tadbir' => 'Configuration management settings',
+        
+        // Application Layer (أمان, وصل, صبر, أصول)
+        'aman' => 'Security and authentication settings',
+        'wisal' => 'Session management settings',
+        'sabr' => 'Background processing settings',
+        'usul' => 'Business rules and validation settings',
+        
+        // User Interface Layer (إقرأ, بيان, سراج, رحلة)
+        'iqra' => 'Search and discovery settings',
+        'bayan' => 'Content formatting settings',
+        'siraj' => 'API and knowledge settings',
+        'rihlah' => 'User experience and caching settings',
+        
+        // Legacy categories for backward compatibility
         'core' => 'Core application settings',
         'database' => 'Database configuration',
         'security' => 'Security and authentication settings',
@@ -73,7 +104,7 @@ class TadbirConfiguration
     /**
      * Create a new Tadbir configuration instance.
      *
-     * @param Shahid $logger The logger instance
+     * @param ShahidLogger $logger The logger instance
      */
     public function __construct(ShahidLogger $logger)
     {
@@ -121,6 +152,75 @@ class TadbirConfiguration
                 'hijri_calendar' => true,
                 'arabic_support' => true,
                 'scholar_verification' => true
+            ],
+            // Foundation Layer (أساس)
+            'asas' => [
+                'container_cache_enabled' => true,
+                'service_provider_auto_discovery' => true,
+                'foundation_auto_initialize' => true,
+                'bootstrap_environment_detection' => true
+            ],
+            // Infrastructure Layer
+            'sabil' => [
+                'route_caching_enabled' => true,
+                'middleware_auto_discovery' => true,
+                'route_grouping_enabled' => true
+            ],
+            'nizam' => [
+                'system_auto_organization' => true,
+                'component_auto_registration' => true
+            ],
+            'mizan' => [
+                'query_caching_enabled' => true,
+                'performance_monitoring_enabled' => true,
+                'connection_pooling_enabled' => true
+            ],
+            'tadbir' => [
+                'config_auto_reload' => false,
+                'config_validation_enabled' => true,
+                'config_encryption_enabled' => false
+            ],
+            // Application Layer
+            'aman' => [
+                'security_policies_enabled' => true,
+                'islamic_content_validation' => true,
+                'threat_detection_enabled' => true
+            ],
+            'wisal' => [
+                'session_encryption_enabled' => true,
+                'multi_device_sessions_enabled' => true,
+                'session_analytics_enabled' => true
+            ],
+            'sabr' => [
+                'queue_auto_processing' => true,
+                'job_retry_enabled' => true,
+                'queue_monitoring_enabled' => true
+            ],
+            'usul' => [
+                'business_rules_enabled' => true,
+                'rule_engine_enabled' => true,
+                'validation_auto_enforcement' => true
+            ],
+            // User Interface Layer
+            'iqra' => [
+                'search_indexing_enabled' => true,
+                'search_analytics_enabled' => true,
+                'content_discovery_enabled' => true
+            ],
+            'bayan' => [
+                'content_formatting_enabled' => true,
+                'islamic_formatting_enabled' => true,
+                'multi_format_output_enabled' => true
+            ],
+            'siraj' => [
+                'api_rate_limiting_enabled' => true,
+                'api_documentation_enabled' => true,
+                'knowledge_discovery_enabled' => true
+            ],
+            'rihlah' => [
+                'user_experience_caching_enabled' => true,
+                'performance_optimization_enabled' => true,
+                'cache_analytics_enabled' => true
             ],
             'extensions' => [
                 'enabled_extensions' => [],
