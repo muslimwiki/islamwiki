@@ -1,61 +1,57 @@
 <?php
 
 /**
- * This file is part of IslamWiki.
- *
- * Copyright (C) 2025 IslamWiki Contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Debug Session System
  */
 
-declare(strict_types=1);
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Start output buffering
+ob_start();
 
-echo "<h1>🔍 Session Debug</h1>";
+echo "=== Session Debug Test ===<br>";
 
-// Setup container and session
-$container = new \IslamWiki\Core\Container();
-$container->singleton('session', function () {
-    return new \IslamWiki\Core\Session\SessionManager();
-});
+try {
+    echo "Step 1: Loading autoloader...<br>";
+    require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+    echo "Step 2: Autoloader loaded successfully<br>";
 
-$session = $container->get('session');
-$session->start();
+    echo "Step 3: Creating container...<br>";
+    $container = new \IslamWiki\Core\Container\AsasContainer();
+    echo "Step 4: Container created successfully<br>";
 
-echo "<h2>Session Information</h2>";
-echo "<p><strong>Session ID:</strong> " . session_id() . "</p>";
-echo "<p><strong>Session Name:</strong> " . session_name() . "</p>";
-echo "<p><strong>Session Status:</strong> " . session_status() . "</p>";
+    echo "Step 5: Creating session manager...<br>";
+    $sessionManager = new \IslamWiki\Core\Session\WisalSession();
+    echo "Step 6: Session manager created successfully<br>";
 
-echo "<h2>Session Data</h2>";
-echo "<pre>";
-print_r($_SESSION);
-echo "</pre>";
+    echo "Step 7: Starting session...<br>";
+    $sessionManager->start();
+    echo "Step 8: Session started successfully<br>";
 
-echo "<h2>Session Manager Methods</h2>";
-echo "<p><strong>isLoggedIn:</strong> " . ($session->isLoggedIn() ? 'true' : 'false') . "</p>";
-echo "<p><strong>getUserId:</strong> " . ($session->getUserId() ?? 'null') . "</p>";
-echo "<p><strong>getUsername:</strong> " . ($session->getUsername() ?? 'null') . "</p>";
-echo "<p><strong>isAdmin:</strong> " . ($session->isAdmin() ? 'true' : 'false') . "</p>";
+    echo "Step 9: Setting session data...<br>";
+    $_SESSION['test_key'] = 'test_value';
+    echo "Step 10: Session data set successfully<br>";
 
-echo "<h2>Cookies</h2>";
-echo "<pre>";
-print_r($_COOKIE);
-echo "</pre>";
+    echo "Step 11: Reading session data...<br>";
+    $testValue = $_SESSION['test_key'] ?? 'not_found';
+    echo "Step 12: Session data read: $testValue<br>";
 
-echo "<h2>Headers</h2>";
-echo "<pre>";
-print_r(getallheaders());
-echo "</pre>";
+    echo "Step 13: Session ID: " . session_id() . "<br>";
+    echo "Step 14: Session name: " . session_name() . "<br>";
+    echo "Step 15: Session status: " . session_status() . "<br>";
+
+    echo "Step 16: Session data dump:<br><pre>";
+    print_r($_SESSION);
+    echo "</pre>";
+
+    echo "Step 17: Session debug completed successfully<br>";
+
+} catch (\Throwable $e) {
+    echo "<br><strong>ERROR: " . $e->getMessage() . "</strong><br>";
+    echo "File: " . $e->getFile() . ":" . $e->getLine() . "<br>";
+    echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+}
+
+ob_end_flush();

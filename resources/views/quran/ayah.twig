@@ -906,16 +906,16 @@
             <div class="breadcrumb-left">
                 <a href="/" class="breadcrumb-link">🏠 Home</a>
                 <span class="breadcrumb-separator">›</span>
-                <a href="/quran" class="breadcrumb-link">📖 Quran</a>
+                <a href="/{{ locale }}/quran" class="breadcrumb-link">📖 Quran</a>
                 <span class="breadcrumb-separator">›</span>
-                <a href="/quran/{{ surah }}" class="breadcrumb-link">📚 {{ surah_name ?? 'Surah ' ~ surah }}</a>
+                <a href="/{{ locale }}/quran/{{ surah }}" class="breadcrumb-link">📚 {{ surah_name ?? 'Surah ' ~ surah }}</a>
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">🎯 Ayah {{ ayah_number }}</span>
             </div>
             <div class="breadcrumb-center">
-                <a href="/quran/search" class="breadcrumb-nav-link">🔍 Search</a>
-                <a href="/quran/juz" class="breadcrumb-nav-link">📚 Juz</a>
-                <a href="/quran" class="breadcrumb-nav-link">📖 Surah List</a>
+                <a href="/{{ locale }}/quran/search" class="breadcrumb-nav-link">🔍 Search</a>
+                <a href="/{{ locale }}/quran/juz" class="breadcrumb-nav-link">📚 Juz</a>
+                <a href="/{{ locale }}/quran" class="breadcrumb-nav-link">📖 Surah List</a>
             </div>
             <div class="breadcrumb-right">
                 <form method="get" action="" class="translation-form-inline">
@@ -974,7 +974,7 @@
             <!-- Navigation -->
             <div class="ayah-navigation">
                 {% if prev_ayah %}
-                    <a href="/quran/{{ surah }}/{{ prev_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button prev">
+                    <a href="/{{ locale }}/quran/{{ surah }}/{{ prev_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button prev">
                         Previous Ayah
                     </a>
                 {% else %}
@@ -982,7 +982,7 @@
                 {% endif %}
                 
                 {% if next_ayah %}
-                    <a href="/quran/{{ surah }}/{{ next_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button next">
+                    <a href="/{{ locale }}/quran/{{ surah }}/{{ next_ayah.ayah_number }}?translator={{ translator|url_encode }}" class="nav-button next">
                         Next Ayah
                     </a>
                 {% else %}
@@ -995,7 +995,7 @@
             <div class="error-icon">⚠️</div>
             <h3>Sorry, the requested ayah could not be found.</h3>
             <p>Please check the surah and ayah numbers and try again.</p>
-            <a href="/quran" class="error-action-btn">Return to Quran</a>
+            <a href="/{{ locale }}/quran" class="error-action-btn">Return to Quran</a>
         </div>
     {% endif %}
     
@@ -1005,10 +1005,10 @@
             <div class="footer-section">
                 <h4>📚 Quran Resources</h4>
                 <ul>
-                    <li><a href="/quran/search">Search Quran</a></li>
-                    <li><a href="/quran/juz">Juz Navigation</a></li>
-                    <li><a href="/quran/surah">Surah List</a></li>
-                    <li><a href="/quran/translations">Translations</a></li>
+                    <li><a href="/{{ locale }}/quran/search">Search Quran</a></li>
+                    <li><a href="/{{ locale }}/quran/juz">Juz Navigation</a></li>
+                    <li><a href="/{{ locale }}/quran/surah">Surah List</a></li>
+                    <li><a href="/{{ locale }}/quran/translations">Translations</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1023,19 +1023,19 @@
             <div class="footer-section">
                 <h4>🔍 Quick Actions</h4>
                 <ul>
-                    <li><a href="/quran/{{ surah }}">Full Surah View</a></li>
-                    <li><a href="/quran/{{ surah }}/{{ ayah_number|default(1) - 1 }}">Previous Ayah</a></li>
-                    <li><a href="/quran/{{ surah }}/{{ ayah_number|default(1) + 1 }}">Next Ayah</a></li>
-                    <li><a href="/quran">Quran Home</a></li>
+                    <li><a href="/{{ locale }}/quran/{{ surah }}">Full Surah View</a></li>
+                    <li><a href="/{{ locale }}/quran/{{ surah }}/{{ ayah_number|default(1) - 1 }}">Previous Ayah</a></li>
+                    <li><a href="/{{ locale }}/quran/{{ surah }}/{{ ayah_number|default(1) + 1 }}">Next Ayah</a></li>
+                    <li><a href="/{{ locale }}/quran">Quran Home</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>📖 Study Tools</h4>
                 <ul>
-                    <li><a href="/quran/bookmark">Bookmark Ayah</a></li>
-                    <li><a href="/quran/notes">Personal Notes</a></li>
-                    <li><a href="/quran/recitation">Audio Recitation</a></li>
-                    <li><a href="/quran/tajweed">Tajweed Rules</a></li>
+                    <li><a href="/{{ locale }}/quran/bookmark">Bookmark Ayah</a></li>
+                    <li><a href="/{{ locale }}/quran/notes">Personal Notes</a></li>
+                    <li><a href="/{{ locale }}/quran/recitation">Audio Recitation</a></li>
+                    <li><a href="/{{ locale }}/quran/tajweed">Tajweed Rules</a></li>
                 </ul>
             </div>
         </div>

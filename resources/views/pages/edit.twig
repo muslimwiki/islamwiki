@@ -367,7 +367,7 @@
             {% if ':' in page.getAttribute('slug') %}
                 {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
             {% endif %}
-            <form method="POST" action="{{ isNew ? '/wiki' : '/wiki/' ~ displaySlug }}">
+            <form method="POST" action="{{ isNew ? (locale ? '/' ~ locale ~ '/wiki' : '/en/wiki') : (locale ? '/' ~ locale ~ '/wiki/' ~ displaySlug : '/en/wiki/' ~ displaySlug) }}">
                 {% if not isNew %}
                     <input type="hidden" name="_method" value="PUT">
                 {% endif %}
@@ -440,7 +440,7 @@
                 </div>
                 
                 <div class="form-actions">
-                    <a href="{{ isNew ? '/' : '/wiki/' ~ displaySlug }}" 
+                    <a href="{{ isNew ? (locale ? '/' ~ locale : '/en') : (locale ? '/' ~ locale ~ '/wiki/' ~ displaySlug : '/en/wiki/' ~ displaySlug) }}" 
                        class="btn btn-secondary">
                         <span>❌</span>
                         Cancel

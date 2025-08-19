@@ -9,16 +9,17 @@ echo "=== Route Debug Test ===<br>";
 
 try {
     echo "Step 1: Loading autoloader...<br>";
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
     echo "Step 2: Autoloader loaded successfully<br>";
 
-    echo "Step 3: Creating Application...<br>";
-    $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
-    echo "Step 4: Application created successfully<br>";
+    echo "Step 3: Creating NizamApplication...<br>";
+    $app = new \IslamWiki\Core\NizamApplication(dirname(__DIR__, 2));
+    $app->boot();
+    echo "Step 4: NizamApplication booted successfully<br>";
 
-    echo "Step 5: Creating IslamRouter...<br>";
-    $router = new \IslamWiki\Core\Routing\IslamRouter($app->getContainer());
-    echo "Step 6: IslamRouter created successfully<br>";
+    echo "Step 5: Creating SabilRouting...<br>";
+    $router = new \IslamWiki\Core\Routing\SabilRouting($app->getContainer());
+    echo "Step 6: SabilRouting created successfully<br>";
 
     echo "Step 7: Adding test routes...<br>";
     $router->get('/debug-routes', function ($request) {
@@ -30,11 +31,9 @@ try {
     echo "Step 8: Test routes added successfully<br>";
 
     echo "Step 9: Loading web routes...<br>";
-    $webRoutesPath = __DIR__ . '/../routes/web.php';
+    $webRoutesPath = dirname(__DIR__, 2) . '/routes/web.php';
     if (file_exists($webRoutesPath)) {
         echo "Step 10: Web routes file exists<br>";
-        // Store router in variable for routes file
-        $routerForRoutes = $router;
         require $webRoutesPath;
         echo "Step 11: Web routes loaded successfully<br>";
     } else {
@@ -42,7 +41,14 @@ try {
     }
 
     echo "Step 12: Creating PSR-7 request...<br>";
-    $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+    $uri = '/debug-routes';
+    $method = 'GET';
+    $server = [
+        'REQUEST_METHOD' => $method,
+        'REQUEST_URI' => $uri,
+        'HTTP_HOST' => 'localhost',
+    ];
+    $request = new \GuzzleHttp\Psr7\ServerRequest($method, 'http://localhost' . $uri, [], null, '1.1', $server);
     echo "Step 13: PSR-7 request created successfully<br>";
 
     echo "Step 14: Request URI is: " . $request->getUri()->getPath() . "<br>";

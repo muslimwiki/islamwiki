@@ -39,7 +39,7 @@
                             {{ surah.verses_count }} verses • {{ surah.revelation_type }}
                         </p>
                     </div>
-                    <a href="/quran/surah/{{ surah.surah_number }}" class="surah-link">View</a>
+                    <a href="/{{ locale }}/quran/surah/{{ surah.surah_number }}" class="surah-link">View</a>
                 </div>
                 {% endfor %}
             </div>
@@ -57,7 +57,7 @@
                             {{ juz.start_surah }}:{{ juz.start_ayah }} - {{ juz.end_surah }}:{{ juz.end_ayah }}
                         </p>
                     </div>
-                    <a href="/quran/juz/{{ juz.juz_number }}" class="juz-link">View</a>
+                    <a href="/{{ locale }}/quran/juz/{{ juz.juz_number }}" class="juz-link">View</a>
                 </div>
                 {% endfor %}
             </div>
@@ -65,8 +65,8 @@
     </div>
 
     <div class="quran-actions">
-        <a href="/quran/search" class="btn btn-primary">Search Quran</a>
-        <a href="/quran/page/1" class="btn btn-secondary">Start Reading</a>
+        <a href="/{{ locale }}/quran/search" class="btn btn-primary">Search Quran</a>
+        <a href="/{{ locale }}/quran/page/1" class="btn btn-secondary">Start Reading</a>
     </div>
 </div>
 {% endblock %}

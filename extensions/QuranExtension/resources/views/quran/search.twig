@@ -10,7 +10,7 @@
     </div>
 
     <div class="search-form">
-        <form method="GET" action="/quran/search">
+        <form method="GET" action="/{{ locale }}/quran/search">
             <div class="search-input-group">
                 <input 
                     type="text" 
@@ -61,8 +61,8 @@
                 </div>
                 
                 <div class="ayah-actions">
-                    <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="btn btn-primary">View Ayah</a>
-                    <a href="/quran/surah/{{ ayah.surah_number }}" class="btn btn-secondary">View Surah</a>
+                    <a href="/{{ locale }}/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="btn btn-primary">View Ayah</a>
+                    <a href="/{{ locale }}/quran/surah/{{ ayah.surah_number }}" class="btn btn-secondary">View Surah</a>
                 </div>
             </div>
             {% endfor %}

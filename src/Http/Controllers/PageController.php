@@ -75,12 +75,21 @@ class PageController extends Controller
      *
      * @throws \Exception If there's an error retrieving pages
      */
-    public function index(Request $request): Response
+    public function index(Request $request, string $locale = 'en'): Response
     {
-        $this->logger->info('Page list requested', [
-            'query' => $request->getQueryParams(),
-            'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
-        ]);
+        // Validate locale parameter
+        $validLocales = ['en', 'ar', 'tr', 'ur', 'id', 'ms', 'fa', 'he'];
+        if (!in_array($locale, $validLocales)) {
+            $locale = 'en'; // Default to English if invalid locale
+        }
+
+        if ($this->logger) {
+            $this->logger->info('Page list requested', [
+                'query' => $request->getQueryParams(),
+                'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                'locale' => $locale,
+            ]);
+        }
 
         try {
             // Get sort parameters
@@ -174,7 +183,9 @@ class PageController extends Controller
                     'search' => $search,
                     'sort' => $sort,
                     'order' => $order
-                ]
+                ],
+                'locale' => $locale,
+                'currentLocale' => $locale,
             ]);
         } catch (\Exception $e) {
             $this->logger->error('Failed to retrieve page list', [
@@ -328,14 +339,25 @@ class PageController extends Controller
      * @param Request $request The HTTP request
      * @return Response
      */
-    public function create(Request $request): Response
+    public function create(Request $request, string $locale = 'en'): Response
     {
+        // Validate locale parameter
+        $validLocales = ['en', 'ar', 'tr', 'ur', 'id', 'ms', 'fa', 'he'];
+        if (!in_array($locale, $validLocales)) {
+            $locale = 'en'; // Default to English if invalid locale
+        }
+
+        // Debug: Log the locale parameter
+        error_log("PageController::create - Locale parameter: " . $locale);
+        error_log("PageController::create - Request URI: " . $request->getUri()->getPath());
+
         try {
             if ($this->logger) {
                 $this->logger->info('PageController::create method called', [
                     'query_params' => $request->getQueryParams(),
                     'method' => $request->getMethod(),
                     'uri' => $request->getUri()->getPath(),
+                    'locale' => $locale,
                 ]);
             }
 
@@ -363,7 +385,9 @@ class PageController extends Controller
                         ]);
                     }
 
-                    return $this->redirect($existingPage->getEditUrl())
+                    // Build locale-aware redirect URL
+                    $redirectPath = $locale === 'en' ? "/wiki/{$slug}/edit" : "/{$locale}/wiki/{$slug}/edit";
+                    return $this->redirect($redirectPath)
                         ->with('info', 'This page already exists. You are now editing the existing page.');
                 }
             }
@@ -393,6 +417,7 @@ class PageController extends Controller
                 'canDelete' => false,
                 'canLock' => $this->isAdmin($request),
                 'user' => $user,
+                'locale' => $locale,
             ]);
         } catch (HttpException $e) {
             throw $e; // Re-throw HTTP exceptions
@@ -415,8 +440,18 @@ class PageController extends Controller
      * @param Request $request The HTTP request containing the page data
      * @return Response
      */
-    public function store(Request $request): Response
+    public function store(Request $request, string $locale = 'en'): Response
     {
+        // Validate locale parameter
+        $validLocales = ['en', 'ar', 'tr', 'ur', 'id', 'ms', 'fa', 'he'];
+        if (!in_array($locale, $validLocales)) {
+            $locale = 'en'; // Default to English if invalid locale
+        }
+
+        // Debug: Log the locale parameter
+        error_log("PageController::store - Locale parameter: " . $locale);
+        error_log("PageController::store - Request URI: " . $request->getUri()->getPath());
+
         try {
             if ($this->logger) {
                 $this->logger->info('PageController::store method called', [
@@ -425,6 +460,7 @@ class PageController extends Controller
                     'content_type' => $request->getHeaderLine('Content-Type'),
                     'method' => $request->getMethod(),
                     'uri' => $request->getUri()->getPath(),
+                    'locale' => $locale,
                 ]);
             }
 
@@ -505,7 +541,9 @@ class PageController extends Controller
                     ]);
                 }
 
-                return $this->redirect($existingPage->getEditUrl())
+                // Build locale-aware redirect URL
+                $redirectPath = $locale === 'en' ? "/wiki/{$slug}/edit" : "/{$locale}/wiki/{$slug}/edit";
+                return $this->redirect($redirectPath)
                     ->with('info', 'This page already exists. You are now editing the existing page.');
             }
 
@@ -526,6 +564,7 @@ class PageController extends Controller
                     'content' => $content,
                     'content_format' => $contentFormat,
                     'namespace' => $namespace,
+                    // 'locale' => $locale, // Temporarily disabled until migration is run
                     'is_locked' => false,
                     'view_count' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -558,8 +597,9 @@ class PageController extends Controller
                     ]);
                 }
 
-                // Redirect to the new page
-                return $this->redirect("/{$slug}")
+                // Redirect to the new page with locale context
+                $redirectPath = $locale === 'en' ? "/wiki/{$slug}" : "/{$locale}/wiki/{$slug}";
+                return $this->redirect($redirectPath)
                     ->with('success', 'Page created successfully.');
 
             } catch (\Exception $e) {

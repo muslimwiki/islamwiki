@@ -1,3 +1,9 @@
+**Last Updated:** 2025-08-19  
+**Version:** 0.0.1.0  
+**Author:** IslamWiki Development Team  
+**License:** AGPL-3.0  
+**Status:** Extensions Documentation Complete ✅
+
 # IslamWiki Extensions
 
 This directory contains documentation for various extensions that extend the core functionality of IslamWiki.

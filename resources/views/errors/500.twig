@@ -310,6 +310,47 @@
             border-top: 1px solid #e2e8f0;
         }
         
+        .copy-btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        .debug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .debug-header h3 {
+            margin: 0;
+            flex: 1;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -340,6 +381,17 @@
             .actions .btn {
                 display: block;
                 margin: 10px auto;
+                max-width: 200px;
+            }
+            
+            .debug-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .copy-btn {
+                align-self: center;
                 max-width: 200px;
             }
         }
@@ -406,25 +458,34 @@
         </div>
 
             <div class="suggestions">
-            <h3>What you can do:</h3>
-            <ul>
-                <li>Try refreshing the page</li>
-                <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
-                <li>Try again in a few minutes</li>
-                <li>Contact support if the problem persists</li>
-            </ul>
-        </div>
+                <h3>What you can do:</h3>
+                <ul>
+                    <li>Try refreshing the page in a few moments</li>
+                    <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
+                    <li>Clear your browser cache and cookies</li>
+                    <li>Try using a different browser or device</li>
+                    <li>Wait a few minutes and try again</li>
+                    <li>Contact support if the problem persists</li>
+                </ul>
+            </div>
 
             <div class="actions">
                 <a href="{{ url('/') }}" class="btn">🏠 Go to Homepage</a>
-                <a href="{{ url('/pages') }}" class="btn btn-secondary">📚 Browse Pages</a>
+                <a href="javascript:location.reload()" class="btn btn-secondary">🔄 Try Again</a>
+                <a href="{{ url('/status') }}" class="btn btn-secondary">📊 Check Status</a>
                 <a href="javascript:history.back()" class="btn btn-secondary">⬅️ Go Back</a>
-        </div>
+            </div>
 
         {% if debug %}
             <div class="debug-info">
+                <div class="debug-header">
                     <h3>🐛 Debug Information</h3>
-                    
+                    <button id="copyDebugBtn" class="copy-btn" onclick="copyDebugInfo()" title="Copy clean, formatted debug information to clipboard">
+                        📋 Copy Debug Info
+                    </button>
+                </div>
+                
+                <div id="debugContent">
                     {% if exception is defined and exception %}
                         <h4>🚨 Exception Details</h4>
                         <p><strong>Type:</strong> {{ exception.class|default('Unknown') }}</p>
@@ -440,15 +501,16 @@
                     {% endif %}
                     
                     <h4>⚙️ Server Environment</h4>
-                <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
-                <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
-                <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
-                <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
-                
+                    <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
+                    <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
+                    <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
+                    <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
+                    
                     {% if server_info is defined and server_info %}
                         <h4>🔧 Additional Server Info</h4>
                         <pre>{{ server_info|default('Server information not available') }}</pre>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         {% endif %}
         </div>
@@ -458,5 +520,134 @@
             <p>If you continue to experience issues, please contact our support team.</p>
         </div>
     </div>
+
+    <script>
+        function copyDebugInfo() {
+            const debugContent = document.getElementById('debugContent');
+            const copyBtn = document.getElementById('copyDebugBtn');
+            const originalText = copyBtn.innerHTML;
+            
+            // Get clean, formatted text content for copying
+            const textToCopy = formatDebugInfoForCopy(debugContent);
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopySuccess(copyBtn, originalText);
+                }).catch(err => {
+                    console.error('Failed to copy debug info: ', err);
+                    fallbackCopy(textToCopy, copyBtn, originalText);
+                });
+            } else {
+                // Fallback for older browsers or non-secure contexts
+                fallbackCopy(textToCopy, copyBtn, originalText);
+            }
+        }
+        
+        function formatDebugInfoForCopy(debugElement) {
+            // Create a clean, formatted version for copying
+            let formattedText = '';
+            
+            // Add header
+            formattedText += 'DEBUG INFORMATION\n';
+            formattedText += '==================\n\n';
+            
+            // Process each section
+            const sections = debugElement.querySelectorAll('h4');
+            sections.forEach(section => {
+                const sectionTitle = section.textContent.trim();
+                const sectionContent = section.nextElementSibling;
+                
+                // Clean up section title (remove emojis and format nicely)
+                const cleanTitle = sectionTitle.replace(/[🚨📚⚙️🔧]/g, '').trim();
+                formattedText += cleanTitle.toUpperCase() + '\n';
+                formattedText += '-'.repeat(cleanTitle.length) + '\n';
+                
+                // Process content based on type
+                if (sectionContent.tagName === 'P') {
+                    // Single paragraph
+                    const text = sectionContent.textContent.trim();
+                    formattedText += text + '\n\n';
+                } else if (sectionContent.tagName === 'PRE') {
+                    // Pre-formatted content (like stack trace)
+                    const text = sectionContent.textContent.trim();
+                    formattedText += text + '\n\n';
+                } else {
+                    // Multiple paragraphs or other content
+                    let nextElement = section.nextElementSibling;
+                    while (nextElement && nextElement.tagName !== 'H4') {
+                        if (nextElement.tagName === 'P') {
+                            const text = nextElement.textContent.trim();
+                            if (text) {
+                                formattedText += text + '\n';
+                            }
+                        } else if (nextElement.tagName === 'PRE') {
+                            const text = nextElement.textContent.trim();
+                            if (text) {
+                                formattedText += text + '\n';
+                            }
+                        }
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                    formattedText += '\n';
+                }
+            });
+            
+            // Add footer with timestamp
+            formattedText += 'Generated: ' + new Date().toISOString() + '\n';
+            formattedText += 'URL: ' + window.location.href + '\n';
+            
+            return formattedText;
+        }
+        
+        function fallbackCopy(text, button, originalText) {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-999999px';
+            textarea.style.top = '-999999px';
+            document.body.appendChild(textarea);
+            
+            try {
+                textarea.select();
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess(button, originalText);
+                } else {
+                    showCopyError(button, originalText);
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+                showCopyError(button, originalText);
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+        
+        function showCopySuccess(button, originalText) {
+            button.innerHTML = '✅ Copied!';
+            button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            button.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)';
+                button.style.boxShadow = '0 2px 8px rgba(66, 153, 225, 0.3)';
+            }, 2000);
+        }
+        
+        function showCopyError(button, originalText) {
+            button.innerHTML = '❌ Failed';
+            button.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+            button.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)';
+                button.style.boxShadow = '0 2px 8px rgba(66, 153, 225, 0.3)';
+            }, 2000);
+        }
+    </script>
 </body>
 </html>

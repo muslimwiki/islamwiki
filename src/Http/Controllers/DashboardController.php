@@ -79,6 +79,9 @@ class DashboardController extends Controller
             'graph' => [ 'nodes' => [], 'edges' => [] ],
         ];
 
+        // Initialize template path with a default value
+        $templatePath = 'dashboard/user_dashboard';
+
         try {
             error_log("DashboardController::index - About to get auth service");
             $auth = $this->container->get(\IslamWiki\Core\Auth\AmanSecurity::class);
@@ -135,16 +138,16 @@ class DashboardController extends Controller
                 }
             }
 
-                    // Get site statistics (available for all users)
-        $siteStats = $this->getSiteStatistics();
+            // Get site statistics (available for all users)
+            $siteStats = $this->getSiteStatistics();
 
-        // Determine user role and select appropriate template
-        $userRole = $this->determineUserRole($user);
-        $templatePath = $this->getRoleBasedTemplate($userRole);
-        
-        // Log role detection for debugging
-        error_log("DashboardController::index - User role detected: $userRole");
-        error_log("DashboardController::index - Template selected: $templatePath");
+            // Determine user role and select appropriate template
+            $userRole = $this->determineUserRole($user);
+            $templatePath = $this->getRoleBasedTemplate($userRole);
+            
+            // Log role detection for debugging
+            error_log("DashboardController::index - User role detected: $userRole");
+            error_log("DashboardController::index - Template selected: $templatePath");
 
             // Try to get Bayan (Knowledge Graph) stats
             try {

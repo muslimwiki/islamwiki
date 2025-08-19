@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>503 Service Unavailable - IslamWiki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            min-height: 100vh;
+            color: #2d3748;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        .error-header {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .error-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .error-icon {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .error-code {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-content {
+            padding: 40px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .info-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #6b7280;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .info-card h3 {
+            color: #6b7280;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card h3::before {
+            content: "🔧";
+            font-size: 1.1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .info-value {
+            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+            color: #2d3748;
+            font-size: 0.9rem;
+            text-align: right;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .maintenance-info {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-left: 4px solid #0ea5e9;
+            text-align: center;
+        }
+        
+        .maintenance-info h3 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .maintenance-info h3::before {
+            content: "🛠️";
+            font-size: 1.1rem;
+        }
+        
+        .maintenance-status {
+            font-size: 1.1rem;
+            color: #0369a1;
+            margin: 15px 0;
+        }
+        
+        .estimated-time {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin: 15px 0;
+        }
+        
+        .suggestions {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-left: 4px solid #16a34a;
+        }
+        
+        .suggestions h3 {
+            color: #15803d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .suggestions h3::before {
+            content: "💡";
+            font-size: 1.1rem;
+        }
+        
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .suggestions li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .suggestions li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #16a34a;
+            font-weight: bold;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 0 10px;
+            background: #6b7280;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn-secondary {
+            background: #9ca3af;
+        }
+        
+        .btn-secondary:hover {
+            background: #6b7280;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .debug-info {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+        
+        .debug-info h3 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .debug-info h3::before {
+            content: "🐛";
+            font-size: 1.1rem;
+        }
+        
+        .debug-info h4 {
+            color: #60a5fa;
+            margin: 20px 0 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .debug-info p {
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #2d3748;
+        }
+        
+        .debug-info p:last-child {
+            border-bottom: none;
+        }
+        
+        .debug-info strong {
+            color: #fbbf24;
+        }
+        
+        .debug-info pre {
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #fbbf24;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .error-header {
+                padding: 40px 20px;
+            }
+            
+            .error-code {
+                font-size: 3rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-content {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .actions .btn {
+                display: block;
+                margin: 10px auto;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-header">
+            <span class="error-icon">🔧</span>
+            <h1 class="error-code">503</h1>
+            <h2 class="error-title">Service Unavailable</h2>
+            <p class="error-message">We're currently performing maintenance to improve your experience. Please check back soon.</p>
+        </div>
+
+        <div class="error-content">
+            <div class="maintenance-info">
+                <h3>Maintenance Status</h3>
+                <div class="maintenance-status">{{ maintenance_status|default('Scheduled maintenance in progress') }}</div>
+                <div class="estimated-time">Estimated completion: {{ estimated_completion|default('2-3 hours') }}</div>
+                <p>We apologize for the inconvenience. Our team is working hard to get everything back up and running.</p>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Request Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">URL:</span>
+                        <span class="info-value" title="{{ request_uri|default('Unknown') }}">{{ request_uri|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Method:</span>
+                        <span class="info-value">{{ request_method|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">IP Address:</span>
+                        <span class="info-value">{{ request_ip|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">User Agent:</span>
+                        <span class="info-value" title="{{ request_user_agent|default('Unknown') }}">{{ request_user_agent|default('Unknown')|length > 50 ? request_user_agent|default('Unknown')|slice(0, 50) ~ '...' : request_user_agent|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Timestamp:</span>
+                        <span class="info-value">{{ timestamp|default('Unknown') }}</span>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>Service Status</h3>
+                    <div class="info-item">
+                        <span class="info-label">Service:</span>
+                        <span class="info-value">{{ service_name|default('IslamWiki') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value">{{ service_status|default('Maintenance') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Start Time:</span>
+                        <span class="info-value">{{ maintenance_start|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Duration:</span>
+                        <span class="info-value">{{ maintenance_duration|default('Unknown') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Reason:</span>
+                        <span class="info-value">{{ maintenance_reason|default('System improvements') }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="suggestions">
+                <h3>What you can do:</h3>
+                <ul>
+                    <li>Check our <a href="{{ url('/status') }}">status page</a> for updates</li>
+                    <li>Follow us on social media for real-time updates</li>
+                    <li>Try again in a few hours</li>
+                    <li>Contact support if this is urgent</li>
+                    <li>Check our <a href="{{ url('/help') }}">help center</a> for common questions</li>
+                </ul>
+            </div>
+            
+            <div class="actions">
+                <a href="javascript:location.reload()" class="btn btn-success">🔄 Check Status</a>
+                <a href="{{ url('/status') }}" class="btn btn-primary">📊 Status Page</a>
+                <a href="{{ url('/contact') }}" class="btn">📧 Contact Support</a>
+                <a href="{{ url('/help') }}" class="btn btn-secondary">❓ Help Center</a>
+            </div>
+            
+            {% if debug %}
+                <div class="debug-info">
+                    <h3>🐛 Debug Information</h3>
+                    
+                    {% if exception is defined and exception %}
+                        <h4>🚨 Exception Details</h4>
+                        <p><strong>Type:</strong> {{ exception.class|default('Unknown') }}</p>
+                        <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
+                        <p><strong>File:</strong> {{ exception.file|default('Unknown') }}</p>
+                        <p><strong>Line:</strong> {{ exception.line|default('Unknown') }}</p>
+                        <p><strong>Code:</strong> {{ exception.code|default('Unknown') }}</p>
+                        
+                        {% if exception.trace is defined and exception.trace %}
+                            <h4>📚 Stack Trace</h4>
+                            <pre>{{ exception.trace|default('No stack trace available') }}</pre>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <h4>🔧 Maintenance Context</h4>
+                    <p><strong>Maintenance Mode:</strong> {{ maintenance_mode|default('Enabled') }}</p>
+                    <p><strong>Affected Services:</strong> {{ affected_services|default('All services') }}</p>
+                    <p><strong>Maintenance Type:</strong> {{ maintenance_type|default('Scheduled') }}</p>
+                    <p><strong>Priority:</strong> {{ maintenance_priority|default('Normal') }}</p>
+                    
+                    <h4>⚙️ Server Environment</h4>
+                    <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
+                    <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
+                    <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
+                    <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
+                    
+                    {% if server_info is defined and server_info %}
+                        <h4>🔧 Additional Server Info</h4>
+                        <pre>{{ server_info|default('Server information not available') }}</pre>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>IslamWiki - Islamic Knowledge Platform</p>
+            <p>We appreciate your patience during this maintenance period.</p>
+        </div>
+    </div>
+</body>
+</html> 

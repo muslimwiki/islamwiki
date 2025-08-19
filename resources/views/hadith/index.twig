@@ -2,40 +2,674 @@
 
 {% block title %}Hadith Collections - IslamWiki{% endblock %}
 
+{% block head %}
+<style>
+/* Hadith Index Page Specific Styles with Beautiful Islamic Theme */
+.hadith-index-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+.hadith-index-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="islamic-pattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%232d5016" opacity="0.03"/><circle cx="25" cy="25" r="3" fill="%232d5016" opacity="0.02"/><circle cx="25" cy="25" r="5" fill="%232d5016" opacity="0.01"/></pattern></defs><rect width="100" height="100" fill="url(%23islamic-pattern)"/></svg>') repeat;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Beautiful Islamic Page Header */
+.hadith-page-header {
+    text-align: center;
+    margin: 2rem 0 3rem 0;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    border-radius: 1.5rem;
+    color: white;
+    box-shadow: 0 15px 40px rgba(45, 80, 22, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.hadith-page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="header-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="50" r="4" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="50" r="6" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23header-pattern)"/></svg>') repeat;
+    opacity: 0.3;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+}
+
+.page-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+    font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade', serif;
+}
+
+.page-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    font-weight: 300;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    margin-bottom: 2rem;
+}
+
+.header-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 2rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Statistics Section */
+.stats-section {
+    margin-bottom: 4rem;
+}
+
+.stats-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 3rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    color: #2d5016;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+/* Main Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+/* Collections Section */
+.collections-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.section-icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+    color: #2d5016;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.collection-card {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #bae6fd;
+    transition: all 0.2s ease;
+}
+
+.collection-card:hover {
+    border-color: #7dd3fc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.collection-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.collection-arabic {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: right;
+    direction: rtl;
+    font-family: 'Noto Naskh Arabic', serif;
+}
+
+.reliability-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid;
+}
+
+.reliability-badge.sahih {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.reliability-badge.hasan {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.reliability-badge.mixed {
+    background: rgba(107, 114, 128, 0.1);
+    color: #4b5563;
+    border-color: rgba(107, 114, 128, 0.3);
+}
+
+.collection-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-label {
+    color: #6b7280;
+}
+
+.detail-value {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.collection-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.collection-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(45, 80, 22, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: #2d5016;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border: 2px solid #2d5016;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.btn-secondary:hover {
+    background: #f0f9ff;
+    transform: translateY(-1px);
+}
+
+/* Sidebar */
+.hadith-sidebar {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 2rem;
+}
+
+.sidebar-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-title .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #2d5016;
+}
+
+.sidebar-content {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Quick Search */
+.search-form {
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2d5016;
+    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1);
+}
+
+.search-button {
+    width: 100%;
+    background: #2d5016;
+    color: white;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+    background: #4a8029;
+}
+
+/* Quick Links */
+.quick-links {
+    margin-bottom: 1.5rem;
+}
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s ease;
+    margin-bottom: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.quick-link:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+}
+
+.quick-link-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    color: #2d5016;
+}
+
+.quick-link-content {
+    flex: 1;
+}
+
+.quick-link-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.quick-link-description {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* About Section */
+.about-section {
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.about-text {
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.about-text p {
+    margin-bottom: 0.75rem;
+}
+
+.about-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Call to Action */
+.cta-section {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    border-radius: 1.5rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: white;
+    box-shadow: 0 15px 40px rgba(45, 80, 22, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="cta-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="50" r="4" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="50" r="6" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23cta-pattern)"/></svg>') repeat;
+    opacity: 0.3;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.cta-description {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-btn-primary {
+    background: white;
+    color: #2d5016;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.125rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cta-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.cta-btn-secondary {
+    background: transparent;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.125rem;
+    transition: all 0.2s ease;
+    border: 2px solid white;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cta-btn-secondary:hover {
+    background: white;
+    color: #2d5016;
+    transform: translateY(-2px);
+}
+
+/* Loading Placeholder */
+.loading-placeholder {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.loading-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    color: #9ca3af;
+}
+
+.loading-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.loading-description {
+    color: #6b7280;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .collections-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .hadith-index-container {
+        padding: 1rem;
+    }
+    
+    .hadith-page-header {
+        padding: 2rem 1rem;
+        margin: 1rem 0 2rem 0;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-btn-primary, .cta-btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="hadith-page">
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="page-title">📚 Hadith Collections</h1>
-        <p class="page-subtitle">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him)</p>
+<div class="hadith-index-container">
+    <!-- Enhanced Page Header -->
+    <div class="hadith-page-header">
+        <div class="header-content">
+            <svg class="header-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h1 class="page-title">📚 Hadith Collections</h1>
+            <p class="page-subtitle">
+                Authenticated sayings and traditions of Prophet Muhammad (peace be upon him) 
+                from the most reliable Islamic scholars and collections
+            </p>
+            <a href="/hadith/search" class="cta-btn-primary">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                </svg>
+                Search Hadiths
+            </a>
+        </div>
     </div>
 
-    <!-- Hadith Stats -->
-    <div class="hadith-stats">
-        <div class="stat-card">
-            <div class="stat-icon">📚</div>
-            <div class="stat-content">
+    <!-- Enhanced Hadith Statistics -->
+    <div class="stats-section">
+        <h2 class="stats-title">Database Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <svg class="stat-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 <div class="stat-number">12,847</div>
                 <div class="stat-label">Total Hadith</div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">✅</div>
-            <div class="stat-content">
+            
+            <div class="stat-card">
+                <svg class="stat-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
                 <div class="stat-number">8,234</div>
                 <div class="stat-label">Sahih (Authentic)</div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📖</div>
-            <div class="stat-content">
+            
+            <div class="stat-card">
+                <svg class="stat-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                </svg>
                 <div class="stat-number">6</div>
                 <div class="stat-label">Major Collections</div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">👨‍🏫</div>
-            <div class="stat-content">
+            
+            <div class="stat-card">
+                <svg class="stat-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                </svg>
                 <div class="stat-number">47</div>
                 <div class="stat-label">Scholars</div>
             </div>
@@ -43,223 +677,215 @@
     </div>
 
     <!-- Main Content Grid -->
-    <div class="hadith-content-grid">
-        <!-- Left Column: Collections List -->
+    <div class="content-grid">
+        <!-- Left Column - Collections -->
         <div class="collections-section">
-            <div class="section-card">
-                <div class="card-header">
-                    <h2>📚 Major Collections</h2>
-                    <div class="search-box">
-                        <input type="text" id="collection-search" placeholder="Search collections..." class="search-input">
-                    </div>
-                </div>
-                
-                <div class="collections-list">
-                    <div class="collection-item" data-collection="bukhari">
-                        <div class="collection-icon">📖</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Sahih Bukhari</div>
-                            <div class="collection-details">
-                                <span>Imam Bukhari</span>
-                                <span>7,563 hadith</span>
+            <div class="section-header">
+                <svg class="section-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                </svg>
+                <h2 class="section-title">Major Hadith Collections</h2>
+            </div>
+            
+            <div class="collections-grid">
+                {% if collections %}
+                    {% for collection in collections %}
+                    <div class="collection-card">
+                        <div class="collection-header">
+                            <div class="flex-1">
+                                <h3 class="collection-name">{{ collection.name }}</h3>
+                                {% if collection.arabic_name %}
+                                <p class="collection-arabic">{{ collection.arabic_name }}</p>
+                                {% endif %}
                             </div>
-                            <div class="collection-description">The most authentic collection of hadith, compiled by Imam Muhammad ibn Ismail al-Bukhari.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">7,563 hadith</span>
-                                <span class="authenticity">Sahih</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="collection-item" data-collection="muslim">
-                        <div class="collection-icon">📚</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Sahih Muslim</div>
-                            <div class="collection-details">
-                                <span>Imam Muslim</span>
-                                <span>7,563 hadith</span>
-                            </div>
-                            <div class="collection-description">Second most authentic collection, compiled by Imam Muslim ibn al-Hajjaj.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">7,563 hadith</span>
-                                <span class="authenticity">Sahih</span>
+                            <div class="ml-4">
+                                <span class="reliability-badge {{ collection.reliability_level|default('mixed') }}">
+                                    {{ collection.reliability_level|default('Mixed')|title }}
+                                </span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="collection-item" data-collection="abudawud">
-                        <div class="collection-icon">📖</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Sunan Abu Dawud</div>
-                            <div class="collection-details">
-                                <span>Imam Abu Dawud</span>
-                                <span>5,274 hadith</span>
+                        
+                        <div class="collection-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Author:</span>
+                                <span class="detail-value">{{ collection.author|default('Unknown') }}</span>
                             </div>
-                            <div class="collection-description">Focuses on legal hadith, compiled by Imam Abu Dawud al-Sijistani.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">5,274 hadith</span>
-                                <span class="authenticity">Hasan</span>
+                            <div class="detail-item">
+                                <span class="detail-label">Compiled:</span>
+                                <span class="detail-value">{{ collection.year_compiled|default('?') }} AH</span>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="collection-item" data-collection="tirmidhi">
-                        <div class="collection-icon">📚</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Jami' at-Tirmidhi</div>
-                            <div class="collection-details">
-                                <span>Imam Tirmidhi</span>
-                                <span>3,956 hadith</span>
+                            <div class="detail-item">
+                                <span class="detail-label">Total Hadiths:</span>
+                                <span class="detail-value">{{ collection.total_hadiths|default('0')|number_format }}</span>
                             </div>
-                            <div class="collection-description">Comprehensive collection with commentary, compiled by Imam Abu Isa at-Tirmidhi.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">3,956 hadith</span>
-                                <span class="authenticity">Hasan</span>
+                            <div class="detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">{{ collection.status|default('Active') }}</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="collection-item" data-collection="nasai">
-                        <div class="collection-icon">📖</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Sunan an-Nasai</div>
-                            <div class="collection-details">
-                                <span>Imam Nasai</span>
-                                <span>5,662 hadith</span>
-                            </div>
-                            <div class="collection-description">Focuses on legal and ritual hadith, compiled by Imam Ahmad ibn Shu'ayb an-Nasai.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">5,662 hadith</span>
-                                <span class="authenticity">Hasan</span>
-                            </div>
+                        
+                        {% if collection.description %}
+                        <p class="collection-description">{{ collection.description }}</p>
+                        {% endif %}
+                        
+                        <div class="collection-actions">
+                            <a href="/hadith/collection/{{ collection.id }}" class="btn-primary">
+                                Browse Collection
+                            </a>
+                            <a href="/hadith/search?collection={{ collection.id }}" class="btn-secondary">
+                                Search
+                            </a>
                         </div>
                     </div>
-
-                    <div class="collection-item" data-collection="ibnmajah">
-                        <div class="collection-icon">📚</div>
-                        <div class="collection-info">
-                            <div class="collection-name">Sunan Ibn Majah</div>
-                            <div class="collection-details">
-                                <span>Imam Ibn Majah</span>
-                                <span>4,341 hadith</span>
-                            </div>
-                            <div class="collection-description">Comprehensive collection covering various topics, compiled by Imam Muhammad ibn Yazid ibn Majah.</div>
-                            <div class="collection-meta">
-                                <span class="hadith-count">4,341 hadith</span>
-                                <span class="authenticity">Mixed</span>
-                            </div>
-                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Placeholder for when collections are loaded -->
+                    <div class="loading-placeholder">
+                        <svg class="loading-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="loading-title">Loading Collections...</h3>
+                        <p class="loading-description">Please wait while we load the hadith collections.</p>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
 
-        <!-- Right Column: Categories & Quick Actions -->
-        <div class="sidebar-section">
-            <!-- Categories -->
-            <div class="section-card">
-                <div class="card-header">
-                    <h3>🏷️ Categories</h3>
-                </div>
-                <div class="categories-grid">
-                    <div class="category-item" data-category="worship">
-                        <div class="category-icon">🕌</div>
-                        <div class="category-name">Worship (Ibadah)</div>
-                        <div class="category-count">2,847</div>
-                    </div>
-                    <div class="category-item" data-category="morals">
-                        <div class="category-icon">❤️</div>
-                        <div class="category-name">Morals & Ethics</div>
-                        <div class="category-count">1,923</div>
-                    </div>
-                    <div class="category-item" data-category="family">
-                        <div class="category-icon">👨‍👩‍👧‍👦</div>
-                        <div class="category-name">Family & Society</div>
-                        <div class="category-count">1,456</div>
-                    </div>
-                    <div class="category-item" data-category="business">
-                        <div class="category-icon">💰</div>
-                        <div class="category-name">Business & Trade</div>
-                        <div class="category-count">987</div>
-                    </div>
-                    <div class="category-item" data-category="politics">
-                        <div class="category-icon">🏛️</div>
-                        <div class="category-name">Politics & Governance</div>
-                        <div class="category-count">756</div>
-                    </div>
-                    <div class="category-item" data-category="knowledge">
-                        <div class="category-icon">🎓</div>
-                        <div class="category-name">Knowledge & Education</div>
-                        <div class="category-count">1,234</div>
-                    </div>
+        <!-- Right Column - Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Search -->
+            <div class="hadith-sidebar">
+                <h3 class="sidebar-title">
+                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                    </svg>
+                    Quick Search
+                </h3>
+                <form action="/hadith/search" method="GET" class="search-form">
+                    <input type="text" name="q" 
+                           placeholder="Search hadiths..." 
+                           class="search-input">
+                    <button type="submit" class="search-button">
+                        Search
+                    </button>
+                </form>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="hadith-sidebar">
+                <h3 class="sidebar-title">
+                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Quick Links
+                </h3>
+                <div class="quick-links">
+                    <a href="/hadith/search" class="quick-link">
+                        <svg class="quick-link-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                        </svg>
+                        <div class="quick-link-content">
+                            <div class="quick-link-title">Search Hadiths</div>
+                            <div class="quick-link-description">Find specific hadiths</div>
+                        </div>
+                    </a>
+                    
+                    <a href="/{{ locale }}/quran" class="quick-link">
+                        <svg class="quick-link-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div class="quick-link-content">
+                            <div class="quick-link-title">Quran & Tafsir</div>
+                            <div class="quick-link-description">Explore related verses</div>
+                        </div>
+                    </a>
+                    
+                    <a href="/wiki" class="quick-link">
+                        <svg class="quick-link-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                        </svg>
+                        <div class="quick-link-content">
+                            <div class="quick-link-title">Wiki Articles</div>
+                            <div class="quick-link-description">Learn more about Islam</div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="section-card">
-                <div class="card-header">
-                    <h3>⚡ Quick Actions</h3>
-                </div>
-                <div class="quick-actions">
-                    <a href="/hadith/search" class="action-btn">
-                        <span class="action-icon">🔍</span>
-                        Search Hadith
-                    </a>
-                    <a href="/hadith/random" class="action-btn">
-                        <span class="action-icon">🎲</span>
-                        Random Hadith
-                    </a>
-                    <a href="/hadith/study" class="action-btn">
-                        <span class="action-icon">📚</span>
-                        Study Guide
-                    </a>
-                    <a href="/hadith/contribute" class="action-btn">
-                        <span class="action-icon">✍️</span>
-                        Contribute
-                    </a>
+            <!-- About Hadith -->
+            <div class="hadith-sidebar">
+                <h3 class="sidebar-title">
+                    <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    About Hadith
+                </h3>
+                <div class="about-section">
+                    <div class="about-text">
+                        <p>
+                            Hadith are the recorded sayings, actions, and approvals of Prophet Muhammad (peace be upon him), 
+                            serving as a primary source of Islamic law and guidance alongside the Quran.
+                        </p>
+                        <p>
+                            Our database includes authentic hadiths from the six major collections recognized by Sunni Islam, 
+                            carefully graded for authenticity and reliability.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Call to Action Section -->
+    <div class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Explore Authentic Hadiths?</h2>
+            <p class="cta-description">
+                Discover the wisdom and guidance of Prophet Muhammad (peace be upon him) 
+                through our comprehensive collection of authenticated hadiths.
+            </p>
+            <div class="cta-buttons">
+                <a href="/hadith/search" class="cta-btn-primary">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                    </svg>
+                    Start Searching
+                </a>
+                <a href="/hadith/collection/1" class="cta-btn-secondary">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                    </svg>
+                    Browse Collections
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-{% endblock %}
 
-{% block head %}
-{% endblock %}
-
-{% block scripts %}
 <script>
-    // Collection search functionality
-    document.getElementById('collection-search')?.addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase();
-        const collectionItems = document.querySelectorAll('.collection-item');
-        
-        collectionItems.forEach(item => {
-            const collectionName = item.querySelector('.collection-name').textContent.toLowerCase();
-            const collector = item.querySelector('.collection-details').textContent.toLowerCase();
-            
-            if (collectionName.includes(query) || collector.includes(query)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
+// Add smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     });
+});
 
-    // Collection item click handlers
-    document.querySelectorAll('.collection-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const collection = this.dataset.collection;
-            window.location.href = `/hadith/collection/${collection}`;
-        });
+// Add hover effects for collection cards
+document.querySelectorAll('.collection-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-4px)';
     });
-
-    // Category item click handlers
-    document.querySelectorAll('.category-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const categoryName = this.querySelector('.category-name').textContent;
-            window.location.href = `/hadith/category/${categoryName.toLowerCase().replace(/\s+/g, '-')}`;
-        });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
     });
+});
 </script>
 {% endblock %} 

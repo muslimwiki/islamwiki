@@ -14,15 +14,15 @@
     <div class="quran-nav-bar">
         <div class="quran-nav-container">
             <div class="quran-nav-left">
-                <a href="/quran" class="quran-nav-link">📖 Quran Home</a>
-                <a href="/quran/1" class="quran-nav-link">Surah Al-Fatiha</a>
-                <a href="/quran/2" class="quran-nav-link">Surah Al-Baqarah</a>
-                <a href="/quran/3" class="quran-nav-link">Surah Al-Imran</a>
+                <a href="/{{ locale }}/quran" class="quran-nav-link">📖 Quran Home</a>
+                <a href="/{{ locale }}/quran/1" class="quran-nav-link">Surah Al-Fatiha</a>
+                <a href="/{{ locale }}/quran/2" class="quran-nav-link">Surah Al-Baqarah</a>
+                <a href="/{{ locale }}/quran/3" class="quran-nav-link">Surah Al-Imran</a>
             </div>
             <div class="quran-nav-right">
-                <a href="/quran/search" class="quran-nav-link">🔍 Search</a>
-                <a href="/quran/juz" class="quran-nav-link">📚 Juz</a>
-                <a href="/quran" class="quran-nav-link">📖 Surah List</a>
+                <a href="/{{ locale }}/quran/search" class="quran-nav-link">🔍 Search</a>
+                <a href="/{{ locale }}/quran/juz" class="quran-nav-link">📚 Juz</a>
+                <a href="/{{ locale }}/quran" class="quran-nav-link">📖 Surah List</a>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
         <div class="breadcrumb-container">
             <a href="/" class="breadcrumb-link">🏠 Home</a>
             <span class="breadcrumb-separator">›</span>
-            <a href="/quran" class="breadcrumb-link">📖 Quran</a>
+            <a href="/{{ locale }}/quran" class="breadcrumb-link">📖 Quran</a>
             <span class="breadcrumb-separator">›</span>
             <span class="breadcrumb-current">🔍 Search</span>
         </div>
@@ -48,7 +48,7 @@
 
     <!-- Search Form -->
     <div class="search-form-container">
-        <form method="GET" action="/quran/search" class="search-form">
+        <form method="GET" action="/{{ locale }}/quran/search" class="search-form">
             <div class="search-input-group">
                 <input type="text" name="q" value="{{ query }}" placeholder="Search for ayahs, topics, or keywords..." 
                        class="search-input">
@@ -86,7 +86,7 @@
                     <div class="result-item">
                         <div class="result-header">
                             <h3 class="result-title">
-                                <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="result-link">
+                                <a href="/{{ locale }}/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="result-link">
                                     Surah {{ ayah.surah_number }}, Ayah {{ ayah.ayah_number }}
                                 </a>
                             </h3>
@@ -106,10 +106,10 @@
                         {% endif %}
                         
                         <div class="result-actions">
-                            <a href="/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="action-btn primary">
+                            <a href="/{{ locale }}/quran/{{ ayah.surah_number }}/{{ ayah.ayah_number }}" class="action-btn primary">
                                 View Full Ayah →
                             </a>
-                            <a href="/quran/{{ ayah.surah_number }}" class="action-btn secondary">
+                            <a href="/{{ locale }}/quran/{{ ayah.surah_number }}" class="action-btn secondary">
                                 View Surah
                             </a>
                         </div>
@@ -140,10 +140,10 @@
             <div class="footer-section">
                 <h4>📚 Quran Resources</h4>
                 <ul>
-                    <li><a href="/quran/search">Search Quran</a></li>
-                    <li><a href="/quran/juz">Juz Navigation</a></li>
-                    <li><a href="/quran">Surah List</a></li>
-                    <li><a href="/quran/translations">Translations</a></li>
+                    <li><a href="/{{ locale }}/quran/search">Search Quran</a></li>
+                    <li><a href="/{{ locale }}/quran/juz">Juz Navigation</a></li>
+                    <li><a href="/{{ locale }}/quran">Surah List</a></li>
+                    <li><a href="/{{ locale }}/quran/translations">Translations</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -158,19 +158,19 @@
             <div class="footer-section">
                 <h4>🔍 Quick Actions</h4>
                 <ul>
-                    <li><a href="/quran/1">First Surah</a></li>
-                    <li><a href="/quran/114">Last Surah</a></li>
-                    <li><a href="/quran/juz">Browse by Juz</a></li>
-                    <li><a href="/quran">Quran Home</a></li>
+                    <li><a href="/{{ locale }}/quran/1">First Surah</a></li>
+                    <li><a href="/{{ locale }}/quran/114">Last Surah</a></li>
+                    <li><a href="/{{ locale }}/quran/juz">Browse by Juz</a></li>
+                    <li><a href="/{{ locale }}/quran">Quran Home</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>📖 Study Tools</h4>
                 <ul>
-                    <li><a href="/quran/bookmark">Bookmark Ayahs</a></li>
-                    <li><a href="/quran/notes">Personal Notes</a></li>
-                    <li><a href="/quran/recitation">Audio Recitation</a></li>
-                    <li><a href="/quran/tajweed">Tajweed Rules</a></li>
+                    <li><a href="/{{ locale }}/quran/bookmark">Bookmark Ayahs</a></li>
+                    <li><a href="/{{ locale }}/quran/notes">Personal Notes</a></li>
+                    <li><a href="/{{ locale }}/quran/recitation">Audio Recitation</a></li>
+                    <li><a href="/{{ locale }}/quran/tajweed">Tajweed Rules</a></li>
                 </ul>
             </div>
         </div>

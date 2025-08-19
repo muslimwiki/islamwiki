@@ -34,12 +34,12 @@
     </div>
 
     <div class="surah-navigation">
-        <a href="/quran" class="nav-link">← Back to Quran</a>
+        <a href="/{{ locale }}/quran" class="nav-link">← Back to Quran</a>
         {% if surah.surah_number > 1 %}
-        <a href="/quran/surah/{{ surah.surah_number - 1 }}" class="nav-link">← Previous Surah</a>
+        <a href="/{{ locale }}/quran/surah/{{ surah.surah_number - 1 }}" class="nav-link">← Previous Surah</a>
         {% endif %}
         {% if surah.surah_number < 114 %}
-        <a href="/quran/surah/{{ surah.surah_number + 1 }}" class="nav-link">Next Surah →</a>
+        <a href="/{{ locale }}/quran/surah/{{ surah.surah_number + 1 }}" class="nav-link">Next Surah →</a>
         {% endif %}
     </div>
 
@@ -74,8 +74,8 @@
             </div>
             
             <div class="ayah-actions">
-                <a href="/quran/surah/{{ surah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="btn btn-primary">View Ayah</a>
-                <a href="/quran/page/{{ ayah.page }}" class="btn btn-secondary">View Page</a>
+                <a href="/{{ locale }}/quran/surah/{{ surah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="btn btn-primary">View Ayah</a>
+                <a href="/{{ locale }}/quran/page/{{ ayah.page }}" class="btn btn-secondary">View Page</a>
                 {% if ayah.sajda %}
                 <span class="sajda-badge">Sajda</span>
                 {% endif %}
@@ -86,8 +86,8 @@
 
     <div class="surah-footer">
         <div class="surah-actions">
-            <a href="/quran/search" class="btn btn-primary">Search Quran</a>
-            <a href="/quran" class="btn btn-secondary">Back to Quran</a>
+            <a href="/{{ locale }}/quran/search" class="btn btn-primary">Search Quran</a>
+            <a href="/{{ locale }}/quran" class="btn btn-secondary">Back to Quran</a>
         </div>
     </div>
 </div>

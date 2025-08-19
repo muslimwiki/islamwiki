@@ -1,302 +1,338 @@
-<!--
-This file is part of IslamWiki.
+# IslamWiki Data Models
 
-Copyright (C) 2025 IslamWiki Contributors
+## 🎯 **Overview**
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This directory contains documentation for the data models that represent the core entities and relationships in IslamWiki. Models follow the Active Record pattern and implement Islamic naming conventions for database tables and relationships.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+---
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-# Database Models
+## 🏗️ **Model Architecture**
 
-This document provides detailed documentation of all database models in the IslamWiki application.
-
-## Table of Contents
-1. [Core Models](#core-models)
-   - [Page](#page)
-   - [Revision](#revision)
-   - [User](#user)
-   - [Category](#category)
-   - [Media](#media)
-2. [Relationships](#relationships)
-3. [Query Scopes](#query-scopes)
-4. [Events and Observers](#events-and-observers)
-5. [Validation Rules](#validation-rules)
-6. [API Resources](#api-resources)
-
-## Core Models
-
-### Page
-
-Represents a wiki page in the system.
-
-#### Table: `pages`
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | bigint | Primary key |
-| `title` | string | Page title |
-| `slug` | string | URL-friendly identifier |
-| `namespace` | string | Page namespace (e.g., 'Main', 'User', 'Help') |
-| `content` | text | Current page content |
-| `is_locked` | boolean | Whether the page is locked from editing |
-| `locked_by` | bigint | ID of user who locked the page |
-| `locked_at` | timestamp | When the page was locked |
-| `view_count` | integer | Number of views |
-| `last_viewed_at` | timestamp | When the page was last viewed |
-| `created_at` | timestamp | Creation timestamp |
-| `updated_at` | timestamp | Last update timestamp |
-
-#### Methods
-
-```php
-// Get the page's full title including namespace
-public function getFullTitle(): string;
-
-// Get the page's URL
-public function getUrl(): string;
-
-// Check if the page is locked
-public function isLocked(): bool;
-
-// Get all revisions for this page
-public function revisions(): HasMany;
-
-// Get the latest revision
-public function latestRevision(): HasOne;
-
-// Get the user who created the page
-public function creator(): BelongsTo;
-
-// Get all categories for this page
-public function categories(): BelongsToMany;
+### **Model Hierarchy**
+```
+Model Architecture:
+├── 📁 Base Models - Abstract base classes and interfaces
+├── 📁 User Models - User account and authentication models
+├── 📁 Content Models - Wiki pages and content models
+├── 📁 Islamic Models - Quran, Hadith, and Islamic content
+├── 📁 System Models - System configuration and settings
+└── 📁 Extension Models - Extension-specific data models
 ```
 
-### Revision
+### **Model Responsibilities**
+- **Data Representation**: Represent database entities and relationships
+- **Data Validation**: Validate data before database operations
+- **Business Logic**: Implement domain-specific business rules
+- **Database Operations**: Handle CRUD operations and queries
+- **Relationship Management**: Manage model associations and joins
 
-Represents a version of a wiki page.
+---
 
-#### Table: `revisions`
+## 🔧 **Model Categories**
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | bigint | Primary key |
-| `page_id` | bigint | Reference to the page |
-| `user_id` | bigint | User who created this revision |
-| `content` | text | Page content at this revision |
-| `comment` | string | Edit comment |
-| `is_minor_edit` | boolean | Whether this was a minor edit |
-| `created_at` | timestamp | Creation timestamp |
-| `updated_at` | timestamp | Last update timestamp |
+### **1. Base Models**
+- **AbstractModel**: Base model with common functionality
+- **TimestampsModel**: Model with created/updated timestamps
+- **SoftDeleteModel**: Model with soft delete functionality
+- **AuditModel**: Model with audit trail capabilities
 
-#### Methods
+### **2. User Models**
+- **User**: User account information and authentication
+- **UserProfile**: Extended user profile information
+- **UserRole**: User roles and permissions
+- **UserSession**: User session management
 
+### **3. Content Models**
+- **Page**: Wiki page content and metadata
+- **PageRevision**: Page version history and changes
+- **PageCategory**: Page categorization and organization
+- **PageTag**: Page tagging and labeling
+
+### **4. Islamic Models**
+- **QuranVerse**: Quran verses and translations
+- **QuranSurah**: Quran chapters and metadata
+- **Hadith**: Hadith collections and authenticity
+- **HadithNarrator**: Hadith narrator information
+- **SalahTime**: Salah time calculations and data
+- **HijriDate**: Islamic calendar dates and events
+
+### **5. System Models**
+- **Configuration**: System configuration settings
+- **Extension**: Extension information and status
+- **Skin**: Skin configuration and settings
+- **Log**: System logs and audit trails
+
+---
+
+## 📝 **Model Implementation**
+
+### **Basic Model Structure**
 ```php
-// Get the page this revision belongs to
-public function page(): BelongsTo;
+<?php
 
-// Get the user who created this revision
-public function user(): BelongsTo;
+declare(strict_types=1);
 
-// Get the previous revision
-public function previous(): Revision|null;
+namespace IslamWiki\Models;
 
-// Get the next revision
-public function next(): Revision|null;
+use IslamWiki\Core\Database\AbstractModel;
+use IslamWiki\Core\Database\TimestampsModel;
 
-// Get the difference between this and another revision
-public function diff(Revision $other): array;
-```
-
-### User
-
-Represents a system user.
-
-#### Table: `users`
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | bigint | Primary key |
-| `username` | string | Unique username |
-| `email` | string | Email address |
-| `password` | string | Hashed password |
-| `display_name` | string | User's display name |
-| `is_admin` | boolean | Whether user is an administrator |
-| `email_verified_at` | timestamp | When email was verified |
-| `last_login_at` | timestamp | Last login timestamp |
-| `created_at` | timestamp | Creation timestamp |
-| `updated_at` | timestamp | Last update timestamp |
-
-#### Methods
-
-```php
-// Get user's pages
-public function pages(): HasMany;
-
-// Get user's revisions
-public function revisions(): HasMany;
-
-// Check if user has a specific permission
-public function hasPermission(string $permission): bool;
-
-// Check if user is an administrator
-public function isAdmin(): bool;
-
-// Get user's recent activity
-public function recentActivity(int $limit = 10): Collection;
-```
-
-## Relationships
-
-### Page Relationships
-
-- A page has many revisions
-- A page belongs to a creator (user)
-- A page can have many categories
-- A page can have many media items
-
-### Revision Relationships
-
-- A revision belongs to a page
-- A revision belongs to a user
-- A revision has one previous revision
-- A revision has one next revision
-
-### User Relationships
-
-- A user has many pages (as creator)
-- A user has many revisions
-- A user can watch many pages
-- A user can have many preferences
-
-## Query Scopes
-
-### Page Scopes
-
-```php
-// Get pages in a specific namespace
-public function scopeInNamespace($query, string $namespace);
-
-// Search pages by title or content
-public function scopeSearch($query, string $term);
-
-// Get only locked pages
-public function scopeLocked($query);
-
-// Get pages created by a specific user
-public function scopeByUser($query, int $userId);
-```
-
-### Revision Scopes
-
-```php
-// Get revisions for a specific page
-public function scopeForPage($query, int $pageId);
-
-// Get revisions by a specific user
-public function scopeByUser($query, int $userId);
-
-// Get only minor/major edits
-public function scopeMinor($query, bool $minor = true);
-```
-
-## Events and Observers
-
-### Page Events
-
-- `page.creating`: Before a page is created
-- `page.created`: After a page is created
-- `page.updating`: Before a page is updated
-- `page.updated`: After a page is updated
-- `page.deleting`: Before a page is deleted
-- `page.deleted`: After a page is deleted
-
-### Revision Events
-
-- `revision.creating`: Before a revision is created
-- `revision.created`: After a revision is created
-
-## Validation Rules
-
-### Page Validation
-
-```php
-[
-    'title' => 'required|string|max:255',
-    'namespace' => 'required|string|max:50',
-    'content' => 'required|string',
-    'is_locked' => 'boolean',
-    'categories' => 'array',
-    'categories.*' => 'exists:categories,id',
-]
-```
-
-### Revision Validation
-
-```php
-[
-    'page_id' => 'required|exists:pages,id',
-    'user_id' => 'required|exists:users,id',
-    'content' => 'required|string',
-    'comment' => 'nullable|string|max:500',
-    'is_minor_edit' => 'boolean',
-]
-```
-
-## API Resources
-
-### Page Resource
-
-```json
+/**
+ * User Model - User account management
+ * 
+ * @package IslamWiki\Models
+ * @author IslamWiki Development Team
+ * @license AGPL-3.0
+ */
+class User extends AbstractModel implements TimestampsModel
 {
-    "id": 1,
-    "title": "Sample Page",
-    "slug": "Sample_Page",
-    "namespace": "Main",
-    "url": "/wiki/Sample_Page",
-    "content": "This is the page content...",
-    "is_locked": false,
-    "view_count": 42,
-    "created_at": "2025-01-01T00:00:00Z",
-    "updated_at": "2025-01-01T00:00:00Z",
-    "creator": {
-        "id": 1,
-        "username": "admin",
-        "display_name": "Administrator"
-    },
-    "categories": [
-        {"id": 1, "name": "Documentation"},
-        {"id": 2, "name": "Guide"}
-    ]
+    protected string $table = 'mizan_users';
+    
+    protected array $fillable = [
+        'username',
+        'email',
+        'password_hash',
+        'first_name',
+        'last_name',
+        'is_active',
+        'email_verified_at'
+    ];
+    
+    protected array $hidden = [
+        'password_hash',
+        'remember_token'
+    ];
+    
+    protected array $casts = [
+        'is_active' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+    
+    /**
+     * Get user's full name
+     */
+    public function getFullNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+    
+    /**
+     * Check if user is verified
+     */
+    public function isVerified(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+    
+    /**
+     * Get user's pages
+     */
+    public function pages(): HasMany
+    {
+        return $this->hasMany(Page::class, 'user_id');
+    }
+    
+    /**
+     * Get user's roles
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(UserRole::class, 'mizan_user_roles');
+    }
 }
 ```
 
-### Revision Resource
-
-```json
+### **Model Relationships**
+```php
+// One-to-One Relationship
+public function profile(): HasOne
 {
-    "id": 1,
-    "page_id": 1,
-    "user": {
-        "id": 1,
-        "username": "admin",
-        "display_name": "Administrator"
-    },
-    "comment": "Initial version",
-    "is_minor_edit": false,
-    "created_at": "2025-01-01T00:00:00Z",
-    "updated_at": "2025-01-01T00:00:00Z"
+    return $this->hasOne(UserProfile::class, 'user_id');
+}
+
+// One-to-Many Relationship
+public function posts(): HasMany
+{
+    return $this->hasMany(Post::class, 'author_id');
+}
+
+// Many-to-Many Relationship
+public function tags(): BelongsToMany
+{
+    return $this->belongsToMany(Tag::class, 'mizan_post_tags');
+}
+
+// Polymorphic Relationship
+public function comments(): MorphMany
+{
+    return $this->morphMany(Comment::class, 'commentable');
 }
 ```
 
 ---
-*Last Updated: 2025-07-25*
+
+## 🗄️ **Database Structure**
+
+### **Table Naming Convention**
+```sql
+-- ✅ Correct - Using Islamic naming
+CREATE TABLE mizan_users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    is_active BOOLEAN DEFAULT TRUE,
+    email_verified_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE mizan_pages (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    excerpt TEXT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES mizan_users(id)
+);
+```
+
+### **Indexing Strategy**
+```sql
+-- Primary indexes
+PRIMARY KEY (id)
+
+-- Unique indexes
+UNIQUE KEY uk_users_username (username)
+UNIQUE KEY uk_users_email (email)
+UNIQUE KEY uk_pages_slug (slug)
+
+-- Performance indexes
+KEY idx_pages_user_id (user_id)
+KEY idx_pages_status (status)
+KEY idx_pages_created_at (created_at)
+KEY idx_pages_title_content (title, content(100))
+```
+
+---
+
+## 🚀 **Model Features**
+
+### **Data Validation**
+- **Input Validation**: Validate data before database operations
+- **Type Casting**: Automatic data type conversion
+- **Mass Assignment Protection**: Protect sensitive fields
+- **Validation Rules**: Comprehensive validation rules
+
+### **Query Building**
+- **Eloquent-like Syntax**: Familiar query building interface
+- **Relationship Loading**: Eager and lazy relationship loading
+- **Query Scopes**: Reusable query constraints
+- **Raw Queries**: Direct SQL when needed
+
+### **Performance Optimization**
+- **Query Caching**: Cache frequently used queries
+- **Lazy Loading**: Load relationships on demand
+- **Eager Loading**: Load relationships efficiently
+- **Database Indexing**: Optimized database performance
+
+---
+
+## 🔒 **Security Considerations**
+
+### **Data Protection**
+- **Mass Assignment**: Protect sensitive fields from mass assignment
+- **Input Sanitization**: Sanitize all input data
+- **SQL Injection Prevention**: Use prepared statements
+- **XSS Prevention**: Escape output data
+
+### **Access Control**
+- **Field Visibility**: Hide sensitive fields from output
+- **Role-based Access**: Implement role-based data access
+- **Audit Logging**: Log all data modifications
+- **Data Encryption**: Encrypt sensitive data
+
+---
+
+## 📚 **Model Documentation**
+
+### **Available Models**
+- **[User Models](user/README.md)** - User account management
+- **[Content Models](content/README.md)** - Wiki content management
+- **[Islamic Models](islamic/README.md)** - Islamic content models
+- **[System Models](system/README.md)** - System configuration
+- **[Extension Models](extension/README.md)** - Extension data
+
+### **Model Development**
+- **[Model Standards](../standards.md)** - Development standards
+- **[Style Guide](../guides/style-guide.md)** - Coding standards
+- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
+
+---
+
+## 🧪 **Testing Models**
+
+### **Unit Testing**
+```php
+class UserTest extends TestCase
+{
+    public function testUserCanBeCreated(): void
+    {
+        $user = User::create([
+            'username' => 'testuser',
+            'email' => 'test@example.com',
+            'password_hash' => 'hashed_password'
+        ]);
+        
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals('testuser', $user->username);
+    }
+    
+    public function testUserFullNameIsCorrect(): void
+    {
+        $user = new User([
+            'first_name' => 'John',
+            'last_name' => 'Doe'
+        ]);
+        
+        $this->assertEquals('John Doe', $user->full_name);
+    }
+}
+```
+
+### **Database Testing**
+- **Model Creation**: Test model instantiation and creation
+- **Relationship Loading**: Test relationship loading and queries
+- **Data Validation**: Test validation rules and constraints
+- **Performance Testing**: Test query performance and optimization
+
+---
+
+## 📖 **Additional Resources**
+
+### **Related Documentation**
+- **[Architecture Overview](../architecture/overview.md)** - System architecture
+- **[Core Systems](../architecture/core-systems.md)** - System components
+- **[Controllers Documentation](../controllers/README.md)** - Request handling
+- **[Views Documentation](../views/README.md)** - Template system
+
+### **Development Resources**
+- **[Style Guide](../guides/style-guide.md)** - Coding standards
+- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
+- **[Testing Guidelines](../testing/README.md)** - Testing strategies
+
+---
+
+**Last Updated:** 2025-08-19  
+**Version:** 0.0.1.0  
+**Author:** IslamWiki Development Team  
+**License:** AGPL-3.0  
+**Status:** Models Documentation Complete ✅ 

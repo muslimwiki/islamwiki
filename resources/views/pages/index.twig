@@ -8,48 +8,68 @@
     <div class="second-nav-column">
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">📝 Create Content</h2>
+                <h2 class="card-title">
+                    {% if locale == 'ar' %}📝 إنشاء المحتوى{% else %}📝 Create Content{% endif %}
+                </h2>
             </div>
             <div class="flex gap-4 flex-wrap">
-                <a href="{{ lang_url('wiki/create') }}" class="btn">✏️ Create New Page</a>
-                <a href="{{ lang_url('wiki/create?template=article') }}" class="btn btn-secondary">📄 Article Template</a>
-                <a href="{{ lang_url('wiki/create?template=guide') }}" class="btn btn-secondary">📚 Guide Template</a>
-                <a href="{{ lang_url('wiki/create?template=reference') }}" class="btn btn-secondary">📖 Reference Template</a>
+                <a href="{{ lang_url('wiki/create') }}" class="btn">
+                    {% if locale == 'ar' %}✏️ إنشاء صفحة جديدة{% else %}✏️ Create New Page{% endif %}
+                </a>
+                <a href="{{ lang_url('wiki/create?template=article') }}" class="btn btn-secondary">
+                    {% if locale == 'ar' %}📄 قالب المقال{% else %}📄 Article Template{% endif %}
+                </a>
+                <a href="{{ lang_url('wiki/create?template=guide') }}" class="btn btn-secondary">
+                    {% if locale == 'ar' %}📚 قالب الدليل{% else %}📚 Guide Template{% endif %}
+                </a>
+                <a href="{{ lang_url('wiki/create?template=reference') }}" class="btn btn-secondary">
+                    {% if locale == 'ar' %}📖 قالب المرجع{% else %}📖 Reference Template{% endif %}
+                </a>
             </div>
         </div>
 
         <!-- Stats Section -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">📊 Page Statistics</h2>
+                <h2 class="card-title">
+                    {% if locale == 'ar' %}📊 إحصائيات الصفحات{% else %}📊 Page Statistics{% endif %}
+                </h2>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📄</div>
                     <div class="stat-content">
                         <div class="stat-number">{{ pagination.total }}</div>
-                        <div class="stat-label">Total Pages</div>
+                        <div class="stat-label">
+                            {% if locale == 'ar' %}إجمالي الصفحات{% else %}Total Pages{% endif %}
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">👥</div>
                     <div class="stat-content">
                         <div class="stat-number">{{ pages|length }}</div>
-                        <div class="stat-label">Showing</div>
+                        <div class="stat-label">
+                            {% if locale == 'ar' %}المعروض{% else %}Showing{% endif %}
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div class="stat-content">
                         <div class="stat-number">{{ pagination.current_page }}</div>
-                        <div class="stat-label">Current Page</div>
+                        <div class="stat-label">
+                            {% if locale == 'ar' %}الصفحة الحالية{% else %}Current Page{% endif %}
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">🔍</div>
                     <div class="stat-content">
                         <div class="stat-number">{{ filters.search ? 'Active' : 'None' }}</div>
-                        <div class="stat-label">Search Filter</div>
+                        <div class="stat-label">
+                            {% if locale == 'ar' %}فلتر البحث{% else %}Search Filter{% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,8 +81,13 @@
         <!-- Hero Section -->
         <div class="hero">
             <div class="hero-content">
-                <h1>📚 All Pages</h1>
-                <p>Explore and discover all wiki pages in the system</p>
+                {% if locale == 'ar' %}
+                    <h1>📚 جميع الصفحات</h1>
+                    <p>استكشف واكتشف جميع صفحات الموسوعة في النظام</p>
+                {% else %}
+                    <h1>📚 All Pages</h1>
+                    <p>Explore and discover all wiki pages in the system</p>
+                {% endif %}
             </div>
         </div>
 
@@ -108,21 +133,29 @@
                         
                         <div class="page-meta">
                             <div class="meta-item">
-                                <span class="label">📝 Revisions:</span>
+                                <span class="label">
+                                    {% if locale == 'ar' %}📝 المراجعات:{% else %}📝 Revisions:{% endif %}
+                                </span>
                                 <span class="value">{{ page.revision_count|default(0) }}</span>
                             </div>
                             <div class="meta-item">
-                                <span class="label">🕒 Updated:</span>
+                                <span class="label">
+                                    {% if locale == 'ar' %}🕒 محدث:{% else %}🕒 Updated:{% endif %}
+                                </span>
                                 <span class="value">{{ page.updated_at|default('Never')|date('M j, Y') }}</span>
                             </div>
                             <div class="meta-item">
-                                <span class="label">👤 Author:</span>
+                                <span class="label">
+                                    {% if locale == 'ar' %}👤 المؤلف:{% else %}👤 Author:{% endif %}
+                                </span>
                                 <span class="value">{{ page.author|default('Unknown') }}</span>
                             </div>
                             <div class="meta-item">
-                                <span class="label">📊 Views:</span>
+                                <span class="label">
+                                    {% if locale == 'ar' %}📊 المشاهدات:{% else %}📊 Views:{% endif %}
+                                </span>
                                 <span class="value">{{ page.view_count|default(0) }}</span>
-                        </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}

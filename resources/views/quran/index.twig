@@ -181,7 +181,7 @@
     document.querySelectorAll('.surah-item').forEach(item => {
         item.addEventListener('click', function() {
             const surahNumber = this.dataset.surah;
-            window.location.href = `/quran/${surahNumber}`;
+            window.location.href = `/{{ locale }}/quran/${surahNumber}`;
         });
     });
 

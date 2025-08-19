@@ -1,59 +1,160 @@
-<!--
-This file is part of IslamWiki.
+# IslamWiki Core Components
 
-Copyright (C) 2025 IslamWiki Contributors
+## 🎯 **Overview**
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This directory contains documentation for the core application components that form the foundation of IslamWiki. These components provide essential functionality for the platform's operation and user experience.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+---
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-# Components Documentation
+## 🏗️ **Component Architecture**
 
-This directory contains documentation for the various components in the IslamWiki application.
+### **Core Component System**
+```
+Component Architecture:
+├── 📁 Asas (Foundation) - Dependency injection and service container
+├── 📁 Aman (Security) - Authentication, authorization, and security
+├── 📁 Sabil (Path) - Routing and request handling
+├── 📁 Nizam (Order) - Application coordination and management
+├── 📁 Mizan (Balance) - Database and data management
+├── 📁 Tadbir (Management) - Configuration and administration
+├── 📁 Rihlah (Journey) - Caching and performance
+├── 📁 Sabr (Patience) - Job queues and background processing
+├── 📁 Usul (Principles) - Knowledge and rule management
+├── 📁 Iqra (Read) - Search and discovery
+├── 📁 Bayan (Explanation) - Content formatting and presentation
+├── 📁 Siraj (Light) - API management and external services
+├── 📁 Shahid (Witness) - Logging and monitoring
+├── 📁 Wisal (Connection) - Session and connection management
+├── 📁 Safa (Purity) - CSS framework and styling
+└── 📁 Marwa (Excellence) - JavaScript framework and interactivity
+```
 
-## Available Components
+---
 
-### Core Components
-- **Router** - Handles HTTP request routing
-- **Request** - Handles HTTP requests
-- **Response** - Handles HTTP responses
-- **Container** - Dependency injection container
-- **View** - Template rendering system
+## 🔧 **Component Categories**
 
-### HTTP Components
-- **Controllers** - Request handlers
-- **Middleware** - Request/response processing pipeline
+### **1. Foundation Components (Asas)**
+- **Container System**: Dependency injection and service resolution
+- **Service Registry**: Service registration and management
+- **Configuration Loader**: Configuration file loading and parsing
+- **Environment Manager**: Environment variable management
 
-### Database Components
-- **Connection** - Database connection handler
-- **Query Builder** - Database query construction
+### **2. Security Components (Aman)**
+- **Authentication System**: User login and session management
+- **Authorization Engine**: Role-based access control
+- **Input Validation**: Request data validation and sanitization
+- **Security Middleware**: Security-focused request processing
 
-## Version
-0.0.1
+### **3. Routing Components (Sabil)**
+- **Route Manager**: URL routing and handler mapping
+- **Middleware Pipeline**: Request/response processing chain
+- **Controller Factory**: Controller instantiation and management
+- **Route Caching**: Compiled route caching for performance
 
-## Documentation Index
+### **4. Application Components (Nizam)**
+- **Application Bootstrap**: Application initialization and startup
+- **Service Provider**: Service registration and bootstrapping
+- **Event Dispatcher**: Event handling and dispatching
+- **Application Lifecycle**: Application state management
 
-- [Router](./router.md) - Routing system documentation
-- [Request/Response](./request-response.md) - HTTP message handling
-- [Container](./container.md) - Dependency injection documentation
-- [View](./view.md) - Template system documentation
+### **5. Database Components (Mizan)**
+- **Connection Manager**: Database connection pooling
+- **Query Builder**: SQL query construction and execution
+- **Migration System**: Database schema versioning
+- **Data Models**: Entity and relationship management
 
-## Adding New Components
+---
 
-1. Create a new markdown file in this directory
-2. Follow the existing documentation style
-3. Include version information
-4. Update this README with a link to the new documentation
+## 📚 **Component Documentation**
 
-## Version History
-- **0.0.2 (2025-07-27)**: Added licensing information
-- **0.0.1 (2025-07-26)**: Initial documentation structure
+### **Available Documentation**
+- **[Foundation Components](asas/README.md)** - Core foundation and dependency injection
+- **[Security Components](aman/README.md)** - Authentication and authorization
+- **[Routing Components](sabil/README.md)** - URL routing and middleware
+- **[Application Components](nizam/README.md)** - Application management
+- **[Database Components](mizan/README.md)** - Data management and persistence
+
+### **Component Development**
+- **[Component Standards](../standards.md)** - Development standards and guidelines
+- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming conventions
+- **[Style Guide](../guides/style-guide.md)** - Coding standards and best practices
+
+---
+
+## 🔍 **Component Discovery**
+
+### **Automatic Discovery**
+The component system automatically discovers and registers components based on:
+- **Directory Structure**: Components are organized by Islamic naming
+- **Service Providers**: Components register themselves via service providers
+- **Configuration Files**: Component configuration and dependencies
+- **Auto-loading**: PSR-4 compliant autoloading system
+
+### **Component Registration**
+```php
+// Component registration example
+class ComponentServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->singleton('component.name', function ($app) {
+            return new ComponentClass($app);
+        });
+    }
+}
+```
+
+---
+
+## 🚀 **Performance & Optimization**
+
+### **Component Caching**
+- **Route Caching**: Compiled routes cached for performance
+- **Service Caching**: Service instances cached when appropriate
+- **Configuration Caching**: Configuration data cached for speed
+- **Template Caching**: Compiled templates cached for rendering
+
+### **Lazy Loading**
+- **On-Demand Loading**: Components loaded only when needed
+- **Dependency Resolution**: Dependencies resolved at runtime
+- **Memory Optimization**: Efficient memory usage patterns
+- **Startup Performance**: Fast application startup times
+
+---
+
+## 🔒 **Security & Reliability**
+
+### **Component Security**
+- **Input Validation**: All input validated and sanitized
+- **Access Control**: Role-based component access
+- **Error Handling**: Secure error reporting and logging
+- **Audit Trail**: Component usage tracking and logging
+
+### **Component Reliability**
+- **Error Recovery**: Graceful error handling and recovery
+- **Fallback Systems**: Alternative component implementations
+- **Health Monitoring**: Component health and status monitoring
+- **Performance Metrics**: Component performance tracking
+
+---
+
+## 📖 **Additional Resources**
+
+### **Related Documentation**
+- **[Architecture Overview](../architecture/overview.md)** - System architecture
+- **[Core Systems](../architecture/core-systems.md)** - Detailed system documentation
+- **[Development Standards](../standards.md)** - Development guidelines
+- **[API Documentation](../api/overview.md)** - API reference
+
+### **Development Resources**
+- **[Style Guide](../guides/style-guide.md)** - Coding standards
+- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
+- **[Testing Guidelines](../testing/README.md)** - Testing strategies
+
+---
+
+**Last Updated:** 2025-08-19  
+**Version:** 0.0.1.0  
+**Author:** IslamWiki Development Team  
+**License:** AGPL-3.0  
+**Status:** Components Documentation Complete ✅ 

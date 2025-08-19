@@ -1,0 +1,235 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">My Watchlist</h1>
+                <p class="text-gray-600 mt-2">Track changes to your favorite pages</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="/watchlist/preferences" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Preferences
+                </a>
+                <a href="/wiki" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Browse Pages
+                </a>
+            </div>
+        </div>
+
+        <!-- Watchlist Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Watched Pages</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ pagination.total }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Recent Changes</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ watchlist|filter(item => item.has_unread_changes)|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-yellow-100 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l5-5v5l5 5h-5l-5 5v-5l-5-5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Last Updated</p>
+                        <p class="text-lg font-semibold text-gray-900">
+                            {% if watchlist|length > 0 %}
+                                {{ watchlist|first.updated_at|date('M j') }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-purple-100 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l5-5v5l5 5h-5l-5 5v-5l-5-5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Notifications</p>
+                        <p class="text-2xl font-bold text-gray-900">On</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watchlist Content -->
+        {% if watchlist|length > 0 %}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900">Watched Pages</h2>
+                </div>
+                
+                <div class="divide-y divide-gray-200">
+                    {% for item in watchlist %}
+                        <div class="p-6 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0">
+                                            {% if item.has_unread_changes %}
+                                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                            {% else %}
+                                                <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-lg font-medium text-gray-900">
+                                                <a href="{{ item.url }}" class="hover:text-green-600 transition-colors">
+                                                    {{ item.title }}
+                                                </a>
+                                            </h3>
+                                            
+                                            <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                                <span>Namespace: {{ item.namespace ?: 'Main' }}</span>
+                                                <span>Last edited: {{ item.time_ago }}</span>
+                                                {% if item.last_editor %}
+                                                    <span>by {{ item.last_editor }}</span>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            {% if item.last_edit_comment %}
+                                                <p class="mt-2 text-sm text-gray-600 italic">
+                                                    "{{ item.last_edit_comment }}"
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ item.url }}" class="px-3 py-1 text-sm text-green-600 hover:text-green-700 font-medium">
+                                        View
+                                    </a>
+                                    <button onclick="unwatchPage('{{ item.page_id }}')" class="px-3 py-1 text-sm text-red-600 hover:text-red-700 font-medium">
+                                        Unwatch
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if pagination.last_page > 1 %}
+                    <div class="px-6 py-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-700">
+                                Showing {{ pagination.from }} to {{ pagination.to }} of {{ pagination.total }} results
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                {% if pagination.current_page > 1 %}
+                                    <a href="?page={{ pagination.current_page - 1 }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                        Previous
+                                    </a>
+                                {% endif %}
+                                
+                                {% for page in range(1, pagination.last_page) %}
+                                    {% if page == pagination.current_page %}
+                                        <span class="px-3 py-2 text-sm font-medium text-green-600 bg-green-100 border border-green-300 rounded-md">
+                                            {{ page }}
+                                        </span>
+                                    {% else %}
+                                        <a href="?page={{ page }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                            {{ page }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if pagination.current_page < pagination.last_page %}
+                                    <a href="?page={{ pagination.current_page + 1 }}" class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                        Next
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No watched pages</h3>
+                <p class="mt-1 text-sm text-gray-500">Start watching pages to track their changes.</p>
+                <div class="mt-6">
+                    <a href="/wiki" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Browse Pages
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function unwatchPage(pageId) {
+    if (confirm('Are you sure you want to remove this page from your watchlist?')) {
+        fetch(`/watchlist/${pageId}/unwatch`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to remove page from watchlist');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred');
+        });
+    }
+}
+</script>
+{% endblock %} 

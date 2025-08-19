@@ -79,9 +79,6 @@ class SabilRouting implements RequestHandlerInterface
             'middleware' => $middleware
         ];
 
-        // Log route registration
-        error_log('Registering route: ' . json_encode($routeData));
-        
         $this->_routes[] = $routeData;
 
         return $this;
@@ -183,14 +180,7 @@ class SabilRouting implements RequestHandlerInterface
         $path = $request->getUri()->getPath();
         $method = $request->getMethod();
         
-        // Debug: Log the incoming request
-        error_log("SabilRouting: Handling request - Method: {$method}, Path: {$path}");
-        error_log("SabilRouting: Available routes: " . json_encode(array_map(function($route) {
-            return [
-                'methods' => $route['methods'],
-                'route' => $route['route']
-            ];
-        }, $this->_routes), JSON_PRETTY_PRINT));
+
 
         $uri = $request->getUri()->getPath();
 
@@ -234,16 +224,30 @@ class SabilRouting implements RequestHandlerInterface
             if (strpos($handler, '@') !== false) {
                 [$controller, $method] = explode('@', $handler);
                 
+                error_log("ROUTER: Creating controller instance: $controller");
+                
                 // Get database and container from container
                 $db = $this->_container->get('db');
                 $container = $this->_container;
                 
-                $controllerInstance = new $controller($db, $container);
+                error_log("ROUTER: Got db and container, creating controller");
                 
-                // Pass route parameters to the method
-                $methodParams = array_values($params);
-                array_unshift($methodParams, $request);
-                $response = call_user_func_array([$controllerInstance, $method], $methodParams);
+                try {
+                    $controllerInstance = new $controller($db, $container);
+                    error_log("ROUTER: Controller created successfully: " . get_class($controllerInstance));
+                    
+                    // Pass route parameters to the method
+                    $methodParams = array_values($params);
+                    array_unshift($methodParams, $request);
+                    error_log("ROUTER: Calling method $method with params: " . print_r($methodParams, true));
+                    
+                    $response = call_user_func_array([$controllerInstance, $method], $methodParams);
+                    error_log("ROUTER: Method call successful, response type: " . gettype($response));
+                } catch (\Throwable $e) {
+                    error_log("ROUTER: Exception creating/calling controller: " . $e->getMessage());
+                    error_log("ROUTER: Exception trace: " . $e->getTraceAsString());
+                    throw $e;
+                }
             } else {
                 // Just controller class
                 $db = $this->_container->get('db');
@@ -273,36 +277,20 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function findRoute(string $method, string $uri): ?array
     {
-        error_log("Finding route for: $method $uri");
-        error_log("Available routes:");
-        
-        // Log all registered routes for debugging
-        foreach ($this->_routes as $i => $route) {
-            error_log(sprintf('  Route #%d: %s %s', $i, implode('|', $route['methods']), $route['route']));
-        }
-        
-        foreach ($this->_routes as $i => $route) {
-            $logPrefix = sprintf('Route #%d %s %s: ', $i, implode('|', $route['methods']), $route['route']);
-            
+        foreach ($this->_routes as $route) {
             if (!in_array($method, $route['methods'])) {
-                error_log($logPrefix . 'Method not matched');
                 continue;
             }
             
-            error_log($logPrefix . 'Method matched, checking path...');
             $params = $this->matchRoute($route['route'], $uri);
             
             if ($params !== null) {
                 // Store the parameters in the route array
                 $route['params'] = $params;
-                error_log($logPrefix . 'MATCHED with params: ' . json_encode($params));
                 return $route;
-            } else {
-                error_log($logPrefix . 'Path not matched');
             }
         }
 
-        error_log("No route found for: $method $uri");
         return null;
     }
 
@@ -316,44 +304,29 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function matchRoute(string $pattern, string $uri): ?array
     {
-        error_log("Matching pattern: '$pattern' against URI: '$uri'");
-        
         $regex = $this->patternToRegex($pattern);
-        error_log("Generated regex: $regex");
 
         if (preg_match($regex, $uri, $matches)) {
-            error_log("Pattern matched! Matches: " . json_encode($matches));
-            
             // Remove the full match from the beginning
             array_shift($matches);
 
             // Convert numeric keys to parameter names
             $params = [];
             preg_match_all('/\{([^}]+)\}/', $pattern, $paramNames);
-            
-            error_log("Parameter names in pattern: " . json_encode($paramNames[1] ?? []));
 
             foreach ($paramNames[1] as $index => $paramName) {
                 // Support tokens like name:regex by stripping the regex part for the param key
-                $originalParamName = $paramName;
                 if (strpos($paramName, ':') !== false) {
                     [$paramName] = explode(':', $paramName, 2);
                 }
                 if (isset($matches[$index])) {
                     $params[$paramName] = $matches[$index];
-                    error_log(sprintf("  - Parameter '%s' (original: '%s') = '%s'", 
-                        $paramName, $originalParamName, $matches[$index]));
-                } else {
-                    error_log(sprintf("  - Parameter '%s' (original: '%s') not found in matches", 
-                        $paramName, $originalParamName));
                 }
             }
 
-            error_log("Final parameters: " . json_encode($params));
             return $params;
         }
 
-        error_log("Pattern did not match URI");
         return null;
     }
 
@@ -366,39 +339,25 @@ class SabilRouting implements RequestHandlerInterface
      */
     private function patternToRegex(string $pattern): string
     {
-        error_log("Converting route pattern to regex: '$pattern'");
-        
         // Replace {name} with default capture and {name:regex} with custom capture
         $pattern = preg_replace_callback('/\{([^}]+)\}/', function ($m) {
             $token = $m[1];
             $name = $token;
             $regex = '[^/]+'; // default: segment without slash
             
-            error_log(sprintf("  - Found token: '%s'", $token));
-            
             if (strpos($token, ':') !== false) {
                 [$name, $regexPart] = explode(':', $token, 2);
                 if ($regexPart !== '') {
                     $regex = $regexPart;
-                    error_log(sprintf("    Using custom regex '%s' for parameter '%s'", $regex, $name));
-                } else {
-                    error_log(sprintf("    Using default regex for parameter '%s'", $name));
                 }
-            } else {
-                error_log(sprintf("    No custom regex for parameter '%s', using default", $name));
             }
             
-            $result = '(' . $regex . ')';
-            error_log(sprintf("    Replaced token with: %s", $result));
-            
-            return $result;
+            return '(' . $regex . ')';
         }, $pattern);
 
         // Escape forward slashes
         $escapedPattern = str_replace('/', '\/', $pattern);
         $finalRegex = '/^' . $escapedPattern . '$/';
-        
-        error_log(sprintf("Final regex pattern: %s", $finalRegex));
         
         return $finalRegex;
     }
@@ -476,6 +435,45 @@ class SabilRouting implements RequestHandlerInterface
      */
     protected function renderErrorPage(int $status, string $message): string
     {
+        try {
+            // Try to use Twig template for better error pages
+            $basePath = defined('BASE_PATH') ? BASE_PATH : dirname(dirname(__DIR__));
+            $templatePath = $basePath . '/resources/views/errors/' . $status . '.twig';
+            
+            if (file_exists($templatePath)) {
+                // Create Twig renderer
+                $twigRenderer = new \IslamWiki\Core\View\TwigRenderer(
+                    $basePath . '/resources/views',
+                    false, // Disable cache for now
+                    true // Debug mode
+                );
+                
+                // Prepare template data
+                $templateData = [
+                    'status_code' => $status,
+                    'message' => $message,
+                    'timestamp' => date('Y-m-d H:i:s'),
+                    'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+                    'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+                    'request_ip' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                    'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                    'php_version' => PHP_VERSION,
+                    'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+                    'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+                    'memory_usage' => $this->formatBytes(memory_get_usage(true)),
+                    'memory_limit' => ini_get('memory_limit'),
+                    'debug' => true, // Always show debug info for errors
+                ];
+                
+                // Render the template
+                return $twigRenderer->render('errors/' . $status . '.twig', $templateData);
+            }
+        } catch (\Exception $e) {
+            // If Twig rendering fails, fall back to basic HTML
+            error_log("Failed to render Twig error page: " . $e->getMessage());
+        }
+        
+        // Fallback to basic HTML if template doesn't exist or Twig fails
         return "<!DOCTYPE html>
 <html>
 <head>
@@ -490,5 +488,24 @@ class SabilRouting implements RequestHandlerInterface
     <div class='error'>{$message}</div>
 </body>
 </html>";
+    }
+    
+    /**
+     * Format bytes to human readable format.
+     *
+     * @param int $bytes     The number of bytes
+     * @param int $precision The number of decimal places
+     *
+     * @return string
+     */
+    private function formatBytes(int $bytes, int $precision = 2): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 }

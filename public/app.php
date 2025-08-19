@@ -45,6 +45,7 @@ use IslamWiki\Core\Http\Response;
 
 // Initialize container
 error_log("MAIN ENTRY POINT: app.php is being executed");
+error_log("MAIN ENTRY POINT: Current timestamp: " . date('Y-m-d H:i:s'));
 $container = new AsasContainer();
 
 // Initialize database connection
@@ -245,21 +246,71 @@ $container->instance('controller.factory', $controllerFactory);
 // Initialize router
 $router = new SabilRouting($container);
 
-// Temporarily disable LanguageMiddleware to get the system working
-// TODO: Fix middleware system and re-enable
-/*
-// Add LanguageMiddleware to handle language detection and context
+// Add LocaleMiddleware FIRST (before routes are loaded)
 try {
-    $languageMiddleware = $container->get(\IslamWiki\Core\Http\Middleware\LanguageMiddleware::class);
-    $router->addMiddleware($languageMiddleware);
-    error_log("Successfully added LanguageMiddleware to router");
+    require_once BASE_PATH . '/src/Core/Http/Middleware/LocaleMiddleware.php';
+    $localeMiddleware = new \IslamWiki\Core\Http\Middleware\LocaleMiddleware();
+    $router->addMiddleware($localeMiddleware);
+    error_log("Successfully added LocaleMiddleware to router");
+    error_log("LocaleMiddleware class: " . get_class($localeMiddleware));
 } catch (\Exception $e) {
-    error_log("Could not add LanguageMiddleware: " . $e->getMessage());
+    error_log("Could not add LocaleMiddleware: " . $e->getMessage());
+    error_log("Exception trace: " . $e->getTraceAsString());
 }
-*/
 
-// Load routes
-require_once BASE_PATH . '/public/routes.php';
+// Add ErrorHandlingMiddleware LAST (after routes are loaded)
+try {
+    require_once BASE_PATH . '/src/Http/Middleware/ErrorHandlingMiddleware.php';
+    $errorMiddleware = new \IslamWiki\Http\Middleware\ErrorHandlingMiddleware($simpleLogger, true, 'development');
+    $router->addMiddleware($errorMiddleware);
+    error_log("Successfully added ErrorHandlingMiddleware to router");
+} catch (\Exception $e) {
+    error_log("Could not add ErrorHandlingMiddleware: " . $e->getMessage());
+    error_log("Exception trace: " . $e->getTraceAsString());
+}
+
+// Configure SabilRouting with proper routes
+error_log("MAIN ENTRY POINT: Configuring SabilRouting with routes");
+
+// Homepage
+$router->get('/', 'IslamWiki\Http\Controllers\HomeController@index');
+
+// Wiki Routes - Content Management
+$router->get('/wiki', 'IslamWiki\Http\Controllers\WikiController@index');
+$router->get('/wiki/create', 'IslamWiki\Http\Controllers\WikiController@create');
+$router->post('/wiki', 'IslamWiki\Http\Controllers\WikiController@store');
+$router->get('/wiki/{slug}/edit', 'IslamWiki\Http\Controllers\WikiController@edit');
+$router->put('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@update');
+$router->delete('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@destroy');
+$router->get('/wiki/{slug}/history', 'IslamWiki\Http\Controllers\WikiController@history');
+$router->post('/wiki/{slug}/watch', 'IslamWiki\Http\Controllers\WikiController@watch');
+$router->delete('/wiki/{slug}/unwatch', 'IslamWiki\Http\Controllers\WikiController@unwatch');
+$router->get('/wiki/{slug}', 'IslamWiki\Http\Controllers\WikiController@show');
+
+// Authentication Routes
+$router->get('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@showLogin');
+$router->post('/login', 'IslamWiki\Http\Controllers\Auth\AuthController@login');
+$router->get('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@showRegister');
+$router->post('/register', 'IslamWiki\Http\Controllers\Auth\AuthController@register');
+$router->post('/logout', 'IslamWiki\Http\Controllers\Auth\AuthController@logout');
+
+// Dashboard
+$router->get('/dashboard', 'IslamWiki\Http\Controllers\DashboardController@index');
+
+// Profile Routes
+$router->get('/profile', 'IslamWiki\Http\Controllers\ProfileController@show');
+$router->post('/profile/update', 'IslamWiki\Http\Controllers\ProfileController@update');
+$router->get('/user/{username}', 'IslamWiki\Http\Controllers\ProfileController@showPublic');
+
+// Asset serving routes
+$router->get('/assets/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveCss');
+$router->get('/assets/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveJs');
+
+// Skin asset routes
+$router->get('/skins/{skin}/css/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinCss');
+$router->get('/skins/{skin}/js/{filename}', 'IslamWiki\Http\Controllers\AssetController@serveSkinJs');
+
+error_log("MAIN ENTRY POINT: SabilRouting routes configured successfully");
 
 // Get current request
 $request = Request::capture();

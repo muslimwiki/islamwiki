@@ -42,6 +42,48 @@
         line-height: 1.2;
     }
     
+    .language-switcher {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+        padding: 0.5rem;
+        background: var(--page-bg-light, #f9fafb);
+        border-radius: var(--page-radius-sm, 0.75rem);
+        border: 1px solid var(--page-border-light, #f3f4f6);
+    }
+    
+    .language-switcher-label {
+        font-size: 0.9rem;
+        color: var(--page-text-light, #6b7280);
+        font-weight: 500;
+    }
+    
+    .language-option {
+        padding: 0.25rem 0.75rem;
+        border: 1px solid var(--page-border-light, #f3f4f6);
+        border-radius: var(--page-radius-sm, 0.5rem);
+        background: var(--page-bg, #ffffff);
+        color: var(--page-text, #1f2937);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .language-option:hover {
+        background: var(--page-accent, #3B82F6);
+        color: white;
+        border-color: var(--page-accent, #3B82F6);
+    }
+    
+    .language-option.active {
+        background: var(--page-accent, #3B82F6);
+        color: white;
+        border-color: var(--page-accent, #3B82F6);
+        font-weight: 600;
+    }
+    
     .page-meta {
         display: flex;
         justify-content: center;
@@ -288,6 +330,20 @@
 <div class="page-container">
     <div class="page-header">
         <h1 class="page-title">{{ page.getAttribute('title') }}</h1>
+        
+        <!-- Language Switcher -->
+        {% if availableLanguages and availableLanguages|length > 1 %}
+        <div class="language-switcher">
+            <span class="language-switcher-label">Language:</span>
+            {% for langCode, langName in availableLanguages %}
+                {% if langCode == currentLanguage %}
+                    <span class="language-option active">{{ langName }}</span>
+                {% else %}
+                    <a href="?lang={{ langCode }}" class="language-option">{{ langName }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="page-meta">
             {% if page.getAttribute('namespace') %}
                 <div class="page-meta-item">

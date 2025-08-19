@@ -122,7 +122,7 @@ class SettingsController extends Controller
     /**
      * Update user language preference
      */
-    public function updateLanguage(Request $request): Response
+    public function updateLanguage(Request $request, string $locale = 'en'): Response
     {
         error_log("SettingsController::updateLanguage - Starting language update");
         
@@ -160,7 +160,10 @@ class SettingsController extends Controller
             // Set session language using LanguageService
             $this->languageService->setCurrentLanguage($language);
 
-            error_log("SettingsController::updateLanguage - Session language updated");
+            // Set language cookie for future requests
+            setcookie('islamwiki_language', $language, time() + (365 * 24 * 60 * 60), '/', '', false, true);
+
+            error_log("SettingsController::updateLanguage - Session language updated and cookie set");
 
             // Update TwigRenderer translation language
             try {
@@ -175,13 +178,17 @@ class SettingsController extends Controller
             $translationService = $this->languageService->getTranslationService();
             $successMessage = $translationService ? $translationService->translate('messages.success.language_updated') : 'Language updated successfully';
 
-            // Return success response without redirect - user stays on settings page
-            error_log("SettingsController::updateLanguage - Language update successful, staying on settings page");
+            // Return success response with redirect to locale-aware settings page
+            error_log("SettingsController::updateLanguage - Language update successful, redirecting to locale-aware settings");
+            
+            // Build redirect URL based on new language
+            $redirectUrl = $language === 'en' ? '/settings' : "/{$language}/settings";
             
             return new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'success' => true,
                 'message' => $successMessage,
-                'language' => $language
+                'language' => $language,
+                'redirect_url' => $redirectUrl
             ]));
         } catch (\Exception $e) {
             error_log("SettingsController::updateLanguage - ERROR: " . $e->getMessage());

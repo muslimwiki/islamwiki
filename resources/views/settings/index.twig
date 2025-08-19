@@ -28,7 +28,7 @@
                 {% endfor %}
             </div>
 
-            <form id="language-form" method="POST" action="/settings/language" class="settings-form">
+                            <form id="language-form" method="POST" action="{{ current_language() == 'en' ? '/settings/language' : '/' ~ current_language() ~ '/settings/language' }}" class="settings-form">
                 <input type="hidden" name="language" id="selected-language" value="{{ current_language }}">
                 <button type="submit" class="btn btn-primary">{{ __('settings.language.update') }}</button>
             </form>
@@ -361,7 +361,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Submit form via AJAX
         const formData = new FormData(this);
         
-        fetch('/settings/language', {
+        // Get the form action URL for the fetch request
+        const formAction = this.action;
+        
+        fetch(formAction, {
             method: 'POST',
             body: formData
         })
@@ -370,8 +373,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 // Show success message
                 alert(data.message);
-                // Stay on settings page and refresh to show new language
-                window.location.reload();
+                // Redirect to locale-aware settings page if provided
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Fallback: stay on settings page and refresh
+                    window.location.reload();
+                }
             } else {
                 // Show error message
                 alert(data.message);

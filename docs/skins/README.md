@@ -1,653 +1,563 @@
 # IslamWiki Skin System
 
-## Overview
+## 🎨 **Overview**
 
-The IslamWiki Skin System provides a modular theming architecture that separates the backend skin management from user-facing skins. This allows users to easily add and customize skins without touching the source code. **New in v0.0.47**: Dynamic skin discovery and comprehensive settings interface. **Fixed in v0.0.48**: Authentication compatibility and session safety. **Fixed in v0.0.49**: Muslim skin content rendering and proper skin activation.
+The IslamWiki skin system provides a flexible, WordPress-inspired theme architecture that allows developers to create beautiful, Islamic-themed skins for the platform. Built on the **Safa CSS Framework** and **Marwa JavaScript Framework**, skins provide consistent styling and functionality while maintaining Islamic values and aesthetics.
 
-## Architecture
+---
 
-### Backend System (`src/Skins/`)
-- **Skin.php**: Abstract base class for all skins
-- **SkinManager.php**: Manages skin discovery, loading, and activation
-- **UserSkin.php**: Handles user-defined skins from JSON configuration
-- **SkinServiceProvider.php**: Integrates the skin system with the application
+## 🏗️ **Architecture Overview**
 
-### User Skins (`/skins/`)
-- **Bismillah**: Default skin with Islamic design
-- **Muslim**: Modern skin inspired by Citizen MediaWiki
-- **Dynamic Discovery**: New skins automatically appear in settings
-
-## Directory Structure
-
+### **Skin System Components**
 ```
-/skins/                          # User-facing skins directory
-├── Bismillah/                   # Default skin
-│   ├── skin.json               # Skin configuration
-│   ├── css/
-│   │   └── bismillah.css       # Skin CSS
-│   ├── js/
-│   │   └── bismillah.js        # Skin JavaScript
-│   └── templates/
-│       └── layout.twig         # Custom layout template
-├── Muslim/                      # Modern skin
-│   ├── skin.json
-│   ├── css/
-│   ├── js/
-│   └── templates/
-└── [CustomSkin]/               # User-created skins
-
-src/Skins/                      # Backend skin system
-├── Skin.php                    # Abstract base class
-├── SkinManager.php             # Skin management
-├── UserSkin.php                # User skin handler
-└── SkinServiceProvider.php     # Service integration
+Skin System Architecture:
+├── 📁 Safa (CSS Framework) - Purity and cleanliness in styling
+├── 📁 Marwa (JavaScript Framework) - Excellence in interactivity
+├── 📁 Nizam (Application System) - Order and organization
+├── 📁 Tadbir (Configuration) - Management and planning
+└── 📁 Bayan (Formatting) - Explanation and presentation
 ```
 
-## Dynamic Skin Discovery
+### **Core Principles**
+- **Islamic Aesthetics**: Beautiful, culturally appropriate designs
+- **Responsive Design**: Mobile-first, accessible to all devices
+- **Progressive Enhancement**: Works without JavaScript
+- **Performance Focus**: Optimized for speed and efficiency
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Customization**: Easy to customize and extend
 
-**New Feature**: The skin system now automatically discovers all skins in the `/skins/` directory. New skins will automatically appear in the settings interface without requiring configuration changes.
+---
 
-### How It Works
-1. **Automatic Scanning**: The system scans the `/skins/` directory on startup
-2. **Configuration Validation**: Each skin's `skin.json` is validated
-3. **Settings Integration**: Discovered skins appear in the settings page
-4. **User Selection**: Users can switch between any available skin
+## 🕌 **Islamic Naming Conventions**
 
-### Settings Interface
-- **Comprehensive Settings Page**: Visit `/settings` to manage skins
-- **Skin Information**: View detailed metadata, features, and dependencies
-- **User Preferences**: Individual skin preferences stored per user
-- **API Endpoints**: RESTful API for skin management
-- **Authentication Safe**: Skin middleware doesn't interfere with login process
+### **Skin File Naming**
+All skin files must follow Islamic naming conventions:
 
-## Available Skins
+```php
+// ✅ Correct - Using Islamic naming
+class SafaSkin_Bismillah extends SafaSkin
+{
+    public function getSkinName(): string
+    {
+        return 'Bismillah';
+    }
+    
+    public function getSkinTheme(): string
+    {
+        return 'islamic';
+    }
+}
 
-### Bismillah (Default)
-The **Bismillah** skin is the default skin for IslamWiki, featuring:
+// ❌ Incorrect - Generic naming
+class BismillahSkin extends Skin
+{
+    // No prefix
+}
+```
 
-#### Features
-- **Modern Islamic Design**: Beautiful gradients and Islamic-inspired colors
-- **Responsive Layout**: Works perfectly on all devices
-- **Glass Morphism**: Modern glass-like effects
-- **Dark Theme Support**: Optional dark mode
-- **Animations**: Smooth transitions and hover effects
-- **Accessibility**: WCAG compliant design
+### **Skin Directory Structure**
+```
+skins/
+├── 📁 {SkinName}/
+│   ├── 📄 {SkinName}Skin.php        # Main skin class
+│   ├── 📄 skin.json                 # Skin configuration
+│   ├── 📁 safa/                     # CSS framework files
+│   │   ├── 📄 safa-base.css         # Base styles
+│   │   ├── 📄 safa-components.css   # Component styles
+│   │   ├── 📄 safa-themes.css       # Theme variations
+│   │   └── 📄 safa-utilities.css    # Utility classes
+│   ├── 📁 marwa/                     # JavaScript framework files
+│   │   ├── 📄 marwa-core.js          # Core functionality
+│   │   ├── 📄 marwa-components.js    # UI components
+│   │   └── 📄 marwa-themes.js        # Theme functionality
+│   ├── 📁 templates/                  # Twig templates
+│   │   ├── 📄 base.twig              # Base template
+│   │   ├── 📄 home.twig              # Home page template
+│   │   └── 📄 page.twig              # Page template
+│   ├── 📁 images/                     # Skin-specific images
+│   │   ├── 📄 logo.png                # Skin logo
+│   │   ├── 📄 favicon.ico             # Favicon
+│   │   └── 📄 background.jpg          # Background image
+│   └── 📁 assets/                     # Additional assets
+       ├── 📁 fonts/                   # Custom fonts
+       ├── 📁 icons/                   # Icon sets
+       └── 📁 media/                   # Media files
+```
 
-#### Configuration
+---
+
+## 🎨 **Safa CSS Framework Integration**
+
+### **CSS Framework Structure**
+The **Safa CSS Framework** provides the foundation for all skins:
+
+```css
+/* ✅ Correct - Using Safa framework naming */
+.safa-layout {
+    /* Layout utilities */
+}
+
+.safa-typography {
+    /* Typography system */
+}
+
+.safa-colors {
+    /* Color system */
+}
+
+.safa-components {
+    /* Component styles */
+}
+
+.safa-themes {
+    /* Theme variations */
+}
+
+.safa-utilities {
+    /* Utility classes */
+}
+
+/* ❌ Incorrect - Generic naming */
+.layout {
+    /* No prefix */
+}
+
+.typography {
+    /* No prefix */
+}
+```
+
+### **Theme System**
+```css
+/* Islamic Theme */
+.safa-theme--islamic {
+    --primary-color: #2E7D32;      /* Islamic green */
+    --secondary-color: #1B5E20;    /* Dark green */
+    --accent-color: #FFD700;       /* Gold accent */
+    --text-color: #212121;         /* Dark text */
+    --background-color: #FAFAFA;   /* Light background */
+}
+
+/* Ramadan Theme */
+.safa-theme--ramadan {
+    --primary-color: #1976D2;      /* Ramadan blue */
+    --secondary-color: #0D47A1;    /* Dark blue */
+    --accent-color: #FF6B6B;       /* Red accent */
+    --text-color: #FFFFFF;         /* White text */
+    --background-color: #1A237E;   /* Dark background */
+}
+
+/* Light Theme */
+.safa-theme--light {
+    --primary-color: #2196F3;      /* Material blue */
+    --secondary-color: #1976D2;    /* Dark blue */
+    --accent-color: #FF9800;       /* Orange accent */
+    --text-color: #212121;         /* Dark text */
+    --background-color: #FFFFFF;   /* White background */
+}
+
+/* Dark Theme */
+.safa-theme--dark {
+    --primary-color: #64B5F6;      /* Light blue */
+    --secondary-color: #42A5F5;    /* Blue */
+    --accent-color: #FFB74D;       /* Light orange */
+    --text-color: #FFFFFF;         /* White text */
+    --background-color: #121212;   /* Dark background */
+}
+```
+
+---
+
+## 🚀 **Marwa JavaScript Framework Integration**
+
+### **JavaScript Framework Structure**
+The **Marwa JavaScript Framework** provides interactive functionality:
+
+```javascript
+// ✅ Correct - Using Marwa framework naming
+class MarwaSkinManager {
+    constructor(skinName) {
+        this.skinName = skinName;
+        this.currentTheme = 'islamic';
+        this.init();
+    }
+    
+    init() {
+        this.setupThemeSwitcher();
+        this.setupResponsiveNavigation();
+        this.setupAccessibility();
+    }
+    
+    setupThemeSwitcher() {
+        // Theme switching functionality
+    }
+    
+    setupResponsiveNavigation() {
+        // Responsive navigation
+    }
+    
+    setupAccessibility() {
+        // Accessibility features
+    }
+}
+
+// ❌ Incorrect - Generic naming
+class SkinManager {
+    // No prefix
+}
+```
+
+### **Component System**
+```javascript
+// Theme Switcher Component
+class MarwaThemeSwitcher extends MarwaComponent {
+    constructor(element) {
+        super(element);
+        this.themes = ['islamic', 'ramadan', 'light', 'dark'];
+        this.init();
+    }
+    
+    init() {
+        this.createThemeSelector();
+        this.bindEvents();
+    }
+    
+    createThemeSelector() {
+        // Create theme selector UI
+    }
+    
+    bindEvents() {
+        // Bind theme switching events
+    }
+    
+    switchTheme(theme) {
+        // Switch to selected theme
+        document.documentElement.setAttribute('data-theme', theme);
+        this.currentTheme = theme;
+        this.saveThemePreference(theme);
+    }
+}
+```
+
+---
+
+## 🔧 **Skin Development**
+
+### **Creating a New Skin**
+1. **Create Skin Directory**: Create directory in `skins/` folder
+2. **Skin Class**: Extend `SafaSkin` base class
+3. **Configuration**: Create `skin.json` configuration file
+4. **Templates**: Create Twig templates
+5. **Styles**: Use Safa CSS framework
+6. **Scripts**: Use Marwa JavaScript framework
+7. **Testing**: Test across different devices and themes
+
+### **Skin Class Example**
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace IslamWiki\Skins\Bismillah;
+
+use IslamWiki\Core\Skins\SafaSkin;
+
+/**
+ * Bismillah Skin - Beautiful Islamic-themed skin
+ * 
+ * @package IslamWiki\Skins\Bismillah
+ * @author IslamWiki Development Team
+ */
+class SafaSkin_Bismillah extends SafaSkin
+{
+    public function getSkinName(): string
+    {
+        return 'Bismillah';
+    }
+    
+    public function getSkinDescription(): string
+    {
+        return 'Beautiful Islamic-themed skin with modern design';
+    }
+    
+    public function getSkinVersion(): string
+    {
+        return '1.0.0';
+    }
+    
+    public function getSkinAuthor(): string
+    {
+        return 'IslamWiki Development Team';
+    }
+    
+    public function getSupportedThemes(): array
+    {
+        return ['islamic', 'ramadan', 'light', 'dark'];
+    }
+    
+    public function getDefaultTheme(): string
+    {
+        return 'islamic';
+    }
+    
+    public function getSkinAssets(): array
+    {
+        return [
+            'css' => [
+                'safa-base.css',
+                'safa-components.css',
+                'safa-themes.css',
+                'safa-utilities.css'
+            ],
+            'js' => [
+                'marwa-core.js',
+                'marwa-components.js',
+                'marwa-themes.js'
+            ]
+        ];
+    }
+}
+```
+
+### **Skin Configuration (skin.json)**
 ```json
 {
     "name": "Bismillah",
-    "version": "0.0.28",
-    "author": "IslamWiki Team",
-    "description": "The default skin for IslamWiki with modern Islamic design and beautiful gradients.",
-    "type": "user-skin",
-    "directory": "Bismillah",
-    "assets": {
-        "css": "css/bismillah.css",
-        "js": "js/bismillah.js",
-        "layout": "templates/layout.twig"
-    },
-    "config": {
-        "primary_color": "#667eea",
-        "secondary_color": "#764ba2",
-        "accent_color": "#f093fb",
-        "text_color": "#1f2937",
-        "background_color": "#f8fafc",
-        "card_background": "#ffffff",
-        "border_color": "#e5e7eb",
-        "enable_animations": true,
-        "enable_gradients": true,
-        "font_family": "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
-    },
-    "features": [
-        "responsive",
-        "dark-theme",
-        "animations",
-        "gradients",
-        "glass-morphism",
-        "accessibility"
-    ],
-    "dependencies": {
-        "tailwind": "cdn",
-        "zamzamjs": "local",
-        "prism": "cdn"
-    }
-}
-```
-
-### Muslim
-The **Muslim** skin provides a modern, responsive design inspired by Citizen MediaWiki with proper content rendering:
-
-#### Features
-- **Citizen-Inspired Design**: Modern MediaWiki-inspired layout
-- **Islamic Aesthetics**: Beautiful Islamic design elements with proper CSS class naming
-- **Responsive Design**: Mobile-friendly interface
-- **Extension Support**: Enhanced support for extensions
-- **Accessibility**: Full accessibility compliance
-- **Content Rendering**: Proper content display in main body area
-- **CSS Framework Integration**: Seamless integration with Safa CSS framework
-
-#### Configuration
-```json
-{
-    "name": "Muslim",
-    "version": "0.0.1",
-    "author": "IslamWiki Team",
-    "description": "A beautiful, usable, responsive skin inspired by Citizen MediaWiki skin with Islamic design elements.",
-    "type": "user-skin",
-    "directory": "Muslim",
-    "assets": {
-        "css": "css/muslim.css",
-        "js": "js/muslim.js",
-        "layout": "templates/layout.twig"
-    },
-    "config": {
-        "primary_color": "#2c5aa0",
-        "secondary_color": "#4a90e2",
-        "accent_color": "#f39c12",
-        "text_color": "#2c3e50",
-        "background_color": "#ecf0f1",
-        "card_background": "#ffffff",
-        "border_color": "#bdc3c7",
-        "enable_animations": true,
-        "enable_gradients": true,
-        "font_family": "Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
-    },
-    "features": [
-        "responsive",
-        "dark-theme",
-        "animations",
-        "gradients",
-        "glass-morphism",
-        "accessibility",
-        "extension-support"
-    ],
-    "dependencies": {
-        "tailwind": "cdn",
-        "zamzamjs": "local",
-        "prism": "cdn"
-    }
-}
-```
-
-## Settings Management
-
-### Settings Page
-Visit `/settings` to access the comprehensive settings interface:
-
-#### Appearance Tab
-- **Skin Selection**: Choose from all available skins
-- **Skin Information**: View detailed metadata and features
-- **Theme Options**: Configure animations, gradients, and dark theme
-- **Live Preview**: See skin changes immediately
-
-#### Account Tab
-- **Profile Management**: Update user information
-- **Security Settings**: Change password and security preferences
-- **Account Actions**: Export data, delete account
-
-#### Privacy Tab
-- **Privacy Settings**: Control profile visibility and data sharing
-- **Cookie Preferences**: Manage cookie settings
-- **Data Management**: Download or delete personal data
-
-#### Notifications Tab
-- **Notification Preferences**: Configure email and browser notifications
-- **Email Settings**: Choose which emails to receive
-- **Schedule Settings**: Set notification frequency and quiet hours
-
-### API Endpoints
-- `GET /settings` - Settings page
-- `POST /settings/skin` - Update user's skin preference
-- `GET /settings/skins` - Get available skins
-- `GET /settings/skin/{name}` - Get skin information
-
-### User Preferences
-- **Individual Settings**: Each user has their own skin preference
-- **Database Storage**: Preferences stored in `user_settings` table
-- **Session Persistence**: Settings persist across sessions
-- **Fallback System**: Default to global skin if no user preference
-
-## Creating a New Skin
-
-### Step 1: Create Skin Directory
-```bash
-mkdir -p skins/MyCustomSkin/{css,js,templates}
-```
-
-### Step 2: Create Skin Configuration
-Create `skins/MyCustomSkin/skin.json`:
-```json
-{
-    "name": "MyCustomSkin",
+    "description": "Beautiful Islamic-themed skin with modern design",
     "version": "1.0.0",
-    "author": "Your Name",
-    "description": "A custom skin for IslamWiki",
-    "type": "user-skin",
-    "directory": "MyCustomSkin",
-    "assets": {
-        "css": "css/style.css",
-        "js": "js/script.js",
-        "layout": "templates/layout.twig"
-    },
-    "config": {
-        "primary_color": "#your-color",
-        "secondary_color": "#your-color",
-        "enable_animations": true,
-        "enable_gradients": true
-    },
-    "features": [
-        "responsive",
-        "animations",
-        "gradients"
+    "author": "IslamWiki Development Team",
+    "license": "AGPL-3.0",
+    "themes": [
+        "islamic",
+        "ramadan",
+        "light",
+        "dark"
     ],
-    "dependencies": {
-        "tailwind": "cdn",
-        "zamzamjs": "local"
+    "defaultTheme": "islamic",
+    "responsive": true,
+    "accessibility": true,
+    "rtlSupport": true,
+    "features": [
+        "theme-switching",
+        "responsive-navigation",
+        "accessibility-tools",
+        "customizable-layout"
+    ]
+}
+```
+
+---
+
+## 🎯 **Skin Features**
+
+### **Core Features**
+- **Theme Switching**: Multiple theme variations
+- **Responsive Design**: Mobile-first approach
+- **Accessibility**: WCAG 2.1 AA compliance
+- **RTL Support**: Right-to-left language support
+- **Customization**: Easy to customize and extend
+- **Performance**: Optimized for speed and efficiency
+
+### **Islamic Features**
+- **Islamic Aesthetics**: Beautiful, culturally appropriate designs
+- **Islamic Themes**: Islamic, Ramadan, and other cultural themes
+- **Cultural Sensitivity**: Respectful of Islamic values
+- **Community Focus**: Designed for community collaboration
+
+### **Technical Features**
+- **Twig Templates**: Flexible template system
+- **CSS Framework**: Safa CSS framework integration
+- **JavaScript Framework**: Marwa JavaScript framework integration
+- **Asset Management**: Efficient asset loading and caching
+- **Extension Support**: Easy integration with extensions
+
+---
+
+## 📱 **Responsive Design**
+
+### **Breakpoint System**
+```css
+/* Mobile First Approach */
+.safa-container {
+    width: 100%;
+    padding: 1rem;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .safa-container {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .safa-container {
+        max-width: 960px;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1280px) {
+    .safa-container {
+        max-width: 1200px;
     }
 }
 ```
 
-### Step 3: Create CSS File
-Create `skins/MyCustomSkin/css/mycustomskin.css`:
-```css
-:root {
-    --primary-color: #your-color;
-    --secondary-color: #your-color;
-    /* Define your CSS variables */
-}
-
-/* Your custom styles */
-body {
-    font-family: 'Your Font', sans-serif;
-    background-color: var(--background-color);
-}
-
-/* Add your custom CSS here */
-```
-
-### Step 4: Create JavaScript File
-Create `skins/MyCustomSkin/js/mycustomskin.js`:
+### **Navigation System**
 ```javascript
-// Your custom JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize your skin functionality
-    console.log('MyCustomSkin loaded!');
-});
-```
-
-### Step 5: Create Layout Template (Optional)
-Create `skins/MyCustomSkin/templates/layout.twig`:
-```twig
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}IslamWiki{% endblock %}</title>
+// Responsive Navigation Component
+class MarwaResponsiveNavigation extends MarwaComponent {
+    constructor(element) {
+        super(element);
+        this.mobileBreakpoint = 768;
+        this.init();
+    }
     
-    <!-- Your custom fonts and external CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Your+Font:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    init() {
+        this.setupMobileMenu();
+        this.bindEvents();
+    }
     
-    <!-- Skin CSS -->
-    <style>
-        {{ skin_css|raw }}
-    </style>
-</head>
-<body>
-    <!-- Your custom layout -->
-    <header>
-        <!-- Your header content -->
-    </header>
+    setupMobileMenu() {
+        // Setup mobile navigation menu
+    }
     
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    bindEvents() {
+        // Bind navigation events
+    }
     
-    <footer>
-        <!-- Your footer content -->
-    </footer>
-    
-    <!-- Skin JavaScript -->
-    <script>
-        {{ skin_js|raw }}
-    </script>
-</body>
-</html>
-```
-
-### Step 6: Automatic Discovery
-Once you create your skin, it will automatically appear in the settings page. No additional configuration required!
-
-## Activating a Skin
-
-### Method 1: Settings Page (Recommended)
-1. Visit `/settings`
-2. Go to the "Appearance" tab
-3. Select your desired skin
-4. Click "Select Skin"
-5. The change takes effect immediately
-
-### Method 2: LocalSettings Configuration
-Edit `LocalSettings.php`:
-```php
-// Set the active skin
-$wgActiveSkin = 'MyCustomSkin';
-
-// Optional: Configure skin features
-$wgSkinConfig = [
-    'enable_animations' => true,
-    'enable_gradients' => true,
-    'enable_dark_theme' => false,
-];
-```
-
-### Method 3: Environment Variables
-Set in your `.env` file:
-```env
-ACTIVE_SKIN=MyCustomSkin
-SKIN_ANIMATIONS=true
-SKIN_GRADIENTS=true
-SKIN_DARK_THEME=false
-```
-
-### Method 4: URL Parameter Override (New in v0.0.50)
-For quick testing and development, you can override the skin temporarily using URL parameters:
-
-#### Usage Examples
-- **Bismillah Skin**: `https://local.islam.wiki/?skin=bismillah`
-- **Muslim Skin**: `https://local.islam.wiki/?skin=muslim`
-- **Case Insensitive**: Works with `?skin=Bismillah`, `?skin=bismillah`, `?skin=BISMILLAH`
-
-#### Features
-- **Temporary Override**: URL parameter changes don't affect your saved skin preference
-- **Validation**: Only accepts valid skin names, falls back to your preferred skin
-- **Development Friendly**: Perfect for testing different skins without changing settings
-- **Non-Persistent**: Your user settings remain unchanged
-
-#### Use Cases
-- **Skin Testing**: Quickly test different skins during development
-- **Demonstrations**: Show different skins to users without changing settings
-- **Comparison**: Easily compare skins side-by-side
-- **Troubleshooting**: Test if skin issues are user-specific or global
-
-#### Technical Details
-- **Middleware Processing**: Handled by `SkinMiddleware` with URL parameter detection
-- **Container Updates**: Updates skin data in application container
-- **Template Globals**: Updates `skin_css`, `skin_js`, `active_skin` variables
-- **Asset Loading**: Loads CSS and JS from correct skin directories
-- **Fallback System**: Falls back to user's preferred skin if invalid parameter
-
-## Using Skins Programmatically
-
-### Get Active Skin
-```php
-use IslamWiki\Skins\SkinManager;
-
-$skinManager = $app->getContainer()->get('skin.manager');
-$activeSkin = $skinManager->getActiveSkin();
-
-echo $activeSkin->getName(); // "Bismillah"
-echo $activeSkin->getVersion(); // "0.0.28"
-```
-
-### Get All Available Skins
-```php
-$availableSkins = $skinManager->getSkins();
-foreach ($availableSkins as $skinName => $skin) {
-    echo $skinName . ': ' . $skin->getDescription() . "\n";
+    toggleMobileMenu() {
+        // Toggle mobile menu visibility
+    }
 }
 ```
 
-### Switch Active Skin
-```php
-$skinManager->setActiveSkin('BlueSkin');
+---
+
+## ♿ **Accessibility Features**
+
+### **WCAG 2.1 AA Compliance**
+- **Keyboard Navigation**: Full keyboard navigation support
+- **Screen Reader Support**: ARIA labels and descriptions
+- **High Contrast**: High contrast mode support
+- **Focus Management**: Clear focus indicators
+- **Semantic HTML**: Proper semantic markup
+
+### **Accessibility Components**
+```javascript
+// Accessibility Manager Component
+class MarwaAccessibilityManager extends MarwaComponent {
+    constructor() {
+        super();
+        this.init();
+    }
+    
+    init() {
+        this.setupHighContrast();
+        this.setupFontScaling();
+        this.setupFocusIndicators();
+    }
+    
+    setupHighContrast() {
+        // High contrast mode
+    }
+    
+    setupFontScaling() {
+        // Font scaling functionality
+    }
+    
+    setupFocusIndicators() {
+        // Focus indicators
+    }
+}
 ```
 
-### Get User-Specific Skin
-```php
-$userId = 1;
-$userSkin = $skinManager->getActiveSkinForUser($userId);
-echo $userSkin->getName(); // User's preferred skin
-```
+---
 
-## View Helpers
+## 🔧 **Customization & Extension**
 
-The skin system provides several Twig helpers:
-
-### `skin_css`
-Outputs the CSS content of the active skin:
-```twig
-<style>
-    {{ skin_css|raw }}
-</style>
-```
-
-### `skin_js`
-Outputs the JavaScript content of the active skin:
-```twig
-<script>
-    {{ skin_js|raw }}
-</script>
-```
-
-### `skin_name`
-Returns the name of the active skin:
-```twig
-<p>Current skin: {{ skin_name }}</p>
-```
-
-### `skin_metadata`
-Returns metadata about the active skin:
-```twig
-{% set metadata = skin_metadata() %}
-<p>Skin: {{ metadata.name }} v{{ metadata.version }}</p>
-<p>Author: {{ metadata.author }}</p>
-```
-
-### `available_skins`
-Returns a list of all available skins:
-```twig
-{% set skins = available_skins() %}
-<select name="skin">
-    {% for skinName, skin in skins %}
-        <option value="{{ skinName }}" {% if skinName == skin_name %}selected{% endif %}>
-            {{ skin.name }}
-        </option>
-    {% endfor %}
-</select>
-```
-
-### `skin_asset`
-Generates a URL for a skin asset:
-```twig
-<link rel="stylesheet" href="{{ skin_asset('css/bismillah.css') }}">
-<script src="{{ skin_asset('js/bismillah.js') }}"></script>
-```
-
-### `skin_has_custom_layout`
-Checks if the active skin has a custom layout:
-```twig
-{% if skin_has_custom_layout() %}
-    {% include skin_layout_path() %}
-{% else %}
-    {% include 'layouts/app.twig' %}
-{% endif %}
-```
-
-## Skin Configuration
-
-### CSS Variables
-Skins can define CSS custom properties:
+### **Custom CSS Variables**
 ```css
+/* Custom CSS Variables */
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --text-color: #1f2937;
-    --background-color: #f8fafc;
-    --card-background: #ffffff;
-    --border-color: #e5e7eb;
+    --custom-primary-color: #2E7D32;
+    --custom-secondary-color: #1B5E20;
+    --custom-accent-color: #FFD700;
+    --custom-font-family: 'Amiri', serif;
+    --custom-border-radius: 8px;
+    --custom-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Custom Component Styles */
+.safa-button--custom {
+    background-color: var(--custom-primary-color);
+    border-radius: var(--custom-border-radius);
+    box-shadow: var(--custom-shadow);
+    font-family: var(--custom-font-family);
 }
 ```
 
-### JavaScript Features
-Skins can include custom JavaScript functionality:
-- User dropdown menus
-- Smooth scrolling
-- Loading states
-- Hover effects
-- Intersection Observer animations
-- Keyboard navigation
-- Search functionality
-- Theme toggles
-- Copy-to-clipboard
-- Lazy loading
-- Form validation
-- Mobile menu toggles
-
-## Best Practices
-
-### 1. Skin Organization
-- Keep skin files organized in subdirectories
-- Use descriptive names for CSS classes
-- Follow BEM methodology for CSS
-- Use CSS custom properties for theming
-
-### 2. Performance
-- Minimize CSS and JavaScript file sizes
-- Use CDN resources when possible
-- Implement lazy loading for images
-- Optimize animations for performance
-
-### 3. Accessibility
-- Ensure proper color contrast ratios
-- Provide keyboard navigation support
-- Include ARIA labels and roles
-- Test with screen readers
-
-### 4. Responsive Design
-- Use mobile-first approach
-- Test on various screen sizes
-- Ensure touch-friendly interfaces
-- Optimize for different devices
-
-### 5. Browser Compatibility
-- Test on multiple browsers
-- Use progressive enhancement
-- Provide fallbacks for older browsers
-- Consider polyfills when needed
-
-## Testing
-
-### Test Your Skin
-```bash
-php debug/debug-skin-management.php
-php debug/debug-settings-test.php
+### **Custom JavaScript Components**
+```javascript
+// Custom Component Example
+class MarwaCustomComponent extends MarwaComponent {
+    constructor(element) {
+        super(element);
+        this.init();
+    }
+    
+    init() {
+        // Custom initialization logic
+    }
+    
+    // Custom methods
+    customMethod() {
+        // Custom functionality
+    }
+}
 ```
 
-### Manual Testing
-1. Create your skin in `/skins/`
-2. Visit `/settings` to see it in the skin selection
-3. Select your skin to test it
-4. Test on different devices and browsers
+---
 
-## Troubleshooting
+## 📚 **Documentation & Resources**
 
-### Common Issues
+### **Development Guides**
+- [Skin Development Guide](development.md)
+- [CSS Framework Guide](../architecture/core-systems.md#safa-css-framework)
+- [JavaScript Framework Guide](../architecture/core-systems.md#marwa-javascript-framework)
+- [Template System Guide](../architecture/core-systems.md)
 
-#### Skin Not Loading
-- Check that `skin.json` exists and is valid JSON
-- Verify all asset files exist
-- Check file permissions
-- Run debug scripts to identify issues
+### **Reference Materials**
+- [Islamic Naming Conventions](../guides/islamic-naming-conventions.md)
+- [Style Guide](../guides/style-guide.md)
+- [API Documentation](../api/overview.md)
+- [Extension Development](../extensions/development.md)
 
-#### CSS Not Applying
-- Ensure CSS file path is correct in `skin.json`
-- Check for CSS syntax errors
-- Verify CSS is being loaded in the page
+---
 
-#### JavaScript Errors
-- Check browser console for errors
-- Verify JavaScript file path in `skin.json`
-- Test JavaScript functionality step by step
+## 📄 **License Information**
 
-#### Layout Issues
-- Check if custom layout template exists
-- Verify Twig syntax in layout files
-- Test with default layout first
+This skin system is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-#### Settings Not Working
-- Check if user is logged in
-- Verify database connection
-- Check user_settings table exists
-- Run debug scripts to identify issues
+### **AGPL-3.0 License Requirements**
+- **Source Code**: Must be made available to users
+- **Network Use**: Network use triggers source code distribution
+- **Modifications**: Modified versions must be licensed under AGPL-3.0
+- **Attribution**: Original copyright notices must be preserved
 
-### Debug Mode
-Enable debug mode to see detailed error messages:
-```php
-// In LocalSettings.php
-$wgDebug = true;
-```
+### **License Compliance**
+- All skins must include AGPL-3.0 license headers
+- Source code must be available to users
+- Network use must comply with AGPL-3.0 requirements
+- Modifications must preserve license terms
 
-### Debug Tools
-Use the provided debug scripts:
-```bash
-# Test skin management
-php debug/debug-skin-management.php
+---
 
-# Test settings functionality
-php debug/debug-settings-test.php
-
-# Test detailed skin loading
-php debug/debug-skin-loading-detailed.php
-```
-
-## Contributing
-
-### Adding New Skins
-1. Create your skin in `/skins/`
-2. Follow the naming conventions
-3. Include proper documentation
-4. Test thoroughly
-5. Submit for review
-
-### Improving Existing Skins
-1. Fork the repository
-2. Make your improvements
-3. Test on multiple devices
-4. Submit a pull request
-
-### Reporting Issues
-1. Check existing issues first
-2. Provide detailed reproduction steps
-3. Include browser and device information
-4. Attach screenshots if relevant
-5. Run debug scripts and include output
-
-## Future Enhancements
-
-### Planned Features
-- **Skin Marketplace**: Browse and install skins
-- **Live Preview**: Preview skins before activation
-- **Skin Builder**: Visual skin creation tool
-- **Theme Editor**: In-browser theme customization
-- **Skin Templates**: Pre-built skin templates
-- **Advanced Customization**: More configuration options
-
-### API Extensions
-- **Skin API**: RESTful API for skin management
-- **Plugin System**: Extend skin functionality
-- **Hook System**: Customize skin behavior
-- **Event System**: React to skin events
-
-## License
-
-This skin system is part of IslamWiki and is licensed under the GNU Affero General Public License v3.0.
-
-## Support
-
-For support with the skin system:
-- Check the documentation
-- Search existing issues
-- Create a new issue with details
-- Join the community discussions 
+**Last Updated:** 2025-08-19  
+**Version:** 0.0.1.0  
+**Author:** IslamWiki Development Team  
+**License:** AGPL-3.0  
+**Status:** Skin System Documentation Complete ✅ 

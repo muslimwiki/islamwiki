@@ -995,7 +995,7 @@
     <!-- Main Bar with Logo and Search -->
     <div class="bismillah-main-bar">
         <div class="bismillah-main-bar-content">
-            <a href="/" class="bismillah-site-logo">
+            <a href="{{ current_language() == 'en' ? '/' : '/' ~ current_language() }}" class="bismillah-site-logo">
                 <div class="bismillah-logo-icon">☪</div>
                 <div class="bismillah-logo-text">
                     <div class="bismillah-site-name">IslamWiki</div>
@@ -1004,7 +1004,7 @@
             </a>
 
             <div class="bismillah-main-search">
-                <form action="/iqra-search" method="GET" class="bismillah-search-form">
+                <form action="{{ current_language() == 'en' ? '/iqra-search' : '/' ~ current_language() ~ '/iqra-search' }}" method="GET" class="bismillah-search-form">
                     <input type="text" name="q" class="bismillah-search-input" placeholder="{{ __('nav.search') }}..." value="{{ app.request.query.get('q', '') }}">
                     <button type="submit" class="bismillah-search-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -1015,7 +1015,7 @@
             </div>
             
             <div class="bismillah-header-actions">
-                <a href="/contribute" class="bismillah-contribute-btn">{{ __('nav.contribute') }}</a>
+                <a href="{{ current_language() == 'en' ? '/contribute' : '/' ~ current_language() ~ '/contribute' }}" class="bismillah-contribute-btn">{{ __('nav.contribute') }}</a>
             </div>
         </div>
     </div>
@@ -1024,29 +1024,29 @@
     <nav class="bismillah-main-nav">
         <div class="bismillah-nav-content">
             <ul class="bismillah-nav-menu">
-                <div class="nav-item">
-                    <a href="/" class="nav-link">{{ __('nav.home') }}</a>
-                </div>
+                <li class="bismillah-nav-item">
+                    <a href="{{ current_language() == 'en' ? '/' : '/' ~ current_language() }}" class="bismillah-nav-link">{{ __('nav.home') }}</a>
+                </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/quran" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">📖</span>
                         {{ __('nav.quran') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/quran" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}" class="dropdown-item">
                             <span class="dropdown-icon">📖</span>
                             Browse Quran
                         </a>
-                        <a href="/quran/search" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/quran/search' : '/' ~ current_language() ~ '/quran/search' }}" class="dropdown-item">
                             <span class="dropdown-icon">🔍</span>
                             {{ __('nav.search') }} Quran
                         </a>
-                        <a href="/quran/juz/1" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/quran/juz/1' : '/' ~ current_language() ~ '/quran/juz/1' }}" class="dropdown-item">
                             <span class="dropdown-icon">📚</span>
                             Juz View
                         </a>
-                        <a href="/quran/page/1" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/quran/page/1' : '/' ~ current_language() ~ '/quran/page/1' }}" class="dropdown-item">
                             <span class="dropdown-icon">📄</span>
                             Page View
                         </a>
@@ -1054,20 +1054,20 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/hadith" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">📜</span>
                         {{ __('nav.hadith') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/hadith" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}" class="dropdown-item">
                             <span class="dropdown-icon">📜</span>
                             Browse Hadith
                         </a>
-                        <a href="/hadith/search" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/hadith/search' : '/' ~ current_language() ~ '/hadith/search' }}" class="dropdown-item">
                             <span class="dropdown-icon">🔍</span>
                             Search Hadith
                         </a>
-                        <a href="/hadith/collection/1" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/hadith/collection/1' : '/' ~ current_language() ~ '/hadith/collection/1' }}" class="dropdown-item">
                             <span class="dropdown-icon">📚</span>
                             Collections
                         </a>
@@ -1075,19 +1075,19 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/wiki" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">📝</span>
-                        {{ __('nav.wiki') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="/wiki" class="dropdown-item">
-                            <span class="dropdown-icon">📝</span>
-                            All Pages
+                                            <a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📝</span>
+                            {{ __('nav.wiki') }}
                         </a>
-                        <a href="/wiki/create" class="dropdown-item">
-                            <span class="dropdown-icon">✏️</span>
-                            Create Page
-                        </a>
+                        <div class="nav-dropdown">
+                            <a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}" class="dropdown-item">
+                                <span class="dropdown-icon">📝</span>
+                                All Pages
+                            </a>
+                            <a href="{{ current_language() == 'en' ? '/wiki/create' : '/' ~ current_language() ~ '/wiki/create' }}" class="dropdown-item">
+                                <span class="dropdown-icon">✏️</span>
+                                Create Page
+                            </a>
                         <a href="/special:RecentChanges" class="dropdown-item">
                             <span class="dropdown-icon">🕒</span>
                             Recent Changes
@@ -1096,24 +1096,24 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/sciences" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/sciences' : '/' ~ current_language() ~ '/sciences' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">🔬</span>
                         {{ __('nav.sciences') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/wiki" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/sciences' : '/' ~ current_language() ~ '/sciences' }}" class="dropdown-item">
                             <span class="dropdown-icon">🔬</span>
                             All Sciences
                         </a>
-                        <a href="/sciences/fiqh" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/sciences/fiqh' : '/' ~ current_language() ~ '/sciences/fiqh' }}" class="dropdown-item">
                             <span class="dropdown-icon">⚖️</span>
                             Fiqh
                         </a>
-                        <a href="/sciences/aqeedah" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/sciences/aqeedah' : '/' ~ current_language() ~ '/sciences/aqeedah' }}" class="dropdown-item">
                             <span class="dropdown-icon">💭</span>
                             Aqeedah
                         </a>
-                        <a href="/sciences/tasawwuf" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/sciences/tasawwuf' : '/' ~ current_language() ~ '/sciences/tasawwuf' }}" class="dropdown-item">
                             <span class="dropdown-icon">🕊️</span>
                             Tasawwuf
                         </a>
@@ -1121,20 +1121,20 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/community" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">👥</span>
                         {{ __('nav.community') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/community" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}" class="dropdown-item">
                             <span class="dropdown-icon">👥</span>
                             Community Hub
                         </a>
-                        <a href="/community/users" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/community/users' : '/' ~ current_language() ~ '/community/users' }}" class="dropdown-item">
                             <span class="dropdown-icon">👤</span>
                             Users
                         </a>
-                        <a href="/community/discussions" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/community/discussions' : '/' ~ current_language() ~ '/community/discussions' }}" class="dropdown-item">
                             <span class="dropdown-icon">💬</span>
                             Discussions
                         </a>
@@ -1142,20 +1142,20 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/prayer-times" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/prayer-times' : '/' ~ current_language() ~ '/prayer-times' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">🕌</span>
                         {{ __('nav.prayer') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/prayer-times" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/prayer-times' : '/' ~ current_language() ~ '/prayer-times' }}" class="dropdown-item">
                             <span class="dropdown-icon">🕌</span>
                             Prayer Times
                         </a>
-                        <a href="/prayer-times/qibla" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/prayer-times/qibla' : '/' ~ current_language() ~ '/prayer-times/qibla' }}" class="dropdown-item">
                             <span class="dropdown-icon">🧭</span>
                             Qibla Direction
                         </a>
-                        <a href="/prayer-times/calendar" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/prayer-times/calendar' : '/' ~ current_language() ~ '/prayer-times/calendar' }}" class="dropdown-item">
                             <span class="dropdown-icon">📅</span>
                             Islamic Calendar
                         </a>
@@ -1163,20 +1163,20 @@
                 </li>
                 
                 <li class="bismillah-nav-item has-dropdown">
-                    <a href="/about" class="bismillah-nav-link">
+                    <a href="{{ current_language() == 'en' ? '/about' : '/' ~ current_language() ~ '/about' }}" class="bismillah-nav-link">
                         <span class="bismillah-nav-icon">ℹ️</span>
                         {{ __('nav.about') }}
                     </a>
                     <div class="nav-dropdown">
-                        <a href="/about" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/about' : '/' ~ current_language() ~ '/about' }}" class="dropdown-item">
                             <span class="dropdown-icon">ℹ️</span>
                             About Us
                         </a>
-                        <a href="/about/mission" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/about/mission' : '/' ~ current_language() ~ '/about/mission' }}" class="dropdown-item">
                             <span class="dropdown-icon">🎯</span>
                             Our Mission
                         </a>
-                        <a href="/about/team" class="dropdown-item">
+                        <a href="{{ current_language() == 'en' ? '/about/team' : '/' ~ current_language() ~ '/about/team' }}" class="dropdown-item">
                             <span class="dropdown-icon">👥</span>
                             Our Team
                         </a>
@@ -1248,7 +1248,7 @@
                 <!-- Content Management -->
                 <div class="nav-section">
                     <div class="nav-section-title">Content Management</div>
-                    <a href="/wiki" class="nav-item">
+                    <a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}" class="nav-item">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
                         </svg>
@@ -1261,7 +1261,7 @@
                         </svg>
                         Categories
                     </a>
-                    <a href="/wiki/create" class="nav-item">
+                    <a href="{{ current_language() == 'en' ? '/wiki/create' : '/' ~ current_language() ~ '/wiki/create' }}" class="nav-item">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M5,3C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19H5V5H12V3H5Z"/>
                         </svg>
@@ -1320,10 +1320,10 @@
             <div class="bismillah-footer-section">
                 <h3>Quick Links</h3>
                 <ul class="bismillah-footer-links">
-                    <li><a href="/quran">Quran & Tafsir</a></li>
-                    <li><a href="/hadith">Hadith Collections</a></li>
-                    <li><a href="/wiki">Wiki Articles</a></li>
-                    <li><a href="/community">Community</a></li>
+                    <li><a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}">Quran & Tafsir</a></li>
+                    <li><a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}">Hadith Collections</a></li>
+                    <li><a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}">Wiki Articles</a></li>
+                    <li><a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}">Community</a></li>
                 </ul>
             </div>
             <div class="bismillah-footer-section">

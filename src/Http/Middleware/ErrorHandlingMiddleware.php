@@ -26,6 +26,7 @@ namespace IslamWiki\Http\Middleware;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
+use IslamWiki\Core\View\TwigRenderer;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -56,6 +57,11 @@ class ErrorHandlingMiddleware
     private string $environment;
 
     /**
+     * @var TwigRenderer|null Twig renderer instance
+     */
+    private ?TwigRenderer $twigRenderer = null;
+
+    /**
      * Create a new error handling middleware instance.
      */
     public function __construct(LoggerInterface $logger, bool $debug = false, string $environment = 'production')
@@ -71,10 +77,20 @@ class ErrorHandlingMiddleware
     public function handle(Request $request, callable $next): Response
     {
         $startTime = microtime(true);
+        
+        error_log("ErrorHandlingMiddleware: handle called with path: " . $request->getUri()->getPath());
 
         try {
             // Process the request
+            error_log("ErrorHandlingMiddleware: About to call next middleware");
             $response = $next($request);
+            
+            // Check if response is null (which can happen with middleware)
+            if ($response === null) {
+                throw new \Exception("Middleware returned null response");
+            }
+            
+            error_log("ErrorHandlingMiddleware: Next middleware returned response with status: " . $response->getStatusCode());
 
             // Log successful request
             $this->logRequest($request, $response, microtime(true) - $startTime);
@@ -82,13 +98,24 @@ class ErrorHandlingMiddleware
             return $response;
         } catch (HttpException $e) {
             // Handle HTTP exceptions (4xx, 5xx)
+            error_log("ErrorHandlingMiddleware: Caught HttpException: " . $e->getMessage());
             $this->logHttpException($request, $e);
             return $this->createHttpErrorResponse($e);
         } catch (Throwable $e) {
             // Handle all other exceptions
+            error_log("ErrorHandlingMiddleware: Caught Throwable: " . $e->getMessage());
+            error_log("ErrorHandlingMiddleware: Exception trace: " . $e->getTraceAsString());
             $this->logException($request, $e);
             return $this->createExceptionResponse($e);
         }
+    }
+
+    /**
+     * Make the middleware callable for SabilRouting.
+     */
+    public function __invoke(Request $request, callable $next): Response
+    {
+        return $this->handle($request, $next);
     }
 
     /**
@@ -180,9 +207,172 @@ class ErrorHandlingMiddleware
     }
 
     /**
-     * Render error page.
+     * Render error page using Twig templates.
      */
     private function renderErrorPage(int $statusCode, string $message, ?Throwable $exception = null): string
+    {
+        try {
+            // Try to use Twig template first
+            return $this->renderTwigErrorPage($statusCode, $message, $exception);
+        } catch (Throwable $e) {
+            // Fallback to basic HTML if Twig fails
+            error_log("Failed to render Twig error page: " . $e->getMessage());
+            return $this->renderBasicErrorPage($statusCode, $message, $exception);
+        }
+    }
+
+    /**
+     * Render error page using Twig templates.
+     */
+    private function renderTwigErrorPage(int $statusCode, string $message, ?Throwable $exception = null): string
+    {
+        // Get or create Twig renderer
+        if ($this->twigRenderer === null) {
+            $this->twigRenderer = $this->createTwigRenderer();
+        }
+
+        // Get the appropriate template path
+        $templatePath = $this->getErrorTemplatePath($statusCode);
+        
+        // Check if template exists
+        if (!file_exists($templatePath)) {
+            throw new \Exception("Template not found: {$templatePath}");
+        }
+
+        // Prepare template data
+        $templateData = $this->prepareTemplateData($statusCode, $message, $exception);
+        
+        // Get relative template path for Twig
+        $relativeTemplatePath = 'errors/' . basename($templatePath);
+        
+        // Render using Twig
+        return $this->twigRenderer->render($relativeTemplatePath, $templateData);
+    }
+
+    /**
+     * Create a Twig renderer instance.
+     */
+    private function createTwigRenderer(): TwigRenderer
+    {
+        $basePath = defined('BASE_PATH') ? BASE_PATH : dirname(dirname(dirname(__DIR__)));
+        $templatePath = $basePath . '/resources/views';
+        $cachePath = $basePath . '/storage/framework/views';
+        
+        // Create cache directory if it doesn't exist
+        if (!is_dir($cachePath)) {
+            mkdir($cachePath, 0755, true);
+        }
+        
+        return new TwigRenderer(
+            $templatePath,
+            false, // Disable cache for now
+            $this->debug
+        );
+    }
+
+    /**
+     * Get the path to the error template for the given status code.
+     */
+    private function getErrorTemplatePath(int $statusCode): string
+    {
+        $basePath = defined('BASE_PATH') ? BASE_PATH : dirname(dirname(dirname(__DIR__)));
+        $basePath .= '/resources/views/errors/';
+        
+        switch ($statusCode) {
+            case 400:
+                return $basePath . '400.twig';
+            case 401:
+                return $basePath . '401.twig';
+            case 403:
+                return $basePath . '403.twig';
+            case 404:
+                return $basePath . '404.twig';
+            case 422:
+                return $basePath . '422.twig';
+            case 429:
+                return $basePath . '429.twig';
+            case 500:
+                return $basePath . '500.twig';
+            case 503:
+                return $basePath . '503.twig';
+            default:
+                return $basePath . '500.twig';
+        }
+    }
+
+    /**
+     * Prepare data for the Twig template.
+     */
+    private function prepareTemplateData(int $statusCode, string $message, ?Throwable $exception = null): array
+    {
+        $data = [
+            'status_code' => $statusCode,
+            'message' => $message,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
+            'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'Unknown',
+            'request_ip' => $this->getClientIpFromServer(),
+            'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+            'php_version' => PHP_VERSION,
+            'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+            'server_name' => $_SERVER['SERVER_NAME'] ?? 'Unknown',
+            'memory_usage' => $this->formatBytes(memory_get_usage(true)),
+            'memory_limit' => ini_get('memory_limit'),
+            'debug' => $this->debug,
+        ];
+
+        if ($exception) {
+            $data['exception'] = [
+                'class' => get_class($exception),
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'code' => $exception->getCode(),
+                'trace' => $exception->getTraceAsString(),
+            ];
+        }
+
+        // Add status-specific data
+        switch ($statusCode) {
+            case 401:
+                $data['session_status'] = session_status() === PHP_SESSION_ACTIVE ? 'Active' : 'Inactive';
+                $data['user_id'] = $_SESSION['user_id'] ?? 'Not Logged In';
+                $data['user_role'] = $_SESSION['user_role'] ?? 'None';
+                $data['last_activity'] = $_SESSION['last_activity'] ?? 'Unknown';
+                $data['required_role'] = 'Any Authenticated User';
+                break;
+            case 403:
+                $data['user_id'] = $_SESSION['user_id'] ?? 'Not Logged In';
+                $data['user_role'] = $_SESSION['user_role'] ?? 'None';
+                $data['required_role'] = 'Administrator';
+                $data['resource_type'] = 'Protected Resource';
+                $data['permission_level'] = 'Admin Only';
+                break;
+            case 429:
+                $data['rate_limit'] = '100 requests per hour';
+                $data['rate_remaining'] = '0';
+                $data['rate_reset'] = date('Y-m-d H:i:s', time() + 3600);
+                $data['rate_window'] = '1 hour';
+                $data['retry_after'] = '3600';
+                break;
+            case 503:
+                $data['maintenance_status'] = 'Scheduled maintenance in progress';
+                $data['estimated_completion'] = '2-3 hours';
+                $data['maintenance_start'] = date('Y-m-d H:i:s', time() - 1800);
+                $data['maintenance_duration'] = '2-3 hours';
+                $data['maintenance_reason'] = 'System improvements';
+                $data['service_name'] = 'IslamWiki';
+                $data['service_status'] = 'Maintenance';
+                break;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fallback to basic HTML error page.
+     */
+    private function renderBasicErrorPage(int $statusCode, string $message, ?Throwable $exception = null): string
     {
         $title = $this->getErrorTitle($statusCode);
         $icon = $this->getErrorIcon($statusCode);

@@ -7,7 +7,7 @@
 <div class="text-sm text-gray-700 mb-3 italic">{{ ayah.translation_text }}</div>
 {% endif %}
     <div>
-        <a href="/quran/{{ chapter }}/{{ ayah_number }}" target="_blank" class="text-green-600 hover:text-green-700">
+        <a href="/{{ locale }}/quran/{{ chapter }}/{{ ayah_number }}" target="_blank" class="text-green-600 hover:text-green-700">
             View Ayah →
         </a>
     </div>
@@ -24,7 +24,7 @@
     <div class="text-gray-700 mb-4 italic">{{ ayah.translation_text }}</div>
     {% endif %}
     <div>
-        <a href="/quran/{{ chapter }}/{{ ayah_number }}" class="text-green-600 hover:text-green-700 font-medium">
+        <a href="/{{ locale }}/quran/{{ chapter }}/{{ ayah_number }}" class="text-green-600 hover:text-green-700 font-medium">
             View Ayah
         </a>
     </div>

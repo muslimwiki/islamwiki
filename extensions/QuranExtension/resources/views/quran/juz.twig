@@ -29,13 +29,13 @@
 
         <div class="quran-juz-navigation">
             {% if juz.juz_number > 1 %}
-                <a href="/quran/juz/{{ juz.juz_number - 1 }}" class="quran-nav-btn" data-action="prev-juz">
+                <a href="/{{ locale }}/quran/juz/{{ juz.juz_number - 1 }}" class="quran-nav-btn" data-action="prev-juz">
                     <i class="fas fa-chevron-left"></i> Previous Juz
                 </a>
             {% endif %}
             
             {% if juz.juz_number < 30 %}
-                <a href="/quran/juz/{{ juz.juz_number + 1 }}" class="quran-nav-btn" data-action="next-juz">
+                <a href="/{{ locale }}/quran/juz/{{ juz.juz_number + 1 }}" class="quran-nav-btn" data-action="next-juz">
                     Next Juz <i class="fas fa-chevron-right"></i>
                 </a>
             {% endif %}
@@ -57,7 +57,7 @@
                             <span>Ayahs: {{ surah.ayahs_count }}</span>
                             <span>Type: {{ surah.revelation_type }}</span>
                         </div>
-                        <a href="/quran/surah/{{ surah.surah_number }}" class="quran-nav-btn">View Surah</a>
+                        <a href="/{{ locale }}/quran/surah/{{ surah.surah_number }}" class="quran-nav-btn">View Surah</a>
                     </div>
                 </div>
             {% endfor %}
@@ -82,7 +82,7 @@
                     {% endif %}
                     
                     <div class="quran-ayah-actions">
-                        <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
+                        <a href="/{{ locale }}/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
                         <button class="quran-bookmark-btn" data-ayah-id="{{ ayah.id }}">
                             <i class="far fa-bookmark"></i>
                         </button>
@@ -102,7 +102,7 @@
 
     <div class="quran-juz-pagination">
         {% if juz.juz_number > 1 %}
-            <a href="/quran/juz/{{ juz.juz_number - 1 }}" class="quran-page-btn">
+            <a href="/{{ locale }}/quran/juz/{{ juz.juz_number - 1 }}" class="quran-page-btn">
                 <i class="fas fa-chevron-left"></i> Juz {{ juz.juz_number - 1 }}
             </a>
         {% endif %}
@@ -110,7 +110,7 @@
         <span class="quran-current-page">Juz {{ juz.juz_number }} of 30</span>
         
         {% if juz.juz_number < 30 %}
-            <a href="/quran/juz/{{ juz.juz_number + 1 }}" class="quran-page-btn">
+            <a href="/{{ locale }}/quran/juz/{{ juz.juz_number + 1 }}" class="quran-page-btn">
                 Juz {{ juz.juz_number + 1 }} <i class="fas fa-chevron-right"></i>
             </a>
         {% endif %}

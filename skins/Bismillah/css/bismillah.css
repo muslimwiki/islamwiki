@@ -2322,6 +2322,12 @@ body {
     align-items: center;
 }
 
+.bismillah-auth-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
 .bismillah-user-menu {
     color: var(--islamic-white);
     text-decoration: none;

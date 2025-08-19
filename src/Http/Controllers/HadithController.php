@@ -54,31 +54,44 @@ class HadithController extends Controller
      * Display specific Hadith page
      *
      * @param Request $request
-     * @param int $id Hadith ID
+     * @param int $collectionId Collection ID
+     * @param string $hadithNumber Hadith number within collection
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, $collectionId, $hadithNumber)
     {
-        $hadithData = $this->hadith->findById($id);
+        $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
 
+        // Get collection info even if hadith not found
+        $collectionInfo = $this->hadith->getCollectionInfo($collectionId);
+        
         if (!$hadithData) {
-            return $this->notFound('Hadith not found');
+            // Instead of 404, show the page with no data message
+            $collectionName = isset($collectionInfo['name']) ? $collectionInfo['name'] : "Collection {$collectionId}";
+            $data = [
+                'title' => "Hadith {$collectionName} {$hadithNumber} - IslamWiki",
+                'hadith' => null,
+                'chain' => [],
+                'commentary' => null,
+                'collection_id' => $collectionId,
+                'hadith_number' => $hadithNumber
+            ];
+        } else {
+            // Get chain of narrators
+            $chain = $this->hadith->getChain($hadithData['id']);
+
+            // Get commentary if available
+            $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
+
+            $data = [
+                'title' => "Hadith {$hadithData['collection_name']} {$hadithData['hadith_number']} - IslamWiki",
+                'hadith' => $hadithData,
+                'chain' => $chain,
+                'commentary' => $commentary,
+                'collection_id' => $hadithData['collection_id'],
+                'hadith_number' => $hadithData['hadith_number']
+            ];
         }
-
-        // Get chain of narrators
-        $chain = $this->hadith->getChain($hadithData['id']);
-
-        // Get commentary if available
-        $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
-
-        $data = [
-            'title' => "Hadith {$hadithData['collection_name']} {$hadithData['hadith_number']} - IslamWiki",
-            'hadith' => $hadithData,
-            'chain' => $chain,
-            'commentary' => $commentary,
-            'collection_id' => $hadithData['collection_id'],
-            'hadith_number' => $hadithData['hadith_number']
-        ];
 
         return $this->view('hadith/hadith', $data);
     }
@@ -95,12 +108,8 @@ class HadithController extends Controller
         $hadiths = $this->hadith->getByCollection($collection);
         $collectionInfo = $this->hadith->getCollectionInfo($collection);
 
-        if (empty($hadiths)) {
-            return new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode(['success' => false, 'error' => 'Collection not found'])
-            );
+        if (!$collectionInfo) {
+            return $this->notFound('Collection not found');
         }
 
         $data = [

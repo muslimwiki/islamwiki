@@ -265,7 +265,7 @@ function viewQueue() {
 
 function viewFullVerse() {
     const reference = '{{ data.quran_verse.reference }}';
-    window.location.href = `/quran/${reference}`;
+    window.location.href = `/{{ locale }}/quran/${reference}`;
 }
 
 function getNewVerse() {

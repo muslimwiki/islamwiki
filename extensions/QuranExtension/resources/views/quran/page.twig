@@ -29,13 +29,13 @@
 
         <div class="quran-page-navigation">
             {% if page.page_number > 1 %}
-                <a href="/quran/page/{{ page.page_number - 1 }}" class="quran-nav-btn" data-action="prev-page">
+                <a href="/{{ locale }}/quran/page/{{ page.page_number - 1 }}" class="quran-nav-btn" data-action="prev-page">
                     <i class="fas fa-chevron-left"></i> Previous Page
                 </a>
             {% endif %}
             
             {% if page.page_number < 604 %}
-                <a href="/quran/page/{{ page.page_number + 1 }}" class="quran-nav-btn" data-action="next-page">
+                <a href="/{{ locale }}/quran/page/{{ page.page_number + 1 }}" class="quran-nav-btn" data-action="next-page">
                     Next Page <i class="fas fa-chevron-right"></i>
                 </a>
             {% endif %}
@@ -59,7 +59,7 @@
                     {% endif %}
                     
                     <div class="quran-ayah-actions">
-                        <a href="/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
+                        <a href="/{{ locale }}/quran/surah/{{ ayah.surah_number }}/ayah/{{ ayah.ayah_number }}" class="quran-nav-btn">View</a>
                         <button class="quran-bookmark-btn" data-ayah-id="{{ ayah.id }}">
                             <i class="far fa-bookmark"></i>
                         </button>
@@ -79,7 +79,7 @@
 
     <div class="quran-page-pagination">
         {% if page.page_number > 1 %}
-            <a href="/quran/page/{{ page.page_number - 1 }}" class="quran-page-btn">
+            <a href="/{{ locale }}/quran/page/{{ page.page_number - 1 }}" class="quran-page-btn">
                 <i class="fas fa-chevron-left"></i> Page {{ page.page_number - 1 }}
             </a>
         {% endif %}
@@ -87,7 +87,7 @@
         <span class="quran-current-page">Page {{ page.page_number }} of 604</span>
         
         {% if page.page_number < 604 %}
-            <a href="/quran/page/{{ page.page_number + 1 }}" class="quran-page-btn">
+            <a href="/{{ locale }}/quran/page/{{ page.page_number + 1 }}" class="quran-page-btn">
                 Page {{ page.page_number + 1 }} <i class="fas fa-chevron-right"></i>
             </a>
         {% endif %}

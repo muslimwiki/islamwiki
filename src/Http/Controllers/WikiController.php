@@ -54,13 +54,20 @@ class WikiController extends PageController
      * @param Request $request The HTTP request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request, string $locale = 'en'): Response
     {
+        // Validate locale parameter
+        $validLocales = ['en', 'ar', 'tr', 'ur', 'id', 'ms', 'fa', 'he'];
+        if (!in_array($locale, $validLocales)) {
+            $locale = 'en'; // Default to English if invalid locale
+        }
+
         try {
             if ($this->logger) {
                 $this->logger->info('Wiki index requested', [
                     'query' => $request->getQueryParams(),
                     'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                    'locale' => $locale,
                 ]);
             }
 
@@ -168,133 +175,62 @@ class WikiController extends PageController
     }
 
     /**
-     * Show the wiki page.
-     *
-     * @param Request $request The HTTP request
-     * @param string $slug The page slug
-     * @return Response
+     * Display the specified wiki page
      */
     public function show(Request $request, string $slug): Response
     {
-        try {
-            if ($this->logger) {
-                $this->logger->info('Wiki page view requested', [
-                    'slug' => $slug,
-                    'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
-                ]);
-            }
-
-            // Namespace-aware dispatch for MediaWiki-style prefixes inside /wiki/{slug}
-            [$ns, $titlePart] = NamespaceManager::parseTitle($slug);
-            if (NamespaceManager::isSpecial($ns)) {
-                return $this->redirect('/Special:' . $titlePart, 302);
-            }
-            if ($ns === 'Quran') {
-                return $this->redirect('/quran/search?q=' . urlencode($titlePart), 302);
-            }
-            if ($ns === 'Hadith') {
-                return $this->redirect('/hadith/search?q=' . urlencode($titlePart), 302);
-            }
-
-            // First try to find the page with wiki namespace
-            $wikiSlug = self::WIKI_NAMESPACE . ':' . $slug;
-            $page = Page::findBySlug($wikiSlug, $this->db);
-
-            // If not found, try without namespace (for regular pages)
-            if (!$page) {
-                $page = Page::findBySlug($slug, $this->db);
-
-                // If still not found, try with Main namespace
-                if (!$page) {
-                    $mainSlug = 'Main:' . $slug;
-                    $page = Page::findBySlug($mainSlug, $this->db);
-                }
-            }
-
-            if (!$page) {
-                // Check if user has permission to create pages
-                $canCreate = $this->canCreatePage($request);
-
-                if ($canCreate) {
-                    return $this->redirect("/wiki/create?title=" . urlencode($slug), 302);
-                }
-
-                throw new HttpException(404, 'The requested page was not found.');
-            }
-
-            // Check if the page is locked and user has permission to view
-            if ($page->isLocked()) {
-                $user = $this->user($request);
-                $isAdmin = $user ? $this->isAdmin($request) : false;
-
-                if (!$isAdmin) {
-                    if ($this->logger) {
-                        $this->logger->warning('Attempt to access locked page', [
-                            'page_id' => $page->getAttribute('id'),
-                            'slug' => $slug,
-                            'user_id' => $user ? $user['id'] : 'guest',
-                        ]);
-                    }
-
-                    return $this->view('errors.403', [
-                        'message' => 'This page is currently locked and cannot be viewed.',
-                        'title' => 'Access Denied',
-                        'show_login' => !$user,
-                        'can_request_access' => $user !== null,
-                    ], 403);
-                }
-            }
-
-            // Get user information for permission checks and tracking
-            $user = $this->user($request);
-            $isAdmin = $user ? $this->isAdmin($request) : false;
-            $userId = $user ? $user['id'] : null;
-
-            // View count increment handled centrally in displayWikiPage() via updatePageViewCount()
-
-            // Get page revisions and attach author name for latest revision
-            $revisions = $page->revisions();
-            $latestRevision = $revisions[0] ?? null;
-            if ($latestRevision) {
-                $authorUsername = null;
-                try {
-                    $stmt = $this->db->getPdo()->prepare('SELECT username FROM users WHERE id = ? LIMIT 1');
-                    $stmt->execute([$latestRevision->getAttribute('user_id')]);
-                    $authorUsername = $stmt->fetchColumn();
-                } catch (\Exception $e) {
-                    // ignore, will fallback to Unknown
-                }
-                $latestRevision->setAttribute('author_name', $authorUsername ?: 'Unknown');
-            }
-
-            // Parse wiki text content
-            $content = $this->parseWikiText($page->getAttribute('content'));
-
-            if ($this->logger) {
-                $this->logger->info('Wiki page displayed successfully', [
-                    'page_id' => $page->getAttribute('id'),
-                    'title' => $page->getAttribute('title'),
-                    'namespace' => $page->getAttribute('namespace'),
-                    'revision_count' => count($revisions),
-                    'view_count' => $page->getAttribute('view_count'),
-                ]);
-            }
-
-            return $this->displayWikiPage($request, $page);
-
-        } catch (HttpException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            if ($this->logger) {
-                $this->logger->error('Failed to display wiki page', [
-                    'slug' => $slug,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
-
-            throw new HttpException(500, 'An error occurred while loading the page. Please try again later.');
+        // Get locale from request attributes (set by LocaleMiddleware)
+        $locale = $request->getAttribute('locale', 'en');
+        
+        if ($this->logger) {
+            $this->logger->info('WikiController::show called', [
+                'slug' => $slug,
+                'locale' => $locale,
+                'isWikiRoute' => $request->getAttribute('isWikiRoute', false)
+            ]);
         }
+
+        // First try to find the page with wiki namespace
+        $wikiSlug = self::WIKI_NAMESPACE . ':' . $slug;
+        if ($this->logger) {
+            $this->logger->info('Looking for page with wiki namespace', [
+                'slug' => $slug,
+                'wikiSlug' => $wikiSlug,
+                'namespace' => self::WIKI_NAMESPACE,
+            ]);
+        }
+        $page = Page::findBySlug($wikiSlug, $this->db);
+        if ($this->logger) {
+            $this->logger->info('Page lookup result', [
+                'wikiSlug' => $wikiSlug,
+                'pageFound' => $page ? 'yes' : 'no',
+                'pageId' => $page ? $page->getAttribute('id') : null,
+            ]);
+        }
+
+        if (!$page) {
+            // Page doesn't exist - offer to create it
+            if ($this->logger) {
+                $this->logger->info('Page not found, redirecting to create page', ['slug' => $slug]);
+            }
+            
+            // Use MediaWiki-style URL without locale prefix
+            return $this->redirect("/wiki/create?title=" . urlencode($slug), 302);
+        }
+
+        // Get page content in the user's preferred language
+        $content = $this->getLocalizedContent($page, $locale);
+        
+        // Render the page with language context
+        return $this->view('pages/show.twig', [
+            'page' => $page,
+            'content' => $content,
+            'locale' => $locale,
+            'displaySlug' => $slug,
+            'isWikiRoute' => true,
+            'availableLanguages' => $this->getAvailableLanguages($page),
+            'currentLanguage' => $locale
+        ]);
     }
 
     /**
@@ -303,11 +239,18 @@ class WikiController extends PageController
      * @param Request $request The HTTP request
      * @return Response
      */
-    public function create(Request $request): Response
+    public function create(Request $request, string $locale = 'en'): Response
     {
+        // Validate locale parameter
+        $validLocales = ['en', 'ar', 'tr', 'ur', 'id', 'ms', 'fa', 'he'];
+        if (!in_array($locale, $validLocales)) {
+            $locale = 'en'; // Default to English if invalid locale
+        }
+
         $this->logger->info('Wiki page creation form requested', [
             'query' => $request->getQueryParams(),
             'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+            'locale' => $locale,
         ]);
 
         try {
@@ -325,7 +268,9 @@ class WikiController extends PageController
                         'existing_page_id' => $existingPage->getAttribute('id'),
                     ]);
 
-                    return $this->redirect("/wiki/{$title}/edit")
+                    // Use locale-aware redirect
+                    $redirectPath = $locale === 'en' ? "/wiki/{$title}/edit" : "/{$locale}/wiki/{$title}/edit";
+                    return $this->redirect($redirectPath)
                         ->with('info', 'This wiki page already exists. You are now editing the existing page.');
                 }
             }
@@ -333,6 +278,7 @@ class WikiController extends PageController
             $this->logger->debug('Wiki page creation form displayed', [
                 'title' => $title,
                 'namespace' => self::WIKI_NAMESPACE,
+                'locale' => $locale,
             ]);
 
             // Use pages/edit template for now until wiki templates are created
@@ -345,6 +291,7 @@ class WikiController extends PageController
                 'canDelete' => false,
                 'canLock' => $this->isAdmin($request),
                 'user' => $this->user($request),
+                'locale' => $locale,
             ]);
         } catch (\Exception $e) {
             $this->logger->error('Failed to display wiki page creation form', [
@@ -363,7 +310,7 @@ class WikiController extends PageController
      * @param Request $request The HTTP request
      * @return Response
      */
-    public function store(Request $request): Response
+    public function store(Request $request, string $locale = 'en'): Response
     {
         try {
             if ($this->logger) {
@@ -489,8 +436,15 @@ class WikiController extends PageController
                 $displaySlug = substr($slug, strpos($slug, ':') + 1);
             }
 
+            // Get locale from request or default to 'en'
+            $locale = $request->getAttribute('locale', 'en');
+            if (empty($locale)) {
+                $locale = 'en';
+            }
+
+                        // Redirect to the new page using the simpler route structure
             return $this->redirect("/wiki/{$displaySlug}")
-                ->with('success', 'Page created successfully.');
+                            ->with('success', 'Page created successfully.');
 
         } catch (\Exception $e) {
             if ($this->logger) {
@@ -512,7 +466,7 @@ class WikiController extends PageController
      * @param string $slug The page slug
      * @return Response
      */
-    public function edit(Request $request, string $slug): Response
+    public function edit(Request $request, string $slug, string $locale = 'en'): Response
     {
         try {
             if ($this->logger) {
@@ -594,7 +548,7 @@ class WikiController extends PageController
      * @param string $slug The page slug
      * @return Response
      */
-    public function update(Request $request, string $slug): Response
+    public function update(Request $request, string $slug, string $locale = 'en'): Response
     {
         try {
             if ($this->logger) {
@@ -720,7 +674,7 @@ class WikiController extends PageController
      * @param string $slug The page slug
      * @return Response
      */
-    public function history(Request $request, string $slug): Response
+    public function history(Request $request, string $slug, string $locale = 'en'): Response
     {
         $this->logger->info('Wiki page history requested', [
             'slug' => $slug,
@@ -776,7 +730,7 @@ class WikiController extends PageController
      * @param string $slug The page slug
      * @return Response
      */
-    public function destroy(Request $request, string $slug): Response
+    public function destroy(Request $request, string $slug, string $locale = 'en'): Response
     {
         $this->logger->info('Wiki page delete requested', [
             'slug' => $slug,
@@ -827,7 +781,7 @@ class WikiController extends PageController
     /**
      * Watch/unwatch methods - delegate to parent
      */
-    public function watch(Request $request, string $slug): Response
+    public function watch(Request $request, string $slug, string $locale = 'en'): Response
     {
         try {
             $user = $this->user($request);
@@ -868,7 +822,7 @@ class WikiController extends PageController
         }
     }
 
-    public function unwatch(Request $request, string $slug): Response
+    public function unwatch(Request $request, string $slug, string $locale = 'en'): Response
     {
         try {
             $user = $this->user($request);
@@ -1052,7 +1006,7 @@ class WikiController extends PageController
     /**
      * API methods - simple implementations
      */
-    public function apiIndex(Request $request): Response
+    public function apiIndex(Request $request, string $locale = 'en'): Response
     {
         try {
             $search = $request->getQueryParam('q');
@@ -1082,7 +1036,7 @@ class WikiController extends PageController
         }
     }
 
-    public function apiShow(Request $request, string $slug): Response
+    public function apiShow(Request $request, string $locale, string $slug): Response
     {
         try {
             $wikiSlug = self::WIKI_NAMESPACE . ':' . $slug;
@@ -1114,7 +1068,7 @@ class WikiController extends PageController
         }
     }
 
-    public function apiStore(Request $request): Response
+    public function apiStore(Request $request, string $locale = 'en'): Response
     {
         try {
             $data = $request->getParsedBody();
@@ -1146,7 +1100,7 @@ class WikiController extends PageController
         }
     }
 
-    public function apiUpdate(Request $request, string $slug): Response
+    public function apiUpdate(Request $request, string $locale, string $slug): Response
     {
         try {
             $page = Page::findBySlug(self::WIKI_NAMESPACE . ':' . $slug, $this->db) ?? Page::findBySlug($slug, $this->db);
@@ -1168,7 +1122,7 @@ class WikiController extends PageController
         }
     }
 
-    public function apiDestroy(Request $request, string $slug): Response
+    public function apiDestroy(Request $request, string $locale, string $slug): Response
     {
         try {
             $page = Page::findBySlug(self::WIKI_NAMESPACE . ':' . $slug, $this->db) ?? Page::findBySlug($slug, $this->db);
@@ -1181,5 +1135,28 @@ class WikiController extends PageController
         } catch (\Exception $e) {
             return $this->json(['success' => false, 'message' => 'Failed to delete wiki page'], 500);
         }
+    }
+
+    /**
+     * Get localized content for the page
+     */
+    private function getLocalizedContent(Page $page, string $locale): string
+    {
+        // For now, return the main content
+        // In the future, this could check for translations
+        return $page->getAttribute('content') ?? '';
+    }
+
+    /**
+     * Get available languages for the page
+     */
+    private function getAvailableLanguages(Page $page): array
+    {
+        // For now, return supported languages
+        // In the future, this could check for actual translations
+        return [
+            'en' => 'English',
+            'ar' => 'العربية'
+        ];
     }
 }

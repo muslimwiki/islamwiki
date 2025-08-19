@@ -5,7 +5,7 @@
 {% block content %}
 <div class="quran-ayah-container">
     <div class="ayah-navigation">
-        <a href="/quran/surah/{{ surah }}" class="nav-link">
+        <a href="/{{ locale }}/quran/surah/{{ surah }}" class="nav-link">
             <i class="fas fa-arrow-left"></i> Back to Surah {{ surah }}
         </a>
         <div class="ayah-reference">
@@ -101,13 +101,13 @@
 
     <div class="ayah-navigation-bottom">
         {% if ayah_number > 1 %}
-        <a href="/quran/{{ surah }}/{{ ayah_number - 1 }}" class="nav-btn prev">
+        <a href="/{{ locale }}/quran/{{ surah }}/{{ ayah_number - 1 }}" class="nav-btn prev">
             <i class="fas fa-chevron-left"></i> Previous Ayah
         </a>
         {% endif %}
         
         {% if ayah_number < 286 %}
-        <a href="/quran/{{ surah }}/{{ ayah_number + 1 }}" class="nav-btn next">
+        <a href="/{{ locale }}/quran/{{ surah }}/{{ ayah_number + 1 }}" class="nav-btn next">
             Next Ayah <i class="fas fa-chevron-right"></i>
         </a>
         {% endif %}
@@ -116,7 +116,7 @@
     <div class="ayah-not-found">
         <h2>Ayah Not Found</h2>
         <p>The requested ayah {{ surah }}:{{ ayah_number }} could not be found.</p>
-        <a href="/quran" class="btn btn-primary">Return to Quran</a>
+        <a href="/{{ locale }}/quran" class="btn btn-primary">Return to Quran</a>
     </div>
     {% endif %}
 </div>

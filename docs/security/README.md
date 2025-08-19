@@ -1,314 +1,423 @@
-# Security Documentation
+# IslamWiki Security
 
-This document outlines the comprehensive security features implemented in IslamWiki to protect against common web vulnerabilities and ensure enterprise-level security.
+## 🎯 **Overview**
 
-## Overview
+This directory contains comprehensive security documentation for IslamWiki, covering authentication, authorization, input validation, output security, and security best practices. All security measures follow enterprise-grade standards and Islamic content validation requirements.
 
-IslamWiki implements a multi-layered security approach with comprehensive protection against:
-- SQL Injection attacks
-- Cross-Site Scripting (XSS)
-- Cross-Site Request Forgery (CSRF)
-- Directory Traversal attacks
-- Rate limiting and abuse prevention
-- Input validation and sanitization
+---
 
-## Security Middleware
+## 🏗️ **Security Architecture**
 
-### SecurityMiddleware
+### **Security Layers**
+```
+Security Architecture:
+├── 📁 Authentication - User identity verification
+├── 📁 Authorization - Access control and permissions
+├── 📁 Input Validation - Data sanitization and validation
+├── 📁 Output Security - XSS prevention and output escaping
+├── 📁 Session Security - Secure session management
+├── 📁 API Security - API endpoint protection
+└── 📁 Monitoring - Security monitoring and logging
+```
 
-The `SecurityMiddleware` provides comprehensive security features:
+### **Security Principles**
+- **Defense in Depth**: Multiple security layers
+- **Least Privilege**: Minimal required permissions
+- **Fail Secure**: Secure by default
+- **Input Validation**: Validate all input data
+- **Output Escaping**: Escape all output data
 
-#### Rate Limiting
-- **Requests per minute**: 60 requests
-- **Burst limit**: 10 requests per second
-- **Storage**: In-memory (production should use Redis)
-- **Configuration**: Configurable limits in middleware
+---
 
-#### Input Validation & Sanitization
-- **Null bytes**: Removed from all input
-- **Control characters**: Stripped except newlines and tabs
-- **Line endings**: Normalized to Unix format
-- **Character encoding**: UTF-8 validation
+## 🔐 **Authentication System**
 
-#### Attack Pattern Detection
+### **User Authentication**
+- **Multi-factor Authentication**: Enhanced security options
+- **Password Policies**: Strong password requirements
+- **Account Lockout**: Brute force protection
+- **Session Management**: Secure session handling
 
-**SQL Injection Patterns:**
+### **Authentication Implementation**
 ```php
-'/union\s*select/i',
-'/union\+select/i',
-'/union%20select/i',
-'/drop\s+table/i',
-'/delete\s+from/i',
-'/insert\s+into/i',
-'/update\s+set/i',
-'/exec\s*\(/i',
-'/eval\s*\(/i',
+<?php
+
+declare(strict_types=1);
+
+namespace IslamWiki\Core\Security;
+
+use IslamWiki\Core\Security\AmanAuthenticator;
+
+/**
+ * Authentication Service - User authentication management
+ * 
+ * @package IslamWiki\Core\Security
+ * @author IslamWiki Development Team
+ * @license AGPL-3.0
+ */
+class AmanAuthenticationService
+{
+    private AmanAuthenticator $authenticator;
+    
+    public function __construct(AmanAuthenticator $authenticator)
+    {
+        $this->authenticator = $authenticator;
+    }
+    
+    /**
+     * Authenticate user with credentials
+     */
+    public function authenticate(string $username, string $password): bool
+    {
+        // Validate input
+        if (empty($username) || empty($password)) {
+            return false;
+        }
+        
+        // Sanitize input
+        $username = $this->sanitizeInput($username);
+        
+        // Authenticate user
+        return $this->authenticator->authenticate($username, $password);
+    }
+    
+    /**
+     * Sanitize input data
+     */
+    private function sanitizeInput(string $input): string
+    {
+        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    }
+}
 ```
 
-**XSS Patterns:**
+---
+
+## 🛡️ **Authorization System**
+
+### **Role-based Access Control**
+- **User Roles**: Admin, Scholar, Contributor, User
+- **Permission System**: Granular permission control
+- **Resource Protection**: Content and feature access control
+- **Audit Logging**: Access attempt logging
+
+### **Authorization Implementation**
 ```php
-'/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/i',
-'/javascript:/i',
-'/vbscript:/i',
-'/onload\s*=/i',
-'/onerror\s*=/i',
+/**
+ * Authorization Service - Access control management
+ */
+class AmanAuthorizationService
+{
+    /**
+     * Check if user has permission
+     */
+    public function hasPermission(int $userId, string $permission): bool
+    {
+        $user = $this->getUser($userId);
+        $role = $this->getUserRole($user);
+        
+        return $this->roleHasPermission($role, $permission);
+    }
+    
+    /**
+     * Get user permissions
+     */
+    public function getUserPermissions(int $userId): array
+    {
+        $user = $this->getUser($userId);
+        $role = $this->getUserRole($user);
+        
+        return $this->getRolePermissions($role);
+    }
+}
 ```
 
-**Directory Traversal:**
-- Blocks `..` and `//` patterns in URLs
+---
 
-#### Security Headers
+## 🔒 **Input Validation & Sanitization**
+
+### **Validation Rules**
+- **Required Fields**: Mandatory field validation
+- **Data Types**: Type checking and validation
+- **Length Limits**: Field length restrictions
+- **Format Validation**: Email, URL, date validation
+- **Custom Rules**: Islamic content validation
+
+### **Validation Implementation**
 ```php
-'X-Content-Type-Options' => 'nosniff',
-'X-Frame-Options' => 'DENY',
-'X-XSS-Protection' => '1; mode=block',
-'Referrer-Policy' => 'strict-origin-when-cross-origin',
-'Content-Security-Policy' => "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;",
-'Permissions-Policy' => 'geolocation=(), microphone=(), camera=()',
-'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
+/**
+ * Input Validation Service
+ */
+class AmanValidationService
+{
+    /**
+     * Validate user input
+     */
+    public function validate(array $data, array $rules): array
+    {
+        $errors = [];
+        
+        foreach ($rules as $field => $fieldRules) {
+            $value = $data[$field] ?? null;
+            
+            foreach ($fieldRules as $rule) {
+                if (!$this->validateRule($value, $rule)) {
+                    $errors[$field][] = $this->getErrorMessage($field, $rule);
+                }
+            }
+        }
+        
+        return $errors;
+    }
+    
+    /**
+     * Validate individual rule
+     */
+    private function validateRule($value, string $rule): bool
+    {
+        switch ($rule) {
+            case 'required':
+                return !empty($value);
+            case 'email':
+                return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+            case 'min:3':
+                return strlen($value) >= 3;
+            default:
+                return true;
+        }
+    }
+}
 ```
 
-## Error Handling Middleware
+---
 
-### ErrorHandlingMiddleware
+## 🚫 **Output Security**
 
-Provides comprehensive error handling and debugging:
+### **XSS Prevention**
+- **Output Escaping**: Automatic HTML escaping
+- **Content Security Policy**: CSP headers
+- **Input Sanitization**: Clean input data
+- **Safe HTML**: Allowlist-based HTML filtering
 
-#### Features
-- **Exception Catching**: All exceptions caught and logged
-- **Debug Information**: Detailed error info in development mode
-- **User-Friendly Pages**: Professional error pages with navigation
-- **Performance Monitoring**: Request timing and memory usage
-- **Graceful Responses**: Proper HTTP status codes and messages
+### **Output Security Implementation**
+```twig
+{# Automatic Output Escaping #}
+<h1>{{ page.title|escape }}</h1>
+<div class="content">{{ page.content|raw }}</div>
 
-#### Error Pages
-- **404 Not Found**: Page not found with helpful navigation
-- **403 Forbidden**: Access denied with explanation
-- **500 Internal Server Error**: Server error with debug info in development
-- **429 Too Many Requests**: Rate limit exceeded
-- **Custom Error Pages**: Professional styling with action buttons
+{# CSRF Protection #}
+<form method="POST" action="{{ path('page.update') }}">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <!-- Form fields -->
+</form>
 
-## CSRF Protection
+{# Content Security Policy #}
+<meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+```
 
-### CsrfMiddleware
+---
 
-Protects against Cross-Site Request Forgery attacks:
+## 🔐 **Session Security**
 
-#### Features
-- **Token Validation**: Verifies CSRF tokens for state-changing requests
-- **Flexible Sources**: Checks POST data, headers, and Laravel-style tokens
-- **User-Friendly Errors**: Clear explanations for token mismatches
-- **Automatic Generation**: Tokens generated for forms
-- **Session Integration**: Works with session management
+### **Session Management**
+- **Secure Sessions**: HTTPS-only sessions
+- **Session Timeout**: Automatic session expiration
+- **Session Regeneration**: CSRF protection
+- **Session Storage**: Secure session storage
 
-#### Token Sources
-1. POST parameter: `_token`
-2. Header: `X-CSRF-TOKEN`
-3. Header: `X-XSRF-TOKEN` (Laravel style)
-
-#### Excluded Routes
-- `/api/` - API endpoints
-- `/webhook/` - Webhook endpoints
-
-## Enhanced Logging
-
-### Logger Class
-
-PSR-3 compliant logging with enhanced features:
-
-#### Specialized Methods
+### **Session Security Implementation**
 ```php
-$logger->security('SQL injection attempt', ['ip' => '192.168.1.1']);
-$logger->userAction('page_edit', ['user_id' => 123, 'page_id' => 456]);
-$logger->performance('database_query', 0.123, ['query' => 'SELECT * FROM pages']);
-$logger->query('SELECT * FROM pages WHERE id = ?', 0.045, ['params' => [1]]);
-$logger->exception($e, ['context' => 'user_action']);
+/**
+ * Session Security Service
+ */
+class WisalSessionSecurityService
+{
+    /**
+     * Configure secure session settings
+     */
+    public function configureSecureSession(): void
+    {
+        // Secure session configuration
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_secure', 1);
+        ini_set('session.cookie_samesite', 'Strict');
+        ini_set('session.use_strict_mode', 1);
+        
+        // Session timeout
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour
+        ini_set('session.cookie_lifetime', 3600); // 1 hour
+    }
+    
+    /**
+     * Regenerate session ID
+     */
+    public function regenerateSession(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
+    }
+}
 ```
 
-#### Log Rotation
-- **Max file size**: 10MB (configurable)
-- **Files to keep**: 5 (configurable)
-- **Automatic rotation**: Based on date and size
-- **Compression**: Old logs can be compressed
+---
 
-#### Context Information
-- **Request details**: IP, method, URI, user agent
-- **Performance metrics**: Timing, memory usage
-- **User information**: User ID, session data
-- **Server information**: PHP version, memory limits
+## 🌐 **API Security**
 
-## Middleware Stack
+### **API Protection**
+- **Rate Limiting**: Request rate limiting
+- **API Keys**: Secure API key management
+- **Request Validation**: API input validation
+- **Response Security**: Secure API responses
 
-### MiddlewareStack
-
-Manages the execution order of middleware components:
-
-#### Execution Order
-1. Error Handling Middleware
-2. Security Middleware
-3. CSRF Middleware
-4. Route Handler
-
-#### Features
-- **Ordered Execution**: Middleware executed in defined order
-- **Error Handling**: Graceful handling of middleware failures
-- **Debug Logging**: Comprehensive logging of middleware execution
-- **Request Conversion**: Proper PSR-7 to internal Request conversion
-
-## Testing Security Features
-
-### Test Script
-Run the comprehensive security test suite:
-
-```bash
-php scripts/test_security_error_handling.php
-```
-
-### Test Coverage
-- **Database Connection**: Verifies database connectivity
-- **Container Services**: Tests service registration and resolution
-- **Security Middleware**: Tests attack pattern detection
-- **Error Handling**: Tests exception catching and logging
-- **CSRF Protection**: Tests token validation
-- **Middleware Stack**: Tests middleware execution
-- **Enhanced Logging**: Tests specialized logging methods
-- **Log File Creation**: Verifies log file generation
-- **Security Headers**: Tests header addition
-
-### Manual Testing
-Test attack patterns manually:
-
-```bash
-# SQL Injection (should be blocked)
-curl "http://localhost:8000/test?q=union+select"
-
-# XSS (should be blocked)
-curl "http://localhost:8000/test?q=<script>alert('xss')</script>"
-
-# Directory Traversal (should be blocked)
-curl "http://localhost:8000/test?q=../../../etc/passwd"
-
-# Rate Limiting (should be blocked after 60 requests/minute)
-for i in {1..70}; do curl "http://localhost:8000/test"; done
-```
-
-## Production Considerations
-
-### Security Headers
-Ensure all security headers are properly configured for your environment:
-
+### **API Security Implementation**
 ```php
-// Content Security Policy
-"default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;"
-
-// Strict Transport Security
-"max-age=31536000; includeSubDomains"
+/**
+ * API Security Middleware
+ */
+class SirajApiSecurityMiddleware
+{
+    /**
+     * Process API request
+     */
+    public function process(Request $request): Response
+    {
+        // Rate limiting
+        if (!$this->checkRateLimit($request)) {
+            return new Response('Rate limit exceeded', 429);
+        }
+        
+        // API key validation
+        if (!$this->validateApiKey($request)) {
+            return new Response('Invalid API key', 401);
+        }
+        
+        // Input validation
+        if (!$this->validateInput($request)) {
+            return new Response('Invalid input', 400);
+        }
+        
+        return $this->next($request);
+    }
+}
 ```
 
-### Rate Limiting
-For production, consider using Redis for rate limiting:
+---
 
+## 📊 **Security Monitoring**
+
+### **Security Logging**
+- **Access Logs**: User access logging
+- **Security Events**: Security incident logging
+- **Audit Trails**: User action tracking
+- **Performance Monitoring**: Security performance tracking
+
+### **Monitoring Implementation**
 ```php
-// Replace in-memory storage with Redis
-private static array $rateLimitStore = []; // Change to Redis
+/**
+ * Security Monitoring Service
+ */
+class ShahidSecurityMonitoringService
+{
+    /**
+     * Log security event
+     */
+    public function logSecurityEvent(string $event, array $data): void
+    {
+        $logEntry = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'event' => $event,
+            'data' => $data,
+            'ip_address' => $this->getClientIp(),
+            'user_id' => $this->getCurrentUserId()
+        ];
+        
+        $this->logger->log('security', json_encode($logEntry));
+    }
+    
+    /**
+     * Monitor for security threats
+     */
+    public function monitorThreats(): void
+    {
+        // Monitor failed login attempts
+        $this->monitorFailedLogins();
+        
+        // Monitor suspicious activity
+        $this->monitorSuspiciousActivity();
+        
+        // Monitor API abuse
+        $this->monitorApiAbuse();
+    }
+}
 ```
 
-### Logging
-Configure appropriate log levels for production:
+---
 
+## 📚 **Security Documentation**
+
+### **Available Security Guides**
+- **[Authentication Guide](authentication.md)** - User authentication
+- **[Authorization Guide](authorization.md)** - Access control
+- **[Input Validation](input-validation.md)** - Data validation
+- **[Output Security](output-security.md)** - XSS prevention
+- **[Session Management](session-management.md)** - Session security
+
+### **Security Development**
+- **[Security Standards](../standards.md)** - Security standards
+- **[Style Guide](../guides/style-guide.md)** - Coding standards
+- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
+
+---
+
+## 🧪 **Security Testing**
+
+### **Security Testing Strategy**
+- **Penetration Testing**: Regular security assessments
+- **Vulnerability Scanning**: Automated vulnerability detection
+- **Code Review**: Security-focused code review
+- **Security Audits**: Comprehensive security audits
+
+### **Security Testing Implementation**
 ```php
-// Development
-$logger = new Logger($logDir, 'debug');
-
-// Production
-$logger = new Logger($logDir, 'warning');
+class SecurityTest extends TestCase
+{
+    public function testXssProtection(): void
+    {
+        $input = '<script>alert("xss")</script>';
+        $output = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        
+        $this->assertStringNotContains('<script>', $output);
+    }
+    
+    public function testCsrfProtection(): void
+    {
+        $response = $this->post('/api/user/update', []);
+        
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+}
 ```
 
-### Error Handling
-Disable debug mode in production:
+---
 
-```php
-// .env
-APP_DEBUG=false
-APP_ENV=production
-```
+## 📖 **Additional Resources**
 
-## Security Best Practices
+### **Related Documentation**
+- **[Architecture Overview](../architecture/overview.md)** - System architecture
+- **[Core Systems](../architecture/core-systems.md)** - System components
+- **[API Documentation](../api/overview.md)** - API reference
+- **[Testing Guidelines](../testing/README.md)** - Testing strategies
 
-### Input Validation
-- Always validate and sanitize user input
-- Use prepared statements for database queries
-- Implement proper access controls
-- Log security events for monitoring
+### **Security Resources**
+- **[OWASP Guidelines](https://owasp.org/)** - Web security best practices
+- **[Security Headers](https://securityheaders.com/)** - Security header testing
+- **[Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)** - CSP documentation
 
-### Session Security
-- Use secure session configuration
-- Implement proper session timeout
-- Regenerate session IDs after login
-- Use HTTP-only cookies
+---
 
-### Error Handling
-- Never expose sensitive information in error messages
-- Log errors for debugging but show user-friendly messages
-- Implement proper error boundaries
-- Monitor error rates and patterns
-
-### Monitoring
-- Monitor security logs regularly
-- Set up alerts for suspicious activity
-- Track performance metrics
-- Review access logs periodically
-
-## Compliance
-
-### Security Standards
-- **OWASP Top 10**: Protection against common vulnerabilities
-- **PSR-3**: Standardized logging interface
-- **PSR-7**: HTTP message interface compliance
-- **PSR-15**: HTTP middleware interface compliance
-
-### Data Protection
-- **Input Sanitization**: All user input is sanitized
-- **Output Encoding**: All output is properly encoded
-- **Access Control**: Proper permission checking
-- **Audit Logging**: Comprehensive activity logging
-
-## Troubleshooting
-
-### Common Issues
-
-**Permission Denied Errors:**
-```bash
-sudo chown -R www-data:www-data storage/ logs/
-sudo chmod -R 755 storage/ logs/
-```
-
-**Rate Limiting Too Strict:**
-Adjust limits in `SecurityMiddleware`:
-```php
-'requests_per_minute' => 60,  // Increase if needed
-'burst_limit' => 10,          // Increase if needed
-```
-
-**CSRF Token Issues:**
-Ensure forms include CSRF tokens:
-```html
-<input type="hidden" name="_token" value="{{ csrf_token() }}">
-```
-
-**Log File Issues:**
-Check log directory permissions and disk space:
-```bash
-ls -la storage/logs/
-df -h
-```
-
-## Support
-
-For security issues or questions:
-1. Check the logs for detailed error information
-2. Run the security test suite to verify functionality
-3. Review the configuration files for proper settings
-4. Contact the development team for assistance
-
-Remember: Security is an ongoing process. Regularly update dependencies, monitor logs, and stay informed about new security threats.
+**Last Updated:** 2025-08-19  
+**Version:** 0.0.1.0  
+**Author:** IslamWiki Development Team  
+**License:** AGPL-3.0  
+**Status:** Security Documentation Complete ✅ 

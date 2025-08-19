@@ -1,0 +1,172 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Upload Media</h1>
+            
+            <form action="/media/upload" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <!-- File Upload Area -->
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-green-500 transition-colors">
+                    <div class="space-y-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        
+                        <div class="text-gray-600">
+                            <label for="file-upload" class="cursor-pointer">
+                                <span class="text-green-600 hover:text-green-500 font-medium">Click to upload</span>
+                                <span class="text-gray-500"> or drag and drop</span>
+                            </label>
+                            <input id="file-upload" name="files[]" type="file" class="sr-only" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.md" required>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500">
+                            PNG, JPG, GIF, WebP, SVG, MP4, WebM, MP3, OGG, PDF, DOC, DOCX, TXT, MD up to 50MB
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- File List Preview -->
+                <div id="file-list" class="hidden space-y-3">
+                    <h3 class="text-lg font-medium text-gray-900">Selected Files</h3>
+                    <div id="file-items" class="space-y-2"></div>
+                </div>
+                
+                <!-- Upload Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter media title">
+                    </div>
+                    
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter media description"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="categories" class="block text-sm font-medium text-gray-700 mb-2">Categories</label>
+                        <input type="text" id="categories" name="categories" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter categories (comma-separated)">
+                        <p class="text-xs text-gray-500 mt-1">Example: Islamic Art, Calligraphy, Architecture</p>
+                    </div>
+                    
+                    <div>
+                        <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                        <input type="text" id="tags" name="tags" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter tags (comma-separated)">
+                        <p class="text-xs text-gray-500 mt-1">Example: mosque, arabic, geometric</p>
+                    </div>
+                </div>
+                
+                <!-- Privacy Settings -->
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Privacy & Access</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="is_public" value="1" checked class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                            <span class="ml-2 text-sm text-gray-700">Make this media publicly accessible</span>
+                        </label>
+                        
+                        <label class="flex items-center">
+                            <input type="checkbox" name="allow_comments" value="1" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                            <span class="ml-2 text-sm text-gray-700">Allow comments and discussions</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-end space-x-4">
+                    <a href="/media/gallery" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Upload Media
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file-upload');
+    const fileList = document.getElementById('file-list');
+    const fileItems = document.getElementById('file-items');
+    
+    fileInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        
+        if (files.length > 0) {
+            fileList.classList.remove('hidden');
+            fileItems.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+                
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'flex items-center space-x-3';
+                
+                const icon = document.createElement('span');
+                icon.className = 'text-gray-400';
+                icon.innerHTML = getFileIcon(file.type);
+                
+                const details = document.createElement('div');
+                details.innerHTML = `
+                    <div class="text-sm font-medium text-gray-900">${file.name}</div>
+                    <div class="text-sm text-gray-500">${formatFileSize(file.size)}</div>
+                `;
+                
+                fileInfo.appendChild(icon);
+                fileInfo.appendChild(details);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'text-red-500 hover:text-red-700';
+                removeBtn.innerHTML = 'Remove';
+                removeBtn.onclick = function() {
+                    fileItem.remove();
+                    if (fileItems.children.length === 0) {
+                        fileList.classList.add('hidden');
+                    }
+                };
+                
+                fileItem.appendChild(fileInfo);
+                fileItem.appendChild(removeBtn);
+                fileItems.appendChild(fileItem);
+            });
+        } else {
+            fileList.classList.add('hidden');
+        }
+    });
+    
+    function getFileIcon(mimeType) {
+        if (mimeType.startsWith('image/')) {
+            return '🖼️';
+        } else if (mimeType.startsWith('video/')) {
+            return '🎥';
+        } else if (mimeType.startsWith('audio/')) {
+            return '🎵';
+        } else if (mimeType.includes('pdf')) {
+            return '📄';
+        } else if (mimeType.includes('document')) {
+            return '📝';
+        } else {
+            return '📁';
+        }
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+});
+</script>
+{% endblock %} 
