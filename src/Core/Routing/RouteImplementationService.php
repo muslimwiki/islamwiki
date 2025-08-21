@@ -293,7 +293,7 @@ class RouteImplementationService
     {
         foreach ($middleware as $middlewareName) {
             try {
-                $this->routing->addMiddleware($middlewareName, $this->createMiddleware($middlewareName));
+                $this->routing->middleware($middlewareName, $this->createMiddleware($middlewareName));
                 $this->statistics['middleware_count']++;
                 $this->logger->debug("Registered middleware: {$middlewareName} for group: {$groupKey}");
             } catch (Exception $e) {

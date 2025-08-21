@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>400 - Bad Request | IslamWiki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 60px;
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .error-code {
+            font-family: 'Amiri', serif;
+            font-size: 6rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(220, 38, 38, 0.2);
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .error-details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        .error-details h3 {
+            color: #374151;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .error-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .error-details li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .error-details li:last-child {
+            border-bottom: none;
+        }
+
+        .error-details .label {
+            font-weight: 500;
+            color: #374151;
+            min-width: 120px;
+        }
+
+        .error-details .value {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            text-align: right;
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn .button-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .btn .loading {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn.loading .button-text {
+            opacity: 0;
+        }
+
+        .btn.loading .loading {
+            opacity: 1;
+        }
+
+        .islamic-quote {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 6px solid #f59e0b;
+        }
+
+        .quote-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            color: #92400e;
+            margin-bottom: 10px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .quote-source {
+            color: #a16207;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .technical-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .technical-info h4 {
+            color: #374151;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .technical-info p {
+            color: #6b7280;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .technical-info ul {
+            color: #6b7280;
+            margin-left: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .technical-info li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .error-container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+
+            .error-code {
+                font-size: 4rem;
+            }
+
+            .error-title {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .error-details li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .error-details .value {
+                text-align: left;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <!-- Error Icon -->
+        <div class="error-icon">⚠️</div>
+        
+        <!-- Error Code -->
+        <div class="error-code">400</div>
+        
+        <!-- Error Title -->
+        <h1 class="error-title">Bad Request</h1>
+        
+        <!-- Error Message -->
+        <p class="error-message">
+            The request could not be understood by the server due to malformed syntax. Please check your request and try again.
+        </p>
+        
+        <!-- Error Details -->
+        <div class="error-details">
+            <h3>Request Information</h3>
+            <ul>
+                <li>
+                    <span class="label">Time:</span>
+                    <span class="value">{{ timestamp|default('now'|date('Y-m-d H:i:s T')) }}</span>
+                </li>
+                <li>
+                    <span class="label">URL:</span>
+                    <span class="value">{{ request_url|default(app.request.uri|default('Unknown')) }}</span>
+                </li>
+                <li>
+                    <span class="label">Method:</span>
+                    <span class="value">{{ request_method|default(app.request.method|default('Unknown')) }}</span>
+                </li>
+                <li>
+                    <span class="label">IP Address:</span>
+                    <span class="value">{{ client_ip|default(app.request.clientIp|default('Unknown')) }}</span>
+                </li>
+                {% if app.debug %}
+                <li>
+                    <span class="label">Error:</span>
+                    <span class="value">{{ error_message|default('Bad request syntax') }}</span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{{ path('home') }}" class="btn btn-primary">
+                <span class="button-text">Go to Homepage</span>
+                <span class="loading">↻</span>
+            </a>
+            <button onclick="window.history.back()" class="btn btn-secondary">
+                <span class="button-text">Go Back</span>
+                <span class="loading">↻</span>
+            </button>
+            <button onclick="location.reload()" class="btn btn-secondary">
+                <span class="button-text">Try Again</span>
+                <span class="loading">↻</span>
+            </button>
+            <a href="{{ path('contact')|default('#') }}" class="btn btn-danger">
+                <span class="button-text">Report Issue</span>
+                <span class="loading">↻</span>
+            </a>
+        </div>
+        
+        <!-- Islamic Quote -->
+        <div class="islamic-quote">
+            <div class="quote-text">
+                "And when you speak, be just, even if it be against a near relative."
+            </div>
+            <div class="quote-source">
+                — Quran 6:152
+            </div>
+        </div>
+        
+        <!-- Technical Information -->
+        <div class="technical-info">
+            <h4>What happened?</h4>
+            <p>The server could not understand your request due to:</p>
+            <ul>
+                <li>Malformed URL or parameters</li>
+                <li>Invalid request format</li>
+                <li>Missing required fields</li>
+                <li>Syntax errors in the request</li>
+            </ul>
+            
+            <h4 style="margin-top: 1rem;">What you can do:</h4>
+            <ul>
+                <li>Check the URL for typos or errors</li>
+                <li>Verify all required form fields are filled</li>
+                <li>Try refreshing the page</li>
+                <li>Contact support if the problem persists</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Button loading states
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.tagName === 'A') {
+                    this.classList.add('loading');
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                    }, 2000);
+                }
+            });
+        });
+
+        // Console logging for debugging
+        console.log('400 Bad Request Error Page Loaded');
+        console.log('Error Details:', {
+            timestamp: '{{ timestamp|default("now"|date("Y-m-d H:i:s T")) }}',
+            url: '{{ request_url|default(app.request.uri|default("Unknown")) }}',
+            method: '{{ request_method|default(app.request.method|default("Unknown")) }}',
+            client_ip: '{{ client_ip|default(app.request.clientIp|default("Unknown")) }}'
+        });
+
+        // Analytics tracking (if available)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'error_page_view', {
+                'error_code': '400',
+                'error_type': 'bad_request',
+                'page_title': '400 Bad Request'
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,69 +1,51 @@
 {
     "name": "islamwiki/islamwiki",
-    "description": "A comprehensive Islamic knowledge platform built with modern PHP and Islamic design principles",
+    "description": "IslamWiki - Authentic Islamic Knowledge Platform combining MediaWiki, WordPress, and Modern PHP",
     "type": "project",
-    "version": "0.0.54",
-    "license": "AGPL-3.0-only",
-    "keywords": [
-        "islamic",
-        "knowledge",
-        "quran",
-        "hadith",
-        "islamic-sciences",
-        "php",
-        "framework"
-    ],
+    "keywords": ["islamic", "wiki", "knowledge", "platform", "mediawiki", "wordpress", "php"],
+    "license": "AGPL-3.0",
+    "version": "0.0.2.0",
     "authors": [
         {
-            "name": "IslamWiki Team",
-            "email": "dev@islam.wiki"
+            "name": "IslamWiki Development Team",
+            "email": "team@islamwiki.com",
+            "homepage": "https://islamwiki.com"
         }
     ],
     "require": {
         "php": "^8.1",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-pdo": "*",
-        "psr/log": "^1.1",
-        "guzzlehttp/psr7": "^2.7",
-        "psr/container": "^2.0",
-        "psr/http-factory": "^1.0",
-        "psr/http-message": "^1.0",
-        "psr/http-server-handler": "^1.0",
-        "guzzlehttp/guzzle": "^7.9",
         "twig/twig": "^3.0",
-        "vlucas/phpdotenv": "^5.5"
+        "monolog/monolog": "^3.0"
     },
     "require-dev": {
-        "erusev/parsedown": "^1.7"
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^1.0",
+        "squizlabs/php_codesniffer": "^3.0"
     },
     "autoload": {
         "psr-4": {
-            "IslamWiki\\": "src/",
-            "IslamWiki\\Extensions\\": "extensions/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+            "IslamWiki\\Core\\": "src/Core/",
+            "IslamWiki\\Extensions\\": "extensions/",
+            "IslamWiki\\Skins\\": "skins/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "maintenance/tests/"
+            "IslamWiki\\Tests\\": "tests/"
         }
     },
     "scripts": {
         "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "analyse": "phpstan analyse"
+        "stan": "phpstan analyse src",
+        "organize": "php scripts/organize_project.php"
     },
     "config": {
         "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "phpstan/extension-installer": true
-        }
+        "optimize-autoloader": true
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

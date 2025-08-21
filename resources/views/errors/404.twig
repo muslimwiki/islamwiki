@@ -1,653 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Page Not Found - IslamWiki</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #2d3748;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-        
-        .error-header {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .error-header::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-        
-        .error-icon {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            display: block;
-            animation: bounce 2s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-        
-        .error-code {
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .error-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            opacity: 0.9;
-        }
-        
-        .error-message {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .error-content {
-            padding: 40px;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .info-card {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 25px;
-            border-left: 4px solid #2ecc71;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .info-card h3 {
-            color: #2ecc71;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .info-card h3::before {
-            content: "📋";
-            font-size: 1.1rem;
-        }
-        
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .info-item:last-child {
-            border-bottom: none;
-        }
-        
-        .info-label {
-            font-weight: 500;
-            color: #4a5568;
-        }
-        
-        .info-value {
-            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
-            color: #2d3748;
-            font-size: 0.9rem;
-            text-align: right;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .suggestions {
-            background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 40px;
-            border-left: 4px solid #10b981;
-        }
-        
-        .suggestions h3 {
-            color: #059669;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .suggestions h3::before {
-            content: "💡";
-            font-size: 1.1rem;
-        }
-        
-        .suggestions ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .suggestions li {
-            padding: 8px 0;
-            position: relative;
-            padding-left: 25px;
-        }
-        
-        .suggestions li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #10b981;
-            font-weight: bold;
-        }
-        
-        .actions {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 0 10px;
-            background: #2ecc71;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-        
-        .btn-secondary {
-            background: #6b7280;
-        }
-        
-        .btn-secondary:hover {
-            background: #4b5563;
-        }
-        
-        .debug-info {
-            background: #1a202c;
-            color: #e2e8f0;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 30px;
-            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
-            font-size: 0.9rem;
-        }
-        
-        .debug-info h3 {
-            color: #fbbf24;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .debug-info h3::before {
-            content: "🐛";
-            font-size: 1.1rem;
-        }
-        
-        .debug-info h4 {
-            color: #60a5fa;
-            margin: 20px 0 10px 0;
-            font-size: 1.1rem;
-        }
-        
-        .debug-info p {
-            margin: 8px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid #2d3748;
-        }
-        
-        .debug-info p:last-child {
-            border-bottom: none;
-        }
-        
-        .debug-info strong {
-            color: #fbbf24;
-        }
-        
-        .debug-info pre {
-            background: #2d3748;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 15px 0;
-            border-left: 4px solid #fbbf24;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-        
-        .copy-btn {
-            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .copy-btn:hover {
-            background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
-        }
-        
-        .copy-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-        
-        .debug-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .debug-header h3 {
-            margin: 0;
-            flex: 1;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #718096;
-            font-size: 0.9rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .error-header {
-                padding: 40px 20px;
-            }
-            
-            .error-code {
-                font-size: 3rem;
-            }
-            
-            .error-title {
-                font-size: 1.5rem;
-            }
-            
-            .error-content {
-                padding: 20px;
-            }
-            
-            .info-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .actions .btn {
-                display: block;
-                margin: 10px auto;
-                max-width: 200px;
-            }
-            
-            .debug-header {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-            }
-            
-            .copy-btn {
-                align-self: center;
-                max-width: 200px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="error-header">
-            <span class="error-icon">🔍</span>
-            <h1 class="error-code">404</h1>
-            <h2 class="error-title">Page Not Found</h2>
-            <p class="error-message">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
-        </div>
+{% extends "layouts/app.twig" %}
 
-        <div class="error-content">
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3>Request Information</h3>
-                    <div class="info-item">
-                        <span class="info-label">URL:</span>
-                        <span class="info-value" title="{{ request_uri|default('Unknown') }}">{{ request_uri|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Method:</span>
-                        <span class="info-value">{{ request_method|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">IP Address:</span>
-                        <span class="info-value">{{ request_ip|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">User Agent:</span>
-                        <span class="info-value" title="{{ request_user_agent|default('Unknown') }}">{{ request_user_agent|default('Unknown')|length > 50 ? request_user_agent|default('Unknown')|slice(0, 50) ~ '...' : request_user_agent|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Timestamp:</span>
-                        <span class="info-value">{{ timestamp|default('Unknown') }}</span>
-                    </div>
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-primary">404</h1>
+                <h2 class="mb-4">الصفحة غير موجودة</h2>
+                <h3 class="mb-4">Page Not Found</h3>
+                
+                <div class="error-message mb-4">
+                    <p class="lead">عذراً، الصفحة التي تبحث عنها غير موجودة</p>
+                    <p class="lead">Sorry, the page you are looking for could not be found.</p>
                 </div>
                 
-                <div class="info-card">
-                    <h3>Server Information</h3>
-                    <div class="info-item">
-                        <span class="info-label">PHP Version:</span>
-                        <span class="info-value">{{ php_version|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Server Software:</span>
-                        <span class="info-value">{{ server_software|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Server Name:</span>
-                        <span class="info-value">{{ server_name|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Memory Usage:</span>
-                        <span class="info-value">{{ memory_usage|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Memory Limit:</span>
-                        <span class="info-value">{{ memory_limit|default('Unknown') }}</span>
-                    </div>
+                <div class="suggestions mb-5">
+                    <h4>اقتراحات:</h4>
+                    <h4>Suggestions:</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="btn btn-outline-primary m-2">🏠 الصفحة الرئيسية / Home</a></li>
+                        <li><a href="/quran" class="btn btn-outline-success m-2">📖 القرآن الكريم / Quran</a></li>
+                        <li><a href="/hadith" class="btn btn-outline-info m-2">📜 الحديث الشريف / Hadith</a></li>
+                        <li><a href="/search" class="btn btn-outline-warning m-2">🔍 البحث / Search</a></li>
+                    </ul>
+                </div>
+                
+                <div class="arabic-text mb-4">
+                    <p class="h5">"إِنَّ اللَّهَ مَعَ الصَّابِرِينَ"</p>
+                    <p class="text-muted">"Indeed, Allah is with the patient."</p>
                 </div>
             </div>
-            
-            <div class="suggestions">
-                <h3>What you can do:</h3>
-                <ul>
-                    <li>Check the URL for any typos or spelling errors</li>
-                    <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
-                    <li>Use the <a href="{{ url('/iqra-search') }}">search function</a> to find what you're looking for</li>
-                    <li>Browse our <a href="{{ url('/wiki') }}">wiki pages</a> for similar content</li>
-                    <li>Check our <a href="{{ url('/sitemap') }}">sitemap</a> for a complete list of pages</li>
-                    <li>Contact support if you believe this is an error</li>
-                </ul>
-            </div>
-            
-            <div class="actions">
-                <a href="{{ url('/') }}" class="btn">🏠 Go to Homepage</a>
-                <a href="{{ url('/iqra-search') }}" class="btn btn-secondary">🔍 Search</a>
-                <a href="{{ url('/wiki') }}" class="btn btn-secondary">📚 Browse Wiki</a>
-                <a href="javascript:history.back()" class="btn btn-secondary">⬅️ Go Back</a>
-            </div>
-            
-            {% if debug %}
-                <div class="debug-info">
-                    <div class="debug-header">
-                        <h3>🐛 Debug Information</h3>
-                        <button id="copyDebugBtn" class="copy-btn" onclick="copyDebugInfo()" title="Copy clean, formatted debug information to clipboard">
-                            📋 Copy Debug Info
-                        </button>
-                    </div>
-                    
-                    <div id="debugContent">
-                        {% if exception is defined and exception %}
-                            <h4>🚨 Exception Details</h4>
-                            <p><strong>Type:</strong> {{ exception.class|default('Unknown') }}</p>
-                            <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
-                            <p><strong>File:</strong> {{ exception.file|default('Unknown') }}</p>
-                            <p><strong>Line:</strong> {{ exception.line|default('Unknown') }}</p>
-                            <p><strong>Code:</strong> {{ exception.code|default('Unknown') }}</p>
-                            
-                            {% if exception.trace is defined and exception.trace %}
-                                <h4>📚 Stack Trace</h4>
-                                <pre>{{ exception.trace|default('No stack trace available') }}</pre>
-                            {% endif %}
-                        {% endif %}
-                        
-                        <h4>⚙️ Server Environment</h4>
-                        <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
-                        <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
-                        <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
-                        <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
-                        
-                        {% if server_info is defined and server_info %}
-                            <h4>🔧 Additional Server Info</h4>
-                            <pre>{{ server_info|default('Server information not available') }}</pre>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-        
-        <div class="footer">
-            <p>IslamWiki - Islamic Knowledge Platform</p>
-            <p>If you continue to experience issues, please contact our support team.</p>
         </div>
     </div>
+</div>
 
-    <script>
-        function copyDebugInfo() {
-            const debugContent = document.getElementById('debugContent');
-            const copyBtn = document.getElementById('copyDebugBtn');
-            const originalText = copyBtn.innerHTML;
-            
-            // Get clean, formatted text content for copying
-            const textToCopy = formatDebugInfoForCopy(debugContent);
-            
-            // Try modern clipboard API first
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    showCopySuccess(copyBtn, originalText);
-                }).catch(err => {
-                    console.error('Failed to copy debug info: ', err);
-                    fallbackCopy(textToCopy, copyBtn, originalText);
-                });
-            } else {
-                // Fallback for older browsers or non-secure contexts
-                fallbackCopy(textToCopy, copyBtn, originalText);
-            }
-        }
-        
-        function formatDebugInfoForCopy(debugElement) {
-            // Create a clean, formatted version for copying
-            let formattedText = '';
-            
-            // Add header
-            formattedText += 'DEBUG INFORMATION\n';
-            formattedText += '==================\n\n';
-            
-            // Process each section
-            const sections = debugElement.querySelectorAll('h4');
-            sections.forEach(section => {
-                const sectionTitle = section.textContent.trim();
-                const sectionContent = section.nextElementSibling;
-                
-                // Clean up section title (remove emojis and format nicely)
-                const cleanTitle = sectionTitle.replace(/[🚨📚⚙️🔧]/g, '').trim();
-                formattedText += cleanTitle.toUpperCase() + '\n';
-                formattedText += '-'.repeat(cleanTitle.length) + '\n';
-                
-                // Process content based on type
-                if (sectionContent.tagName === 'P') {
-                    // Single paragraph
-                    const text = sectionContent.textContent.trim();
-                    formattedText += text + '\n\n';
-                } else if (sectionContent.tagName === 'PRE') {
-                    // Pre-formatted content (like stack trace)
-                    const text = sectionContent.textContent.trim();
-                    formattedText += text + '\n\n';
-                } else {
-                    // Multiple paragraphs or other content
-                    let nextElement = section.nextElementSibling;
-                    while (nextElement && nextElement.tagName !== 'H4') {
-                        if (nextElement.tagName === 'P') {
-                            const text = nextElement.textContent.trim();
-                            if (text) {
-                                formattedText += text + '\n';
-                            }
-                        } else if (nextElement.tagName === 'PRE') {
-                            const text = nextElement.textContent.trim();
-                            if (text) {
-                                formattedText += text + '\n';
-                            }
-                        }
-                        nextElement = nextElement.nextElementSibling;
-                    }
-                    formattedText += '\n';
-                }
-            });
-            
-            // Add footer with timestamp
-            formattedText += 'Generated: ' + new Date().toISOString() + '\n';
-            formattedText += 'URL: ' + window.location.href + '\n';
-            
-            return formattedText;
-        }
-        
-        function fallbackCopy(text, button, originalText) {
-            // Create a temporary textarea element
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.left = '-999999px';
-            textarea.style.top = '-999999px';
-            document.body.appendChild(textarea);
-            
-            try {
-                textarea.select();
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showCopySuccess(button, originalText);
-                } else {
-                    showCopyError(button, originalText);
-                }
-            } catch (err) {
-                console.error('Fallback copy failed: ', err);
-                showCopyError(button, originalText);
-            } finally {
-                document.body.removeChild(textarea);
-            }
-        }
-        
-        function showCopySuccess(button, originalText) {
-            button.innerHTML = '✅ Copied!';
-            button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-            button.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)';
-                button.style.boxShadow = '0 2px 8px rgba(66, 153, 225, 0.3)';
-            }, 2000);
-        }
-        
-        function showCopyError(button, originalText) {
-            button.innerHTML = '❌ Failed';
-            button.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-            button.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)';
-                button.style.boxShadow = '0 2px 8px rgba(66, 153, 225, 0.3)';
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+<style>
+.error-page {
+    padding: 3rem 0;
+}
+
+.error-page h1 {
+    font-size: 8rem;
+    font-weight: bold;
+    color: #2d5016;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-page h2, .error-page h3 {
+    color: #3a5f1e;
+}
+
+.error-page .arabic-text {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 2px solid #dee2e6;
+}
+
+.error-page .arabic-text p {
+    margin-bottom: 0.5rem;
+}
+
+.error-page .suggestions ul li {
+    margin: 0.5rem 0;
+}
+
+.btn-outline-primary:hover, .btn-outline-success:hover, 
+.btn-outline-info:hover, .btn-outline-warning:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+</style>
+{% endblock %}

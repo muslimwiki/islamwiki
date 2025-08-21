@@ -23,8 +23,9 @@ class UsulServiceProvider
      */
     public function register(AsasContainer $container): void
     {
-        // Register Usul as singleton
-        $container->singleton(UsulKnowledge::class, function () use ($container) {
+        // Register Usul as singleton with lazy dependency resolution
+        $container->set(UsulKnowledge::class, function () use ($container) {
+            // Only resolve dependencies when the service is actually requested
             $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
             return new UsulKnowledge($container, $logger, $db);
@@ -35,7 +36,7 @@ class UsulServiceProvider
         $container->alias('usul', UsulKnowledge::class);
 
         // Register knowledge system configuration
-        $container->singleton('knowledge.config', function () {
+        $container->set('knowledge.config', function () {
             return [
                 'root_systems' => [
                     'quranic' => ['enabled' => true, 'confidence_threshold' => 0.5],

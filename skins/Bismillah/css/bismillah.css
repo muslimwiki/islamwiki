@@ -1546,13 +1546,13 @@ body {
 }
 
 .bismillah-logo {
+    color: var(--islamic-white);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    text-decoration: none;
-    color: var(--islamic-white);
-    font-size: 1.5rem;
-    font-weight: 700;
+    gap: 0.5rem;
     transition: var(--transition);
 }
 
@@ -1562,9 +1562,31 @@ body {
 }
 
 .bismillah-logo-icon {
-    width: 32px;
-    height: 32px;
-    fill: currentColor;
+    font-size: 2rem;
+    color: var(--islamic-gold);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.site-name {
+    font-weight: 800;
+    font-size: 1.8rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    color: var(--islamic-white);
+    line-height: 1;
+}
+
+.site-tagline {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--islamic-gold);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    line-height: 1;
+    margin-top: 0.1rem;
 }
 
 .bismillah-search {
@@ -1657,6 +1679,14 @@ body {
     gap: 1rem;
 }
 
+.bismillah-header-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin: 0 var(--spacing-md);
+}
+
 .bismillah-logo {
     color: var(--islamic-white);
     text-decoration: none;
@@ -1680,6 +1710,38 @@ body {
 .logo-text {
     font-weight: 800;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.bismillah-salah-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--islamic-white);
+    font-size: 0.9rem;
+}
+
+.next-salah, .current-time, .current-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.next-salah:hover, .current-time:hover, .current-date:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.salah-icon, .time-icon, .date-icon {
+    font-size: 1.1rem;
+}
+
+.salah-text, .time-text, .date-text {
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 /* ===== SEARCH SECTION ===== */
@@ -1707,6 +1769,7 @@ body {
     color: var(--islamic-green);
     font-size: 0.9rem;
     transition: var(--transition);
+    box-shadow: var(--shadow);
 }
 
 .search-input:focus {
@@ -1716,24 +1779,30 @@ body {
     transform: scale(1.02);
 }
 
-.search-button {
+.search-btn {
     position: absolute;
     right: 0.5rem;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--islamic-green);
+    background: transparent;
     border: none;
     border-radius: var(--radius-sm);
     padding: 0.5rem;
-    color: var(--islamic-white);
+    color: var(--islamic-green);
     cursor: pointer;
     transition: var(--transition);
+    font-size: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.search-button:hover {
-    background: var(--islamic-light-green);
+.search-btn:hover {
+    background: rgba(45, 80, 22, 0.1);
+    color: var(--islamic-light-green);
     transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 2px 10px rgba(45, 80, 22, 0.3);
 }
 
 .search-icon {
@@ -1879,6 +1948,334 @@ body {
     background: rgba(255, 255, 255, 0.2);
     color: var(--islamic-white);
     border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== SAFA HEADER AUTHENTICATION STYLES ===== */
+/* Modern authentication header with Islamic aesthetics */
+
+.safa-header {
+    background: linear-gradient(135deg, var(--islamic-dark-green) 0%, var(--islamic-green) 100%);
+    color: var(--islamic-white);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 1000;
+}
+
+.safa-header__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 70px;
+}
+
+.safa-header__brand {
+    display: flex;
+    align-items: center;
+}
+
+.safa-header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+    color: var(--islamic-white);
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.safa-header__logo:hover {
+    color: var(--islamic-gold);
+    transform: scale(1.05);
+}
+
+.safa-header__logo-image {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+}
+
+.safa-header__title {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+}
+
+.safa-header__navigation {
+    flex: 1;
+    margin: 0 var(--spacing-xl);
+}
+
+.safa-header__nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--spacing-lg);
+    justify-content: center;
+}
+
+.safa-header__nav-item {
+    position: relative;
+}
+
+.safa-header__nav-link {
+    color: var(--islamic-white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    position: relative;
+}
+
+.safa-header__nav-link:hover {
+    color: var(--islamic-gold);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.safa-header__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--islamic-gold);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.safa-header__nav-link:hover::after {
+    width: 100%;
+}
+
+/* Authentication Section */
+.safa-header__auth {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Guest User Styles */
+.safa-header__guest {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Button Styles */
+.safa-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.safa-button--primary {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-green);
+}
+
+.safa-button--primary:hover {
+    background: #b8942a;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.safa-button--outline {
+    background: transparent;
+    color: var(--islamic-white);
+    border: 2px solid var(--islamic-white);
+}
+
+.safa-button--outline:hover {
+    background: var(--islamic-white);
+    color: var(--islamic-dark-green);
+    transform: translateY(-1px);
+}
+
+.safa-button--small {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+}
+
+/* Authenticated User Styles */
+.safa-header__user {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.safa-header__user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.safa-header__user-info:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.safa-header__user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--islamic-gold);
+}
+
+.safa-header__user-name {
+    font-weight: 500;
+    color: var(--islamic-white);
+}
+
+/* User Menu Dropdown */
+.safa-header__user-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition);
+    z-index: 1001;
+    margin-top: var(--spacing-xs);
+}
+
+.safa-header__user:hover .safa-header__user-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.safa-header__user-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--spacing-sm) 0;
+}
+
+.safa-header__user-menu-item {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.safa-header__user-menu-item:last-child {
+    border-bottom: none;
+}
+
+.safa-header__user-menu-item--divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: var(--spacing-xs) 0;
+}
+
+.safa-header__user-menu-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.safa-header__user-menu-link:hover {
+    background: var(--islamic-cream);
+    color: var(--islamic-green);
+}
+
+.safa-header__user-menu-link--logout {
+    color: #dc2626;
+}
+
+.safa-header__user-menu-link--logout:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Mobile Menu Toggle */
+.safa-header__mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.safa-header__mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.safa-header__mobile-toggle-line {
+    width: 20px;
+    height: 2px;
+    background: var(--islamic-white);
+    transition: var(--transition);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .safa-header__container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .safa-header__navigation {
+        display: none;
+    }
+    
+    .safa-header__mobile-toggle {
+        display: flex;
+    }
+    
+    .safa-header__auth {
+        gap: var(--spacing-sm);
+    }
+    
+    .safa-button--small {
+        padding: var(--spacing-xs);
+        font-size: 0.8rem;
+    }
+    
+    .safa-header__user-name {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .safa-header__container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .safa-header__title {
+        font-size: 1.2rem;
+    }
+    
+    .safa-header__guest {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
 }
 
 /* ===== MAIN CONTENT AREA ===== */
@@ -5255,4 +5652,954 @@ main,
         left: auto;
         right: 0;
     }
+}
+
+.site-tagline {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--islamic-gold);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+.bismillah-login-btn {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-green);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    display: inline-block;
+}
+
+.bismillah-login-btn:hover {
+    background: var(--islamic-white);
+    color: var(--islamic-green);
+    border-color: var(--islamic-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.bismillah-language-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bismillah-lang-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--islamic-white);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.bismillah-lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--islamic-gold);
+    transform: translateY(-1px);
+}
+
+.bismillah-lang-toggle.active {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-green);
+    border-color: var(--islamic-gold);
+}
+
+/* Additional dropdown styling for forms and dividers */
+.dropdown-divider {
+    height: 1px;
+    background: rgba(212, 175, 55, 0.3);
+    margin: 0.5rem 0;
+    border: none;
+}
+
+.dropdown-form {
+    margin: 0;
+    padding: 0;
+}
+
+.logout-item {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.logout-item:hover {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--islamic-gold);
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--islamic-gold);
+}
+
+.logout-item:active {
+    background: rgba(212, 175, 55, 0.25);
+    transform: translateX(2px);
+}
+
+/* JavaScript-controlled dropdown visibility */
+.user-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Dashboard Layout Styles */
+.dashboard-container {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    margin-top: 0;
+    gap: 0;
+}
+
+/* Ensure main page content is not affected by dashboard styles */
+.main-page-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Islamic Pattern Background */
+.islamic-pattern {
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(45, 80, 22, 0.05) 0%, transparent 50%);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background: var(--islamic-green);
+    border-right: 1px solid var(--islamic-dark-green);
+    box-shadow: var(--shadow);
+    overflow-y: auto;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--islamic-dark-green);
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+.user-info {
+    margin: 0;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-role {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--islamic-gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.user-islamic-role {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--islamic-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--islamic-white);
+    margin-top: 8px;
+}
+
+.sidebar-nav {
+    padding: 0.5rem 0;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin: 0;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    color: var(--islamic-white);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--islamic-gold);
+    border-left-color: var(--islamic-gold);
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    overflow-y: auto;
+    min-height: calc(100vh - 80px);
+}
+
+/* Dashboard CSS Variables */
+:root {
+    --islamic-green: #2d5016;
+    --islamic-gold: #d4af37;
+    --islamic-dark-green: #1a3009;
+    --islamic-light-green: #4a8029;
+    --islamic-cream: #f8f6f0;
+    --islamic-white: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #666;
+    --text-light: #999;
+    --border-light: #e9ecef;
+    --shadow: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Dashboard Component Styles */
+.dashboard .welcome-hero {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 50%, #6ba53a 100%);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+.dashboard .hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard .hero-text {
+    flex: 1;
+}
+
+.dashboard .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.dashboard .hero-subtitle {
+    font-size: 1.2rem;
+    color: white !important;
+    opacity: 0.95;
+    margin-bottom: 25px;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard .hero-actions {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+
+.dashboard .btn-hero {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.dashboard .btn-hero-primary {
+    background: #d4af37;
+    color: #2d5016;
+}
+
+.dashboard .btn-hero-primary:hover {
+    background: #e6c44a;
+    transform: translateY(-2px);
+}
+
+.dashboard .btn-hero-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.dashboard .btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.dashboard .hero-decoration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    opacity: 0.1;
+}
+
+/* Quick Stats Row */
+.quick-stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding: 25px;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.primary {
+    border-left: 4px solid var(--islamic-green);
+}
+
+.stat-icon {
+    margin-bottom: 15px;
+}
+
+.stat-icon-text {
+    font-size: 2.5rem;
+}
+
+.stat-content {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--islamic-green);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.stat-change {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.stat-change.positive {
+    background: #d5f4e6;
+    color: #27ae60;
+}
+
+.stat-change.neutral {
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Dashboard Grid */
+.dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Dashboard Widgets */
+.dashboard-widget {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.widget-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px 25px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.widget-icon {
+    font-size: 1.5rem;
+}
+
+.widget-content {
+    padding: 25px;
+}
+
+/* Progress Bars */
+.progress-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.progress-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.progress-percentage {
+    font-weight: 700;
+    color: #2d5016;
+    font-size: 1.1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2d5016, #4a8029);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Admin Dashboard Specific Styles */
+.admin-dashboard {
+    padding: 0;
+}
+
+.admin-header {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.admin-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: white !important;
+}
+
+.admin-header p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+.admin-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #2d5016;
+}
+
+.btn-primary:hover {
+    background: #e6c44a;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #e67e22;
+    transform: translateY(-1px);
+}
+
+/* Admin Quick Actions */
+.admin-quick-actions {
+    margin-bottom: 30px;
+}
+
+.admin-quick-actions h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.action-btn {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.action-btn:hover {
+    background: var(--islamic-green);
+    color: white;
+    border-color: var(--islamic-green);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+.action-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Admin Dashboard Grid */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.widget-large {
+    grid-column: span 2;
+}
+
+.widget-medium {
+    grid-column: span 1;
+}
+
+/* System Metrics */
+.system-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.metric {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--islamic-green);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* System Health */
+.system-health {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.health-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.health-indicator.excellent {
+    color: #27ae60;
+}
+
+.health-indicator.good {
+    color: #f39c12;
+}
+
+.health-indicator.poor {
+    color: #e74c3c;
+}
+
+.uptime-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-main-grid,
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .widget-large {
+        grid-column: span 1;
+    }
+    
+    .system-metrics {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* Additional Admin Dashboard Styles */
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--islamic-green);
+    margin-bottom: 8px;
+}
+
+.stat-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-actions, .content-actions, .security-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+.content-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.security-status {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.status-label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.status-value {
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.status-value.active {
+    background: #d5f4e6;
+    color: #27ae60;
+}
+
+.status-value.inactive {
+    background: #fadbd8;
+    color: #e74c3c;
+}
+
+/* Ensure main page content is not affected by dashboard styles */
+.main-page-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Main Page Hero Section - Protected from Dashboard Styles */
+.hero {
+    background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="islamic-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23islamic-pattern)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-bismillah {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-family: 'Amiri', serif;
+    color: #d4af37;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+    opacity: 0.95;
+    line-height: 1.6;
+    color: white;
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.hero-stats .stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.hero-stats .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #d4af37;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.hero-stats .stat-label {
+    font-size: 1rem;
+    color: white;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Logo Link Styling */
+.bismillah-logo-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.bismillah-logo-link:hover {
+    transform: scale(1.02);
+    text-decoration: none;
+    color: inherit;
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.bismillah-logo-link:focus {
+    outline: 2px solid #d4af37;
+    outline-offset: 2px;
+    border-radius: 8px;
+    background-color: rgba(212, 175, 55, 0.15);
+}
+
+.bismillah-logo-link:active {
+    transform: scale(0.98);
+}
+
+/* Ensure logo text remains readable when link is active */
+.bismillah-logo-link:hover .bismillah-logo,
+.bismillah-logo-link:focus .bismillah-logo {
+    color: inherit;
 }

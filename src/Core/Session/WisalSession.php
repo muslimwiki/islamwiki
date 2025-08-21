@@ -689,4 +689,44 @@ class WisalSession
     {
         return $this->sessions;
     }
+    
+    /**
+     * Get CSRF token for forms.
+     *
+     * @return string CSRF token
+     */
+    public function getCsrfToken(): string
+    {
+        // Generate a CSRF token if not exists
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        
+        return $_SESSION['csrf_token'];
+    }
+    
+    /**
+     * Validate CSRF token.
+     *
+     * @param string $token Token to validate
+     * @return bool True if token is valid
+     */
+    public function validateCsrfToken(string $token): bool
+    {
+        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    }
+    
+    /**
+     * Start the session.
+     *
+     * @return self
+     */
+    public function start(): self
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            $this->startPhpSession();
+        }
+        
+        return $this;
+    }
 }

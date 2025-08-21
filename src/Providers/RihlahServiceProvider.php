@@ -24,7 +24,8 @@ class RihlahServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register Rihlah as singleton
-        $container->singleton(Rihlah::class, function () use ($container) {
+        $container->set(Rihlah::class, function () use ($container) {
+            // Only resolve dependencies when the service is actually requested
             $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
             return new RihlahCaching($container, $logger, $db);
@@ -35,7 +36,7 @@ class RihlahServiceProvider
         $container->alias('rihlah', Rihlah::class);
 
         // Register cache configuration
-        $container->singleton('cache.config', function () {
+        $container->set('cache.config', function () {
             return [
                 'default_driver' => 'memory',
                 'drivers' => [

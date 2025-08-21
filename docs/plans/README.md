@@ -19,6 +19,13 @@ Development Planning:
 └── 📁 Roadmap Plans - Development timeline and milestones
 ```
 
+### **Available Plans**
+- **[MediaWiki Integration Plan](mediawiki-integration-plan.md)** - Comprehensive MediaWiki feature implementation
+- **[MediaWiki Progress Tracker](mediawiki-progress-tracker.md)** - Progress tracking for MediaWiki integration
+- **[MediaWiki Phase 1 Quick Start](mediawiki-phase1-quickstart.md)** - Immediate implementation guide for Phase 1
+- **[MediaWiki Phase 1 Complete](mediawiki-phase1-complete.md)** - ✅ Phase 1 completion summary and achievements
+- **[MediaWiki Phase 2 Complete](mediawiki-phase2-complete.md)** - ✅ Phase 2 completion summary and achievements
+
 ### **Planning Principles**
 - **Islamic Values**: Align with Islamic principles and values
 - **User-Centric**: Focus on user needs and experience
@@ -53,6 +60,14 @@ Development Planning:
 - **Advanced Search**: Semantic search capabilities
 - **Community**: Enhanced community features
 - **Mobile App**: Native mobile applications
+
+### **Phase 5: MediaWiki Integration (Months 25-30)**
+- **Wiki Markup**: Full MediaWiki syntax support
+- **Template System**: Advanced template engine with parameters
+- **Content Organization**: Categories, tags, and metadata
+- **Collaboration**: Talk pages and user contributions
+- **Media Management**: File upload and organization
+- **Advanced Search**: Full-text search and discovery
 
 ---
 
@@ -98,6 +113,19 @@ Development Planning:
 - 📋 **Semantic Search**: Intelligent content discovery
 - 📋 **Community Features**: Enhanced user interaction
 - 📋 **Advanced Analytics**: User behavior analysis
+
+### **Version 1.3 - MediaWiki Integration Release**
+**Target Date**: Q1 2026
+**Focus**: Full MediaWiki compatibility and advanced wiki features
+
+#### **Features**
+- 📋 **MediaWiki Syntax**: Full MediaWiki markup support
+- 📋 **Advanced Templates**: Complex template system with parameters
+- 📋 **Categories & Organization**: Hierarchical content organization
+- 📋 **Talk Pages**: Discussion and collaboration features
+- 📋 **Advanced Search**: Full-text search with filters
+- 📋 **Media Management**: File handling and organization
+- 📋 **User Contributions**: Activity tracking and history
 - 📋 **Internationalization**: Multi-language support
 - 📋 **Mobile App**: Native mobile application
 

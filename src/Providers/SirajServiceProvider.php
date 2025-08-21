@@ -24,7 +24,7 @@ class SirajServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register Siraj as singleton
-        $container->singleton(Siraj::class, function () use ($container) {
+        $container->set(Siraj::class, function () use ($container) {
             $logger = $container->get(ShahidLogger::class);
             $session = $container->get(WisalSession::class);
             return new SirajAPI($container, $logger, $session);
@@ -35,7 +35,7 @@ class SirajServiceProvider
         $container->alias('siraj', Siraj::class);
 
         // Register API configuration
-        $container->singleton('api.config', function () {
+        $container->set('api.config', function () {
             return [
                 'rate_limiting' => [
                     'default' => ['requests' => 60, 'window' => 60],

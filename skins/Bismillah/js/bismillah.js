@@ -31,6 +31,9 @@ window.BismillahSkin = {
         anchorLinks.forEach(link => {
             link.addEventListener('click', this.handleSmoothScroll.bind(this));
         });
+
+        // User dropdown functionality
+        this.setupUserDropdown();
     },
 
     // Setup animations
@@ -154,6 +157,38 @@ window.BismillahSkin = {
         if (savedTheme) {
             this.switchTheme(savedTheme);
         }
+    },
+
+    // Setup user dropdown functionality
+    setupUserDropdown: function() {
+        const userDropdowns = document.querySelectorAll('.user-dropdown');
+        
+        userDropdowns.forEach(dropdown => {
+            const userMenu = dropdown.querySelector('.user-menu');
+            const dropdownMenu = dropdown.querySelector('.user-dropdown-menu');
+            
+            if (userMenu && dropdownMenu) {
+                // Toggle dropdown on click
+                userMenu.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dropdownMenu.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+                
+                // Close dropdown on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
     }
 };
 

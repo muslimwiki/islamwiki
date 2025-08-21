@@ -39,7 +39,7 @@ class SessionServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register session manager as singleton
-        $container->singleton('session', function () {
+        $container->set('session', function () use ($container) {
             $config = [
                 'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
                 'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
@@ -49,7 +49,23 @@ class SessionServiceProvider
                 'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
             ];
 
-            return new WisalSession($config);
+            $logger = $container->get('logger');
+            return new WisalSession($logger, $config);
+        });
+        
+        // Also register with the class name for type-hinted injection
+        $container->set(WisalSession::class, function () use ($container) {
+            $config = [
+                'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
+                'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
+                'path' => getenv('SESSION_PATH') ?: '/',
+                'secure' => getenv('SESSION_SECURE') !== 'false',
+                'http_only' => getenv('SESSION_HTTP_ONLY') !== 'false',
+                'same_site' => getenv('SESSION_SAME_SITE') ?: 'Lax',
+            ];
+
+            $logger = $container->get('logger');
+            return new WisalSession($logger, $config);
         });
     }
 

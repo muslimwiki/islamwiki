@@ -25,7 +25,7 @@ class LoggingServiceProvider
     public function register(ContainerInterface $container): void
     {
         // error_log('LoggingServiceProvider: register() called');
-        $container->bind(LoggerInterface::class, function (ContainerInterface $c) {
+        $container->set(LoggerInterface::class, function (ContainerInterface $c) {
             // error_log('LoggingServiceProvider: Creating Shahid logger');
             $config = [];
             try {
@@ -54,7 +54,7 @@ class LoggingServiceProvider
         });
 
         // Alias for convenience
-        $container->bind('logger', function (ContainerInterface $c) {
+        $container->set('logger', function (ContainerInterface $c) {
             return $c->get(LoggerInterface::class);
         });
 

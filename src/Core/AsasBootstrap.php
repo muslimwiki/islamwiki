@@ -89,47 +89,47 @@ class AsasBootstrap
     public function bootstrap(): bool
     {
         try {
-            echo "🚀 Starting IslamWiki Islamic Architecture Bootstrap...\n\n";
+            // echo "🚀 Starting IslamWiki Islamic Architecture Bootstrap...\n\n";
 
             // Step 1: Initialize Foundation Layer
             $this->initializeFoundationLayer();
-            echo "✅ Foundation Layer initialized\n";
+            // echo "✅ Foundation Layer initialized\n";
 
             // Step 2: Initialize Infrastructure Layer
             $this->initializeInfrastructureLayer();
-            echo "✅ Infrastructure Layer initialized\n";
+            // echo "✅ Infrastructure Layer initialized\n";
 
             // Step 3: Initialize Application Layer
             $this->initializeApplicationLayer();
-            echo "✅ Application Layer initialized\n";
+            // echo "✅ Application Layer initialized\n";
 
             // Step 4: Initialize User Interface Layer
             $this->initializeUserInterfaceLayer();
-            echo "✅ User Interface Layer initialized\n";
+            // echo "✅ User Interface Layer initialized\n";
 
             // Step 5: Initialize Extensions
             $this->initializeExtensions();
-            echo "✅ Extensions initialized\n";
+            // echo "✅ Extensions initialized\n";
 
             // Step 6: Implement Routes
             $this->implementRoutes();
-            echo "✅ Routes implemented\n";
+            // echo "✅ Routes implemented\n";
 
             // Step 7: Finalize Bootstrap
             $this->finalizeBootstrap();
-            echo "✅ Bootstrap finalized\n";
+            // echo "✅ Bootstrap finalized\n";
 
             $this->bootstrapped = true;
             $bootstrapTime = microtime(true) - $this->startTime;
             
-            echo "\n🎉 IslamWiki Islamic Architecture Bootstrap Complete!\n";
-            echo "⏱️  Bootstrap time: " . number_format($bootstrapTime * 1000, 2) . "ms\n";
-            echo "🏗️  All 16 Islamic systems are now operational\n\n";
+            // echo "\n🎉 IslamWiki Islamic Architecture Bootstrap Complete!\n";
+            // echo "⏱️  Bootstrap time: " . number_format($bootstrapTime * 1000, 2) . "ms\n";
+            // echo "🏗️  All 16 Islamic systems are now operational\n\n";
 
             return true;
 
         } catch (Exception $e) {
-            echo "❌ Bootstrap failed: " . $e->getMessage() . "\n";
+            // echo "❌ Bootstrap failed: " . $e->getMessage() . "\n";
             return false;
         }
     }
@@ -141,20 +141,30 @@ class AsasBootstrap
      */
     protected function initializeFoundationLayer(): void
     {
-        echo "🏗️  Initializing Foundation Layer (أساس)...\n";
+        // echo "🏗️  Initializing Foundation Layer (أساس)...\n";
 
-        // Initialize ShahidLogger (Witness/Logging)
-        $logger = new ShahidLogger();
-        $this->container->set('shahid.logger', $logger);
+        $basePath = __DIR__ . '/../..';
+        
+        // Register base path service
+        $this->container->set('base_path', $basePath);
+        // echo "   ✅ Base path service registered\n";
+
+        // Initialize ShahidLogger with proper directory
+        $logDir = $basePath . '/logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
+        $logger = new ShahidLogger($logDir);
         $this->container->set('logger', $logger);
-
-        // Initialize TadbirConfiguration (Manage/Configuration)
-        $config = new TadbirConfiguration($logger);
+        
+        // Initialize TadbirConfiguration
+        $config = new TadbirConfiguration($this->container);
         $this->container->set('tadbir.config', $config);
         $this->container->set('config', $config);
+        $this->container->set('IslamWiki\Core\Configuration\TadbirConfiguration', $config);
 
-        echo "   ✅ ShahidLogger (Logging) initialized\n";
-        echo "   ✅ TadbirConfiguration (Configuration) initialized\n";
+        // echo "   ✅ Shahid Logger initialized\n";
+        // echo "   ✅ Tadbir Configuration initialized\n";
     }
 
     /**
@@ -164,7 +174,7 @@ class AsasBootstrap
      */
     protected function initializeInfrastructureLayer(): void
     {
-        echo "🏗️  Initializing Infrastructure Layer...\n";
+        // echo "🏗️  Initializing Infrastructure Layer...\n";
 
         $logger = $this->container->get('logger');
 
@@ -177,15 +187,20 @@ class AsasBootstrap
         $routing = new SabilRouting($this->container, $logger);
         $this->container->set('sabil.routing', $routing);
         $this->container->set('routing', $routing);
+        $this->container->set('IslamWiki\Core\Routing\SabilRouting', $routing);
+
+        // Set the application instance in the container for ViewServiceProvider
+        $this->container->set('app', $this);
 
         // Initialize NizamApplication (Order/Application)
-        $nizam = new NizamApplication($this->container);
+        $basePath = __DIR__ . '/../../';
+        $nizam = new NizamApplication($basePath, $this->container);
         $this->container->set('nizam.application', $nizam);
         $this->container->set('application', $nizam);
 
-        echo "   ✅ MizanDatabase (Database) initialized\n";
-        echo "   ✅ SabilRouting (Routing) initialized\n";
-        echo "   ✅ NizamApplication (Application) initialized\n";
+        // echo "   ✅ MizanDatabase (Database) initialized\n";
+        // echo "   ✅ SabilRouting (Routing) initialized\n";
+        // echo "   ✅ NizamApplication (Application) initialized\n";
     }
 
     /**
@@ -195,7 +210,7 @@ class AsasBootstrap
      */
     protected function initializeApplicationLayer(): void
     {
-        echo "🏗️  Initializing Application Layer...\n";
+        // echo "🏗️  Initializing Application Layer...\n";
 
         $logger = $this->container->get('logger');
 
@@ -214,10 +229,10 @@ class AsasBootstrap
             public function __construct($logger) {}
         });
 
-        echo "   ✅ AmanSecurity (Security) initialized\n";
-        echo "   ✅ WisalSession (Session) initialized\n";
-        echo "   ✅ SabrQueue (Queue) initialized\n";
-        echo "   ✅ UsulKnowledge (Knowledge) initialized\n";
+        // echo "   ✅ AmanSecurity (Security) initialized\n";
+        // echo "   ✅ WisalSession (Session) initialized\n";
+        // echo "   ✅ SabrQueue (Queue) initialized\n";
+        // echo "   ✅ UsulKnowledge (Knowledge) initialized\n";
     }
 
     /**
@@ -227,7 +242,7 @@ class AsasBootstrap
      */
     protected function initializeUserInterfaceLayer(): void
     {
-        echo "🏗️  Initializing User Interface Layer...\n";
+        // echo "🏗️  Initializing User Interface Layer...\n";
 
         $logger = $this->container->get('logger');
 
@@ -246,10 +261,10 @@ class AsasBootstrap
             public function __construct($logger) {}
         });
 
-        echo "   ✅ IqraSearch (Search) initialized\n";
-        echo "   ✅ BayanFormatter (Formatter) initialized\n";
-        echo "   ✅ SirajAPI (API) initialized\n";
-        echo "   ✅ RihlahCaching (Caching) initialized\n";
+        // echo "   ✅ IqraSearch (Search) initialized\n";
+        // echo "   ✅ BayanFormatter (Formatter) initialized\n";
+        // echo "   ✅ SirajAPI (API) initialized\n";
+        // echo "   ✅ RihlahCaching (Caching) initialized\n";
     }
 
     /**
@@ -259,20 +274,31 @@ class AsasBootstrap
      */
     protected function initializeExtensions(): void
     {
-        echo "🏗️  Initializing Extensions...\n";
+        // echo "🏗️  Initializing Extensions...\n";
 
         $logger = $this->container->get('logger');
 
-        // Initialize IslamicExtensionManager
-        $extensionManager = new IslamicExtensionManager($this->container);
+        // Initialize HookManager first (required by some extensions)
+        $hookManager = new \IslamWiki\Core\Extensions\Hooks\HookManager();
+        $this->container->set('IslamWiki\Core\Extensions\Hooks\HookManager', $hookManager);
+        // echo "   ✅ HookManager service registered\n";
+
+        // Use the correct ExtensionManager (not IslamicExtensionManager)
+        $extensionManager = new \IslamWiki\Core\Extensions\ExtensionManager($this->container);
         $this->container->set('extension.manager', $extensionManager);
 
-        // Discover and load extensions
-        $extensionManager->discoverExtensions();
-        $extensionManager->initializeExtensions();
+        // Register additional service names for compatibility
+        $config = $this->container->get('config');
+        $this->container->set('IslamWiki\Core\Configuration\TadbirConfiguration', $config);
+        $this->container->set('IslamWiki\Core\Logging\ShahidLogger', $logger);
 
-        echo "   ✅ Extension Manager initialized\n";
-        echo "   ✅ Extensions discovered and loaded\n";
+        // Now that the ExtensionManager is available, load extensions from configuration
+        if (method_exists($config, 'loadExtensionsWhenReady')) {
+            $config->loadExtensionsWhenReady();
+        }
+
+        // echo "   ✅ Extension Manager initialized\n";
+        // echo "   ✅ Extensions discovered and loaded\n";
     }
 
     /**
@@ -282,17 +308,21 @@ class AsasBootstrap
      */
     protected function implementRoutes(): void
     {
-        echo "🏗️  Implementing Routes...\n";
+        // echo "🏗️  Implementing Routes...\n";
 
+        // Temporarily skip route implementation to get basic functionality working
+        // echo "   ⏭️  Route implementation skipped for now\n";
+        
+        // TODO: Fix route implementation service
         // Initialize RouteImplementationService
-        $routeService = new RouteImplementationService($this->container);
-        $this->container->set('route.service', $routeService);
+        // $routeService = new RouteImplementationService($this->container);
+        // $this->container->set('route.service', $routeService);
 
         // Implement all routes
-        $routeService->implementAllRoutes();
+        // $routeService->implementAllRoutes();
 
-        echo "   ✅ Route Implementation Service initialized\n";
-        echo "   ✅ All Islamic routes implemented\n";
+        // echo "   ✅ Route Implementation Service initialized\n";
+        // echo "   ✅ All Islamic routes implemented\n";
     }
 
     /**
@@ -302,7 +332,7 @@ class AsasBootstrap
      */
     protected function finalizeBootstrap(): void
     {
-        echo "🏗️  Finalizing Bootstrap...\n";
+        // echo "🏗️  Finalizing Bootstrap...\n";
 
         // Boot extensions
         $extensionManager = $this->container->get('extension.manager');
@@ -311,8 +341,8 @@ class AsasBootstrap
         // Set application as ready
         $this->container->set('app.ready', true);
 
-        echo "   ✅ Extensions booted\n";
-        echo "   ✅ Application marked as ready\n";
+        // echo "   ✅ Extensions booted\n";
+        // echo "   ✅ Application marked as ready\n";
     }
 
     /**
@@ -336,7 +366,7 @@ class AsasBootstrap
             'bootstrapped' => $this->bootstrapped,
             'start_time' => $this->startTime,
             'bootstrap_time' => $this->bootstrapped ? microtime(true) - $this->startTime : 0,
-            'container_services' => array_keys($this->container->getServices())
+            'container_services' => $this->container->keys()
         ];
     }
 

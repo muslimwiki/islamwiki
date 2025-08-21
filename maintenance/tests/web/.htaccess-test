@@ -1,2 +1,0 @@
-# Test .htaccess processing
-Redirect 301 /test-redirect https://example.com 

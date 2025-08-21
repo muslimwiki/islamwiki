@@ -97,6 +97,13 @@ class AsasContainer implements ContainerInterface
     protected bool $booted = false;
 
     /**
+     * Services currently being resolved (for circular dependency detection).
+     *
+     * @var array<string, bool>
+     */
+    protected array $resolving = [];
+
+    /**
      * Constructor.
      *
      * @param array<string, mixed> $services Initial services to register
@@ -264,19 +271,30 @@ class AsasContainer implements ContainerInterface
 
         // Check if service exists
         if (!isset($this->services[$id])) {
-            throw new class extends Exception implements NotFoundExceptionInterface {
+            throw new class($id) extends Exception implements NotFoundExceptionInterface {
                 public function __construct(string $id) {
                     parent::__construct("Service '{$id}' not found in container");
                 }
             };
         }
 
+        // Check for circular dependencies
+        if (isset($this->resolving[$id])) {
+            throw new Exception("Circular dependency detected for service '{$id}'");
+        }
+
         try {
+            $this->resolving[$id] = true;
             $service = $this->resolveService($id, $this->services[$id]);
             $this->instances[$id] = $service;
+            unset($this->resolving[$id]);
+            
+            // Debug: Log what type of service is being returned
+            error_log("Container: Resolved service '{$id}' to type: " . gettype($service) . " (class: " . (is_object($service) ? get_class($service) : 'not object') . ")");
 
             return $service;
         } catch (Exception $e) {
+            unset($this->resolving[$id]);
             throw new class($e->getMessage(), 0, $e) extends Exception implements ContainerExceptionInterface {
             };
         }
@@ -287,32 +305,35 @@ class AsasContainer implements ContainerInterface
      *
      * @param string $id      Service identifier
      * @param mixed  $service Service definition
-     * @return object
+     * @return mixed
      * @throws Exception
      */
-    protected function resolveService(string $id, mixed $service): object
+    protected function resolveService(string $id, mixed $service): mixed
     {
+        // Check if callable first (closures are objects, so this must come before is_object check)
+        if (is_callable($service)) {
+            return $service($this);
+        }
+
         if (is_object($service)) {
             return $service;
         }
 
         if (is_string($service)) {
-            if (!class_exists($service)) {
-                throw new Exception("Class '{$service}' not found for service '{$id}'");
+            // Check if it's a class name or just a string value
+            if (class_exists($service)) {
+                return new $service();
             }
-
-            return new $service();
-        }
-
-        if (is_callable($service)) {
-            return $service($this);
+            // It's just a string value, return it as-is
+            return $service;
         }
 
         if (is_array($service)) {
             return $this->resolveArrayService($id, $service);
         }
 
-        throw new Exception("Unable to resolve service '{$id}'");
+        // For other types (int, float, bool, null), return as-is
+        return $service;
     }
 
     /**
@@ -387,6 +408,7 @@ class AsasContainer implements ContainerInterface
         $this->tagged = [];
         $this->providers = [];
         $this->booted = false;
+        $this->resolving = [];
 
         return $this;
     }

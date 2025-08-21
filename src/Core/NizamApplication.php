@@ -151,9 +151,10 @@ class NizamApplication
     /**
      * Create a new NizamApplication instance.
      */
-    public function __construct(string $basePath)
+    public function __construct(string $basePath, \IslamWiki\Core\Container\AsasContainer $container = null)
     {
         $this->basePath = rtrim($basePath, '\/');
+        $this->container = $container ?? new \IslamWiki\Core\Container\AsasContainer();
         $this->bootstrap();
     }
 
@@ -170,8 +171,7 @@ class NizamApplication
      */
     protected function bootstrap(): void
     {
-        // Initialize the service container first
-        $this->container = new \IslamWiki\Core\Container\AsasContainer();
+        // Container is now passed in constructor or created as fallback
 
         // Bind the application instance to the container
         $this->container->set(self::class, $this);
@@ -179,23 +179,6 @@ class NizamApplication
 
         // Register core bindings
         $this->registerCoreContainerAliases();
-
-        // Set up database connection first as it's needed for other services
-        $dbConfig = [
-            'driver' => getenv('DB_CONNECTION') ?: 'mysql',
-            'host' => getenv('DB_HOST') ?: '127.0.0.1',
-            'database' => getenv('DB_DATABASE') ?: 'islamwiki',
-            'username' => getenv('DB_USERNAME') ?: 'root',
-            'password' => getenv('DB_PASSWORD') ?: '',
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-        ];
-
-        // Create and bind the database connection
-        $db = new \IslamWiki\Core\Database\Connection($dbConfig);
-        $this->container->set('db', $db);
-        $this->container->set(\IslamWiki\Core\Database\Connection::class, $db);
 
         // Bind Shahid
         $logDir = $this->basePath('storage/logs');
@@ -243,7 +226,7 @@ class NizamApplication
         $this->_session = new WisalSession($this->_logger, []);
 
         // Initialize Aman (Security) with proper parameters
-        $this->_auth = new AmanSecurity($this->_logger, []);
+        $this->_auth = new AmanSecurity($this->_session, $this->connection);
 
         // Initialize Sabr (Queue) with proper parameters
         $this->_queue = new SabrQueue($this->_logger, []);
@@ -252,7 +235,7 @@ class NizamApplication
         $this->knowledge = new UsulKnowledge($this->_logger, []);
 
         // Initialize Tadbir (Configuration) with proper parameters
-        $this->config = new TadbirConfiguration($this->_logger);
+        $this->config = new TadbirConfiguration($this->container);
 
         // Initialize User Interface Layer components
         $this->search = new IqraSearch($this->_logger, []);
@@ -359,7 +342,7 @@ class NizamApplication
     {
         $this->container->alias('app', self::class);
         $this->container->alias('container', \IslamWiki\Core\Container\AsasContainer::class);
-        $this->container->alias('db', \IslamWiki\Core\Database\Connection::class);
+        $this->container->alias(\IslamWiki\Core\Database\Connection::class, 'db');
         $this->container->alias('logger', \IslamWiki\Core\Logging\ShahidLogger::class);
         $this->container->alias(\Psr\Log\LoggerInterface::class, \IslamWiki\Core\Logging\ShahidLogger::class);
         $this->container->alias('auth', \IslamWiki\Core\Auth\AmanSecurity::class);

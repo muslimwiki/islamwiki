@@ -21,7 +21,7 @@ class IslamicDatabaseServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register the Islamic database manager
-        $container->singleton(IslamicDatabaseManager::class, function (Container $container) {
+        $container->set(IslamicDatabaseManager::class, function (Container $container) {
             $config = $container->get('config');
             $dbConfig = $config->get('database.connections', []);
 
@@ -37,22 +37,22 @@ class IslamicDatabaseServiceProvider
         });
 
         // Register individual database connections for easy access
-        $container->singleton('db.quran', function (Container $container) {
+        $container->set('db.quran', function (Container $container) {
             $manager = $container->get(IslamicDatabaseManager::class);
             return $manager->getQuranConnection();
         });
 
-        $container->singleton('db.hadith', function (Container $container) {
+        $container->set('db.hadith', function (Container $container) {
             $manager = $container->get(IslamicDatabaseManager::class);
             return $manager->getHadithConnection();
         });
 
-        $container->singleton('db.wiki', function (Container $container) {
+        $container->set('db.wiki', function (Container $container) {
             $manager = $container->get(IslamicDatabaseManager::class);
             return $manager->getWikiConnection();
         });
 
-        $container->singleton('db.scholar', function (Container $container) {
+        $container->set('db.scholar', function (Container $container) {
             $manager = $container->get(IslamicDatabaseManager::class);
             return $manager->getScholarConnection();
         });

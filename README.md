@@ -1,130 +1,199 @@
-# IslamWiki
+# IslamWiki - Authentic Islamic Knowledge Platform
 
-**Version**: 0.0.1.1  
-**Status**: Site Restructuring & Architecture Implementation  
-**Last Updated**: 2025-08-19
+## 🎯 **Overview**
 
-A comprehensive Islamic knowledge platform built with modern web technologies, featuring Quran and Hadith management, Islamic calendar integration, salah times, and a role-based dashboard system.
+IslamWiki is a comprehensive Islamic knowledge management platform that combines the best features of MediaWiki, WordPress, and modern PHP frameworks while maintaining Islamic values and principles.
 
-## 🚀 **Latest Release (v0.0.1.1) - Site Restructuring & Architecture Implementation**
+## 🏗️ **Project Structure**
 
-### **Major Changes**
-- **🏗️ Site Architecture Restructuring**: Implementing 16 core Islamic systems with proper naming conventions
-- **🗄️ Database Schema Restructuring**: Aligning database structure with new Islamic architecture
-- **🔌 Extension System Modernization**: Updating extensions to match new Islamic naming standards
-- **🛣️ Routing System Restructuring**: Organizing routes by Islamic systems for better organization
-- **🔒 Security System Enhancement**: Implementing AmanSecurity with Islamic naming conventions
-- **📚 Implementation Guides**: Moving from documentation to actual code implementation
-- **📖 Wiki System Restoration**: Complete wiki functionality with page management and collaboration
-- **📊 Dashboard System**: Beautiful dashboard with system monitoring and management
+### **📁 Core Directories**
 
-### **Development Phase Transition**
-- **Previous Phase**: Testing & bug fixes (0.0.0.x) - experimental development
-- **Current Phase**: Site restructuring & architecture implementation (0.0.1.x) - implementing new Islamic systems
-- **Next Phase**: Feature development (0.0.2.x) - Quran, Hadith, Forums, Messaging systems
-- **Future Phase**: Stabilization (0.0.1.x.x) - production-ready architecture
+```
+local.islam.wiki/
+├── 📁 public/              # Web entry points ONLY
+│   ├── 📄 index.php        # Main application entry point
+│   ├── 📄 app.php          # Alternative entry point
+│   ├── 📄 .htaccess        # Apache configuration
+│   └── 📄 favicon.ico      # Site favicon
+├── 📁 src/                 # PHP source code
+├── 📁 resources/           # Frontend assets and templates
+├── 📁 skins/               # Skin-specific assets
+├── 📁 extensions/          # Extension system
+├── 📁 config/              # Configuration files
+├── 📁 database/            # Database migrations
+├── 📁 languages/           # Language files
+├── 📁 storage/             # Application storage
+├── 📁 var/                 # Variable data (cache, logs)
+└── 📁 vendor/              # Composer dependencies
+```
 
-### **Implementation Progress**
-- **Foundation Layer (Asas)**: ✅ 100% complete (3/3 components)
-- **Infrastructure Layer**: ✅ 100% complete (4/4 components) - All systems implemented
-- **Application Layer**: ✅ 100% complete (4/4 components) - All systems implemented
-- **User Interface Layer**: ✅ 100% complete (4/4 components) - All systems implemented
-- **Database Restructuring**: ✅ 100% complete - All migrations and schema alignment completed
-- **Extension Modernization**: ✅ 100% complete - All extension systems modernized
-- **Routing System Restructuring**: ✅ 100% complete - All routes implemented with Islamic architecture
-- **Wiki System**: ✅ 100% complete - Full wiki functionality restored and operational
-- **Dashboard System**: ✅ 100% complete - Beautiful dashboard with all management features
+### **📁 Development & Maintenance**
 
-### **Overall Progress**: **100% Complete** 🎉
-
-### **Current Working Features**
-- **📖 Wiki System**: Complete wiki functionality with page management, editing, and collaboration
-- **📊 Dashboard**: System monitoring, configuration management, and performance analytics
-- **📚 Knowledge Management**: Quran, Hadith, Islamic sciences, and documentation systems
-- **🕒 Time & Calendar**: Salah times, Islamic calendar, and Hijri date management
-- **🔍 Search & Discovery**: Advanced search with Islamic content optimization
-- **👥 Community Features**: User profiles, discussions, and community interaction
-- **⚙️ System Management**: Complete system administration and configuration
-
-### **What's Next (Phase 0.0.2.x)**
-- Enhanced Quran features and translations
-- Advanced Hadith authentication systems
-- Community forums and messaging
-- Mobile applications and APIs
-- Advanced Islamic content management
-- User authentication and security systems
-
-## 🏗️ **Architecture Overview**
-
-IslamWiki is built on a modern, scalable architecture with 16 core Islamic systems organized into four layers:
-
-### **Foundation Layer (أساس)**
-- **AsasContainer**: PSR-11 compliant dependency injection container
-- **AsasFoundation**: Core foundation services and utilities
-- **AsasBootstrap**: Application bootstrap and initialization
-
-### **Infrastructure Layer**
-- **SabilRouting (سبيل)**: Islamic routing system for organized path management
-- **NizamApplication (نظام)**: Central application orchestrator and order management
-- **MizanDatabase (ميزان)**: Database system with balance and optimization
-- **TadbirConfiguration (تدبير)**: Configuration management and system administration
-
-### **Application Layer**
-- **AmanSecurity (أمان)**: Security, authentication, and access control
-- **WisalSession (وصل)**: Session management and user connection handling
-- **SabrQueue (صبر)**: Background processing and queue management
-- **UsulKnowledge (أصول)**: Business rules and Islamic knowledge validation
-
-### **User Interface Layer**
-- **IqraSearch (إقرأ)**: Islamic search engine and content discovery
-- **BayanFormatter (بيان)**: Content formatting and Islamic presentation
-- **SirajAPI (سراج)**: API management and knowledge discovery
-- **RihlahCaching (رحلة)**: Caching system for performance optimization
+```
+local.islam.wiki/
+├── 📁 scripts/             # Utility and setup scripts
+│   ├── 📁 database/        # Database scripts
+│   ├── 📁 hadith_import/   # Hadith import scripts
+│   ├── 📁 quran/           # Quran import scripts
+│   ├── 📁 templates/       # Template scripts
+│   └── 📁 utils/           # Utility scripts
+├── 📁 maintenance/         # Maintenance and system scripts
+│   ├── 📁 scripts/         # Maintenance scripts
+│   └── 📁 update/          # Update scripts
+├── 📁 tests/               # All testing files (consolidated)
+└── 📁 debug/               # All debug files (consolidated)
+```
 
 ## 🚀 **Quick Start**
 
-### **Requirements**
-- PHP 8.1+
-- Apache 2.4+ with mod_rewrite enabled
-- MySQL 8.0+ or MariaDB 10.5+
-- Composer 2.0+
+### **1. Start Development Server**
+```bash
+php -S localhost:8000 public/index.php
+```
 
-### **Installation**
-1. Clone the repository
-2. Run `composer install`
-3. Configure your web server to point to the `public/` directory
-4. Access your site at the configured domain
+### **2. Access Application**
+- **Main Site**: http://localhost:8000
+- **Admin Dashboard**: http://localhost:8000/dashboard/admin
+- **User Dashboard**: http://localhost:8000/dashboard/user
 
-### **Access Points**
-- **Main Site**: `/` - Complete IslamWiki platform
-- **Wiki System**: `/wiki` - Full wiki functionality
-- **Dashboard**: `/dashboard` - System management and monitoring
-- **Architecture Demo**: `/islamic_demo.php` - Islamic systems overview
+## 🔧 **Development**
 
-## 📊 **System Status**
+### **Architecture**
+- **Hybrid System**: MediaWiki + WordPress + Modern PHP
+- **16 Core Islamic Systems**: Named after Islamic concepts
+- **Extension System**: WordPress-inspired plugin architecture
+- **Skin System**: WordPress-inspired theme architecture
 
-All 16 Islamic systems are operational and ready for production deployment. The platform provides:
-- Complete wiki functionality with Islamic content management
-- Beautiful dashboard for system administration
-- Advanced routing and navigation systems
-- Islamic architecture integration throughout
-- Production-ready deployment capability
+### **Core Systems**
+- **Asas** (Foundation) - Core foundation and services
+- **Aman** (Security) - Authentication and authorization
+- **Sabil** (Path) - Routing and request handling
+- **Nizam** (Order) - Application coordination
+- **Mizan** (Balance) - Database management
+- **Tadbir** (Management) - Configuration management
+- **Safa** (Purity) - CSS framework
+- **Marwa** (Excellence) - JavaScript framework
 
-## 🔗 **Documentation**
+## 🎨 **Recent Major Improvements**
 
-- [Architecture Overview](docs/architecture/overview.md)
-- [Development Guide](docs/guides/development.md)
-- [Extension Development](docs/extensions/development.md)
-- [API Documentation](docs/api/overview.md)
+### **✅ Unified Skin System Implementation**
+- **Consolidated all visual elements** into a single skin system
+- **Eliminated fragmentation** between layouts, templates, and components
+- **Professional appearance** across all pages with consistent header/footer
+- **WordPress-quality skin management** with Islamic aesthetics
+
+### **✅ Dashboard System Restoration**
+- **Admin Dashboard** (`/dashboard/admin`) - Full system management interface
+- **User Dashboard** (`/dashboard/user`) - Personalized user experience
+- **Proper sidebar navigation** with role-based links
+- **Beautiful Islamic theming** with responsive design
+
+### **✅ Header & Navigation Improvements**
+- **Logo now links to home page** (`/`) with proper accessibility
+- **Unified user menu** with working logout functionality
+- **Consistent navigation** across all pages
+- **Professional header design** with Islamic aesthetics
+
+### **✅ Project Organization Cleanup**
+- **Public folder cleaned** - Only web entry points remain
+- **Test files consolidated** in `tests/` directory
+- **Debug files consolidated** in `debug/` directory
+- **No duplication** between maintenance and scripts folders
+- **Clear separation of concerns** for all file types
+
+### **✅ CSS & Styling Improvements**
+- **Dashboard-specific styles** properly isolated from main page
+- **Responsive design** for all screen sizes
+- **Islamic color scheme** with golden accents
+- **Smooth animations** and hover effects
+- **Professional appearance** throughout the platform
+
+## 📚 **Documentation**
+
+- **Architecture**: `docs/architecture/`
+- **Development**: `docs/guides/development.md`
+- **Extensions**: `docs/extensions/development.md`
+- **Skins**: `docs/skins/development.md`
+- **Standards**: `docs/standards/standards.md`
+
+## 🧪 **Testing & Debugging**
+
+### **Test Files**
+All test files are consolidated in the `tests/` directory:
+```bash
+# Run specific tests
+php tests/test_name.php
+
+# Run all tests
+find tests/ -name "*.php" -exec php {} \;
+```
+
+### **Debug Files**
+All debug files are consolidated in the `debug/` directory:
+```bash
+# Run debug scripts
+php debug/debug_script.php
+```
+
+### **Organization Check**
+Run our organization verification script:
+```bash
+php scripts/organize_project.php
+```
+
+## 🚨 **Important Rules**
+
+### **❌ NEVER PUT IN `public/`**
+- CSS files
+- JavaScript files
+- Template files
+- PHP source code
+- Configuration files
+- Test files
+- Debug files
+
+### **✅ CORRECT LOCATIONS**
+- **Web Entry Points**: `public/` (ONLY)
+- **PHP Source Code**: `src/`
+- **Templates**: `resources/views/`
+- **Skin Assets**: `skins/{SkinName}/`
+- **Extension Assets**: `extensions/{Name}/`
+- **Test Files**: `tests/`
+- **Debug Files**: `debug/`
+
+## 🔒 **Security**
+
+- **Authentication**: Multi-factor authentication support
+- **Authorization**: Role-based access control
+- **Input Validation**: Comprehensive sanitization
+- **Output Security**: XSS protection
+- **Content Security**: Islamic content validation
+
+## 📊 **Current Status**
+
+### **✅ Completed Features**
+- **Unified Skin System**: All visual elements consolidated
+- **Dashboard System**: Admin and user dashboards fully functional
+- **Header Navigation**: Logo links to home, unified user menu
+- **Project Organization**: Clean, organized file structure
+- **CSS Styling**: Professional appearance with Islamic aesthetics
+- **Responsive Design**: Works on all screen sizes
+
+### **🎯 Working Systems**
+- **Main Page**: Beautiful hero section with Islamic design
+- **Admin Dashboard**: Full system management interface
+- **User Dashboard**: Personalized user experience
+- **Navigation**: Consistent header across all pages
+- **User Authentication**: Working login/logout system
+- **Skin Management**: Unified visual system
 
 ## 📄 **License**
 
-This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 **Contributing**
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
 ---
 
-**🏛️ IslamWiki - Building the future of Islamic knowledge sharing** 🎉
+**Last Updated**: 2025-08-21  
+**Version**: 0.0.2.0  
+**Author**: IslamWiki Development Team  
+**Status**: Production Ready with Unified UI & Clean Organization 🚀

@@ -1,34 +1,52 @@
-# IslamWiki Layout System
+# IslamWiki Layout System - Now Part of Unified Skin System
 
 ## 🎯 **Overview**
 
-This directory contains documentation for the layout system of IslamWiki, which provides the structural foundation for all pages, implements the dashboard interface, and ensures consistent user experience across the platform.
+**IMPORTANT UPDATE**: The layout system has been consolidated into the unified skin system. Layouts are now managed as part of individual skins, not as a separate system.
+
+**New Location**: `skins/{SkinName}/layouts/`
 
 ---
 
-## 🏗️ **Layout Architecture**
+## 🏗️ **New Architecture: Layouts Within Skins**
 
-### **Layout Hierarchy**
+### **Layout System Integration**
 ```
-Layout System:
-├── 📁 Base Layouts - Foundation layout templates
-├── 📁 Dashboard Layouts - Administrative and user dashboards
-├── 📁 Page Layouts - Content page layouts
-├── 📁 Form Layouts - Form and input layouts
-├── 📁 Error Layouts - Error page layouts
-└── 📁 Email Layouts - Email notification layouts
+Unified Skin System:
+├── 📁 Skins (Everything Visual)
+│   ├── 📁 {SkinName}/             # Individual skin (e.g., Bismillah)
+│   │   ├── 📁 layouts/            # Page structures (THIS IS WHERE LAYOUTS LIVE NOW)
+│   │   │   ├── 📄 base.twig       # Base page layout
+│   │   │   ├── 📄 dashboard.twig  # Dashboard layout
+│   │   │   ├── 📄 content.twig    # Content page layout
+│   │   │   └── 📄 auth.twig       # Authentication layout
+│   │   ├── 📁 components/         # Reusable UI parts
+│   │   ├── 📁 pages/              # Page-specific templates
+│   │   ├── 📁 css/                # Skin-specific styles
+│   │   ├── 📁 js/                 # Skin-specific JavaScript
+│   │   └── 📁 assets/             # Images, fonts, icons
+│   └── 📁 Other skins...
+└── 📁 Extensions (Functionality only)
 ```
-
-### **Layout Responsibilities**
-- **Page Structure**: Define overall page structure and organization
-- **Navigation**: Provide consistent navigation and user interface
-- **Responsiveness**: Ensure mobile-first responsive design
-- **Accessibility**: Implement WCAG 2.1 AA compliance
-- **Theme Support**: Support multiple Islamic themes
 
 ---
 
-## 🔧 **Layout Categories**
+## 🔄 **Migration Status**
+
+### **What Changed:**
+- ❌ **Old System**: `resources/views/layouts/` (separate system)
+- ✅ **New System**: `skins/{SkinName}/layouts/` (unified with skins)
+
+### **Files Moved:**
+- `resources/views/layouts/base.twig` → `skins/Bismillah/layouts/base.twig`
+- `resources/views/layouts/dashboard.twig` → `skins/Bismillah/layouts/dashboard.twig`
+- `resources/views/layouts/app.twig` → `skins/Bismillah/layouts/app.twig`
+- `resources/views/layouts/auth.twig` → `skins/Bismillah/layouts/auth.twig`
+- `resources/views/layouts/debug.twig` → `skins/Bismillah/layouts/debug.twig`
+
+---
+
+## 🎨 **Layout Categories (Now Within Skins)**
 
 ### **1. Base Layouts**
 - **Main Layout**: Primary application layout
@@ -50,11 +68,11 @@ Layout System:
 
 ---
 
-## 📝 **Layout Implementation**
+## 📝 **New Layout Implementation**
 
-### **Base Layout Structure**
+### **Layout Location (Updated):**
 ```twig
-{# Main Application Layout #}
+{# New location: skins/Bismillah/layouts/base.twig #}
 <!DOCTYPE html>
 <html lang="{{ app.locale }}" dir="{{ app.direction }}" class="safa-theme--{{ app.theme }}">
 <head>
@@ -63,20 +81,14 @@ Layout System:
     <meta name="description" content="{% block meta_description %}IslamWiki - Islamic Knowledge Platform{% endblock %}">
     <title>{% block title %}IslamWiki{% endblock %}</title>
     
-    {# Favicon and Icons #}
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
-    
     {# Safa CSS Framework #}
     <link rel="stylesheet" href="{{ asset('safa/safa-base.css') }}">
     <link rel="stylesheet" href="{{ asset('safa/safa-components.css') }}">
     <link rel="stylesheet" href="{{ asset('safa/safa-themes.css') }}">
     <link rel="stylesheet" href="{{ asset('safa/safa-utilities.css') }}">
     
-    {# Custom Fonts #}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {# Skin-specific CSS #}
+    <link rel="stylesheet" href="{{ asset('skins/' ~ activeSkin ~ '/css/' ~ activeSkin ~ '.css') }}">
     
     {# Page-specific CSS #}
     {% block stylesheets %}{% endblock %}
@@ -85,36 +97,33 @@ Layout System:
     {# Skip to Content Link for Accessibility #}
     <a href="#main-content" class="safa-skip-link">Skip to main content</a>
     
-    {# Header #}
-    <header class="safa-header" role="banner">
-        {% include 'components/header.twig' %}
-    </header>
+    {# Header Component #}
+    {% include 'skins/' ~ activeSkin ~ '/components/header.twig' %}
     
-    {# Main Navigation #}
-    <nav class="safa-main-nav" role="navigation" aria-label="Main navigation">
-        {% include 'components/navigation.twig' %}
-    </nav>
+    {# Main Navigation Component #}
+    {% include 'skins/' ~ activeSkin ~ '/components/navigation.twig' %}
     
     {# Main Content #}
     <main id="main-content" class="safa-main" role="main">
-        {# Breadcrumbs #}
+        {# Breadcrumbs Component #}
         {% if breadcrumbs is defined %}
-            {% include 'components/breadcrumbs.twig' %}
+            {% include 'skins/' ~ activeSkin ~ '/components/breadcrumbs.twig' %}
         {% endif %}
         
         {# Page Content #}
         {% block content %}{% endblock %}
     </main>
     
-    {# Footer #}
-    <footer class="safa-footer" role="contentinfo">
-        {% include 'components/footer.twig' %}
-    </footer>
+    {# Footer Component #}
+    {% include 'skins/' ~ activeSkin ~ '/components/footer.twig' %}
     
     {# Marwa JavaScript Framework #}
     <script src="{{ asset('marwa/marwa-core.js') }}" defer></script>
     <script src="{{ asset('marwa/marwa-components.js') }}" defer></script>
     <script src="{{ asset('marwa/marwa-themes.js') }}" defer></script>
+    
+    {# Skin-specific JavaScript #}
+    <script src="{{ asset('skins/' ~ activeSkin ~ '/js/' ~ activeSkin ~ '.js') }}" defer></script>
     
     {# Page-specific JavaScript #}
     {% block javascripts %}{% endblock %}
@@ -122,137 +131,80 @@ Layout System:
 </html>
 ```
 
-### **Dashboard Layout Example**
-```twig
-{# Dashboard Layout #}
-{% extends 'layouts/base.twig' %}
+---
 
-{% block content %}
-<div class="safa-dashboard">
-    {# Sidebar Navigation #}
-    <aside class="safa-dashboard__sidebar" role="complementary">
-        <nav class="safa-dashboard-nav" aria-label="Dashboard navigation">
-            <ul class="safa-dashboard-nav__list">
-                <li class="safa-dashboard-nav__item">
-                    <a href="{{ path('dashboard.overview') }}" class="safa-dashboard-nav__link">
-                        <span class="safa-dashboard-nav__icon">📊</span>
-                        <span class="safa-dashboard-nav__text">Overview</span>
-                    </a>
-                </li>
-                <li class="safa-dashboard-nav__item">
-                    <a href="{{ path('dashboard.content') }}" class="safa-dashboard-nav__link">
-                        <span class="safa-dashboard-nav__icon">📝</span>
-                        <span class="safa-dashboard-nav__text">Content</span>
-                    </a>
-                </li>
-                <li class="safa-dashboard-nav__item">
-                    <a href="{{ path('dashboard.users') }}" class="safa-dashboard-nav__link">
-                        <span class="safa-dashboard-nav__icon">👥</span>
-                        <span class="safa-dashboard-nav__text">Users</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-    
-    {# Main Dashboard Content #}
-    <div class="safa-dashboard__main">
-        <div class="safa-dashboard__header">
-            <h1 class="safa-dashboard__title">{% block dashboard_title %}Dashboard{% endblock %}</h1>
-            <div class="safa-dashboard__actions">
-                {% block dashboard_actions %}{% endblock %}
-            </div>
-        </div>
+## 🔧 **Using Layouts in New System**
+
+### **Template References (Updated):**
+```php
+// OLD WAY (separate system)
+$template = 'layouts/base.twig';
+
+// NEW WAY (unified skin system)
+$template = 'skins/' . $activeSkin . '/layouts/base.twig';
+```
+
+### **Controller Usage:**
+```php
+class PageController extends Controller
+{
+    public function show(string $slug): Response
+    {
+        $page = $this->pageService->getPage($slug);
         
-        <div class="safa-dashboard__content">
-            {% block dashboard_content %}{% endblock %}
-        </div>
-    </div>
-</div>
-{% endblock %}
+        // Use skin-specific layout
+        return $this->view('skins/' . $this->getActiveSkin() . '/layouts/content.twig', [
+            'page' => $page,
+            'activeSkin' => $this->getActiveSkin()
+        ]);
+    }
+}
 ```
 
 ---
 
 ## 🎨 **Safa CSS Framework Integration**
 
-### **Layout CSS Classes**
+### **Layout CSS Classes (Updated):**
 ```css
 /* ✅ Correct - Using Safa framework naming */
-.safa-body {
-    /* Body styles */
+.safa-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .safa-header {
-    /* Header styles */
-}
-
-.safa-main-nav {
-    /* Main navigation */
+    height: var(--safa-header-height);
+    background: var(--safa-theme-primary);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .safa-main {
-    /* Main content area */
+    flex: 1;
+    display: flex;
+}
+
+.safa-sidebar {
+    width: var(--safa-sidebar-width);
+    background: var(--safa-theme-cream);
+    border-right: 1px solid var(--safa-theme-accent);
+}
+
+.safa-content {
+    flex: 1;
+    max-width: var(--safa-content-max-width);
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .safa-footer {
-    /* Footer styles */
-}
-
-.safa-dashboard {
-    /* Dashboard layout */
-}
-
-.safa-dashboard__sidebar {
-    /* Dashboard sidebar */
-}
-
-.safa-dashboard__main {
-    /* Dashboard main content */
-}
-
-/* ❌ Incorrect - Generic naming */
-.body {
-    /* No prefix */
-}
-
-.header {
-    /* No prefix */
-}
-```
-
-### **Responsive Design**
-```css
-/* Mobile First Approach */
-.safa-dashboard {
-    display: flex;
-    flex-direction: column;
-}
-
-.safa-dashboard__sidebar {
-    order: 2;
-}
-
-.safa-dashboard__main {
-    order: 1;
-}
-
-/* Tablet and Desktop */
-@media (min-width: 768px) {
-    .safa-dashboard {
-        flex-direction: row;
-    }
-    
-    .safa-dashboard__sidebar {
-        order: 1;
-        width: 250px;
-        flex-shrink: 0;
-    }
-    
-    .safa-dashboard__main {
-        order: 2;
-        flex: 1;
-    }
+    height: var(--safa-footer-height);
+    background: var(--safa-theme-primary);
+    color: white;
 }
 ```
 
@@ -260,11 +212,12 @@ Layout System:
 
 ## 🚀 **Marwa JavaScript Framework Integration**
 
-### **Layout JavaScript**
+### **Layout JavaScript (Updated):**
 ```javascript
-// Layout initialization
+// Layout initialization within skin context
 class MarwaLayout {
-    constructor() {
+    constructor(skinName) {
+        this.skinName = skinName;
         this.init();
     }
     
@@ -275,46 +228,37 @@ class MarwaLayout {
         this.setupAccessibility();
     }
     
-    setupSkipLinks() {
-        // Handle skip to content links
-        const skipLinks = document.querySelectorAll('.safa-skip-link');
-        skipLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) {
-                    target.focus();
-                    target.scrollIntoView();
-                }
-            });
-        });
-    }
-    
     setupResponsiveNavigation() {
-        // Handle mobile navigation
-        const navToggle = document.querySelector('.safa-nav-toggle');
-        const nav = document.querySelector('.safa-main-nav');
+        // Handle mobile navigation for specific skin
+        const navToggle = document.querySelector(`.${this.skinName}-nav-toggle`);
+        const nav = document.querySelector(`.${this.skinName}-main-nav`);
         
         if (navToggle && nav) {
             navToggle.addEventListener('click', () => {
-                nav.classList.toggle('safa-main-nav--open');
+                nav.classList.toggle(`${this.skinName}-main-nav--open`);
             });
         }
     }
 }
+
+// Initialize for current skin
+document.addEventListener('DOMContentLoaded', () => {
+    const activeSkin = document.documentElement.dataset.skin || 'Bismillah';
+    new MarwaLayout(activeSkin);
+});
 ```
 
 ---
 
-## 🔒 **Security & Accessibility**
+## 🔒 **Security & Accessibility (Updated)**
 
-### **Security Features**
+### **Security Features:**
 - **CSRF Protection**: Token-based form protection
 - **XSS Prevention**: Output escaping and sanitization
 - **Content Security Policy**: CSP headers for security
 - **Secure Headers**: Security-focused HTTP headers
 
-### **Accessibility Features**
+### **Accessibility Features:**
 - **Skip Links**: Skip to main content navigation
 - **ARIA Labels**: Proper ARIA labeling and roles
 - **Keyboard Navigation**: Full keyboard navigation support
@@ -323,67 +267,82 @@ class MarwaLayout {
 
 ---
 
-## 📚 **Layout Documentation**
+## 📚 **Updated Documentation References**
 
-### **Available Layouts**
-- **[Base Layouts](base/README.md)** - Foundation layouts
-- **[Dashboard Layouts](dashboard/README.md)** - Dashboard interfaces
-- **[Page Layouts](page/README.md)** - Content page layouts
-- **[Form Layouts](form/README.md)** - Form layouts
-- **[Error Layouts](error/README.md)** - Error page layouts
+### **Related Documentation:**
+- **[Unified Skin System](../skins/unified-system.md)** - Complete unified system guide
+- **[Skin Development](../skins/development.md)** - How to develop skins with layouts
+- **[Template Extension System Plan](../architecture/template-extension-system-plan.md)** - Implementation plan
+- **[SafaSkinExtension](../extensions/SafaSkinExtension.md)** - Extension documentation
 
-### **Layout Development**
-- **[Layout Standards](../standards.md)** - Development standards
-- **[Style Guide](../guides/style-guide.md)** - Coding standards
-- **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
+### **Migration Resources:**
+- **[Migration Guide](../skins/migration.md)** - How to migrate existing layouts
+- **[File Organization](../guides/organization.md)** - New file organization structure
 
 ---
 
-## 🧪 **Testing Layouts**
+## 🧪 **Testing Layouts (Updated)**
 
-### **Layout Testing**
+### **Layout Testing (New Context):**
 ```php
 class LayoutTest extends TestCase
 {
     public function testLayoutRendersCorrectly(): void
     {
         $renderer = new TwigRenderer();
-        $data = ['theme' => 'islamic'];
+        $data = [
+            'theme' => 'islamic',
+            'activeSkin' => 'Bismillah'
+        ];
         
-        $html = $renderer->render('layouts/base.twig', $data);
+        // Test skin-specific layout
+        $html = $renderer->render('skins/Bismillah/layouts/base.twig', $data);
         
         $this->assertStringContains('safa-theme--islamic', $html);
         $this->assertStringContains('safa-body', $html);
         $this->assertStringContains('safa-header', $html);
     }
+    
+    public function testSkinSpecificLayout(): void
+    {
+        $skinManager = new SkinManager();
+        $skinManager->setActiveSkin('Bismillah');
+        
+        $layout = $skinManager->getActiveSkin()->getLayout('base');
+        $this->assertEquals('skins/Bismillah/layouts/base.twig', $layout);
+    }
 }
 ```
-
-### **Accessibility Testing**
-- **ARIA Compliance**: Test ARIA labels and roles
-- **Keyboard Navigation**: Test keyboard accessibility
-- **Screen Reader**: Test screen reader compatibility
-- **Color Contrast**: Test color contrast ratios
 
 ---
 
 ## 📖 **Additional Resources**
 
-### **Related Documentation**
-- **[Architecture Overview](../architecture/overview.md)** - System architecture
-- **[Core Systems](../architecture/core-systems.md)** - System components
-- **[Views Documentation](../views/README.md)** - Template system
-- **[Components Documentation](../components/README.md)** - UI components
-
-### **Development Resources**
-- **[Style Guide](../guides/style-guide.md)** - Coding standards
+### **Development Resources:**
+- **[Style Guide](../guides/style-guide.md)** - Updated coding standards
 - **[Islamic Naming Conventions](../guides/islamic-naming-conventions.md)** - Naming guide
-- **[Testing Guidelines](../testing/README.md)** - Testing strategies
+- **[Testing Guidelines](../testing/README.md)** - Updated testing strategies
+
+---
+
+## 🚨 **Important Notes**
+
+### **Breaking Changes:**
+1. **Template Paths**: All layout template paths have changed
+2. **File Locations**: Layouts are now within skin directories
+3. **References**: Update all template references in code
+4. **Documentation**: Old documentation is outdated
+
+### **Migration Required:**
+- **Update Controllers**: Change template path references
+- **Update Views**: Change include/extends paths
+- **Update Tests**: Update test template paths
+- **Update Documentation**: Remove old system references
 
 ---
 
 **Last Updated:** 2025-08-19  
-**Version:** 0.0.1.0  
+**Version:** 2.0 (Unified Skin System)  
 **Author:** IslamWiki Development Team  
-**License:** AGPL-3.0  
-**Status:** Layouts Documentation Complete ✅ 
+**Status:** Layouts Now Part of Unified Skin System ✅  
+**Migration:** Required - Update all template references 

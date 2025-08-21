@@ -34,7 +34,8 @@ class SabrServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register Sabr queue system
-        $container->singleton(SabrQueue::class, function () use ($container) {
+        $container->set(SabrQueue::class, function () use ($container) {
+            // Only resolve dependencies when the service is actually requested
             $logger = $container->get(ShahidLogger::class);
             $db = $container->get(Connection::class);
             return new SabrQueue($container, $logger, $db);
@@ -45,7 +46,7 @@ class SabrServiceProvider
         $container->alias('sabr', SabrQueue::class);
 
         // Register queue configuration
-        $container->singleton('queue.config', function () {
+        $container->set('queue.config', function () {
             return [
                 'default_driver' => 'database',
                 'drivers' => [

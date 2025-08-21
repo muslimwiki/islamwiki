@@ -21,12 +21,17 @@ class ExtensionServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register the HookManager
-        $container->singleton(HookManager::class, function () {
+        $container->set(HookManager::class, function () {
             return new HookManager();
         });
 
         // Register the ExtensionManager
-        $container->singleton(ExtensionManager::class, function (AsasContainer $container) {
+        $container->set(ExtensionManager::class, function (AsasContainer $container) {
+            return new ExtensionManager($container);
+        });
+
+        // Also register with alias for extension instantiation
+        $container->set('extension.manager', function (AsasContainer $container) {
             return new ExtensionManager($container);
         });
     }

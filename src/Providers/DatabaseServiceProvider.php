@@ -40,7 +40,7 @@ class DatabaseServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register database connection
-        $container->bind('db', function () {
+        $container->set('db', function () {
             $host = $_ENV['DB_HOST'] ?? 'localhost';
             $port = $_ENV['DB_PORT'] ?? '3306';
             $database = $_ENV['DB_DATABASE'] ?? 'islamwiki';
@@ -61,16 +61,15 @@ class DatabaseServiceProvider
             return new Connection($config);
         });
 
-        // Register migrator
-        $container->bind('migrator', function () use ($container) {
+        // Register migrator as truly lazy service to avoid circular dependency
+        $container->set('migrator', function () use ($container) {
+            // Only resolve the db service when the migrator is actually requested
             $connection = $container->get('db');
             $migrationPath = dirname(__DIR__, 2) . '/database/migrations';
             return new Migrator($connection, $migrationPath);
         });
 
-        // Register database connection as singleton
-        $container->singleton(Connection::class, function () use ($container) {
-            return $container->get('db');
-        });
+        // Register an alias for Connection::class to point to 'db' service
+        $container->alias(Connection::class, 'db');
     }
 }

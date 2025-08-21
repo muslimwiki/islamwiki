@@ -43,7 +43,7 @@ class StaticDataServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register the static data manager as a singleton
-        $container->singleton('static.data', function (AsasContainer $container) {
+        $container->set('static.data', function (AsasContainer $container) {
             // For now, return a simple mock implementation
             return new class {
                 public function getStaticData(string $key = null): array
@@ -96,12 +96,12 @@ class StaticDataServiceProvider
         });
 
         // Register the static data manager as a factory for dynamic updates
-        $container->bind('static.data.manager', function (AsasContainer $container) {
+        $container->set('static.data.manager', function (AsasContainer $container) {
             return $container->get('static.data');
         });
 
         // Register global static data as a singleton
-        $container->singleton('static.data.global', function (AsasContainer $container) {
+        $container->set('static.data.global', function (AsasContainer $container) {
             $manager = $container->get('static.data');
             return $manager->getStaticData();
         });

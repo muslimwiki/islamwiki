@@ -26,13 +26,13 @@ class LanguageServiceProvider
         error_log("LanguageServiceProvider: Starting registration");
         
         // Register TranslationService first
-        $container->singleton(TranslationService::class, function () {
+        $container->set(TranslationService::class, function () {
             error_log("LanguageServiceProvider: Creating TranslationService");
             return new TranslationService('en'); // Default to English
         });
         
         // Register LanguageService as singleton, and connect it to TranslationService
-        $container->singleton(LanguageService::class, function (AsasContainer $container) {
+        $container->set(LanguageService::class, function (AsasContainer $container) {
             error_log("LanguageServiceProvider: Creating LanguageService");
             $languageService = new LanguageService();
             // Connect the TranslationService to LanguageService
@@ -43,14 +43,14 @@ class LanguageServiceProvider
         });
 
         // Register LanguageMiddleware
-        $container->singleton(LanguageMiddleware::class, function (AsasContainer $container) {
+        $container->set(LanguageMiddleware::class, function (AsasContainer $container) {
             error_log("LanguageServiceProvider: Creating LanguageMiddleware");
             $languageService = $container->get(LanguageService::class);
             return new LanguageMiddleware($languageService);
         });
         
         // Register TwigTranslationExtension
-        $container->singleton(TwigTranslationExtension::class, function (AsasContainer $container) {
+        $container->set(TwigTranslationExtension::class, function (AsasContainer $container) {
             error_log("LanguageServiceProvider: Creating TwigTranslationExtension");
             $translationService = $container->get(TranslationService::class);
             $extension = new TwigTranslationExtension($translationService);
@@ -59,7 +59,7 @@ class LanguageServiceProvider
         });
 
         // Register language configuration
-        $container->singleton('language.config', function () {
+        $container->set('language.config', function () {
             return [
                 'default_language' => 'en',
                 'supported_languages' => [

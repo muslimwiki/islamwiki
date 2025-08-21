@@ -1,31 +1,20 @@
 <?php
+// Set proper HTTP headers
+header('Content-Type: text/plain; charset=utf-8');
+header('HTTP/1.1 200 OK');
 
-/**
- * IslamWiki Startup Script
- *
- * This script starts the IslamWiki application and demonstrates
- * the Islamic architecture in action.
- *
- * @category  Scripts
- * @package   IslamWiki\Scripts
- * @author    IslamWiki Development Team
- * @license   https://opensource.org/licenses/AGPL-3.0 AGPL-3.0-only
- * @link      https://islam.wiki
- * @since     0.0.1.1
- */
-
-// Enable error reporting for debugging
+// Enable error reporting
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+echo "🚀 Starting IslamWiki Islamic Architecture Bootstrap...\n";
 
 // Define base path
 define('BASE_PATH', dirname(__DIR__));
 
 // Include Composer autoloader
 require_once BASE_PATH . '/vendor/autoload.php';
-
-echo "🚀 Starting IslamWiki Islamic Architecture...\n";
-echo "=============================================\n\n";
 
 try {
     // Step 1: Initialize Container
@@ -36,36 +25,48 @@ try {
     // Step 2: Initialize Foundation Layer
     echo "🏗️  Step 2: Initializing Foundation Layer (أساس)...\n";
     
-    // Initialize ShahidLogger
-    $logger = new \IslamWiki\Core\Logging\ShahidLogger();
+    // Create logger
+    $logger = new \IslamWiki\Core\Logging\ShahidLogger(__DIR__ . '/../logs');
     $container->set('shahid.logger', $logger);
-    $container->set('logger', $logger);
-    echo "   ✅ ShahidLogger (Logging) initialized\n";
+    $container->set(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
+    echo "✅ Logger created\n";
     
-    // Initialize TadbirConfiguration
-    $config = new \IslamWiki\Core\Configuration\TadbirConfiguration($logger);
+    // Create configuration
+    $config = new \IslamWiki\Core\Configuration\TadbirConfiguration($container);
     $container->set('tadbir.config', $config);
-    $container->set('config', $config);
-    echo "   ✅ TadbirConfiguration (Configuration) initialized\n";
+    $container->set(\IslamWiki\Core\Configuration\TadbirConfiguration::class, $config);
+    echo "✅ Configuration created\n";
+    
+    // Create database
+    $database = new \IslamWiki\Core\Database\MizanDatabase($logger, []);
+    $container->set('mizan.database', $database);
+    $container->set(\IslamWiki\Core\Database\MizanDatabase::class, $database);
+    echo "✅ Database created\n";
+    
+    // Create routing
+    $routing = new \IslamWiki\Core\Routing\SabilRouting($container, $logger);
+    $container->set('sabil.routing', $routing);
+    $container->set(\IslamWiki\Core\Routing\SabilRouting::class, $routing);
+    echo "✅ Routing created\n";
+    
+    // Create application
+    $application = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..', $container);
+    $container->set('nizam.application', $application);
+    $container->set(\IslamWiki\Core\NizamApplication::class, $application);
+    echo "✅ Application created\n";
     echo "✅ Foundation Layer initialized\n\n";
 
     // Step 3: Initialize Infrastructure Layer
     echo "🏗️  Step 3: Initializing Infrastructure Layer...\n";
     
-    // Initialize MizanDatabase
-    $database = new \IslamWiki\Core\Database\MizanDatabase($logger, []);
-    $container->set('mizan.database', $database);
+    // Database and routing are already created above, just add aliases
     $container->set('database', $database);
-    echo "   ✅ MizanDatabase (Database) initialized\n";
-    
-    // Initialize SabilRouting
-    $routing = new \IslamWiki\Core\Routing\SabilRouting($container, $logger);
-    $container->set('sabil.routing', $routing);
     $container->set('routing', $routing);
+    echo "   ✅ MizanDatabase (Database) initialized\n";
     echo "   ✅ SabilRouting (Routing) initialized\n";
     
     // Initialize NizamApplication
-    $nizam = new \IslamWiki\Core\NizamApplication($container);
+    $nizam = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..', $container);
     $container->set('nizam.application', $nizam);
     $container->set('application', $nizam);
     echo "   ✅ NizamApplication (Application) initialized\n";
@@ -175,11 +176,25 @@ try {
     echo "📊 Implementation Progress: 100% Complete\n";
     echo "🚀 Ready for production deployment!\n\n";
     
-    // Show container services
+    // Show container services (with error handling)
     echo "📋 Container Services:\n";
-    $services = array_keys($container->getServices());
-    foreach ($services as $service) {
-        echo "   🔧 {$service}\n";
+    try {
+        $services = $container->keys();
+        if (is_array($services) && !empty($services)) {
+            foreach ($services as $service) {
+                if (is_string($service)) {
+                    echo "   🔧 {$service}\n";
+                } else {
+                    echo "   🔧 [Complex Service]\n";
+                }
+            }
+        } else {
+            echo "   ℹ️  No services found in container\n";
+        }
+    } catch (Exception $e) {
+        echo "   ⚠️  Could not display services: " . $e->getMessage() . "\n";
+    } catch (Error $e) {
+        echo "   ⚠️  Could not display services: " . $e->getMessage() . "\n";
     }
     
     echo "\n🌐 To view the web interface, visit:\n";
@@ -189,6 +204,17 @@ try {
     echo "   php scripts/test_islamic_routes.php\n\n";
     
     echo "🏁 Startup complete! IslamWiki is ready to use.\n";
+    
+    // Create bootstrap marker file
+    $markerDir = __DIR__ . '/../storage/framework';
+    if (!is_dir($markerDir)) {
+        mkdir($markerDir, 0755, true);
+    }
+    file_put_contents($markerDir . '/app_bootstrapped', date('Y-m-d H:i:s'));
+    echo "✅ Bootstrap marker created - Web interface now accessible!\n";
+    
+    // Exit cleanly
+    exit(0);
 
 } catch (Exception $e) {
     echo "❌ Startup failed: " . $e->getMessage() . "\n";

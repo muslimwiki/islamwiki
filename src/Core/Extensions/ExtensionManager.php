@@ -5,307 +5,118 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Extensions;
 
 use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Extensions\Hooks\HookManager;
 
 /**
  * Extension Manager
- *
- * Manages the loading, initialization, and lifecycle of extensions.
- * Provides a centralized way to discover, load, and manage extensions.
+ * 
+ * Manages the loading, activation, and lifecycle of extensions.
+ * 
+ * @package IslamWiki\Core\Extensions
+ * @version 0.0.1
+ * @author IslamWiki Development Team
+ * @license AGPL-3.0
  */
 class ExtensionManager
 {
-    /**
-     * @var Container Application container
-     */
     private AsasContainer $container;
-
-    /**
-     * @var HookManager Hook manager instance
-     */
-    private HookManager $hookManager;
-
-    /**
-     * @var array Loaded extensions
-     */
     private array $extensions = [];
+    private array $activeExtensions = [];
 
-    /**
-     * @var array Extension metadata
-     */
-    private array $extensionMetadata = [];
-
-    /**
-     * @var string Extensions directory path
-     */
-    private string $extensionsPath;
-
-    /**
-     * Constructor
-     */
     public function __construct(AsasContainer $container)
     {
         $this->container = $container;
-        $this->hookManager = $container->get(HookManager::class);
-
-        // Get the application instance to get the base path
-        // If the application is not bound, use a default path
-        try {
-            $app = $container->get(\IslamWiki\Core\Application::class);
-            $this->extensionsPath = $app->basePath('extensions');
-        } catch (\Exception $e) {
-            // Use a default path if application is not available
-            $this->extensionsPath = __DIR__ . '/../../../extensions';
-        }
     }
 
     /**
-     * Load all enabled extensions
+     * Register an extension
      */
-    public function loadExtensions(): void
+    public function register(string $name, ExtensionInterface $extension): void
     {
-        $enabledExtensions = $this->getEnabledExtensions();
-
-        foreach ($enabledExtensions as $extensionName) {
-            $this->loadExtension($extensionName);
-        }
+        $this->extensions[$name] = $extension;
     }
 
     /**
-     * Load a specific extension
-     *
-     * @param string $extensionName The name of the extension
-     * @return bool True if the extension was loaded successfully
+     * Activate an extension
      */
-    public function loadExtension(string $extensionName): bool
+    public function activate(string $name): bool
     {
-        try {
-            // Check if extension directory exists
-            $extensionPath = $this->extensionsPath . '/' . $extensionName;
-            if (!is_dir($extensionPath)) {
-                error_log("Extension directory not found: {$extensionPath}");
-                return false;
-            }
-
-            // Load extension configuration
-            $configFile = $extensionPath . '/extension.json';
-            if (!file_exists($configFile)) {
-                error_log("Extension configuration not found: {$configFile}");
-                return false;
-            }
-
-            $config = json_decode(file_get_contents($configFile), true);
-            if (!$config) {
-                error_log("Invalid extension configuration: {$configFile}");
-                return false;
-            }
-
-            // Validate required fields
-            if (!isset($config['name'], $config['version'], $config['main'])) {
-                error_log("Missing required fields in extension configuration: {$configFile}");
-                return false;
-            }
-
-            // Load the main extension file
-            $mainFile = $extensionPath . '/' . $config['main'];
-            if (!file_exists($mainFile)) {
-                error_log("Extension main file not found: {$mainFile}");
-                return false;
-            }
-
-            require_once $mainFile;
-
-            // Get the extension class name
-            $className = $config['class'] ?? $extensionName;
-            if (!class_exists($className)) {
-                error_log("Extension class not found: {$className}");
-                return false;
-            }
-
-            // Create extension instance
-            $extension = new $className($this->container);
-
-            // Initialize the extension
-            $extension->initialize();
-
-            // Store the extension
-            $this->extensions[$extensionName] = $extension;
-            $this->extensionMetadata[$extensionName] = $config;
-
-            error_log("Extension loaded successfully: {$extensionName}");
-            return true;
-        } catch (\Exception $e) {
-            error_log("Error loading extension {$extensionName}: " . $e->getMessage());
+        if (!isset($this->extensions[$name])) {
             return false;
         }
-    }
 
-    /**
-     * Get all available extensions
-     *
-     * @return array Array of extension names
-     */
-    public function getAvailableExtensions(): array
-    {
-        $extensions = [];
-
-        if (!is_dir($this->extensionsPath)) {
-            return $extensions;
+        $extension = $this->extensions[$name];
+        if ($extension->activate()) {
+            $this->activeExtensions[$name] = $extension;
+            return true;
         }
 
-        $directories = glob($this->extensionsPath . '/*', GLOB_ONLYDIR);
+        return false;
+    }
 
-        foreach ($directories as $directory) {
-            $extensionName = basename($directory);
-            $configFile = $directory . '/extension.json';
-
-            if (file_exists($configFile)) {
-                $extensions[] = $extensionName;
-            }
+    /**
+     * Deactivate an extension
+     */
+    public function deactivate(string $name): bool
+    {
+        if (!isset($this->activeExtensions[$name])) {
+            return false;
         }
 
-        return $extensions;
+        $extension = $this->activeExtensions[$name];
+        if ($extension->deactivate()) {
+            unset($this->activeExtensions[$name]);
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * Get enabled extensions from configuration
-     *
-     * @return array Array of enabled extension names
+     * Get all extensions
      */
-    public function getEnabledExtensions(): array
-    {
-        // This would typically read from a configuration file
-        // For now, we'll return all available extensions
-        return $this->getAvailableExtensions();
-    }
-
-    /**
-     * Get a loaded extension
-     *
-     * @param string $extensionName The name of the extension
-     * @return Extension|null The extension instance or null if not found
-     */
-    public function getExtension(string $extensionName): ?Extension
-    {
-        return $this->extensions[$extensionName] ?? null;
-    }
-
-    /**
-     * Get all loaded extensions
-     *
-     * @return array Array of loaded extensions
-     */
-    public function getLoadedExtensions(): array
+    public function getExtensions(): array
     {
         return $this->extensions;
     }
 
     /**
-     * Check if an extension is loaded
-     *
-     * @param string $extensionName The name of the extension
-     * @return bool True if the extension is loaded
+     * Get active extensions
      */
-    public function isExtensionLoaded(string $extensionName): bool
+    public function getActiveExtensions(): array
     {
-        return isset($this->extensions[$extensionName]);
+        return $this->activeExtensions;
     }
 
     /**
-     * Get extension metadata
-     *
-     * @param string $extensionName The name of the extension
-     * @return array|null Extension metadata or null if not found
+     * Check if extension is active
      */
-    public function getExtensionMetadata(string $extensionName): ?array
+    public function isActive(string $name): bool
     {
-        return $this->extensionMetadata[$extensionName] ?? null;
+        return isset($this->activeExtensions[$name]);
     }
 
     /**
-     * Get all extension metadata
-     *
-     * @return array Array of all extension metadata
+     * Get extension by name
      */
-    public function getAllExtensionMetadata(): array
+    public function getExtension(string $name): ?ExtensionInterface
     {
-        return $this->extensionMetadata;
+        return $this->extensions[$name] ?? null;
     }
 
     /**
-     * Enable an extension
-     *
-     * @param string $extensionName The name of the extension
-     * @return bool True if the extension was enabled successfully
+     * Boot all registered extensions
      */
-    public function enableExtension(string $extensionName): bool
+    public function bootExtensions(): void
     {
-        if ($this->isExtensionLoaded($extensionName)) {
-            return true; // Already loaded
-        }
-
-        return $this->loadExtension($extensionName);
-    }
-
-    /**
-     * Disable an extension
-     *
-     * @param string $extensionName The name of the extension
-     * @return bool True if the extension was disabled successfully
-     */
-    public function disableExtension(string $extensionName): bool
-    {
-        if (!isset($this->extensions[$extensionName])) {
-            return false;
-        }
-
-        $extension = $this->extensions[$extensionName];
-        $extension->disable();
-
-        unset($this->extensions[$extensionName]);
-        unset($this->extensionMetadata[$extensionName]);
-
-        return true;
-    }
-
-    /**
-     * Get extension statistics
-     *
-     * @return array Statistics about loaded extensions
-     */
-    public function getStatistics(): array
-    {
-        $stats = [
-            'total_extensions' => count($this->extensions),
-            'available_extensions' => count($this->getAvailableExtensions()),
-            'enabled_extensions' => count($this->getEnabledExtensions()),
-            'extensions' => [],
-        ];
-
         foreach ($this->extensions as $name => $extension) {
-            $stats['extensions'][$name] = $extension->toArray();
+            try {
+                if (method_exists($extension, 'boot')) {
+                    $extension->boot();
+                }
+            } catch (\Exception $e) {
+                // Log error but continue with other extensions
+                error_log("Failed to boot extension {$name}: " . $e->getMessage());
+            }
         }
-
-        return $stats;
-    }
-
-    /**
-     * Get the hook manager instance
-     *
-     * @return HookManager The hook manager
-     */
-    public function getHookManager(): HookManager
-    {
-        return $this->hookManager;
-    }
-
-    /**
-     * Get the container instance
-     *
-     * @return Container The container
-     */
-    public function getContainer(): Container
-    {
-        return $this->container;
     }
 }

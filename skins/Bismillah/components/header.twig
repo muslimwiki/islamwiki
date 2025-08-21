@@ -1,0 +1,195 @@
+{# Header Component for Bismillah Skin #}
+<header class="safa-header safa-header--bismillah">
+    <div class="safa-header__container">
+        <!-- Logo and Site Title -->
+        <div class="safa-header__brand">
+            <a href="{{ path('home') }}" class="safa-header__logo">
+                <img src="/skins/Bismillah/assets/images/logo.png" alt="IslamWiki" class="safa-header__logo-image">
+                <span class="safa-header__title">IslamWiki</span>
+            </a>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="safa-header__navigation">
+            <ul class="safa-header__nav-list">
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('home') }}" class="safa-header__nav-link">Home</a>
+                </li>
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('wiki.index') }}" class="safa-header__nav-link">Wiki</a>
+                </li>
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('quran.index') }}" class="safa-header__nav-link">Quran</a>
+                </li>
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('hadith.index') }}" class="safa-header__nav-link">Hadith</a>
+                </li>
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('community.index') }}" class="safa-header__nav-link">Community</a>
+                </li>
+                <li class="safa-header__nav-item">
+                    <a href="{{ path('search.index') }}" class="safa-header__nav-link">Search</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- User Authentication Section -->
+        <div class="safa-header__auth">
+            {% if app.user %}
+                <!-- Authenticated User -->
+                <div class="safa-header__user">
+                    <div class="safa-header__user-info">
+                        <img src="{{ app.user.avatar_url|default('/skins/Bismillah/assets/images/default-avatar.png') }}" 
+                             alt="{{ app.user.display_name }}" 
+                             class="safa-header__user-avatar">
+                        <span class="safa-header__user-name">{{ app.user.display_name }}</span>
+                    </div>
+                    
+                    <div class="safa-header__user-menu">
+                        <ul class="safa-header__user-menu-list">
+                            <li class="safa-header__user-menu-item">
+                                <a href="{{ path('user.settings.index') }}" class="safa-header__user-menu-link">
+                                    <i class="safa-icon safa-icon--settings"></i>
+                                    Settings
+                                </a>
+                            </li>
+                            <li class="safa-header__user-menu-item">
+                                <a href="{{ path('auth.profile') }}" class="safa-header__user-menu-link">
+                                    <i class="safa-icon safa-icon--profile"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            {% if app.user.isAdmin %}
+                            <li class="safa-header__user-menu-item">
+                                <a href="{{ path('admin.dashboard') }}" class="safa-header__user-menu-link">
+                                    <i class="safa-icon safa-icon--admin"></i>
+                                    Admin
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li class="safa-header__user-menu-item safa-header__user-menu-item--divider"></li>
+                            <li class="safa-header__user-menu-item">
+                                <a href="{{ path('auth.logout') }}" class="safa-header__user-menu-link safa-header__user-menu-link--logout">
+                                    <i class="safa-icon safa-icon--logout"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Guest User -->
+                <div class="safa-header__guest">
+                    <a href="{{ path('auth.login') }}" class="safa-button safa-button--outline safa-button--small">
+                        <i class="safa-icon safa-icon--login"></i>
+                        Sign In
+                    </a>
+                    <a href="{{ path('auth.register') }}" class="safa-button safa-button--primary safa-button--small">
+                        <i class="safa-icon safa-icon--register"></i>
+                        Sign Up
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="safa-header__mobile-toggle" aria-label="Toggle mobile menu">
+            <span class="safa-header__mobile-toggle-line"></span>
+            <span class="safa-header__mobile-toggle-line"></span>
+            <span class="safa-header__mobile-toggle-line"></span>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile Navigation -->
+<div class="safa-mobile-nav" id="mobileNav">
+    <div class="safa-mobile-nav__container">
+        <div class="safa-mobile-nav__header">
+            <h3 class="safa-mobile-nav__title">Menu</h3>
+            <button class="safa-mobile-nav__close" aria-label="Close mobile menu">
+                <i class="safa-icon safa-icon--close"></i>
+            </button>
+        </div>
+        
+        <nav class="safa-mobile-nav__navigation">
+            <ul class="safa-mobile-nav__nav-list">
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('home') }}" class="safa-mobile-nav__nav-link">Home</a>
+                </li>
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('wiki.index') }}" class="safa-mobile-nav__nav-link">Wiki</a>
+                </li>
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('quran.index') }}" class="safa-mobile-nav__nav-link">Quran</a>
+                </li>
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('hadith.index') }}" class="safa-mobile-nav__nav-link">Hadith</a>
+                </li>
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('community.index') }}" class="safa-mobile-nav__nav-link">Community</a>
+                </li>
+                <li class="safa-mobile-nav__nav-item">
+                    <a href="{{ path('search.index') }}" class="safa-mobile-nav__nav-link">Search</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile User Section -->
+        <div class="safa-mobile-nav__user">
+            {% if app.user %}
+                <div class="safa-mobile-nav__user-info">
+                    <img src="{{ app.user.avatar_url|default('/skins/Bismillah/assets/images/default-avatar.png') }}" 
+                         alt="{{ app.user.display_name }}" 
+                         class="safa-mobile-nav__user-avatar">
+                    <div class="safa-mobile-nav__user-details">
+                        <span class="safa-mobile-nav__user-name">{{ app.user.display_name }}</span>
+                        <span class="safa-mobile-nav__user-role">{{ app.user.primary_role }}</span>
+                    </div>
+                </div>
+                
+                <ul class="safa-mobile-nav__user-menu">
+                    <li class="safa-mobile-nav__user-menu-item">
+                        <a href="{{ path('user.settings.index') }}" class="safa-mobile-nav__user-menu-link">
+                            <i class="safa-icon safa-icon--settings"></i>
+                            Settings
+                        </a>
+                    </li>
+                    <li class="safa-mobile-nav__user-menu-item">
+                        <a href="{{ path('auth.profile') }}" class="safa-mobile-nav__user-menu-link">
+                            <i class="safa-icon safa-icon--profile"></i>
+                            Profile
+                        </a>
+                    </li>
+                    {% if app.user.isAdmin %}
+                    <li class="safa-mobile-nav__user-menu-item">
+                        <a href="{{ path('admin.dashboard') }}" class="safa-mobile-nav__user-menu-link">
+                            <i class="safa-icon safa-icon--admin"></i>
+                            Admin
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="safa-mobile-nav__user-menu-item">
+                        <a href="{{ path('auth.logout') }}" class="safa-mobile-nav__user-menu-link safa-mobile-nav__user-menu-link--logout">
+                            <i class="safa-icon safa-icon--logout"></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            {% else %}
+                <div class="safa-mobile-nav__guest">
+                    <a href="{{ path('auth.login') }}" class="safa-button safa-button--outline safa-button--full">
+                        <i class="safa-icon safa-icon--login"></i>
+                        Sign In
+                    </a>
+                    <a href="{{ path('auth.register') }}" class="safa-button safa-button--primary safa-button--full">
+                        <i class="safa-icon safa-icon--register"></i>
+                        Sign Up
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Navigation Overlay -->
+<div class="safa-mobile-nav__overlay" id="mobileNavOverlay"></div> 

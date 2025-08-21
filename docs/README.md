@@ -1,202 +1,203 @@
-# IslamWiki Documentation
+# IslamWiki System Documentation
 
-**Version**: 0.0.1.0  
-**Last Updated**: 2025-08-19  
-**Author**: IslamWiki Development Team  
-**License**: AGPL-3.0
+## 🎯 **Overview**
 
-Welcome to the comprehensive documentation for the Islam Wiki project. This documentation covers all aspects of the application architecture, components, and development guidelines.
-
-### ✅ **Latest Updates (v0.0.1.0)**
-- **🎯 Documentation Restructuring**: ✅ Complete documentation restructuring with comprehensive README files
-- **🏗️ Architecture Corrections**: ✅ Fixed major inconsistencies in system layer organization
-- **📁 File Naming Standardization**: ✅ Moved from inconsistent UPPERCASE to consistent lowercase
-- **🔌 Extension Versioning Independence**: ✅ New system for extension management
-- **🚀 Modern Development Practices**: ✅ Enhanced documentation with modern PHP practices
-- **📚 Comprehensive Structure**: ✅ Every directory now has comprehensive README files
-- **🔗 Link Integrity**: ✅ All internal links fixed and working properly
-
-### 📋 **Development Status**
-- **Database Connection Strategy**: ✅ **COMPLETED** (0.0.0.11) - Separate connections recommended
-- **Islamic Database Implementation**: ✅ **COMPLETED** (0.0.0.12) - 39 tables across 4 databases
-- **Islamic Authentication**: ✅ **COMPLETED** (0.0.0.12) - Enhanced authentication with scholar verification
-- **Islamic Content Management**: ✅ **COMPLETED** (0.0.0.12) - Complete content creation and moderation
-- **Quran Integration**: ✅ **COMPLETED** (0.0.0.13) - Complete Quran verse management system
-- **Hadith Integration**: ✅ **COMPLETED** (0.0.0.14) - Complete Hadith management system
-- **Islamic Calendar Integration**: ✅ **COMPLETED** (0.0.0.15) - Islamic calendar with event management
-- **Salah Times Integration**: ✅ **COMPLETED** (0.0.0.16) - Complete salah time system with astronomical algorithms
-- **Search & Discovery**: ✅ **COMPLETED** (0.0.0.17) - Comprehensive search across all Islamic content types
-- **Configuration System**: ✅ **COMPLETED** (0.0.0.18) - Hybrid configuration system with MediaWiki-inspired structure
-- **Documentation Structure**: ✅ Root folder for essential docs, docs/ for specialized content
-- **Islamic Core Organization**: ✅ Nested within app/Core/Islamic/ (Option B)
-- **Language Files**: ✅ Laravel-style resources/lang instead of MediaWiki i18n
-- **Extensions Permissions**: ✅ Per-extension basis permissions
-- **API Versioning**: ✅ Separate versioning for all APIs
-- **Enhanced Configuration System**: ✅ **COMPLETED** (0.0.0.24) - Advanced configuration management with CLI tools, visual builder, and enhanced API
-- **Comprehensive Routing System**: ✅ **COMPLETED** (0.0.0.25) - Complete routing system for all features and API endpoints
-- **View Templates Implementation**: ✅ **COMPLETED** (0.0.0.26) - Complete Twig template system for all routes and features
-- **Database Integration & Authentication**: ✅ **COMPLETED** (0.0.0.27) - Complete database integration and authentication systems
-- **Code Quality & Error Resolution**: ✅ **COMPLETED** (0.0.0.38) - Achieved 100% error-free codebase with comprehensive syntax validation
-- **DashboardExtension System**: ✅ **COMPLETED** (0.0.0.61) - Complete role-based dashboard system with personalized user experiences
-- **Documentation Restructuring**: ✅ **COMPLETED** (0.0.1.0) - Complete documentation restructuring with comprehensive structure
-
-### 🚧 **Next Phase (0.0.1.1)**
-- **Site Restructuring**: Begin major site architecture restructuring
-- **Core Systems Implementation**: Implement new architectural foundation
-- **Database Restructuring**: Update database structure to match new architecture
-- **Extension System Updates**: Modernize extension system architecture
-
-## 📚 Documentation Structure
-
-### Core Documentation
-- **[Architecture Overview](architecture/overview.md)** - System architecture and design patterns
-- **[Components](components/README.md)** - Core application components
-- **[Controllers](controllers/README.md)** - Controller documentation and patterns
-- **[Models](models/README.md)** - Data models and database structure
-- **[Views](views/README.md)** - Template system and view rendering
-- **[Layouts](layouts/README.md)** - Layout system and dashboard interface
-
-### Development Guides
-- **[Style Guide](guides/style-guide.md)** - Coding standards and conventions
-- **[Islamic Naming Conventions](guides/islamic-naming-conventions.md)** - Complete Islamic naming system for all components
-- **[Islamic Terminology Standards](guides/islamic-terminology-standards.md)** - Standard Islamic terms (salah, Quran, Hadith, etc.)
-- **[Versioning Strategy](guides/versioning.md)** - Semantic versioning and release process
-- **[Security Guidelines](security/README.md)** - Security best practices
-- **[Testing Guidelines](testing/README.md)** - Testing strategies and procedures
-
-### Feature Documentation
-- **[Feature Summaries](features/README.md)** - Detailed feature implementation summaries
-- **[Extension System](extensions/README.md)** - Extension system and development guide
-
-### **Release Documentation**
-- **[Release Notes](releases/README.md)** - All version release notes and changelog
-- **[Changelog](releases/CHANGELOG.md)** - Complete version history and changes
-
-## 🏗️ Project Organization
-
-### Directory Structure
-```
-📁 docs/                    # Documentation
-├── 📁 plans/              # Development plans and roadmaps
-├── 📁 guides/             # User and developer guides
-├── 📁 architecture/       # System architecture docs
-├── 📁 components/         # Component documentation
-├── 📁 security/           # Security documentation
-├── 📁 features/           # Feature documentation and summaries
-├── 📁 troubleshooting/    # Issue resolution and troubleshooting
-├── 📁 deployment/         # Deployment guides
-├── 📁 testing/            # Testing documentation
-├── 📁 controllers/        # Controller documentation
-├── 📁 models/             # Model documentation
-├── 📁 views/              # View documentation
-├── 📁 layouts/            # Layout documentation
-├── 📁 extensions/         # Extension documentation
-├── 📁 skins/              # Skin documentation
-├── 📁 releases/           # Release documentation
-├── 📁 api/                # API documentation
-└── 📁 standards/          # Development standards
-
-📁 scripts/                # Utility scripts
-├── 📁 database/           # Database migrations and setup
-├── 📁 debug/              # Debug and troubleshooting tools
-├── 📁 tests/              # Test scripts
-└── 📁 utils/              # Utility and maintenance scripts
-
-📁 maintenance/tests/      # Consolidated tests
-├── 📁 cli/                # CLI test runners
-├── 📁 Unit/               # Unit tests
-│   └── 📁 Database/       # Database unit tests
-├── 📁 Integration/        # Integration tests
-└── 📁 web/                # Web-style test scripts
-
-📁 public/                 # Web root (minimal)
-├── index.php              # Main application entry point
-├── .htaccess              # Apache configuration
-└── (other web-accessible files)
-
-📁 src/                    # Application source code
-├── 📁 Core/               # Core framework components
-├── 📁 Http/               # HTTP layer (controllers, middleware)
-├── 📁 Models/             # Data models
-├── 📁 Providers/          # Service providers
-└── 📁 resources/          # Application resources
-```
-
-### Key Organizational Changes
-
-#### **Documentation Organization**
-- **Plans**: All development plans moved to `docs/plans/`
-- **Guides**: Comprehensive guides in `docs/guides/`
-- **Architecture**: System design docs in `docs/architecture/`
-- **Components**: Component-specific docs in `docs/components/`
-
-#### **Script Organization**
-- **Database Scripts**: Migration and setup scripts in `scripts/database/`
-- **Debug Tools**: Troubleshooting scripts in `scripts/debug/`
-- **Test Scripts**: Test utilities in `scripts/tests/`
-- **Utilities**: Maintenance scripts in `scripts/utils/`
-
-#### **Test Organization**
-- **Unit Tests**: PHPUnit tests in `maintenance/tests/Unit/`
-- **Web Tests**: Browser-style test scripts in `maintenance/tests/web/`
-- **Integration Tests**: End-to-end tests in `maintenance/tests/Integration/`
-
-#### **Clean Public Directory**
-- **Minimal Web Root**: Only essential web-accessible files
-- **Security**: Reduced attack surface by moving test files
-- **Performance**: Faster directory scanning
-
-## 🚀 Quick Start
-
-### **Getting Started**
-1. **Setup**: Follow the [Installation Guide](guides/installation.md)
-2. **Development**: Review the [Style Guide](guides/style-guide.md)
-3. **Testing**: Use the [Testing Guidelines](testing/README.md)
-4. **Deployment**: Follow the [Deployment Guide](deployment/README.md)
-
-## 🔧 Development Workflow
-
-### Code Organization
-- **Controllers**: HTTP request handling in `src/Http/Controllers/`
-- **Models**: Data layer in `src/Models/`
-- **Views**: Templates in `resources/views/`
-- **Middleware**: Request processing in `src/Http/Middleware/`
-
-### Testing Strategy
-- **Unit Tests**: `maintenance/tests/Unit/` for isolated component testing
-- **Web Tests**: `maintenance/tests/web/` for browser-style testing
-- **Integration Tests**: End-to-end testing in `maintenance/tests/Integration/`
-
-### Scripts and Utilities
-- **Database**: Migration and setup scripts in `scripts/database/`
-- **Debug**: Troubleshooting tools in `scripts/debug/`
-- **Maintenance**: Utility scripts in `scripts/utils/`
-
-## 📖 Documentation Standards
-
-### File Naming
-- Use descriptive names with hyphens: `feature-name.md`
-- Group related files in appropriate directories
-- Maintain consistent naming across documentation
-
-### Content Structure
-- Start with overview and purpose
-- Include code examples and usage
-- Provide troubleshooting sections
-- Link to related documentation
-
-### Version Control
-- Keep documentation in sync with code changes
-- Update version numbers and changelogs
-- Maintain backward compatibility notes
-
-## 🔗 Related Documentation
-
-- **[Main README](../README.md)** - Project overview and quick start
-- **[Release Notes](releases/README.md)** - Release documentation and changelog
-- **[License](LICENSE.md)** - Project licensing information
-- **[Versioning Guide](guides/versioning.md)** - Semantic versioning strategy
+This directory contains comprehensive documentation for IslamWiki, a modern Islamic knowledge platform built with a **unified skin system** that provides a consistent, professional user experience across all pages.
 
 ---
 
-*Last updated: v0.0.8 - 2025-08-19*
+## 🏗️ **New Unified Architecture**
+
+### **Core Concept: "Everything Visual is a Skin"**
+
+IslamWiki has been transformed with a **unified skin system** that consolidates all visual elements into a single, cohesive system:
+
+```
+Unified Architecture:
+├── 📁 Skins (Everything Visual)           # Unified visual system
+│   ├── 📁 {SkinName}/                     # Individual skin (e.g., Bismillah)
+│   │   ├── 📁 layouts/                    # Page structures
+│   │   ├── 📁 components/                 # Reusable UI parts
+│   │   ├── 📁 pages/                      # Page templates
+│   │   ├── 📁 css/                        # Skin-specific styles
+│   │   ├── 📁 js/                         # Skin-specific JavaScript
+│   │   └── 📁 assets/                     # Images, fonts, icons
+│   └── 📁 Other skins...                  # Additional skin options
+├── 📁 Extensions (Functionality only)     # Functional extensions
+└── 📁 Core Systems (16 Islamic systems)   # Backend functionality
+```
+
+### **What We Achieved:**
+1. **Eliminated Fragmentation**: No more separate layouts, templates, and components systems
+2. **Professional Appearance**: All pages now use consistent header, navigation, and footer
+3. **Easy Maintenance**: All visual elements in one place per skin
+4. **Better Performance**: Skin-specific asset loading and optimization
+5. **Developer Friendly**: Clear organization and familiar WordPress-style pattern
+
+---
+
+## 📚 **Architecture Documentation**
+
+### **Core Architecture Documents**
+- **[Architecture Overview](architecture/overview.md)** - Complete system architecture overview
+- **[Core Systems](architecture/core-systems.md)** - Detailed documentation of all 16 Islamic-named core systems
+- **[Hybrid Architecture](architecture/hybrid-architecture.md)** - MediaWiki + WordPress + Modern PHP hybrid approach
+- **[Template Extension System Plan](architecture/template-extension-system-plan.md)** - Comprehensive implementation plan
+
+---
+
+## 🎨 **Unified Skin System**
+
+### **Skin System Documentation**
+- **[Unified Skin System](skins/unified-system.md)** - Complete unified system guide
+- **[Skin Development](skins/development.md)** - How to develop skins with layouts, components, and pages
+- **[Migration Guide](skins/migration.md)** - How to migrate existing layouts, components, and pages
+
+### **What's Now Unified:**
+- **Layouts**: Page structures within skins (was: separate layouts system)
+- **Components**: Reusable UI parts within skins (was: separate components system)
+- **Pages**: Page templates within skins (was: separate views system)
+- **Styling**: CSS framework + skin-specific overrides
+- **Interactivity**: JavaScript framework + skin-specific components
+
+---
+
+## 🔌 **Extension System**
+
+### **Extension Documentation**
+- **[Extension System Overview](extensions/README.md)** - Extension system overview
+- **[Extension Development](extensions/development.md)** - How to develop extensions
+- **[SafaSkinExtension](extensions/SafaSkinExtension.md)** - Skin management extension
+
+### **Extension Types**
+- **Functional Extensions**: Add new functionality (Quran, Hadith, etc.)
+- **Skin Extensions**: Add new visual themes and layouts
+- **Integration Extensions**: Connect to external services
+
+---
+
+## 🛠️ **Development Resources**
+
+### **Development Guides**
+- **[Development Guide](guides/development.md)** - Development practices and workflows
+- **[Style Guide](guides/style-guide.md)** - Coding standards and conventions
+- **[Islamic Naming Conventions](guides/islamic-naming-conventions.md)** - Naming system
+- **[Project Organization](guides/organization.md)** - Project structure and organization
+
+### **Development Standards**
+- **[Development Standards](standards/README.md)** - Development standards and guidelines
+- **[Code Standards](standards/standards.md)** - Comprehensive coding standards
+
+---
+
+## 🚀 **Implementation Status**
+
+### **✅ Completed:**
+- **Unified Skin System**: All visual elements consolidated into skins
+- **Core Systems**: All 16 Islamic systems operational
+- **Documentation**: Comprehensive documentation updated
+- **Architecture**: Clean, organized architecture
+
+### **🔄 In Progress:**
+- **SafaSkinExtension**: Skin management extension development
+- **Enhanced Settings**: Skin selection and customization interface
+- **Performance Optimization**: Asset loading and caching optimization
+
+### **📋 Planned:**
+- **Skin Gallery**: Visual skin selection interface
+- **Live Preview**: Real-time skin preview system
+- **Theme Customization**: Advanced customization options
+
+---
+
+## 🎯 **Key Benefits of Unified System**
+
+### **For Users:**
+- **Consistent Experience**: Professional appearance across all pages
+- **Easy Customization**: Simple skin and theme selection
+- **Better Performance**: Optimized loading and rendering
+- **Professional Quality**: WordPress-quality user experience
+
+### **For Developers:**
+- **Clear Organization**: No confusion about where files go
+- **Easy Maintenance**: All skin-related files in one place
+- **Familiar Pattern**: WordPress-style theme development
+- **Better Performance**: Skin-specific asset optimization
+
+### **For Administrators:**
+- **Easy Management**: Simple skin switching and management
+- **Professional Appearance**: Consistent, polished user interface
+- **Better User Experience**: Improved user satisfaction and engagement
+- **Easier Maintenance**: Simplified system management
+
+---
+
+## 🔄 **Migration Information**
+
+### **Breaking Changes:**
+1. **Template Paths**: All template paths have changed
+2. **File Locations**: Files are now within skin directories
+3. **References**: Update all template references in code
+4. **Documentation**: Old documentation is outdated
+
+### **Migration Required:**
+- **Update Controllers**: Change template path references
+- **Update Views**: Change include/extends paths
+- **Update Tests**: Update test template paths
+- **Update Documentation**: Remove old system references
+
+---
+
+## 📖 **Getting Started**
+
+### **For New Users:**
+1. **Read Overview**: Start with [Architecture Overview](architecture/overview.md)
+2. **Understand System**: Learn about [Core Systems](architecture/core-systems.md)
+3. **Explore Skins**: See [Unified Skin System](skins/unified-system.md)
+
+### **For Developers:**
+1. **Read Plan**: Review [Template Extension System Plan](architecture/template-extension-system-plan.md)
+2. **Learn Development**: Study [Development Guide](guides/development.md)
+3. **Understand Standards**: Review [Development Standards](standards/standards.md)
+
+### **For Administrators:**
+1. **System Overview**: Read [Architecture Overview](architecture/overview.md)
+2. **Skin Management**: Learn about [Unified Skin System](skins/unified-system.md)
+3. **Extension System**: Understand [Extension System](extensions/README.md)
+
+---
+
+## 📞 **Support & Resources**
+
+### **Documentation:**
+- **Architecture**: Complete system architecture documentation
+- **Development**: Comprehensive development guides
+- **Standards**: Development standards and best practices
+- **Migration**: Migration guides and resources
+
+### **Community:**
+- **Development Team**: IslamWiki Development Team
+- **Documentation**: Comprehensive documentation system
+- **Standards**: Clear development standards
+- **Support**: Development and user support resources
+
+---
+
+## 🎉 **Conclusion**
+
+IslamWiki has been successfully transformed from a fragmented template system into a **unified, professional skin management platform**. The new system provides:
+
+- ✅ **Consistent UI**: All pages look professional and cohesive
+- ✅ **Easy Maintenance**: All visual elements in one place
+- ✅ **Better Performance**: Optimized asset loading
+- ✅ **Developer Friendly**: Clear organization and familiar patterns
+- ✅ **Professional Quality**: WordPress-quality user experience
+
+**This unified approach eliminates confusion, improves performance, and provides a consistent, beautiful experience across all pages while maintaining the Islamic aesthetic and values of the platform.**
+
+---
+
+**Last Updated:** 2025-08-19  
+**Version:** 2.0 (Unified Skin System)  
+**Author:** IslamWiki Development Team  
+**Status:** Unified Skin System Implementation Complete ✅

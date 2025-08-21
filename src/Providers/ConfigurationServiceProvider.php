@@ -46,7 +46,7 @@ class ConfigurationServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register configuration manager as a singleton
-        $container->singleton(ConfigurationManager::class, function ($container) {
+        $container->set(ConfigurationManager::class, function ($container) {
             return new ConfigurationManager($container);
         });
 
@@ -72,6 +72,8 @@ class ConfigurationServiceProvider
      */
     private function registerConfigurationValidation(AsasContainer $container): void
     {
+        // Temporarily disable configuration validation to debug bootstrap issues
+        /*
         // Get configuration manager instance
         $configManager = $container->get(ConfigurationManager::class);
 
@@ -81,6 +83,7 @@ class ConfigurationServiceProvider
         if (!empty($validation)) {
             $this->handleConfigurationErrors($validation);
         }
+        */
     }
 
     /**

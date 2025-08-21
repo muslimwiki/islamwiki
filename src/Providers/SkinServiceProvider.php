@@ -26,7 +26,7 @@ class SkinServiceProvider
     {
         // For now, just register basic skin data without complex dependencies
         // This will be expanded once the basic authentication system is working
-        $container->singleton('skin.data', function () {
+        $container->set('skin.data', function () {
             return [
                 'css' => '',
                 'js' => '',

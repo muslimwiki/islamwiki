@@ -24,15 +24,16 @@ class AuthServiceProvider
      */
     public function register(AsasContainer $container): void
     {
-        // Register the Aman authentication manager directly
-        $container->singleton(AmanSecurity::class, function (AsasContainer $container) {
+        // Register the Aman authentication manager as a lazy service
+        $container->set(AmanSecurity::class, function (AsasContainer $container) {
+            // Only resolve dependencies when the service is actually requested
             $session = $container->get('session');
             $db = $container->get('db');
             return new AmanSecurity($session, $db);
         });
 
         // Register 'auth' alias to point to AmanSecurity
-        $container->alias(AmanSecurity::class, 'auth');
+        $container->alias('auth', AmanSecurity::class);
     }
 
     /**

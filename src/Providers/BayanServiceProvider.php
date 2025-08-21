@@ -43,33 +43,33 @@ class BayanServiceProvider
     public function register(AsasContainer $container): void
     {
         // Register BayanFormatter as singleton (acts as Bayan manager)
-        $container->singleton(BayanFormatter::class, function () use ($container) {
+        $container->set(BayanFormatter::class, function () use ($container) {
             $connection = $container->get('db');
             $logger = $container->get(LoggerInterface::class);
             return new BayanFormatter($connection, $logger);
         });
 
         // Also expose under simple key 'bayan' for places resolving by string alias
-        $container->singleton('bayan', function (AsasContainer $c) {
+        $container->set('bayan', function (AsasContainer $c) {
             return $c->get(BayanFormatter::class);
         });
 
         // Register NodeManager as singleton
-        $container->singleton(NodeManager::class, function () use ($container) {
+        $container->set(NodeManager::class, function () use ($container) {
             $connection = $container->get('db');
             $logger = $container->get(LoggerInterface::class);
             return new NodeManager($connection, $logger);
         });
 
         // Register EdgeManager as singleton
-        $container->singleton(EdgeManager::class, function () use ($container) {
+        $container->set(EdgeManager::class, function () use ($container) {
             $connection = $container->get('db');
             $logger = $container->get(LoggerInterface::class);
             return new EdgeManager($connection, $logger);
         });
 
         // Register QueryManager as singleton
-        $container->singleton(QueryManager::class, function () use ($container) {
+        $container->set(QueryManager::class, function () use ($container) {
             $connection = $container->get('db');
             $logger = $container->get(LoggerInterface::class);
             return new QueryManager($connection, $logger);

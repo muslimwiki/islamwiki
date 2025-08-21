@@ -21,33 +21,32 @@ AddDefaultCharset UTF-8
 Options -Indexes
 
 # Enable rewrite engine for routing
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Allow direct access to specific files
-    RewriteRule ^(islamic_demo\.php|test\.html)$ - [L]
-    
-    # Allow direct access to scripts directory
-    RewriteRule ^scripts/ - [L]
-    
-    # Allow direct access to assets
-    RewriteRule ^(assets|css|js|images)/ - [L]
-    
-    # Route everything else to app.php (main application)
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ app.php [QSA,L]
+RewriteEngine On
+
+# Handle errors with our beautiful Islamic error pages
+ErrorDocument 404 /errors/404.php
+ErrorDocument 500 /errors/500.php
+ErrorDocument 403 /errors/403.php
+
+# Route ALL requests through our beautiful Islamic design entry point
+# This ensures static files are handled by our SabilRouting system
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Set timezone (adjust as needed)
-# php_value date.timezone UTC
-
-# Increase PHP memory limit (adjust as needed)
-# php_value memory_limit 256M
-
-# Increase max execution time (adjust as needed)
-# php_value max_execution_time 300
-
-# Enable error reporting for development
-# php_flag display_errors on
-# php_value error_reporting E_ALL
+# PHP settings for our beautiful Islamic design
+<IfModule mod_php.c>
+    php_value display_errors Off
+    php_value log_errors On
+    php_value error_log /var/log/apache2/local.islam.wiki_error.log
+    php_value max_execution_time 30
+    php_value memory_limit 256M
+</IfModule>

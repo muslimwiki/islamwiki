@@ -78,8 +78,8 @@ class ViewServiceProvider
         }
 
         // Register the Twig renderer instance with the container
-        $container->instance('view', $twigRenderer);
-        $container->instance(TwigRenderer::class, $twigRenderer);
+        $container->set('view', $twigRenderer);
+        $container->set(TwigRenderer::class, $twigRenderer);
     }
 
     /**

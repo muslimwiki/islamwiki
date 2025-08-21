@@ -521,4 +521,120 @@ class SabilRouting
 
         return $names;
     }
+    
+    /**
+     * Handle the incoming request
+     */
+    public function handle(\IslamWiki\Core\Http\Request $request): \IslamWiki\Core\Http\Response
+    {
+        $method = $request->getMethod();
+        $path = $request->getUri()->getPath();
+        
+        error_log("SabilRouting: Handling request - Method: {$method}, Path: {$path}");
+        
+        // Handle static files first (CSS, JS, images, etc.)
+        if ($this->isStaticFile($path)) {
+            error_log("SabilRouting: Static file detected: {$path}");
+            $response = $this->serveStaticFile($path);
+            // Send the static file response immediately
+            $response->send();
+            exit; // Stop execution after sending static file
+        }
+        
+        error_log("SabilRouting: Not a static file, checking routes. Total routes: " . count($this->routes));
+        
+        // Look for a matching route
+        foreach ($this->routes as $index => $route) {
+            error_log("SabilRouting: Checking route {$index} - Method: {$route['method']}, Path: {$route['path']}");
+            
+            if ($route['method'] === $method && $route['path'] === $path) {
+                error_log("SabilRouting: Route match found! Executing handler...");
+                
+                // Execute the route handler
+                if (is_callable($route['handler'])) {
+                    $response = call_user_func($route['handler'], $request);
+                    if ($response instanceof \IslamWiki\Core\Http\Response) {
+                        error_log("SabilRouting: Handler returned valid Response object");
+                        return $response;
+                    } else {
+                        error_log("SabilRouting: Handler returned invalid response type: " . gettype($response));
+                    }
+                } else {
+                    error_log("SabilRouting: Handler is not callable");
+                }
+            }
+        }
+        
+        error_log("SabilRouting: No route match found, returning 404");
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/html'], '<h1>Page not found</h1>');
+    }
+    
+    /**
+     * Check if the request is for a static file
+     */
+    private function isStaticFile(string $path): bool
+    {
+        $staticExtensions = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'ico', 'svg', 'woff', 'woff2', 'ttf', 'eot'];
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        
+        $isStatic = in_array($extension, $staticExtensions);
+        error_log("SabilRouting: Checking if static file - Path: {$path}, Extension: {$extension}, IsStatic: " . ($isStatic ? 'true' : 'false'));
+        
+        return $isStatic;
+    }
+    
+    /**
+     * Serve a static file
+     */
+    private function serveStaticFile(string $path): \IslamWiki\Core\Http\Response
+    {
+        // Remove leading slash for file path
+        $filePath = ltrim($path, '/');
+        
+        // Build the full path relative to the project root (two levels up from public/)
+        $fullPath = __DIR__ . '/../../../' . $filePath;
+        
+        // Check if file exists
+        if (!file_exists($fullPath)) {
+            error_log("SabilRouting: Static file not found at: {$fullPath}");
+            return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/html'], 'File not found: ' . $filePath);
+        }
+        
+        // Set appropriate content type
+        $contentTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'ico' => 'image/x-icon',
+            'svg' => 'image/svg+xml',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject'
+        ];
+        
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $contentType = $contentTypes[$extension] ?? 'application/octet-stream';
+        
+        // Read file content
+        $content = file_get_contents($fullPath);
+        if ($content === false) {
+            error_log("SabilRouting: Error reading static file: {$fullPath}");
+            return new \IslamWiki\Core\Http\Response(500, ['Content-Type' => 'text/html'], 'Error reading file: ' . $filePath);
+        }
+        
+        // Add cache headers for static files
+        $headers = [
+            'Content-Type' => $contentType,
+            'Content-Length' => strlen($content),
+            'Cache-Control' => 'public, max-age=3600',
+            'Expires' => gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT'
+        ];
+        
+        error_log("SabilRouting: Successfully served static file: {$filePath} from {$fullPath}");
+        return new \IslamWiki\Core\Http\Response(200, $headers, $content);
+    }
 }

@@ -9,1125 +9,211 @@
     <!-- Google Fonts for Islamic Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Safa CSS Framework - Commented out to prevent purple theme override -->
-    <!-- <link rel="stylesheet" href="/assets/css/safa.css?v={{ 'now'|date('U') }}"> -->
-    
-    <!-- Bismillah Skin CSS - Always load for main site structure -->
+    <!-- Bismillah Skin CSS - Beautiful Islamic Theme -->
     <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
     
     <!-- Additional Skin CSS (if specified) -->
     {% if skin_css_url %}
         <link rel="stylesheet" href="{{ skin_css_url }}?v={{ 'now'|date('U') }}">
     {% endif %}
-    
-    <!-- Ensure Bismillah header styles are loaded -->
-    <style>
-        /* Override Safa CSS purple colors with Bismillah green theme */
-        :root {
-            --primary-color: #2d5016 !important;
-            --secondary-color: #4a8029 !important;
-            --accent-color: #d4af37 !important;
-            --link-color: #2d5016 !important;
-        }
-        
-        /* Force all primary colors to use Islamic green */
-        *[class*="primary"], *[class*="btn-primary"], *[class*="bg-primary"] {
-            background-color: #2d5016 !important;
-            border-color: #2d5016 !important;
-        }
-        
-        *[class*="text-primary"] {
-            color: #2d5016 !important;
-        }
-        
-        /* Override any purple colors */
-        *[class*="purple"], *[class*="btn-purple"], *[class*="bg-purple"] {
-            background-color: #2d5016 !important;
-            border-color: #2d5016 !important;
-        }
-        
-        *[class*="text-purple"] {
-            color: #2d5016 !important;
-        }
-        
-        /* Global Language Switcher */
-        .language-switcher-global {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-right: 1rem;
-        }
-        
-        .lang-option {
-            padding: 0.25rem 0.5rem;
-            border: 1px solid var(--border-color, #ddd);
-            border-radius: 4px;
-            background: var(--bg-color, #fff);
-            color: var(--text-color, #333);
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            min-width: 2rem;
-            text-align: center;
-        }
-        
-        .lang-option:hover {
-            background: var(--primary-color, #2d5016);
-            color: white;
-            border-color: var(--primary-color, #2d5016);
-        }
-        
-        .lang-option.active {
-            background: var(--primary-color, #2d5016);
-            color: white;
-            border-color: var(--primary-color, #2d5016);
-        }
-        
-        /* Force dropdown functionality to work */
-        .nav-dropdown {
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            background: white !important;
-            border: 1px solid #ddd !important;
-            border-radius: 8px !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
-            min-width: 200px !important;
-            z-index: 99999 !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transform: translateY(-10px) !important;
-            transition: all 0.3s ease !important;
-            border-top: 3px solid #d4af37 !important;
-            /* Remove display: block to allow proper hiding */
-            /* Fix overflow and positioning issues */
-            overflow: visible !important;
-            clip: auto !important;
-            height: auto !important;
-            max-height: none !important;
-            min-height: 100px !important;
-            margin-top: 5px !important;
-        }
-        
-        /* Show dropdowns only on hover */
-        .bismillah-nav-item:hover .nav-dropdown {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translateY(0) !important;
-        }
-        
-        /* User dropdown - hide by default */
-        .user-dropdown {
-            position: relative !important;
-        }
-        
-        .user-dropdown-menu {
-            position: absolute !important;
-            top: 100% !important;
-            right: 0 !important;
-            min-width: 200px !important;
-            z-index: 99999 !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transform: translateY(-10px) !important;
-            transition: all 0.3s ease !important;
-            padding: 0.5rem 0 !important;
-            margin-top: 5px !important;
-        }
-        
-        /* Show user dropdown on hover */
-        .user-dropdown:hover .user-dropdown-menu {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translateY(0) !important;
-        }
-        
-        /* Ensure dropdown items are clickable */
-        .user-dropdown-menu .dropdown-item {
-            display: block !important;
-            padding: 0.75rem 1rem !important;
-            text-decoration: none !important;
-            transition: background-color 0.2s ease !important;
-        }
-        
-        .user-dropdown-menu .dropdown-item:hover {
-            /* Hover effect will be handled by CSS */
-        }
-        
-        /* Fix navigation container overflow */
-        .bismillah-main-nav {
-            overflow: visible !important;
-        }
-        
-        .bismillah-nav-content {
-            overflow: visible !important;
-        }
-        
-        .bismillah-nav-menu {
-            overflow: visible !important;
-        }
-        
-        .bismillah-nav-item {
-            overflow: visible !important;
-            position: relative !important;
-            z-index: 1000 !important;
-            display: inline-block !important;
-        }
-        
-        .bismillah-nav-item.has-dropdown {
-            overflow: visible !important;
-            position: relative !important;
-        }
-        
-        /* Ensure navigation links have proper hover areas */
-        .bismillah-nav-link {
-            position: relative !important;
-            z-index: 1001 !important;
-            display: block !important;
-            padding: 8px 12px !important;
-            color: white !important;
-            text-decoration: none !important;
-            background: transparent !important;
-            /* Ensure links are clickable */
-            pointer-events: auto !important;
-            cursor: pointer !important;
-        }
-        
-        .bismillah-nav-link:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-        }
-        
-        /* Debug: make sure nav items are clickable */
-        .bismillah-nav-item {
-            cursor: pointer !important;
-            margin: 0 4px !important;
-            position: relative !important;
-            z-index: 1000 !important;
-        }
-        
-        .bismillah-nav-item:hover {
-            background: rgba(255, 255, 255, 0.05) !important;
-        }
-        
-        /* Reduce spacing in navigation menu */
-        .bismillah-nav-menu {
-            gap: 8px !important;
-            justify-content: center !important;
-        }
-        
-        /* Ensure dropdowns don't block navigation links */
-        .nav-dropdown {
-            /* Remove pointer-events blocking */
-        }
-        
-        .bismillah-nav-item:hover .nav-dropdown {
-            /* Remove pointer-events blocking */
-        }
-        
-        /* Fix any parent container clipping */
-        body, html {
-            overflow-x: visible !important;
-        }
-        
-        .bismillah-header, .bismillah-main-nav {
-            overflow: visible !important;
-            clip: auto !important;
-        }
-        
-        /* Basic styling for navigation items */
-        .bismillah-nav-link {
-            display: block !important;
-            padding: 12px 16px !important;
-            color: white !important;
-            text-decoration: none !important;
-            background: transparent !important;
-        }
-        
-        .bismillah-nav-link:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
-        }
-        
-        /* Ensure dropdown items are visible and clickable */
-        .dropdown-item {
-            display: block !important;
-            padding: 12px 16px !important;
-            color: #333 !important;
-            text-decoration: none !important;
-            border-bottom: 1px solid #eee !important;
-            background: white !important;
-            transition: all 0.3s ease !important;
-            /* Make sure dropdown items are clickable */
-            cursor: pointer !important;
-            position: relative !important;
-            z-index: 100000 !important;
-            /* Ensure clicks work */
-            pointer-events: auto !important;
-        }
-        
-        .dropdown-item:hover {
-            background: #f8f9fa !important;
-            color: #2d5016 !important;
-            padding-left: 24px !important;
-            /* Debug: make hover visible */
-            border-left: 3px solid #d4af37 !important;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none !important;
-        }
-        
-        /* Ensure dropdown items don't block hover */
-        .dropdown-item * {
-            pointer-events: auto !important;
-        }
-        
-        /* Make sure dropdown container allows interaction */
-        .nav-dropdown {
-            pointer-events: auto !important;
-        }
-        
-        .nav-dropdown * {
-            pointer-events: auto !important;
-        }
-        
-        /* Override any pointer-events blocking */
-        .bismillah-nav-item:hover .nav-dropdown,
-        .bismillah-nav-item:hover .nav-dropdown * {
-            pointer-events: auto !important;
-        }
-        
-        /* Dropdown arrow indicator */
-        .bismillah-nav-item.has-dropdown .bismillah-nav-link::after {
-            content: '▼' !important;
-            font-size: 12px !important;
-            margin-left: 8px !important;
-            opacity: 0.7 !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .bismillah-nav-item.has-dropdown:hover .bismillah-nav-link::after {
-            transform: rotate(180deg) !important;
-            opacity: 1 !important;
-        }
-        
-        /* Right-aligned dropdowns */
-        .bismillah-nav-item:nth-last-child(-n+3) .nav-dropdown,
-        .bismillah-nav-item:nth-last-child(-n+2) .nav-dropdown,
-        .bismillah-nav-item:last-child .nav-dropdown {
-            left: auto !important;
-            right: 0 !important;
-        }
-        
-        /* Fallback styles for Bismillah header if CSS fails to load */
-        .bismillah-header {
-            background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%);
-            color: white;
-            box-shadow: 0 4px 20px rgba(45, 80, 22, 0.3);
-        }
-        
-        .bismillah-header-top {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .bismillah-header-left, .bismillah-header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .bismillah-header-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 0;
-        }
-        
-        .bismillah-secondary-nav {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .bismillah-logo {
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Force footer styling to work */
-        .bismillah-footer {
-            background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%) !important;
-            color: white !important;
-            padding: 3rem 0 2rem 0 !important;
-            margin-top: auto !important;
-            box-shadow: 0 -4px 20px rgba(45, 80, 22, 0.2) !important;
-        }
-        
-        .bismillah-footer-content {
-            width: 100% !important;
-            max-width: none !important;
-            margin: 0 !important;
-            padding: 0 2rem !important;
-            display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-            gap: 3rem !important;
-        }
-        
-        .bismillah-footer-section h3 {
-            color: white !important;
-            font-size: 1.25rem !important;
-            font-weight: 600 !important;
-            margin-bottom: 1.5rem !important;
-            position: relative !important;
-        }
-        
-        .bismillah-footer-section h3::after {
-            content: '' !important;
-            position: absolute !important;
-            bottom: -8px !important;
-            left: 0 !important;
-            width: 40px !important;
-            height: 3px !important;
-            background: #d4af37 !important;
-            border-radius: 2px !important;
-        }
-        
-        .bismillah-footer-section p {
-            color: rgba(255, 255, 255, 0.9) !important;
-            line-height: 1.6 !important;
-            margin-bottom: 1.5rem !important;
-        }
-        
-        .bismillah-footer-section a {
-            color: #d4af37 !important;
-            text-decoration: none !important;
-            transition: all 0.3s ease !important;
-            display: inline-block !important;
-            margin-bottom: 0.5rem !important;
-        }
-        
-        .bismillah-footer-section a:hover {
-            color: white !important;
-            transform: translateX(5px) !important;
-        }
-        
-        .bismillah-footer-links {
-            list-style: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        
-        .bismillah-footer-links li {
-            margin-bottom: 0.5rem !important;
-        }
-        
-        .bismillah-footer-links a {
-            color: rgba(255, 255, 255, 0.8) !important;
-            text-decoration: none !important;
-            transition: all 0.3s ease !important;
-            display: inline-block !important;
-        }
-        
-        .bismillah-footer-links a:hover {
-            color: #d4af37 !important;
-            transform: translateX(5px) !important;
-        }
-        
-        /* Copyright Section */
-        .bismillah-copyright {
-            background: #1a3a0f !important;
-            color: rgba(255, 255, 255, 0.8) !important;
-            padding: 1.5rem 0 !important;
-            text-align: center !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-        
-        .bismillah-copyright-content {
-            width: 100% !important;
-            max-width: none !important;
-            margin: 0 !important;
-            padding: 0 2rem !important;
-        }
-        
-        .bismillah-copyright p {
-            margin: 0 !important;
-            font-size: 0.9rem !important;
-            color: rgba(255, 255, 255, 0.7) !important;
-        }
-        
-        /* Force authentication pages to use green theme */
-        .login-page, .register-page {
-            background: linear-gradient(135deg, #f8faf5 0%, #ffffff 100%) !important;
-        }
-        
-        .login-container, .register-container {
-            background: white !important;
-            border: 1px solid rgba(45, 80, 22, 0.1) !important;
-            box-shadow: 0 10px 25px rgba(45, 80, 22, 0.15) !important;
-        }
-        
-        .login-header, .register-header {
-            background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%) !important;
-            color: white !important;
-        }
-        
-        .login-title, .register-title {
-            color: white !important;
-        }
-        
-        .login-subtitle, .register-subtitle {
-            color: rgba(255, 255, 255, 0.9) !important;
-        }
-        
-        .form-control:focus {
-            border-color: #2d5016 !important;
-            box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1) !important;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #2d5016 0%, #4a8029 100%) !important;
-            color: white !important;
-            border: none !important;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1a3a0f 0%, #2d5016 100%) !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        .link {
-            color: #2d5016 !important;
-        }
-        
-        .link:hover {
-            color: #1a3a0f !important;
-        }
-        
-        .signup-link a {
-            color: #2d5016 !important;
-        }
-        
-        .signup-link a:hover {
-            color: #1a3a0f !important;
-        }
-        
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        
-        .bismillah-header-container {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            padding: 0 1.5rem;
-        }
-        
-        .bismillah-search {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .search-form {
-            display: flex;
-            position: relative;
-        }
-        
-        .search-input-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 3rem 0.75rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            background: rgba(255, 255, 255, 0.9);
-            color: #2d5016;
-            font-size: 0.9rem;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-        }
-        
-        .search-button {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #2d5016;
-            border: none;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .search-button:hover {
-            background: #4a8029;
-            transform: translateY(-50%) scale(1.05);
-        }
-        
-        .search-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
-        
-        .bismillah-user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .user-button {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .user-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .auth-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline {
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: transparent;
-        }
-        
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Mobile responsive design */
-        @media (max-width: 768px) {
-            .bismillah-header-container {
-                padding: 0 1rem;
-            }
-            
-            .bismillah-header-top {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem 0;
-            }
-            
-            .bismillah-search {
-                max-width: 100%;
-                order: 2;
-            }
-            
-            .bismillah-user-menu {
-                order: 1;
-                justify-content: center;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .bismillah-secondary-nav {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                justify-content: center;
-            }
-            
-            .nav-link {
-                font-size: 0.9rem;
-                padding: 0.4rem 0.8rem;
-            }
-        }
-    </style>
-    
-    <!-- ZamZam.js for frontend interactivity -->
-    <script defer src="/assets/js/zamzam.js"></script>
-    
-    {% block styles %}{% endblock %}
-    
-    {% block head %}{% endblock %}
-    
-    {% block body_class %}{% endblock %}
 </head>
-<body{% if block('body_class') %} class="{{ block('body_class') }}"{% endif %}>
-    <!-- Top Bar with Islamic Info -->
-    <div class="bismillah-top-bar">
-        <div class="bismillah-top-bar-content">
-            <div class="bismillah-islamic-info">
-                <div class="bismillah-prayer-info">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                    </svg>
-                    Next Prayer: Asr - 3:45 PM
-            </div>
-                <div class="bismillah-date-info">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2Z"/>
-                                </svg>
-                    15 Rabi' al-Awwal 1446 | September 18, 2024
-                </div>
-            </div>
-            <div class="bismillah-user-actions">
-                {% if user %}
-                    <div class="user-dropdown">
-                        <button class="bismillah-user-menu user-dropdown-toggle">
-                            <span>👤 {{ user.username }}</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7,10L12,15L17,10H7Z"/>
-                            </svg>
-                        </button>
-                        <div class="user-dropdown-menu">
-                            <a href="{{ current_language() == 'en' ? '/dashboard' : '/' ~ current_language() ~ '/dashboard' }}" class="dropdown-item">📊 {{ __('nav.dashboard') }}</a>
-                            <a href="{{ current_language() == 'en' ? '/profile' : '/' ~ current_language() ~ '/profile' }}" class="dropdown-item">👤 {{ __('nav.profile') }}</a>
-                            <a href="{{ current_language() == 'en' ? '/settings' : '/' ~ current_language() ~ '/settings' }}" class="dropdown-item">⚙️ {{ __('nav.settings') }}</a>
-                            <a href="/auth/logout" class="dropdown-item">🚪 {{ __('nav.logout') }}</a>
+<body class="bismillah-body">
+    <!-- Header -->
+    <header class="bismillah-header">
+        <!-- Header Top Bar - Salah Time & Login -->
+        <div class="bismillah-header-top">
+            <div class="bismillah-header-content">
+                <div class="bismillah-header-left">
+                    <div class="bismillah-salah-info">
+                        <div class="next-salah">
+                            <span class="salah-icon">🕌</span>
+                            <span class="salah-text">Next: Asr 3:45 PM</span>
+                        </div>
+                        <div class="current-time">
+                            <span class="time-icon">🕐</span>
+                            <span class="time-text">{{ 'now'|date('g:i A') }}</span>
+                        </div>
+                        <div class="current-date">
+                            <span class="date-icon">📅</span>
+                            <span class="date-text">{{ 'now'|date('l, F j, Y') }}</span>
                         </div>
                     </div>
-                {% else %}
-                    <a href="/auth/login" class="bismillah-user-menu">🔑 {{ __('nav.login') }}</a>
-                    <a href="/auth/register" class="bismillah-user-menu">📝 {{ __('nav.register') }}</a>
-                {% endif %}
+                </div>
+                
+                <div class="bismillah-header-right">
+                    <div class="bismillah-header-actions">
+                        {% if user %}
+                            <div class="user-dropdown">
+                                <button class="bismillah-user-menu user-dropdown-toggle">
+                                    <span>👤 {{ user.username }}</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M7,10L12,15L17,10H7Z"/>
+                                    </svg>
+                                </button>
+                                <div class="user-dropdown-menu">
+                                    <a href="/dashboard" class="dropdown-item">📊 Dashboard</a>
+                                    <a href="/profile" class="dropdown-item">👤 Profile</a>
+                                    <a href="/settings" class="dropdown-item">⚙️ Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <form action="/auth/logout" method="POST" class="dropdown-form">
+                                        <button type="submit" class="dropdown-item logout-item">🚪 Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <a href="/auth/login" class="bismillah-login-btn">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Main Bar with Logo and Search -->
-    <div class="bismillah-main-bar">
-        <div class="bismillah-main-bar-content">
-            <a href="{{ current_language() == 'en' ? '/' : '/' ~ current_language() }}" class="bismillah-site-logo">
-                <div class="bismillah-logo-icon">☪</div>
-                <div class="bismillah-logo-text">
-                    <div class="bismillah-site-name">IslamWiki</div>
-                    <div class="bismillah-site-tagline">Authentic Islamic Knowledge</div>
+        
+        <!-- Main Header - Logo, Search & Language -->
+        <div class="bismillah-header-secondary">
+            <div class="bismillah-header-container">
+                <div class="bismillah-header-left">
+                    <a href="/" class="bismillah-logo-link" aria-label="Go to IslamWiki Homepage" title="Go to Homepage">
+                        <div class="bismillah-logo">
+                            <div class="bismillah-logo-icon" aria-hidden="true">☪</div>
+                            <div class="logo-text">
+                                <div class="site-name">IslamWiki</div>
+                                <div class="site-tagline">Authentic Islamic Knowledge</div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-
-            <div class="bismillah-main-search">
-                <form action="{{ current_language() == 'en' ? '/iqra-search' : '/' ~ current_language() ~ '/iqra-search' }}" method="GET" class="bismillah-search-form">
-                    <input type="text" name="q" class="bismillah-search-input" placeholder="{{ __('nav.search') }}..." value="{{ app.request.query.get('q', '') }}">
-                    <button type="submit" class="bismillah-search-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-            
-            <div class="bismillah-header-actions">
-                <!-- Language Switcher -->
-                <div class="language-switcher-global">
-                    <a href="?lang=en" class="lang-option {{ current_language() == 'en' ? 'active' : '' }}">EN</a>
-                    <a href="?lang=ar" class="lang-option {{ current_language() == 'ar' ? 'active' : '' }}">العربية</a>
+                
+                <div class="bismillah-header-center">
+                    <form class="search-form" action="/search" method="GET">
+                        <div class="search-input-wrapper">
+                            <input type="text" name="q" placeholder="Search Islamic knowledge..." class="search-input">
+                            <button type="submit" class="search-btn">🔍</button>
+                        </div>
+                    </form>
                 </div>
-                <a href="{{ current_language() == 'en' ? '/contribute' : '/' ~ current_language() ~ '/contribute' }}" class="bismillah-contribute-btn">{{ __('nav.contribute') }}</a>
+                
+                <div class="bismillah-header-right">
+                    <div class="bismillah-language-selector">
+                        <div class="bismillah-lang-toggle" data-lang="en">
+                            <span class="lang-text">EN</span>
+                        </div>
+                        <div class="bismillah-lang-toggle" data-lang="ar">
+                            <span class="lang-text">عربي</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Main Navigation -->
-    <nav class="bismillah-main-nav">
-        <div class="bismillah-nav-content">
-            <ul class="bismillah-nav-menu">
-                <div class="nav-item">
-                    <a href="{{ current_language() == 'en' ? '/' : '/' ~ current_language() }}" class="nav-link">{{ __('nav.home') }}</a>
-                </div>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">📖</span>
-                        {{ __('nav.quran') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📖</span>
-                            Browse Quran
+        
+        <!-- Navigation -->
+        <nav class="bismillah-secondary-nav">
+            <div class="bismillah-nav-content">
+                <ul class="bismillah-nav-menu">
+                    <li class="bismillah-nav-item">
+                        <a href="/" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">🏠</span>
+                            Home
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/quran/search' : '/' ~ current_language() ~ '/quran/search' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🔍</span>
-                            {{ __('nav.search') }} Quran
+                    </li>
+                    <li class="bismillah-nav-item has-dropdown">
+                        <a href="/quran" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📖</span>
+                            Quran
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/quran/juz/1' : '/' ~ current_language() ~ '/quran/juz/1' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📚</span>
-                            Juz View
+                        <div class="nav-dropdown">
+                            <a href="/quran/read" class="dropdown-item">Read Quran</a>
+                            <a href="/quran/translations" class="dropdown-item">Translations</a>
+                            <a href="/quran/tafsir" class="dropdown-item">Tafsir</a>
+                            <a href="/quran/recitation" class="dropdown-item">Recitation</a>
+                        </div>
+                    </li>
+                    <li class="bismillah-nav-item has-dropdown">
+                        <a href="/hadith" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📚</span>
+                            Hadith
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/quran/page/1' : '/' ~ current_language() ~ '/quran/page/1' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📄</span>
-                            Page View
+                        <div class="nav-dropdown">
+                            <a href="/hadith/collections" class="dropdown-item">Collections</a>
+                            <a href="/hadith/search" class="dropdown-item">Search Hadith</a>
+                            <a href="/hadith/authenticity" class="dropdown-item">Authenticity</a>
+                        </div>
+                    </li>
+                    <li class="bismillah-nav-item has-dropdown">
+                        <a href="/articles" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📝</span>
+                            Articles
                         </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">📜</span>
-                        {{ __('nav.hadith') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📜</span>
-                            Browse Hadith
+                        <div class="nav-dropdown">
+                            <a href="/articles/islamic-history" class="dropdown-item">Islamic History</a>
+                            <a href="/articles/fiqh" class="dropdown-item">Fiqh</a>
+                            <a href="/articles/aqeedah" class="dropdown-item">Aqeedah</a>
+                            <a href="/articles/tasawwuf" class="dropdown-item">Tasawwuf</a>
+                        </div>
+                    </li>
+                    <li class="bismillah-nav-item">
+                        <a href="/salah" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">🕌</span>
+                            Salah Times
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/hadith/search' : '/' ~ current_language() ~ '/hadith/search' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🔍</span>
-                            Search Hadith
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/hadith/collection/1' : '/' ~ current_language() ~ '/hadith/collection/1' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📚</span>
-                            Collections
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">📝</span>
-                        {{ __('nav.wiki') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📝</span>
-                            All Pages
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/wiki/create' : '/' ~ current_language() ~ '/wiki/create' }}" class="dropdown-item">
-                            <span class="dropdown-icon">✏️</span>
-                            Create Page
-                        </a>
-                        <a href="/special:RecentChanges" class="dropdown-item">
-                            <span class="dropdown-icon">🕒</span>
-                            Recent Changes
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/sciences' : '/' ~ current_language() ~ '/sciences' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">🔬</span>
-                        {{ __('nav.sciences') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/sciences' : '/' ~ current_language() ~ '/sciences' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🔬</span>
-                            All Sciences
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/sciences/fiqh' : '/' ~ current_language() ~ '/sciences/fiqh' }}" class="dropdown-item">
-                            <span class="dropdown-icon">⚖️</span>
-                            Fiqh
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/sciences/aqeedah' : '/' ~ current_language() ~ '/sciences/aqeedah' }}" class="dropdown-item">
-                            <span class="dropdown-icon">💭</span>
-                            Aqeedah
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/sciences/tasawwuf' : '/' ~ current_language() ~ '/sciences/tasawwuf' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🕊️</span>
-                            Tasawwuf
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">👥</span>
-                        {{ __('nav.community') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}" class="dropdown-item">
-                            <span class="dropdown-icon">👥</span>
-                            Community Hub
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/community/users' : '/' ~ current_language() ~ '/community/users' }}" class="dropdown-item">
-                            <span class="dropdown-icon">👤</span>
-                            Users
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/community/activity' : '/' ~ current_language() ~ '/community/activity' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📊</span>
-                            Activity
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/community/contribute' : '/' ~ current_language() ~ '/community/contribute' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🎯</span>
-                            {{ __('nav.contribute') }}
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/docs' : '/' ~ current_language() ~ '/docs' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">📚</span>
-                        {{ __('nav.docs') }}
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/docs' : '/' ~ current_language() ~ '/docs' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📚</span>
-                            Documentation
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/docs/architecture' : '/' ~ current_language() ~ '/docs/architecture' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🏗️</span>
-                            Architecture
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/docs/guides' : '/' ~ current_language() ~ '/docs/guides' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📖</span>
-                            Guides
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/bayan' : '/' ~ current_language() ~ '/bayan' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">🧠</span>
-                        Bayan
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/bayan' : '/' ~ current_language() ~ '/bayan' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🧠</span>
-                            Knowledge Graph
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/bayan/search' : '/' ~ current_language() ~ '/bayan/search' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🔍</span>
-                            Search Bayan
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/bayan/create' : '/' ~ current_language() ~ '/bayan/create' }}" class="dropdown-item">
-                            <span class="dropdown-icon">✏️</span>
-                            Create Node
-                        </a>
-                    </div>
-                </li>
-                
-                <li class="bismillah-nav-item has-dropdown">
-                    <a href="{{ current_language() == 'en' ? '/about' : '/' ~ current_language() ~ '/about' }}" class="bismillah-nav-link">
-                        <span class="bismillah-nav-icon">ℹ️</span>
-                        About & Help
-                    </a>
-                    <div class="nav-dropdown">
-                        <a href="{{ current_language() == 'en' ? '/about' : '/' ~ current_language() ~ '/about' }}" class="dropdown-item">
-                            <span class="dropdown-icon">ℹ️</span>
-                            About IslamWiki
-                        </a>
-                        <a href="{{ current_language() == 'en' ? '/calendar' : '/' ~ current_language() ~ '/calendar' }}" class="dropdown-item">
-                            <span class="dropdown-icon">📅</span>
+                    </li>
+                    <li class="bismillah-nav-item">
+                        <a href="/calendar" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📅</span>
                             Islamic Calendar
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/salah' : '/' ~ current_language() ~ '/salah' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🕌</span>
-                            Prayer Times
+                    </li>
+                    <li class="bismillah-nav-item">
+                        <a href="/community" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">👥</span>
+                            Community
                         </a>
-                        <a href="{{ current_language() == 'en' ? '/dashboard' : '/' ~ current_language() ~ '/dashboard' }}" class="dropdown-item">
-                            <span class="dropdown-icon">🎛️</span>
-                            {{ __('nav.dashboard') }}
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-        <!-- Main Content Area -->
-        <main class="bismillah-main">
-            {% block main_wrapper_start %}<div class="bismillah-container">
-            {% endblock %}
-            {% block content %}{% endblock %}
-            {% block main_wrapper_end %}
-            </div>{% endblock %}
-        </main>
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
 
-        <!-- Bismillah Footer -->
-        <footer class="bismillah-footer">
+    <!-- Footer -->
+    <footer class="bismillah-footer">
         <div class="bismillah-footer-content">
             <div class="bismillah-footer-section">
                 <h3>About IslamWiki</h3>
-                <p>Dedicated to preserving and sharing authentic Islamic knowledge for the global Muslim community.</p>
-                <a href="{{ current_language() == 'en' ? '/about' : '/' ~ current_language() ~ '/about' }}">Learn More</a>
-                    </div>
+                <p>Your trusted source for authentic Islamic knowledge, verified by scholars and accessible to the global Muslim community.</p>
+            </div>
             <div class="bismillah-footer-section">
                 <h3>Quick Links</h3>
                 <ul class="bismillah-footer-links">
-                    <li><a href="{{ current_language() == 'en' ? '/quran' : '/' ~ current_language() ~ '/quran' }}">Quran & Tafsir</a></li>
-                    <li><a href="{{ current_language() == 'en' ? '/hadith' : '/' ~ current_language() ~ '/hadith' }}">Hadith Collections</a></li>
-                    <li><a href="{{ current_language() == 'en' ? '/wiki' : '/' ~ current_language() ~ '/wiki' }}">Wiki Articles</a></li>
-                            <li><a href="{{ current_language() == 'en' ? '/community' : '/' ~ current_language() ~ '/community' }}">Community</a></li>
-                        </ul>
-                    </div>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                </ul>
+            </div>
             <div class="bismillah-footer-section">
-                <h3>Support</h3>
+                <h3>Connect</h3>
                 <ul class="bismillah-footer-links">
-                    <li><a href="{{ current_language() == 'en' ? '/contact' : '/' ~ current_language() ~ '/contact' }}">Contact Us</a></li>
-                            <li><a href="{{ current_language() == 'en' ? '/help' : '/' ~ current_language() ~ '/help' }}">Help Center</a></li>
-                    <li><a href="{{ current_language() == 'en' ? '/contribute' : '/' ~ current_language() ~ '/contribute' }}">{{ __('nav.contribute') }}</a></li>
-                        </ul>
-                    </div>
-                </div>
+                    <li><a href="/community">Community Forum</a></li>
+                    <li><a href="/newsletter">Newsletter</a></li>
+                    <li><a href="/social">Social Media</a></li>
+                    <li><a href="/support">Support</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="bismillah-footer-bottom">
+            <div class="bismillah-footer-content">
+                <p>&copy; 2025 IslamWiki. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
-    <!-- Copyright -->
-    <div class="bismillah-copyright">
-        <div class="bismillah-copyright-content">
-            <p>&copy; 2024 IslamWiki. All rights reserved.</p>
-                </div>
-            </div>
-
-    <!-- Dropdown functionality for mobile/touch devices -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, checking dropdowns...');
-            
-            const navItems = document.querySelectorAll('.bismillah-nav-item.has-dropdown');
-            console.log('Found nav items with dropdowns:', navItems.length);
-            
-            // Debug: check if hover events are working
-            const allNavLinks = document.querySelectorAll('.bismillah-nav-link');
-            console.log('Found nav links:', allNavLinks.length);
-            
-            allNavLinks.forEach((link, index) => {
-                console.log(`Nav link ${index + 1}:`, link.textContent.trim());
-                
-                // Test hover events
-                link.addEventListener('mouseenter', function() {
-                    console.log(`Mouse entered nav link: ${this.textContent.trim()}`);
-                    this.style.border = '2px solid green';
-                });
-                
-                link.addEventListener('mouseleave', function() {
-                    console.log(`Mouse left nav link: ${this.textContent.trim()}`);
-                    this.style.border = '1px solid transparent';
-                });
-                
-                // Test click events
-                link.addEventListener('click', function(e) {
-                    console.log(`Clicked nav link: ${this.textContent.trim()}`);
-                });
-            });
-            
-            // Debug: check dropdown items
-            const allDropdownItems = document.querySelectorAll('.dropdown-item');
-            console.log('Found dropdown items:', allDropdownItems.length);
-            
-            allDropdownItems.forEach((item, index) => {
-                console.log(`Dropdown item ${index + 1}:`, item.textContent.trim());
-                
-                // Test hover events on dropdown items
-                item.addEventListener('mouseenter', function() {
-                    console.log(`Mouse entered dropdown item: ${this.textContent.trim()}`);
-                    this.style.background = '#e8f5e8';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    console.log(`Mouse left dropdown item: ${this.textContent.trim()}`);
-                    this.style.background = 'white';
-                });
-                
-                // Test click events on dropdown items
-                item.addEventListener('click', function(e) {
-                    console.log(`Clicked dropdown item: ${this.textContent.trim()}`);
-                    // Allow navigation for actual links
-                    if (this.href) {
-                        console.log(`Navigating to: ${this.href}`);
-                        // Uncomment the next line to allow actual navigation
-                        // window.location.href = this.href;
-                    }
-                });
-                
-                // Ensure dropdown items are clickable
-                item.style.pointerEvents = 'auto';
-                item.style.cursor = 'pointer';
-            });
-            
-            navItems.forEach((item, index) => {
-                const link = item.querySelector('.bismillah-nav-link');
-                const dropdown = item.querySelector('.nav-dropdown');
-                
-                console.log(`Nav item ${index + 1}:`, {
-                    hasLink: !!link,
-                    hasDropdown: !!dropdown,
-                    dropdownDisplay: dropdown ? dropdown.style.display : 'N/A',
-                    dropdownOpacity: dropdown ? dropdown.style.opacity : 'N/A'
-                });
-                
-                // Add click event for mobile/touch devices
-                if (link && dropdown) {
-                    link.addEventListener('click', function(e) {
-                        if (window.innerWidth <= 768) {
-                            e.preventDefault();
-                            const isVisible = dropdown.style.opacity === '1';
-                            dropdown.style.opacity = isVisible ? '0' : '1';
-                            dropdown.style.visibility = isVisible ? 'hidden' : 'visible';
-                            dropdown.style.transform = isVisible ? 'translateY(-10px)' : 'translateY(0)';
-                            console.log(`Toggled dropdown ${index + 1} to:`, isVisible ? 'hidden' : 'visible');
-                        }
-                    });
-                }
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!item.contains(e.target)) {
-                        if (dropdown) {
-                            dropdown.style.opacity = '0';
-                            dropdown.style.visibility = 'hidden';
-                            dropdown.style.transform = 'translateY(-10px)';
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+    <!-- JavaScript -->
+    <script src="/skins/Bismillah/js/bismillah.js?v={{ 'now'|date('U') }}"></script>
+    <script src="/assets/js/marwa.js?v={{ 'now'|date('U') }}"></script>
     
     {% block scripts %}{% endblock %}
 </body>
