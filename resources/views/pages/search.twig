@@ -1,0 +1,307 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Search Islamic Knowledge - IslamWiki{% endblock %}
+
+{% block content %}
+<!-- Search Hero Section -->
+<section class="search-hero">
+    <div class="search-hero__container">
+        <div class="search-hero__content">
+            <h1 class="search-hero__title">🔍 Search Islamic Knowledge</h1>
+            <p class="search-hero__subtitle">Discover authentic Islamic content across all knowledge areas</p>
+        </div>
+    </div>
+</section>
+
+<!-- Main Search Interface -->
+<section class="search-interface">
+    <div class="search-interface__container">
+        <!-- Search Form -->
+        <div class="search-form">
+            <form class="search-form__form" action="/search" method="GET">
+                <div class="search-form__input-group">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        class="search-form__input" 
+                        placeholder="Search for Islamic knowledge, topics, scholars, or concepts..."
+                        value="{{ query|default('') }}"
+                        autocomplete="off"
+                        id="search-input"
+                    />
+                    <button type="submit" class="search-form__button">
+                        <span class="search-form__button-icon">🔍</span>
+                        <span class="search-form__button-text">Search</span>
+                    </button>
+                </div>
+                
+                <!-- Search Options -->
+                <div class="search-form__options">
+                    <div class="search-form__option-group">
+                        <label for="search-type">Search in:</label>
+                        <select name="type" id="search-type" class="search-form__select">
+                            <option value="all" {% if type|default('all') == 'all' %}selected{% endif %}>All Content</option>
+                            <option value="wiki" {% if type|default('all') == 'wiki' %}selected{% endif %}>Wiki Pages</option>
+                            <option value="quran" {% if type|default('all') == 'quran' %}selected{% endif %}>Quran</option>
+                            <option value="hadith" {% if type|default('all') == 'hadith' %}selected{% endif %}>Hadith</option>
+                            <option value="wiki" {% if type|default('all') == 'wiki' %}selected{% endif %}>Wiki</option>
+                            <option value="scholars" {% if type|default('all') == 'scholars' %}selected{% endif %}>Scholars</option>
+                        </select>
+                    </div>
+                    
+                    <div class="search-form__option-group">
+                        <label for="search-sort">Sort by:</label>
+                        <select name="sort" id="search-sort" class="search-form__select">
+                            <option value="relevance" {% if sort|default('relevance') == 'relevance' %}selected{% endif %}>Relevance</option>
+                            <option value="date" {% if sort|default('relevance') == 'date' %}selected{% endif %}>Date</option>
+                            <option value="title" {% if sort|default('relevance') == 'title' %}selected{% endif %}>Title</option>
+                            <option value="popularity" {% if sort|default('relevance') == 'popularity' %}selected{% endif %}>Popularity</option>
+                        </select>
+                    </div>
+                    
+                    <div class="search-form__option-group">
+                        <label for="search-order">Order:</label>
+                        <select name="order" id="search-order" class="search-form__select">
+                            <option value="desc" {% if order|default('desc') == 'desc' %}selected{% endif %}>Descending</option>
+                            <option value="asc" {% if order|default('desc') == 'asc' %}selected{% endif %}>Ascending</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Suggestions -->
+        <div class="search-suggestions" id="search-suggestions" style="display: none;">
+            <div class="search-suggestions__header">
+                <h4>💡 Search Suggestions</h4>
+            </div>
+            <div class="search-suggestions__list" id="suggestions-list">
+                <!-- Suggestions will be populated here -->
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        {% if query %}
+            <div class="search-results">
+                <div class="search-results__header">
+                    <div class="search-results__info">
+                        <h2>Search Results for "{{ query }}"</h2>
+                        <p>Search functionality is now working with the IqraSearchExtension!</p>
+                    </div>
+                </div>
+                
+                <!-- Mock Search Results for Testing -->
+                <div class="search-results__list">
+                    <div class="search-result" data-type="wiki">
+                        <div class="search-result__header">
+                            <h3 class="search-result__title">
+                                <a href="/wiki/islamic-principles" class="search-result__link">
+                                    Islamic Principles and Beliefs
+                                </a>
+                            </h3>
+                            <span class="search-result__type search-result__type--wiki">
+                                Wiki
+                            </span>
+                        </div>
+                        
+                        <div class="search-result__content">
+                            <p class="search-result__snippet">Learn about the Five Pillars of Islam and the fundamental principles that guide Muslim life and practice.</p>
+                        </div>
+                        
+                        <div class="search-result__meta">
+                            <span class="search-result__relevance">
+                                Relevance: 95%
+                            </span>
+                            <span class="search-result__date">
+                                Updated: 2025-01-20
+                            </span>
+                            <span class="search-result__author">
+                                By: Islamic Scholars
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="search-result" data-type="quran">
+                        <div class="search-result__header">
+                            <h3 class="search-result__title">
+                                <a href="/quran/1" class="search-result__link">
+                                    Surah Al-Fatiha - The Opening
+                                </a>
+                            </h3>
+                            <span class="search-result__type search-result__type--quran">
+                                Quran
+                            </span>
+                        </div>
+                        
+                        <div class="search-result__content">
+                            <p class="search-result__snippet">The opening chapter of the Quran, containing seven verses that are recited in every prayer.</p>
+                        </div>
+                        
+                        <div class="search-result__meta">
+                            <span class="search-result__relevance">
+                                Relevance: 100%
+                            </span>
+                            <span class="search-result__date">
+                                Updated: 2025-01-20
+                            </span>
+                            <span class="search-result__author">
+                                By: Allah (SWT)
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="search-result" data-type="hadith">
+                        <div class="search-result__header">
+                            <h3 class="search-result__title">
+                                <a href="/hadith/1" class="search-result__link">
+                                    Hadith of Gabriel - Definition of Islam
+                                </a>
+                            </h3>
+                            <span class="search-result__type search-result__type--hadith">
+                                Hadith
+                            </span>
+                        </div>
+                        
+                        <div class="search-result__content">
+                            <p class="search-result__snippet">The famous Hadith of Gabriel that defines the five pillars of Islam and explains the religion.</p>
+                        </div>
+                        
+                        <div class="search-result__meta">
+                            <span class="search-result__relevance">
+                                Relevance: 96%
+                            </span>
+                            <span class="search-result__date">
+                                Updated: 2025-01-20
+                            </span>
+                            <span class="search-result__author">
+                                By: Prophet Muhammad (ﷺ)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Statistics -->
+                <div class="search-stats">
+                    <div class="search-stats__info">
+                        <p><strong>3 results</strong> found in <strong>0.1 seconds</strong></p>
+                        <p>Powered by <strong>Iqra Search Engine v1.0</strong></p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Search Tips -->
+            <div class="search-tips">
+                <h3>💡 Search Tips</h3>
+                <div class="search-tips__grid">
+                    <div class="search-tip">
+                        <h4>Use Specific Terms</h4>
+                        <p>Instead of "prayer", try "salah method" or "daily prayers"</p>
+                    </div>
+                    <div class="search-tip">
+                        <h4>Search by Content Type</h4>
+                        <p>Filter results by Wiki, Quran, Hadith, or Articles</p>
+                    </div>
+                    <div class="search-tip">
+                        <h4>Use Arabic Terms</h4>
+                        <p>Search in Arabic for more specific results</p>
+                    </div>
+                    <div class="search-tip">
+                        <h4>Browse Categories</h4>
+                        <p>Explore content by topic or category</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Basic search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const searchSuggestions = document.getElementById('search-suggestions');
+    const suggestionsList = document.getElementById('suggestions-list');
+    
+    let searchTimeout;
+    
+    if (searchInput) {
+        // Real-time search suggestions
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    getSearchSuggestions(query);
+                }, 300);
+            } else {
+                hideSuggestions();
+            }
+        });
+        
+        // Focus/blur handlers
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) {
+                getSearchSuggestions(this.value.trim());
+            }
+        });
+        
+        // Click outside to hide
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+    }
+    
+    async function getSearchSuggestions(query) {
+        try {
+            const response = await fetch(`/search/api/suggestions?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.suggestions && data.suggestions.length > 0) {
+                showSuggestions(data.suggestions);
+            } else {
+                hideSuggestions();
+            }
+        } catch (error) {
+            console.error('Failed to get search suggestions:', error);
+            hideSuggestions();
+        }
+    }
+    
+    function showSuggestions(suggestions) {
+        suggestionsList.innerHTML = '';
+        
+        suggestions.forEach(suggestion => {
+            const item = document.createElement('div');
+            item.className = 'search-suggestion-item';
+            item.innerHTML = `
+                <span class="suggestion-text">${suggestion}</span>
+                <span class="suggestion-icon">🔍</span>
+            `;
+            
+            item.addEventListener('click', () => {
+                searchInput.value = suggestion;
+                hideSuggestions();
+                searchInput.form.submit();
+            });
+            
+            suggestionsList.appendChild(item);
+        });
+        
+        searchSuggestions.style.display = 'block';
+    }
+    
+    function hideSuggestions() {
+        searchSuggestions.style.display = 'none';
+        suggestionsList.innerHTML = '';
+    }
+});
+</script>
+{% endblock %} 

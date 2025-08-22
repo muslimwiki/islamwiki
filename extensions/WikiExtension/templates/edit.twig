@@ -1,0 +1,606 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ page ? 'Edit: ' ~ page.title : 'Create New Page' }} - Wiki - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-container">
+    <div class="wiki-header">
+        <div class="wiki-breadcrumb">
+            <a href="/wiki">Wiki</a> &raquo; 
+            {% if page %}
+                <a href="/wiki/{{ page.slug }}">{{ page.title }}</a> &raquo; Edit
+            {% else %}
+                Create New Page
+            {% endif %}
+        </div>
+        
+        <div class="wiki-page-title">
+            <h1>{{ page ? 'Edit: ' ~ page.title : 'Create New Wiki Page' }}</h1>
+            {% if page %}
+                <p class="wiki-page-description">Edit this wiki page</p>
+            {% else %}
+                <p class="wiki-page-description">Create a new wiki page</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="wiki-content">
+        <div class="wiki-main">
+            <form method="POST" action="{{ page ? '/wiki/' ~ page.slug : '/wiki/create' }}" class="wiki-edit-form">
+                {% if page %}
+                    <input type="hidden" name="_method" value="PUT">
+                {% endif %}
+                
+                <div class="wiki-form-group">
+                    <label for="title" class="wiki-form-label">Page Title *</label>
+                    <input type="text" id="title" name="title" class="wiki-form-input" 
+                           value="{{ page.title ?? '' }}" required 
+                           placeholder="Enter page title">
+                    <small class="wiki-form-help">Choose a clear, descriptive title for your page</small>
+                </div>
+
+                <div class="wiki-form-group">
+                    <label for="content" class="wiki-form-label">Content *</label>
+                    <textarea id="content" name="content" class="wiki-form-textarea" rows="20" required
+                              placeholder="Enter page content using Markdown or HTML">{{ page.content ?? '' }}</textarea>
+                    <small class="wiki-form-help">
+                        You can use <a href="#" class="wiki-markdown-help">Markdown</a> or HTML for formatting
+                    </small>
+                </div>
+
+                <div class="wiki-form-group">
+                    <label for="meta_description" class="wiki-form-label">Meta Description</label>
+                    <textarea id="meta_description" name="meta_description" class="wiki-form-textarea" rows="3"
+                              placeholder="Brief description of the page content">{{ page.meta_description ?? '' }}</textarea>
+                    <small class="wiki-form-help">A brief summary of the page content (optional)</small>
+                </div>
+
+                <div class="wiki-form-row">
+                    <div class="wiki-form-group wiki-form-group--half">
+                        <label for="category_id" class="wiki-form-label">Category</label>
+                        <select id="category_id" name="category_id" class="wiki-form-select">
+                            <option value="">Select a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" 
+                                        {{ page and page.category_id == category.id ? 'selected' : '' }}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <small class="wiki-form-help">Choose the most appropriate category</small>
+                    </div>
+
+                    <div class="wiki-form-group wiki-form-group--half">
+                        <label for="content_type" class="wiki-form-label">Content Type</label>
+                        <select id="content_type" name="content_type" class="wiki-form-select">
+                            <option value="page" {{ page and page.content_type == 'page' ? 'selected' : '' }}>Wiki Page</option>
+                            <option value="article" {{ page and page.content_type == 'article' ? 'selected' : '' }}>Article</option>
+                            <option value="guide" {{ page and page.content_type == 'guide' ? 'selected' : '' }}>Guide</option>
+                            <option value="reference" {{ page and page.content_type == 'reference' ? 'selected' : '' }}>Reference</option>
+                        </select>
+                        <small class="wiki-form-help">Select the type of content</small>
+                    </div>
+                </div>
+
+                <div class="wiki-form-group">
+                    <label for="tags" class="wiki-form-label">Tags</label>
+                    <input type="text" id="tags" name="tags" class="wiki-form-input" 
+                           value="{{ page.tags ?? '' }}" 
+                           placeholder="Enter tags separated by commas">
+                    <small class="wiki-form-help">Add relevant tags separated by commas (e.g., islam, quran, hadith)</small>
+                </div>
+
+                {% if page %}
+                    <div class="wiki-form-group">
+                        <label for="edit_comment" class="wiki-form-label">Edit Comment</label>
+                        <input type="text" id="edit_comment" name="edit_comment" class="wiki-form-input" 
+                               placeholder="Brief description of your changes">
+                        <small class="wiki-form-help">Describe what you changed (optional but recommended)</small>
+                    </div>
+                {% endif %}
+
+                <div class="wiki-form-actions">
+                    <button type="submit" class="wiki-btn wiki-btn--primary">
+                        <i class="fas fa-save"></i>
+                        {{ page ? 'Update Page' : 'Create Page' }}
+                    </button>
+                    
+                    {% if page %}
+                        <a href="/wiki/{{ page.slug }}" class="wiki-btn wiki-btn--secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                    {% else %}
+                        <a href="/wiki" class="wiki-btn wiki-btn--secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        
+        <div class="wiki-sidebar">
+            <div class="wiki-editor-help">
+                <h3>Editing Help</h3>
+                
+                <div class="wiki-help-section">
+                    <h4>Markdown Basics</h4>
+                    <ul class="wiki-help-list">
+                        <li><code>**bold**</code> for <strong>bold text</strong></li>
+                        <li><code>*italic*</code> for <em>italic text</em></li>
+                        <li><code># Heading</code> for headings</li>
+                        <li><code>[Link](URL)</code> for links</li>
+                        <li><code>![Alt](URL)</code> for images</li>
+                    </ul>
+                </div>
+
+                <div class="wiki-help-section">
+                    <h4>Page Guidelines</h4>
+                    <ul class="wiki-help-list">
+                        <li>Write clear, informative content</li>
+                        <li>Use proper headings and structure</li>
+                        <li>Include relevant links and references</li>
+                        <li>Follow Islamic content guidelines</li>
+                    </ul>
+                </div>
+
+                <div class="wiki-help-section">
+                    <h4>Preview</h4>
+                    <button type="button" id="preview-btn" class="wiki-btn wiki-btn--outline">
+                        <i class="fas fa-eye"></i>
+                        Preview Changes
+                    </button>
+                </div>
+            </div>
+
+            {% if page %}
+                <div class="wiki-page-info">
+                    <h3>Page Information</h3>
+                    <div class="wiki-info-item">
+                        <strong>Created:</strong> {{ page.created_at|date('M j, Y') }}
+                    </div>
+                    <div class="wiki-info-item">
+                        <strong>Last Updated:</strong> {{ page.updated_at|date('M j, Y') }}
+                    </div>
+                    <div class="wiki-info-item">
+                        <strong>Views:</strong> {{ page.view_count ?? 0 }}
+                    </div>
+                    {% if page.is_locked %}
+                        <div class="wiki-info-item wiki-locked">
+                            <strong>Status:</strong> Page Locked
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div id="preview-modal" class="wiki-modal">
+    <div class="wiki-modal-content">
+        <div class="wiki-modal-header">
+            <h3>Page Preview</h3>
+            <button type="button" class="wiki-modal-close">&times;</button>
+        </div>
+        <div class="wiki-modal-body">
+            <div id="preview-content"></div>
+        </div>
+        <div class="wiki-modal-footer">
+            <button type="button" class="wiki-btn wiki-btn--secondary" onclick="closePreview()">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.wiki-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wiki-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e8e8e8;
+    padding-bottom: 20px;
+}
+
+.wiki-breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.wiki-breadcrumb a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.wiki-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.wiki-page-title h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.wiki-page-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.wiki-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.wiki-main {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.wiki-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wiki-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.wiki-form-group--half {
+    width: 100%;
+}
+
+.wiki-form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.wiki-form-input, .wiki-form-textarea, .wiki-form-select {
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+}
+
+.wiki-form-input:focus, .wiki-form-textarea:focus, .wiki-form-select:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+}
+
+.wiki-form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.wiki-form-help {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.wiki-form-help a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.wiki-form-help a:hover {
+    text-decoration: underline;
+}
+
+.wiki-form-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.wiki-btn--primary {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--primary:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+}
+
+.wiki-btn--secondary {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.wiki-btn--secondary:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.wiki-btn--outline {
+    background: transparent;
+    color: #007cba;
+    border: 1px solid #007cba;
+}
+
+.wiki-btn--outline:hover {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-editor-help, .wiki-page-info {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-editor-help h3, .wiki-page-info h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.wiki-help-section {
+    margin-bottom: 20px;
+}
+
+.wiki-help-section h4 {
+    margin: 0 0 10px 0;
+    color: #34495e;
+    font-size: 1rem;
+}
+
+.wiki-help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wiki-help-list li {
+    margin-bottom: 8px;
+    padding-left: 15px;
+    position: relative;
+    font-size: 14px;
+    color: #666;
+}
+
+.wiki-help-list li::before {
+    content: '•';
+    color: #007cba;
+    position: absolute;
+    left: 0;
+}
+
+.wiki-help-list code {
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+}
+
+.wiki-info-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.wiki-info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.wiki-info-item strong {
+    color: #2c3e50;
+}
+
+.wiki-locked {
+    color: #dc3545;
+}
+
+/* Modal Styles */
+.wiki-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.wiki-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.wiki-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wiki-modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.wiki-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wiki-modal-close:hover {
+    color: #333;
+}
+
+.wiki-modal-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.wiki-modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .wiki-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .wiki-form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .wiki-form-actions {
+        flex-direction: column;
+    }
+    
+    .wiki-page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .wiki-main, .wiki-sidebar > div {
+        padding: 20px;
+    }
+    
+    .wiki-modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Preview functionality
+    const previewBtn = document.getElementById('preview-btn');
+    const previewModal = document.getElementById('preview-modal');
+    const previewContent = document.getElementById('preview-content');
+    const contentTextarea = document.getElementById('content');
+    
+    if (previewBtn) {
+        previewBtn.addEventListener('click', function() {
+            const content = contentTextarea.value;
+            if (content.trim()) {
+                // Simple markdown to HTML conversion (basic)
+                const htmlContent = convertMarkdownToHtml(content);
+                previewContent.innerHTML = htmlContent;
+                previewModal.style.display = 'block';
+            } else {
+                alert('Please enter some content to preview.');
+            }
+        });
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === previewModal) {
+            previewModal.style.display = 'none';
+        }
+    });
+    
+    // Close modal with close button
+    const closeBtn = document.querySelector('.wiki-modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            previewModal.style.display = 'none';
+        });
+    }
+});
+
+function closePreview() {
+    document.getElementById('preview-modal').style.display = 'none';
+}
+
+function convertMarkdownToHtml(markdown) {
+    // Basic markdown conversion
+    let html = markdown
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/^\- (.*$)/gim, '<li>$1</li>')
+        .replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/^(.+)$/gm, '<p>$1</p>');
+    
+    // Wrap lists
+    html = html.replace(/<li>(.*?)<\/li>/g, '<ul><li>$1</li></ul>');
+    
+    return html;
+}
+</script>
+{% endblock %}

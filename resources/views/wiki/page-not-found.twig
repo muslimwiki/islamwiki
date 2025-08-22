@@ -1,0 +1,502 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ pageTitle }} - Wiki - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-page-not-found-container">
+    <div class="container mx-auto px-4 py-6">
+        <!-- Page Header -->
+        <div class="wiki-page-header mb-6">
+            <div class="page-title-section">
+                <h1 class="wiki-page-title">{{ pageTitle }}</h1>
+                <p class="wiki-page-subtitle">From IslamWiki</p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="page-action-buttons">
+                <a href="/wiki/create?title={{ pageName }}" class="btn btn-primary">
+                    <span class="btn-icon">✏️</span>
+                    Create
+                </a>
+                <a href="/wiki/{{ pageName }}/discussion" class="btn btn-secondary">
+                    <span class="btn-icon">💬</span>
+                    Discussion
+                </a>
+                <button class="btn btn-secondary" onclick="showPageOptions()">
+                    <span class="btn-icon">⋯</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Not Found Message -->
+        <div class="page-not-found-message">
+            <div class="message-content">
+                <p class="message-text">
+                    There is currently no text in this page. You can 
+                    <a href="/search?q={{ pageName }}&type=wiki">search for this page title in other pages</a>, 
+                    <a href="/wiki/{{ pageName }}/history">search the related logs</a>, or 
+                    <a href="/wiki/create?title={{ pageName }}" class="create-link">create this page</a>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Quick Create Section -->
+        <div class="quick-create-section">
+            <div class="quick-create-header">
+                <h3>Create "{{ pageTitle }}"</h3>
+                <p>Start writing this page now</p>
+            </div>
+            
+            <div class="quick-create-form">
+                <form method="POST" action="/wiki/create">
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="title" value="{{ pageTitle }}">
+                    <input type="hidden" name="slug" value="{{ pageName }}">
+                    
+                    <!-- Quick Category Selection -->
+                    <div class="form-group">
+                        <label for="quick-category" class="form-label">Category</label>
+                        <select id="quick-category" name="category_id" class="form-select" required>
+                            <option value="">Select a category</option>
+                            <option value="1">Quranic Studies</option>
+                            <option value="2">Hadith Studies</option>
+                            <option value="3">Islamic History</option>
+                            <option value="4">Fiqh & Jurisprudence</option>
+                            <option value="5">Islamic Practices</option>
+                            <option value="6">Islamic Sciences</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Quick Summary -->
+                    <div class="form-group">
+                        <label for="quick-summary" class="form-label">Brief Summary</label>
+                        <textarea id="quick-summary" 
+                                  name="summary" 
+                                  class="form-textarea" 
+                                  rows="2"
+                                  placeholder="Brief description of what this page will cover"
+                                  required></textarea>
+                    </div>
+                    
+                    <!-- Content Editor with Toolbar -->
+                    <div class="form-group">
+                        <label for="quick-content" class="form-label">Page Content</label>
+                        
+                        <!-- Formatting Toolbar -->
+                        <div class="formatting-toolbar">
+                            <div class="toolbar-group">
+                                <button type="button" class="toolbar-btn" data-format="bold" title="Bold (Ctrl+B)">
+                                    <strong>B</strong>
+                                </button>
+                                <button type="button" class="toolbar-btn" data-format="italic" title="Italic (Ctrl+I)">
+                                    <em>I</em>
+                                </button>
+                                <button type="button" class="toolbar-btn" data-format="heading" title="Heading">
+                                    <strong>H</strong>
+                                </button>
+                            </div>
+                            
+                            <div class="toolbar-group">
+                                <button type="button" class="toolbar-btn" data-format="list" title="Bullet List">
+                                    • List
+                                </button>
+                                <button type="button" class="toolbar-btn" data-format="link" title="Insert Link">
+                                    🔗
+                                </button>
+                                <button type="button" class="toolbar-btn" data-format="image" title="Insert Image">
+                                    🖼️
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Editor -->
+                        <textarea id="quick-content" 
+                                  name="content" 
+                                  class="form-textarea content-editor" 
+                                  rows="15"
+                                  placeholder="Write your page content here. Use the toolbar above for formatting."
+                                  required></textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <span class="btn-icon">📝</span>
+                            Save Page
+                        </button>
+                        <a href="/wiki" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Wiki Page Not Found Styling */
+.wiki-page-not-found-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, rgba(79, 70, 229, 0.05) 100%);
+}
+
+.wiki-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.page-title-section {
+    flex: 1;
+}
+
+.wiki-page-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.wiki-page-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.page-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    border-color: #2563eb;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb;
+    color: #374151;
+    border-color: #9ca3af;
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+/* Page Not Found Message */
+.page-not-found-message {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+.message-content {
+    text-align: center;
+}
+
+.message-text {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.message-text a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.message-text a:hover {
+    text-decoration: underline;
+}
+
+.create-link {
+    color: #059669 !important;
+    font-weight: 600 !important;
+}
+
+/* Quick Create Section */
+.quick-create-section {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+}
+
+.quick-create-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.quick-create-header h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.quick-create-header p {
+    color: #6b7280;
+    margin: 0;
+}
+
+.quick-create-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+}
+
+.content-editor {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Formatting Toolbar */
+.formatting-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 2px solid #e5e7eb;
+    border-bottom: none;
+    border-radius: 0.5rem 0.5rem 0 0;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 0.25rem;
+    padding-right: 0.75rem;
+    border-right: 1px solid #e5e7eb;
+}
+
+.toolbar-group:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    color: #374151;
+}
+
+.toolbar-btn:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+.toolbar-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wiki-page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .wiki-page-title {
+        font-size: 2.5rem;
+    }
+    
+    .page-action-buttons {
+        justify-content: center;
+    }
+    
+    .quick-create-section {
+        padding: 1.5rem;
+    }
+    
+    .formatting-toolbar {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .toolbar-group {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        padding-right: 0;
+        padding-bottom: 0.75rem;
+    }
+    
+    .toolbar-group:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}
+</style>
+
+<script>
+// Formatting Toolbar Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const toolbar = document.querySelector('.formatting-toolbar');
+    const contentEditor = document.getElementById('quick-content');
+    
+    if (!toolbar || !contentEditor) return;
+    
+    // Toolbar button click handlers
+    toolbar.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toolbar-btn')) {
+            e.preventDefault();
+            const format = e.target.dataset.format;
+            applyFormat(format);
+        }
+    });
+    
+    // Apply formatting based on button type
+    function applyFormat(format) {
+        const start = contentEditor.selectionStart;
+        const end = contentEditor.selectionEnd;
+        const selectedText = contentEditor.value.substring(start, end);
+        let replacement = '';
+        
+        switch(format) {
+            case 'bold':
+                replacement = `**${selectedText}**`;
+                break;
+            case 'italic':
+                replacement = `*${selectedText}*`;
+                break;
+            case 'heading':
+                replacement = `# ${selectedText}`;
+                break;
+            case 'list':
+                replacement = `- ${selectedText}`;
+                break;
+            case 'link':
+                replacement = `[${selectedText}](url)`;
+                break;
+            case 'image':
+                replacement = `![${selectedText}](image-url)`;
+                break;
+        }
+        
+        // Replace selected text
+        contentEditor.value = contentEditor.value.substring(0, start) + replacement + contentEditor.value.substring(end);
+        
+        // Restore focus and selection
+        contentEditor.focus();
+        contentEditor.setSelectionRange(start, start + replacement.length);
+    }
+    
+    // Auto-resize textarea
+    contentEditor.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 400) + 'px';
+    });
+});
+
+// Page options function
+function showPageOptions() {
+    // Implement page options menu
+    alert('Page options menu - to be implemented');
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,1105 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Wiki Categories - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-container">
+    <div class="wiki-header">
+        <div class="wiki-breadcrumb">
+            <a href="/wiki">Wiki</a> &raquo; Categories
+        </div>
+        
+        <div class="wiki-page-title">
+            <h1>Wiki Categories</h1>
+            <p class="wiki-page-description">Browse and explore content organized by categories</p>
+        </div>
+    </div>
+
+    <div class="wiki-content">
+        <div class="wiki-main">
+            <!-- Categories Overview -->
+            <div class="wiki-categories-overview">
+                <div class="wiki-overview-header">
+                    <h2>Categories Overview</h2>
+                    <div class="wiki-overview-stats">
+                        <span class="wiki-overview-stat">
+                            <i class="fas fa-folder"></i>
+                            {{ categories|length }} categories
+                        </span>
+                        <span class="wiki-overview-stat">
+                            <i class="fas fa-file-alt"></i>
+                            {{ total_pages ?? 0 }} total pages
+                        </span>
+                        <span class="wiki-overview-stat">
+                            <i class="fas fa-eye"></i>
+                            {{ total_views ?? 0 }} total views
+                        </span>
+                    </div>
+                </div>
+                
+                {% if featured_categories|length > 0 %}
+                    <div class="wiki-featured-categories">
+                        <h3>Featured Categories</h3>
+                        <div class="wiki-featured-grid">
+                            {% for category in featured_categories %}
+                                <div class="wiki-featured-card">
+                                    <div class="wiki-featured-icon">
+                                        <i class="{{ category.icon ?? 'fas fa-folder' }}"></i>
+                                    </div>
+                                    <div class="wiki-featured-content">
+                                        <h4 class="wiki-featured-title">
+                                            <a href="/wiki/categories/{{ category.slug }}">{{ category.name }}</a>
+                                        </h4>
+                                        {% if category.description %}
+                                            <p class="wiki-featured-description">{{ category.description }}</p>
+                                        {% endif %}
+                                        <div class="wiki-featured-meta">
+                                            <span class="wiki-featured-pages">{{ category.page_count ?? 0 }} pages</span>
+                                            {% if category.subcategory_count %}
+                                                <span class="wiki-featured-subcategories">{{ category.subcategory_count }} subcategories</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Categories List -->
+            <div class="wiki-categories-list">
+                <div class="wiki-categories-header">
+                    <h3>All Categories</h3>
+                    <div class="wiki-categories-controls">
+                        <div class="wiki-search-categories">
+                            <input type="text" id="category-search" class="wiki-category-search-input" 
+                                   placeholder="Search categories...">
+                            <i class="fas fa-search wiki-category-search-icon"></i>
+                        </div>
+                        <div class="wiki-categories-sort">
+                            <select id="category-sort" class="wiki-category-sort-select">
+                                <option value="name">Sort by Name</option>
+                                <option value="pages">Sort by Pages</option>
+                                <option value="views">Sort by Views</option>
+                                <option value="recent">Sort by Recent Activity</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if categories|length > 0 %}
+                    <div class="wiki-categories-grid" id="categories-grid">
+                        {% for category in categories %}
+                            <div class="wiki-category-card" data-category-name="{{ category.name|lower }}">
+                                <div class="wiki-category-header">
+                                    <div class="wiki-category-icon">
+                                        <i class="{{ category.icon ?? 'fas fa-folder' }}"></i>
+                                    </div>
+                                    <div class="wiki-category-info">
+                                        <h4 class="wiki-category-title">
+                                            <a href="/wiki/categories/{{ category.slug }}">{{ category.name }}</a>
+                                        </h4>
+                                        {% if category.description %}
+                                            <p class="wiki-category-description">{{ category.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="wiki-category-stats">
+                                    <div class="wiki-category-stat">
+                                        <span class="wiki-category-stat-label">Pages:</span>
+                                        <span class="wiki-category-stat-value">{{ category.page_count ?? 0 }}</span>
+                                    </div>
+                                    
+                                    {% if category.subcategory_count %}
+                                        <div class="wiki-category-stat">
+                                            <span class="wiki-category-stat-label">Subcategories:</span>
+                                            <span class="wiki-category-stat-value">{{ category.subcategory_count }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="wiki-category-stat">
+                                        <span class="wiki-category-stat-label">Views:</span>
+                                        <span class="wiki-category-stat-value">{{ category.total_views ?? 0 }}</span>
+                                    </div>
+                                    
+                                    {% if category.last_activity %}
+                                        <div class="wiki-category-stat">
+                                            <span class="wiki-category-stat-label">Last Activity:</span>
+                                            <span class="wiki-category-stat-value">{{ category.last_activity|date('M j, Y') }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if category.recent_pages|length > 0 %}
+                                    <div class="wiki-category-recent">
+                                        <h5>Recent Pages</h5>
+                                        <ul class="wiki-category-recent-list">
+                                            {% for page in category.recent_pages|slice(0, 3) %}
+                                                <li class="wiki-category-recent-item">
+                                                    <a href="/wiki/{{ page.slug }}" class="wiki-category-recent-link">
+                                                        {{ page.title }}
+                                                    </a>
+                                                    <span class="wiki-category-recent-date">{{ page.updated_at|date('M j') }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="wiki-category-actions">
+                                    <a href="/wiki/categories/{{ category.slug }}" class="wiki-category-action-link">
+                                        <i class="fas fa-eye"></i>
+                                        Browse
+                                    </a>
+                                    
+                                    {% if can_create_pages %}
+                                        <a href="/wiki/create?category={{ category.id }}" class="wiki-category-action-link">
+                                            <i class="fas fa-plus"></i>
+                                            Add Page
+                                        </a>
+                                    {% endif %}
+                                    
+                                    {% if can_edit_categories %}
+                                        <a href="/wiki/categories/{{ category.slug }}/edit" class="wiki-category-action-link">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if pagination %}
+                        <div class="wiki-pagination">
+                            {% if pagination.prev_page %}
+                                <a href="?page={{ pagination.prev_page }}" class="wiki-pagination-link wiki-pagination-link--prev">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Previous
+                                </a>
+                            {% endif %}
+                            
+                            <div class="wiki-pagination-pages">
+                                {% for page_num in pagination.page_range %}
+                                    {% if page_num == pagination.current_page %}
+                                        <span class="wiki-pagination-current">{{ page_num }}</span>
+                                    {% else %}
+                                        <a href="?page={{ page_num }}" class="wiki-pagination-link">{{ page_num }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            
+                            {% if pagination.next_page %}
+                                <a href="?page={{ pagination.next_page }}" class="wiki-pagination-link wiki-pagination-link--next">
+                                    Next
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="wiki-no-categories">
+                        <div class="wiki-no-categories-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h4>No Categories Found</h4>
+                        <p>No categories have been created yet.</p>
+                        
+                        {% if can_create_categories %}
+                            <a href="/wiki/categories/create" class="wiki-btn wiki-btn--primary">
+                                <i class="fas fa-plus"></i>
+                                Create First Category
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="wiki-sidebar">
+            <!-- Quick Actions -->
+            <div class="wiki-quick-actions">
+                <h3>Quick Actions</h3>
+                
+                {% if can_create_categories %}
+                    <a href="/wiki/categories/create" class="wiki-btn wiki-btn--primary wiki-btn--full">
+                        <i class="fas fa-plus"></i>
+                        Create Category
+                    </a>
+                {% endif %}
+                
+                {% if can_create_pages %}
+                    <a href="/wiki/create" class="wiki-btn wiki-btn--outline wiki-btn--full">
+                        <i class="fas fa-file-alt"></i>
+                        Create Page
+                    </a>
+                {% endif %}
+                
+                <a href="/wiki/search" class="wiki-btn wiki-btn--outline wiki-btn--full">
+                    <i class="fas fa-search"></i>
+                    Search Wiki
+                </a>
+            </div>
+            
+            <!-- Category Statistics -->
+            <div class="wiki-category-statistics">
+                <h3>Category Statistics</h3>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Total Categories</div>
+                    <div class="wiki-stat-value">{{ categories|length }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Total Pages</div>
+                    <div class="wiki-stat-value">{{ total_pages ?? 0 }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Total Views</div>
+                    <div class="wiki-stat-value">{{ total_views ?? 0 }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Most Active</div>
+                    <div class="wiki-stat-value">{{ most_active_category ?? 'N/A' }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Largest Category</div>
+                    <div class="wiki-stat-value">{{ largest_category ?? 'N/A' }}</div>
+                </div>
+            </div>
+            
+            <!-- Popular Categories -->
+            <div class="wiki-popular-categories">
+                <h3>Popular Categories</h3>
+                
+                {% if popular_categories|length > 0 %}
+                    <div class="wiki-popular-list">
+                        {% for category in popular_categories %}
+                            <a href="/wiki/categories/{{ category.slug }}" class="wiki-popular-item">
+                                <div class="wiki-popular-info">
+                                    <span class="wiki-popular-name">{{ category.name }}</span>
+                                    <span class="wiki-popular-pages">{{ category.page_count ?? 0 }} pages</span>
+                                </div>
+                                <i class="fas fa-chevron-right wiki-popular-arrow"></i>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="wiki-no-popular">No popular categories yet.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Category Tree -->
+            <div class="wiki-category-tree">
+                <h3>Category Tree</h3>
+                
+                {% if category_tree|length > 0 %}
+                    <div class="wiki-tree-container">
+                        {% for root_category in category_tree %}
+                            <div class="wiki-tree-item">
+                                <div class="wiki-tree-root">
+                                    <a href="/wiki/categories/{{ root_category.slug }}" class="wiki-tree-link">
+                                        <i class="fas fa-folder"></i>
+                                        {{ root_category.name }}
+                                    </a>
+                                    <span class="wiki-tree-count">({{ root_category.page_count ?? 0 }})</span>
+                                </div>
+                                
+                                {% if root_category.children|length > 0 %}
+                                    <div class="wiki-tree-children">
+                                        {% for child in root_category.children %}
+                                            <div class="wiki-tree-child">
+                                                <a href="/wiki/categories/{{ child.slug }}" class="wiki-tree-link wiki-tree-link--child">
+                                                    <i class="fas fa-folder-open"></i>
+                                                    {{ child.name }}
+                                                </a>
+                                                <span class="wiki-tree-count">({{ child.page_count ?? 0 }})</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="wiki-no-tree">No category hierarchy available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.wiki-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wiki-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e8e8e8;
+    padding-bottom: 20px;
+}
+
+.wiki-breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.wiki-breadcrumb a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.wiki-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.wiki-page-title h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.wiki-page-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.wiki-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.wiki-main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Categories Overview */
+.wiki-categories-overview {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.wiki-overview-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+.wiki-overview-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.wiki-overview-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8f9fa;
+    color: #495057;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.wiki-overview-stat i {
+    color: #007cba;
+    width: 14px;
+}
+
+.wiki-featured-categories {
+    margin-top: 25px;
+}
+
+.wiki-featured-categories h3 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.wiki-featured-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.wiki-featured-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.wiki-featured-card:hover {
+    border-color: #007cba;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.wiki-featured-icon {
+    width: 50px;
+    height: 50px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1976d2;
+    font-size: 24px;
+}
+
+.wiki-featured-content {
+    flex: 1;
+}
+
+.wiki-featured-title {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+}
+
+.wiki-featured-title a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.wiki-featured-title a:hover {
+    color: #007cba;
+}
+
+.wiki-featured-description {
+    margin: 0 0 12px 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+.wiki-featured-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #666;
+}
+
+.wiki-featured-pages, .wiki-featured-subcategories {
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Categories List */
+.wiki-categories-list {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e8e8e8;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.wiki-categories-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.wiki-categories-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.wiki-search-categories {
+    position: relative;
+}
+
+.wiki-category-search-input {
+    padding: 10px 35px 10px 12px;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 200px;
+    transition: border-color 0.3s ease;
+}
+
+.wiki-category-search-input:focus {
+    outline: none;
+    border-color: #007cba;
+}
+
+.wiki-category-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-category-sort-select {
+    padding: 10px 12px;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.wiki-categories-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.wiki-category-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.wiki-category-card:hover {
+    border-color: #007cba;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.wiki-category-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.wiki-category-icon {
+    width: 40px;
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007cba;
+    font-size: 18px;
+}
+
+.wiki-category-info {
+    flex: 1;
+}
+
+.wiki-category-title {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+}
+
+.wiki-category-title a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.wiki-category-title a:hover {
+    color: #007cba;
+}
+
+.wiki-category-description {
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.wiki-category-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.wiki-category-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wiki-category-stat-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.wiki-category-stat-value {
+    font-size: 16px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.wiki-category-recent {
+    margin-bottom: 20px;
+}
+
+.wiki-category-recent h5 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.wiki-category-recent-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wiki-category-recent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-category-recent-item:last-child {
+    border-bottom: none;
+}
+
+.wiki-category-recent-link {
+    color: #007cba;
+    text-decoration: none;
+    font-size: 14px;
+    flex: 1;
+}
+
+.wiki-category-recent-link:hover {
+    text-decoration: underline;
+}
+
+.wiki-category-recent-date {
+    color: #666;
+    font-size: 12px;
+}
+
+.wiki-category-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wiki-category-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.wiki-category-action-link:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #212529;
+}
+
+/* No Categories */
+.wiki-no-categories {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.wiki-no-categories-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.wiki-no-categories h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+}
+
+.wiki-no-categories p {
+    margin: 0 0 25px 0;
+    font-size: 1.1rem;
+}
+
+/* Sidebar Styles */
+.wiki-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-quick-actions, .wiki-category-statistics, .wiki-popular-categories, .wiki-category-tree {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-quick-actions h3, .wiki-category-statistics h3, .wiki-popular-categories h3, .wiki-category-tree h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.wiki-btn--primary {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--primary:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+}
+
+.wiki-btn--outline {
+    background: transparent;
+    color: #007cba;
+    border: 1px solid #007cba;
+}
+
+.wiki-btn--outline:hover {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--full {
+    width: 100%;
+}
+
+.wiki-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-stat-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.wiki-stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-stat-value {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.wiki-popular-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wiki-popular-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    color: #007cba;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-popular-item:last-child {
+    border-bottom: none;
+}
+
+.wiki-popular-item:hover {
+    color: #005a87;
+}
+
+.wiki-popular-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wiki-popular-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.wiki-popular-pages {
+    font-size: 12px;
+    color: #666;
+}
+
+.wiki-popular-arrow {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.wiki-no-popular {
+    color: #999;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+}
+
+.wiki-tree-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.wiki-tree-item {
+    border-left: 2px solid #e8e8e8;
+    padding-left: 15px;
+}
+
+.wiki-tree-root {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.wiki-tree-link {
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.wiki-tree-link:hover {
+    text-decoration: underline;
+}
+
+.wiki-tree-count {
+    color: #666;
+    font-size: 12px;
+}
+
+.wiki-tree-children {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wiki-tree-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wiki-tree-link--child {
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.wiki-no-tree {
+    color: #999;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+}
+
+/* Pagination Styles */
+.wiki-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.wiki-pagination-pages {
+    display: flex;
+    gap: 8px;
+}
+
+.wiki-pagination-link, .wiki-pagination-current {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.wiki-pagination-link {
+    color: #007cba;
+    border: 1px solid #e8e8e8;
+}
+
+.wiki-pagination-link:hover {
+    background: #f8f9fa;
+    border-color: #007cba;
+}
+
+.wiki-pagination-current {
+    background: #007cba;
+    color: #fff;
+    border: 1px solid #007cba;
+}
+
+.wiki-pagination-link--prev, .wiki-pagination-link--next {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .wiki-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .wiki-overview-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .wiki-overview-stats {
+        justify-content: flex-start;
+    }
+    
+    .wiki-categories-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .wiki-categories-controls {
+        justify-content: flex-start;
+    }
+    
+    .wiki-category-search-input {
+        width: 100%;
+        min-width: 200px;
+    }
+    
+    .wiki-category-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .wiki-category-actions {
+        flex-direction: column;
+    }
+    
+    .wiki-page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .wiki-main > div, .wiki-sidebar > div {
+        padding: 20px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category search functionality
+    const searchInput = document.getElementById('category-search');
+    const categoriesGrid = document.getElementById('categories-grid');
+    const categoryCards = document.querySelectorAll('.wiki-category-card');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            categoryCards.forEach(card => {
+                const categoryName = card.dataset.categoryName;
+                if (categoryName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Category sorting functionality
+    const sortSelect = document.getElementById('category-sort');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            // Implement sorting logic here
+            console.log('Sorting by:', sortBy);
+        });
+    }
+    
+    // Add smooth animations
+    const categoryCards = document.querySelectorAll('.wiki-category-card');
+    categoryCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %} 

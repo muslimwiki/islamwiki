@@ -12,6 +12,21 @@
     <!-- Bismillah Skin CSS - Beautiful Islamic Theme -->
     <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
     
+    <!-- Wiki-specific CSS -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/wiki.css?v={{ 'now'|date('U') }}">
+    
+    <!-- Analytics CSS -->
+    <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/analytics.css?v={{ 'now'|date('U') }}">
+    
+    <!-- Header Search CSS -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/header-search.css?v={{ 'now'|date('U') }}">
+    
+    <!-- Search Widget CSS -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/search-widget.css?v={{ 'now'|date('U') }}">
+    
+    <!-- Quick Search CSS -->
+    <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/quick-search.css?v={{ 'now'|date('U') }}">
+    
     <!-- Additional Skin CSS (if specified) -->
     {% if skin_css_url %}
         <link rel="stylesheet" href="{{ skin_css_url }}?v={{ 'now'|date('U') }}">
@@ -139,15 +154,15 @@
                         </div>
                     </li>
                     <li class="bismillah-nav-item has-dropdown">
-                        <a href="/articles" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">📝</span>
-                            Articles
+                        <a href="/wiki" class="bismillah-nav-link">
+                            <span class="bismillah-nav-icon">📚</span>
+                            Wiki
                         </a>
                         <div class="nav-dropdown">
-                            <a href="/articles/islamic-history" class="dropdown-item">Islamic History</a>
-                            <a href="/articles/fiqh" class="dropdown-item">Fiqh</a>
-                            <a href="/articles/aqeedah" class="dropdown-item">Aqeedah</a>
-                            <a href="/articles/tasawwuf" class="dropdown-item">Tasawwuf</a>
+                            <a href="/wiki/categories" class="dropdown-item">Categories</a>
+                            <a href="/wiki/recent" class="dropdown-item">Recent Pages</a>
+                            <a href="/wiki/featured" class="dropdown-item">Featured Pages</a>
+                            <a href="/search" class="dropdown-item">Search Wiki</a>
                         </div>
                     </li>
                     <li class="bismillah-nav-item">
@@ -214,6 +229,9 @@
     <!-- JavaScript -->
     <script src="/skins/Bismillah/js/bismillah.js?v={{ 'now'|date('U') }}"></script>
     <script src="/assets/js/marwa.js?v={{ 'now'|date('U') }}"></script>
+    
+    <!-- Header Search JavaScript -->
+    <script src="/skins/Bismillah/js/header-search.js?v={{ 'now'|date('U') }}"></script>
     
     {% block scripts %}{% endblock %}
 </body>

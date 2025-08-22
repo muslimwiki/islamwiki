@@ -148,19 +148,19 @@ if (class_exists('IslamWiki\Extensions\TranslatorExtension\Controllers\Translato
     });
 }
 
-// WikiMarkupExtension Routes
-if (class_exists('IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController')) {
-    $router->group(['prefix' => '/wiki'], function ($router) {
-        $router->get('/', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'index'])
-               ->name('wiki.index');
-        $router->get('/page/{title}', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'showPage'])
-               ->name('wiki.page');
-        $router->get('/edit/{title}', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'editPage'])
-               ->name('wiki.edit');
-        $router->post('/save', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'savePage'])
-               ->name('wiki.save');
-    });
-}
+// WikiMarkupExtension Routes (disabled - now handled by WikiExtension)
+// if (class_exists('IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController')) {
+//     $router->group(['prefix' => '/wiki'], function ($router) {
+//         $router->get('/', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'index'])
+//                ->name('wiki.index');
+//         $router->get('/page/{title}', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'showPage'])
+//                ->name('wiki.page');
+//         $router->get('/edit/{title}', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'editPage'])
+//                ->name('wiki.edit');
+//         $router->post('/save', [IslamWiki\Extensions\WikiMarkupExtension\Controllers\WikiController::class, 'savePage'])
+//                ->name('wiki.save');
+//     });
+// }
 
 // API Routes for Extensions
 $router->group(['prefix' => '/api/extensions', 'middleware' => ['auth']], function ($router) {

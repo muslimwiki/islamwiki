@@ -1,10 +1,18 @@
 {
     "name": "islamwiki/islamwiki",
-    "description": "IslamWiki - Authentic Islamic Knowledge Platform combining MediaWiki, WordPress, and Modern PHP",
+    "description": "IslamWiki - Authentic Islamic Knowledge Platform",
     "type": "project",
-    "keywords": ["islamic", "wiki", "knowledge", "platform", "mediawiki", "wordpress", "php"],
+    "version": "0.0.2.1",
     "license": "AGPL-3.0",
-    "version": "0.0.2.0",
+    "keywords": [
+        "islamic",
+        "wiki",
+        "knowledge",
+        "platform",
+        "quran",
+        "hadith",
+        "islamic-sciences"
+    ],
     "authors": [
         {
             "name": "IslamWiki Development Team",

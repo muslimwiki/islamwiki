@@ -1,0 +1,971 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}History: {{ page.title }} - Wiki - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-container">
+    <div class="wiki-header">
+        <div class="wiki-breadcrumb">
+            <a href="/wiki">Wiki</a> &raquo; 
+            <a href="/wiki/{{ page.slug }}">{{ page.title }}</a> &raquo; History
+        </div>
+        
+        <div class="wiki-page-title">
+            <h1>Page History</h1>
+            <p class="wiki-page-description">Revision history for "{{ page.title }}"</p>
+        </div>
+    </div>
+
+    <div class="wiki-content">
+        <div class="wiki-main">
+            <!-- Page Info -->
+            <div class="wiki-page-info-card">
+                <div class="wiki-page-info-header">
+                    <h2>{{ page.title }}</h2>
+                    <div class="wiki-page-info-meta">
+                        <span class="wiki-page-info-item">
+                            <i class="fas fa-eye"></i>
+                            {{ page.view_count ?? 0 }} views
+                        </span>
+                        <span class="wiki-page-info-item">
+                            <i class="fas fa-edit"></i>
+                            {{ revisions|length }} revision{{ revisions|length != 1 ? 's' : '' }}
+                        </span>
+                        <span class="wiki-page-info-item">
+                            <i class="fas fa-calendar"></i>
+                            Last updated {{ page.updated_at|date('M j, Y') }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="wiki-page-info-actions">
+                    <a href="/wiki/{{ page.slug }}" class="wiki-btn wiki-btn--outline">
+                        <i class="fas fa-eye"></i>
+                        View Current
+                    </a>
+                    {% if can_edit %}
+                        <a href="/wiki/{{ page.slug }}/edit" class="wiki-btn wiki-btn--primary">
+                            <i class="fas fa-edit"></i>
+                            Edit Page
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Revision History -->
+            <div class="wiki-revision-history">
+                <div class="wiki-revision-header">
+                    <h3>Revision History</h3>
+                    <div class="wiki-revision-controls">
+                        {% if revisions|length > 1 %}
+                            <button type="button" id="compare-revisions" class="wiki-btn wiki-btn--outline" disabled>
+                                <i class="fas fa-exchange-alt"></i>
+                                Compare Selected
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if revisions|length > 0 %}
+                    <div class="wiki-revisions-list">
+                        {% for revision in revisions %}
+                            <div class="wiki-revision-item" data-revision-id="{{ revision.id }}">
+                                <div class="wiki-revision-select">
+                                    {% if revisions|length > 1 %}
+                                        <input type="checkbox" name="compare_revision" value="{{ revision.id }}" 
+                                               class="wiki-revision-checkbox" onchange="updateCompareButton()">
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="wiki-revision-content">
+                                    <div class="wiki-revision-header-info">
+                                        <div class="wiki-revision-title">
+                                            <h4>
+                                                <a href="/wiki/{{ page.slug }}/revision/{{ revision.revision_number }}">
+                                                    Revision {{ revision.revision_number }}
+                                                </a>
+                                            </h4>
+                                            <span class="wiki-revision-date">
+                                                {{ revision.created_at|date('M j, Y \a\t g:i A') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="wiki-revision-meta">
+                                            {% if revision.edit_comment %}
+                                                <div class="wiki-revision-comment">
+                                                    <i class="fas fa-comment"></i>
+                                                    {{ revision.edit_comment }}
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <div class="wiki-revision-author">
+                                                <i class="fas fa-user"></i>
+                                                {{ revision.creator_name ?? 'Anonymous' }}
+                                            </div>
+                                            
+                                            {% if revision.is_minor %}
+                                                <span class="wiki-revision-minor">Minor edit</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="wiki-revision-stats">
+                                        <div class="wiki-revision-stat">
+                                            <span class="wiki-revision-stat-label">Size:</span>
+                                            <span class="wiki-revision-stat-value">{{ revision.content|length }} characters</span>
+                                        </div>
+                                        
+                                        {% if revision.previous_revision %}
+                                            <div class="wiki-revision-stat">
+                                                <span class="wiki-revision-stat-label">Changes:</span>
+                                                <span class="wiki-revision-stat-value">
+                                                    {% set changes = revision.changes ?? {} %}
+                                                    {% if changes.added %}
+                                                        <span class="wiki-change-added">+{{ changes.added }}</span>
+                                                    {% endif %}
+                                                    {% if changes.removed %}
+                                                        <span class="wiki-change-removed">-{{ changes.removed }}</span>
+                                                    {% endif %}
+                                                    {% if not changes.added and not changes.removed %}
+                                                        <span class="wiki-change-neutral">No changes</span>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="wiki-revision-actions">
+                                        <a href="/wiki/{{ page.slug }}/revision/{{ revision.revision_number }}" 
+                                           class="wiki-revision-action-link">
+                                            <i class="fas fa-eye"></i>
+                                            View
+                                        </a>
+                                        
+                                        {% if revision.previous_revision %}
+                                            <a href="/wiki/{{ page.slug }}/compare/{{ revision.previous_revision }}/{{ revision.revision_number }}" 
+                                               class="wiki-revision-action-link">
+                                                <i class="fas fa-exchange-alt"></i>
+                                                Compare
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if can_revert and not revision.is_current %}
+                                            <a href="/wiki/{{ page.slug }}/revert/{{ revision.revision_number }}" 
+                                               class="wiki-revision-action-link wiki-revision-action--revert"
+                                               onclick="return confirm('Are you sure you want to revert to this revision? This will create a new revision with the old content.')">
+                                                <i class="fas fa-undo"></i>
+                                                Revert
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if can_delete_revision and not revision.is_current %}
+                                            <form method="POST" action="/wiki/{{ page.slug }}/revision/{{ revision.revision_number }}" 
+                                                  class="wiki-revision-delete-form"
+                                                  onsubmit="return confirm('Are you sure you want to delete this revision? This action cannot be undone.')">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="wiki-revision-action-link wiki-revision-action--delete">
+                                                    <i class="fas fa-trash"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if pagination %}
+                        <div class="wiki-pagination">
+                            {% if pagination.prev_page %}
+                                <a href="?page={{ pagination.prev_page }}" class="wiki-pagination-link wiki-pagination-link--prev">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Previous
+                                </a>
+                            {% endif %}
+                            
+                            <div class="wiki-pagination-pages">
+                                {% for page_num in pagination.page_range %}
+                                    {% if page_num == pagination.current_page %}
+                                        <span class="wiki-pagination-current">{{ page_num }}</span>
+                                    {% else %}
+                                        <a href="?page={{ page_num }}" class="wiki-pagination-link">{{ page_num }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            
+                            {% if pagination.next_page %}
+                                <a href="?page={{ pagination.next_page }}" class="wiki-pagination-link wiki-pagination-link--next">
+                                    Next
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="wiki-no-revisions">
+                        <div class="wiki-no-revisions-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h4>No Revisions Found</h4>
+                        <p>This page doesn't have any revision history yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="wiki-sidebar">
+            <!-- Page Statistics -->
+            <div class="wiki-page-stats">
+                <h3>Page Statistics</h3>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Total Revisions</div>
+                    <div class="wiki-stat-value">{{ revisions|length }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Current Size</div>
+                    <div class="wiki-stat-value">{{ page.content|length }} characters</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">First Created</div>
+                    <div class="wiki-stat-value">{{ page.created_at|date('M j, Y') }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Last Modified</div>
+                    <div class="wiki-stat-value">{{ page.updated_at|date('M j, Y') }}</div>
+                </div>
+                
+                <div class="wiki-stat-item">
+                    <div class="wiki-stat-label">Total Views</div>
+                    <div class="wiki-stat-value">{{ page.view_count ?? 0 }}</div>
+                </div>
+            </div>
+            
+            <!-- Revision Actions -->
+            <div class="wiki-revision-actions-sidebar">
+                <h3>Revision Actions</h3>
+                
+                {% if can_edit %}
+                    <a href="/wiki/{{ page.slug }}/edit" class="wiki-btn wiki-btn--primary wiki-btn--full">
+                        <i class="fas fa-edit"></i>
+                        Edit Current Page
+                    </a>
+                {% endif %}
+                
+                {% if can_revert %}
+                    <div class="wiki-revert-info">
+                        <p>You can revert to any previous revision. This will create a new revision with the old content.</p>
+                    </div>
+                {% endif %}
+                
+                {% if can_delete_revision %}
+                    <div class="wiki-delete-info">
+                        <p><strong>Admin:</strong> You can delete revisions. This action cannot be undone.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="wiki-recent-activity">
+                <h3>Recent Activity</h3>
+                
+                {% if recent_activity|length > 0 %}
+                    <div class="wiki-activity-list">
+                        {% for activity in recent_activity %}
+                            <div class="wiki-activity-item">
+                                <div class="wiki-activity-icon">
+                                    {% if activity.type == 'edit' %}
+                                        <i class="fas fa-edit"></i>
+                                    {% elseif activity.type == 'revert' %}
+                                        <i class="fas fa-undo"></i>
+                                    {% elseif activity.type == 'delete' %}
+                                        <i class="fas fa-trash"></i>
+                                    {% else %}
+                                        <i class="fas fa-circle"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="wiki-activity-content">
+                                    <div class="wiki-activity-text">{{ activity.description }}</div>
+                                    <div class="wiki-activity-time">{{ activity.created_at|date('M j, Y g:i A') }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="wiki-no-activity">No recent activity.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Export Options -->
+            <div class="wiki-export-options">
+                <h3>Export Options</h3>
+                
+                <div class="wiki-export-links">
+                    <a href="/wiki/{{ page.slug }}/export/pdf" class="wiki-export-link">
+                        <i class="fas fa-file-pdf"></i>
+                        Export as PDF
+                    </a>
+                    
+                    <a href="/wiki/{{ page.slug }}/export/markdown" class="wiki-export-link">
+                        <i class="fas fa-file-code"></i>
+                        Export as Markdown
+                    </a>
+                    
+                    <a href="/wiki/{{ page.slug }}/export/html" class="wiki-export-link">
+                        <i class="fas fa-file-code"></i>
+                        Export as HTML
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.wiki-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wiki-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e8e8e8;
+    padding-bottom: 20px;
+}
+
+.wiki-breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.wiki-breadcrumb a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.wiki-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.wiki-page-title h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.wiki-page-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.wiki-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.wiki-main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Page Info Card */
+.wiki-page-info-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid #007cba;
+}
+
+.wiki-page-info-header {
+    margin-bottom: 20px;
+}
+
+.wiki-page-info-header h2 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+.wiki-page-info-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.wiki-page-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-page-info-item i {
+    color: #007cba;
+    width: 14px;
+}
+
+.wiki-page-info-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.wiki-btn--outline {
+    background: transparent;
+    color: #007cba;
+    border: 1px solid #007cba;
+}
+
+.wiki-btn--outline:hover {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--primary {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--primary:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+}
+
+.wiki-btn--full {
+    width: 100%;
+}
+
+/* Revision History */
+.wiki-revision-history {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-revision-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.wiki-revision-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.wiki-revision-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.wiki-revisions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-revision-item {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.wiki-revision-item:hover {
+    border-color: #007cba;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.wiki-revision-select {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 5px;
+}
+
+.wiki-revision-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.wiki-revision-content {
+    flex: 1;
+}
+
+.wiki-revision-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.wiki-revision-title h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.wiki-revision-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.wiki-revision-title a:hover {
+    color: #007cba;
+}
+
+.wiki-revision-date {
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-revision-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.wiki-revision-comment {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+    max-width: 300px;
+    text-align: right;
+}
+
+.wiki-revision-comment i {
+    color: #007cba;
+    width: 14px;
+}
+
+.wiki-revision-author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-revision-author i {
+    color: #007cba;
+    width: 14px;
+}
+
+.wiki-revision-minor {
+    background: #f8f9fa;
+    color: #666;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wiki-revision-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.wiki-revision-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.wiki-revision-stat-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.wiki-revision-stat-value {
+    color: #2c3e50;
+}
+
+.wiki-change-added {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.wiki-change-removed {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.wiki-change-neutral {
+    color: #666;
+    font-style: italic;
+}
+
+.wiki-revision-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wiki-revision-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.wiki-revision-action-link:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #212529;
+}
+
+.wiki-revision-action--revert {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.wiki-revision-action--revert:hover {
+    background: #ffeaa7;
+    border-color: #fdcb6e;
+}
+
+.wiki-revision-action--delete {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.wiki-revision-action--delete:hover {
+    background: #f5c6cb;
+    border-color: #f1b0b7;
+}
+
+.wiki-revision-delete-form {
+    margin: 0;
+}
+
+/* No Revisions */
+.wiki-no-revisions {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.wiki-no-revisions-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.wiki-no-revisions h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+}
+
+.wiki-no-revisions p {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* Sidebar Styles */
+.wiki-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-page-stats, .wiki-revision-actions-sidebar, .wiki-recent-activity, .wiki-export-options {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-page-stats h3, .wiki-revision-actions-sidebar h3, .wiki-recent-activity h3, .wiki-export-options h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.wiki-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-stat-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.wiki-stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.wiki-stat-value {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.wiki-revert-info, .wiki-delete-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+.wiki-revert-info p, .wiki-delete-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.wiki-delete-info p strong {
+    color: #dc3545;
+}
+
+.wiki-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wiki-activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-activity-item:last-child {
+    border-bottom: none;
+}
+
+.wiki-activity-icon {
+    width: 20px;
+    color: #007cba;
+    text-align: center;
+}
+
+.wiki-activity-content {
+    flex: 1;
+}
+
+.wiki-activity-text {
+    color: #2c3e50;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.wiki-activity-time {
+    color: #666;
+    font-size: 12px;
+}
+
+.wiki-no-activity {
+    color: #999;
+    font-style: italic;
+    margin: 0;
+    text-align: center;
+}
+
+.wiki-export-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wiki-export-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.wiki-export-link:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #212529;
+}
+
+/* Pagination Styles */
+.wiki-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.wiki-pagination-pages {
+    display: flex;
+    gap: 8px;
+}
+
+.wiki-pagination-link, .wiki-pagination-current {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.wiki-pagination-link {
+    color: #007cba;
+    border: 1px solid #e8e8e8;
+}
+
+.wiki-pagination-link:hover {
+    background: #f8f9fa;
+    border-color: #007cba;
+}
+
+.wiki-pagination-current {
+    background: #007cba;
+    color: #fff;
+    border: 1px solid #007cba;
+}
+
+.wiki-pagination-link--prev, .wiki-pagination-link--next {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .wiki-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .wiki-page-info-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .wiki-page-info-actions {
+        flex-direction: column;
+    }
+    
+    .wiki-revision-header-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .wiki-revision-meta {
+        align-items: flex-start;
+    }
+    
+    .wiki-revision-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .wiki-revision-actions {
+        flex-direction: column;
+    }
+    
+    .wiki-page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .wiki-main > div, .wiki-sidebar > div {
+        padding: 20px;
+    }
+}
+</style>
+
+<script>
+function updateCompareButton() {
+    const checkboxes = document.querySelectorAll('.wiki-revision-checkbox:checked');
+    const compareButton = document.getElementById('compare-revisions');
+    
+    if (checkboxes.length === 2) {
+        compareButton.disabled = false;
+        compareButton.onclick = function() {
+            const selectedRevisions = Array.from(checkboxes).map(cb => cb.value);
+            if (selectedRevisions.length === 2) {
+                const [rev1, rev2] = selectedRevisions.sort((a, b) => parseInt(a) - parseInt(b));
+                window.location.href = `/wiki/{{ page.slug }}/compare/${rev1}/${rev2}`;
+            }
+        };
+    } else {
+        compareButton.disabled = true;
+    }
+}
+
+// Initialize compare button state
+document.addEventListener('DOMContentLoaded', function() {
+    updateCompareButton();
+    
+    // Add click handlers for revision checkboxes
+    const checkboxes = document.querySelectorAll('.wiki-revision-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateCompareButton);
+    });
+});
+</script>
+{% endblock %}

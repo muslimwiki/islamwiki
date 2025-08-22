@@ -1,0 +1,385 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ page.title }} - Wiki - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-container">
+    <div class="wiki-header">
+        <div class="wiki-breadcrumb">
+            <a href="/wiki">Wiki</a> &raquo; 
+            {% if page.category_name %}
+                <a href="/wiki/category/{{ page.category_slug }}">{{ page.category_name }}</a> &raquo;
+            {% endif %}
+            {{ page.title }}
+        </div>
+        
+        <div class="wiki-page-title">
+            <h1>{{ page.title }}</h1>
+            {% if page.meta_description %}
+                <p class="wiki-page-description">{{ page.meta_description }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="wiki-content">
+        <div class="wiki-main">
+            <div class="wiki-page-content">
+                {{ page.content|raw }}
+            </div>
+            
+            <div class="wiki-page-meta">
+                <div class="wiki-meta-info">
+                    <span class="wiki-meta-item">
+                        <i class="fas fa-user"></i>
+                        Created by {{ page.user_id ?? 'Unknown' }}
+                    </span>
+                    <span class="wiki-meta-item">
+                        <i class="fas fa-calendar"></i>
+                        {{ page.created_at|date('M j, Y') }}
+                    </span>
+                    <span class="wiki-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Last updated {{ page.updated_at|date('M j, Y') }}
+                    </span>
+                    <span class="wiki-meta-item">
+                        <i class="fas fa-eye"></i>
+                        {{ page.view_count ?? 0 }} views
+                    </span>
+                </div>
+                
+                {% if page.tags %}
+                    <div class="wiki-tags">
+                        <i class="fas fa-tags"></i>
+                        {% for tag in page.tags|split(',') %}
+                            <span class="wiki-tag">{{ tag|trim }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="wiki-sidebar">
+            <div class="wiki-actions">
+                {% if canEditPage %}
+                    <a href="/wiki/{{ page.slug }}/edit" class="wiki-btn wiki-btn--primary">
+                        <i class="fas fa-edit"></i> Edit Page
+                    </a>
+                {% endif %}
+                
+                <a href="/wiki/{{ page.slug }}/history" class="wiki-btn wiki-btn--secondary">
+                    <i class="fas fa-history"></i> View History
+                </a>
+                
+                {% if page.is_locked %}
+                    <span class="wiki-locked">
+                        <i class="fas fa-lock"></i> Page Locked
+                    </span>
+                {% endif %}
+            </div>
+            
+            {% if relatedPages %}
+                <div class="wiki-related">
+                    <h3>Related Pages</h3>
+                    <ul class="wiki-related-list">
+                        {% for related in relatedPages %}
+                            <li>
+                                <a href="/wiki/{{ related.slug }}">{{ related.title }}</a>
+                                {% if related.category_name %}
+                                    <span class="wiki-category-badge">{{ related.category_name }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if page.category_name %}
+                <div class="wiki-category-info">
+                    <h3>Category: {{ page.category_name }}</h3>
+                    <p>{{ page.category_description ?? 'No description available.' }}</p>
+                    <a href="/wiki/category/{{ page.category_slug }}" class="wiki-btn wiki-btn--outline">
+                        View All {{ page.category_name }} Pages
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.wiki-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wiki-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e8e8e8;
+    padding-bottom: 20px;
+}
+
+.wiki-breadcrumb {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.wiki-breadcrumb a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.wiki-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.wiki-page-title h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.wiki-page-description {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.wiki-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.wiki-main {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-page-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+
+.wiki-page-content h2, .wiki-page-content h3 {
+    color: #34495e;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.wiki-page-content p {
+    margin-bottom: 20px;
+}
+
+.wiki-page-content ul, .wiki-page-content ol {
+    margin-bottom: 20px;
+    padding-left: 25px;
+}
+
+.wiki-page-content li {
+    margin-bottom: 8px;
+}
+
+.wiki-page-meta {
+    border-top: 1px solid #e8e8e8;
+    padding-top: 20px;
+}
+
+.wiki-meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.wiki-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.wiki-meta-item i {
+    color: #007cba;
+}
+
+.wiki-tags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wiki-tags i {
+    color: #007cba;
+}
+
+.wiki-tag {
+    background: #f0f8ff;
+    color: #007cba;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid #d1e7ff;
+}
+
+.wiki-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-actions {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.wiki-btn--primary {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-btn--primary:hover {
+    background: #005a87;
+    transform: translateY(-1px);
+}
+
+.wiki-btn--secondary {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.wiki-btn--secondary:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.wiki-btn--outline {
+    background: transparent;
+    color: #007cba;
+    border: 1px solid #007cba;
+}
+
+.wiki-btn--outline:hover {
+    background: #007cba;
+    color: #fff;
+}
+
+.wiki-locked {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #dc3545;
+    font-size: 14px;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 6px;
+    border: 1px solid #f5c6cb;
+}
+
+.wiki-related, .wiki-category-info {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.wiki-related h3, .wiki-category-info h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.wiki-related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wiki-related-list li {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.wiki-related-list li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.wiki-related-list a {
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wiki-related-list a:hover {
+    text-decoration: underline;
+}
+
+.wiki-category-badge {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin-left: 8px;
+}
+
+.wiki-category-info p {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .wiki-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .wiki-meta-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .wiki-page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .wiki-main, .wiki-sidebar > div {
+        padding: 20px;
+    }
+}
+</style>
+{% endblock %} 

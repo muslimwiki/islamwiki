@@ -1,0 +1,36 @@
+{
+    "name": "IqraSearchExtension",
+    "version": "1.0.0",
+    "description": "Advanced Islamic search system for IslamWiki using the Iqra search engine",
+    "author": "IslamWiki Development Team",
+    "license": "AGPL-3.0",
+    "type": "search",
+    "requires": {
+        "php": ">=8.1",
+        "islamwiki": ">=0.0.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "IslamWiki\\Extensions\\IqraSearchExtension\\": ""
+        }
+    },
+    "services": [
+        "iqra.search_engine",
+        "iqra.search_indexer",
+        "iqra.search_relevance",
+        "iqra.search_suggestions"
+    ],
+    "hooks": [
+        "SearchQuery",
+        "SearchResult",
+        "ContentIndexed"
+    ],
+    "features": [
+        "Universal search across all content types",
+        "Advanced filtering and sorting",
+        "Real-time search suggestions",
+        "Search analytics and insights",
+        "Content indexing and optimization",
+        "Multi-language search support"
+    ]
+} 

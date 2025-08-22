@@ -643,32 +643,38 @@
     transition: all 0.3s ease;
     border: 2px solid transparent;
     font-size: 0.95rem;
+    cursor: pointer;
 }
 
 .action-button-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
-    color: white;
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    border: 2px solid #3b82f6;
 }
 
 .action-button-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
-    color: white;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    color: #ffffff;
     text-decoration: none;
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    border-color: #2563eb;
 }
 
 .action-button-secondary {
     background: transparent;
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: #3b82f6;
+    border-color: #3b82f6;
+    border: 2px solid #3b82f6;
 }
 
 .action-button-secondary:hover {
-    background: var(--primary-color);
-    color: white;
+    background: #3b82f6;
+    color: #ffffff;
     text-decoration: none;
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
 }
 
 .action-icon {
@@ -679,27 +685,28 @@
 .empty-results {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--card-background);
+    background: #ffffff;
     border-radius: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .empty-icon {
     font-size: 4rem;
     margin-bottom: 1.5rem;
     opacity: 0.5;
+    color: #6b7280;
 }
 
 .empty-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #1f2937;
     margin: 0 0 1rem 0;
 }
 
 .empty-description {
-    color: var(--text-secondary);
+    color: #6b7280;
     font-size: 1.1rem;
     margin: 0 0 2rem 0;
     line-height: 1.6;

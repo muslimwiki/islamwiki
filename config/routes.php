@@ -26,6 +26,11 @@ use IslamWiki\Http\Controllers\ProfileController;
 use IslamWiki\Http\Controllers\SettingsController;
 use IslamWiki\Http\Controllers\QueueController;
 use IslamWiki\Http\Controllers\SciencesController;
+use IslamWiki\Extensions\WikiExtension\Controllers\WikiController;
+use IslamWiki\Extensions\WikiExtension\Controllers\PageController as WikiPageController;
+use IslamWiki\Extensions\WikiExtension\Controllers\CategoryController;
+use IslamWiki\Extensions\WikiExtension\Controllers\SearchController as WikiSearchController;
+use IslamWiki\Extensions\WikiExtension\Controllers\HistoryController;
 use IslamWiki\Http\Middleware\AuthenticationMiddleware;
 use IslamWiki\Core\Language\LanguageService;
 
@@ -58,6 +63,13 @@ return function (\IslamWiki\Core\Application $app) {
     );
     $queueController = new QueueController($db, $container);
     $sciencesController = new SciencesController($db, $container);
+    
+    // WikiExtension Controllers
+    $wikiController = new WikiController($db, $container);
+    $wikiPageController = new WikiPageController($db, $container);
+    $wikiCategoryController = new CategoryController($db, $container);
+    $wikiSearchController = new WikiSearchController($db, $container);
+    $wikiHistoryController = new HistoryController($db, $container);
 
     // Create middleware instances
     $authMiddleware = new AuthenticationMiddleware($container->get('session'));
@@ -80,22 +92,22 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/dashboard', [$dashboardController, 'index']);
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/dashboard', [$dashboardController, 'index']);
 
-    // Page routes
-    $app->get('/wiki', [$pageController, 'index']);
-    $app->get('/wiki/{slug:.+}', [$pageController, 'show']);
-    $app->get('/wiki/{slug:.+}/history', [$pageController, 'history']);
-    $app->get('/wiki/{slug:.+}/history/{revisionId:\d+}', [$pageController, 'showRevision']);
-    $app->get('/wiki/{slug:.+}/revert/{revisionId:\d+}', [$pageController, 'revert']);
-    $app->get('/wiki/{slug:.+}/edit', [$pageController, 'edit']);
-    $app->post('/wiki/{slug:.+}', [$pageController, 'update']);
+    // Page routes (legacy - now handled by WikiExtension)
+    // $app->get('/wiki', [$pageController, 'index']);
+    // $app->get('/wiki/{slug:.+}', [$pageController, 'show']);
+    // $app->get('/wiki/{slug:.+}/history', [$pageController, 'history']);
+    // $app->get('/wiki/{slug:.+}/history/{revisionId:\d+}', [$pageController, 'showRevision']);
+    // $app->get('/wiki/{slug:.+}/revert/{revisionId:\d+}', [$pageController, 'revert']);
+    // $app->get('/wiki/{slug:.+}/edit', [$pageController, 'edit']);
+    // $app->post('/wiki/{slug:.+}', [$pageController, 'update']);
     $app->get('/create', [$pageController, 'create']);
     $app->post('/create', [$pageController, 'store']);
-    $app->post('/wiki/{slug:.+}/lock', [$pageController, 'lock']);
-    $app->post('/wiki/{slug:.+}/unlock', [$pageController, 'unlock']);
+    // $app->post('/wiki/{slug:.+}/lock', [$pageController, 'lock']);
+    // $app->post('/wiki/{slug:.+}/unlock', [$pageController, 'unlock']);
 
-    // Language-specific page routes
-    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki', [$pageController, 'index']);
-    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}', [$pageController, 'show']);
+    // Language-specific page routes (legacy - now handled by WikiExtension)
+    // $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki', [$pageController, 'index']);
+    // $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}', [$pageController, 'show']);
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/history', [$pageController, 'history']);
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/history/{revisionId:\d+}', [$pageController, 'showRevision']);
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/revert/{revisionId:\d+}', [$pageController, 'revert']);
@@ -106,18 +118,27 @@ return function (\IslamWiki\Core\Application $app) {
     $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/lock', [$pageController, 'lock']);
     $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug:.+}/unlock', [$pageController, 'unlock']);
 
-    // User authentication routes
-    $app->get('/login', [$authController, 'showLogin']);
-    $app->post('/login', [$authController, 'login']);
-    $app->get('/logout', [$authController, 'logout']);
-    $app->get('/register', [$authController, 'showRegister']);
-    $app->post('/register', [$authController, 'register']);
+    // User authentication routes - Fixed structure
+    $app->get('/auth/login', [$authController, 'showLogin']);
+    $app->post('/auth/login', [$authController, 'login']);
+    $app->get('/auth/register', [$authController, 'showRegister']);
+    $app->post('/auth/register', [$authController, 'register']);
+    $app->get('/auth/forgot-password', [$authController, 'showForgotPassword']);
+    $app->post('/auth/forgot-password', [$authController, 'forgotPassword']);
+    $app->get('/auth/reset-password', [$authController, 'showResetPassword']);
+    $app->post('/auth/reset-password', [$authController, 'resetPassword']);
+    $app->post('/auth/logout', [$authController, 'logout']);
     
-    // Language-specific authentication routes
-    $app->get('/{language:en|ar|tr|ur|id|ms|fa|tr|ur|id|ms|fa|he}/login', [$authController, 'showLogin']);
-    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/login', [$authController, 'login']);
-    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/register', [$authController, 'showRegister']);
-    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/register', [$authController, 'register']);
+    // Language-specific authentication routes - Fixed structure
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/login', [$authController, 'showLogin']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/login', [$authController, 'login']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/register', [$authController, 'showRegister']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/register', [$authController, 'register']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/forgot-password', [$authController, 'showForgotPassword']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/forgot-password', [$authController, 'forgotPassword']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/reset-password', [$authController, 'showResetPassword']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/reset-password', [$authController, 'resetPassword']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/auth/logout', [$authController, 'logout']);
     
     // Protected routes (require authentication)
     $app->get('/profile', [$profileController, 'index'])->middleware($authMiddleware);
@@ -168,17 +189,13 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/configuration/audit', [$configController, 'auditLog']);
     $app->get('/configuration/backups', [$configController, 'backups']);
 
-    // Search routes
-    $app->get('/search', [$searchController, 'index']);
-    $app->post('/search', [$searchController, 'search']);
-    $app->get('/search/suggestions', [$searchController, 'suggestions']);
-    $app->get('/search/analytics', [$searchController, 'analytics']);
-
-    // Iqra Search routes
-    $app->get('/iqra-search', [$iqraSearchController, 'index']);
-    $app->get('/iqra-search/api/search', [$iqraSearchController, 'apiSearch']);
-    $app->get('/iqra-search/api/suggestions', [$iqraSearchController, 'apiSuggestions']);
-    $app->get('/iqra-search/api/analytics', [$iqraSearchController, 'apiAnalytics']);
+    // Search routes - Now handled directly by IqraSearchExtension
+    // All search functionality is unified under /search
+    $app->get('/search', [$iqraSearchController, 'index']);
+    $app->post('/search', [$iqraSearchController, 'apiSearch']);
+    $app->get('/search/api/search', [$iqraSearchController, 'apiSearch']);
+    $app->get('/search/api/suggestions', [$iqraSearchController, 'apiSuggestions']);
+    $app->get('/search/api/analytics', [$iqraSearchController, 'apiAnalytics']);
 
     // Salah routes
     $app->get('/salah', [$salahController, 'index']);
@@ -201,6 +218,64 @@ return function (\IslamWiki\Core\Application $app) {
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/search', [$hadithController, 'search']);
     $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/hadith/widget', [$hadithController, 'widget']);
 
+    // Unified Wiki routes (handled by WikiExtension)
+    $app->get('/wiki', [$wikiController, 'index']);
+    $app->get('/wiki/{slug}', [$wikiPageController, 'show']);
+    $app->get('/wiki/{slug}/edit', [$wikiPageController, 'edit']);
+    $app->post('/wiki/{slug}', [$wikiPageController, 'update']);
+    $app->get('/wiki/category/{category}', [$wikiCategoryController, 'show']);
+    $app->get('/wiki/search', [$wikiSearchController, 'index']);
+    $app->post('/wiki/search', [$wikiSearchController, 'search']);
+    $app->get('/wiki/history', [$wikiHistoryController, 'index']);
+    $app->get('/wiki/create', [$wikiPageController, 'create']);
+    $app->post('/wiki/create', [$wikiPageController, 'store']);
+
+    // Language-specific Wiki routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki', [$wikiController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}', [$wikiPageController, 'show']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/edit', [$wikiPageController, 'edit']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}', [$wikiPageController, 'update']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/{category}', [$wikiCategoryController, 'show']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/search', [$wikiSearchController, 'index']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/search', [$wikiSearchController, 'search']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/history', [$wikiHistoryController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/create', [$wikiPageController, 'create']);
+        $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/create', [$wikiPageController, 'store']);
+    
+    // Additional Wiki routes for categories and management
+    $app->get('/wiki/categories', [$wikiCategoryController, 'index']);
+    $app->get('/wiki/category/create', [$wikiCategoryController, 'create'])->middleware($authMiddleware);
+    $app->post('/wiki/category/create', [$wikiCategoryController, 'store'])->middleware($authMiddleware);
+    $app->get('/wiki/category/{category}/edit', [$wikiCategoryController, 'edit'])->middleware($authMiddleware);
+    $app->post('/wiki/category/{category}/edit', [$wikiCategoryController, 'update'])->middleware($authMiddleware);
+    $app->post('/wiki/category/{category}/delete', [$wikiCategoryController, 'delete'])->middleware($authMiddleware);
+    
+    // Advanced Wiki routes for page management
+    $app->get('/wiki/{slug}/history', [$wikiHistoryController, 'index']);
+    $app->get('/wiki/{slug}/history/{revisionId}', [$wikiHistoryController, 'show']);
+    $app->get('/wiki/{slug}/history/compare/{revision1}/{revision2}', [$wikiHistoryController, 'compare']);
+    $app->post('/wiki/{slug}/history/revert/{revisionId}', [$wikiHistoryController, 'revert'])->middleware($authMiddleware);
+    $app->post('/wiki/{slug}/lock', [$wikiPageController, 'lock'])->middleware($authMiddleware);
+    $app->post('/wiki/{slug}/unlock', [$wikiPageController, 'unlock'])->middleware($authMiddleware);
+    $app->delete('/wiki/{slug}', [$wikiPageController, 'delete'])->middleware($authMiddleware);
+    
+    // Language-specific advanced wiki routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/history', [$wikiHistoryController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/history/{revisionId}', [$wikiHistoryController, 'show']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/history/compare/{revision1}/{revision2}', [$wikiHistoryController, 'compare']);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/history/revert/{revisionId}', [$wikiHistoryController, 'revert'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}/lock', [$wikiPageController, 'lock'])->middleware($authMiddleware);
+    $app->post('/{language:en|tr|ur|id|ms|fa|he}/wiki/{slug}/unlock', [$wikiPageController, 'unlock'])->middleware($authMiddleware);
+    $app->delete('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/{slug}', [$wikiPageController, 'delete'])->middleware($authMiddleware);
+    
+    // Language-specific additional wiki routes
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/categories', [$wikiCategoryController, 'index']);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/create', [$wikiCategoryController, 'create'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/create', [$wikiCategoryController, 'store'])->middleware($authMiddleware);
+    $app->get('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/{category}/edit', [$wikiCategoryController, 'edit'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/{category}/edit', [$wikiCategoryController, 'update'])->middleware($authMiddleware);
+    $app->post('/{language:en|ar|tr|ur|id|ms|fa|he}/wiki/category/{category}/delete', [$wikiCategoryController, 'delete'])->middleware($authMiddleware);
+    
     // Quran routes - Handled by QuranExtension
     // Note: Quran routes are now registered by the QuranExtension
 
@@ -250,6 +325,11 @@ return function (\IslamWiki\Core\Application $app) {
         $contentController,
         $communityController,
         $securityController,
+        $wikiController,
+        $wikiPageController,
+        $wikiCategoryController,
+        $wikiSearchController,
+        $wikiHistoryController,
         $profileController
     ) {
         // Pages
@@ -260,8 +340,11 @@ return function (\IslamWiki\Core\Application $app) {
         $this->delete('/pages/{slug:.+}', [$apiController, 'deletePage']);
         $this->get('/pages/{slug:.+}/history', [$apiController, 'getPageHistory']);
 
-        // Search
-        $this->get('/search', [$apiController, 'search']);
+        // Search API - Now handled directly by IqraSearchExtension
+        $this->get('/search', [$iqraSearchController, 'apiSearch']);
+        $this->post('/search', [$iqraSearchController, 'apiSearch']);
+        $this->get('/search/suggestions', [$iqraSearchController, 'apiSuggestions']);
+        $this->get('/search/analytics', [$iqraSearchController, 'apiAnalytics']);
 
         // Users
         $this->get('/users/current', [$apiController, 'getCurrentUser']);
@@ -279,12 +362,6 @@ return function (\IslamWiki\Core\Application $app) {
         $this->get('/configuration/dependencies/{key}', [$configController, 'apiDependencies']);
         $this->post('/configuration/suggestions', [$configController, 'apiSuggestions']);
         $this->get('/configuration/performance', [$configController, 'apiPerformance']);
-
-        // Search API
-        $this->get('/search', [$searchController, 'apiSearch']);
-        $this->post('/search', [$searchController, 'apiSearch']);
-        $this->get('/search/suggestions', [$searchController, 'apiSuggestions']);
-        $this->get('/search/analytics', [$searchController, 'apiAnalytics']);
 
         // Salah API
         $this->get('/salah/times', [$salahController, 'apiGetTimes']);
@@ -312,6 +389,15 @@ return function (\IslamWiki\Core\Application $app) {
         $this->get('/content/category/{category}', [$contentController, 'apiCategory']);
         $this->get('/content/search', [$contentController, 'apiSearch']);
         $this->get('/content/recommendations', [$contentController, 'apiRecommendations']);
+        
+        // Wiki API
+        $this->get('/wiki', [$wikiController, 'apiIndex']);
+        $this->get('/wiki/{slug}', [$wikiPageController, 'apiShow']);
+        $this->get('/wiki/search', [$wikiSearchController, 'apiSearch']);
+        $this->get('/wiki/categories', [$wikiCategoryController, 'apiIndex']);
+        $this->get('/wiki/category/{category}', [$wikiCategoryController, 'apiShow']);
+        $this->get('/wiki/{slug}/history', [$wikiHistoryController, 'apiIndex']);
+        $this->get('/wiki/{slug}/history/{revisionId}', [$wikiHistoryController, 'apiShow']);
 
         // Community API
         $this->get('/community', [$communityController, 'apiIndex']);

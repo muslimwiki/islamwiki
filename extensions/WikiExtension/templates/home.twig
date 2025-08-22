@@ -1,0 +1,149 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}IslamWiki - Authentic Islamic Knowledge{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+        <h1 class="hero-title">Welcome to IslamWiki</h1>
+        <p class="hero-subtitle">The world's most comprehensive source of authentic Islamic knowledge, built by scholars for the global Muslim community.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">6,236</div>
+                <div class="stat-label">Quranic Verses</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">12,847</div>
+                <div class="stat-label">Authentic Hadith</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2,847</div>
+                <div class="stat-label">Articles</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">47</div>
+                <div class="stat-label">Languages</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Articles -->
+<section class="featured-section">
+    <div class="section-container">
+        <div class="section-title">
+            <h2>Featured Content</h2>
+            <p class="section-subtitle">Carefully curated articles reviewed by our panel of Islamic scholars</p>
+        </div>
+
+        <div class="featured-grid">
+            <article class="featured-card">
+                <div class="card-image">📖</div>
+                <div class="card-content">
+                    <div class="card-category">Quranic Studies</div>
+                    <h3 class="card-title">Understanding Surah Al-Fatiha: The Opening</h3>
+                    <p class="card-excerpt">A comprehensive analysis of the opening chapter of the Quran, its meanings, and significance in Islamic worship and daily life.</p>
+                    <div class="card-meta">
+                        <div class="card-author">
+                            <div class="author-avatar">AH</div>
+                            <span>Dr. Ahmed Hassan</span>
+                        </div>
+                        <span>2 hours ago</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="featured-card">
+                <div class="card-image">🕌</div>
+                <div class="card-content">
+                    <div class="card-category">Islamic History</div>
+                    <h3 class="card-title">The Golden Age of Islamic Science</h3>
+                    <p class="card-excerpt">Explore the remarkable contributions of Muslim scholars to mathematics, astronomy, medicine, and philosophy during the Islamic Golden Age.</p>
+                    <div class="card-meta">
+                        <div class="card-author">
+                            <div class="author-avatar">LM</div>
+                            <span>Dr. Layla Mahmoud</span>
+                        </div>
+                        <span>5 hours ago</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="featured-card">
+                <div class="card-image">📚</div>
+                <div class="card-content">
+                    <div class="card-category">Hadith Studies</div>
+                    <h3 class="card-title">The Science of Hadith Authentication</h3>
+                    <p class="card-excerpt">Learn about the rigorous methodology used by Islamic scholars to verify and authenticate prophetic traditions throughout history.</p>
+                    <div class="card-meta">
+                        <div class="card-author">
+                            <div class="author-avatar">OS</div>
+                            <span>Prof. Omar Salim</span>
+                        </div>
+                        <span>1 day ago</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="section-container">
+        <div class="section-title">
+            <h2>Explore Islamic Knowledge</h2>
+            <p class="section-subtitle">Browse our comprehensive collection of Islamic content organized by category</p>
+        </div>
+
+        <div class="categories-grid">
+            <div class="category-card" onclick="location.href='/{{ locale }}/quran'">
+                <div class="category-icon">📖</div>
+                <h3 class="category-title">Quran & Tafsir</h3>
+                <p class="category-description">Complete Quranic text with translations, commentary, and scholarly interpretations.</p>
+                <div class="category-count">6,236 verses • 47 translations</div>
+            </div>
+
+            <div class="category-card" onclick="location.href='/hadith'">
+                <div class="category-icon">📚</div>
+                <h3 class="category-title">Hadith Collections</h3>
+                <p class="category-description">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him).</p>
+                <div class="category-count">12,847 authenticated hadith</div>
+            </div>
+
+            <div class="category-card" onclick="location.href='/scholars'">
+                <div class="category-icon">👨‍🏫</div>
+                <h3 class="category-title">Islamic Scholars</h3>
+                <p class="category-description">Biographies and works of influential Islamic scholars throughout history.</p>
+                <div class="category-count">892 scholar profiles</div>
+            </div>
+
+            <div class="category-card" onclick="location.href='/fiqh'">
+                <div class="category-icon">⚖️</div>
+                <h3 class="category-title">Fiqh & Jurisprudence</h3>
+                <p class="category-description">Islamic law, jurisprudence, and contemporary legal rulings.</p>
+                <div class="category-count">3,289 rulings & opinions</div>
+            </div>
+
+            <div class="category-card" onclick="location.href='/history'">
+                <div class="category-icon">🕌</div>
+                <h3 class="category-title">Islamic History</h3>
+                <p class="category-description">Chronicles of Islamic civilization, events, and historical analysis.</p>
+                <div class="category-count">1,456 historical articles</div>
+            </div>
+
+            <div class="category-card" onclick="location.href='/practices'">
+                <div class="category-icon">🌙</div>
+                <h3 class="category-title">Islamic Practices</h3>
+                <p class="category-description">Guidance on worship, rituals, and daily Islamic practices.</p>
+                <div class="category-count">567 practice guides</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block head %}{% endblock %}

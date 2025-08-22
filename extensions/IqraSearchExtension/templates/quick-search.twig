@@ -1,0 +1,137 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Quick Search - {{ query }} - IslamWiki{% endblock %}
+
+{% block content %}
+<!-- Quick Search Header -->
+<section class="quick-search-header">
+    <div class="quick-search-header__container">
+        <h1 class="quick-search-header__title">🔍 Quick Search Results</h1>
+        <p class="quick-search-header__subtitle">Searching for: "{{ query }}"</p>
+        
+        <!-- Back to Search -->
+        <div class="quick-search-header__actions">
+            <a href="/search?q={{ query|url_encode }}" class="quick-search-header__button">
+                🔍 Full Search Results
+            </a>
+            <a href="javascript:history.back()" class="quick-search-header__button quick-search-header__button--secondary">
+                ← Go Back
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Search Results -->
+<section class="quick-search-results">
+    <div class="quick-search-results__container">
+        {% if results %}
+            <div class="quick-search-results__info">
+                <p><strong>{{ results|length }} results</strong> found in <strong>{{ search_time|default('0.1') }} seconds</strong></p>
+            </div>
+            
+            <div class="quick-search-results__list">
+                {% for result in results %}
+                <div class="quick-search-result" data-type="{{ result.type }}">
+                    <div class="quick-search-result__header">
+                        <h3 class="quick-search-result__title">
+                            <a href="{{ result.url }}" class="quick-search-result__link">
+                                {{ result.title }}
+                            </a>
+                        </h3>
+                        <span class="quick-search-result__type quick-search-result__type--{{ result.type }}">
+                            {{ result.type|title }}
+                        </span>
+                    </div>
+                    
+                    <div class="quick-search-result__content">
+                        <p class="quick-search-result__snippet">{{ result.snippet }}</p>
+                    </div>
+                    
+                    <div class="quick-search-result__meta">
+                        <span class="quick-search-result__relevance">
+                            Relevance: {{ result.relevance }}%
+                        </span>
+                        {% if result.author %}
+                        <span class="quick-search-result__author">
+                            By: {{ result.author }}
+                        </span>
+                        {% endif %}
+                        {% if result.last_updated %}
+                        <span class="quick-search-result__date">
+                            Updated: {{ result.last_updated }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Load More Results -->
+            <div class="quick-search-results__load-more">
+                <a href="/search?q={{ query|url_encode }}" class="quick-search-results__load-more-button">
+                    🔍 View All {{ total_results|default(results|length) }} Results
+                </a>
+            </div>
+            
+        {% else %}
+            <div class="quick-search-results__empty">
+                <div class="quick-search-results__empty-icon">🔍</div>
+                <h2 class="quick-search-results__empty-title">No Results Found</h2>
+                <p class="quick-search-results__empty-description">
+                    We couldn't find any results for "{{ query }}". Try:
+                </p>
+                <ul class="quick-search-results__empty-suggestions">
+                    <li>Checking your spelling</li>
+                    <li>Using different keywords</li>
+                    <li>Searching in specific content types</li>
+                    <li>Using broader search terms</li>
+                </ul>
+                
+                <div class="quick-search-results__empty-actions">
+                    <a href="/search" class="quick-search-results__empty-button">
+                        🔍 Try Advanced Search
+                    </a>
+                    <a href="/wiki" class="quick-search-results__empty-button quick-search-results__empty-button--secondary">
+                        📚 Browse Wiki Content
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Related Searches -->
+{% if related_searches %}
+<section class="quick-search-related">
+    <div class="quick-search-related__container">
+        <h2 class="quick-search-related__title">Related Searches</h2>
+        <div class="quick-search-related__tags">
+            {% for related in related_searches %}
+            <a href="/search?q={{ related|url_encode }}" class="quick-search-related__tag">
+                {{ related }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Quick search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any quick search specific functionality here
+    console.log('Quick search results loaded for: {{ query }}');
+    
+    // Track search analytics
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'search', {
+            'search_term': '{{ query }}',
+            'search_results': {{ results|length }},
+            'search_type': 'quick_search'
+        });
+    }
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,301 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Islamic Wiki - Discover Islamic Knowledge - IslamWiki{% endblock %}
+
+{% block content %}
+<!-- Wiki Hero Section -->
+<section class="wiki-hero">
+    <div class="wiki-hero__container">
+        <div class="wiki-hero__content">
+            <h1 class="wiki-hero__title">📚 Islamic Wiki</h1>
+            <p class="wiki-hero__subtitle">Discover, learn, and contribute to the vast knowledge of Islamic scholarship, history, and contemporary understanding.</p>
+            <p class="wiki-hero__description">Our comprehensive wiki system brings together authentic Islamic knowledge in an accessible, collaborative format.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="wiki-search">
+    <div class="wiki-search__container">
+        <div class="wiki-search__form">
+            <input type="text" class="wiki-search__input" placeholder="Search Islamic knowledge, topics, scholars, or concepts..." />
+            <button class="wiki-search__button" type="button">🔍 Search</button>
+        </div>
+        
+        <!-- Search Options -->
+        <div class="wiki-search__options">
+            <div class="wiki-search__type-selector">
+                <label for="search-type">Search in:</label>
+                <select id="search-type" class="wiki-search__type-select">
+                    <option value="all">All Content</option>
+                    <option value="wiki">Wiki Pages</option>
+                    <option value="quran">Quran</option>
+                    <option value="hadith">Hadith</option>
+                    <option value="wiki">Wiki</option>
+                    <option value="scholars">Scholars</option>
+                </select>
+            </div>
+            
+            <div class="wiki-search__sort-selector">
+                <label for="search-sort">Sort by:</label>
+                <select id="search-sort" class="wiki-search__sort-select">
+                    <option value="relevance">Relevance</option>
+                    <option value="date">Date</option>
+                    <option value="title">Title</option>
+                    <option value="popularity">Popularity</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Search Suggestions -->
+        <div class="wiki-search__suggestions" id="search-suggestions" style="display: none;">
+            <div class="wiki-search__suggestions-header">
+                <h4>💡 Search Suggestions</h4>
+            </div>
+            <div class="wiki-search__suggestions-list" id="suggestions-list">
+                <!-- Suggestions will be populated here -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="wiki-stats">
+    <div class="wiki-stats__container">
+        <div class="wiki-stats__grid">
+            <div class="wiki-stats__card">
+                <div class="wiki-stats__number">0</div>
+                <div class="wiki-stats__label">Total Pages</div>
+            </div>
+            <div class="wiki-stats__card">
+                <div class="wiki-stats__number">0</div>
+                <div class="wiki-stats__label">Categories</div>
+            </div>
+            <div class="wiki-stats__card">
+                <div class="wiki-stats__number">0</div>
+                <div class="wiki-stats__label">Revisions</div>
+            </div>
+            <div class="wiki-stats__card">
+                <div class="wiki-stats__number">0</div>
+                <div class="wiki-stats__label">Contributors</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions Section -->
+<section class="wiki-actions">
+    <div class="wiki-actions__container">
+        <div class="wiki-actions__grid">
+            <a href="/search" class="wiki-action__button wiki-action__button--primary">
+                <span class="wiki-action__icon">🔍</span>
+                <span class="wiki-action__text">Search Knowledge</span>
+            </a>
+            <a href="/wiki/create" class="wiki-action__button wiki-action__button--secondary">
+                <span class="wiki-action__icon">✍️</span>
+                <span class="wiki-action__text">Create New Page</span>
+            </a>
+            <a href="/wiki/categories" class="wiki-action__button wiki-action__button--outline">
+                <span class="wiki-action__icon">📂</span>
+                <span class="wiki-action__text">Browse Categories</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="wiki-cta">
+    <div class="wiki-cta__container">
+        <div class="wiki-cta__content">
+            <h2 class="wiki-cta__title">🌟 Contribute to Islamic Knowledge</h2>
+            <p class="wiki-cta__description">Share your knowledge, research, and insights with the global Islamic community.</p>
+            <a href="/wiki/create" class="wiki-cta__button">Start Writing</a>
+        </div>
+    </div>
+</section>
+
+<!-- Search Widget Sidebar -->
+<aside class="wiki-sidebar">
+    <div class="wiki-sidebar__container">
+        {% include 'components/search-widget.twig' %}
+        
+        <div class="wiki-sidebar__section">
+            <h3 class="wiki-sidebar__title">📚 Quick Access</h3>
+            <ul class="wiki-sidebar__links">
+                <li><a href="/wiki/categories">Browse Categories</a></li>
+                <li><a href="/wiki/recent">Recent Updates</a></li>
+                <li><a href="/wiki/popular">Popular Pages</a></li>
+                <li><a href="/wiki/random">Random Page</a></li>
+            </ul>
+        </div>
+        
+        <div class="wiki-sidebar__section">
+            <h3 class="wiki-sidebar__title">🔍 Search Tips</h3>
+            <ul class="wiki-sidebar__tips">
+                <li>Use specific terms for better results</li>
+                <li>Try different content types</li>
+                <li>Check search suggestions</li>
+                <li>Use quotes for exact phrases</li>
+            </ul>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Wiki-specific JavaScript with Iqra Search Integration
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality with Iqra integration
+    const searchInput = document.querySelector('.wiki-search__input');
+    const searchButton = document.querySelector('.wiki-search__button');
+    const searchType = document.querySelector('#search-type');
+    const searchSort = document.querySelector('#search-sort');
+    const searchSuggestions = document.querySelector('#search-suggestions');
+    const suggestionsList = document.querySelector('#suggestions-list');
+    
+    let searchTimeout;
+    
+    // Search button click handler
+    if (searchButton) {
+        searchButton.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+        });
+    }
+    
+    // Enter key handler
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Real-time search suggestions
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            
+            // Show suggestions after 300ms delay
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    getSearchSuggestions(query);
+                }, 300);
+            } else {
+                hideSuggestions();
+            }
+        });
+        
+        // Focus/blur handlers for suggestions
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) {
+                getSearchSuggestions(this.value.trim());
+            }
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+    }
+    
+    // Perform search using Iqra search system
+    function performSearch() {
+        const query = searchInput.value.trim();
+        const type = searchType.value;
+        const sort = searchSort.value;
+        
+        if (query) {
+            // Build search URL with parameters
+            const searchUrl = new URL('/search', window.location.origin);
+            searchUrl.searchParams.set('q', query);
+            searchUrl.searchParams.set('type', type);
+            searchUrl.searchParams.set('sort', sort);
+            searchUrl.searchParams.set('order', 'desc');
+            
+            // Redirect to search results
+            window.location.href = searchUrl.toString();
+        }
+    }
+    
+    // Get search suggestions from search API
+    async function getSearchSuggestions(query) {
+        try {
+            const response = await fetch(`/search/api/suggestions?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.success !== false && data.suggestions && data.suggestions.length > 0) {
+                showSuggestions(data.suggestions);
+            } else {
+                hideSuggestions();
+            }
+        } catch (error) {
+            console.error('Failed to get search suggestions:', error);
+            hideSuggestions();
+        }
+    }
+    
+    // Display search suggestions
+    function showSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0) {
+            hideSuggestions();
+            return;
+        }
+        
+        // Clear previous suggestions
+        suggestionsList.innerHTML = '';
+        
+        // Add new suggestions
+        suggestions.forEach(suggestion => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.className = 'wiki-search__suggestion-item';
+            suggestionItem.innerHTML = `
+                <span class="suggestion-text">${suggestion}</span>
+                <span class="suggestion-icon">🔍</span>
+            `;
+            
+            // Click handler for suggestion
+            suggestionItem.addEventListener('click', function() {
+                searchInput.value = suggestion;
+                hideSuggestions();
+                performSearch();
+            });
+            
+            suggestionsList.appendChild(suggestionItem);
+        });
+        
+        // Show suggestions container
+        searchSuggestions.style.display = 'block';
+    }
+    
+    // Hide search suggestions
+    function hideSuggestions() {
+        searchSuggestions.style.display = 'none';
+        suggestionsList.innerHTML = '';
+    }
+    
+    // Quick search shortcuts
+    const quickSearchButtons = document.querySelectorAll('.wiki-action__button');
+    quickSearchButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // If it's a search action, don't navigate yet
+            if (href.includes('/wiki/search')) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Deployment Dashboard - IslamWiki</title>
+    <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/production-deployment.css">
+    <link rel="stylesheet" href="/assets/css/safa.css">
+</head>
+<body class="safa-body">
+    <div class="safa-container">
+        <!-- Header -->
+        <header class="safa-header">
+            <div class="safa-header-content">
+                <h1 class="safa-header-title">
+                    🚀 Production Deployment Dashboard
+                </h1>
+                <p class="safa-header-subtitle">
+                    Complete production deployment and launch management
+                </p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="safa-main">
+            <!-- Deployment Status Overview -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>📊 Deployment Status Overview</h2>
+                    <div class="safa-section-actions">
+                        <button class="safa-button safa-button--primary" id="refreshStatus">
+                            🔄 Refresh Status
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="safa-grid safa-grid--3">
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🏭 Current Environment</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                <span class="safa-status-badge safa-status-badge--{{ current_environment }}">
+                                    {{ current_environment|upper }}
+                                </span>
+                            </div>
+                            <p class="safa-text-muted">
+                                Active deployment environment
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>📈 Production Readiness</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-progress-bar">
+                                <div class="safa-progress-fill" style="width: {{ production_readiness.system_health }}%"></div>
+                            </div>
+                            <p class="safa-text-muted">
+                                {{ production_readiness.system_health }}% System Health
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🚀 Deployment Status</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                {% if is_deployment_in_progress %}
+                                    <span class="safa-status-badge safa-status-badge--in-progress">
+                                        IN PROGRESS
+                                    </span>
+                                {% else %}
+                                    <span class="safa-status-badge safa-status-badge--ready">
+                                        READY
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <p class="safa-text-muted">
+                                {% if is_deployment_in_progress %}
+                                    Deployment in progress
+                                {% else %}
+                                    Ready for deployment
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deployment Actions -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>⚡ Deployment Actions</h2>
+                </div>
+                
+                <div class="safa-grid safa-grid--2">
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🚀 Start Deployment</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <form id="deploymentForm" class="safa-form">
+                                <div class="safa-form-group">
+                                    <label for="targetEnvironment" class="safa-label">Target Environment</label>
+                                    <select id="targetEnvironment" name="environment" class="safa-select" required>
+                                        <option value="development">Development</option>
+                                        <option value="staging">Staging</option>
+                                        <option value="production">Production</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="safa-form-actions">
+                                    <button type="submit" class="safa-button safa-button--primary">
+                                        🚀 Start Deployment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🔙 Rollback Deployment</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <form id="rollbackForm" class="safa-form">
+                                <div class="safa-form-group">
+                                    <label for="rollbackEnvironment" class="safa-label">Environment to Rollback</label>
+                                    <select id="rollbackEnvironment" name="environment" class="safa-select" required>
+                                        <option value="development">Development</option>
+                                        <option value="staging">Staging</option>
+                                        <option value="production">Production</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="safa-form-actions">
+                                    <button type="submit" class="safa-button safa-button--danger">
+                                        🔙 Rollback Deployment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Production Readiness Validation -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>✅ Production Readiness Validation</h2>
+                </div>
+                
+                <div class="safa-grid safa-grid--4">
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🏥 System Health</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                <span class="safa-status-badge safa-status-badge--success">
+                                    {{ production_readiness.system_health }}%
+                                </span>
+                            </div>
+                            <p class="safa-text-muted">
+                                Overall system health score
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>⚡ Performance</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                <span class="safa-status-badge safa-status-badge--{{ production_readiness.performance_ready ? 'success' : 'warning' }}">
+                                    {{ production_readiness.performance_ready ? 'READY' : 'NEEDS ATTENTION' }}
+                                </span>
+                            </div>
+                            <p class="safa-text-muted">
+                                Performance validation status
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🛡️ Security</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                <span class="safa-status-badge safa-status-badge--{{ production_readiness.security_ready ? 'success' : 'warning' }}">
+                                    {{ production_readiness.security_ready ? 'SECURE' : 'NEEDS ATTENTION' }}
+                                </span>
+                            </div>
+                            <p class="safa-text-muted">
+                                Security validation status
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>📈 Scalability</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-status-indicator">
+                                <span class="safa-status-badge safa-status-badge--{{ production_readiness.scalability_ready ? 'success' : 'warning' }}">
+                                    {{ production_readiness.scalability_ready ? 'READY' : 'NEEDS ATTENTION' }}
+                                </span>
+                            </div>
+                            <p class="safa-text-muted">
+                                Scalability validation status
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Launch Checklist -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>🎯 Launch Checklist</h2>
+                </div>
+                
+                <div class="safa-grid safa-grid--4">
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>⚙️ Technical</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <ul class="safa-checklist">
+                                {% for item, status in launch_checklist.technical %}
+                                <li class="safa-checklist-item">
+                                    <span class="safa-checklist-status safa-checklist-status--{{ status|lower }}">
+                                        {{ status == 'Ready' ? '✅' : '⏳' }}
+                                    </span>
+                                    {{ item|replace('_', ' ')|title }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>💼 Business</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <ul class="safa-checklist">
+                                {% for item, status in launch_checklist.business %}
+                                <li class="safa-checklist-item">
+                                    <span class="safa-checklist-status safa-checklist-status--{{ status|lower }}">
+                                        {{ status == 'Ready' ? '✅' : '⏳' }}
+                                    </span>
+                                    {{ item|replace('_', ' ')|title }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>👥 User Experience</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <ul class="safa-checklist">
+                                {% for item, status in launch_checklist.user_experience %}
+                                <li class="safa-checklist-item">
+                                    <span class="safa-checklist-status safa-checklist-status--{{ status|lower }}">
+                                        {{ status == 'Ready' ? '✅' : '⏳' }}
+                                    </span>
+                                    {{ item|replace('_', ' ')|title }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>📋 Compliance</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <ul class="safa-checklist">
+                                {% for item, status in launch_checklist.compliance %}
+                                <li class="safa-checklist-item">
+                                    <span class="safa-checklist-status safa-checklist-status--{{ status|lower }}">
+                                        {{ status == 'Compliant' ? '✅' : '⚠️' }}
+                                    </span>
+                                    {{ item|replace('_', ' ')|title }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Training & Documentation -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>📚 Training & Documentation</h2>
+                </div>
+                
+                <div class="safa-grid safa-grid--2">
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>🎓 Training Modules</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-training-modules">
+                                <div class="safa-training-level">
+                                    <h4>Beginner</h4>
+                                    <p>2 modules available</p>
+                                </div>
+                                <div class="safa-training-level">
+                                    <h4>Intermediate</h4>
+                                    <p>2 modules available</p>
+                                </div>
+                                <div class="safa-training-level">
+                                    <h4>Advanced</h4>
+                                    <p>2 modules available</p>
+                                </div>
+                                <div class="safa-training-level">
+                                    <h4>Admin</h4>
+                                    <p>2 modules available</p>
+                                </div>
+                            </div>
+                            <div class="safa-card-actions">
+                                <button class="safa-button safa-button--secondary" id="viewTraining">
+                                    View Training Modules
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="safa-card">
+                        <div class="safa-card-header">
+                            <h3>📖 Documentation</h3>
+                        </div>
+                        <div class="safa-card-content">
+                            <div class="safa-documentation-categories">
+                                <div class="safa-doc-category">
+                                    <h4>User Guides</h4>
+                                    <p>3 documents available</p>
+                                </div>
+                                <div class="safa-doc-category">
+                                    <h4>Admin Guides</h4>
+                                    <p>3 documents available</p>
+                                </div>
+                                <div class="safa-doc-category">
+                                    <h4>Developer Guides</h4>
+                                    <p>3 documents available</p>
+                                </div>
+                            </div>
+                            <div class="safa-card-actions">
+                                <button class="safa-button safa-button--secondary" id="viewDocumentation">
+                                    View Documentation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deployment History -->
+            <section class="safa-section">
+                <div class="safa-section-header">
+                    <h2>📜 Deployment History</h2>
+                </div>
+                
+                <div class="safa-card">
+                    <div class="safa-card-content">
+                        <div class="safa-table-container">
+                            <table class="safa-table">
+                                <thead>
+                                    <tr>
+                                        <th>Environment</th>
+                                        <th>Status</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Duration</th>
+                                        <th>Steps Completed</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deploymentHistoryTable">
+                                    <!-- Deployment history will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="safa-footer">
+            <div class="safa-footer-content">
+                <p>&copy; 2025 IslamWiki. Production Deployment Dashboard.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/extensions/IqraSearchExtension/assets/js/production-deployment.js"></script>
+    <script>
+        // Initialize production deployment dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Refresh deployment status
+            document.getElementById('refreshStatus').addEventListener('click', function() {
+                refreshDeploymentStatus();
+            });
+
+            // Deployment form submission
+            document.getElementById('deploymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                startDeployment();
+            });
+
+            // Rollback form submission
+            document.getElementById('rollbackForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                rollbackDeployment();
+            });
+
+            // View training modules
+            document.getElementById('viewTraining').addEventListener('click', function() {
+                window.location.href = '/admin/training';
+            });
+
+            // View documentation
+            document.getElementById('viewDocumentation').addEventListener('click', function() {
+                window.location.href = '/admin/documentation';
+            });
+
+            // Initial load
+            loadDeploymentHistory();
+        });
+
+        // Refresh deployment status
+        function refreshDeploymentStatus() {
+            fetch('/admin/production-deployment/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing status:', error);
+                });
+        }
+
+        // Start deployment
+        function startDeployment() {
+            const environment = document.getElementById('targetEnvironment').value;
+            
+            fetch('/admin/production-deployment/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ environment: environment })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Deployment started successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to start deployment: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error starting deployment:', error);
+                alert('Error starting deployment');
+            });
+        }
+
+        // Rollback deployment
+        function rollbackDeployment() {
+            const environment = document.getElementById('rollbackEnvironment').value;
+            
+            if (confirm(`Are you sure you want to rollback the deployment for ${environment}?`)) {
+                fetch('/admin/production-deployment/rollback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ environment: environment })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Deployment rollback completed successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to rollback deployment: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error rolling back deployment:', error);
+                    alert('Error rolling back deployment');
+                });
+            }
+        }
+
+        // Load deployment history
+        function loadDeploymentHistory() {
+            fetch('/admin/production-deployment/history')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        populateDeploymentHistory(data.deployment_history);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading deployment history:', error);
+                });
+        }
+
+        // Populate deployment history table
+        function populateDeploymentHistory(history) {
+            const tableBody = document.getElementById('deploymentHistoryTable');
+            tableBody.innerHTML = '';
+
+            history.forEach(deployment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${deployment.environment}</td>
+                    <td><span class="safa-status-badge safa-status-badge--${deployment.status}">${deployment.status.toUpperCase()}</span></td>
+                    <td>${deployment.start_time}</td>
+                    <td>${deployment.end_time || '-'}</td>
+                    <td>${deployment.duration || '-'}</td>
+                    <td>${deployment.steps_completed}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html> 

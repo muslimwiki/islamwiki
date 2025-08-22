@@ -1,0 +1,61 @@
+<!-- Search Widget Component -->
+<div class="search-widget">
+    <div class="search-widget__header">
+        <h3 class="search-widget__title">🔍 Quick Search</h3>
+        <p class="search-widget__subtitle">Find Islamic knowledge instantly</p>
+    </div>
+    
+    <form class="search-widget__form" action="/search" method="GET">
+        <div class="search-widget__input-group">
+            <input 
+                type="text" 
+                name="q" 
+                class="search-widget__input" 
+                placeholder="Search topics, scholars, or concepts..."
+                autocomplete="off"
+                data-search-widget-input
+            />
+            <button type="submit" class="search-widget__button">
+                <span class="search-widget__icon">🔍</span>
+            </button>
+        </div>
+        
+        <!-- Search Type Selector -->
+        <div class="search-widget__type-selector">
+            <label for="search-widget-type">Search in:</label>
+            <select name="type" id="search-widget-type" class="search-widget__select">
+                <option value="all">All Content</option>
+                <option value="wiki">Wiki Pages</option>
+                <option value="quran">Quran</option>
+                <option value="hadith">Hadith</option>
+                <option value="wiki">Wiki</option>
+                <option value="scholars">Scholars</option>
+            </select>
+        </div>
+    </form>
+    
+    <!-- Popular Searches -->
+    <div class="search-widget__popular">
+        <h4 class="search-widget__popular-title">Popular Searches</h4>
+        <div class="search-widget__popular-tags">
+            <a href="/search?q=islamic+principles" class="search-widget__tag">Islamic Principles</a>
+            <a href="/search?q=quran+recitation" class="search-widget__tag">Quran Recitation</a>
+            <a href="/search?q=hadith+authentication" class="search-widget__tag">Hadith Authentication</a>
+            <a href="/search?q=islamic+education" class="search-widget__tag">Islamic Education</a>
+            <a href="/search?q=ramadan+fasting" class="search-widget__tag">Ramadan Fasting</a>
+            <a href="/search?q=zakat+calculation" class="search-widget__tag">Zakat Calculation</a>
+        </div>
+    </div>
+    
+    <!-- Search Statistics -->
+    <div class="search-widget__stats">
+        <div class="search-widget__stat">
+            <span class="search-widget__stat-number">10</span>
+            <span class="search-widget__stat-label">Content Types</span>
+        </div>
+        <div class="search-widget__stat">
+            <span class="search-widget__stat-number">&lt;100ms</span>
+            <span class="search-widget__stat-label">Response Time</span>
+        </div>
+    </div>
+</div> 

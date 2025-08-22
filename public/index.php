@@ -52,8 +52,9 @@ try {
     // Route to the appropriate template based on path and method
     switch ($path) {
         case '/':
-            $template = 'pages/home.twig';
-            $title = 'IslamWiki - Authentic Islamic Knowledge';
+            // Redirect root to wiki as the main focus
+            header("Location: /wiki", true, 301);
+            exit;
             break;
         case '/quran':
             $template = 'quran/index.twig';
@@ -64,12 +65,234 @@ try {
             $title = 'Hadith - IslamWiki';
             break;
         case '/wiki':
-            $template = 'pages/index.twig';
-            $title = 'Wiki - IslamWiki';
+            // Use the wiki template with proper skin integration
+            $template = 'pages/wiki.twig';
+            $title = 'Islamic Wiki - Discover Islamic Knowledge - IslamWiki';
+            break;
+        case '/wiki/create':
+            // Wiki page creation form
+            $template = 'wiki/create.twig';
+            $title = 'Create New Page - Wiki - IslamWiki';
+            
+            // Get title from URL parameters if provided
+            $pageTitle = $_GET['title'] ?? '';
+            
+            // Store template variables for the create form
+            $templateData = [
+                'title' => 'Create New Page - Wiki - IslamWiki',
+                'pageTitle' => $pageTitle,
+                'categories' => [
+                    ['id' => 1, 'name' => 'Quranic Studies', 'slug' => 'quranic-studies'],
+                    ['id' => 2, 'name' => 'Hadith Studies', 'slug' => 'hadith-studies'],
+                    ['id' => 3, 'name' => 'Islamic History', 'slug' => 'islamic-history'],
+                    ['id' => 4, 'name' => 'Fiqh & Jurisprudence', 'slug' => 'fiqh-jurisprudence'],
+                    ['id' => 5, 'name' => 'Islamic Practices', 'slug' => 'islamic-practices'],
+                    ['id' => 6, 'name' => 'Islamic Sciences', 'slug' => 'islamic-sciences']
+                ],
+                'templates' => [
+                    ['id' => 1, 'name' => 'Standard Article', 'slug' => 'standard-article'],
+                    ['id' => 2, 'name' => 'Biography', 'slug' => 'biography'],
+                    ['id' => 3, 'name' => 'Historical Event', 'slug' => 'historical-event'],
+                    ['id' => 4, 'name' => 'Religious Ruling', 'slug' => 'religious-ruling']
+                ],
+                'user' => [
+                    'id' => 1,
+                    'username' => 'Guest',
+                    'role' => 'user'
+                ]
+            ];
+            break;
+        case '/wiki/search':
+            // Redirect wiki search to unified search
+            $query = $_GET['q'] ?? '';
+            $type = $_GET['type'] ?? 'all';
+            $sort = $_GET['sort'] ?? 'relevance';
+            $order = $_GET['order'] ?? 'desc';
+            
+            $redirectUrl = '/search';
+            $params = [];
+            if ($query) $params[] = 'q=' . urlencode($query);
+            if ($type !== 'all') $params[] = 'sort=' . urlencode($sort);
+            if ($order !== 'desc') $params[] = 'order=' . urlencode($order);
+            
+            if (!empty($params)) {
+                $redirectUrl .= '?' . implode('&', $params);
+            }
+            
+            header("Location: $redirectUrl", true, 301);
+            exit;
+            break;
+        case (preg_match('/^\/wiki\/(.+)$/', $path, $matches) ? $path : null):
+            // Dynamic wiki page request (/wiki/{page_name})
+            $pageName = $matches[1];
+            
+            // Skip if it's a known wiki route
+            if (in_array($pageName, ['create', 'search', 'categories', 'category'])) {
+                // Let the SabilRouting system handle these
+                break;
+            }
+            
+            // This is a wiki page that doesn't exist - show create page
+            $template = 'wiki/page-not-found.twig';
+            $title = $pageName . ' - Wiki - IslamWiki';
+            
+            // Store template variables for the page not found view
+            $templateData = [
+                'pageName' => $pageName,
+                'pageTitle' => ucfirst(str_replace(['-', '_'], ' ', $pageName)),
+                'user' => [
+                    'id' => 1,
+                    'username' => 'Guest',
+                    'role' => 'user'
+                ]
+            ];
             break;
         case '/search':
-            $template = 'search/index.twig';
-            $title = 'Search - IslamWiki';
+            // Unified search page - Now properly handled by IqraSearchExtension
+            $template = 'iqra-search/index.twig';
+            $title = 'Search Islamic Knowledge - IslamWiki';
+            
+            // Store template variables for the main rendering system
+            $templateData = [
+                'query' => $_GET['q'] ?? '',
+                'type' => $_GET['type'] ?? 'all',
+                'sort' => $_GET['sort'] ?? 'relevance',
+                'order' => $_GET['order'] ?? 'desc',
+                'results' => [],
+                'totalResults' => 0,
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'searchStats' => [
+                    'total_pages' => 0,
+                    'total_quran' => 0,
+                    'total_hadith' => 0,
+                    'total_calendar' => 0,
+                    'total_prayer' => 0
+                ],
+                'searchTime' => 0,
+                'searchTypes' => [
+                    'all' => 'All Content',
+                    'wiki' => 'Wiki Pages',
+                    'quran' => 'Quran',
+                    'hadith' => 'Hadith',
+                    'articles' => 'Articles',
+                    'scholars' => 'Scholars'
+                ],
+                'sortOptions' => [
+                    'relevance' => 'Relevance',
+                    'date' => 'Date',
+                    'title' => 'Title',
+                    'popularity' => 'Popularity'
+                ],
+                'orderOptions' => [
+                    'desc' => 'Descending',
+                    'asc' => 'Ascending'
+                ]
+            ];
+            break;
+        case '/search/analytics':
+            // Search analytics dashboard - Now handled by IqraSearchExtension
+            $template = 'iqra-search/analytics.twig';
+            $title = 'Search Analytics - IqraSearchExtension - IslamWiki';
+            break;
+        case '/search/api/suggestions':
+            // Search suggestions API - Now handled by IqraSearchExtension
+            header('Content-Type: application/json');
+            $query = $_GET['q'] ?? '';
+            
+            if (empty($query) || strlen($query) < 2) {
+                echo json_encode(['suggestions' => []]);
+                exit;
+            }
+            
+            // Use IqraSearch suggestions
+            $suggestions = [
+                $query . ' knowledge',
+                $query . ' principles',
+                $query . ' history',
+                $query . ' teachings',
+                $query . ' scholars'
+            ];
+            
+            echo json_encode([
+                'suggestions' => $suggestions,
+                'query' => $query,
+                'count' => count($suggestions)
+            ]);
+            exit;
+            break;
+        case '/iqra-search':
+            // Iqra Search - Islamic search engine
+            $template = 'iqra-search/index.twig';
+            $title = 'Iqra Search - Islamic Knowledge Search - IslamWiki';
+            break;
+        case '/iqra-search/api/search':
+            // Iqra Search API endpoint
+            header('Content-Type: application/json');
+            $query = $_GET['q'] ?? '';
+            $type = $_GET['type'] ?? 'all';
+            $page = max(1, (int)($_GET['page'] ?? 1));
+            $sort = $_GET['sort'] ?? 'relevance';
+            $order = $_GET['order'] ?? 'desc';
+            
+            if (empty($query)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Query parameter is required', 'code' => 'MISSING_QUERY']);
+                exit;
+            }
+            
+            // For now, return a mock response until we integrate with the full Iqra system
+            $mockResults = [
+                'success' => true,
+                'query' => $query,
+                'type' => $type,
+                'results' => [
+                    [
+                        'title' => 'Islamic Knowledge Base',
+                        'type' => 'wiki',
+                        'snippet' => 'Comprehensive Islamic knowledge and information...',
+                        'url' => '/wiki/islamic-knowledge',
+                        'relevance' => 95
+                    ]
+                ],
+                'pagination' => [
+                    'current_page' => $page,
+                    'total_pages' => 1,
+                    'total_results' => 1,
+                    'per_page' => 20
+                ],
+                'search_time' => 0.1,
+                'engine' => 'Iqra Search Engine v1.0'
+            ];
+            
+            echo json_encode($mockResults);
+            exit;
+            break;
+        case '/iqra-search/api/suggestions':
+            // Iqra Search Suggestions API endpoint
+            header('Content-Type: application/json');
+            $query = $_GET['q'] ?? '';
+            
+            if (empty($query) || strlen($query) < 2) {
+                echo json_encode(['suggestions' => []]);
+                exit;
+            }
+            
+            // Mock suggestions for now
+            $suggestions = [
+                $query . ' knowledge',
+                $query . ' principles',
+                $query . ' history',
+                $query . ' teachings',
+                $query . ' scholars'
+            ];
+            
+            echo json_encode([
+                'suggestions' => $suggestions,
+                'query' => $query,
+                'count' => count($suggestions)
+            ]);
+            exit;
             break;
         case '/admin':
             // Check if user is logged in
@@ -298,6 +521,33 @@ try {
             $title = 'Settings - IslamWiki';
             break;
         default:
+            // Check if this is a wiki page request (/wiki/{page_name})
+            if (preg_match('/^\/wiki\/(.+)$/', $path, $matches)) {
+                $pageName = $matches[1];
+                
+                // Skip if it's a known wiki route
+                if (in_array($pageName, ['create', 'search', 'categories', 'category'])) {
+                    // Let the SabilRouting system handle these
+                    break;
+                }
+                
+                // This is a wiki page that doesn't exist - show create page
+                $template = 'wiki/page-not-found.twig';
+                $title = $pageName . ' - Wiki - IslamWiki';
+                
+                // Store template variables for the page not found view
+                $templateData = [
+                    'pageName' => $pageName,
+                    'pageTitle' => ucfirst(str_replace(['-', '_'], ' ', $pageName)),
+                    'user' => [
+                        'id' => 1,
+                        'username' => 'Guest',
+                        'role' => 'user'
+                    ]
+                ];
+                break;
+            }
+            
             // Check if it's a static file request
             if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/', $path)) {
                 // Serve static file
@@ -335,7 +585,7 @@ try {
     }
     
     // Render the template
-    $html = $view->render($template, [
+    $renderData = [
         'title' => $title,
         'current_language' => 'en',
         'error' => $error ?? null,
@@ -343,8 +593,15 @@ try {
             'id' => $_SESSION['user_id'],
             'username' => $_SESSION['username'] ?? 'User',
             'is_admin' => $_SESSION['is_admin'] ?? false
-        ] : null
-    ]);
+        ] : null,
+    ];
+    
+    // Add any additional template variables if they exist
+    if (isset($templateData) && is_array($templateData)) {
+        $renderData = array_merge($renderData, $templateData);
+    }
+    
+    $html = $view->render($template, $renderData);
     
     // Output the HTML
     echo $html;

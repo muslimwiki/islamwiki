@@ -33,6 +33,40 @@
             </ul>
         </nav>
 
+        <!-- Global Search Bar -->
+        <div class="header-search">
+            <form class="header-search__form" action="/search" method="GET">
+                <div class="header-search__input-group">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        class="header-search__input" 
+                        placeholder="Search Islamic knowledge..."
+                        autocomplete="off"
+                        id="header-search-input"
+                    />
+                    <button type="submit" class="header-search__button">
+                        <span class="header-search__icon">🔍</span>
+                    </button>
+                </div>
+                
+                <!-- Quick Search Options -->
+                <div class="header-search__quick-options">
+                    <a href="/search?type=wiki" class="header-search__quick-option">Wiki</a>
+                    <a href="/search?type=quran" class="header-search__quick-option">Quran</a>
+                    <a href="/search?type=hadith" class="header-search__quick-option">Hadith</a>
+                    <a href="/search?type=wiki" class="header-search__quick-option">Wiki</a>
+                </div>
+            </form>
+            
+            <!-- Search Suggestions Dropdown -->
+            <div class="header-search__suggestions" id="header-search-suggestions" style="display: none;">
+                <div class="header-search__suggestions-list" id="header-suggestions-list">
+                    <!-- Suggestions will be populated here -->
+                </div>
+            </div>
+        </div>
+
         <!-- User Authentication Section -->
         <div class="safa-header__auth">
             {% if app.user %}

@@ -1,0 +1,408 @@
+/* Quick Search Styles */
+
+/* Quick Search Header */
+.quick-search-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quick-search-header__container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quick-search-header__title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-family: 'Amiri', serif;
+}
+
+.quick-search-header__subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin-bottom: 25px;
+}
+
+.quick-search-header__actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-search-header__button {
+    background: white;
+    color: #667eea;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quick-search-header__button:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.quick-search-header__button--secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.quick-search-header__button--secondary:hover {
+    background: white;
+    color: #667eea;
+}
+
+/* Quick Search Results */
+.quick-search-results {
+    padding: 0 20px 40px;
+}
+
+.quick-search-results__container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quick-search-results__info {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    color: #6c757d;
+}
+
+.quick-search-results__list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.quick-search-result {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #667eea;
+}
+
+.quick-search-result:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.quick-search-result__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.quick-search-result__title {
+    margin: 0;
+    flex: 1;
+}
+
+.quick-search-result__link {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.quick-search-result__link:hover {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.quick-search-result__type {
+    background: #667eea;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.quick-search-result__type--wiki {
+    background: #28a745;
+}
+
+.quick-search-result__type--quran {
+    background: #17a2b8;
+}
+
+.quick-search-result__type--hadith {
+    background: #ffc107;
+    color: #333;
+}
+
+.quick-search-result__type--article {
+    background: #6f42c1;
+}
+
+.quick-search-result__type--scholar {
+    background: #fd7e14;
+}
+
+.quick-search-result__content {
+    margin-bottom: 20px;
+}
+
+.quick-search-result__snippet {
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.quick-search-result__meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.quick-search-result__relevance,
+.quick-search-result__author,
+.quick-search-result__date {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Load More Results */
+.quick-search-results__load-more {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.quick-search-results__load-more-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quick-search-results__load-more-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}
+
+/* Empty Results */
+.quick-search-results__empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.quick-search-results__empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.quick-search-results__empty-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-family: 'Amiri', serif;
+}
+
+.quick-search-results__empty-description {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+}
+
+.quick-search-results__empty-suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    display: inline-block;
+    text-align: left;
+}
+
+.quick-search-results__empty-suggestions li {
+    color: #6c757d;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.quick-search-results__empty-suggestions li:before {
+    content: '💡';
+    position: absolute;
+    left: 0;
+}
+
+.quick-search-results__empty-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-search-results__empty-button {
+    background: #667eea;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.quick-search-results__empty-button:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.quick-search-results__empty-button--secondary {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.quick-search-results__empty-button--secondary:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Related Searches */
+.quick-search-related {
+    padding: 40px 20px;
+    background: #f8f9fa;
+}
+
+.quick-search-related__container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.quick-search-related__title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    font-family: 'Amiri', serif;
+}
+
+.quick-search-related__tags {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-search-related__tag {
+    background: white;
+    color: #667eea;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.quick-search-related__tag:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quick-search-header__title {
+        font-size: 2rem;
+    }
+    
+    .quick-search-header__subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .quick-search-header__actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .quick-search-result {
+        padding: 20px;
+    }
+    
+    .quick-search-result__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .quick-search-result__meta {
+        gap: 10px;
+    }
+    
+    .quick-search-results__empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-search-header {
+        padding: 30px 15px;
+    }
+    
+    .quick-search-header__title {
+        font-size: 1.8rem;
+    }
+    
+    .quick-search-results {
+        padding: 0 15px 30px;
+    }
+    
+    .quick-search-result {
+        padding: 15px;
+    }
+    
+    .quick-search-result__title {
+        font-size: 1.1rem;
+    }
+    
+    .quick-search-results__empty {
+        padding: 40px 15px;
+    }
+    
+    .quick-search-results__empty-title {
+        font-size: 1.5rem;
+    }
+} 
