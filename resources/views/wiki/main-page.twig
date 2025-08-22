@@ -1,0 +1,267 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Main Page - IslamWiki{% endblock %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+<div class="main-page-container">
+    <!-- Welcome Banner with Bismillah -->
+    <div class="main-page-header">
+        <div class="bismillah-text">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+        <h1>Welcome to MuslimWiki</h1>
+        <p class="welcome-text">Your Source for Islamic Knowledge</p>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="current-time">{{ "now"|date("H:i, j F Y") }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="hijri-date">{{ hijri_date|default('28 Safar 1447 AH') }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="article-count">{{ total_articles|default('4,829') }} articles in English</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Three-Column Content Layout -->
+    <div class="content-section">
+        <h2>Top Articles</h2>
+        <div class="article-links">
+            <a href="/wiki/Islam" class="article-link">Islam</a>
+            <a href="/wiki/Muslim" class="article-link">Muslim</a>
+            <a href="/wiki/Allah" class="article-link">Allah</a>
+            <a href="/wiki/Quran" class="article-link">Qur'an</a>
+            <a href="/wiki/Muhammad" class="article-link">Muhammad</a>
+            <a href="/wiki/Ka'bah" class="article-link">Ka'bah</a>
+        </div>
+    </div>
+        
+        <!-- Newest Articles Column -->
+        <div class="content-column">
+            <div class="column-header">Newest Articles</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/1-10_Islamic_Framework">1-10 Islamic Framework</a></li>
+                    <li><a href="/wiki/Separation_of_church_and_state">Separation of church and state in the United States</a></li>
+                    <li><a href="/wiki/Dimensions_of_Islam">Dimensions of Islam</a></li>
+                    <li><a href="/wiki/Adhkar">Adhkār</a></li>
+                    <li><a href="/wiki/Put_Allah_first">Put Allah first in your life</a></li>
+                    <li><a href="/wiki/Foundations_of_Islam">The Foundations of Islam</a></li>
+                    <li><a href="/wiki/Surah_Al-Qadr">Surah Al-Qadr</a></li>
+                    <li><a href="/wiki/Islam_and_Destiny">Islam and the Destiny of Man</a></li>
+                    <li><a href="/wiki/Thalaathat_ul_Usool">Thalaathat-ul-Usool (Fundamental Principles)</a></li>
+                    <li><a href="/wiki/Al_Qawaaid_ul_Arbaah">Al-Qawaaid-ul-Arba'ah (Fundamental Principles)</a></li>
+                    <li><a href="/wiki/Kitab_al_Tawhid">Kitab al-Tawhid</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Did You Know Column -->
+        <div class="content-column">
+            <div class="column-header">Did You Know?</div>
+            <div class="column-content">
+                <ul class="fact-list">
+                    <li>The three levels of Islam are <strong>Islam</strong>, <strong>Iman</strong>, and <strong>Ihsan</strong>.</li>
+                    <li>Smoking in Islam is <strong>haram</strong>.</li>
+                    <li><strong>Islam</strong> means "submission to the will of <strong>Allah</strong>" in Arabic.</li>
+                    <li>Muslims pray five times a day facing the <strong>Kaaba</strong> in <strong>Mecca</strong>.</li>
+                    <li>The <strong>Qur'an</strong> was revealed over a period of 23 years.</li>
+                    <li>Islamic civilization made significant contributions to science, mathematics, and medicine during the Islamic Golden Age.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Content Sections -->
+    <div class="content-grid">
+        <!-- Featured Column -->
+        <div class="content-column">
+            <div class="column-header">Featured</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Abdur_Rahman_ibn_Nasir_as_Sa_di">Abdur-Rahman ibn Nasir as-Sa'di</a></li>
+                    <li><a href="/wiki/Tafsir_As_Sa_di">Tafsir As-Sa'di</a></li>
+                    <li><a href="/wiki/Guide_to_understanding_Islam">Guide to understanding Islam</a></li>
+                    <li><a href="/wiki/New_Muslims_Guide">New Muslims Guide</a></li>
+                    <li><a href="/wiki/Prophet_Muhammad">Prophet Muhammad</a></li>
+                    <li><a href="/wiki/Biography_of_Prophet">A Biography of the Prophet of Islam</a></li>
+                    <li><a href="/wiki/Dajjal">Dajjal</a></li>
+                    <li><a href="/wiki/Proofs_that_Islam_is_truth">Proofs that Islam is the truth</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- QA Column -->
+        <div class="content-column">
+            <div class="column-header">QA (Questions & Answers)</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Role_of_women_in_Islam">What is the role of women in Islam?</a></li>
+                    <li><a href="/wiki/Guidelines_for_marriage">What are the guidelines for marriage?</a></li>
+                    <li><a href="/wiki/Dealing_with_non_practicing_spouse">Dealing with a non-practicing spouse</a></li>
+                    <li><a href="/wiki/Concept_of_Jihad">What is the concept of Jihad?</a></li>
+                    <li><a href="/wiki/How_to_interact_with_non_Muslims">How to interact with non-Muslims?</a></li>
+                </ul>
+                <div class="see-more">
+                    <a href="/wiki/QA_Index">→ See more QA</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Community Column -->
+        <div class="content-column">
+            <div class="column-header">Community</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/MuslimWiki_Changelogs">MuslimWiki Changelogs</a></li>
+                    <li><a href="/wiki/Recent_Changes">Recent Changes</a></li>
+                    <li><a href="/wiki/How_to_Contribute">How to Contribute</a></li>
+                    <li><a href="/wiki/About_MuslimWiki">About Muslim.Wiki</a></li>
+                    <li><a href="/wiki/Index_to_MuslimWiki">Index to MuslimWiki</a></li>
+                    <li><a href="/wiki/Glossary_of_Islam">Glossary of Islam</a></li>
+                    <li><a href="/wiki/Template_index">Template index</a></li>
+                    <li><a href="/wiki/List_of_masjids_in_US">List of masjids in the United States</a></li>
+                    <li><a href="/wiki/List_of_contemporary_Muslim_influencers">List of contemporary Muslim influencers</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Islamic Pillars Section -->
+    <div class="content-grid">
+        <!-- Six Pillars of Faith -->
+        <div class="content-column">
+            <div class="column-header">Six Pillars of Faith</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Belief_in_Allah">Belief in Allah</a></li>
+                    <li><a href="/wiki/Belief_in_Angels">Belief in Angels</a></li>
+                    <li><a href="/wiki/Belief_in_Revelation">Belief in Revelation</a></li>
+                    <li><a href="/wiki/Belief_in_Prophets">Belief in the Prophets</a></li>
+                    <li><a href="/wiki/Belief_in_Day_of_Judgement">Belief in the Day of Judgement</a></li>
+                    <li><a href="/wiki/Belief_in_Divine_Decree">Belief in Divine Decree</a></li>
+                </ul>
+                <div class="see-more">
+                    <a href="/wiki/Pillars_of_Iman">→ See all Pillars of Iman</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Five Pillars of Islam -->
+        <div class="content-column">
+            <div class="column-header">Five Pillars of Islam</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Declaration_of_Faith">Declaration of Faith (Shahada)</a></li>
+                    <li><a href="/wiki/Salah">Salah (Prayer)</a></li>
+                    <li><a href="/wiki/Zakat">Charity (Zakat)</a></li>
+                    <li><a href="/wiki/Sawm">Fasting (Sawm)</a></li>
+                    <li><a href="/wiki/Hajj">Pilgrimage (Hajj)</a></li>
+                </ul>
+                <div class="see-more">
+                    <a href="/wiki/Pillars_of_Islam">→ See all Pillars of Islam</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Schools of Thought -->
+        <div class="content-column">
+            <div class="column-header">Schools of Thought</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><strong>Schools of Islamic theology:</strong></li>
+                    <li><a href="/wiki/Athariyyah">Athariyyah</a></li>
+                    <li><a href="/wiki/Ashariyyah">Ash'ariyyah</a></li>
+                    <li><strong>Schools of Islamic jurisprudence:</strong></li>
+                    <li><a href="/wiki/Hanafi_madhhab">Hanafi madhhab</a></li>
+                    <li><a href="/wiki/Maliki_madhhab">Maliki madhhab</a></li>
+                    <li><a href="/wiki/Shafii_madhhab">Shafi'i madhhab</a></li>
+                    <li><a href="/wiki/Hanbali_madhhab">Hanbali madhhab</a></li>
+                </ul>
+                <div class="see-more">
+                    <a href="/wiki/Islamic_schools_and_branches">→ See all Islamic schools and branches</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Sections -->
+    <div class="content-grid">
+        <!-- Learn Islam -->
+        <div class="content-column">
+            <div class="column-header">Learn Islam</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Basic_Beliefs">Basic Beliefs</a></li>
+                    <li><a href="/wiki/Ethics_and_Morals">Ethics & Morals</a></li>
+                    <li><a href="/wiki/Family_Life">Family Life</a></li>
+                    <li><a href="/wiki/History_of_Islam">History of Islam</a></li>
+                    <li><a href="/wiki/List_of_Islam_related_films">List of Islam-related films</a></li>
+                    <li><a href="/wiki/List_of_animated_Islamic_films">List of animated Islamic films</a></li>
+                    <li><a href="/wiki/List_of_recommended_books">List of recommended books</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Daily Practice -->
+        <div class="content-column">
+            <div class="column-header">Daily Practice</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Prayer_Times">Prayer Times</a></li>
+                    <li><a href="/wiki/Morning_and_Evening_Adhkar">Morning & Evening Adhkar</a></li>
+                    <li><a href="/wiki/Duas_from_Quran_and_Sunnah">Duas from Qur'an & Sunnah</a></li>
+                    <li><a href="/wiki/Hijri_Calendar">Hijri Calendar</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Quran & Hadith -->
+        <div class="content-column">
+            <div class="column-header">Qur'an & Hadith</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><strong>Qur'an:</strong></li>
+                    <li><a href="/wiki/Commentary_Tafseer">Commentary (Tafseer)</a></li>
+                    <li><a href="/wiki/Sciences_of_Quran">Sciences of the Qur'an</a></li>
+                    <li><a href="/wiki/Quran_translations">Qur'an translations</a></li>
+                    <li><a href="/wiki/List_of_translations_of_Quran">List of translations of the Qur'an</a></li>
+                    <li><a href="/wiki/English_translations_of_Quran">English translations of the Qur'an</a></li>
+                    <li><strong>Hadith Collections:</strong></li>
+                    <li><a href="/wiki/Sahih_al_Bukhari">Sahih al-Bukhari</a></li>
+                    <li><a href="/wiki/Sahih_Muslim">Sahih Muslim</a></li>
+                    <li><a href="/wiki/Sunan_Abi_Dawud">Sunan Abi Dāwūd</a></li>
+                    <li><strong>Manuscripts:</strong></li>
+                    <li><a href="/wiki/Sana_manuscript">San'a' manuscript</a></li>
+                    <li><a href="/wiki/Topkapi_manuscript">Topkapi manuscript</a></li>
+                    <li><a href="/wiki/Uthmanic_codex">Uthmanic codex</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Christianity Section -->
+    <div class="content-grid">
+        <div class="content-column full-width">
+            <div class="column-header">Christianity</div>
+            <div class="column-content">
+                <ul class="article-list">
+                    <li><a href="/wiki/Christian_denominations">Christian denominations</a></li>
+                    <li><a href="/wiki/Is_Jesus_God">Is Jesus God?</a></li>
+                    <li><a href="/wiki/Corruption_of_Christianity">Corruption of Christianity</a></li>
+                    <li><a href="/wiki/Proofs_that_Christianity_is_false">Proofs that Christianity is false</a></li>
+                    <li><a href="/wiki/Refutation_of_trinity">Proofs for the refutation of the trinity as a doctrine taught by Jesus</a></li>
+                    <li><a href="/wiki/Bible_errors_and_contradictions">Bible errors and contradictions</a></li>
+                    <li><a href="/wiki/Did_Jesus_die">Did Jesus die?</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p>Muslim.Wiki is a collaborative platform for Islamic knowledge. Please verify information with authentic sources.</p>
+    </div>
+</div>
+{% endblock %} 

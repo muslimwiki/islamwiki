@@ -3,142 +3,45 @@
 {% block title %}Community - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="community-section">
-    <!-- Header -->
-    <div class="community-header">
-        <h1 class="community-title">Community</h1>
-        <p class="community-description">Connect with fellow Muslims and share knowledge</p>
-    </div>
-
-    <!-- Stats Cards -->
-    <div class="community-stats-grid">
-        <div class="community-stat-card">
-            <div class="community-stat-icon bg-green-100 text-green-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                </svg>
-            </div>
-            <div class="community-stat-content">
-                <p class="community-stat-label">Active Users</p>
-                <p class="community-stat-number">{{ stats.active_users|default(0) }}</p>
-            </div>
-        </div>
-
-        <div class="community-stat-card">
-            <div class="community-stat-icon bg-blue-100 text-blue-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                </svg>
-            </div>
-            <div class="community-stat-content">
-                <p class="community-stat-label">Discussions</p>
-                <p class="community-stat-number">{{ stats.discussions|default(0) }}</p>
-            </div>
-        </div>
-
-        <div class="community-stat-card">
-            <div class="community-stat-icon bg-purple-100 text-purple-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                </svg>
-            </div>
-            <div class="community-stat-content">
-                <p class="community-stat-label">Replies</p>
-                <p class="community-stat-number">{{ stats.replies|default(0) }}</p>
-            </div>
-        </div>
-
-        <div class="community-stat-card">
-            <div class="community-stat-icon bg-orange-100 text-orange-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-            </div>
-            <div class="community-stat-content">
-                <p class="community-stat-label">Today's Activity</p>
-                <p class="community-stat-number">{{ stats.today_activity|default(0) }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="community-actions-grid">
-        <a href="/community/discussions" class="community-action-card">
-            <div class="community-action-icon bg-green-100 text-green-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                </svg>
-            </div>
-            <div class="community-action-content">
-                <h3>Join Discussions</h3>
-                <p>Participate in Islamic discussions and share knowledge</p>
-            </div>
-        </a>
-
-        <a href="/community/users" class="community-action-card">
-            <div class="community-action-icon bg-blue-100 text-blue-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                </svg>
-            </div>
-            <div class="community-action-content">
-                <h3>Meet Members</h3>
-                <p>Connect with fellow Muslims in the community</p>
-            </div>
-        </a>
-
-        <a href="/community/activity" class="community-action-card">
-            <div class="community-action-icon bg-purple-100 text-purple-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-            </div>
-            <div class="community-action-content">
-                <h3>View Activity</h3>
-                <p>See what's happening in the community</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="community-activity-section">
-        <div class="community-activity-header">
-            <h2 class="community-activity-title">Recent Activity</h2>
+<div class="main-content-wrapper">
+    <div class="main-content">
+        <div class="community-header">
+            <h1>🌍 Islamic Community</h1>
+            <p>Connect with fellow Muslims, share knowledge, and grow together in faith.</p>
         </div>
         
-        {% if recent_activity|length > 0 %}
-            <div class="community-activity-list">
-                {% for activity in recent_activity %}
-                <div class="community-activity-item">
-                    <div class="community-activity-avatar">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+        <div class="community-sections">
+            <div class="community-section">
+                <h2>👥 Community Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-users"></i>
+                        <h3>User Profiles</h3>
+                        <p>Create your profile and connect with other community members.</p>
                     </div>
-                    <div class="community-activity-content">
-                        <p class="community-activity-text">
-                            <span class="font-medium">{{ activity.user_name }}</span>
-                            {{ activity.action }}
-                            {% if activity.link %}
-                                <a href="{{ activity.link }}">{{ activity.target }}</a>
-                            {% else %}
-                                <span>{{ activity.target }}</span>
-                            {% endif %}
-                        </p>
-                        <p class="community-activity-meta">{{ activity.time_ago }}</p>
+                    <div class="feature-card">
+                        <i class="fas fa-comments"></i>
+                        <h3>Discussions</h3>
+                        <p>Participate in meaningful discussions about Islamic topics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-share-alt"></i>
+                        <h3>Knowledge Sharing</h3>
+                        <p>Share your knowledge and learn from others.</p>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-        {% else %}
-            <div class="community-empty-state">
-                <svg class="community-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                <h3 class="community-empty-title">No recent activity</h3>
-                <p class="community-empty-description">Get started by joining a discussion or connecting with members.</p>
+            
+            <div class="community-section">
+                <h2>📚 Learning Together</h2>
+                <p>Join study groups, participate in online courses, and engage in collaborative learning experiences.</p>
             </div>
-        {% endif %}
+            
+            <div class="community-section">
+                <h2>🤝 Get Involved</h2>
+                <p>This community section is under development. Check back soon for more features!</p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 

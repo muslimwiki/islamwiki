@@ -1,0 +1,782 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Skin Settings - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="safa-settings-container">
+    <!-- Page Header -->
+    <div class="settings-header">
+        <h1>🎨 Skin Settings</h1>
+        <p>Customize your IslamWiki experience with beautiful skins and themes</p>
+    </div>
+
+    <!-- Current Skin Display -->
+    <div class="safa-current-skin">
+        <h2>Current Skin: {{ current_skin.name|default('Bismillah') }}</h2>
+        <div class="safa-skin-preview">
+            <div class="skin-preview-card">
+                <div class="skin-preview-header">
+                    <h3>{{ current_skin.name|default('Bismillah') }}</h3>
+                    <span class="skin-version">{{ current_skin.version|default('1.0.0') }}</span>
+                </div>
+                <div class="skin-preview-content">
+                    <p>{{ current_skin.description|default('Beautiful Islamic-themed skin with modern design principles') }}</p>
+                    <div class="skin-features">
+                        <span class="feature-tag">Responsive</span>
+                        <span class="feature-tag">Islamic Theme</span>
+                        <span class="feature-tag">Modern UI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Skins -->
+    <div class="safa-available-skins">
+        <h3>Choose Your Skin</h3>
+        <div class="safa-skin-grid">
+            {% for skin in available_skins %}
+            <div class="safa-skin-card" data-skin="{{ skin.name }}">
+                <div class="skin-card-header">
+                    <h4>{{ skin.name }}</h4>
+                    <span class="skin-version">{{ skin.version }}</span>
+                </div>
+                <div class="skin-card-preview">
+                    <img src="/skins/{{ skin.name }}/preview.png" alt="{{ skin.name }} Preview" 
+                         onerror="this.src='/skins/{{ skin.name }}/preview.jpg'; this.onerror=null;">
+                </div>
+                <div class="skin-card-description">
+                    <p>{{ skin.description }}</p>
+                </div>
+                <div class="skin-card-actions">
+                    <button class="btn btn-primary preview-skin" data-skin="{{ skin.name }}">
+                        👁️ Preview
+                    </button>
+                    {% if skin.name != current_skin.name %}
+                    <button class="btn btn-success activate-skin" data-skin="{{ skin.name }}">
+                        ✅ Activate
+                    </button>
+                    {% else %}
+                    <span class="current-skin-badge">Current</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Theme Customization -->
+    <div class="safa-theme-customization">
+        <h3>Theme Customization</h3>
+        <div class="customization-grid">
+            <!-- Color Scheme Selection -->
+            <div class="customization-section">
+                <h4>Color Scheme</h4>
+                <div class="d-flex flex-wrap">
+                    {% for scheme, info in customization_options.color_schemes %}
+                    <div class="color-scheme-option" data-scheme="{{ scheme }}">
+                        <div class="color-preview"></div>
+                        <div class="scheme-name">{{ info.name }}</div>
+                        <small class="text-muted">{{ info.description }}</small>
+                        <input type="radio" name="color_scheme" value="{{ scheme }}" 
+                               {% if user_preferences.color_scheme == scheme %}checked{% endif %}
+                               class="form-check-input mt-2">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="customization-section">
+                <h4>📝 Typography</h4>
+                <div class="typography-options">
+                    <div class="option-group">
+                        <label>Font Family:</label>
+                        <select name="font_family" class="form-control">
+                                                {% for font, description in customization_options.typography.font_families %}
+                    <option value="{{ font }}" {% if user_preferences.theme_customization.font_family == font %}selected{% endif %}>
+                        {{ font }} - {{ description }}
+                    </option>
+                    {% endfor %}
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>Font Size:</label>
+                        <select name="font_size" class="form-control">
+                                                {% for size, description in customization_options.typography.font_sizes %}
+                    <option value="{{ size }}" {% if user_preferences.theme_customization.font_size == size %}selected{% endif %}>
+                        {{ size|title }} - {{ description }}
+                    </option>
+                    {% endfor %}
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>Line Height:</label>
+                        <select name="line_height" class="form-control">
+                                                {% for height, description in customization_options.typography.line_heights %}
+                    <option value="{{ height }}" {% if user_preferences.theme_customization.line_height == height %}selected{% endif %}>
+                        {{ height|title }} - {{ description }}
+                    </option>
+                    {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacing -->
+            <div class="customization-section">
+                <h4>📏 Spacing</h4>
+                <div class="spacing-options">
+                    {% for spacing in customization_options.spacing %}
+                    <div class="spacing-option">
+                        <input type="radio" name="spacing" value="{{ spacing }}" 
+                               {% if user_preferences.theme_customization.spacing == spacing %}checked{% endif %}>
+                        <label>{{ spacing|title }}</label>
+                        <span class="spacing-description">{{ customization_options.spacing[spacing] }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Options -->
+    <div class="safa-layout-options">
+        <h3>Layout Options</h3>
+        <div class="layout-grid">
+            <div class="layout-section">
+                <h4>Sidebar Position</h4>
+                <div class="layout-options">
+                    {% for position in layout_options.sidebar_position %}
+                    <div class="layout-option">
+                        <input type="radio" name="sidebar_position" value="{{ position }}" 
+                               {% if user_preferences.layout_preferences.sidebar_position == position %}checked{% endif %}>
+                        <label>{{ position|title }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="layout-section">
+                <h4>Content Width</h4>
+                <div class="layout-options">
+                    {% for width in layout_options.content_width %}
+                    <div class="layout-option">
+                        <input type="radio" name="content_width" value="{{ width }}" 
+                               {% if user_preferences.layout_preferences.content_width == width %}checked{% endif %}>
+                        <label>{{ width|title }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="layout-section">
+                <h4>Navigation Style</h4>
+                <div class="layout-options">
+                    {% for style in layout_options.navigation_style %}
+                    <div class="layout-option">
+                        <input type="radio" name="navigation_style" value="{{ style }}" 
+                               {% if user_preferences.layout_preferences.navigation_style == style %}checked{% endif %}>
+                        <label>{{ style|title }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Component Management -->
+    <div class="safa-component-management">
+        <h3>Component Management</h3>
+        <div class="component-grid">
+            {% for component, info in component_options %}
+            <div class="component-option">
+                <div class="component-info">
+                    <h4>{{ info.name }}</h4>
+                    <p>{{ info.description }}</p>
+                </div>
+                <div class="component-toggle">
+                    <label class="switch">
+                        <input type="checkbox" name="component_{{ component }}" 
+                               {% if user_preferences.component_visibility[component] %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="safa-action-buttons">
+        <button class="btn btn-primary" id="save-preferences">
+            💾 Save Preferences
+        </button>
+        <button class="btn btn-secondary" id="preview-changes">
+            👁️ Preview Changes
+        </button>
+        <button class="btn btn-outline" id="reset-preferences">
+            🔄 Reset to Default
+        </button>
+        <button class="btn btn-outline" id="export-preferences">
+            📤 Export Preferences
+        </button>
+        <button class="btn btn-outline" id="import-preferences">
+            📥 Import Preferences
+        </button>
+    </div>
+</div>
+
+<!-- Live Preview Modal -->
+<div class="modal fade" id="livePreviewModal" tabindex="-1" aria-labelledby="livePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="livePreviewModalLabel">Live Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-container">
+                    <iframe id="previewFrame" src="" width="100%" height="600px" frameborder="0"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="applyPreview">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">Import Preferences</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="importFile" class="form-label">Select JSON file:</label>
+                    <input type="file" class="form-control" id="importFile" accept=".json">
+                </div>
+                <div class="mb-3">
+                    <label for="importText" class="form-label">Or paste JSON content:</label>
+                    <textarea class="form-control" id="importText" rows="5" placeholder='{"preferences": {...}}'></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="importPreferences">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="settingsToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">Settings</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Your preferences have been saved successfully!
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== SETTINGS PAGE STYLING ===== */
+/* Full width and professional appearance */
+.safa-settings-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+    background: #f8f9fa !important;
+    min-height: 100vh !important;
+}
+
+/* Remove all borders from settings components */
+.safa-current-skin,
+.skin-preview-card,
+.safa-skin-card,
+.component-option,
+.customization-section,
+.layout-option,
+.color-scheme-option {
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+}
+
+/* Enhanced color scheme for settings */
+.safa-settings-container .settings-header h1 {
+    color: #2d5016 !important;
+    font-size: 2.5rem !important;
+    margin-bottom: 0.5rem !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.safa-settings-container .settings-header p {
+    color: #6c757d !important;
+    font-size: 1.1rem !important;
+}
+
+/* Current skin section styling */
+.safa-settings-container .safa-current-skin {
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 2rem !important;
+    margin-bottom: 3rem !important;
+    text-align: center !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Skin preview card styling */
+.safa-settings-container .skin-preview-card {
+    background: white !important;
+    border-radius: 8px !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+}
+
+/* Skin grid layout */
+.safa-settings-container .safa-skin-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 2rem !important;
+    margin-bottom: 3rem !important;
+}
+
+/* Individual skin cards */
+.safa-settings-container .safa-skin-card {
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.safa-settings-container .safa-skin-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+}
+
+/* Component options styling */
+.safa-settings-container .component-option {
+    background: white !important;
+    border-radius: 10px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+    transition: all 0.2s ease !important;
+}
+
+.safa-settings-container .component-option:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+}
+
+/* Color scheme options */
+.safa-settings-container .color-scheme-option {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    margin: 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-align: center !important;
+    min-width: 150px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.safa-settings-container .color-scheme-option:hover {
+    box-shadow: 0 4px 12px rgba(139, 195, 74, 0.2) !important;
+    transform: translateY(-2px) !important;
+}
+
+.safa-settings-container .color-scheme-option.selected {
+    background: #f8f9fa !important;
+    box-shadow: 0 4px 12px rgba(45, 80, 22, 0.15) !important;
+}
+
+/* Customization sections */
+.safa-settings-container .customization-section {
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+}
+
+.safa-settings-container .customization-section h4 {
+    color: #2d5016 !important;
+    margin-bottom: 1rem !important;
+    font-size: 1.2rem !important;
+    border-bottom: 2px solid #8bc34a !important;
+    padding-bottom: 0.5rem !important;
+}
+
+/* Layout options */
+.safa-settings-container .layout-option {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin: 0.5rem 0 !important;
+    padding: 0.75rem !important;
+    background: #f8f9fa !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.safa-settings-container .layout-option:hover {
+    background: #e9ecef !important;
+}
+
+/* Enhanced buttons */
+.safa-settings-container .btn {
+    border-radius: 8px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.safa-settings-container .btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Form controls */
+.safa-settings-container .form-control,
+.safa-settings-container .form-select {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.safa-settings-container .form-control:focus,
+.safa-settings-container .form-select:focus {
+    border-color: #8bc34a !important;
+    box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, 0.25) !important;
+}
+
+/* Switch toggles */
+.safa-settings-container .form-check-input:checked {
+    background-color: #8bc34a !important;
+    border-color: #8bc34a !important;
+}
+
+/* Enhanced color previews */
+.safa-settings-container .color-preview {
+    width: 100% !important;
+    height: 60px !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.75rem !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Traditional Islamic Theme */
+.safa-settings-container .color-scheme-option[data-scheme="traditional"] .color-preview {
+    background: linear-gradient(135deg, #2d5016 0%, #8bc34a 50%, #ffc107 100%) !important;
+}
+
+/* Modern Professional Theme */
+.safa-settings-container .color-scheme-option[data-scheme="modern"] .color-preview {
+    background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #ff7043 100%) !important;
+}
+
+/* Elegant Dark Theme */
+.safa-settings-container .color-scheme-option[data-scheme="elegant"] .color-preview {
+    background: linear-gradient(135deg, #424242 0%, #757575 50%, #ffd54f 100%) !important;
+}
+
+/* Warm Comfort Theme */
+.safa-settings-container .color-scheme-option[data-scheme="warm"] .color-preview {
+    background: linear-gradient(135deg, #8d6e63 0%, #a1887f 50%, #ffab91 100%) !important;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize settings functionality
+    initializeSettings();
+});
+
+function initializeSettings() {
+    // Save preferences
+    document.getElementById('save-preferences').addEventListener('click', savePreferences);
+    
+    // Preview changes
+    document.getElementById('preview-changes').addEventListener('click', previewChanges);
+    
+    // Reset preferences
+    document.getElementById('reset-preferences').addEventListener('click', resetPreferences);
+    
+    // Export preferences
+    document.getElementById('export-preferences').addEventListener('click', exportPreferences);
+    
+    // Import preferences
+    document.getElementById('import-preferences').addEventListener('click', importPreferences);
+    
+    // Skin activation
+    document.querySelectorAll('.activate-skin').forEach(button => {
+        button.addEventListener('click', function() {
+            const skinName = this.dataset.skin;
+            activateSkin(skinName);
+        });
+    });
+    
+    // Skin preview
+    document.querySelectorAll('.preview-skin').forEach(button => {
+        button.addEventListener('click', function() {
+            const skinName = this.dataset.skin;
+            previewSkin(skinName);
+        });
+    });
+}
+
+function savePreferences() {
+    const preferences = collectPreferences();
+    
+    // Send to server
+    fetch('/api/settings/skins/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(preferences)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Success', 'Preferences saved successfully!', 'success');
+        } else {
+            showToast('Error', data.message || 'Failed to save preferences', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving preferences:', error);
+        showToast('Error', 'Failed to save preferences', 'error');
+    });
+}
+
+function collectPreferences() {
+    return {
+        theme_customization: {
+            color_scheme: document.querySelector('input[name="color_scheme"]:checked')?.value || 'traditional',
+            font_family: document.querySelector('select[name="font_family"]').value,
+            font_size: document.querySelector('select[name="font_size"]').value,
+            line_height: document.querySelector('select[name="line_height"]').value,
+            spacing: document.querySelector('input[name="spacing"]:checked')?.value || 'normal'
+        },
+        layout_preferences: {
+            sidebar_position: document.querySelector('input[name="sidebar_position"]:checked')?.value || 'left',
+            content_width: document.querySelector('input[name="content_width"]:checked')?.value || 'standard',
+            navigation_style: document.querySelector('input[name="navigation_style"]:checked')?.value || 'sidebar'
+        },
+        component_visibility: {
+            search_bar: document.querySelector('input[name="component_search_bar"]')?.checked || false,
+            user_menu: document.querySelector('input[name="component_user_menu"]')?.checked || false,
+            notifications: document.querySelector('input[name="component_notifications"]')?.checked || false,
+            breadcrumbs: document.querySelector('input[name="component_breadcrumbs"]')?.checked || false,
+            social_links: document.querySelector('input[name="component_social_links"]')?.checked || false,
+            related_content: document.querySelector('input[name="component_related_content"]')?.checked || false,
+            quick_actions: document.querySelector('input[name="component_quick_actions"]')?.checked || false,
+            progress_indicator: document.querySelector('input[name="component_progress_indicator"]')?.checked || false
+        }
+    };
+}
+
+function activateSkin(skinName) {
+    fetch('/api/settings/skins/switch', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ skin: skinName })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Success', `Successfully switched to ${skinName} skin!`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('Error', data.message || 'Failed to switch skin', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error switching skin:', error);
+        showToast('Error', 'Failed to switch skin', 'error');
+    });
+}
+
+function previewSkin(skinName) {
+    // Show preview modal
+    const modal = new bootstrap.Modal(document.getElementById('livePreviewModal'));
+    const previewFrame = document.getElementById('previewFrame');
+    
+    // Set preview URL
+    previewFrame.src = `/api/settings/skins/preview/${skinName}`;
+    
+    modal.show();
+}
+
+function previewChanges() {
+    const preferences = collectPreferences();
+    
+    // Show preview modal with current preferences
+    const modal = new bootstrap.Modal(document.getElementById('livePreviewModal'));
+    const previewFrame = document.getElementById('previewFrame');
+    
+    // Set preview URL with preferences
+    previewFrame.src = `/api/settings/skins/preview/current?prefs=${encodeURIComponent(JSON.stringify(preferences))}`;
+    
+    modal.show();
+}
+
+function resetPreferences() {
+    if (confirm('Are you sure you want to reset all preferences to default?')) {
+        fetch('/api/settings/skins/reset', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Success', 'Preferences reset to default!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showToast('Error', data.message || 'Failed to reset preferences', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error resetting preferences:', error);
+            showToast('Error', 'Failed to reset preferences', 'error');
+        });
+    }
+}
+
+function exportPreferences() {
+    const preferences = collectPreferences();
+    const exportData = {
+        export_date: new Date().toISOString(),
+        version: '1.0',
+        preferences: preferences
+    };
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `islamwiki_preferences_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Success', 'Preferences exported successfully!', 'success');
+}
+
+function importPreferences() {
+    const modal = new bootstrap.Modal(document.getElementById('importModal'));
+    modal.show();
+}
+
+document.getElementById('importPreferences').addEventListener('click', function() {
+    const fileInput = document.getElementById('importFile');
+    const textInput = document.getElementById('importText');
+    
+    let importData;
+    
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            try {
+                importData = JSON.parse(e.target.result);
+                processImport(importData);
+            } catch (error) {
+                showToast('Error', 'Invalid JSON file', 'error');
+            }
+        };
+        
+        reader.readAsText(file);
+    } else if (textInput.value.trim()) {
+        try {
+            importData = JSON.parse(textInput.value);
+            processImport(importData);
+        } catch (error) {
+            showToast('Error', 'Invalid JSON content', 'error');
+        }
+    } else {
+        showToast('Error', 'Please select a file or enter JSON content', 'error');
+    }
+});
+
+function processImport(importData) {
+    fetch('/api/settings/skins/import', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(importData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Success', 'Preferences imported successfully!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('Error', data.message || 'Failed to import preferences', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error importing preferences:', error);
+        showToast('Error', 'Failed to import preferences', 'error');
+    });
+}
+
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('settingsToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    
+    // Update toast appearance based on type
+    toast.className = `toast toast-${type}`;
+    
+    // Show toast
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+</script>
+{% endblock %} 

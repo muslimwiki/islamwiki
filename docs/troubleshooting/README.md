@@ -336,7 +336,7 @@ php artisan extension:install ExtensionName
 php artisan config:show skins
 
 # Check skin assets
-ls -la public/skins/
+ls -la skins/
 ls -la resources/views/skins/
 
 # Check browser console for errors

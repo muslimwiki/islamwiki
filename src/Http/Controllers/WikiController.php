@@ -175,6 +175,68 @@ class WikiController extends PageController
     }
 
     /**
+     * Display the Main_Page (default landing page).
+     *
+     * @param Request $request The HTTP request
+     * @return Response
+     */
+    public function showMainPage(Request $request): Response
+    {
+        try {
+            if ($this->logger) {
+                $this->logger->info('Main_Page requested', [
+                    'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                ]);
+            }
+
+            // Get current date and time
+            $currentTime = date('H:i, j F Y');
+            $hijriDate = $this->getHijriDate();
+            $totalArticles = $this->getTotalArticleCount();
+            
+            return $this->view('wiki/main-page', [
+                'current_time' => $currentTime,
+                'hijri_date' => $hijriDate,
+                'total_articles' => $totalArticles,
+                'title' => 'Main Page - IslamWiki'
+            ]);
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Failed to load Main_Page', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+            throw new HttpException(500, 'Failed to load main page');
+        }
+    }
+
+    /**
+     * Get Hijri date for current date
+     */
+    private function getHijriDate(): string
+    {
+        // For now, return a placeholder
+        // TODO: Implement proper Hijri date calculation
+        return '28 Safar 1447 AH';
+    }
+
+    /**
+     * Get total article count
+     */
+    private function getTotalArticleCount(): int
+    {
+        try {
+            $stmt = $this->db->getPdo()->prepare('SELECT COUNT(*) as count FROM pages WHERE namespace = ?');
+            $stmt->execute(['wiki']);
+            $result = $stmt->fetch();
+            return $result['count'] ?? 0;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    /**
      * Display the specified wiki page
      */
     public function show(Request $request, string $slug): Response

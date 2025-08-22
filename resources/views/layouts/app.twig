@@ -9,20 +9,14 @@
     <!-- Google Fonts for Islamic Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Bismillah Skin CSS - Beautiful Islamic Theme -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Wiki-specific CSS -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/wiki.css?v={{ 'now'|date('U') }}">
+    <!-- Bismillah Skin CSS - Beautiful Islamic Theme (CONSOLIDATED) -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
     
     <!-- Analytics CSS -->
     <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/analytics.css?v={{ 'now'|date('U') }}">
-    
-    <!-- Header Search CSS -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/header-search.css?v={{ 'now'|date('U') }}">
-    
-    <!-- Search Widget CSS -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/search-widget.css?v={{ 'now'|date('U') }}">
     
     <!-- Quick Search CSS -->
     <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/quick-search.css?v={{ 'now'|date('U') }}">
@@ -31,207 +25,571 @@
     {% if skin_css_url %}
         <link rel="stylesheet" href="{{ skin_css_url }}?v={{ 'now'|date('U') }}">
     {% endif %}
+    
+    <!-- Extra CSS from child templates -->
+    {% block extra_css %}{% endblock %}
 </head>
 <body class="bismillah-body">
-    <!-- Header -->
-    <header class="bismillah-header">
-        <!-- Header Top Bar - Salah Time & Login -->
-        <div class="bismillah-header-top">
-            <div class="bismillah-header-content">
-                <div class="bismillah-header-left">
-                    <div class="bismillah-salah-info">
-                        <div class="next-salah">
-                            <span class="salah-icon">🕌</span>
-                            <span class="salah-text">Next: Asr 3:45 PM</span>
-                        </div>
-                        <div class="current-time">
-                            <span class="time-icon">🕐</span>
-                            <span class="time-text">{{ 'now'|date('g:i A') }}</span>
-                        </div>
-                        <div class="current-date">
-                            <span class="date-icon">📅</span>
-                            <span class="date-text">{{ 'now'|date('l, F j, Y') }}</span>
-                        </div>
+    <!-- Condensed Sidebar -->
+    <div class="condensed-sidebar">
+        <!-- Top Section: Logo, Search, Hamburger -->
+        <div class="sidebar-top">
+            <!-- Logo -->
+            <div class="sidebar-logo">
+                <i class="fas fa-mosque"></i>
+            </div>
+            
+            <!-- Search Button -->
+            <div class="sidebar-icon search-icon" id="search-trigger" title="Search">
+                <i class="fas fa-search"></i>
+                <div class="search-dropdown">
+                    <div class="search-input-container">
+                        <input type="text" class="search-input" placeholder="Search Islamic knowledge...">
+                        <button class="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
-                </div>
-                
-                <div class="bismillah-header-right">
-                    <div class="bismillah-header-actions">
-                        {% if user %}
-                            <div class="user-dropdown">
-                                <button class="bismillah-user-menu user-dropdown-toggle">
-                                    <span>👤 {{ user.username }}</span>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M7,10L12,15L17,10H7Z"/>
-                                    </svg>
-                                </button>
-                                <div class="user-dropdown-menu">
-                                    <a href="/dashboard" class="dropdown-item">📊 Dashboard</a>
-                                    <a href="/profile" class="dropdown-item">👤 Profile</a>
-                                    <a href="/settings" class="dropdown-item">⚙️ Settings</a>
-                                    <div class="dropdown-divider"></div>
-                                    <form action="/auth/logout" method="POST" class="dropdown-form">
-                                        <button type="submit" class="dropdown-item logout-item">🚪 Logout</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% else %}
-                            <a href="/auth/login" class="bismillah-login-btn">Login</a>
-                        {% endif %}
+                    <div class="search-suggestions">
+                        <div class="search-suggestion">
+                            <i class="fas fa-book"></i>
+                            <span>Quran</span>
+                        </div>
+                        <div class="search-suggestion">
+                            <i class="fas fa-quote-left"></i>
+                            <span>Hadith</span>
+                        </div>
+                        <div class="search-suggestion">
+                            <i class="fas fa-mosque"></i>
+                            <span>Islamic Practices</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Main Header - Logo, Search & Language -->
-        <div class="bismillah-header-secondary">
-            <div class="bismillah-header-container">
-                <div class="bismillah-header-left">
-                    <a href="/" class="bismillah-logo-link" aria-label="Go to IslamWiki Homepage" title="Go to Homepage">
-                        <div class="bismillah-logo">
-                            <div class="bismillah-logo-icon" aria-hidden="true">☪</div>
-                            <div class="logo-text">
-                                <div class="site-name">IslamWiki</div>
-                                <div class="site-tagline">Authentic Islamic Knowledge</div>
-                            </div>
-                        </div>
+            
+            <!-- Hamburger Menu -->
+            <div class="sidebar-icon hamburger-icon" id="hamburger-trigger" title="Menu">
+                <i class="fas fa-bars"></i>
+                <div class="hamburger-dropdown">
+                    <a href="/wiki/Main_Page" class="dropdown-item">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="/wiki" class="dropdown-item">
+                        <i class="fas fa-book"></i>
+                        Wiki
+                    </a>
+                    <a href="/quran" class="dropdown-item">
+                        <i class="fas fa-quran"></i>
+                        Quran
+                    </a>
+                    <a href="/hadith" class="dropdown-item">
+                        <i class="fas fa-quote-left"></i>
+                        Hadith
+                    </a>
+                    <a href="/search" class="dropdown-item">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/community" class="dropdown-item">
+                        <i class="fas fa-users"></i>
+                        Community
+                    </a>
+                    <a href="/about" class="dropdown-item">
+                        <i class="fas fa-info-circle"></i>
+                        About
                     </a>
                 </div>
-                
-                <div class="bismillah-header-center">
-                    <form class="search-form" action="/search" method="GET">
-                        <div class="search-input-wrapper">
-                            <input type="text" name="q" placeholder="Search Islamic knowledge..." class="search-input">
-                            <button type="submit" class="search-btn">🔍</button>
-                        </div>
-                    </form>
+            </div>
+        </div>
+        
+        <!-- Bottom Section: Settings, Notifications, Navigation, Profile -->
+        <div class="sidebar-bottom">
+            <!-- Settings -->
+            <div class="sidebar-icon settings-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+                <div class="settings-dropdown">
+                    <a href="/settings" class="dropdown-item">
+                        <i class="fas fa-palette"></i>
+                        Skin Settings
+                    </a>
+                    <a href="/settings/preferences" class="dropdown-item">
+                        <i class="fas fa-sliders-h"></i>
+                        Preferences
+                    </a>
+                    <a href="/settings/account" class="dropdown-item">
+                        <i class="fas fa-user-cog"></i>
+                        Account
+                    </a>
                 </div>
-                
-                <div class="bismillah-header-right">
-                    <div class="bismillah-language-selector">
-                        <div class="bismillah-lang-toggle" data-lang="en">
-                            <span class="lang-text">EN</span>
+            </div>
+            
+            <!-- Notifications -->
+            <div class="sidebar-icon notifications-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+                <div class="notifications-panel">
+                    <div class="notifications-header">
+                        <h3>Notifications</h3>
+                        <button class="close-notifications" title="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="notifications-list">
+                        <div class="notification-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>New article published</span>
                         </div>
-                        <div class="bismillah-lang-toggle" data-lang="ar">
-                            <span class="lang-text">عربي</span>
+                        <div class="notification-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Salah time reminder</span>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-user-plus"></i>
+                            <span>New community member</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Navigation -->
-        <nav class="bismillah-secondary-nav">
-            <div class="bismillah-nav-content">
-                <ul class="bismillah-nav-menu">
-                    <li class="bismillah-nav-item">
-                        <a href="/" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">🏠</span>
-                            Home
+            
+            <!-- Navigation Toggle -->
+            <div class="sidebar-icon navigation-icon" title="Navigation">
+                <i class="fas fa-compass"></i>
+                <div class="navigation-dropdown">
+                    <div class="navigation-section">
+                        <h3>📚 Islamic Knowledge</h3>
+                        <a href="/wiki/Main_Page" class="dropdown-item">
+                            <i class="fas fa-home"></i>
+                            Main Page
                         </a>
-                    </li>
-                    <li class="bismillah-nav-item has-dropdown">
-                        <a href="/quran" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">📖</span>
-                            Quran
-                        </a>
-                        <div class="nav-dropdown">
-                            <a href="/quran/read" class="dropdown-item">Read Quran</a>
-                            <a href="/quran/translations" class="dropdown-item">Translations</a>
-                            <a href="/quran/tafsir" class="dropdown-item">Tafsir</a>
-                            <a href="/quran/recitation" class="dropdown-item">Recitation</a>
-                        </div>
-                    </li>
-                    <li class="bismillah-nav-item has-dropdown">
-                        <a href="/hadith" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">📚</span>
-                            Hadith
-                        </a>
-                        <div class="nav-dropdown">
-                            <a href="/hadith/collections" class="dropdown-item">Collections</a>
-                            <a href="/hadith/search" class="dropdown-item">Search Hadith</a>
-                            <a href="/hadith/authenticity" class="dropdown-item">Authenticity</a>
-                        </div>
-                    </li>
-                    <li class="bismillah-nav-item has-dropdown">
-                        <a href="/wiki" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">📚</span>
+                        <a href="/wiki" class="dropdown-item">
+                            <i class="fas fa-book"></i>
                             Wiki
                         </a>
-                        <div class="nav-dropdown">
-                            <a href="/wiki/categories" class="dropdown-item">Categories</a>
-                            <a href="/wiki/recent" class="dropdown-item">Recent Pages</a>
-                            <a href="/wiki/featured" class="dropdown-item">Featured Pages</a>
-                            <a href="/search" class="dropdown-item">Search Wiki</a>
-                        </div>
-                    </li>
-                    <li class="bismillah-nav-item">
-                        <a href="/salah" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">🕌</span>
-                            Salah Times
+                        <a href="/quran" class="dropdown-item">
+                            <i class="fas fa-quran"></i>
+                            Quran
                         </a>
-                    </li>
-                    <li class="bismillah-nav-item">
-                        <a href="/calendar" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">📅</span>
-                            Islamic Calendar
+                        <a href="/hadith" class="dropdown-item">
+                            <i class="fas fa-quote-left"></i>
+                            Hadith
                         </a>
-                    </li>
-                    <li class="bismillah-nav-item">
-                        <a href="/community" class="bismillah-nav-link">
-                            <span class="bismillah-nav-icon">👥</span>
+                    </div>
+                    
+                    <div class="navigation-section">
+                        <h3>🔍 Tools & Search</h3>
+                        <a href="/search" class="dropdown-item">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </a>
+                        <a href="/settings" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </div>
+                    
+                    <div class="navigation-section">
+                        <h3>👥 Community</h3>
+                        <a href="/community" class="dropdown-item">
+                            <i class="fas fa-users"></i>
                             Community
                         </a>
-                    </li>
-                </ul>
+                        <a href="/about" class="dropdown-item">
+                            <i class="fas fa-info-circle"></i>
+                            About
+                        </a>
+                    </div>
+                </div>
             </div>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="bismillah-footer">
-        <div class="bismillah-footer-content">
-            <div class="bismillah-footer-section">
-                <h3>About IslamWiki</h3>
-                <p>Your trusted source for authentic Islamic knowledge, verified by scholars and accessible to the global Muslim community.</p>
-            </div>
-            <div class="bismillah-footer-section">
-                <h3>Quick Links</h3>
-                <ul class="bismillah-footer-links">
-                    <li><a href="/about">About Us</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a href="/privacy">Privacy Policy</a></li>
-                    <li><a href="/terms">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="bismillah-footer-section">
-                <h3>Connect</h3>
-                <ul class="bismillah-footer-links">
-                    <li><a href="/community">Community Forum</a></li>
-                    <li><a href="/newsletter">Newsletter</a></li>
-                    <li><a href="/social">Social Media</a></li>
-                    <li><a href="/support">Support</a></li>
-                </ul>
+            
+            <!-- Profile -->
+            <div class="sidebar-icon profile-icon" title="Profile">
+                <i class="fas fa-user"></i>
+                <div class="profile-dropdown">
+                    <a href="/profile" class="dropdown-item">
+                        <i class="fas fa-user-circle"></i>
+                        My Profile
+                    </a>
+                    <a href="/dashboard" class="dropdown-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="/logout" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="bismillah-footer-bottom">
+    </div>
+    
+    <!-- ===== MAIN CONTENT WRAPPER ===== -->
+    <div class="main-content-wrapper">
+        <!-- Simplified Header - Only Top Bar with Salah Time -->
+        <header class="bismillah-header-simplified">
+            <div class="bismillah-header-content">
+                <div class="bismillah-salah-info">
+                    <span class="salah-icon">🕌</span>
+                    <span class="salah-text">
+                        Next: Asr 3:45 PM
+                    </span>
+                    <span class="time-separator">•</span>
+                    <span class="time-icon">🕐</span>
+                    <span class="current-time">4:37 PM</span>
+                    <span class="time-separator">•</span>
+                    <span class="hijri-date">28 Safar 1447 AH</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        
+        <!-- Footer - Clean and Professional (INSIDE main-content-wrapper) -->
+        <footer class="bismillah-footer">
             <div class="bismillah-footer-content">
-                <p>&copy; 2025 IslamWiki. All rights reserved.</p>
+                <div class="bismillah-footer-section">
+                    <h3>About IslamWiki</h3>
+                    <p>Your trusted source for authentic Islamic knowledge, verified by scholars and accessible to the global Muslim community.</p>
+                </div>
+                <div class="bismillah-footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="bismillah-footer-links">
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="bismillah-footer-section">
+                    <h3>Connect</h3>
+                    <ul class="bismillah-footer-links">
+                        <li><a href="/community">Community Forum</a></li>
+                        <li><a href="/newsletter">Newsletter</a></li>
+                        <li><a href="/social">Social Media</a></li>
+                        <li><a href="/support">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bismillah-footer-bottom">
+                <div class="bismillah-footer-content">
+                    <p>&copy; 2025 IslamWiki. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- ===== MENU OVERLAYS ===== -->
+    
+    <!-- Hamburger Menu Overlay -->
+    <div class="menu-overlay">
+        <div class="menu-header">
+            <h2>Main Menu</h2>
+            <button class="close-menu" title="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+
+    </div>
+    
+    <!-- Search Overlay -->
+    <div class="search-overlay">
+        <div class="search-header">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search IslamWiki..." autocomplete="off">
+            </div>
+            <button class="close-search" title="Close Search">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="search-content">
+            <div class="bismillah-display">
+                <div class="bismillah-text">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+                <div class="search-icon-large">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h2>Search IslamWiki</h2>
+                <p>Discover Islamic knowledge and wisdom</p>
+            </div>
+            
+            <div class="search-shortcuts">
+                <div class="shortcut-item">
+                    <label>Search in namespace:</label>
+                    <input type="text" class="shortcut-input" placeholder="e.g., Help, User, Talk">
+                </div>
+            </div>
+            
+            <div class="search-actions">
+                <div class="action-hint">Press Enter to search</div>
+                <div class="action-hint">Use Ctrl+K to open search anytime</div>
             </div>
         </div>
-    </footer>
-
+    </div>
+    
+    <!-- Settings Menu -->
+    <div class="settings-menu">
+        <div class="settings-section">
+            <label>Text Size</label>
+            <div class="settings-grid">
+                <button class="text-size-btn" data-size="small">Small</button>
+                <button class="text-size-btn active" data-size="standard">Standard</button>
+                <button class="text-size-btn" data-size="large">Large</button>
+                <button class="text-size-btn" data-size="extra-large">Extra Large</button>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <label>Color Theme</label>
+            <div class="settings-grid">
+                <button class="color-theme-btn active" data-theme="light">Light</button>
+                <button class="color-theme-btn" data-theme="dark">Dark</button>
+                <button class="color-theme-btn" data-theme="auto">Auto</button>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <label>Content Width</label>
+            <div class="settings-grid">
+                <button class="width-btn active" data-width="standard">Standard</button>
+                <button class="width-btn" data-width="wide">Wide</button>
+                <button class="width-btn" data-width="full">Full</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications Panel -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>
+                <i class="fas fa-bell"></i>
+                Notifications
+            </h3>
+            <button class="mark-all-read">Mark all as read</button>
+        </div>
+        
+        <div class="notifications-list">
+            <!-- Notifications will be loaded dynamically -->
+        </div>
+        
+        <div class="notifications-footer">
+            <a href="/wiki/Special:Notifications">
+                <i class="fas fa-cog"></i>
+                Notification preferences
+            </a>
+            <a href="/wiki/Special:Notifications">
+                <i class="fas fa-list"></i>
+                All notifications
+            </a>
+        </div>
+    </div>
+    
+    <!-- Profile Menu -->
+    <div class="profile-menu">
+        <div class="user-info">
+            <!-- User info will be loaded dynamically -->
+        </div>
+        
+        <div class="profile-actions">
+            <!-- Profile actions will be loaded dynamically -->
+        </div>
+        
+        <div class="profile-footer">
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Log out
+            </button>
+        </div>
+    </div>
+    
     <!-- JavaScript -->
-    <script src="/skins/Bismillah/js/bismillah.js?v={{ 'now'|date('U') }}"></script>
     <script src="/assets/js/marwa.js?v={{ 'now'|date('U') }}"></script>
     
-    <!-- Header Search JavaScript -->
-    <script src="/skins/Bismillah/js/header-search.js?v={{ 'now'|date('U') }}"></script>
+    <!-- Smart Sidebar Navigation System -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup logo click handler
+            const logo = document.querySelector('.sidebar-logo');
+            if (logo) {
+                logo.addEventListener('click', () => {
+                    window.location.href = '/wiki/Main_Page';
+                });
+            }
+            
+            // Dropdown management system
+            let hoverTimeout;
+            let hoveredDropdown = null;
+            
+            // Define navigation targets for each icon
+            const iconNavigation = {
+                'search-icon': '/search',
+                'hamburger-icon': '/wiki/Main_Page',
+                'settings-icon': '/settings',
+                'notifications-icon': '/notifications',
+                'navigation-icon': '/wiki',
+                'profile-icon': '/profile'
+            };
+            
+            // Get all sidebar icons
+            const sidebarIcons = document.querySelectorAll('.sidebar-icon');
+            console.log('Found sidebar icons:', sidebarIcons.length);
+            
+            sidebarIcons.forEach((icon, index) => {
+                const dropdown = icon.querySelector('[class*="-dropdown"], [class*="-panel"], [class*="-menu"]');
+                const iconId = icon.id || icon.className.split(' ').find(cls => cls.includes('-icon'));
+                
+                console.log(`Icon ${index}: ${iconId}, Has dropdown: ${!!dropdown}`);
+                
+                // Hover to show dropdown
+                icon.addEventListener('mouseenter', () => {
+                    if (!dropdown) return;
+                    
+                    clearTimeout(hoverTimeout);
+                    
+                    // Close any other hovered dropdowns
+                    if (hoveredDropdown && hoveredDropdown !== dropdown) {
+                        hoveredDropdown.style.display = 'none';
+                        hoveredDropdown.classList.remove('dropdown-open');
+                    }
+                    
+                    // Show this dropdown
+                    dropdown.style.display = 'block';
+                    dropdown.classList.add('dropdown-open');
+                    hoveredDropdown = dropdown;
+                    console.log('Hover: Showing dropdown for', iconId);
+                });
+                
+                // Hover to keep dropdown open
+                icon.addEventListener('mouseleave', () => {
+                    if (!dropdown) return;
+                    
+                    hoverTimeout = setTimeout(() => {
+                        if (hoveredDropdown === dropdown) {
+                            dropdown.style.display = 'none';
+                            dropdown.classList.remove('dropdown-open');
+                            hoveredDropdown = null;
+                            console.log('Hover: Closing dropdown for', iconId);
+                        }
+                    }, 200);
+                });
+                
+                // Click to navigate to primary function - with multiple event types
+                const handleIconClick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('🎯 CLICK DETECTED on icon:', iconId);
+                    console.log('Icon classes:', icon.className);
+                    console.log('Icon ID:', icon.id);
+                    console.log('Event type:', e.type);
+                    
+                    // Determine navigation target based on class names or IDs
+                    let targetUrl = null;
+                    
+                    if (icon.classList.contains('search-icon') || icon.id === 'search-trigger') {
+                        targetUrl = '/search';
+                        console.log('🔍 Search icon clicked');
+                    } else if (icon.classList.contains('hamburger-icon') || icon.id === 'hamburger-trigger') {
+                        targetUrl = '/wiki/Main_Page';
+                        console.log('☰ Hamburger icon clicked');
+                    } else if (icon.classList.contains('settings-icon')) {
+                        targetUrl = '/settings';
+                        console.log('⚙️ Settings icon clicked');
+                    } else if (icon.classList.contains('notifications-icon')) {
+                        targetUrl = '/notifications';
+                        console.log('🔔 Notifications icon clicked');
+                    } else if (icon.classList.contains('navigation-icon')) {
+                        targetUrl = '/wiki';
+                        console.log('🧭 Navigation icon clicked');
+                    } else if (icon.classList.contains('profile-icon')) {
+                        targetUrl = '/profile';
+                        console.log('👤 Profile icon clicked');
+                    }
+                    
+                    if (targetUrl) {
+                        console.log('🚀 Navigating to:', targetUrl);
+                        // Add a small delay to ensure console logs are visible
+                        setTimeout(() => {
+                            window.location.href = targetUrl;
+                        }, 100);
+                    } else {
+                        console.log('❌ No navigation target found for classes:', icon.className);
+                    }
+                };
+                
+                // Add multiple event listeners to ensure clicks are caught
+                icon.addEventListener('click', handleIconClick);
+                icon.addEventListener('mousedown', (e) => {
+                    console.log('👇 Mousedown on icon:', iconId);
+                });
+                icon.addEventListener('mouseup', (e) => {
+                    console.log('👆 Mouseup on icon:', iconId);
+                });
+                
+                // Keep dropdown open when hovering over it
+                if (dropdown) {
+                    dropdown.addEventListener('mouseenter', () => {
+                        clearTimeout(hoverTimeout);
+                    });
+                    
+                    dropdown.addEventListener('mouseleave', () => {
+                        hoverTimeout = setTimeout(() => {
+                            if (hoveredDropdown === dropdown) {
+                                dropdown.style.display = 'none';
+                                dropdown.classList.remove('dropdown-open');
+                                hoveredDropdown = null;
+                                console.log('Hover: Closing dropdown from dropdown leave for', iconId);
+                            }
+                        }, 200);
+                    });
+                }
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.sidebar-icon') && !e.target.closest('[class*="-dropdown"], [class*="-panel"], [class*="-menu"]')) {
+                    if (hoveredDropdown) {
+                        console.log('Clicking outside, closing hovered dropdown');
+                        hoveredDropdown.style.display = 'none';
+                        hoveredDropdown.classList.remove('dropdown-open');
+                        hoveredDropdown = null;
+                    }
+                }
+            });
+            
+            // Close dropdowns with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && hoveredDropdown) {
+                    console.log('Escape key, closing hovered dropdown');
+                    hoveredDropdown.style.display = 'none';
+                    hoveredDropdown.classList.remove('dropdown-open');
+                    hoveredDropdown = null;
+                }
+            });
+            
+            // Test: Log all found icons and their properties
+            console.log('📋 SIDEBAR ICONS SUMMARY:');
+            sidebarIcons.forEach((icon, i) => {
+                console.log(`Icon ${i}:`, {
+                    id: icon.id,
+                    className: icon.className,
+                    hasDropdown: !!icon.querySelector('[class*="-dropdown"], [class*="-panel"], [class*="-menu"]')
+                });
+            });
+            
+            console.log('✅ Smart sidebar navigation system initialized');
+            
+            // Test: Add a visible alert to confirm JavaScript is working
+            setTimeout(() => {
+                console.log('🧪 Testing sidebar clicks - JavaScript is active!');
+                // You can click on any sidebar icon now - check console for debug info
+            }, 1000);
+        });
+    </script>
     
     {% block scripts %}{% endblock %}
 </body>

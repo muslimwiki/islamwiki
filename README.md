@@ -1,17 +1,17 @@
 # 🕌 IslamWiki - Authentic Islamic Knowledge Platform
 
-**Version**: 0.0.2.1  
-**Status**: Production Ready with Enhanced Wiki System 🚀  
+**Version**: 0.0.2.2  
+**Status**: Production Ready with Modern Sidebar & Clean Architecture 🚀  
 **Last Updated**: 2025-08-22  
 
-## 🎉 **What's New in Version 0.0.2.1**
+## 🎉 **What's New in Version 0.0.2.2**
 
 ### **🌟 Major Improvements**
-- **Wiki-Focused Site**: Site now defaults to `/wiki` as the main focus
-- **Dynamic Page Creation**: Any `/wiki/{page_name}` shows create option for missing pages
-- **Enhanced Search System**: Unified search with IqraSearchExtension
-- **Improved UI/UX**: Better readability and professional appearance
-- **MediaWiki-Style Behavior**: Professional wiki platform experience
+- **Modern Sidebar Design**: Condensed 60px navigation with professional appearance
+- **Smart Navigation System**: Hover for options, click for navigation
+- **Clean Architecture**: Fixed file organization and eliminated duplicates
+- **Professional UI/UX**: Modern, gradient-free design with Islamic aesthetics
+- **Responsive Navigation**: Works perfectly on all devices and screen sizes
 
 ### **🔧 Technical Enhancements**
 - **Fixed Routing Issues**: Resolved 404 errors and broken links

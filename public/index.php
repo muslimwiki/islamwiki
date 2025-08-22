@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Main application entry point for local.islam.wiki
  * 
  * @package IslamWiki\Public
- * @version 0.0.1
+ * @version 0.0.2.2
  * @author IslamWiki Development Team
  * @license AGPL-3.0
  */
@@ -52,8 +52,8 @@ try {
     // Route to the appropriate template based on path and method
     switch ($path) {
         case '/':
-            // Redirect root to wiki as the main focus
-            header("Location: /wiki", true, 301);
+            // Redirect root to Main_Page as the main focus
+            header("Location: /wiki/Main_Page", true, 301);
             exit;
             break;
         case '/quran':
@@ -68,6 +68,36 @@ try {
             // Use the wiki template with proper skin integration
             $template = 'pages/wiki.twig';
             $title = 'Islamic Wiki - Discover Islamic Knowledge - IslamWiki';
+            break;
+        case '/wiki/Main_Page':
+            // Main page - default landing page
+            $template = 'wiki/main-page.twig';
+            $title = 'Main Page - IslamWiki';
+            
+            // Get current date and time
+            $currentTime = date('H:i, j F Y');
+            $totalArticles = 4829; // Placeholder for now
+            
+            // Initialize extension data
+            $hijriDate = null;
+            $nextSalah = null;
+            
+            // For now, use fallback values while we work on extension integration
+            // TODO: Integrate with HijriCalendar and SalahTime extensions
+            $hijriDate = '28 Safar 1447 AH';
+            $nextSalah = [
+                'name' => 'Asr',
+                'time' => new DateTime('15:45')
+            ];
+            
+            // Store template variables for the main page
+            $templateData = [
+                'current_time' => $currentTime,
+                'hijri_date' => $hijriDate,
+                'next_salah' => $nextSalah,
+                'total_articles' => $totalArticles,
+                'title' => 'Main Page - IslamWiki'
+            ];
             break;
         case '/wiki/create':
             // Wiki page creation form
@@ -225,6 +255,16 @@ try {
             // Iqra Search - Islamic search engine
             $template = 'iqra-search/index.twig';
             $title = 'Iqra Search - Islamic Knowledge Search - IslamWiki';
+            break;
+        case '/community':
+            // Community page
+            $template = 'community/index.twig';
+            $title = 'Community - IslamWiki';
+            break;
+        case '/about':
+            // About page
+            $template = 'about/index.twig';
+            $title = 'About - IslamWiki';
             break;
         case '/iqra-search/api/search':
             // Iqra Search API endpoint
@@ -519,6 +559,225 @@ try {
         case '/settings':
             $template = 'settings/index.twig';
             $title = 'Settings - IslamWiki';
+            break;
+        case '/settings/skins':
+            $template = 'settings/skins.twig';
+            $title = 'Skin Settings - IslamWiki';
+            
+            try {
+                // Get skin settings data
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $settingsData = $skinController->index();
+                
+                $templateData = array_merge([
+                    'title' => 'Skin Settings - IslamWiki'
+                ], $settingsData);
+            } catch (Exception $e) {
+                error_log("Error loading skin settings: " . $e->getMessage());
+                $templateData = [
+                    'title' => 'Skin Settings - IslamWiki',
+                    'error' => 'Failed to load skin settings',
+                    'current_skin' => null,
+                    'available_skins' => [],
+                    'user_preferences' => [],
+                    'customization_options' => [],
+                    'layout_options' => [],
+                    'component_options' => []
+                ];
+            }
+            break;
+        case '/api/settings/skins/switch':
+            // API endpoint for switching skins
+            header('Content-Type: application/json');
+            
+            if ($method !== 'POST') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $input = json_decode(file_get_contents('php://input'), true);
+                $skinName = $input['skin'] ?? '';
+                
+                if (empty($skinName)) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Skin name is required']);
+                    exit;
+                }
+                
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->switchSkin($skinName);
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error switching skin: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/update':
+            // API endpoint for updating theme and layout preferences
+            header('Content-Type: application/json');
+            
+            if ($method !== 'POST') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $input = json_decode(file_get_contents('php://input'), true);
+                
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                
+                if (isset($input['theme_customization'])) {
+                    $result = $skinController->updateTheme($input['theme_customization']);
+                } elseif (isset($input['layout_preferences'])) {
+                    $result = $skinController->updateLayout($input['layout_preferences']);
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Invalid request data']);
+                    exit;
+                }
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error updating preferences: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/component':
+            // API endpoint for toggling component visibility
+            header('Content-Type: application/json');
+            
+            if ($method !== 'POST') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $input = json_decode(file_get_contents('php://input'), true);
+                $componentName = $input['component'] ?? '';
+                $visible = $input['visible'] ?? true;
+                
+                if (empty($componentName)) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Component name is required']);
+                    exit;
+                }
+                
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->toggleComponent($componentName, $visible);
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error toggling component: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/preview':
+            // API endpoint for live skin preview
+            header('Content-Type: application/json');
+            
+            if ($method !== 'GET') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $skinName = $_GET['skin'] ?? 'current';
+                $customization = [];
+                
+                if (isset($_GET['prefs'])) {
+                    $customization = json_decode($_GET['prefs'], true) ?: [];
+                }
+                
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->getLivePreview($skinName, $customization);
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error generating preview: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/reset':
+            // API endpoint for resetting preferences
+            header('Content-Type: application/json');
+            
+            if ($method !== 'POST') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->resetPreferences();
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error resetting preferences: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/export':
+            // API endpoint for exporting preferences
+            header('Content-Type: application/json');
+            
+            if ($method !== 'GET') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->exportPreferences();
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error exporting preferences: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
+            break;
+        case '/api/settings/skins/import':
+            // API endpoint for importing preferences
+            header('Content-Type: application/json');
+            
+            if ($method !== 'POST') {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+                exit;
+            }
+            
+            try {
+                $input = json_decode(file_get_contents('php://input'), true);
+                
+                $skinController = new \IslamWiki\Http\Controllers\SkinSettingsController($container);
+                $result = $skinController->importPreferences($input);
+                
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error importing preferences: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(['error' => 'Internal server error']);
+            }
+            exit;
             break;
         default:
             // Check if this is a wiki page request (/wiki/{page_name})

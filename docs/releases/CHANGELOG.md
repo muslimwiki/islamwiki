@@ -71,6 +71,40 @@ This document tracks all changes, improvements, and fixes made to IslamWiki acro
 
 ---
 
+## [0.0.2.2] - 2025-08-22
+
+### 🎯 **Sidebar Redesign & Navigation System**
+
+#### **Added**
+- **Condensed Left-Side Navigation**: 60px sidebar maximizing content space
+- **Smart Sidebar Navigation System**: Hover for dropdowns, click for navigation
+- **Professional UI/UX**: Modern, enterprise-grade interface design
+- **Islamic Aesthetics**: Beautiful Islamic-themed interface elements
+- **Responsive Design**: Mobile-first approach with proper touch targets
+
+#### **Changed**
+- **Sidebar Layout**: Redesigned from wide to condensed navigation
+- **Color Scheme**: Replaced gradients with clean, solid colors (#17203D)
+- **Navigation Behavior**: Hover shows options, click navigates to functions
+- **Visual Design**: Modern, professional appearance throughout
+- **Asset Organization**: Cleaned up file structure and architecture
+
+#### **Fixed**
+- **Architecture Violation**: Removed duplicate `public/skins/` directory
+- **File Organization**: Consolidated routing into single `public/index.php`
+- **Asset Serving**: CSS/JS now served correctly from root `/skins/` directory
+- **Navigation Issues**: Sidebar dropdowns work smoothly without flickering
+- **Documentation**: Updated all guides to reflect correct architecture
+
+#### **Technical Improvements**
+- **JavaScript Navigation**: Smart state management for hover and click
+- **CSS Framework**: Clean, gradient-free styling system
+- **Performance**: Optimized asset loading and caching
+- **Accessibility**: High contrast and readable text
+- **Cross-browser**: Works on Chrome, Firefox, Safari, Edge, and mobile
+
+---
+
 ## [0.0.0.62] - 2025-08-19
 
 ### **Added**

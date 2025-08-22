@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Condensed Navigation - IslamWiki</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Condensed Navigation CSS -->
+    <link rel="stylesheet" href="/skins/Bismillah/css/condensed-navigation.css">
+    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah-main.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-content {
+            margin-left: 60px;
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Condensed Left Sidebar -->
+    <div class="condensed-sidebar">
+        <!-- Logo -->
+        <div class="sidebar-logo" title="IslamWiki - Click to go home">
+            <div>IW</div>
+        </div>
+        
+        <!-- Search Icon -->
+        <div class="sidebar-icon search-icon" title="Search (Ctrl+K)">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <!-- Hamburger Menu Icon -->
+        <div class="sidebar-icon hamburger-menu-icon" title="Main Menu (Ctrl+M)">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <!-- Settings Icon -->
+        <div class="sidebar-icon settings-icon" title="Display Preferences">
+            <i class="fas fa-cog"></i>
+        </div>
+        
+        <!-- Notifications Icon -->
+        <div class="sidebar-icon notifications-icon" title="Notifications">
+            <i class="fas fa-bell"></i>
+        </div>
+        
+        <!-- Navigation Toggle Icon -->
+        <div class="sidebar-icon navigation-icon" title="Navigation Toggle">
+            <i class="fas fa-compass"></i>
+        </div>
+        
+        <!-- Profile Icon -->
+        <div class="sidebar-icon profile-icon" title="User Profile (Alt+P)">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content-wrapper">
+        <div class="test-content">
+            <h1>Test Condensed Navigation System</h1>
+            
+            <div class="test-section">
+                <h2>Sidebar Icons</h2>
+                <p>Click on the icons in the left sidebar to test the navigation system:</p>
+                <ul>
+                    <li><strong>IW Logo:</strong> Click to go to Main Page</li>
+                    <li><strong>Search Icon:</strong> Opens search overlay (Ctrl+K)</li>
+                    <li><strong>Hamburger Menu:</strong> Opens main menu (Ctrl+M)</li>
+                    <li><strong>Settings Icon:</strong> Opens display preferences</li>
+                    <li><strong>Notifications Icon:</strong> Opens notifications panel</li>
+                    <li><strong>Navigation Icon:</strong> Toggles navigation</li>
+                    <li><strong>Profile Icon:</strong> Opens user profile (Alt+P)</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h2>Keyboard Shortcuts</h2>
+                <p>Test these keyboard shortcuts:</p>
+                <ul>
+                    <li><strong>Ctrl+K:</strong> Open search</li>
+                    <li><strong>Ctrl+M:</strong> Open main menu</li>
+                    <li><strong>Escape:</strong> Close any open overlay</li>
+                    <li><strong>Alt+P:</strong> Open profile menu</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h2>Test Buttons</h2>
+                <button class="test-button" onclick="testSearch()">Test Search Overlay</button>
+                <button class="test-button" onclick="testMenu()">Test Main Menu</button>
+                <button class="test-button" onclick="testSettings()">Test Settings</button>
+                <button class="test-button" onclick="testNotifications()">Test Notifications</button>
+                <button class="test-button" onclick="testProfile()">Test Profile</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Menu Overlays -->
+    <div class="menu-overlay">
+        <div class="menu-header">
+            <h2>Main Menu</h2>
+            <button class="close-menu" title="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-sections">
+            <div class="menu-section">
+                <h3>Navigation</h3>
+                <ul class="menu-items">
+                    <li class="menu-item">
+                        <a href="/wiki/Main_Page">
+                            <i class="icon fas fa-home"></i>
+                            <span>Main Page</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/wiki/Contents">
+                            <i class="icon fas fa-list"></i>
+                            <span>Contents</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search Overlay -->
+    <div class="search-overlay">
+        <div class="search-header">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search IslamWiki..." autocomplete="off">
+            </div>
+            <button class="close-search" title="Close Search">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="search-content">
+            <div class="bismillah-display">
+                <div class="bismillah-text">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+                <div class="search-icon-large">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h2>Search IslamWiki</h2>
+                <p>Discover Islamic knowledge and wisdom</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Menu -->
+    <div class="settings-menu">
+        <div class="settings-section">
+            <label>Text Size</label>
+            <div class="settings-grid">
+                <button class="text-size-btn" data-size="small">Small</button>
+                <button class="text-size-btn active" data-size="standard">Standard</button>
+                <button class="text-size-btn" data-size="large">Large</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications Panel -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            <button class="mark-all-read">Mark all as read</button>
+        </div>
+        <div class="notifications-list">
+            <div class="notification-item">Test notification 1</div>
+            <div class="notification-item">Test notification 2</div>
+        </div>
+    </div>
+    
+    <!-- Profile Menu -->
+    <div class="profile-menu">
+        <div class="user-info">
+            <div class="user-avatar">U</div>
+            <div class="user-details">
+                <div class="user-name">Test User</div>
+                <div class="user-email">test@example.com</div>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <a href="#" class="profile-action">My Profile</a>
+            <a href="#" class="profile-action">Settings</a>
+        </div>
+        <div class="profile-footer">
+            <button class="logout-btn">Log out</button>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="/skins/Bismillah/js/condensed-navigation.js"></script>
+    <script src="/skins/Bismillah/js/search-overlay.js"></script>
+    <script src="/skins/Bismillah/js/settings-menu.js"></script>
+    <script src="/skins/Bismillah/js/notifications.js"></script>
+    <script src="/skins/Bismillah/js/profile-menu.js"></script>
+    
+    <script>
+        // Test functions
+        function testSearch() {
+            document.querySelector('.search-overlay').classList.add('active');
+        }
+        
+        function testMenu() {
+            document.querySelector('.menu-overlay').classList.add('active');
+        }
+        
+        function testSettings() {
+            document.querySelector('.settings-menu').classList.add('active');
+        }
+        
+        function testNotifications() {
+            document.querySelector('.notifications-panel').classList.add('active');
+        }
+        
+        function testProfile() {
+            document.querySelector('.profile-menu').classList.add('active');
+        }
+        
+        // Initialize all systems
+        document.addEventListener('DOMContentLoaded', function() {
+            window.condensedNavigation = new CondensedNavigation();
+            window.searchOverlay = new SearchOverlay();
+            window.settingsMenu = new SettingsMenu();
+            window.notifications = new NotificationsSystem();
+            window.profile = new ProfileMenu();
+            
+            console.log('Test page - Condensed Navigation System initialized');
+        });
+    </script>
+</body>
+</html> 
