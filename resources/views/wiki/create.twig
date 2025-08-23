@@ -1,173 +1,367 @@
 {% extends 'layouts/app.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{# Read query parameters directly to ensure they're always available #}
+{% set title = title|default('New Page') %}
+{% set namespace = namespace|default('') %}
+{% set content = content|default('') %}
+{% set isNew = isNew|default(true) %}
+{% set canEdit = canEdit|default(true) %}
+{% set canDelete = canDelete|default(false) %}
+{% set canLock = canLock|default(false) %}
+{% set user = user|default(null) %}
+{% set locale = locale|default('en') %}
+
+{% block title %}Creating {{ title }} - IslamWiki{% endblock %}
 
 {% block content %}
-<div class="wiki-create-container">
-    <div class="container mx-auto px-4 py-6">
-        <!-- Compact Header -->
-        <div class="wiki-create-header mb-6">
-            <h1 class="wiki-create-title">Create New Page</h1>
-            <p class="wiki-create-subtitle">Share your knowledge with the Islamic community</p>
+<div class="wiki-creation-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="section-container">
+            <h1 class="page-title">
+                Creating {{ title }}
+            </h1>
+            <p class="page-subtitle">
+                From IslamWiki
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="section-container">
+        <!-- Instructions -->
+        <div class="instructions-box">
+            <div class="instructions-content">
+                <div class="instructions-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="instructions-text">
+                    <p>
+                        You have followed a link to a page that does not exist yet. To create the page, start typing in the box below using <strong>Enhanced Markdown with Wiki Extensions</strong>. If you are here by mistake, click your browser's <strong>back</strong> button.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <!-- Compact Create Form -->
-        <div class="max-w-5xl mx-auto">
-            <form method="POST" action="/wiki/create" class="wiki-create-form">
-                <!-- CSRF Token -->
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                
-                <!-- Top Row: Title, Category, Template -->
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label for="title" class="form-label">Page Title *</label>
-                        <input type="text" 
-                               id="title" 
-                               name="title" 
-                               class="form-input" 
-                               placeholder="Enter page title"
-                               value="{{ pageTitle|default('') }}"
-                               required>
-                    </div>
-                    
-                    <div class="form-group w-48">
-                        <label for="category" class="form-label">Category *</label>
-                        <select id="category" name="category_id" class="form-select" required>
-                            <option value="">Select category</option>
-                            {% for category in categories %}
-                            <option value="{{ category.id }}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="form-group w-48">
-                        <label for="template" class="form-label">Template</label>
-                        <select id="template" name="template_id" class="form-select">
-                            <option value="">Default</option>
-                            {% for template in templates %}
-                            <option value="{{ template.id }}">{{ template.name }}</option>
-                            {% endfor %}
-                        </select>
+        <!-- Create Form -->
+        <div class="create-form-container">
+            <form method="POST" action="/create" class="create-form">
+                <input type="hidden" name="_token" value="">
+                <input type="hidden" name="title" value="{{ title }}">
+                <input type="hidden" name="namespace" value="{{ namespace }}">
+                <input type="hidden" name="comment" value="Created page">
+                <input type="hidden" name="content_format" value="markdown">
+
+                <!-- Content Format Information -->
+                <div class="format-selection">
+                    <div class="format-info">
+                        <div class="format-icon">
+                            <i class="fas fa-markdown"></i>
+                        </div>
+                        <div class="format-details">
+                            <h3>Enhanced Markdown with Wiki Extensions</h3>
+                            <p>IslamWiki uses <strong>Markdown</strong> with powerful wiki extensions for internal links, templates, categories, and Islamic content features.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Summary Row -->
-                <div class="form-group">
-                    <label for="summary" class="form-label">Summary *</label>
-                    <textarea id="summary" 
-                              name="summary" 
-                              class="form-textarea" 
-                              rows="2"
-                              placeholder="Brief summary of the page content"
-                              required></textarea>
-                </div>
-
-                <!-- Content Section with Toolbar -->
-                <div class="form-group">
-                    <label for="content" class="form-label">Page Content *</label>
-                    
-                    <!-- Formatting Toolbar -->
-                    <div class="formatting-toolbar">
-                        <div class="toolbar-group">
-                            <button type="button" class="toolbar-btn" data-format="bold" title="Bold (Ctrl+B)">
+                <!-- Enhanced Markdown Toolbar -->
+                <div class="formatting-toolbar" id="markdown-toolbar">
+                    <!-- Top Row -->
+                    <div class="toolbar-row">
+                        <div class="toolbar-section">
+                            <!-- Basic Markdown Formatting -->
+                            <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
                                 <strong>B</strong>
                             </button>
-                            <button type="button" class="toolbar-btn" data-format="italic" title="Italic (Ctrl+I)">
+                            <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
                                 <em>I</em>
                             </button>
-                            <button type="button" class="toolbar-btn" data-format="underline" title="Underline (Ctrl+U)">
-                                <u>U</u>
+                            <button type="button" class="toolbar-btn" data-action="heading" title="Heading">
+                                <i class="fas fa-heading"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="link" title="Insert Link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="image" title="Insert Image">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <div class="toolbar-separator"></div>
+                            <button type="button" class="toolbar-btn" data-action="list" title="List">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="code" title="Code">
+                                <i class="fas fa-code"></i>
                             </button>
                         </div>
-                        
-                        <div class="toolbar-group">
-                            <button type="button" class="toolbar-btn" data-format="heading" title="Heading">
-                                <strong>H</strong>
-                            </button>
-                            <button type="button" class="toolbar-btn" data-format="list" title="Bullet List">
-                                • List
-                            </button>
-                            <button type="button" class="toolbar-btn" data-format="number" title="Numbered List">
-                                1. List
-                            </button>
-                        </div>
-                        
-                        <div class="toolbar-group">
-                            <button type="button" class="toolbar-btn" data-format="link" title="Insert Link">
-                                🔗
-                            </button>
-                            <button type="button" class="toolbar-btn" data-format="image" title="Insert Image">
-                                🖼️
-                            </button>
-                            <button type="button" class="toolbar-btn" data-format="quote" title="Block Quote">
-                                💬
-                            </button>
-                        </div>
-                        
-                        <div class="toolbar-group">
-                            <button type="button" class="toolbar-btn" data-format="code" title="Code Block">
-                                &lt;/&gt;
-                            </button>
-                            <button type="button" class="toolbar-btn" data-format="table" title="Insert Table">
-                                ⊞
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Content Editor -->
-                    <textarea id="content" 
-                              name="content" 
-                              class="form-textarea content-editor" 
-                              rows="20"
-                              placeholder="Write your page content here. Use the toolbar above for formatting."
-                              required></textarea>
-                    
-                    <div class="editor-help">
-                        <small>
-                            <strong>Quick Formatting:</strong> 
-                            **bold**, *italic*, # heading, - list, [link](url), ![image](url)
-                        </small>
-                    </div>
-                </div>
 
-                <!-- Bottom Row: Tags, Settings, Actions -->
-                <div class="form-bottom-row">
-                    <div class="form-left">
-                        <div class="form-group">
-                            <label for="tags" class="form-label">Tags</label>
-                            <input type="text" 
-                                   id="tags" 
-                                   name="tags" 
-                                   class="form-input" 
-                                   placeholder="tag1, tag2, tag3">
+                        <div class="toolbar-section">
+                            <!-- Wiki Extensions Dropdown -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="wiki-extensions">
+                                    Wiki Extensions <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="wiki-extensions-dropdown">
+                                    <div class="dropdown-section">
+                                        <h4>Internal Links</h4>
+                                        <button type="button" data-action="internal-link">[[Page Name]]</button>
+                                        <button type="button" data-action="internal-link-display">[[Page|Display]]</button>
+                                        <button type="button" data-action="category">[Category:Name]</button>
+                                    </div>
+                                    <div class="dropdown-section">
+                                        <h4>Templates</h4>
+                                        <button type="button" data-action="template">&#123;&#123;Template&#125;&#125;</button>
+                                        <button type="button" data-action="infobox">&#123;&#123;Infobox&#125;&#125;</button>
+                                        <button type="button" data-action="reference">&#123;&#123;Reference&#125;&#125;</button>
+                                    </div>
+                                    <div class="dropdown-section">
+                                        <h4>References</h4>
+                                        <button type="button" data-action="ref">Reference</button>
+                                        <button type="button" data-action="ref-named">Named Reference</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Islamic Content Extensions -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="islamic">
+                                    Islamic Content <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="islamic-dropdown">
+                                    <div class="dropdown-section">
+                                        <h4>Quran</h4>
+                                        <button type="button" data-action="quran-template">&#123;&#123;Quran|surah=1|ayah=1-7&#125;&#125;</button>
+                                        <button type="button" data-action="quran-verse">Quran Verse</button>
+                                        <button type="button" data-action="quran-chapter">Quran Chapter</button>
+                                    </div>
+                                    <div class="dropdown-section">
+                                        <h4>Hadith</h4>
+                                        <button type="button" data-action="hadith-template">&#123;&#123;Hadith|book=Bukhari|number=1&#125;&#125;</button>
+                                        <button type="button" data-action="hadith-chain">Hadith Chain</button>
+                                        <button type="button" data-action="hadith-grade">Hadith Grade</button>
+                                    </div>
+                                    <div class="dropdown-section">
+                                        <h4>Islamic Content</h4>
+                                        <button type="button" data-action="scholar-template">&#123;&#123;Scholar|name=Ibn Sina&#125;&#125;</button>
+                                        <button type="button" data-action="fatwa-template">&#123;&#123;Fatwa|scholar=Name&#125;&#125;</button>
+                                        <button type="button" data-action="prayer-times">&#123;&#123;PrayerTimes&#125;&#125;</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Special Characters -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="special">
+                                    Special characters <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="special-dropdown">
+                                    <div class="special-chars-grid">
+                                        <div class="char-category">
+                                            <h4>Latin</h4>
+                                            <div class="char-grid">
+                                                <button type="button" data-char="Á">Á</button>
+                                                <button type="button" data-char="á">á</button>
+                                                <button type="button" data-char="À">À</button>
+                                                <button type="button" data-char="à">à</button>
+                                                <button type="button" data-char="Â">Â</button>
+                                                <button type="button" data-char="â">â</button>
+                                                <button type="button" data-char="Ä">Ä</button>
+                                                <button type="button" data-char="ä">ä</button>
+                                                <button type="button" data-char="Ã">Ã</button>
+                                                <button type="button" data-char="ã">ã</button>
+                                            </div>
+                                        </div>
+                                        <div class="char-category">
+                                            <h4>Symbols</h4>
+                                            <div class="char-grid">
+                                                <button type="button" data-char="©">©</button>
+                                                <button type="button" data-char="®">®</button>
+                                                <button type="button" data-char="™">™</button>
+                                                <button type="button" data-char="±">±</button>
+                                                <button type="button" data-char="×">×</button>
+                                                <button type="button" data-char="÷">÷</button>
+                                                <button type="button" data-char="≤">≤</button>
+                                                <button type="button" data-char="≥">≥</button>
+                                                <button type="button" data-char="≠">≠</button>
+                                                <button type="button" data-char="≈">≈</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Help -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="help">
+                                    Help <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="help-dropdown">
+                                    <div class="help-content">
+                                        <h4>Enhanced Markdown Examples</h4>
+                                        <div class="help-example">
+                                            <strong>Bold:</strong> <code>**text**</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>Italic:</strong> <code>*text*</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>Heading:</strong> <code># Heading</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>List:</strong> <code>- Item</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>Internal Link:</strong> <code>[[Page Name]]</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>Template:</strong> <code>&#123;&#123;Template|param=value&#125;&#125;</code>
+                                        </div>
+                                        <div class="help-example">
+                                            <strong>Quran:</strong> <code>&#123;&#123;Quran|surah=1|ayah=1-7&#125;&#125;</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Page Settings</label>
-                            <div class="form-checkboxes">
-                                <label class="form-checkbox">
-                                    <input type="checkbox" name="allow_comments" value="1" checked>
-                                    <span>Allow comments</span>
-                                </label>
-                                <label class="form-checkbox">
-                                    <input type="checkbox" name="allow_editing" value="1" checked>
-                                    <span>Allow editing</span>
-                                </label>
+
+                        <div class="toolbar-section">
+                            <!-- Insert Dropdown -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="insert">
+                                    Insert <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-content" id="insert-dropdown">
+                                    <button type="button" data-action="gallery">Picture Gallery</button>
+                                    <button type="button" data-action="table">Table</button>
+                                    <button type="button" data-action="redirect">Redirect</button>
+                                </div>
+                            </div>
+
+                            <!-- Search and Replace -->
+                            <button type="button" class="toolbar-btn" data-action="search" title="Search and Replace">
+                                <i class="fas fa-search"></i>
+                            </button>
+
+                            <!-- Preview Toggle -->
+                            <button type="button" class="toolbar-btn preview-btn" data-action="preview" title="Toggle Preview">
+                                <i class="fas fa-eye"></i> Preview
+                            </button>
+
+                            <!-- Three Dots Menu -->
+                            <div class="toolbar-dropdown">
+                                <button type="button" class="dropdown-btn" data-dropdown="more-options">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-content" id="more-options-dropdown">
+                                    <button type="button" data-action="protect">Protect</button>
+                                    <button type="button" data-action="watch">Watch</button>
+                                    <button type="button" data-action="tools">Tools</button>
+                                    <button type="button" data-action="what-links">What Links Here</button>
+                                    <button type="button" data-action="page-info">Page Information</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-right">
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
-                                <span class="btn-icon">📝</span>
-                                Create Page
+
+                    <!-- Bottom Row -->
+                    <div class="toolbar-row">
+                        <div class="toolbar-section">
+                            <!-- Additional Formatting -->
+                            <button type="button" class="toolbar-btn" data-action="indent-left" title="Decrease Indent">
+                                <i class="fas fa-outdent"></i>
                             </button>
-                            <a href="/wiki" class="btn btn-secondary">
-                                Cancel
-                            </a>
+                            <button type="button" class="toolbar-btn" data-action="indent-right" title="Increase Indent">
+                                <i class="fas fa-indent"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="superscript" title="Superscript">
+                                <i class="fas fa-superscript"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="subscript" title="Subscript">
+                                <i class="fas fa-subscript"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Content Editor with Preview Toggle -->
+                <div class="editor-container">
+                    <div class="editor-section">
+                        <label for="content" class="form-label">
+                            Page Content
+                        </label>
+                        <textarea id="content"
+                                  name="content"
+                                  rows="25"
+                                  required
+                                  class="form-textarea"
+                                  placeholder="Enter your page content using Enhanced Markdown with wiki extensions...">{{ content }}</textarea>
+                    </div>
+
+                    <!-- Preview Section (Hidden by default) -->
+                    <div class="preview-section" id="preview-section" style="display: none;">
+                        <div class="preview-header">
+                            <h4>Live Preview</h4>
+                            <button type="button" class="close-preview" data-action="close-preview">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="preview-content" id="preview-content">
+                            <!-- Preview content will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="form-group">
+                    <label for="summary" class="form-label">
+                        Summary
+                    </label>
+                    <textarea id="summary"
+                              name="summary"
+                              rows="3"
+                              class="form-textarea summary-textarea"
+                              placeholder="Brief description of your changes..."></textarea>
+                </div>
+
+                <!-- Watch Page -->
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="watch" value="1" class="form-checkbox">
+                        <span class="checkbox-text">Watch this page</span>
+                    </label>
+                </div>
+
+                <!-- Contribution Notice -->
+                <div class="contribution-notice">
+                    <p>
+                        Please note that all contributions to IslamWiki are considered to be released under the GNU Affero General Public License v3.0 (AGPL-3.0). If you do not want your writing to be edited and redistributed, then do not submit it here. You are also promising us that you wrote this yourself, or copied it from a public domain or similar free resource. Do not submit copyrighted work without permission!
+                    </p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button"
+                            onclick="window.history.back()"
+                            class="btn btn-secondary">
+                        Cancel
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            id="show-preview-btn">
+                        Show preview
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary">
+                        Show changes
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary">
+                        Save draft
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save page
+                    </button>
                 </div>
             </form>
         </div>
@@ -175,405 +369,539 @@
 </div>
 
 <style>
-/* Compact Wiki Create Page Styling */
-.wiki-create-container {
+.wiki-creation-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8fafc 0%, rgba(79, 70, 229, 0.05) 100%);
+    background: #f8f9fa;
+    padding: 0;
+    width: 100% !important;
+    max-width: none !important;
 }
 
-.wiki-create-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.wiki-create-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0 0 0.5rem 0;
-}
-
-.wiki-create-subtitle {
-    font-size: 1.1rem;
-    color: #6b7280;
-    margin: 0;
-}
-
-.wiki-create-form {
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    border: 1px solid #e5e7eb;
-}
-
-/* Form Layout */
-.form-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group.flex-1 {
-    flex: 1;
-}
-
-.form-group.w-48 {
-    width: 12rem;
-}
-
-.form-label {
-    display: block;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
+/* Use standard layout approach like other pages */
+.wiki-creation-container {
     width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    background: white;
+    background: #f8f9fa;
 }
 
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.wiki-creation-container .page-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem 0;
+    margin-bottom: 0;
 }
 
-.form-textarea {
-    resize: vertical;
+.wiki-creation-container .section-container {
+    text-align: left;
 }
 
-.content-editor {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 0.9rem;
+.page-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem 0;
+    margin-bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Removed custom container classes - using standard section-container */
+
+.instructions-box {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #856404;
+}
+
+.instructions-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.instructions-icon {
+    flex-shrink: 0;
+    color: #f39c12;
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+}
+
+.instructions-text p {
+    margin: 0;
     line-height: 1.5;
+}
+
+.instructions-text strong {
+    color: #856404;
+    font-weight: 600;
+}
+
+.create-form-container {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.format-selection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+}
+
+.format-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.format-icon {
+    flex-shrink: 0;
+    color: #007bff;
+    font-size: 2rem;
+}
+
+.format-details h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.format-details p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.format-details strong {
+    color: #007bff;
+    font-weight: 600;
 }
 
 /* Formatting Toolbar */
 .formatting-toolbar {
-    display: flex;
-    gap: 0.5rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
     padding: 0.75rem;
-    background: #f8fafc;
-    border: 2px solid #e5e7eb;
-    border-bottom: none;
-    border-radius: 0.5rem 0.5rem 0 0;
-    margin-bottom: 0;
-    flex-wrap: wrap;
+    margin: 1rem 0;
 }
 
-.toolbar-group {
+.toolbar-row {
     display: flex;
-    gap: 0.25rem;
-    padding-right: 0.75rem;
-    border-right: 1px solid #e5e7eb;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
-.toolbar-group:last-child {
-    border-right: none;
-    padding-right: 0;
+.toolbar-row:last-child {
+    margin-bottom: 0;
+}
+
+.toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .toolbar-btn {
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    min-width: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid #d1d5db;
-    background: white;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.8rem;
-    color: #374151;
 }
 
 .toolbar-btn:hover {
-    background: #f3f4f6;
-    border-color: #9ca3af;
-    transform: translateY(-1px);
+    background: #e9ecef;
+    border-color: #adb5bd;
 }
 
-.toolbar-btn.active {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
+.toolbar-separator {
+    width: 1px;
+    height: 1.5rem;
+    background: #ced4da;
+    margin: 0 0.25rem;
 }
 
-.toolbar-btn[data-format="bold"] strong {
-    font-weight: 700;
+.toolbar-dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-.toolbar-btn[data-format="italic"] em {
-    font-style: italic;
-}
-
-.toolbar-btn[data-format="underline"] u {
-    text-decoration: underline;
-}
-
-/* Editor Help */
-.editor-help {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 0.5rem;
-    font-size: 0.8rem;
-    color: #0369a1;
-}
-
-/* Bottom Row Layout */
-.form-bottom-row {
+.dropdown-btn {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    font-size: 0.875rem;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #f3f4f6;
-}
-
-.form-left {
-    flex: 1;
-}
-
-.form-right {
-    flex-shrink: 0;
-}
-
-/* Checkboxes */
-.form-checkboxes {
-    display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.form-checkbox {
+.dropdown-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: #fff;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+}
+
+.toolbar-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-section {
+    margin-bottom: 1rem;
+}
+
+.dropdown-section:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-section h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #666;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.25rem;
+}
+
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #333;
+    border-radius: 0.25rem;
+}
+
+.dropdown-content button:hover {
+    background: #f8f9fa;
+}
+
+.special-chars-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.char-category h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.char-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.25rem;
+}
+
+.char-grid button {
+    padding: 0.25rem;
+    border: 1px solid #ced4da;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.75rem;
+    border-radius: 0.125rem;
+}
+
+.char-grid button:hover {
+    background: #f8f9fa;
+}
+
+.help-content {
+    max-width: 300px;
+}
+
+.help-example {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.help-example code {
+    background: #f8f9fa;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.125rem;
+    font-family: monospace;
+    font-size: 0.75em;
+}
+
+.preview-btn {
+    background: #28a745 !important;
+    color: #fff !important;
+    border-color: #28a745 !important;
+}
+
+.preview-btn:hover {
+    background: #218838 !important;
+    border-color: #1e7e34 !important;
+}
+
+/* Editor Container */
+.editor-container {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.editor-section {
+    flex: 1;
+}
+
+.preview-section {
+    flex: 1;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    background: #fff;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.preview-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.close-preview {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.close-preview:hover {
+    color: #333;
+}
+
+.preview-content {
+    padding: 1rem;
+    min-height: 400px;
+    overflow-y: auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: #fff;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-textarea {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    resize: vertical;
+    min-height: 2.5rem;
+}
+
+.summary-textarea {
+    font-family: inherit;
+    font-size: 0.875rem;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    margin: 0;
 }
 
-.form-checkbox input[type="checkbox"] {
+.form-checkbox {
     width: auto;
     margin: 0;
 }
 
-.form-checkbox span {
-    color: #374151;
-    font-size: 0.9rem;
+.checkbox-text {
+    font-size: 0.875rem;
+    color: #333;
 }
 
-/* Form Actions */
+.contribution-notice {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.contribution-notice p {
+    margin: 0;
+}
+
 .form-actions {
     display: flex;
-    gap: 0.75rem;
-    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    flex-wrap: wrap;
 }
 
 .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1.5;
+    text-align: center;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: white;
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
 }
 
 .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-    border-color: #2563eb;
+    background: #0056b3;
+    border-color: #0056b3;
 }
 
 .btn-secondary {
-    background: transparent;
-    color: #6b7280;
-    border-color: #d1d5db;
+    background: #fff;
+    color: #6c757d;
+    border-color: #6c757d;
 }
 
 .btn-secondary:hover {
-    background: #f9fafb;
-    color: #374151;
-    border-color: #9ca3af;
+    background: #6c757d;
+    color: #fff;
 }
 
-.btn-icon {
-    font-size: 1rem;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .form-row {
-        flex-direction: column;
-    }
-    
-    .form-group.w-48 {
-        width: 100%;
-    }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .wiki-create-title {
-        font-size: 2rem;
+    .page-title {
+        font-size: 1.5rem;
     }
     
-    .wiki-create-form {
-        padding: 1.5rem;
+    .container {
+        padding: 0 1rem;
     }
     
-    .form-bottom-row {
+    .editor-container {
         flex-direction: column;
-        gap: 1.5rem;
     }
     
-    .form-actions {
+    .toolbar-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .toolbar-section {
         justify-content: center;
     }
     
-    .formatting-toolbar {
+    .form-actions {
         flex-direction: column;
-        gap: 0.75rem;
     }
     
-    .toolbar-group {
-        border-right: none;
-        border-bottom: 1px solid #e5e7eb;
-        padding-right: 0;
-        padding-bottom: 0.75rem;
-    }
-    
-    .toolbar-group:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
+    .btn {
+        width: 100%;
     }
 }
 </style>
 
-<script>
-// Formatting Toolbar Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const toolbar = document.querySelector('.formatting-toolbar');
-    const contentEditor = document.getElementById('content');
-    
-    if (!toolbar || !contentEditor) return;
-    
-    // Toolbar button click handlers
-    toolbar.addEventListener('click', function(e) {
-        if (e.target.classList.contains('toolbar-btn')) {
-            e.preventDefault();
-            const format = e.target.dataset.format;
-            applyFormat(format);
-        }
-    });
-    
-    // Apply formatting based on button type
-    function applyFormat(format) {
-        const start = contentEditor.selectionStart;
-        const end = contentEditor.selectionEnd;
-        const selectedText = contentEditor.value.substring(start, end);
-        let replacement = '';
-        
-        switch(format) {
-            case 'bold':
-                replacement = `**${selectedText}**`;
-                break;
-            case 'italic':
-                replacement = `*${selectedText}*`;
-                break;
-            case 'underline':
-                replacement = `<u>${selectedText}</u>`;
-                break;
-            case 'heading':
-                replacement = `# ${selectedText}`;
-                break;
-            case 'list':
-                replacement = `- ${selectedText}`;
-                break;
-            case 'number':
-                replacement = `1. ${selectedText}`;
-                break;
-            case 'link':
-                replacement = `[${selectedText}](url)`;
-                break;
-            case 'image':
-                replacement = `![${selectedText}](image-url)`;
-                break;
-            case 'quote':
-                replacement = `> ${selectedText}`;
-                break;
-            case 'code':
-                replacement = `\`${selectedText}\``;
-                break;
-            case 'table':
-                replacement = `| ${selectedText} | |\n| --- | --- |\n| | |`;
-                break;
-        }
-        
-        // Replace selected text
-        contentEditor.value = contentEditor.value.substring(0, start) + replacement + contentEditor.value.substring(end);
-        
-        // Restore focus and selection
-        contentEditor.focus();
-        contentEditor.setSelectionRange(start, start + replacement.length);
-    }
-    
-    // Keyboard shortcuts
-    contentEditor.addEventListener('keydown', function(e) {
-        if (e.ctrlKey || e.metaKey) {
-            switch(e.key.toLowerCase()) {
-                case 'b':
-                    e.preventDefault();
-                    applyFormat('bold');
-                    break;
-                case 'i':
-                    e.preventDefault();
-                    applyFormat('italic');
-                    break;
-                case 'u':
-                    e.preventDefault();
-                    applyFormat('underline');
-                    break;
-            }
-        }
-    });
-    
-    // Auto-resize textarea
-    contentEditor.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 500) + 'px';
-    });
-});
-</script>
+<script src="/assets/js/enhanced-markdown-toolbar.js"></script>
 {% endblock %} 

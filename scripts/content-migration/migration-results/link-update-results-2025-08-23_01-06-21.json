@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "title": "Link Test Page",
+        "original_content": "[[Quran]] - Simple internal link\\n[[Category:Islamic Studies]] - Old MediaWiki category\\n[[File:quran.jpg]] - File link\\n[[Wikipedia:Islam]] - Interwiki link",
+        "updated_content": "[[Quran]] - Simple internal link\\n[Category:Islamic Studies] - Old MediaWiki category\\n![quran](quran.jpg) - File link\\n[Islam](https:\/\/en.wikipedia.org\/wiki\/Islam) - Interwiki link",
+        "source_type": "wiki_page"
+    }
+]

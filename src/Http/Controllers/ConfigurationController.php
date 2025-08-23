@@ -20,6 +20,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Logging\ShahidLogger;
+use IslamWiki\Core\Database\Connection;
 
 class ConfigurationController extends Controller
 {
@@ -31,14 +32,14 @@ class ConfigurationController extends Controller
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private ShahidLogger $logger;
 
     /**
      * Create a new configuration controller instance.
      */
-    public function __construct(\IslamWiki\Core\Container\Asas $container)
+    public function __construct(Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
     {
-        parent::__construct($container);
+        parent::__construct($db, $container);
         $this->configManager = $container->get(ConfigurationManager::class);
         $this->logger = $container->get(ShahidLogger::class);
     }

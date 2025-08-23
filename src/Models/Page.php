@@ -18,7 +18,7 @@ class Page
     /**
      * The table associated with the model.
      */
-    protected string $table = 'pages';
+    protected string $table = 'wiki_pages';
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +33,7 @@ class Page
         'is_locked',
         'namespace',
         'parent_id',
+        'status',
         // Tracking/meta fields
         'view_count',
         'last_viewed_at',

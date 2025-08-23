@@ -31,6 +31,30 @@
                     <p class="h5">"إِنَّ اللَّهَ مَعَ الصَّابِرِينَ"</p>
                     <p class="text-muted">"Indeed, Allah is with the patient."</p>
                 </div>
+
+                <div class="technical-info mb-4">
+                    <h4>معلومات تقنية:</h4>
+                    <h4>Technical Information:</h4>
+                    <div class="alert alert-info">
+                        <p class="text-muted mb-2">
+                            <strong>Time:</strong> {{ "now"|date("Y-m-d H:i:s T") }}<br>
+                            <strong>Request ID:</strong> {{ request_id|default('Unknown') }}<br>
+                            <strong>Status Code:</strong> {{ status_code|default('404') }}<br>
+                            <strong>Requested URL:</strong> {{ app.request.uri|default('Unknown') }}<br>
+                            <strong>Method:</strong> {{ app.request.method|default('Unknown') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="shahid-logging mb-4">
+                    <h4>📊 Shahid Logging System:</h4>
+                    <h4>نظام التسجيل:</h4>
+                    <div class="alert alert-success">
+                        <p class="mb-2">This 404 error has been automatically logged through the Shahid logging system.</p>
+                        <p class="mb-2">Check the application logs for detailed information about missing routes.</p>
+                        <p class="mb-0"><strong>Log File:</strong> storage/logs/application-{{ "now"|date("Y-m-d") }}.log</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -410,9 +410,41 @@ class SabilRouting
      */
     protected function matchPath(string $routePath, string $requestPath): bool
     {
-        // Simple exact match for now
-        // TODO: Implement pattern matching with parameters
-        return $routePath === $requestPath;
+        // Handle exact matches first
+        if ($routePath === $requestPath) {
+            return true;
+        }
+        
+        // Handle dynamic routes with parameters like {slug}
+        if (strpos($routePath, '{') !== false) {
+            $routeParts = explode('/', trim($routePath, '/'));
+            $requestParts = explode('/', trim($requestPath, '/'));
+            
+            // Must have same number of parts
+            if (count($routeParts) !== count($requestParts)) {
+                return false;
+            }
+            
+            // Check each part
+            for ($i = 0; $i < count($routeParts); $i++) {
+                $routePart = $routeParts[$i];
+                $requestPart = $requestParts[$i] ?? '';
+                
+                // If route part is a parameter (starts with {), it matches anything
+                if (strpos($routePart, '{') === 0 && strpos($routePart, '}') !== false) {
+                    continue; // Parameter matches anything
+                }
+                
+                // Exact match required for non-parameters
+                if ($routePart !== $requestPart) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        return false;
     }
 
     /**

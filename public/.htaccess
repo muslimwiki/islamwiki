@@ -23,11 +23,6 @@ Options -Indexes
 # Enable rewrite engine for routing
 RewriteEngine On
 
-# Handle errors with our beautiful Islamic error pages
-ErrorDocument 404 /errors/404.php
-ErrorDocument 500 /errors/500.php
-ErrorDocument 403 /errors/403.php
-
 # Route ALL requests through our beautiful Islamic design entry point
 # This ensures static files are handled by our SabilRouting system
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -44,7 +39,6 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 
 # PHP settings for our beautiful Islamic design
 <IfModule mod_php.c>
-    php_value display_errors Off
     php_value log_errors On
     php_value error_log /var/log/apache2/local.islam.wiki_error.log
     php_value max_execution_time 30

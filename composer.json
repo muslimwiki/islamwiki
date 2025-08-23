@@ -1,8 +1,8 @@
 {
     "name": "islamwiki/islamwiki",
-    "description": "IslamWiki - Authentic Islamic Knowledge Platform",
+    "description": "A comprehensive, collaborative platform for Islamic knowledge and wisdom",
     "type": "project",
-    "version": "0.0.2.2",
+    "version": "0.0.2.3",
     "license": "AGPL-3.0",
     "keywords": [
         "islamic",
@@ -33,9 +33,15 @@
     "autoload": {
         "psr-4": {
             "IslamWiki\\Core\\": "src/Core/",
+            "IslamWiki\\Http\\": "src/Http/",
+            "IslamWiki\\Models\\": "src/Models/",
+            "IslamWiki\\Providers\\": "src/Providers/",
             "IslamWiki\\Extensions\\": "extensions/",
             "IslamWiki\\Skins\\": "skins/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -1,0 +1,769 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}All Templates - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="templates-index-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="section-container">
+            <div class="templates-header">
+                <h1 class="page-title">
+                    <i class="fas fa-th-list"></i>
+                    All Templates
+                </h1>
+                <div class="templates-actions">
+                    <a href="/wiki/create?title=Template:NewTemplate" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create New Template
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" id="refresh-templates-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <p class="page-subtitle">
+                Browse and manage all available templates in the system
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="section-container">
+        <!-- Search and Filter -->
+        <div class="templates-controls">
+            <div class="search-section">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" 
+                           id="template-search" 
+                           class="search-input" 
+                           placeholder="Search templates...">
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <select id="template-category-filter" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="article-quality">Article Quality</option>
+                    <option value="navigation">Navigation</option>
+                    <option value="content">Content</option>
+                    <option value="references">References</option>
+                    <option value="islamic">Islamic Content</option>
+                </select>
+                
+                <select id="template-sort" class="filter-select">
+                    <option value="name">Sort by Name</option>
+                    <option value="recent">Sort by Recent</option>
+                    <option value="usage">Sort by Usage</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Templates Statistics -->
+        <div class="templates-stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ templates|length }}</div>
+                <div class="stat-label">Total Templates</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ templates|filter(t => t.category == 'article-quality')|length }}</div>
+                <div class="stat-label">Article Quality</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ templates|filter(t => t.category == 'navigation')|length }}</div>
+                <div class="stat-label">Navigation</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ templates|filter(t => t.category == 'islamic')|length }}</div>
+                <div class="stat-label">Islamic Content</div>
+            </div>
+        </div>
+
+        <!-- Templates List -->
+        <div class="templates-list" id="templates-list">
+            {% if templates|length > 0 %}
+                {% for template in templates %}
+                <div class="template-card" data-template-name="{{ template }}" data-category="general">
+                    <div class="template-card-header">
+                        <h3 class="template-name">
+                            <i class="fas fa-file-code"></i>
+                            <a href="/wiki/Template:{{ template }}">{{ template }}</a>
+                        </h3>
+                        <div class="template-actions">
+                            <a href="/wiki/Template:{{ template }}/edit" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="/wiki/Template:{{ template }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="template-card-content">
+                        <div class="template-usage">
+                            <strong>Usage:</strong> <code>&#123;&#123;{{ template }}&#125;&#125;</code>
+                        </div>
+                        
+                        <div class="template-description">
+                            {% if template == 'Good article' %}
+                                Indicates that an article has been reviewed and meets good article criteria.
+                            {% elseif template == 'About' %}
+                                Creates a disambiguation notice for articles that could refer to multiple topics.
+                            {% elseif template == 'Infobox' %}
+                                Displays structured information in a formatted box.
+                            {% elseif template == 'Stub' %}
+                                Indicates that an article needs expansion.
+                            {% elseif template == 'Warning' %}
+                                Displays a warning message to users.
+                            {% elseif template == 'Note' %}
+                                Displays an informational note.
+                            {% elseif template == 'Cquote' %}
+                                Displays a styled quotation with optional source attribution.
+                            {% elseif template == 'Reflist' %}
+                                Container for reference lists.
+                            {% elseif template == 'Islam portal' %}
+                                Link to the Islam portal.
+                            {% else %}
+                                Template for enhanced content display and formatting.
+                            {% endif %}
+                        </div>
+                        
+                        <div class="template-meta">
+                            <span class="template-category">
+                                <i class="fas fa-tag"></i>
+                                {% if template in ['Good article', 'Stub'] %}
+                                    Article Quality
+                                {% elseif template in ['About', 'Infobox'] %}
+                                    Navigation
+                                {% elseif template in ['Warning', 'Note', 'Cquote'] %}
+                                    Content
+                                {% elseif template == 'Reflist' %}
+                                    References
+                                {% elseif template == 'Islam portal' %}
+                                    Islamic Content
+                                {% else %}
+                                    General
+                                {% endif %}
+                            </span>
+                            
+                            <span class="template-usage-count">
+                                <i class="fas fa-link"></i>
+                                <span class="usage-number">0</span> pages
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-templates">
+                    <div class="no-templates-icon">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <h3>No Templates Found</h3>
+                    <p>There are no templates available yet. Create the first template to get started!</p>
+                    <a href="/wiki/create?title=Template:Example" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create First Template
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Template Categories Info -->
+        <div class="template-categories-info">
+            <h2>Template Categories</h2>
+            <div class="categories-grid">
+                <div class="category-item">
+                    <h4><i class="fas fa-star"></i> Article Quality</h4>
+                    <p>Templates that indicate article status, quality, or review status.</p>
+                    <div class="category-examples">
+                        Examples: <code>{{Good article}}</code>, <code>{{Stub}}</code>
+                    </div>
+                </div>
+                
+                <div class="category-item">
+                    <h4><i class="fas fa-compass"></i> Navigation</h4>
+                    <p>Templates that help users navigate between related articles and content.</p>
+                    <div class="category-examples">
+                        Examples: <code>{{About}}</code>, <code>{{Infobox}}</code>
+                    </div>
+                </div>
+                
+                <div class="category-item">
+                    <h4><i class="fas fa-file-alt"></i> Content</h4>
+                    <p>Templates for displaying various types of content with consistent styling.</p>
+                    <div class="category-examples">
+                        Examples: <code>{{Warning}}</code>, <code>{{Note}}</code>, <code>{{Cquote}}</code>
+                    </div>
+                </div>
+                
+                <div class="category-item">
+                    <h4><i class="fas fa-link"></i> References</h4>
+                    <p>Templates for managing citations, references, and bibliographies.</p>
+                    <div class="category-examples">
+                        Examples: <code>{{Reflist}}</code>
+                    </div>
+                </div>
+                
+                <div class="category-item">
+                    <h4><i class="fas fa-star-and-crescent"></i> Islamic Content</h4>
+                    <p>Specialized templates for Islamic content and religious topics.</p>
+                    <div class="category-examples">
+                        Examples: <code>{{Islam portal}}</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Creation Guide -->
+        <div class="template-creation-guide">
+            <h2>Creating New Templates</h2>
+            <div class="creation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Plan Your Template</h4>
+                        <p>Decide what your template will do and what parameters it needs.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Choose a Name</h4>
+                        <p>Use descriptive names like "Infobox" or "Warning" rather than abbreviations.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Write the Content</h4>
+                        <p>Use Enhanced Markdown and template parameters like <code>{{{1}}}</code> and <code>{{{param}}}</code>.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Test and Refine</h4>
+                        <p>Test your template with various parameters and refine as needed.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="creation-actions">
+                <a href="/wiki/create?title=Template:NewTemplate" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New Template
+                </a>
+                <a href="/docs/templates" class="btn btn-outline-secondary">
+                    <i class="fas fa-book"></i> Template Documentation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.templates-index-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 0;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.templates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.templates-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.templates-controls {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-section {
+    margin-bottom: 1rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.filter-section {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    background: #fff;
+    min-width: 150px;
+}
+
+.templates-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.stat-item {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.templates-list {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.template-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease-in-out;
+}
+
+.template-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.template-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.template-name {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.template-name a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.template-name a:hover {
+    text-decoration: underline;
+}
+
+.template-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.template-card-content {
+    color: #6c757d;
+}
+
+.template-usage {
+    margin-bottom: 0.75rem;
+}
+
+.template-usage code {
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875em;
+    color: #e83e8c;
+}
+
+.template-description {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.template-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.875rem;
+}
+
+.template-category,
+.template-usage-count {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #6c757d;
+}
+
+.no-templates {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.no-templates-icon {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.no-templates h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.no-templates p {
+    margin: 0 0 1.5rem 0;
+    color: #6c757d;
+}
+
+.template-categories-info,
+.template-creation-guide {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.category-item {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.25rem;
+    border-left: 4px solid #007bff;
+}
+
+.category-item h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.category-item p {
+    margin: 0 0 0.75rem 0;
+    color: #6c757d;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.category-examples {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.category-examples code {
+    background: #e9ecef;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.125rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    color: #495057;
+}
+
+.creation-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.step-number {
+    width: 2rem;
+    height: 2rem;
+    background: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.step-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.creation-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    border-color: #545b62;
+}
+
+.btn-outline-primary {
+    background: transparent;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .templates-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .templates-actions {
+        justify-content: center;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+    }
+    
+    .template-card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .template-actions {
+        justify-content: center;
+    }
+    
+    .creation-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('template-search');
+    const categoryFilter = document.getElementById('template-category-filter');
+    const sortSelect = document.getElementById('template-sort');
+    const templatesList = document.getElementById('templates-list');
+    const refreshBtn = document.getElementById('refresh-templates-btn');
+    
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        filterTemplates();
+    });
+    
+    // Category filter
+    categoryFilter.addEventListener('change', function() {
+        filterTemplates();
+    });
+    
+    // Sort functionality
+    sortSelect.addEventListener('change', function() {
+        sortTemplates();
+    });
+    
+    // Refresh templates
+    refreshBtn.addEventListener('click', function() {
+        location.reload();
+    });
+    
+    function filterTemplates() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const templateCards = templatesList.querySelectorAll('.template-card');
+        
+        templateCards.forEach(card => {
+            const templateName = card.querySelector('.template-name').textContent.toLowerCase();
+            const category = card.getAttribute('data-category');
+            
+            const matchesSearch = templateName.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        updateStats();
+    }
+    
+    function sortTemplates() {
+        const sortBy = sortSelect.value;
+        const templateCards = Array.from(templatesList.querySelectorAll('.template-card'));
+        
+        templateCards.sort((a, b) => {
+            const nameA = a.querySelector('.template-name').textContent;
+            const nameB = b.querySelector('.template-name').textContent;
+            
+            if (sortBy === 'name') {
+                return nameA.localeCompare(nameB);
+            } else if (sortBy === 'recent') {
+                // For now, just sort by name since we don't have timestamps
+                return nameA.localeCompare(nameB);
+            } else if (sortBy === 'usage') {
+                // For now, just sort by name since we don't have usage data
+                return nameA.localeCompare(nameB);
+            }
+            
+            return 0;
+        });
+        
+        // Re-append sorted cards
+        templateCards.forEach(card => {
+            templatesList.appendChild(card);
+        });
+    }
+    
+    function updateStats() {
+        const visibleCards = templatesList.querySelectorAll('.template-card[style="display: block"], .template-card:not([style*="display: none"])');
+        const totalTemplates = visibleCards.length;
+        
+        // Update the total templates stat
+        const totalStat = document.querySelector('.stat-item:first-child .stat-number');
+        if (totalStat) {
+            totalStat.textContent = totalTemplates;
+        }
+    }
+    
+    // Initialize
+    filterTemplates();
+});
+</script>
+{% endblock %} 

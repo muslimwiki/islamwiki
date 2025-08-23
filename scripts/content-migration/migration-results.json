@@ -1,0 +1,34 @@
+{
+    "migration_results": [
+        {
+            "type": "wiki_page",
+            "original_length": 173,
+            "converted_length": 160,
+            "changes_made": true,
+            "timestamp": "2025-08-23 01:15:27"
+        },
+        {
+            "type": "discussion",
+            "original_length": 79,
+            "converted_length": 79,
+            "changes_made": false,
+            "timestamp": "2025-08-23 01:15:27"
+        },
+        {
+            "type": "user_profile",
+            "original_length": 71,
+            "converted_length": 69,
+            "changes_made": true,
+            "timestamp": "2025-08-23 01:15:27"
+        }
+    ],
+    "statistics": {
+        "total_items": 3,
+        "items_with_changes": 2,
+        "total_original_length": 323,
+        "total_converted_length": 308,
+        "conversion_rate": 66.66666666666666
+    },
+    "timestamp": "2025-08-23 01:15:27",
+    "version": "0.0.3.0"
+}

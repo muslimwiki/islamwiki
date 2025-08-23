@@ -1,0 +1,612 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ isNew ? 'Creating' : 'Editing' }} Template:{{ templateName }} - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="template-edit-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="section-container">
+            <div class="template-edit-header">
+                <h1 class="page-title">
+                    <i class="fas fa-edit"></i>
+                    {{ isNew ? 'Creating' : 'Editing' }} Template:{{ templateName }}
+                </h1>
+                <div class="template-edit-actions">
+                    <a href="/wiki/Template:{{ templateName }}" class="btn btn-secondary">
+                        <i class="fas fa-eye"></i> View Template
+                    </a>
+                    <a href="/wiki/Special:Templates" class="btn btn-outline-secondary">
+                        <i class="fas fa-list"></i> All Templates
+                    </a>
+                </div>
+            </div>
+            <p class="page-subtitle">
+                {{ isNew ? 'Create a new template' : 'Modify existing template' }} using Enhanced Markdown
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="section-container">
+        <!-- Template Information -->
+        <div class="template-info-box">
+            <div class="template-info-content">
+                <div class="template-info-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="template-info-text">
+                    <p>
+                        <strong>Templates</strong> are reusable content blocks that can be included in other wiki pages.
+                        Use Enhanced Markdown syntax and template parameters to create dynamic content.
+                    </p>
+                    <p>
+                        <strong>Usage:</strong> <code>&#123;&#123;{{ templateName }}&#125;&#125;</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Edit Form -->
+        <div class="template-edit-form-container">
+            <form method="POST" action="/wiki/Template:{{ templateName }}" class="template-edit-form">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                
+                <!-- Template Name Display -->
+                <div class="form-group">
+                    <label class="form-label">Template Name</label>
+                    <div class="template-name-display">
+                        <code>Template:{{ templateName }}</code>
+                    </div>
+                    <small class="form-text">This template will be accessible via <code>&#123;&#123;{{ templateName }}&#125;&#125;</code></small>
+                </div>
+
+                <!-- Template Content Editor -->
+                <div class="form-group">
+                    <label for="content" class="form-label">Template Content</label>
+                    
+                    <!-- Enhanced Markdown Toolbar for Templates -->
+                    <div class="template-toolbar" id="template-toolbar">
+                        <div class="toolbar-section">
+                            <h4>Template Parameters</h4>
+                            <button type="button" class="toolbar-btn" data-action="param-1" title="First Parameter">
+                                {{{1}}}
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="param-2" title="Second Parameter">
+                                {{{2}}}
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="param-3" title="Third Parameter">
+                                {{{3}}}
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="named-param" title="Named Parameter">
+                                {{{param}}}
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="default-param" title="Parameter with Default">
+                                {{{param|default}}}
+                            </button>
+                        </div>
+                        
+                        <div class="toolbar-section">
+                            <h4>Conditionals</h4>
+                            <button type="button" class="toolbar-btn" data-action="if-conditional" title="If Conditional">
+                                {{#if:condition|then|else}}
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="switch-conditional" title="Switch Statement">
+                                {{#switch:value|case1=result1|case2=result2}}
+                            </button>
+                        </div>
+                        
+                        <div class="toolbar-section">
+                            <h4>HTML Elements</h4>
+                            <button type="button" class="toolbar-btn" data-action="div" title="Div Container">
+                                &lt;div&gt;&lt;/div&gt;
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="span" title="Span Element">
+                                &lt;span&gt;&lt;/span&gt;
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="strong" title="Strong Text">
+                                &lt;strong&gt;&lt;/strong&gt;
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="em" title="Emphasized Text">
+                                &lt;em&gt;&lt;/em&gt;
+                            </button>
+                        </div>
+                        
+                        <div class="toolbar-section">
+                            <h4>CSS Classes</h4>
+                            <button type="button" class="toolbar-btn" data-action="template-class" title="Template Class">
+                                class="template"
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="custom-class" title="Custom Class">
+                                class="your-class"
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <textarea id="content"
+                              name="content"
+                              rows="20"
+                              required
+                              class="form-textarea template-content-editor"
+                              placeholder="Enter your template content using Enhanced Markdown and template parameters...">{{ templateContent }}</textarea>
+                    
+                    <small class="form-text">
+                        Use <code>{{{1}}}</code>, <code>{{{2}}}</code> for positional parameters, 
+                        <code>{{{param}}}</code> for named parameters, and <code>{{{param|default}}}</code> for defaults.
+                    </small>
+                </div>
+
+                <!-- Template Preview -->
+                <div class="form-group">
+                    <div class="template-preview-toggle">
+                        <button type="button" class="btn btn-outline-primary" id="preview-template-btn">
+                            <i class="fas fa-eye"></i> Preview Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-preview-section" id="template-preview-section" style="display: none;">
+                        <div class="template-preview-header">
+                            <h4>Template Preview</h4>
+                            <button type="button" class="btn btn-outline-secondary" id="close-preview-btn">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                        <div class="template-preview-content" id="template-preview-content">
+                            <!-- Preview content will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Comment -->
+                <div class="form-group">
+                    <label for="comment" class="form-label">Edit Comment</label>
+                    <input type="text" 
+                           id="comment" 
+                           name="comment" 
+                           class="form-input"
+                           placeholder="Brief description of your changes..."
+                           value="{{ isNew ? 'Created template' : 'Updated template' }}">
+                    <small class="form-text">Describe what you changed and why (optional but recommended)</small>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" 
+                            onclick="window.history.back()" 
+                            class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </button>
+                    <button type="button" 
+                            class="btn btn-outline-primary" 
+                            id="save-draft-btn">
+                        <i class="fas fa-save"></i> Save Draft
+                    </button>
+                    <button type="submit" 
+                            class="btn btn-primary">
+                        <i class="fas fa-check"></i> {{ isNew ? 'Create Template' : 'Save Changes' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Template Help -->
+        <div class="template-help-section">
+            <h2>Template Help</h2>
+            
+            <div class="help-grid">
+                <div class="help-item">
+                    <h4>Parameter Syntax</h4>
+                    <ul>
+                        <li><code>{{{1}}}</code> - First positional parameter</li>
+                        <li><code>{{{2}}}</code> - Second positional parameter</li>
+                        <li><code>{{{param}}}</code> - Named parameter</li>
+                        <li><code>{{{param|default}}}</code> - Parameter with default value</li>
+                    </ul>
+                </div>
+                
+                <div class="help-item">
+                    <h4>Conditional Logic</h4>
+                    <ul>
+                        <li><code>{{#if:condition|then|else}}</code> - Simple if/else</li>
+                        <li><code>{{#switch:value|case1=result1|case2=result2}}</code> - Switch statement</li>
+                    </ul>
+                </div>
+                
+                <div class="help-item">
+                    <h4>HTML Structure</h4>
+                    <ul>
+                        <li>Use semantic HTML elements</li>
+                        <li>Add CSS classes for styling</li>
+                        <li>Include FontAwesome icons when appropriate</li>
+                        <li>Ensure accessibility with proper ARIA labels</li>
+                    </ul>
+                </div>
+                
+                <div class="help-item">
+                    <h4>Best Practices</h4>
+                    <ul>
+                        <li>Keep templates simple and focused</li>
+                        <li>Document parameters clearly</li>
+                        <li>Use consistent naming conventions</li>
+                        <li>Test with various parameter combinations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.template-edit-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 0;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.template-edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.template-edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.template-info-box {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #1565c0;
+}
+
+.template-info-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.template-info-icon {
+    flex-shrink: 0;
+    color: #2196f3;
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+}
+
+.template-edit-form-container {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.template-name-display {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+.template-toolbar {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.toolbar-section {
+    margin-bottom: 1rem;
+}
+
+.toolbar-section:last-child {
+    margin-bottom: 0;
+}
+
+.toolbar-section h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #6c757d;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.25rem;
+}
+
+.toolbar-btn {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: #fff;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    font-size: 0.75rem;
+    margin: 0.125rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.toolbar-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.template-content-editor {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.template-preview-toggle {
+    margin-bottom: 1rem;
+}
+
+.template-preview-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.template-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.template-preview-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.template-preview-content {
+    padding: 1rem;
+    min-height: 200px;
+    background: #f8f9fa;
+}
+
+.template-help-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.help-item h4 {
+    margin: 0 0 0.75rem 0;
+    color: #495057;
+    font-size: 1rem;
+}
+
+.help-item ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.help-item li {
+    margin-bottom: 0.25rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.help-item code {
+    background: #f8f9fa;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.125rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.75em;
+    color: #e83e8c;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-textarea,
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-textarea:focus,
+.form-input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    border-color: #545b62;
+}
+
+.btn-outline-primary {
+    background: transparent;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .template-edit-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .template-edit-actions {
+        justify-content: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contentEditor = document.getElementById('content');
+    const previewBtn = document.getElementById('preview-template-btn');
+    const previewSection = document.getElementById('template-preview-section');
+    const previewContent = document.getElementById('template-preview-content');
+    const closePreviewBtn = document.getElementById('close-preview-btn');
+    
+    // Template toolbar functionality
+    const toolbarBtns = document.querySelectorAll('.toolbar-btn');
+    toolbarBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.getAttribute('data-action');
+            const text = this.textContent.trim();
+            
+            // Insert text at cursor position
+            const start = contentEditor.selectionStart;
+            const end = contentEditor.selectionEnd;
+            const currentValue = contentEditor.value;
+            
+            contentEditor.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+            
+            // Set cursor position after inserted text
+            contentEditor.selectionStart = contentEditor.selectionEnd = start + text.length;
+            contentEditor.focus();
+        });
+    });
+    
+    // Preview functionality
+    previewBtn.addEventListener('click', function() {
+        const content = contentEditor.value;
+        
+        // For now, just show the raw content
+        // In a full implementation, this would process the template with sample parameters
+        previewContent.innerHTML = '<div class="template-preview-raw">' + 
+                                 '<h5>Raw Template Content:</h5>' +
+                                 '<pre>' + content.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>' +
+                                 '<p><em>Note: This is a raw preview. In actual usage, parameters would be substituted.</em></p>' +
+                                 '</div>';
+        
+        previewSection.style.display = 'block';
+        previewBtn.style.display = 'none';
+    });
+    
+    closePreviewBtn.addEventListener('click', function() {
+        previewSection.style.display = 'none';
+        previewBtn.style.display = 'inline-flex';
+    });
+    
+    // Save draft functionality (placeholder)
+    const saveDraftBtn = document.getElementById('save-draft-btn');
+    saveDraftBtn.addEventListener('click', function() {
+        // This would save to localStorage or send to server
+        alert('Draft saving functionality will be implemented in the next phase.');
+    });
+});
+</script>
+{% endblock %} 

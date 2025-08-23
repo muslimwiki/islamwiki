@@ -1,0 +1,28 @@
+{
+    "summary": {
+        "total_items": 1,
+        "total_updates": 8,
+        "total_original_size": 704,
+        "total_updated_size": 754,
+        "update_rate": 8,
+        "size_change_percentage": 7.1022727272727275,
+        "timestamp": "2025-08-23 01:15:27"
+    },
+    "detailed_results": [
+        {
+            "content_type": "test_content",
+            "original_content": "This is a test page with various link formats:\n\n## Internal Links\n- [[Quran]] - Simple internal link\n- [[Hadith|Islamic Traditions]] - Internal link with display text\n- [[Category:Islamic Studies]] - Old MediaWiki category format\n\n## File and Image Links\n- [[File:quran.jpg]] - File link\n- [[Image:hadith.jpg]] - Image link\n\n## External and Interwiki Links\n- [External Link](https:\/\/example.com) - Markdown external link\n- [[Wikipedia:Islam]] - Interwiki link\n- [[Wiktionary:Quran]] - Another interwiki link\n\n## Templates\n- {{Infobox|title=Test}} - Template reference\n- {{Quran|surah=1|ayah=1-7}} - Islamic template\n\n## Mixed Content\nThis page contains a mix of [[old]] and [[new|formats]] for [[links]].",
+            "updated_content": "This is a test page with various link formats:\n\n## Internal Links\n- [[Quran]] - Simple internal link\n- [[Hadith|Islamic Traditions]] - Internal link with display text\n- [Category:Islamic Studies] - Old MediaWiki category format\n\n## File and Image Links\n- ![quran](quran.jpg) - File link\n- ![hadith](hadith.jpg) - Image link\n\n## External and Interwiki Links\n- [External Link](https:\/\/example.com) - Markdown external link\n- [Islam](https:\/\/en.wikipedia.org\/wiki\/Islam) - Interwiki link\n- [Quran](https:\/\/en.wiktionary.org\/wiki\/Quran) - Another interwiki link\n\n## Templates\n- {{Infobox|title=Test}} - Template reference\n- {{Quran|surah=1|ayah=1-7}} - Islamic template\n\n## Mixed Content\nThis page contains a mix of [[old]] and [[new|formats]] for [[links]].",
+            "updates_applied": {
+                "categories": 1,
+                "internal_links": 3,
+                "file_links": 1,
+                "image_links": 1,
+                "interwiki_links": 2
+            },
+            "original_size": 704,
+            "updated_size": 754,
+            "timestamp": "2025-08-23 01:15:27"
+        }
+    ]
+}

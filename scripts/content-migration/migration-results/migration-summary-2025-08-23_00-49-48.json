@@ -1,0 +1,12 @@
+{
+    "total_items": 2,
+    "successful_migrations": 2,
+    "failed_migrations": 0,
+    "success_rate": 100,
+    "total_conversions": 0,
+    "total_template_conversions": 1,
+    "total_link_updates": 1,
+    "total_validation_issues": 1,
+    "execution_timestamp": "2025-08-23 00:49:48",
+    "migration_version": "0.0.3.0"
+}

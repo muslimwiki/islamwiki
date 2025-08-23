@@ -343,7 +343,36 @@ class WikiController extends PageController
                 'locale' => $locale,
             ]);
 
-            // Use pages/edit template for now until wiki templates are created
+            // Check if WikiMarkupExtension is available and use it
+            if (class_exists('\IslamWiki\Extensions\WikiMarkupExtension\WikiMarkupEditor')) {
+                try {
+                    // Create WikiMarkupEditor instance
+                    $parser = new \IslamWiki\Extensions\WikiMarkupExtension\WikiMarkupParser();
+                    $editor = new \IslamWiki\Extensions\WikiMarkupExtension\WikiMarkupEditor($parser);
+                    
+                    // Generate the enhanced edit form
+                    $editForm = $editor->generateEditForm($title, '', 'wikimarkup');
+                    
+                    // Use a dedicated wiki creation template
+                    return $this->view('wiki/create', [
+                        'title' => $title,
+                        'namespace' => self::WIKI_NAMESPACE,
+                        'editForm' => $editForm,
+                        'isNew' => true,
+                        'canEdit' => true,
+                        'canDelete' => false,
+                        'canLock' => $this->isAdmin($request),
+                        'user' => $this->user($request),
+                        'locale' => $locale,
+                    ]);
+                } catch (\Exception $e) {
+                    $this->logger->warning('WikiMarkupExtension not available, falling back to basic form', [
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Fallback to basic form if WikiMarkupExtension is not available
             return $this->view('pages/edit', [
                 'title' => $title,
                 'namespace' => self::WIKI_NAMESPACE,

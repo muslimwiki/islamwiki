@@ -1,0 +1,169 @@
+{
+    "wiki_pages": [
+        {
+            "id": 1,
+            "title": "Main Page",
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[IslamWiki]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Infobox|title=Welcome}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "high"
+        },
+        {
+            "id": 2,
+            "title": "Quran",
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[Quran]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Quran|surah=1|ayah=1-7}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "low"
+        },
+        {
+            "id": 3,
+            "title": "Hadith",
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[Hadith]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Hadith|book=Bukhari|number=1}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "low"
+        }
+    ],
+    "discussions": [
+        {
+            "id": 1,
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[Islam]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Infobox|title=Islam}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "medium"
+        },
+        {
+            "id": 2,
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Note|message=Good for new users}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 0.5
+            },
+            "priority": "medium"
+        }
+    ],
+    "user_profiles": [
+        {
+            "id": 1,
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[Islamic History]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Scholar|name=Ibn Khaldun}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "low"
+        }
+    ],
+    "system_content": [
+        {
+            "id": 1,
+            "type": "help",
+            "analysis": {
+                "hasWikiMarkup": true,
+                "patterns": {
+                    "internal_links": {
+                        "count": 1,
+                        "examples": [
+                            "[[Getting Started]]"
+                        ]
+                    },
+                    "templates": {
+                        "count": 1,
+                        "examples": [
+                            "{{Warning|message=Important}}"
+                        ]
+                    }
+                },
+                "complexity": "low",
+                "estimatedConversionTime": 1
+            },
+            "priority": "high"
+        }
+    ]
+}

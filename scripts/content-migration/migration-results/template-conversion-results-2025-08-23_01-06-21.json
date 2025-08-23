@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "title": "Template Test Page",
+        "original_content": "{{Infobox|title=Test|content=This is a test infobox}}\\n{{stub}}\\n{{disambiguation}}\\n{{main|Quran}}\\n{{see also|Hadith}}",
+        "converted_content": "{{Infobox|title=Test|content=This is a test infobox}}\\n{{Note|message=message=This article is a stub and needs expansion}}\\n{{Warning|message=message=This is a disambiguation page}}\\n{{Note|message=message=Main article: [[Quran]]}}\\n{{Note|message=message=See also: [[Hadith]]}}",
+        "source_type": "wiki_page"
+    }
+]

@@ -107,7 +107,7 @@ class PageController extends Controller
             $search = $request->getQueryParam('q');
 
             // Build the base query - simplified for now
-            $pages = $this->db->table('pages')
+            $pages = $this->db->table('wiki_pages')
                 ->select([
                     'id',
                     'title',
@@ -122,7 +122,7 @@ class PageController extends Controller
 
             // Apply filters if provided
             if ($namespace) {
-                $pages = $this->db->table('pages')
+                $pages = $this->db->table('wiki_pages')
                     ->select([
                         'id',
                         'title',
@@ -136,7 +136,7 @@ class PageController extends Controller
                     ->orderBy($sort, $order)
                     ->get();
             } elseif ($search) {
-                $pages = $this->db->table('pages')
+                $pages = $this->db->table('wiki_pages')
                     ->select([
                         'id',
                         'title',
@@ -218,118 +218,86 @@ class PageController extends Controller
      */
     public function show(Request $request, string $slug): Response
     {
-        $startTime = microtime(true);
-        $this->logger->info('Page view requested', [
-            'slug' => $slug,
-            'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
-            'user_agent' => $request->getHeaderLine('User-Agent'),
-            'referer' => $request->getHeaderLine('Referer'),
-            'method' => $request->getMethod(),
-            'is_ajax' => $request->isXmlHttpRequest(),
-        ]);
+        if ($this->logger) {
+            $this->logger->info('Page view requested', [
+                'slug' => $slug,
+                'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+            ]);
+        }
 
         try {
             // Try to find the page by the exact slug first
             $page = Page::findBySlug($slug, $this->db);
 
-            // If not found, try with 'Main' namespace
+            // If not found, try normalized slug formats
             if (!$page) {
-                $this->logger->debug('Page not found, trying with Main namespace', ['slug' => $slug]);
-                $page = Page::findBySlug("Main:{$slug}", $this->db);
-
-                if ($page) {
-                    $this->logger->info('Redirecting to main namespace page', [
-                        'original_slug' => $slug,
-                        'resolved_slug' => $page->getSlug(),
-                    ]);
-                    return $this->redirect($page->getUrl(), 301); // 301 for permanent redirect
+                // Try different slug formats
+                $possibleSlugs = [
+                    strtolower(str_replace(['_', ' '], '-', $slug)), // Main_Page -> main-page
+                    strtolower(str_replace(['-', ' '], '_', $slug)), // main-page -> main_page
+                    strtolower($slug), // Main_Page -> main_page
+                ];
+                
+                foreach ($possibleSlugs as $possibleSlug) {
+                    if ($possibleSlug !== $slug) {
+                        $page = Page::findBySlug($possibleSlug, $this->db);
+                        if ($page) {
+                            if ($this->logger) {
+                                $this->logger->info('Page found with normalized slug', [
+                                    'original_slug' => $slug,
+                                    'resolved_slug' => $possibleSlug,
+                                ]);
+                            }
+                            break;
+                        }
+                    }
                 }
+            }
 
-                // Check if user has permission to create pages
-                $canCreate = $this->canCreatePage($request);
-                $this->logger->info('Page not found', [
-                    'slug' => $slug,
-                    'user_can_create' => $canCreate,
-                ]);
-
-                if ($canCreate) {
-                    return $this->redirect("/edit?title=" . urlencode($slug), 302);
+            // If still not found, show 404
+            if (!$page) {
+                if ($this->logger) {
+                    $this->logger->info('Page not found', ['slug' => $slug]);
                 }
-
                 throw new HttpException(404, 'The requested page was not found.');
             }
 
-            // Check if the page is locked and user has permission to view
-            if ($page->isLocked()) {
-                $user = $this->user($request);
-                $isAdmin = $user ? $this->isAdmin($request) : false;
-
-                if (!$isAdmin) {
-                    $this->logger->warning('Attempt to access locked page', [
-                        'page_id' => $page->getAttribute('id'),
-                        'slug' => $slug,
-                        'user_id' => $user ? $user['id'] : 'guest',
-                        'is_authenticated' => $user !== null,
-                        'is_admin' => false,
-                    ]);
-
-                    return $this->view('errors.403', [
-                        'message' => 'This page is currently locked and cannot be viewed.',
-                        'title' => 'Access Denied',
-                        'show_login' => !$user,
-                        'can_request_access' => $user !== null,
-                    ], 403);
-                }
-
-                $this->logger->info('Admin viewing locked page', [
+            // Simple page display - just show the content
+            $content = $page->getAttribute('content') ?: 'No content available.';
+            
+            // Process the content - try EnhancedMarkdown extension first, fallback to basic processing
+            $processedContent = $this->processContent($content);
+            
+            if ($this->logger) {
+                $this->logger->info('Page displayed successfully', [
                     'page_id' => $page->getAttribute('id'),
-                    'admin_id' => $user['id'],
+                    'title' => $page->getAttribute('title'),
                 ]);
             }
 
-            // Get user information for permission checks and tracking
-            $user = $this->user($request);
-            $isAdmin = $user ? $this->isAdmin($request) : false;
-            $userId = $user ? $user['id'] : null;
-
-            // View count increment handled by WikiController's displayWikiPage() for wiki pages
-
-            // Get page revisions
-            $revisions = $page->revisions();
-            $latestRevision = $revisions[0] ?? null;
-
-            // Parse wiki text content
-            $content = $this->parseWikiText($page->getAttribute('content'));
-
-            // Log successful page view
-            $this->logger->info('Page displayed successfully', [
-                'page_id' => $page->getAttribute('id'),
-                'title' => $page->getAttribute('title'),
-                'namespace' => $page->getAttribute('namespace'),
-                'revision_count' => count($revisions),
-                // view_count removed per request
-            ]);
-
+            // Return the proper view with Bismillah skin
             return $this->view('pages/show', [
                 'page' => $page,
-                'latestRevision' => $latestRevision,
-                'content' => $content,
-                'canEdit' => $this->canEditPage($page, $request),
-                'canDelete' => $this->canDeletePage($page, $request),
-                'canLock' => $this->isAdmin($request),
+                'content' => $processedContent,
+                'title' => $page->getAttribute('title') ?: 'Welcome to IslamWiki',
+                'canEdit' => true,
+                'canDelete' => false,
+                'canLock' => false,
             ]);
+
         } catch (\Exception $e) {
-            $this->logger->error('Failed to display page', [
-                'slug' => $slug,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            if ($this->logger) {
+                $this->logger->error('Failed to display page', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             if ($e instanceof HttpException) {
                 throw $e;
             }
 
-            throw new HttpException(500, 'An error occurred while loading the page. Please try again later.');
+            throw new HttpException(500, 'Internal server error while displaying page');
         }
     }
 
@@ -361,9 +329,15 @@ class PageController extends Controller
                 ]);
             }
 
-            // Get title and namespace from query parameters
-            $title = trim($request->getQueryParam('title', ''));
-            $namespace = trim($request->getQueryParam('namespace', ''));
+            // Get title and namespace from query parameters safely
+            $queryParams = method_exists($request, 'getQueryParams') ? $request->getQueryParams() : [];
+            $title = trim($queryParams['title'] ?? '');
+            $namespace = trim($queryParams['namespace'] ?? '');
+            
+            // Ensure title is always defined to prevent template errors
+            if (empty($title)) {
+                $title = 'New Page';
+            }
 
             // If title is provided but namespace isn't, try to extract it
             if ($title && !$namespace && strpos($title, ':') !== false) {
@@ -408,7 +382,7 @@ class PageController extends Controller
                 ]);
             }
 
-            return $this->view('pages/edit', [
+            return $this->view('wiki/create', [
                 'title' => $title,
                 'namespace' => $namespace,
                 'content' => '',
@@ -558,13 +532,12 @@ class PageController extends Controller
                 }
 
                 // Create page using direct database insertion
-                $pageId = $this->db->table('pages')->insertGetId([
+                $pageId = $this->db->table('wiki_pages')->insertGetId([
                     'title' => $title,
                     'slug' => $slug,
                     'content' => $content,
                     'content_format' => $contentFormat,
                     'namespace' => $namespace,
-                    // 'locale' => $locale, // Temporarily disabled until migration is run
                     'is_locked' => false,
                     'view_count' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -588,6 +561,7 @@ class PageController extends Controller
                     'comment' => $comment,
                     'user_id' => 1, // Default user for now
                     'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
 
                 if ($this->logger) {
@@ -996,7 +970,7 @@ class PageController extends Controller
             ]);
 
             // Update the page's last_viewed_at timestamp
-            $this->db->table('pages')
+            $this->db->table('wiki_pages')
                 ->where('id', $page->getAttribute('id'))
                 ->update(['last_viewed_at' => date('Y-m-d H:i:s')]);
         } catch (\Exception $e) {
@@ -1160,6 +1134,158 @@ class PageController extends Controller
     }
 
     /**
+     * Process page content using the best available method.
+     *
+     * @param string $content The content to process
+     * @return string The processed HTML content
+     */
+    protected function processContent(string $content): string
+    {
+        // Try to use EnhancedMarkdown extension first
+        try {
+            if ($this->container->has(\IslamWiki\Core\Extensions\ExtensionManager::class)) {
+                $extMgr = $this->container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+                $hook = $extMgr->getHookManager();
+                $processed = $hook->runLast('ContentParse', [$content, 'markdown']);
+                if (is_string($processed) && $processed !== '') {
+                    return $processed;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Continue to fallback methods
+        }
+
+        // Try to load EnhancedMarkdown extension directly
+        try {
+            $enhancedMarkdown = new \IslamWiki\Extensions\EnhancedMarkdown\EnhancedMarkdown(
+                $this->db,
+                null, // templateManager
+                null, // categoryManager
+                null  // referenceManager
+            );
+            return $enhancedMarkdown->process($content);
+        } catch (\Throwable $e) {
+            // Continue to basic processing
+        }
+
+        // Fallback to improved basic markdown processing
+        return $this->parseBasicMarkdown($content);
+    }
+
+    /**
+     * Parse basic markdown without excessive line breaks.
+     *
+     * @param string $text The text to parse
+     * @return string The parsed HTML
+     */
+    protected function parseBasicMarkdown(string $text): string
+    {
+        // First, escape any existing HTML to prevent XSS
+        $text = htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Process code blocks first (before other markdown)
+        $text = $this->parseCodeBlocks($text);
+
+        // Process headers
+        $text = $this->parseHeaders($text);
+
+        // Process emphasis (bold and italic)
+        $text = $this->parseEmphasis($text);
+
+        // Process links
+        $text = $this->parseLinks($text);
+
+        // Process lists
+        $text = $this->parseLists($text);
+
+        // Process blockquotes
+        $text = $this->parseBlockquotes($text);
+
+        // Process horizontal rules
+        $text = $this->parseHorizontalRules($text);
+
+        // Process paragraphs (better than nl2br)
+        $text = $this->processParagraphs($text);
+
+        // Allow extensions to post-process rendered HTML sitewide (e.g., progress bars)
+        try {
+            if ($this->container->has(\IslamWiki\Core\Extensions\ExtensionManager::class)) {
+                $extMgr = $this->container->get(\IslamWiki\Core\Extensions\ExtensionManager::class);
+                $hook = $extMgr->getHookManager();
+                $post = $hook->runLast('ContentPostRender', [$text, 'page']);
+                if (is_string($post) && $post !== '') {
+                    $text = $post;
+                }
+            }
+        } catch (\Throwable $e) {
+            // non-fatal
+        }
+
+        return $text;
+    }
+
+    /**
+     * Process paragraphs properly instead of using nl2br.
+     *
+     * @param string $text The text to process
+     * @return string The processed text with proper paragraphs
+     */
+    protected function processParagraphs(string $text): string
+    {
+        // Split text into lines
+        $lines = explode("\n", $text);
+        $result = [];
+        $currentParagraph = [];
+
+        foreach ($lines as $line) {
+            $trimmedLine = trim($line);
+            
+            // If it's an empty line and we have content in current paragraph
+            if (empty($trimmedLine) && !empty($currentParagraph)) {
+                // Close the current paragraph
+                $paragraphContent = trim(implode(' ', $currentParagraph));
+                if (!empty($paragraphContent) && !preg_match('/^<[hul]/', $paragraphContent)) {
+                    $result[] = '<p>' . $paragraphContent . '</p>';
+                } else {
+                    $result[] = $paragraphContent;
+                }
+                $currentParagraph = [];
+            }
+            // If it's a content line
+            elseif (!empty($trimmedLine)) {
+                // Check if it's already a processed HTML element (heading, list, etc.)
+                if (preg_match('/^<[hul]/', $trimmedLine)) {
+                    // Close any open paragraph first
+                    if (!empty($currentParagraph)) {
+                        $paragraphContent = trim(implode(' ', $currentParagraph));
+                        if (!empty($paragraphContent)) {
+                            $result[] = '<p>' . $paragraphContent . '</p>';
+                        }
+                        $currentParagraph = [];
+                    }
+                    // Add the HTML element directly
+                    $result[] = $trimmedLine;
+                } else {
+                    // Add to current paragraph
+                    $currentParagraph[] = $trimmedLine;
+                }
+            }
+        }
+
+        // Handle any remaining paragraph content
+        if (!empty($currentParagraph)) {
+            $paragraphContent = trim(implode(' ', $currentParagraph));
+            if (!empty($paragraphContent) && !preg_match('/^<[hul]/', $paragraphContent)) {
+                $result[] = '<p>' . $paragraphContent . '</p>';
+            } else {
+                $result[] = $paragraphContent;
+            }
+        }
+
+        return implode("\n", $result);
+    }
+
+    /**
      * Parse code blocks with syntax highlighting.
      */
     protected function parseCodeBlocks(string $text): string
@@ -1310,5 +1436,66 @@ class PageController extends Controller
     {
         $text = preg_replace('/^[ \t]*[-*_]{3,}[ \t]*$/m', '<hr>', $text);
         return $text;
+    }
+
+    /**
+     * Delete a wiki page.
+     *
+     * @param Request $request The HTTP request
+     * @param string $slug The page slug
+     * @return Response
+     */
+    public function destroy(Request $request, string $slug): Response
+    {
+        try {
+            // Get the page
+            $page = $this->getPageBySlug($slug);
+            
+            if (!$page) {
+                throw new HttpException(404, "Page not found: $slug");
+            }
+
+            // Check if user has permission to delete
+            if (!$this->canEdit($request, $page)) {
+                throw new HttpException(403, "You don't have permission to delete this page");
+            }
+
+            // Log the deletion
+            if ($this->logger) {
+                $this->logger->info('Page deleted', [
+                    'slug' => $slug,
+                    'title' => $page['title'],
+                    'user_id' => $this->user($request)['id'] ?? null,
+                    'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown'
+                ]);
+            }
+
+            // Delete the page from database
+            $stmt = $this->db->prepare("DELETE FROM wiki_pages WHERE slug = ?");
+            $result = $stmt->execute([$slug]);
+
+            if (!$result) {
+                throw new \Exception("Failed to delete page from database");
+            }
+
+            // Redirect to wiki index with success message
+            return $this->redirect('/wiki', [
+                'message' => "Page '$slug' has been successfully deleted.",
+                'type' => 'success'
+            ]);
+
+        } catch (HttpException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Error deleting page', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+            
+            throw new HttpException(500, "Internal server error while deleting page");
+        }
     }
 }

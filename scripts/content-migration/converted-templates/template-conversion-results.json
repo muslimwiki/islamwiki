@@ -1,0 +1,44 @@
+{
+    "summary": {
+        "total_items": 1,
+        "total_conversions": 25,
+        "total_original_size": 800,
+        "total_converted_size": 957,
+        "conversion_rate": 2500,
+        "size_change_percentage": 19.625,
+        "timestamp": "2025-08-23 01:15:27"
+    },
+    "detailed_results": [
+        {
+            "content_type": "test_content",
+            "original_content": "This is a test page with various MediaWiki templates:\n\n{{Infobox|title=Test|content=This is a test infobox}}\n{{stub}}\n{{disambiguation}}\n{{main|Quran}}\n{{see also|Hadith}}\n{{quote|This is a test quote}}\n{{quran|surah=1|ayah=1-7}}\n{{hadith|book=Bukhari|number=1}}\n{{scholar|name=Ibn Sina}}\n{{fatwa|scholar=Al-Ghazali|topic=Prayer}}\n{{prayer times|city=Mecca}}\n{{hijri calendar|date=today}}\n{{qibla direction|from=Current Location|to=Mecca}}\n{{category|Islamic Studies}}\n{{ref|This is a reference}}\n{{external link|url=https:\/\/example.com|text=Example}}\n{{image|file=test.jpg|alt=Test Image|caption=This is a test image}}\n{{table|This is table content}}\n{{warning|This is a warning}}\n{{note|This is a note}}\n{{success|This is a success message}}\n{{error|This is an error message}}\n\nEnd of test content.",
+            "converted_content": "This is a test page with various MediaWiki templates:\n\n{{Infobox|title=Test|content=This is a test infobox}}\n{{Note|message=message=This article is a stub and needs expansion}}\n{{Warning|message=message=This is a disambiguation page}}\n{{Note|message=message=Main article: [[Quran]]}}\n{{Note|message=message=See also: [[Hadith]]}}\n> This is a test quote\n{{quran|surah=1|ayah=1-7}}\n{{Hadith|book=Bukhari|number=1}}\n{{Scholar|name=Ibn Sina}}\n{{Fatwa|scholar=Al-Ghazali|topic=Prayer}}\n{{PrayerTimes|city=Mecca}}\n{{HijriCalendar|date=today}}\n{{QiblaDirection|from=Current Location|to=Mecca}}\n[Category:Islamic Studies]\n<ref>This is a reference<\/ref>\n[Example](https:\/\/example.com)\n![Test Image](test.jpg \"This is a test image\")\n{{Infobox|title=Table|content=This is table content}}\n{{Warning|message=This is a warning}}\n{{Note|message=This is a note}}\n{{Success|message=This is a success message}}\n{{Error|message=This is an error message}}\n\nEnd of test content.",
+            "conversions_applied": {
+                "infobox": 1,
+                "stub": 1,
+                "disambiguation": 1,
+                "main": 1,
+                "see_also": 1,
+                "quote": 1,
+                "hadith": 1,
+                "scholar": 1,
+                "fatwa": 1,
+                "prayer_times": 1,
+                "hijri_calendar": 1,
+                "qibla_direction": 1,
+                "category": 1,
+                "reference": 1,
+                "external_link": 1,
+                "image": 1,
+                "table": 1,
+                "warning": 2,
+                "note": 4,
+                "success": 1,
+                "error": 1
+            },
+            "original_size": 800,
+            "converted_size": 957,
+            "timestamp": "2025-08-23 01:15:27"
+        }
+    ]
+}

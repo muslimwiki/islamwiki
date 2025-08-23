@@ -1,0 +1,1 @@
+The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.

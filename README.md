@@ -1,125 +1,80 @@
-# 🕌 IslamWiki - Authentic Islamic Knowledge Platform
+# IslamWiki - Islamic Knowledge Platform
 
-**Version**: 0.0.2.2  
-**Status**: Production Ready with Modern Sidebar & Clean Architecture 🚀  
-**Last Updated**: 2025-08-22  
+[![Version](https://img.shields.io/badge/version-0.0.2.3-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
-## 🎉 **What's New in Version 0.0.2.2**
+**IslamWiki** is a comprehensive, collaborative platform dedicated to sharing and preserving authentic Islamic knowledge. Built with modern web technologies and Islamic design principles, it provides a beautiful, accessible way for the global Muslim community to learn, contribute, and grow in their Islamic knowledge.
 
-### **🌟 Major Improvements**
-- **Modern Sidebar Design**: Condensed 60px navigation with professional appearance
-- **Smart Navigation System**: Hover for options, click for navigation
-- **Clean Architecture**: Fixed file organization and eliminated duplicates
-- **Professional UI/UX**: Modern, gradient-free design with Islamic aesthetics
-- **Responsive Navigation**: Works perfectly on all devices and screen sizes
+## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-### **🔧 Technical Enhancements**
-- **Fixed Routing Issues**: Resolved 404 errors and broken links
-- **Improved Templates**: Better styling and responsive design
-- **Enhanced Forms**: Pre-filled data and better user experience
-- **Performance Optimization**: Faster page loading and better caching
+**Version 0.0.2.3** represents a major milestone with:
+- ✅ **Complete system recovery** from critical errors
+- ✅ **Beautiful Bismillah skin** fully integrated across all pages
+- ✅ **Comprehensive error handling** with Shahid logging system
+- ✅ **Pure Sabil routing** system (old routing completely removed)
+- ✅ **Enhanced Markdown processing** with beautiful content rendering
+- ✅ **Responsive Islamic-themed UI** with sidebar, header, and footer
 
----
+## 🚀 **Key Features**
 
-## 🏛️ **Platform Overview**
+### **🎨 Beautiful Islamic Design**
+- **Bismillah Skin**: Complete Islamic-themed user interface
+- **Responsive Sidebar**: Navigation with mosque icon, search, and profile
+- **Islamic Typography**: Amiri and Noto Naskh Arabic fonts
+- **Prayer Time Display**: Current time and Hijri calendar integration
+- **Professional Layout**: Modern web design with Islamic aesthetics
 
-IslamWiki is a **revolutionary hybrid platform** that combines the best features of MediaWiki, WordPress, and modern PHP while maintaining Islamic values and principles. The platform now focuses on **wiki functionality as its core feature**.
+### **📚 Comprehensive Wiki Functionality**
+- **Page Creation**: Intuitive forms for new Islamic content
+- **Content Viewing**: Beautifully rendered Markdown with Islamic styling
+- **Enhanced Markdown**: Wiki extensions and Islamic content features
+- **Content Management**: Edit, delete, and version control capabilities
+- **Search & Navigation**: Easy discovery of Islamic knowledge
 
-### **Core Philosophy**
-- **Islamic-First**: Built with Islamic values and content validation
-- **Hybrid Architecture**: MediaWiki + WordPress + Modern PHP
-- **Performance Focus**: Optimized for speed and scalability
-- **User Experience**: Professional, intuitive interface
+### **🛡️ Robust System Architecture**
+- **Sabil Routing**: Modern, efficient routing system
+- **Comprehensive Error Handling**: Beautiful error pages with detailed logging
+- **Shahid Logging**: Advanced logging and debugging system
+- **Session Management**: Secure authentication and user management
+- **Extension System**: Modular architecture for future enhancements
 
----
+### **🌍 Global Accessibility**
+- **Multi-language Support**: English, Arabic, Turkish, Urdu, Indonesian, Malay, Persian, Hebrew
+- **Responsive Design**: Mobile and desktop optimized
+- **Islamic Content Focus**: Quran, Hadith, Islamic history, Fiqh, and more
+- **Community Features**: Collaboration tools for scholars and contributors
 
-## 🚀 **Current Features**
+## 🏗️ **System Architecture**
 
-### **📚 Wiki System (Main Focus)**
-- **Dynamic Page Creation**: Visit `/wiki/{page_name}` to create missing pages
-- **Page Not Found Views**: Beautiful interfaces for non-existent pages
-- **Quick Create Forms**: Inline creation with pre-filled data
-- **Category Management**: Organized content structure
-- **Template System**: Multiple page templates available
+### **Core Components**
+- **NizamApplication**: Main application orchestrator
+- **SabilRouting**: Modern routing system
+- **WisalSession**: Advanced session management
+- **AmanSecurity**: Comprehensive authentication system
+- **ShahidLogger**: Advanced logging and debugging
 
-### **🔍 Enhanced Search System**
-- **Unified Search**: Single `/search` endpoint for all content
-- **IqraSearchExtension**: Advanced Islamic search engine
-- **Multiple Content Types**: Wiki, Quran, Hadith, Scholars
-- **Smart Filtering**: Category and type-based search
-- **Live Suggestions**: Real-time search recommendations
+### **Content Processing**
+- **Enhanced Markdown**: Wiki extensions and Islamic syntax
+- **Template Engine**: Twig-based templating with skin support
+- **Content Rendering**: Beautiful HTML output with Islamic styling
+- **Asset Management**: Efficient loading of CSS, JavaScript, and fonts
 
-### **🎨 Professional UI/UX**
-- **Bismillah Skin**: Beautiful Islamic-themed interface
-- **Responsive Design**: Works perfectly on all devices
-- **Improved Readability**: High contrast and clear typography
-- **Modern Components**: Professional buttons and forms
-- **Accessibility**: WCAG 2.1 AA compliance
-
-### **⚙️ System Management**
-- **Admin Dashboard**: Complete system administration
-- **User Management**: Role-based access control
-- **Extension System**: WordPress-style plugin architecture
-- **Skin System**: WordPress-style theme management
-- **Performance Monitoring**: Built-in optimization tools
-
----
-
-## 🏗️ **Architecture**
-
-### **Hybrid Approach**
-```
-IslamWiki = MediaWiki + WordPress + Modern PHP
-├── 📁 MediaWiki: Content management, versioning, collaborative editing
-├── 📁 WordPress: Plugin system, theme system, user experience  
-└── 📁 Modern PHP: Performance, security, developer experience
-```
-
-### **Core Systems (16 Islamic-Named)**
-- **Asas** (Foundation) - Core foundation and dependency injection
-- **Aman** (Security) - Comprehensive security framework
-- **Sabil** (Path) - Advanced routing system
-- **Nizam** (Order) - Main application system
-- **Mizan** (Balance) - Database system
-- **Iqra** (Read) - Islamic search engine
-- **Bayan** (Explanation) - Content formatting
-- **Safa** (Purity) - CSS framework
-- **Marwa** (Excellence) - JavaScript framework
-- **And 7 more systems...**
-
----
+### **Database & Storage**
+- **MySQL/MariaDB**: Robust content storage
+- **Active Record Models**: Clean data access patterns
+- **Migration System**: Version-controlled database schema
+- **Content Versioning**: Full revision history and rollback
 
 ## 🚀 **Quick Start**
 
-### **1. Access the Platform**
-- **Main Site**: Visit `/wiki` (default landing page)
-- **Create Pages**: Go to `/wiki/create` or visit any `/wiki/{page_name}`
-- **Search Content**: Use the unified `/search` endpoint
+### **Prerequisites**
+- PHP 8.0 or higher
+- MySQL 5.7+ or MariaDB 10.2+
+- Apache/Nginx with URL rewriting
+- Composer for dependency management
 
-### **2. Create Your First Wiki Page**
-1. **Visit**: `/wiki/your-page-name`
-2. **See**: "Page not found" view with create option
-3. **Click**: "Create" button
-4. **Fill**: Form with your content
-5. **Save**: Your new wiki page
-
-### **3. Use the Search System**
-1. **Go to**: `/search`
-2. **Enter**: Your search query
-3. **Select**: Content type (Wiki, Quran, Hadith, etc.)
-4. **View**: Comprehensive search results
-
----
-
-## 🔧 **Installation & Setup**
-
-### **Requirements**
-- **PHP**: 8.1 or higher
-- **Database**: MySQL 8.0+ or MariaDB 10.5+
-- **Web Server**: Apache 2.4+ or Nginx 1.18+
-- **Extensions**: Required PHP extensions (see composer.json)
-
-### **Quick Installation**
+### **Installation**
 ```bash
 # Clone the repository
 git clone https://github.com/islamwiki/islamwiki.git
@@ -128,157 +83,146 @@ cd islamwiki
 # Install dependencies
 composer install
 
-# Set up environment
-cp .env.example .env
-# Edit .env with your database credentials
+# Configure database
+cp config/database.example.php config/database.php
+# Edit database.php with your credentials
 
 # Run migrations
-php scripts/database/run_migrations.php
+php scripts/database/migrate.php
 
-# Set permissions
-chmod -R 755 storage/ var/ logs/
-chmod -R 644 .env
+# Set up web server
+# Point document root to public/ directory
+# Ensure skins/ directory is accessible
 
-# Access your site
-# Site will default to /wiki
+# Access the platform
+# Open http://your-domain/wiki/Main_Page
 ```
 
----
+### **Configuration**
+- **Database**: Configure MySQL/MariaDB connection
+- **Web Server**: Set up URL rewriting for clean URLs
+- **Skins**: Ensure skins directory is web-accessible
+- **Extensions**: Enable desired extensions in config
 
-## 📚 **Documentation**
+## 📱 **User Experience**
 
-### **User Guides**
-- **[Wiki User Guide](docs/guides/wiki-user-guide.md)** - How to use the wiki system
-- **[Search Guide](docs/guides/search-guide.md)** - Using the search system
-- **[Content Creation](docs/guides/content-creation.md)** - Creating and editing content
+### **Main Page**
+- **Beautiful Welcome**: Islamic-themed landing page
+- **Content Overview**: What you can find on IslamWiki
+- **Getting Started**: Guide for new users
+- **Featured Content**: Links to Quran, Hadith, Calendar, Prayer Times
 
-### **Developer Guides**
-- **[Development Guide](docs/guides/development.md)** - Development practices
-- **[Extension Development](docs/extensions/development.md)** - Creating extensions
-- **[Skin Development](docs/skins/development.md)** - Creating skins
-- **[API Documentation](docs/api/overview.md)** - API reference
+### **Content Creation**
+- **Enhanced Markdown Editor**: Rich text editing with Islamic features
+- **Template System**: Pre-built templates for different content types
+- **Category Management**: Organize content by Islamic topics
+- **Reference System**: Proper citation and source management
 
-### **Architecture Documentation**
-- **[System Architecture](docs/architecture/overview.md)** - Complete system overview
-- **[Core Systems](docs/architecture/core-systems.md)** - 16 Islamic-named systems
-- **[Hybrid Architecture](docs/architecture/hybrid-architecture.md)** - Architecture philosophy
+### **Navigation & Search**
+- **Smart Sidebar**: Context-aware navigation
+- **Search Functionality**: Find Islamic content quickly
+- **Category Browsing**: Explore topics systematically
+- **Recent Changes**: Stay updated with new content
 
----
+## 🔧 **Development & Contributing**
 
-## 🔌 **Extensions & Skins**
+### **Code Structure**
+```
+src/
+├── Core/           # Core application components
+├── Http/           # HTTP handling and controllers
+├── Models/         # Data models and database access
+├── Providers/      # Service providers and DI container
+└── Services/       # Business logic services
 
-### **Available Extensions**
-- **WikiExtension**: Core wiki functionality
-- **IqraSearchExtension**: Advanced search engine
-- **QuranExtension**: Quran management
-- **HadithExtension**: Hadith collections
-- **DashboardExtension**: Admin dashboard
-- **SafaSkinExtension**: Skin management system
+extensions/         # Modular extensions
+resources/          # Views, assets, and templates
+skins/             # User interface themes
+tests/             # Test suite and examples
+```
 
-### **Available Skins**
-- **Bismillah**: Default Islamic-themed skin
-- **Muslim**: Alternative skin option
-- **Custom**: User-created skins
-
----
-
-## 🧪 **Testing & Quality**
-
-### **Code Quality**
-- **PHP Standards**: PSR-12 compliance
-- **Type Safety**: Strict typing with PHP 8.1+
-- **Documentation**: Comprehensive PHPDoc coverage
-- **Testing**: PHPUnit testing framework
-
-### **Performance**
-- **Response Time**: < 200ms for most pages
-- **Caching**: Multi-level caching strategy
-- **Database**: Optimized queries and indexing
-- **Assets**: Minified and optimized CSS/JS
-
----
-
-## 🤝 **Contributing**
-
-### **How to Contribute**
+### **Development Workflow**
 1. **Fork** the repository
 2. **Create** a feature branch
-3. **Make** your changes
-4. **Test** thoroughly
-5. **Submit** a pull request
+3. **Develop** with Islamic design principles
+4. **Test** thoroughly across different devices
+5. **Submit** a pull request with detailed description
 
-### **Development Standards**
-- Follow Islamic naming conventions
-- Use PSR-12 coding standards
-- Include comprehensive documentation
-- Write tests for new features
+### **Contributing Guidelines**
+- **Islamic Etiquette**: Follow Islamic principles in all interactions
+- **Code Quality**: Maintain high standards and comprehensive testing
+- **Documentation**: Document all changes and new features
+- **Community**: Engage respectfully with other contributors
 
----
+## 📊 **Performance & Scalability**
 
-## 📄 **License**
+### **Current Performance**
+- **Fast Page Loading**: Optimized routing and content delivery
+- **Efficient Database**: Optimized queries and indexing
+- **Asset Optimization**: Compressed CSS and JavaScript
+- **Caching System**: Intelligent content and template caching
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+### **Scalability Features**
+- **Modular Architecture**: Easy to extend and maintain
+- **Extension System**: Add new features without core changes
+- **Database Optimization**: Efficient storage and retrieval
+- **CDN Ready**: Easy integration with content delivery networks
 
-- **Source Code**: Available to all users
-- **Network Use**: Triggers source code distribution
-- **Modifications**: Must be licensed under AGPL-3.0
-- **Attribution**: Original copyright notices preserved
+## 🔮 **Roadmap & Future**
 
----
+### **Immediate Goals (0.0.2.4)**
+- **Enhanced Wiki Functionality**: Complete edit, delete, history features
+- **User Management**: Authentication, profiles, and permissions
+- **Content Moderation**: Quality control and review system
+- **Advanced Search**: Full-text search with Islamic content indexing
 
-## 🆘 **Support & Community**
+### **Medium Term (0.0.3.x)**
+- **Mobile App**: Native mobile applications
+- **AI Integration**: Smart content recommendations
+- **Community Features**: Forums, discussions, and collaboration
+- **Multi-language Content**: Full localization support
+
+### **Long Term Vision**
+- **Global Islamic Network**: Connect scholars worldwide
+- **Educational Platform**: Islamic learning management system
+- **Research Tools**: Advanced Islamic studies resources
+- **API Platform**: Open access to Islamic knowledge
+
+## 🤝 **Community & Support**
 
 ### **Getting Help**
-- **Documentation**: Comprehensive guides available
-- **Issues**: Report bugs on GitHub
-- **Discussions**: Community discussions
-- **Wiki**: Platform documentation
+- **Documentation**: Comprehensive guides and tutorials
+- **Community Forum**: Ask questions and share knowledge
+- **Issue Tracker**: Report bugs and request features
+- **Contributor Chat**: Real-time development discussions
 
-### **Community Resources**
-- **Islamic Values**: Built-in content validation
-- **Scholar Verification**: Authenticated sources
-- **Community Guidelines**: Content moderation tools
-- **Educational Focus**: Learning and knowledge sharing
+### **Stay Connected**
+- **Newsletter**: Updates on new features and releases
+- **Social Media**: Follow development progress
+- **Community Events**: Participate in Islamic tech meetups
+- **Scholar Network**: Connect with Islamic scholars and researchers
 
----
+## 📄 **License & Legal**
 
-## 🎯 **Roadmap**
+This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
 
-### **Version 0.0.2.x (Current)**
-- ✅ **Wiki System**: Dynamic page creation and management
-- ✅ **Search System**: Unified search with IqraSearchExtension
-- ✅ **UI/UX**: Professional interface and improved readability
-- 🔄 **Performance**: Ongoing optimization and caching
+### **Islamic Content Guidelines**
+- **Authenticity**: All content must be from reliable Islamic sources
+- **Respect**: Follow Islamic etiquette in all interactions
+- **Accuracy**: Maintain high standards of Islamic scholarship
+- **Inclusivity**: Welcome all Muslims regardless of school of thought
 
-### **Version 0.0.3.x (Next)**
-- 📋 **Advanced Wiki Features**: Version control, collaborative editing
-- 📋 **Content Management**: Enhanced content creation tools
-- 📋 **Community Features**: User contributions and discussions
-- 📋 **Mobile Applications**: Mobile-optimized interfaces
+## 🙏 **Acknowledgments**
 
-### **Version 0.1.x (Future)**
-- 📋 **AI Integration**: Machine learning for content recommendations
-- 📋 **Blockchain**: Content authenticity verification
-- 📋 **Microservices**: Scalable service architecture
-- 📋 **Global Deployment**: Multi-region and multi-language support
+- **Islamic Scholars**: For guidance and content verification
+- **Open Source Community**: For the amazing tools and frameworks
+- **Design Community**: For beautiful Islamic-themed interfaces
+- **Global Muslim Community**: For inspiration and support
 
 ---
 
-## 📞 **Contact & Links**
+**🌙 May Allah guide us all to the straight path and bless our efforts in sharing Islamic knowledge.**
 
-- **Website**: [IslamWiki.org](https://islamwiki.org)
-- **GitHub**: [github.com/islamwiki/islamwiki](https://github.com/islamwiki/islamwiki)
-- **Documentation**: [docs.islamwiki.org](https://docs.islamwiki.org)
-- **Community**: [community.islamwiki.org](https://community.islamwiki.org)
-
----
-
-**🏛️ IslamWiki - Empowering Islamic Knowledge Through Technology**  
-**Version 0.0.2.1** | **Status**: Production Ready with Enhanced Wiki System 🚀 | **Focus**: Wiki-First Platform with Professional UI/UX
-
----
-
-**Last Updated**: 2025-08-22  
-**Version**: 0.0.2.1  
-**Author**: IslamWiki Development Team  
-**License**: AGPL-3.0
+**📧 Contact**: [team@islamwiki.org](mailto:team@islamwiki.org)  
+**🌐 Website**: [https://islamwiki.org](https://islamwiki.org)  
+**📱 Community**: [https://community.islamwiki.org](https://community.islamwiki.org)

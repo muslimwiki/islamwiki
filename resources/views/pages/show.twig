@@ -1,6 +1,6 @@
 {% extends "layouts/app.twig" %}
 
-{% block title %}{{ page.getAttribute('title') }} - IslamWiki{% endblock %}
+{% block title %}{{ title|default('Welcome to IslamWiki') }} - IslamWiki{% endblock %}
 
 {% block styles %}
 <style>
@@ -329,7 +329,7 @@
 {% block content %}
 <div class="page-container">
     <div class="page-header">
-        <h1 class="page-title">{{ page.getAttribute('title') }}</h1>
+        <h1 class="page-title">{{ title|default('Welcome to IslamWiki') }}</h1>
         
         <!-- Language Switcher -->
         {% if availableLanguages and availableLanguages|length > 1 %}
@@ -345,16 +345,16 @@
         </div>
         {% endif %}
         <div class="page-meta">
-            {% if page.getAttribute('namespace') %}
+            {% if page.namespace %}
                 <div class="page-meta-item">
                     <span class="page-meta-icon">📁</span>
-                    <span>{{ page.getAttribute('namespace') }}</span>
+                    <span>{{ page.namespace }}</span>
                 </div>
             {% endif %}
             {# removed view counter per request #}
             <div class="page-meta-item">
                 <span class="page-meta-icon">📅</span>
-                <span>Last edited: {{ page.getAttribute('updated_at')|date('M j, Y') }}</span>
+                <span>Last edited: {{ page.updated_at|date('M j, Y') }}</span>
             </div>
         </div>
     </div>
@@ -365,20 +365,20 @@
 
     <div class="page-actions">
         {% if canEdit %}
-            {% set displaySlug = page.getAttribute('slug') %}
-            {% if ':' in page.getAttribute('slug') %}
-                {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+            {% set displaySlug = page.slug %}
+            {% if ':' in page.slug %}
+                {% set displaySlug = page.slug|split(':')|last %}
             {% endif %}
-            <a href="/wiki/{{ displaySlug }}/edit" class="btn btn-primary">
+            <a href="/create?title={{ displaySlug }}" class="btn btn-primary">
                 <span>✏️</span>
                 Edit Page
             </a>
         {% endif %}
         
         {% if canDelete %}
-            {% set displaySlug = page.getAttribute('slug') %}
-            {% if ':' in page.getAttribute('slug') %}
-                {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+            {% set displaySlug = page.slug %}
+            {% if ':' in page.slug %}
+                {% set displaySlug = page.slug|split(':')|last %}
             {% endif %}
             <a href="/wiki/{{ displaySlug }}/delete" class="btn btn-danger" 
                onclick="return confirm('Are you sure you want to delete this page?')">
@@ -388,11 +388,11 @@
         {% endif %}
         
         {% if canLock %}
-            {% set displaySlug = page.getAttribute('slug') %}
-            {% if ':' in page.getAttribute('slug') %}
-                {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+            {% set displaySlug = page.slug %}
+            {% if ':' in page.slug %}
+                {% set displaySlug = page.slug|split(':')|last %}
             {% endif %}
-            {% if page.getAttribute('is_locked') %}
+            {% if page.is_locked %}
                 <a href="/wiki/{{ displaySlug }}/unlock" class="btn btn-warning">
                     <span>🔓</span>
                     Unlock Page
@@ -405,9 +405,9 @@
             {% endif %}
         {% endif %}
         
-        {% set displaySlug = page.getAttribute('slug') %}
-        {% if ':' in page.getAttribute('slug') %}
-            {% set displaySlug = page.getAttribute('slug')|split(':')|last %}
+        {% set displaySlug = page.slug %}
+        {% if ':' in page.slug %}
+            {% set displaySlug = page.slug|split(':')|last %}
         {% endif %}
         <a href="/wiki/{{ displaySlug }}/history" class="btn btn-secondary">
             <span>📚</span>
@@ -438,7 +438,7 @@
     <div class="page-revision-info">
         <small>
             <span class="page-revision-icon">👤</span>
-            Last edited by {{ latestRevision.getAttribute('author_name') ?? 'Unknown' }} 
+            Last edited by {{ latestRevision.author_name ?? 'Unknown' }} 
             on {{ latestRevision.created_at|date('M j, Y \a\t g:i A') }}
             {% if latestRevision.comment %}
                 - {{ latestRevision.comment }}

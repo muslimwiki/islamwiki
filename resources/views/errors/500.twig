@@ -45,13 +45,48 @@
                 <div class="technical-info mb-4">
                     <h4>معلومات تقنية:</h4>
                     <h4>Technical Information:</h4>
-                    <p class="text-muted">
-                        <small>
-                            Time: {{ "now"|date("Y-m-d H:i:s T") }}<br>
-                            URL: {{ app.request.uri|default('Unknown') }}<br>
-                            Method: {{ app.request.method|default('Unknown') }}
-                        </small>
-                    </p>
+                    <div class="alert alert-info">
+                        <p class="text-muted mb-2">
+                            <strong>Time:</strong> {{ "now"|date("Y-m-d H:i:s T") }}<br>
+                            <strong>Request ID:</strong> {{ request_id|default('Unknown') }}<br>
+                            <strong>Status Code:</strong> {{ status_code|default('500') }}<br>
+                            <strong>URL:</strong> {{ app.request.uri|default('Unknown') }}<br>
+                            <strong>Method:</strong> {{ app.request.method|default('Unknown') }}
+                        </p>
+                    </div>
+                </div>
+
+                {% if exception %}
+                <div class="shahid-debug mb-4">
+                    <h4>🐛 Shahid Debug Information:</h4>
+                    <h4>معلومات التصحيح:</h4>
+                    <div class="alert alert-warning">
+                        <p><strong>Exception Class:</strong> {{ exception.__class__ }}</p>
+                        <p><strong>File:</strong> {{ exception.file }}:{{ exception.line }}</p>
+                        <p><strong>Message:</strong> {{ exception.message }}</p>
+                        
+                        {% if exception.code %}
+                        <p><strong>Error Code:</strong> {{ exception.code }}</p>
+                        {% endif %}
+                        
+                        <details class="mt-3">
+                            <summary><strong>📚 Stack Trace (Click to expand)</strong></summary>
+                            <div class="stack-trace mt-2">
+                                <pre class="bg-light p-3 rounded"><code>{{ exception.traceAsString }}</code></pre>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="shahid-logging mb-4">
+                    <h4>📊 Shahid Logging System:</h4>
+                    <h4>نظام التسجيل:</h4>
+                    <div class="alert alert-success">
+                        <p class="mb-2">This error has been automatically logged through the Shahid logging system with comprehensive context.</p>
+                        <p class="mb-2">Check the application logs for detailed debugging information.</p>
+                        <p class="mb-0"><strong>Log File:</strong> storage/logs/application-{{ "now"|date("Y-m-d") }}.log</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,1 @@
+[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}

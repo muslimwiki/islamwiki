@@ -1,0 +1,456 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ templateName }} - Template - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="template-page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="section-container">
+            <div class="template-header">
+                <h1 class="page-title">
+                    <i class="fas fa-file-code"></i>
+                    Template:{{ templateName }}
+                </h1>
+                <div class="template-actions">
+                    <a href="/wiki/Template:{{ templateName }}/edit" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="/wiki/Special:Templates" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> All Templates
+                    </a>
+                </div>
+            </div>
+            <p class="page-subtitle">
+                Template page for {{ templateName }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="section-container">
+        <!-- Template Information -->
+        <div class="template-info-box">
+            <div class="template-info-content">
+                <div class="template-info-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="template-info-text">
+                    <p>
+                        This is a <strong>template</strong> that can be used in other wiki pages. 
+                        Templates are stored as namespace pages and can be modified by users.
+                    </p>
+                    <p>
+                        <strong>Usage:</strong> <code>&#123;&#123;{{ templateName }}&#125;&#125;</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Content -->
+        <div class="template-content-section">
+            <div class="template-content-header">
+                <h2>Template Content</h2>
+                <div class="template-content-actions">
+                    <button type="button" class="btn btn-outline-secondary" id="copy-template-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="preview-template-btn">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                </div>
+            </div>
+            
+            <div class="template-content-display">
+                <pre class="template-code" id="template-code">{{ templateContent }}</pre>
+            </div>
+        </div>
+
+        <!-- Template Preview -->
+        <div class="template-preview-section" id="template-preview-section" style="display: none;">
+            <div class="template-preview-header">
+                <h3>Template Preview</h3>
+                <button type="button" class="btn btn-outline-secondary" id="close-preview-btn">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+            <div class="template-preview-content" id="template-preview-content">
+                <!-- Preview content will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Template Usage Examples -->
+        <div class="template-usage-section">
+            <h2>Usage Examples</h2>
+            
+            <div class="usage-example">
+                <h3>Basic Usage</h3>
+                <div class="code-example">
+                    <code>&#123;&#123;{{ templateName }}&#125;&#125;</code>
+                </div>
+                <p>Use this template in any wiki page by adding the above code.</p>
+            </div>
+            
+            {% if templateContent contains '{{{' %}
+            <div class="usage-example">
+                <h3>With Parameters</h3>
+                <div class="code-example">
+                    <code>&#123;&#123;{{ templateName }}|param1|param2|named=value&#125;&#125;</code>
+                </div>
+                <p>This template accepts parameters. Check the template content above for available parameters.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Template Metadata -->
+        {% if metadata %}
+        <div class="template-metadata-section">
+            <h2>Template Information</h2>
+            <div class="metadata-grid">
+                {% if metadata.created_at %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Created:</span>
+                    <span class="metadata-value">{{ metadata.created_at|date('F j, Y') }}</span>
+                </div>
+                {% endif %}
+                
+                {% if metadata.updated_at %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Last Modified:</span>
+                    <span class="metadata-value">{{ metadata.updated_at|date('F j, Y') }}</span>
+                </div>
+                {% endif %}
+                
+                {% if metadata.creator_id %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Creator:</span>
+                    <span class="metadata-value">User ID: {{ metadata.creator_id }}</span>
+                </div>
+                {% endif %}
+                
+                {% if metadata.last_editor_id %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Last Editor:</span>
+                    <span class="metadata-value">User ID: {{ metadata.last_editor_id }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Related Templates -->
+        <div class="related-templates-section">
+            <h2>Related Templates</h2>
+            <div class="related-templates-list">
+                <a href="/wiki/Special:Templates" class="related-template-link">
+                    <i class="fas fa-th-list"></i> View All Templates
+                </a>
+                <a href="/wiki/Template:Infobox" class="related-template-link">
+                    <i class="fas fa-table"></i> Infobox Template
+                </a>
+                <a href="/wiki/Template:Stub" class="related-template-link">
+                    <i class="fas fa-exclamation-triangle"></i> Stub Template
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.template-page-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 0;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.template-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.template-info-box {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #1565c0;
+}
+
+.template-info-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.template-info-icon {
+    flex-shrink: 0;
+    color: #2196f3;
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+}
+
+.template-content-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.template-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.template-content-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.template-code {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.template-preview-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.template-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.template-preview-content {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.25rem;
+    min-height: 200px;
+}
+
+.template-usage-section,
+.template-metadata-section,
+.related-templates-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.usage-example {
+    margin-bottom: 1.5rem;
+}
+
+.usage-example:last-child {
+    margin-bottom: 0;
+}
+
+.code-example {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.code-example code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    color: #e83e8c;
+}
+
+.metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.metadata-value {
+    color: #333;
+}
+
+.related-templates-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.related-template-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    color: #495057;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.related-template-link:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #212529;
+    text-decoration: none;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    border-color: #545b62;
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .template-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .template-actions {
+        justify-content: center;
+    }
+    
+    .template-content-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .template-content-actions {
+        justify-content: center;
+    }
+    
+    .metadata-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Copy template button
+    const copyBtn = document.getElementById('copy-template-btn');
+    const templateCode = document.getElementById('template-code');
+    
+    copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(templateCode.textContent).then(function() {
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(function() {
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            }, 2000);
+        });
+    });
+    
+    // Preview template button
+    const previewBtn = document.getElementById('preview-template-btn');
+    const previewSection = document.getElementById('template-preview-section');
+    const previewContent = document.getElementById('template-preview-content');
+    const closePreviewBtn = document.getElementById('close-preview-btn');
+    
+    previewBtn.addEventListener('click', function() {
+        // For now, just show the raw HTML content
+        // In a full implementation, this would process the template with sample parameters
+        previewContent.innerHTML = templateCode.textContent;
+        previewSection.style.display = 'block';
+        previewBtn.style.display = 'none';
+    });
+    
+    closePreviewBtn.addEventListener('click', function() {
+        previewSection.style.display = 'none';
+        previewBtn.style.display = 'inline-flex';
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,142 @@
+{
+    "validation_info": {
+        "version": "0.0.3.0",
+        "timestamp": "2025-08-23 01:15:27",
+        "execution_time": 0.0006561279296875
+    },
+    "statistics": {
+        "total_tests": 8,
+        "passed_tests": 7,
+        "failed_tests": 1,
+        "warnings": 0,
+        "start_time": 1755911727.963333
+    },
+    "test_results": {
+        "content_integrity": {
+            "1-Main_Page.md": {
+                "file_exists": true,
+                "content_length": 160,
+                "has_content": true,
+                "markdown_syntax": true,
+                "wiki_extensions": true
+            },
+            "2-Quran.md": {
+                "file_exists": true,
+                "content_length": 102,
+                "has_content": true,
+                "markdown_syntax": false,
+                "wiki_extensions": true
+            },
+            "3-Hadith.md": {
+                "file_exists": true,
+                "content_length": 89,
+                "has_content": true,
+                "markdown_syntax": false,
+                "wiki_extensions": true
+            }
+        },
+        "markdown_syntax": {
+            "test_content": "# Test Heading\n\nThis is **bold** and *italic* text.\n\n- List item 1\n- List item 2\n\n[Link text](https:\/\/example.com)",
+            "processed_content": "1. Test Heading\n\nThis is **bold** and *italic* text.\n\n- List item 1\n- List item 2\n\n[Link text](https:\/\/example.com)",
+            "html_output": "<p>1. Test Heading<\/p><p>This is <strong>bold<\/strong> and <em>italic<\/em> text.<\/p><p><ul><li>List item 1<\/li>\n<li>List item 2<\/li><\/ul><\/p><p>[Link text](https:\/\/example.com)<\/p>",
+            "expected_html": "<h1>Test Heading<\/h1><p>This is <strong>bold<\/strong> and <em>italic<\/em> text.<\/p><ul><li>List item 1<\/li><li>List item 2<\/li><\/ul><p><a href=\"https:\/\/example.com\">Link text<\/a><\/p>",
+            "test_passed": false
+        },
+        "wiki_extensions": {
+            "test_content": "[[Page Name]] and [[Page|Display Text]] with [Category:Test]",
+            "processed_content": "[[Page Name]] and [[Page|Display Text]] with [Category:Test]",
+            "has_internal_links": 1,
+            "has_categories": 1,
+            "test_passed": true
+        },
+        "islamic_templates": {
+            "test_content": "{{Quran|surah=1|ayah=1-7}} and {{Hadith|book=Bukhari|number=1}}",
+            "processed_content": "{{Quran|surah=1|ayah=1-7}} and {{Hadith|book=Bukhari|number=1}}",
+            "has_quran_template": true,
+            "has_hadith_template": true,
+            "test_passed": true
+        },
+        "link_validation": {
+            "test_content": "[[Valid Link]] and [[Invalid|Link]] with [Category:Test]",
+            "validation": {
+                "total_links": 2,
+                "valid_links": 1,
+                "invalid_links": 1,
+                "issues": [
+                    {
+                        "link": "Invalid|Link",
+                        "issues": [
+                            "Link contains invalid characters"
+                        ]
+                    }
+                ]
+            },
+            "statistics": {
+                "internal_links": {
+                    "count": 2,
+                    "description": "Internal wiki links"
+                },
+                "old_internal_links": {
+                    "count": 1,
+                    "description": "Old MediaWiki internal links with display text"
+                },
+                "external_links": {
+                    "count": 0,
+                    "description": "Markdown external links"
+                },
+                "old_external_links": {
+                    "count": 3,
+                    "description": "Old MediaWiki external links"
+                },
+                "category_links": {
+                    "count": 1,
+                    "description": "Category links"
+                },
+                "old_categories": {
+                    "count": 0,
+                    "description": "Old MediaWiki category format"
+                },
+                "file_links": {
+                    "count": 0,
+                    "description": "File links"
+                },
+                "image_links": {
+                    "count": 0,
+                    "description": "Image links"
+                },
+                "template_links": {
+                    "count": 0,
+                    "description": "Template references"
+                },
+                "interwiki_links": {
+                    "count": 0,
+                    "description": "Interwiki links"
+                }
+            },
+            "test_passed": true
+        },
+        "template_rendering": {
+            "test_content": "{{Infobox|title=Test|content=Test content}}",
+            "processed_content": "{{Infobox|title=Test|content=Test content}}",
+            "test_passed": true
+        },
+        "performance": {
+            "content_length": 8500,
+            "processing_time": 0.00016999244689941406,
+            "chars_per_second": 50002221.59887798,
+            "test_passed": true
+        },
+        "cross_browser_compatibility": {
+            "test_content": "# Heading\n\n**Bold** and *italic* text with [[links]]",
+            "html_output": "<p><h1>Heading<\/h1><\/p><p><strong>Bold<\/strong> and <em>italic<\/em> text with [[links]]<\/p>",
+            "has_valid_html": true,
+            "test_passed": true
+        }
+    },
+    "summary": {
+        "overall_status": "FAILED",
+        "recommendations": [
+            "Address failed tests before deployment"
+        ]
+    }
+}

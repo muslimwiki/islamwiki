@@ -691,18 +691,75 @@ class WisalSession
     }
     
     /**
-     * Get CSRF token for forms.
-     *
-     * @return string CSRF token
+     * Get the current CSRF token.
      */
     public function getCsrfToken(): string
     {
-        // Generate a CSRF token if not exists
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (!$this->has('csrf_token')) {
+            return $this->generateCsrfToken();
         }
-        
-        return $_SESSION['csrf_token'];
+        return $this->get('csrf_token');
+    }
+
+    /**
+     * Generate a new CSRF token.
+     */
+    public function generateCsrfToken(): string
+    {
+        $token = bin2hex(random_bytes(32));
+        $this->put('csrf_token', $token);
+        return $token;
+    }
+
+    /**
+     * Check if a session key exists.
+     */
+    public function has(string $key): bool
+    {
+        return isset($_SESSION[$key]);
+    }
+
+    /**
+     * Get a session value.
+     */
+    public function get(string $key, $default = null)
+    {
+        return $_SESSION[$key] ?? $default;
+    }
+
+    /**
+     * Set a session value.
+     */
+    public function put(string $key, $value): void
+    {
+        $_SESSION[$key] = $value;
+    }
+
+    /**
+     * Check if user is logged in.
+     */
+    public function isLoggedIn(): bool
+    {
+        return $this->has('user_id') && $this->has('username');
+    }
+
+    /**
+     * Get the current user ID.
+     */
+    public function getUserId(): ?int
+    {
+        return $this->get('user_id');
+    }
+
+    /**
+     * Set user as logged in.
+     */
+    public function setUserLoggedIn(array $userData): void
+    {
+        $this->put('user_id', $userData['id']);
+        $this->put('username', $userData['username']);
+        $this->put('is_admin', $userData['role'] === 'admin' ? 1 : 0);
+        $this->put('logged_in_at', time());
     }
     
     /**

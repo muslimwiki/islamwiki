@@ -1,77 +1,21 @@
 {
     "name": "EnhancedMarkdown",
-    "version": "0.0.2",
-    "description": "Enhanced Markdown support with Islamic content syntax and Arabic text handling",
-    "author": "IslamWiki Team",
-    "url": "https://islamwiki.org/extensions/EnhancedMarkdown",
+    "version": "0.0.0.3",
+    "description": "Enhanced Markdown with Wiki Extensions for IslamWiki",
+    "author": "IslamWiki Development Team",
+    "license": "AGPL-3.0",
     "main": "EnhancedMarkdown.php",
-    "class": "IslamWiki\\Extensions\\EnhancedMarkdown\\EnhancedMarkdown",
-    "type": "content",
-    "requires": {
-        "IslamWiki": ">= 0.0.18"
-    },
-    "config": {
-        "enableIslamicSyntax": true,
-        "enableArabicSupport": true,
-        "enableTemplates": true,
-        "defaultEditor": "markdown",
-        "syntaxHighlighting": true,
-        "autoSave": true,
-        "previewMode": "split"
-    },
-    "hooks": {
-        "ContentParse": "onContentParse",
-        "EditorInit": "onEditorInit",
-        "ArticleSave": "onArticleSave",
-        "TemplateLoad": "onTemplateLoad"
-    },
-    "resources": {
-        "css": [
-            "modules/css/editor.css",
-            "modules/css/islamic-syntax.css",
-            "modules/css/arabic-support.css"
-        ],
-        "js": [
-            "modules/js/markdown-editor.js",
-            "modules/js/islamic-shortcuts.js",
-            "modules/js/arabic-keyboard.js"
-        ]
-    },
-    "templates": {
-        "quran-verse": "templates/quran-verse.md",
-        "hadith-citation": "templates/hadith-citation.md",
-        "islamic-date": "templates/islamic-date.md",
-        "prayer-times": "templates/prayer-times.md",
-        "scholar-reference": "templates/scholar-reference.md",
-        "fiqh-article": "templates/fiqh-article.md",
-        "aqeedah-article": "templates/aqeedah-article.md",
-        "tafsir-article": "templates/tafsir-article.md"
-    },
-    "islamicSyntax": {
-        "quran": {
-            "pattern": "{{quran:surah:ayah}}",
-            "example": "{{quran:2:255}}",
-            "description": "Quran verse reference"
-        },
-        "hadith": {
-            "pattern": "{{hadith:collection:book:number}}",
-            "example": "{{hadith:bukhari:1:1}}",
-            "description": "Hadith citation"
-        },
-        "hijri": {
-            "pattern": "{{hijri:YYYY-MM-DD}}",
-            "example": "{{hijri:1445-03-15}}",
-            "description": "Islamic date"
-        },
-        "prayer": {
-            "pattern": "{{prayer-times:location:city}}",
-            "example": "{{prayer-times:location:mecca}}",
-            "description": "Prayer times"
-        },
-        "scholar": {
-            "pattern": "{{scholar:name}}",
-            "example": "{{scholar:ibn-taymiyyah}}",
-            "description": "Scholar reference"
+    "autoload": {
+        "psr-4": {
+            "IslamWiki\\Extensions\\EnhancedMarkdown\\": "src/"
         }
+    },
+    "requires": {
+        "php": ">=8.0"
+    },
+    "provides": {
+        "markdown-processor": "0.0.3.0",
+        "wiki-extensions": "0.0.3.0",
+        "islamic-templates": "0.0.3.0"
     }
 } 

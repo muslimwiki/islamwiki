@@ -1,0 +1,164 @@
+[
+    {
+        "id": 1,
+        "title": "Main Page",
+        "link_validation": {
+            "total_links": 1,
+            "valid_links": 1,
+            "invalid_links": 0,
+            "issues": []
+        },
+        "link_statistics": {
+            "internal_links": {
+                "count": 1,
+                "description": "Internal wiki links"
+            },
+            "old_internal_links": {
+                "count": 0,
+                "description": "Old MediaWiki internal links with display text"
+            },
+            "external_links": {
+                "count": 0,
+                "description": "Markdown external links"
+            },
+            "old_external_links": {
+                "count": 2,
+                "description": "Old MediaWiki external links"
+            },
+            "category_links": {
+                "count": 1,
+                "description": "Category links"
+            },
+            "old_categories": {
+                "count": 0,
+                "description": "Old MediaWiki category format"
+            },
+            "file_links": {
+                "count": 0,
+                "description": "File links"
+            },
+            "image_links": {
+                "count": 0,
+                "description": "Image links"
+            },
+            "template_links": {
+                "count": 1,
+                "description": "Template references"
+            },
+            "interwiki_links": {
+                "count": 0,
+                "description": "Interwiki links"
+            }
+        },
+        "validation_success": true,
+        "timestamp": "2025-08-23 01:14:07"
+    },
+    {
+        "id": 2,
+        "title": "Quran",
+        "link_validation": {
+            "total_links": 1,
+            "valid_links": 1,
+            "invalid_links": 0,
+            "issues": []
+        },
+        "link_statistics": {
+            "internal_links": {
+                "count": 1,
+                "description": "Internal wiki links"
+            },
+            "old_internal_links": {
+                "count": 0,
+                "description": "Old MediaWiki internal links with display text"
+            },
+            "external_links": {
+                "count": 0,
+                "description": "Markdown external links"
+            },
+            "old_external_links": {
+                "count": 1,
+                "description": "Old MediaWiki external links"
+            },
+            "category_links": {
+                "count": 0,
+                "description": "Category links"
+            },
+            "old_categories": {
+                "count": 0,
+                "description": "Old MediaWiki category format"
+            },
+            "file_links": {
+                "count": 0,
+                "description": "File links"
+            },
+            "image_links": {
+                "count": 0,
+                "description": "Image links"
+            },
+            "template_links": {
+                "count": 1,
+                "description": "Template references"
+            },
+            "interwiki_links": {
+                "count": 0,
+                "description": "Interwiki links"
+            }
+        },
+        "validation_success": true,
+        "timestamp": "2025-08-23 01:14:07"
+    },
+    {
+        "id": 3,
+        "title": "Hadith",
+        "link_validation": {
+            "total_links": 1,
+            "valid_links": 1,
+            "invalid_links": 0,
+            "issues": []
+        },
+        "link_statistics": {
+            "internal_links": {
+                "count": 1,
+                "description": "Internal wiki links"
+            },
+            "old_internal_links": {
+                "count": 0,
+                "description": "Old MediaWiki internal links with display text"
+            },
+            "external_links": {
+                "count": 0,
+                "description": "Markdown external links"
+            },
+            "old_external_links": {
+                "count": 1,
+                "description": "Old MediaWiki external links"
+            },
+            "category_links": {
+                "count": 0,
+                "description": "Category links"
+            },
+            "old_categories": {
+                "count": 0,
+                "description": "Old MediaWiki category format"
+            },
+            "file_links": {
+                "count": 0,
+                "description": "File links"
+            },
+            "image_links": {
+                "count": 0,
+                "description": "Image links"
+            },
+            "template_links": {
+                "count": 1,
+                "description": "Template references"
+            },
+            "interwiki_links": {
+                "count": 0,
+                "description": "Interwiki links"
+            }
+        },
+        "validation_success": true,
+        "timestamp": "2025-08-23 01:14:07"
+    }
+]

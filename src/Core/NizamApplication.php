@@ -276,6 +276,7 @@ class NizamApplication
             \IslamWiki\Providers\StaticDataServiceProvider::class,
             \IslamWiki\Providers\BayanServiceProvider::class,
             \IslamWiki\Providers\ExtensionServiceProvider::class,
+            \IslamWiki\Extensions\EnhancedMarkdown\Providers\EnhancedMarkdownServiceProvider::class,
         ];
 
         // Register all providers first
@@ -411,18 +412,88 @@ class NizamApplication
     /**
      * Handle the incoming request.
      */
-    protected function handleRequest(Request $request): Response
+    public function handleRequest(Request $request): Response
     {
         try {
-            if ($this->router) {
-                return $this->router->dispatch($request);
+            
+            // Use SabilRouting to find and dispatch the route
+            $method = $request->getMethod();
+            $path = $request->getUri()->getPath();
+            
+            
+            $route = $this->_sabilRouter->findRoute($method, $path);
+            
+            
+            if ($route) {
+                
+                // Route found, call the handler
+                $handler = $route['handler'];
+                
+                if (is_array($handler) && count($handler) === 2) {
+                    // Controller method handler
+                    $controller = $handler[0];
+                    $method = $handler[1];
+                    
+                    
+                    // Extract path parameters if any
+                    $params = $this->extractPathParameters($route['path'], $path);
+                    
+                    
+                    // Call the controller method with request and parameters
+                    if (count($params) > 0) {
+                        return call_user_func($handler, $request, ...$params);
+                    } else {
+                        return call_user_func($handler, $request);
+                    }
+                } else if (is_callable($handler)) {
+                    // Callable handler
+                    return call_user_func($handler, $request);
+                } else {
+                    throw new \Exception("Invalid route handler");
+                }
             }
 
-            // Fallback to simple response
-            return new Response(200, ['Content-Type' => 'text/html'], 'Application is running');
+            
+            // Route not found - return 404 with proper logging
+            $this->_logger->warning('Route not found', [
+                'request_uri' => $request->getUri()->getPath(),
+                'request_method' => $request->getMethod(),
+                'user_agent' => $request->getHeaderLine('User-Agent'),
+                'remote_addr' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                'context' => 'route_not_found'
+            ]);
+
+            return new Response(404, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+                'X-Error-Type' => 'route_not_found'
+            ], $this->renderErrorPage(404));
         } catch (\Exception $e) {
             return $this->handleRouterException($e, $request);
         }
+    }
+
+    /**
+     * Extract path parameters from route pattern.
+     */
+    protected function extractPathParameters(string $routePath, string $requestPath): array
+    {
+        // Simple parameter extraction for patterns like /wiki/{slug}
+        // This is a basic implementation - can be enhanced later
+        if (strpos($routePath, '{') !== false) {
+            $routeParts = explode('/', trim($routePath, '/'));
+            $requestParts = explode('/', trim($requestPath, '/'));
+            
+            $params = [];
+            for ($i = 0; $i < count($routeParts); $i++) {
+                if (isset($routeParts[$i]) && strpos($routeParts[$i], '{') === 0) {
+                    // This is a parameter
+                    $params[] = $requestParts[$i] ?? '';
+                }
+            }
+            return $params;
+        }
+        
+        return [];
     }
 
     /**
@@ -430,31 +501,164 @@ class NizamApplication
      */
     protected function handleRouterException(\Exception $e, Request $request): Response
     {
-        $this->_logger->error('Router exception: ' . $e->getMessage(), [
-            'exception' => $e,
-            'request' => $request->getUri()
-        ]);
+        // Log the exception with comprehensive context through Shahid
+        $this->_logger->exception($e, [
+            'request_uri' => $request->getUri()->getPath(),
+            'request_method' => $request->getMethod(),
+            'user_agent' => $request->getHeaderLine('User-Agent'),
+            'remote_addr' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+            'context' => 'router_exception'
+        ], 'error');
 
-        return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error');
+        // Return a proper error response
+        return new Response(500, [
+            'Content-Type' => 'text/html; charset=UTF-8',
+            'X-Error-Type' => 'router_exception'
+        ], $this->renderErrorPage(500, $e));
+    }
+
+    /**
+     * Render an error page using the view system.
+     */
+    protected function renderErrorPage(int $statusCode, \Throwable $e = null): string
+    {
+        try {
+            // Try to get the view service from container
+            if ($this->container->has('view')) {
+                $view = $this->container->get('view');
+                
+                $errorData = [
+                    'title' => $this->getErrorTitle($statusCode),
+                    'error' => $e ? $e->getMessage() : 'An error occurred',
+                    'status_code' => $statusCode,
+                    'exception' => $e,
+                    'current_language' => 'en',
+                    'timestamp' => date('Y-m-d H:i:s'),
+                    'request_id' => uniqid('req_', true)
+                ];
+
+                // Log additional context for debugging
+                if ($e) {
+                    $this->_logger->error('Rendering error page', [
+                        'status_code' => $statusCode,
+                        'exception_class' => get_class($e),
+                        'exception_file' => $e->getFile(),
+                        'exception_line' => $e->getLine(),
+                        'request_id' => $errorData['request_id']
+                    ]);
+                }
+
+                $result = $view->render("errors/{$statusCode}.twig", $errorData);
+                return $result;
+            }
+        } catch (\Exception $viewError) {
+            // Log the view rendering error
+            $this->_logger->error('Failed to render error page', [
+                'original_status' => $statusCode,
+                'view_error' => $viewError->getMessage(),
+                'view_error_file' => $viewError->getFile(),
+                'view_error_line' => $viewError->getLine()
+            ]);
+        }
+
+        // Fallback to simple HTML error page
+        return $this->getFallbackErrorPage($statusCode, $e);
+    }
+
+    /**
+     * Get error title based on status code.
+     */
+    protected function getErrorTitle(int $statusCode): string
+    {
+        $titles = [
+            400 => 'Bad Request - IslamWiki',
+            401 => 'Unauthorized - IslamWiki',
+            403 => 'Forbidden - IslamWiki',
+            404 => 'Page Not Found - IslamWiki',
+            500 => 'Internal Server Error - IslamWiki',
+            503 => 'Service Unavailable - IslamWiki'
+        ];
+
+        return $titles[$statusCode] ?? 'Error - IslamWiki';
+    }
+
+    /**
+     * Get fallback error page HTML.
+     */
+    protected function getFallbackErrorPage(int $statusCode, \Throwable $e = null): string
+    {
+        $title = $this->getErrorTitle($statusCode);
+        $message = $e ? htmlspecialchars($e->getMessage()) : 'An error occurred';
+        $requestId = uniqid('req_', true);
+
+        return '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>' . $title . '</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #d32f2f; text-align: center; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .info { background: #e3f2fd; color: #1565c0; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .debug { background: #f3e5f5; color: #6a1b9a; padding: 15px; border-radius: 5px; margin: 20px 0; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 ' . $title . '</h1>
+        
+        <div class="error">
+            <strong>❌ Error Details:</strong>
+            <p>' . $message . '</p>
+        </div>
+        
+        <div class="info">
+            <strong>ℹ️ Information:</strong>
+            <p>An error occurred while processing your request. Please try again later or contact the administrator.</p>
+            <p><strong>Request ID:</strong> ' . $requestId . '</p>
+            <p><strong>Status Code:</strong> ' . $statusCode . '</p>
+            <p><strong>Timestamp:</strong> ' . date('Y-m-d H:i:s') . '</p>
+        </div>
+
+        <div class="debug">
+            <strong>🐛 Debug Information:</strong>
+            <p>This is a fallback error page. The main error template could not be rendered.</p>
+            <p>Check the application logs for more details.</p>
+        </div>
+        
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="/" style="background: #1976d2; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Return to Home</a>
+        </p>
+    </div>
+</body>
+</html>';
     }
 
     /**
      * Send the response to the client.
      */
-    protected function sendResponse(Response $response): void
+    public function sendResponse(Response $response): void
     {
-        // Send status code
-        http_response_code($response->getStatusCode());
+        try {
+            // Send status code
+            http_response_code($response->getStatusCode());
 
-        // Send headers
-        foreach ($response->getHeaders() as $name => $values) {
-            foreach ($values as $value) {
-                header("$name: $value");
+            // Send headers
+            foreach ($response->getHeaders() as $name => $values) {
+                foreach ($values as $value) {
+                    header("$name: $value");
+                }
             }
-        }
 
-        // Send body
-        echo $response->getBody();
+            // Send body
+            echo $response->getBody();
+        } catch (Exception $e) {
+            // Fallback to simple output
+            echo $response->getBody();
+        }
     }
 
     /**
@@ -463,6 +667,42 @@ class NizamApplication
     public function getContainer(): \IslamWiki\Core\Container\AsasContainer
     {
         return $this->container;
+    }
+
+    /**
+     * Register a GET route.
+     */
+    public function get(string $path, $handler, array $options = []): self
+    {
+        $this->_sabilRouter->get($path, $handler, $options);
+        return $this;
+    }
+
+    /**
+     * Register a POST route.
+     */
+    public function post(string $path, $handler, array $options = []): self
+    {
+        $this->_sabilRouter->post($path, $handler, $options);
+        return $this;
+    }
+
+    /**
+     * Register a PUT route.
+     */
+    public function put(string $path, $handler, array $options = []): self
+    {
+        $this->_sabilRouter->put($path, $handler, $options);
+        return $this;
+    }
+
+    /**
+     * Register a DELETE route.
+     */
+    public function delete(string $path, $handler, array $options = []): self
+    {
+        $this->_sabilRouter->delete($path, $handler, $options);
+        return $this;
     }
 
     /**

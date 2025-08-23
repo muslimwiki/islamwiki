@@ -1,0 +1,296 @@
+{
+    "migration_info": {
+        "version": "0.0.3.0",
+        "mode": "DRY RUN",
+        "start_time": "2025-08-23 01:08:21",
+        "end_time": "2025-08-23 01:08:21",
+        "execution_time_seconds": 0.01,
+        "configuration": {
+            "dry_run": true,
+            "backup_original": false,
+            "validate_after_migration": true,
+            "generate_reports": true,
+            "max_content_size": 1048576,
+            "batch_size": 100,
+            "enable_logging": true,
+            "stop_on_error": false,
+            "migration_priority": [
+                "high",
+                "medium",
+                "low"
+            ]
+        }
+    },
+    "statistics": {
+        "total_items": 7,
+        "successful_migrations": 3,
+        "failed_migrations": 0,
+        "success_rate": 42.86,
+        "total_conversions": 3,
+        "total_template_conversions": 3,
+        "total_link_updates": 3
+    },
+    "results": {
+        "analysis": {
+            "wiki_pages": [
+                {
+                    "id": 1,
+                    "title": "Main Page",
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[IslamWiki]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Infobox|title=Welcome}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "high"
+                },
+                {
+                    "id": 2,
+                    "title": "Quran",
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[Quran]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Quran|surah=1|ayah=1-7}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "low"
+                },
+                {
+                    "id": 3,
+                    "title": "Hadith",
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[Hadith]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Hadith|book=Bukhari|number=1}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "low"
+                }
+            ],
+            "discussions": [
+                {
+                    "id": 1,
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[Islam]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Infobox|title=Islam}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "medium"
+                },
+                {
+                    "id": 2,
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Note|message=Good for new users}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 0.5
+                    },
+                    "priority": "medium"
+                }
+            ],
+            "user_profiles": [
+                {
+                    "id": 1,
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[Islamic History]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Scholar|name=Ibn Khaldun}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "low"
+                }
+            ],
+            "system_content": [
+                {
+                    "id": 1,
+                    "type": "help",
+                    "analysis": {
+                        "hasWikiMarkup": true,
+                        "patterns": {
+                            "internal_links": {
+                                "count": 1,
+                                "examples": [
+                                    "[[Getting Started]]"
+                                ]
+                            },
+                            "templates": {
+                                "count": 1,
+                                "examples": [
+                                    "{{Warning|message=Important}}"
+                                ]
+                            }
+                        },
+                        "complexity": "low",
+                        "estimatedConversionTime": 1
+                    },
+                    "priority": "high"
+                }
+            ]
+        },
+        "migration": [
+            {
+                "id": 1,
+                "title": "Main Page",
+                "priority": "high",
+                "original_content": "=== Welcome ===\n\nWelcome to '''IslamWiki'''!\n\nThis page contains:\n* [[Quran]] references\n* {{Infobox|title=Welcome}}\n* [Category:Main]\n\n----\n\n<nowiki>Some code here<\/nowiki>",
+                "converted_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
+                "source_type": "wiki_page",
+                "migration_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 2,
+                "title": "Quran",
+                "priority": "low",
+                "original_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "converted_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "source_type": "wiki_page",
+                "migration_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 3,
+                "title": "Hadith",
+                "priority": "low",
+                "original_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "converted_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "source_type": "wiki_page",
+                "migration_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            }
+        ],
+        "templates": [
+            {
+                "id": 1,
+                "title": "Main Page",
+                "source_type": "wiki_page",
+                "original_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
+                "template_converted_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
+                "template_conversion_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 2,
+                "title": "Quran",
+                "source_type": "wiki_page",
+                "original_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "template_converted_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "template_conversion_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 3,
+                "title": "Hadith",
+                "source_type": "wiki_page",
+                "original_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "template_converted_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "template_conversion_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            }
+        ],
+        "links": [
+            {
+                "id": 1,
+                "title": "Main Page",
+                "source_type": "wiki_page",
+                "original_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
+                "link_updated_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
+                "link_update_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 2,
+                "title": "Quran",
+                "source_type": "wiki_page",
+                "original_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "link_updated_content": "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
+                "link_update_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            },
+            {
+                "id": 3,
+                "title": "Hadith",
+                "source_type": "wiki_page",
+                "original_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "link_updated_content": "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}",
+                "link_update_success": true,
+                "timestamp": "2025-08-23 01:08:21"
+            }
+        ]
+    },
+    "errors": [],
+    "success": true
+}

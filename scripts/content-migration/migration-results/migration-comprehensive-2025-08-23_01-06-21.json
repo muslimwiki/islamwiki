@@ -1,0 +1,279 @@
+{
+    "analysis": {
+        "wiki_pages": [
+            {
+                "id": 1,
+                "title": "Main Page",
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[IslamWiki]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Infobox|title=Welcome}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "high"
+            },
+            {
+                "id": 2,
+                "title": "Quran",
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[Quran]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Quran|surah=1|ayah=1-7}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "low"
+            },
+            {
+                "id": 3,
+                "title": "Hadith",
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[Hadith]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Hadith|book=Bukhari|number=1}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "low"
+            }
+        ],
+        "discussions": [
+            {
+                "id": 1,
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[Islam]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Infobox|title=Islam}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "medium"
+            },
+            {
+                "id": 2,
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Note|message=Good for new users}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 0.5
+                },
+                "priority": "medium"
+            }
+        ],
+        "user_profiles": [
+            {
+                "id": 1,
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[Islamic History]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Scholar|name=Ibn Khaldun}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "low"
+            }
+        ],
+        "system_content": [
+            {
+                "id": 1,
+                "type": "help",
+                "analysis": {
+                    "hasWikiMarkup": true,
+                    "patterns": {
+                        "internal_links": {
+                            "count": 1,
+                            "examples": [
+                                "[[Getting Started]]"
+                            ]
+                        },
+                        "templates": {
+                            "count": 1,
+                            "examples": [
+                                "{{Warning|message=Important}}"
+                            ]
+                        }
+                    },
+                    "complexity": "low",
+                    "estimatedConversionTime": 1
+                },
+                "priority": "high"
+            }
+        ]
+    },
+    "migration": [
+        {
+            "id": 1,
+            "title": "Test Page 1",
+            "original_content": "=== Welcome ===\\n\\nWelcome to '''IslamWiki'''!\\n\\nThis page contains:\\n* [[Quran]] references\\n* {{Infobox|title=Welcome}}\\n* [Category:Main]\\n\\n----\\n\\n<nowiki>Some code here<\/nowiki>",
+            "converted_content": "=== Welcome ===\\n\\nWelcome to **IslamWiki**!\\n\\nThis page contains:\\n* [[Quran]] references\\n* {{Infobox|title=Welcome}}\\n* [Category:Main]\\n\\n----\\n\\n`Some code here`",
+            "source_type": "wiki_page"
+        },
+        {
+            "id": 2,
+            "title": "Test Page 2",
+            "original_content": "== About ==\\n\\nThis is a '''test page''' with various elements:\\n\\n# Ordered list\\n## Subsection\\n\\n{{Template|param=value}}",
+            "converted_content": "== About ==\\n\\nThis is a **test page** with various elements:\\n\\n# Ordered list\\n## Subsection\\n\\n{{Template|param=value}}",
+            "source_type": "wiki_page"
+        }
+    ],
+    "template_conversion": [
+        {
+            "id": 1,
+            "title": "Template Test Page",
+            "original_content": "{{Infobox|title=Test|content=This is a test infobox}}\\n{{stub}}\\n{{disambiguation}}\\n{{main|Quran}}\\n{{see also|Hadith}}",
+            "converted_content": "{{Infobox|title=Test|content=This is a test infobox}}\\n{{Note|message=message=This article is a stub and needs expansion}}\\n{{Warning|message=message=This is a disambiguation page}}\\n{{Note|message=message=Main article: [[Quran]]}}\\n{{Note|message=message=See also: [[Hadith]]}}",
+            "source_type": "wiki_page"
+        }
+    ],
+    "link_updates": [
+        {
+            "id": 1,
+            "title": "Link Test Page",
+            "original_content": "[[Quran]] - Simple internal link\\n[[Category:Islamic Studies]] - Old MediaWiki category\\n[[File:quran.jpg]] - File link\\n[[Wikipedia:Islam]] - Interwiki link",
+            "updated_content": "[[Quran]] - Simple internal link\\n[Category:Islamic Studies] - Old MediaWiki category\\n![quran](quran.jpg) - File link\\n[Islam](https:\/\/en.wikipedia.org\/wiki\/Islam) - Interwiki link",
+            "source_type": "wiki_page"
+        }
+    ],
+    "validation": [
+        {
+            "id": 1,
+            "title": "Validation Test Page",
+            "link_validation": {
+                "total_links": 2,
+                "valid_links": 1,
+                "invalid_links": 1,
+                "issues": [
+                    {
+                        "link": "Invalid|Link",
+                        "issues": [
+                            "Link contains invalid characters"
+                        ]
+                    }
+                ]
+            },
+            "link_statistics": {
+                "internal_links": {
+                    "count": 2,
+                    "description": "Internal wiki links"
+                },
+                "old_internal_links": {
+                    "count": 1,
+                    "description": "Old MediaWiki internal links with display text"
+                },
+                "external_links": {
+                    "count": 0,
+                    "description": "Markdown external links"
+                },
+                "old_external_links": {
+                    "count": 2,
+                    "description": "Old MediaWiki external links"
+                },
+                "category_links": {
+                    "count": 0,
+                    "description": "Category links"
+                },
+                "old_categories": {
+                    "count": 0,
+                    "description": "Old MediaWiki category format"
+                },
+                "file_links": {
+                    "count": 0,
+                    "description": "File links"
+                },
+                "image_links": {
+                    "count": 0,
+                    "description": "Image links"
+                },
+                "template_links": {
+                    "count": 1,
+                    "description": "Template references"
+                },
+                "interwiki_links": {
+                    "count": 0,
+                    "description": "Interwiki links"
+                }
+            },
+            "source_type": "wiki_page"
+        }
+    ],
+    "summary": {
+        "total_items": 2,
+        "successful_migrations": 2,
+        "failed_migrations": 0,
+        "success_rate": 100,
+        "total_conversions": 0,
+        "total_template_conversions": 1,
+        "total_link_updates": 1,
+        "total_validation_issues": 1,
+        "execution_timestamp": "2025-08-23 01:06:21",
+        "migration_version": "0.0.3.0"
+    }
+}
