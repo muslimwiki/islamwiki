@@ -42,7 +42,7 @@ IslamWiki uses Islamic naming conventions throughout its architecture to:
 8. Usul (Principles/Roots) - Knowledge management system
 9. Iqra (Read) - Islamic search engine
 10. Bayan (Explanation/Clarification) - Content formatting system
-11. Sabil (Path/Way) - Advanced routing system
+11. Simplified Routing (Path/Way) - Advanced routing system
 12. Nizam (System/Order) - Main application system
 13. Mizan (Balance/Scale) - Database system
 14. Tadbir (Management/Planning) - Configuration management system
@@ -74,7 +74,7 @@ Marwa (Excellence) - JavaScript Framework
 local.islam.wiki/
 ├── 📁 asas/                    # Core foundation (was: src/)
 ├── 📁 aman/                    # Security system (was: security/)
-├── 📁 sabil/                   # Routing system (was: routes/)
+├── 📁 simplified-routing/      # Routing system (was: routes/)
 ├── 📁 nizam/                   # Main application (was: public/)
 ├── 📁 tadbir/                  # Configuration (was: config/)
 ├── 📁 rihlah/                  # Caching system (was: cache/)
@@ -304,7 +304,7 @@ Core Systems:
 ├── Usul (Principles) - Knowledge, rules, policies
 ├── Iqra (Read) - Search, discovery, reading
 ├── Bayan (Explanation) - Formatting, presentation, clarification
-├── Sabil (Path) - Routing, requests, middleware
+├── Simplified Routing (Path) - Routing, requests, middleware
 ├── Nizam (Order) - Application, coordination, management
 ├── Mizan (Balance) - Database, data, storage
 ├── Tadbir (Management) - Configuration, planning, administration
@@ -317,7 +317,7 @@ Core Systems:
 PHP Files:
 ├── asas-{component}.php        # Core foundation files
 ├── aman-{component}.php        # Security files
-├── sabil-{component}.php       # Routing files
+├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files
 ├── rihlah-{component}.php      # Caching files
 ├── mizan-{component}.php       # Database files
@@ -392,7 +392,7 @@ JavaScript Files:
 - **Usul**: Principles, fundamentals, methodology
 - **Iqra**: Read, recite, proclaim
 - **Bayan**: Explanation, clarification, statement
-- **Sabil**: Path, way, method
+- **Simplified Routing**: Path, way, method
 - **Nizam**: System, order, organization
 - **Mizan**: Balance, scale, measure
 - **Tadbir**: Management, administration, planning

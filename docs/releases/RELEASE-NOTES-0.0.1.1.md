@@ -49,7 +49,7 @@ This release represents a **complete transformation** of IslamWiki from a docume
 - **AsasBootstrap**: Application bootstrap and initialization system
 
 ### **Infrastructure Layer - System Foundation**
-- **SabilRouting (سبيل)**: Islamic routing system for organized path management
+- **Simplified Routing (سبيل)**: Islamic routing system for organized path management
 - **NizamApplication (نظام)**: Central application orchestrator and order management
 - **MizanDatabase (ميزان)**: Database system with balance and optimization
 - **TadbirConfiguration (تدبير)**: Configuration management and system administration

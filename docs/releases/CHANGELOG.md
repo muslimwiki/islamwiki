@@ -325,7 +325,7 @@ This document tracks all changes, improvements, and fixes made to IslamWiki acro
 ## [0.0.9] - 2025-07-21
 
 ### **Added**
-- SabilRouting system
+- Simplified Routing system
 - Inline route definitions
 - Controller support
 - Middleware stack

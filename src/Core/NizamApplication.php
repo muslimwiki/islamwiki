@@ -34,7 +34,7 @@ use Exception;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Routing\IslamRouter;
-use IslamWiki\Core\Routing\SabilRouting;
+use IslamWiki\Core\Routing\Routing;
 use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Auth\AmanSecurity;
 use IslamWiki\Core\Session\WisalSession;
@@ -86,7 +86,7 @@ class NizamApplication
     /**
      * The routing system.
      */
-    private SabilRouting $_sabilRouter;
+    private Routing $_router;
 
     /**
      * The application logger.
@@ -171,16 +171,20 @@ class NizamApplication
      */
     protected function bootstrap(): void
     {
+        error_log('NizamApplication: Bootstrap started');
+        
         // Container is now passed in constructor or created as fallback
 
         // Bind the application instance to the container
         $this->container->set(self::class, $this);
         $this->container->set('app', $this);
+        error_log('NizamApplication: App bound to container');
 
         // Register core bindings
         $this->registerCoreContainerAliases();
 
         // Bind Shahid
+        error_log('NizamApplication: Creating logger');
         $logDir = $this->basePath('storage/logs');
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
@@ -188,6 +192,7 @@ class NizamApplication
         $logger = new \IslamWiki\Core\Logging\ShahidLogger($logDir);
         $this->container->set('logger', $logger);
         $this->container->set(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
+        error_log('NizamApplication: Logger created and bound to container');
 
         // Register service providers first
         $this->registerServiceProviders();
@@ -210,11 +215,71 @@ class NizamApplication
      */
     private function initializeSystems(): void
     {
-        // Get logger from container
-        $this->_logger = $this->container->get('logger');
+        try {
+            // Get logger from container first
+            $this->_logger = $this->container->get('logger');
+            
+            $this->_logger->info('Starting application initialization');
+            $this->_logger->info('Logger obtained successfully');
+        } catch (\Exception $e) {
+            // Fallback to basic error logging
+            error_log('Failed to initialize logger: ' . $e->getMessage());
+            throw $e;
+        }
 
-        // Initialize SabilRouting (Routing) with proper parameters
-        $this->_sabilRouter = new SabilRouting($this->container, $this->_logger);
+        // Initialize Routing system with proper parameters
+        $this->_logger->info('Creating Routing system');
+        $this->_router = new Routing($this->_logger);
+        $this->_logger->info('Routing system created successfully');
+        
+        // Add skin asset routes to routing system
+        $this->_logger->info('Adding CSS route');
+        $this->_router->get('/skins/{skin}/css/{filename}', function($request, $skin, $filename) {
+            $this->_logger->info('CSS route handler called', ['skin' => $skin, 'filename' => $filename]);
+            try {
+                // Serve the actual CSS file
+                $filePath = dirname(__DIR__, 2) . "/skins/{$skin}/css/{$filename}";
+                $this->_logger->info('Looking for CSS file', ['filePath' => $filePath]);
+                
+                if (file_exists($filePath)) {
+                    $content = file_get_contents($filePath);
+                    $this->_logger->info('CSS file loaded successfully', ['size' => strlen($content)]);
+                    
+                    return new \IslamWiki\Core\Http\Response(200, [
+                        'Content-Type' => 'text/css; charset=utf-8',
+                        'Cache-Control' => 'public, max-age=3600',
+                        'X-Content-Type-Options' => 'nosniff'
+                    ], $content);
+                } else {
+                    $this->_logger->warning('CSS file not found', ['filePath' => $filePath]);
+                    return new \IslamWiki\Core\Http\Response(404, [
+                        'Content-Type' => 'text/plain; charset=utf-8'
+                    ], 'CSS file not found');
+                }
+            } catch (\Exception $e) {
+                $this->_logger->error('CSS route handler failed', ['error' => $e->getMessage()]);
+                throw $e;
+            }
+        });
+        $this->_logger->info('CSS route added successfully');
+
+        $this->_router->get('/skins/{skin}/js/{filename}', function($request, $skin, $filename) {
+            $filePath = dirname(__DIR__) . "/skins/{$skin}/js/{$filename}";
+            if (file_exists($filePath)) {
+                $content = file_get_contents($filePath);
+                return new \IslamWiki\Core\Http\Response(200, [
+                    'Content-Type' => 'application/javascript; charset=utf-8',
+                    'Cache-Control' => 'public, max-age=3600',
+                    'X-Content-Type-Options' => 'nosniff'
+                ], $content);
+            }
+            return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'JS file not found');
+        });
+
+        $this->_logger->info('Skin asset routes added to routing system', [
+            'total_routes' => count($this->_router->getRoutes()),
+            'routes' => array_map(function($r) { return $r['method'] . ' ' . $r['path']; }, $this->_router->getRoutes())
+        ]);
 
         // Initialize Mizan (Database) with proper parameters
         $this->database = new MizanDatabase($this->_logger, []);
@@ -244,7 +309,7 @@ class NizamApplication
         $this->_cache = new RihlahCaching($this->_logger, []);
 
         // Store all systems in container for easy access
-        $this->container->set('sabil.routing', $this->_sabilRouter);
+        $this->container->set('routing', $this->_router);
         $this->container->set('mizan.database', $this->database);
         $this->container->set('wisal.session', $this->_session);
         $this->container->set('aman.security', $this->_auth);
@@ -256,8 +321,11 @@ class NizamApplication
         $this->container->set('siraj.api', $this->api);
         $this->container->set('rihlah.caching', $this->_cache);
 
+
+
         $this->_logger->info('All Islamic systems initialized successfully');
     }
+    
 
     /**
      * Register service providers.
@@ -284,12 +352,16 @@ class NizamApplication
         foreach ($providers as $provider) {
             if (class_exists($provider)) {
                 try {
+                    error_log("Registering provider: $provider");
                     $providerInstance = new $provider();
                     $providerInstance->register($this->container);
                     $providerInstances[] = $providerInstance;
+                    error_log("Successfully registered provider: $provider");
                 } catch (\Exception $e) {
                     error_log("Failed to register provider $provider: " . $e->getMessage());
                 }
+            } else {
+                error_log("Provider class not found: $provider");
             }
         }
 
@@ -297,7 +369,9 @@ class NizamApplication
         foreach ($providerInstances as $providerInstance) {
             try {
                 if (method_exists($providerInstance, 'boot')) {
+                    error_log("Booting provider: " . get_class($providerInstance));
                     $providerInstance->boot($this->container);
+                    error_log("Successfully booted provider: " . get_class($providerInstance));
                 }
             } catch (\Exception $e) {
                 error_log("Failed to boot provider " . get_class($providerInstance) . ": " . $e->getMessage());
@@ -416,12 +490,18 @@ class NizamApplication
     {
         try {
             
-            // Use SabilRouting to find and dispatch the route
+            // Use Routing system to find and dispatch the route
             $method = $request->getMethod();
             $path = $request->getUri()->getPath();
             
+            // Debug logging for route lookup
+            $this->_logger->info('Route lookup attempt', [
+                'method' => $method,
+                'path' => $path,
+                'available_routes' => array_map(function($r) { return $r['method'] . ' ' . $r['path']; }, $this->_router->getRoutes())
+            ]);
             
-            $route = $this->_sabilRouter->findRoute($method, $path);
+            $route = $this->_router->findRoute($method, $path);
             
             
             if ($route) {
@@ -447,7 +527,15 @@ class NizamApplication
                     }
                 } else if (is_callable($handler)) {
                     // Callable handler
-                    return call_user_func($handler, $request);
+                    // Extract path parameters if any
+                    $params = $this->extractPathParameters($route['path'], $path);
+                    
+                    // Call the handler with request and parameters
+                    if (count($params) > 0) {
+                        return call_user_func($handler, $request, ...$params);
+                    } else {
+                        return call_user_func($handler, $request);
+                    }
                 } else {
                     throw new \Exception("Invalid route handler");
                 }
@@ -674,7 +762,7 @@ class NizamApplication
      */
     public function get(string $path, $handler, array $options = []): self
     {
-        $this->_sabilRouter->get($path, $handler, $options);
+        $this->_router->get($path, $handler, $options);
         return $this;
     }
 
@@ -683,7 +771,7 @@ class NizamApplication
      */
     public function post(string $path, $handler, array $options = []): self
     {
-        $this->_sabilRouter->post($path, $handler, $options);
+        $this->_router->post($path, $handler, $options);
         return $this;
     }
 
@@ -692,7 +780,7 @@ class NizamApplication
      */
     public function put(string $path, $handler, array $options = []): self
     {
-        $this->_sabilRouter->put($path, $handler, $options);
+        $this->_router->put($path, $handler, $options);
         return $this;
     }
 
@@ -701,24 +789,16 @@ class NizamApplication
      */
     public function delete(string $path, $handler, array $options = []): self
     {
-        $this->_sabilRouter->delete($path, $handler, $options);
+        $this->_router->delete($path, $handler, $options);
         return $this;
     }
 
     /**
-     * Get the router instance.
+     * Get the Routing system.
      */
-    public function getRouter(): mixed
+    public function getRouter(): Routing
     {
-        return $this->router;
-    }
-
-    /**
-     * Get the SabilRouting routing system.
-     */
-    public function getSabilRouter(): SabilRouting
-    {
-        return $this->_sabilRouter;
+        return $this->_router;
     }
 
     /**
@@ -828,46 +908,9 @@ class NizamApplication
             $this->_session->start();
         }
         
-        // Boot all systems that have boot methods
-        if (isset($this->_auth) && $this->_auth && method_exists($this->_auth, 'boot')) {
-            $this->_auth->boot();
-        }
-
-        if (isset($this->_session) && $this->_session && method_exists($this->_session, 'boot')) {
-            $this->_session->boot();
-        }
-
-        if (isset($this->_cache) && $this->_cache && method_exists($this->_cache, 'boot')) {
-            $this->_cache->boot();
-        }
-
-        if (isset($this->_queue) && $this->_queue && method_exists($this->_queue, 'boot')) {
-            $this->_queue->boot();
-        }
-
-        if (isset($this->knowledge) && $this->knowledge && method_exists($this->knowledge, 'boot')) {
-            $this->knowledge->boot();
-        }
-
-        if (isset($this->search) && $this->search && method_exists($this->search, 'boot')) {
-            $this->search->boot();
-        }
-
-        if (isset($this->formatter) && $this->formatter && method_exists($this->formatter, 'boot')) {
-            $this->formatter->boot();
-        }
-
-        if (isset($this->api) && $this->api && method_exists($this->api, 'boot')) {
-            $this->api->boot();
-        }
-
-        if (isset($this->database) && $this->database && method_exists($this->database, 'boot')) {
-            $this->database->boot();
-        }
-
-        if (isset($this->config) && $this->config && method_exists($this->config, 'boot')) {
-            $this->config->boot();
-        }
+        // Note: Core system classes don't have boot methods
+        // They are initialized in their constructors
+        $this->_logger->info('Core systems initialized successfully');
 
         $this->_logger->info('NizamApplication booted successfully');
     }
@@ -877,23 +920,8 @@ class NizamApplication
      */
     public function shutdown(): void
     {
-        // Shutdown all systems gracefully
-        if ($this->_queue) {
-            $this->_queue->shutdown();
-        }
-
-        if ($this->_cache) {
-            $this->_cache->shutdown();
-        }
-
-        if ($this->_session) {
-            $this->_session->shutdown();
-        }
-
-        if ($this->database) {
-            $this->database->shutdown();
-        }
-
+        // Note: Core system classes don't have shutdown methods
+        // They are cleaned up automatically by PHP garbage collection
         $this->_logger->info('NizamApplication shutdown completed');
     }
 

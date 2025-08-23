@@ -26,7 +26,7 @@ This directory contains comprehensive documentation of the IslamWiki system arch
 - **Usul** (Principles) - Business rules and validation
 
 ### **3. Domain Layer**
-- **Sabil** (Path) - Routing and request handling
+- **Simplified Routing** (Path) - Routing and request handling
 - **Nizam** (Order) - System organization
 - **Mizan** (Balance) - Database and data management
 - **Tadbir** (Management) - Configuration and administration
@@ -58,7 +58,7 @@ This directory contains comprehensive documentation of the IslamWiki system arch
 
 ### **Data Flow**
 ```
-User Request → Sabil (Routing) → Aman (Security) → 
+User Request → Simplified Routing → Aman (Security) → 
 Content Request → Bayan (Explanation) → Iqra (Search) → 
 Response → Rihlah (Caching) → User
 ```

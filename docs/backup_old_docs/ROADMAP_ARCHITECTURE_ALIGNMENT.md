@@ -9,7 +9,7 @@ This roadmap outlines the comprehensive plan to align the current IslamWiki arch
 ## 📊 **Current State Analysis**
 
 ### ✅ **What's Already Correct**
-- **SabilRouting**: Working properly with inline route definitions
+- **Simplified Routing**: Working properly with inline route definitions
 - **File Structure**: Basic directory organization is correct
 - **Error Handling**: 404 and 500 error pages working with Twig templates
 - **Extensions**: Extension system is functional

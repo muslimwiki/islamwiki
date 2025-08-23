@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.3-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.4-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,11 +8,11 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.3** represents a major milestone with:
+**Version 0.0.2.4** represents a major milestone with:
 - ✅ **Complete system recovery** from critical errors
 - ✅ **Beautiful Bismillah skin** fully integrated across all pages
 - ✅ **Comprehensive error handling** with Shahid logging system
-- ✅ **Pure Sabil routing** system (old routing completely removed)
+- ✅ **Simplified routing** system with working CSS asset loading (SabilRouting completely removed)
 - ✅ **Enhanced Markdown processing** with beautiful content rendering
 - ✅ **Responsive Islamic-themed UI** with sidebar, header, and footer
 
@@ -33,7 +33,7 @@
 - **Search & Navigation**: Easy discovery of Islamic knowledge
 
 ### **🛡️ Robust System Architecture**
-- **Sabil Routing**: Modern, efficient routing system
+- **Simplified Routing**: Modern, efficient routing system
 - **Comprehensive Error Handling**: Beautiful error pages with detailed logging
 - **Shahid Logging**: Advanced logging and debugging system
 - **Session Management**: Secure authentication and user management
@@ -49,7 +49,7 @@
 
 ### **Core Components**
 - **NizamApplication**: Main application orchestrator
-- **SabilRouting**: Modern routing system
+- **Simplified Routing**: Modern routing system
 - **WisalSession**: Advanced session management
 - **AmanSecurity**: Comprehensive authentication system
 - **ShahidLogger**: Advanced logging and debugging

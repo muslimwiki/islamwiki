@@ -15,7 +15,7 @@ Current Name          → Islamic Name          → Meaning & Purpose
 src/                 → asas/                 → Foundation (Core code)
 config/              → tadbir/               → Management/Planning (Configuration)
 cache/               → rihlah/               → Journey (Caching)
-routes/              → sabil/                → Path/Way (Routing)
+routes/              → simplified-routing/   → Path/Way (Routing)
 public/              → nizam/                → System/Order (Main application)
 resources/           → usul/                 → Principles/Roots (Knowledge management)
 storage/             → sabr/                 → Patience (Job queues)
@@ -43,7 +43,7 @@ Core Systems:
 ├── Usul (Principles/Roots) - Knowledge management
 ├── Iqra (Read) - Islamic search engine
 ├── Bayan (Explanation) - Content formatting system
-├── Sabil (Path/Way) - Advanced routing system
+├── Simplified Routing (Path/Way) - Advanced routing system
 ├── Nizam (System/Order) - Main application system
 ├── Mizan (Balance/Scale) - Database system
 ├── Tadbir (Management/Planning) - Configuration management
@@ -63,7 +63,7 @@ asas/
 │   │   ├── 📄 AsasContainer.php        # Foundation container
 │   │   └── 📄 ContainerInterface.php   # Container interface
 │   ├── 📁 Routing/            # Routing system
-│   │   ├── 📄 SabilRouting.php        # Path routing
+│   │   ├── 📄 Routing.php             # Path routing
 │   │   └── 📄 RouteInterface.php      # Route interface
 │   ├── 📁 Http/               # HTTP handling
 │   │   ├── 📄 Request.php             # HTTP request
@@ -247,20 +247,20 @@ rihlah/
 
 ---
 
-## 🔄 **Routing System (sabil/)**
+## 🔄 **Routing System (simplified-routing/)**
 
 ### **Routing Components**
 ```
-sabil/
+simplified-routing/
 ├── 📁 routes/                  # Route definitions
 │   ├── 📄 web-routes.php              # Web routes
 │   ├── 📄 api-routes.php              # API routes
 │   └── 📄 admin-routes.php            # Admin routes
 ├── 📁 middleware/              # Route middleware
-│   ├── 📄 SabilMiddleware.php         # Main routing middleware
+│   ├── 📄 SimplifiedRoutingMiddleware.php  # Main routing middleware
 │   ├── 📄 RouteMiddleware.php         # Route-specific middleware
 │   └── 📄 ApiMiddleware.php           # API middleware
-└── 📄 sabil-router.php                 # Main router
+└── 📄 simplified-routing-router.php    # Main router
 ```
 
 ---
@@ -426,7 +426,7 @@ ilm/
 Core Files:
 ├── asas-{component}.php        # Foundation files
 ├── aman-{component}.php        # Security files
-├── sabil-{component}.php       # Routing files
+├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files
 ├── rihlah-{component}.php      # Caching files
 ├── tadbir-{component}.php      # Administration files

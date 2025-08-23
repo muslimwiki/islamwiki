@@ -26,7 +26,7 @@ This document provides a comprehensive overview of the current state of IslamWik
 - **Usul Knowledge (أصول)**: Knowledge management system (Principles/Roots)
 - **Iqra Search (اقرأ)**: Islamic search engine (Read)
 - **Bayan Formatter (بيان)**: Content formatting system (Explanation)
-- **Sabil Routing (سبيل)**: Advanced routing system (Path/Way)
+- **Simplified Routing (سبيل)**: Advanced routing system (Path/Way)
 - **Nizam Application (نظام)**: Main application system (System/Order)
 - **Mizan Database (ميزان)**: Database system (Balance/Scale)
 - **Tadbir Configuration (تدبير)**: Configuration management system (Management/Planning)

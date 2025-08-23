@@ -21,7 +21,7 @@ The Islamic Extension Template demonstrates how to properly integrate extensions
 - **AsasBootstrap**: Application bootstrap integration
 
 ### Infrastructure Layer (سبيل, نظام, ميزان, تدبير)
-- **SabilRouting**: Route management and navigation
+- **Simplified Routing**: Route management and navigation
 - **NizamApplication**: System orchestration
 - **MizanDatabase**: Database management
 - **TadbirConfiguration**: Configuration management

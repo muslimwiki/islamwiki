@@ -70,7 +70,7 @@ use IslamWiki\Core\Http\Response;
  * @package IslamWiki\Core\Routing
  * @author IslamWiki Development Team
  */
-class SabilRouting
+class Routing
 {
     private array $routes = [];
     private array $middleware = [];
@@ -148,7 +148,7 @@ class Configuration {}            // No prefix
 PHP Files:
 ├── asas-{component}.php        # Foundation files
 ├── aman-{component}.php        # Security files
-├── sabil-{component}.php       # Routing files
+├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files
 ├── rihlah-{component}.php      # Caching files
 ├── mizan-{component}.php       # Database files
@@ -169,7 +169,7 @@ PHP Files:
 // Core Framework
 namespace IslamWiki\Core\Container;      // Asas
 namespace IslamWiki\Core\Security;       // Aman
-namespace IslamWiki\Core\Routing;        // Sabil
+namespace IslamWiki\Core\Routing;        // Simplified Routing
 namespace IslamWiki\Core\Application;    // Nizam
 namespace IslamWiki\Core\Database;       // Mizan
 namespace IslamWiki\Core\Configuration;  // Tadbir

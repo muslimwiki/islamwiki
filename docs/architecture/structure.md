@@ -72,7 +72,7 @@ local.islam.wiki/
 
 ## 🌐 **Routing System**
 
-### **SabilRouting - Modern PHP Routing**
+### **Simplified Routing - Modern PHP Routing**
 - **Inline Route Definition**: Routes defined directly in `public/index.php` (no external route files)
 - **Controller Support**: Full controller/method routing with dependency injection
 - **Middleware Stack**: Comprehensive middleware support for security and functionality
@@ -81,7 +81,7 @@ local.islam.wiki/
 ### **Route Definition Pattern**
 ```php
 // In public/index.php - CORRECT way
-$router = new SabilRouting($container);
+$router = new Routing($container);
 
 // Content Routes (MediaWiki-style)
 $router->get('/wiki', 'WikiController@index');
@@ -301,7 +301,7 @@ scripts/                   # Utility and setup scripts ONLY
 3. **NEVER put templates in `src/`**
 4. **NEVER put configuration in `public/`**
 5. **NEVER put assets in `src/`**
-6. **NEVER create external route files** (use SabilRouting inline)
+6. **NEVER create external route files** (use Simplified Routing inline)
 7. **NEVER put test files in `public/`**
 8. **NEVER put debug files in `public/`**
 9. **NEVER mix test and debug files** in wrong directories
@@ -316,7 +316,7 @@ scripts/                   # Utility and setup scripts ONLY
 6. **ALWAYS put logs in `logs/` or `storage/logs/`**
 7. **ALWAYS put backups in `backup/`**
 8. **ALWAYS put temporary data in `var/`**
-9. **ALWAYS define routes inline in `index.php` using SabilRouting**
+9. **ALWAYS define routes inline in `index.php` using Simplified Routing**
 10. **ALWAYS put test files in `tests/`**
 11. **ALWAYS put debug files in `debug/`**
 12. **ALWAYS put maintenance scripts in `maintenance/`**

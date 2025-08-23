@@ -189,7 +189,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
 
 ### **Data Flow**
 ```
-User Request → Sabil (Routing) → Aman (Security) → 
+User Request → Simplified Routing → Aman (Security) → 
 Content Request → Iqra (Search) → Usul (Knowledge) → 
 Response → Rihlah (Caching) → User
 ```
@@ -249,7 +249,7 @@ Marwa (Interactivity) → User Interface
 ```
 Asas (Foundation)
 ├── Aman (Security)
-├── Sabil (Routing)
+├── Simplified Routing
 ├── Nizam (Application)
 └── Mizan (Database)
 
@@ -258,7 +258,7 @@ Aman (Security)
 ├── Shahid (Logging)
 └── Usul (Knowledge)
 
-Sabil (Routing)
+Simplified Routing
 ├── Bayan (Explanation)
 ├── Siraj (API)
 └── Rihlah (Caching)
@@ -280,7 +280,7 @@ Frontend Systems
 
 ### **Performance Features**
 - **Rihlah**: Multi-level caching system
-- **Sabil**: Optimized routing and request handling
+- **Simplified Routing**: Optimized routing and request handling
 - **Sabr**: Asynchronous task processing
 - **Mizan**: Database optimization and scaling
 
@@ -363,7 +363,7 @@ $wgSabrConfig = [
 ### **System Health Monitoring**
 - **Asas**: System stability and core services
 - **Aman**: Security events and authentication
-- **Sabil**: Routing performance and request handling
+- **Simplified Routing**: Routing performance and request handling
 - **Rihlah**: Caching performance and optimization
 
 ### **Frontend Performance Monitoring**

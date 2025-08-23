@@ -152,7 +152,7 @@ class StaticDataServiceProvider
     private function registerHelperFunctions(): void
     {
         // Helper function to get static data
-        if (!function_exists('static_data')) {
+        if (!function_exists('IslamWiki\Providers\static_data')) {
             /**
              * Get static data by key
              *
@@ -174,7 +174,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to get navigation data
-        if (!function_exists('get_navigation')) {
+        if (!function_exists('IslamWiki\Providers\get_navigation')) {
             /**
              * Get navigation data by type
              *
@@ -189,7 +189,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to get site information
-        if (!function_exists('get_site_info')) {
+        if (!function_exists('IslamWiki\Providers\get_site_info')) {
             /**
              * Get site information
              *
@@ -208,7 +208,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to get footer data
-        if (!function_exists('get_footer')) {
+        if (!function_exists('IslamWiki\Providers\get_footer')) {
             /**
              * Get footer data
              *
@@ -221,7 +221,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to check if a feature is enabled
-        if (!function_exists('is_feature_enabled')) {
+        if (!function_exists('IslamWiki\Providers\is_feature_enabled')) {
             /**
              * Check if a feature is enabled
              *
@@ -237,7 +237,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to get component data
-        if (!function_exists('get_component')) {
+        if (!function_exists('IslamWiki\Providers\get_component')) {
             /**
              * Get component data by name
              *
@@ -253,7 +253,7 @@ class StaticDataServiceProvider
         }
 
         // Helper function to get social links
-        if (!function_exists('get_social_links')) {
+        if (!function_exists('IslamWiki\Providers\get_social_links')) {
             /**
              * Get social media links
              *

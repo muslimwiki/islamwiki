@@ -83,7 +83,7 @@ ls -la backup/ logs/ var/ storage/ languages/
 - **Modern PHP**: Performance, security, developer experience
 
 **Key Features:**
-- ✅ **SabilRouting**: Inline route definition (no external route files)
+- ✅ **Simplified Routing**: Inline route definition (no external route files)
 - ✅ **Extension System**: WordPress-style plugin architecture
 - ✅ **Skin System**: WordPress-style theme architecture
 - ✅ **Multi-Database**: Separate databases for different content types

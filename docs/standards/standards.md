@@ -79,7 +79,7 @@ use IslamWiki\Core\Exceptions\RouteNotFoundException;
  * @author IslamWiki Development Team
  * @license AGPL-3.0
  */
-final class SabilRouting implements RouteInterface
+final class Routing implements RouteInterface
 {
     private array $routes = [];
     private array $middleware = [];
@@ -345,7 +345,7 @@ class Configuration {}            // No prefix
 PHP Files:
 ├── asas-{component}.php        # Foundation files
 ├── aman-{component}.php        # Security files
-├── sabil-{component}.php       # Routing files
+├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files
 ├── rihlah-{component}.php      # Caching files
 ├── mizan-{component}.php       # Database files
@@ -366,7 +366,7 @@ PHP Files:
 // Core Framework
 namespace IslamWiki\Core\Container;      // Asas
 namespace IslamWiki\Core\Security;       // Aman
-namespace IslamWiki\Core\Routing;        // Sabil
+namespace IslamWiki\Core\Routing;        // Simplified Routing
 namespace IslamWiki\Core\Application;    // Nizam
 namespace IslamWiki\Core\Database;       // Mizan
 namespace IslamWiki\Core\Configuration;  // Tadbir
@@ -657,7 +657,7 @@ class UserAuthenticationTest extends TestCase
 local.islam.wiki/
 ├── 📁 asas/                    # Core foundation (was: src/)
 ├── 📁 aman/                    # Security system (was: security/)
-├── 📁 sabil/                   # Routing system (was: routes/)
+├── 📁 simplified-routing/      # Routing system (was: routes/)
 ├── 📁 nizam/                   # Main application (was: public/)
 ├── 📁 tadbir/                  # Configuration (was: config/)
 ├── 📁 rihlah/                  # Caching system (was: cache/)

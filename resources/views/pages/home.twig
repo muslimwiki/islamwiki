@@ -3,147 +3,378 @@
 {% block title %}IslamWiki - Authentic Islamic Knowledge{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content">
-        <div class="hero-bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
-        <h1 class="hero-title">Welcome to IslamWiki</h1>
-        <p class="hero-subtitle">The world's most comprehensive source of authentic Islamic knowledge, built by scholars for the global Muslim community.</p>
-        
-        <div class="hero-stats">
-            <div class="stat-item">
-                <div class="stat-number">6,236</div>
-                <div class="stat-label">Quranic Verses</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">12,847</div>
-                <div class="stat-label">Authentic Hadith</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">2,847</div>
-                <div class="stat-label">Articles</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">47</div>
-                <div class="stat-label">Languages</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Articles -->
-<section class="featured-section">
-    <div class="section-container">
-        <div class="section-title">
-            <h2>Featured Content</h2>
-            <p class="section-subtitle">Carefully curated articles reviewed by our panel of Islamic scholars</p>
-        </div>
-
-        <div class="featured-grid">
-            <article class="featured-card">
-                <div class="card-image">📖</div>
-                <div class="card-content">
-                    <div class="card-category">Quranic Studies</div>
-                    <h3 class="card-title">Understanding Surah Al-Fatiha: The Opening</h3>
-                    <p class="card-excerpt">A comprehensive analysis of the opening chapter of the Quran, its meanings, and significance in Islamic worship and daily life.</p>
-                    <div class="card-meta">
-                        <div class="card-author">
-                            <div class="author-avatar">AH</div>
-                            <span>Dr. Ahmed Hassan</span>
-                        </div>
-                        <span>2 hours ago</span>
+<div class="main-page-container">
+    <!-- Hero Section with Bismillah -->
+    <section class="main-page-hero">
+        <div class="main-page-hero-content">
+            <div class="main-page-hero-bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+            <h1 class="hero-title">Welcome to IslamWiki</h1>
+            <p class="hero-subtitle">Your comprehensive source for authentic Islamic knowledge</p>
+            
+            <!-- Live Stats -->
+            <div class="main-page-hero-stats">
+                <div class="stat-item">
+                    <div class="stat-icon">🕒</div>
+                    <div class="stat-content">
+                        <div class="stat-value">{{ "now"|date("H:i") }}</div>
+                        <div class="stat-label">Current Time</div>
                     </div>
                 </div>
-            </article>
-
-            <article class="featured-card">
-                <div class="card-image">🕌</div>
-                <div class="card-content">
-                    <div class="card-category">Islamic History</div>
-                    <h3 class="card-title">The Golden Age of Islamic Science</h3>
-                    <p class="card-excerpt">Explore the remarkable contributions of Muslim scholars to mathematics, astronomy, medicine, and philosophy during the Islamic Golden Age.</p>
-                    <div class="card-meta">
-                        <div class="card-author">
-                            <div class="author-avatar">LM</div>
-                            <span>Dr. Layla Mahmoud</span>
-                        </div>
-                        <span>5 hours ago</span>
+                <div class="stat-item">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <div class="stat-value">28 Safar 1447 AH</div>
+                        <div class="stat-label">Hijri Date</div>
                     </div>
                 </div>
-            </article>
-
-            <article class="featured-card">
-                <div class="card-image">📚</div>
-                <div class="card-content">
-                    <div class="card-category">Hadith Studies</div>
-                    <h3 class="card-title">The Science of Hadith Authentication</h3>
-                    <p class="card-excerpt">Learn about the rigorous methodology used by Islamic scholars to verify and authenticate prophetic traditions throughout history.</p>
-                    <div class="card-meta">
-                        <div class="card-author">
-                            <div class="author-avatar">OS</div>
-                            <span>Prof. Omar Salim</span>
-                        </div>
-                        <span>1 day ago</span>
+                <div class="stat-item">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-value">4,829</div>
+                        <div class="stat-label">Articles</div>
                     </div>
                 </div>
-            </article>
+                <div class="stat-item">
+                    <div class="stat-icon">🌍</div>
+                    <div class="stat-content">
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Languages</div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="quick-actions-section">
+        <div class="section-container">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <a href="/wiki/create" class="quick-action-card">
+                    <div class="action-icon">✏️</div>
+                    <h3>Create New Page</h3>
+                    <p>Start contributing to Islamic knowledge</p>
+                </a>
+                <a href="/iqra-search" class="quick-action-card">
+                    <div class="action-icon">🔍</div>
+                    <h3>Search Knowledge</h3>
+                    <p>Find Islamic articles and resources</p>
+                </a>
+                <a href="/wiki/Recent_Changes" class="quick-action-card">
+                    <div class="action-icon">🕒</div>
+                    <h3>Recent Changes</h3>
+                    <p>See what's new on IslamWiki</p>
+                </a>
+                <a href="/wiki/How_to_Contribute" class="quick-action-card">
+                    <div class="action-icon">🤝</div>
+                    <h3>How to Contribute</h3>
+                    <p>Learn how to help the community</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Content Section -->
+    <section class="featured-section">
+        <div class="section-container">
+            <h2 class="section-title">Featured Content</h2>
+            <div class="featured-grid">
+                <article class="featured-card">
+                    <div class="card-image">📖</div>
+                    <div class="card-content">
+                        <div class="card-category">Quranic Studies</div>
+                        <h3 class="card-title">Understanding Surah Al-Fatiha</h3>
+                        <p class="card-excerpt">A comprehensive analysis of the opening chapter of the Quran, its meanings, and significance in Islamic worship.</p>
+                        <div class="card-meta">
+                            <div class="card-author">
+                                <div class="author-avatar">AH</div>
+                                <span>Dr. Ahmed Hassan</span>
+                            </div>
+                            <span class="card-date">2 hours ago</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="featured-card">
+                    <div class="card-image">🕌</div>
+                    <div class="card-content">
+                        <div class="card-category">Islamic History</div>
+                        <h3 class="card-title">The Golden Age of Islamic Science</h3>
+                        <p class="card-excerpt">Explore the remarkable contributions of Muslim scholars to mathematics, astronomy, medicine, and philosophy.</p>
+                        <div class="card-meta">
+                            <div class="card-author">
+                                <div class="author-avatar">LM</div>
+                                <span>Dr. Layla Mahmoud</span>
+                            </div>
+                            <span class="card-date">5 hours ago</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="featured-card">
+                    <div class="card-image">📚</div>
+                    <div class="card-content">
+                        <div class="card-category">Hadith Studies</div>
+                        <h3 class="card-title">The Science of Hadith Authentication</h3>
+                        <p class="card-excerpt">Learn about the rigorous methodology used by Islamic scholars to verify and authenticate prophetic traditions.</p>
+                        <div class="card-meta">
+                            <div class="card-author">
+                                <div class="author-avatar">OS</div>
+                                <span>Prof. Omar Salim</span>
+                            </div>
+                            <span class="card-date">1 day ago</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Knowledge Categories Section -->
+    <section class="categories-section">
+        <div class="section-container">
+            <h2 class="section-title">Explore Islamic Knowledge</h2>
+            <div class="categories-grid">
+                <div class="category-card" onclick="location.href='/wiki/Quran'">
+                    <div class="category-icon">📖</div>
+                    <h3 class="category-title">Quran & Tafsir</h3>
+                    <p class="category-description">Complete Quranic text with translations, commentary, and scholarly interpretations.</p>
+                    <div class="category-count">6,236 verses • 47 translations</div>
+                </div>
+
+                <div class="category-card" onclick="location.href='/wiki/Hadith'">
+                    <div class="category-icon">📚</div>
+                    <h3 class="category-title">Hadith Collections</h3>
+                    <p class="category-description">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him).</p>
+                    <div class="category-count">12,847 authenticated hadith</div>
+                </div>
+
+                <div class="category-card" onclick="location.href='/wiki/Islamic_Scholars'">
+                    <div class="category-icon">👨‍🏫</div>
+                    <h3 class="category-title">Islamic Scholars</h3>
+                    <p class="category-description">Biographies and works of influential Islamic scholars throughout history.</p>
+                    <div class="category-count">892 scholar profiles</div>
+                </div>
+
+                <div class="category-card" onclick="location.href='/wiki/Fiqh'">
+                    <div class="category-icon">⚖️</div>
+                    <h3 class="category-title">Fiqh & Jurisprudence</h3>
+                    <p class="category-description">Islamic law, jurisprudence, and contemporary legal rulings.</p>
+                    <div class="category-count">3,289 rulings & opinions</div>
+                </div>
+
+                <div class="category-card" onclick="location.href='/wiki/Islamic_History'">
+                    <div class="category-icon">🕌</div>
+                    <h3 class="category-title">Islamic History</h3>
+                    <p class="category-description">Chronicles of Islamic civilization, events, and historical analysis.</p>
+                    <div class="category-count">1,456 historical articles</div>
+                </div>
+
+                <div class="category-card" onclick="location.href='/wiki/Islamic_Practices'">
+                    <div class="category-icon">🌙</div>
+                    <h3 class="category-title">Islamic Practices</h3>
+                    <p class="category-description">Guidance on worship, rituals, and daily Islamic practices.</p>
+                    <div class="category-count">567 practice guides</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Islamic Pillars Section -->
+    <section class="pillars-section">
+        <div class="section-container">
+            <h2 class="section-title">Foundations of Islam</h2>
+            <div class="pillars-grid">
+                <!-- Five Pillars of Islam -->
+                <div class="pillar-group">
+                    <h3 class="pillar-group-title">Five Pillars of Islam</h3>
+                    <div class="pillar-items">
+                        <a href="/wiki/Shahada" class="pillar-item">
+                            <div class="pillar-icon">🕌</div>
+                            <div class="pillar-content">
+                                <h4>Shahada</h4>
+                                <p>Declaration of Faith</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Salah" class="pillar-item">
+                            <div class="pillar-icon">🕐</div>
+                            <div class="pillar-content">
+                                <h4>Salah</h4>
+                                <p>Prayer</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Zakat" class="pillar-item">
+                            <div class="pillar-icon">💝</div>
+                            <div class="pillar-content">
+                                <h4>Zakat</h4>
+                                <p>Charity</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Sawm" class="pillar-item">
+                            <div class="pillar-icon">🌙</div>
+                            <div class="pillar-content">
+                                <h4>Sawm</h4>
+                                <p>Fasting</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Hajj" class="pillar-item">
+                            <div class="pillar-icon">🕋</div>
+                            <div class="pillar-content">
+                                <h4>Hajj</h4>
+                                <p>Pilgrimage</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Six Pillars of Faith -->
+                <div class="pillar-group">
+                    <h3 class="pillar-group-title">Six Pillars of Faith</h3>
+                    <div class="pillar-items">
+                        <a href="/wiki/Belief_in_Allah" class="pillar-item">
+                            <div class="pillar-icon">☝️</div>
+                            <div class="pillar-content">
+                                <h4>Belief in Allah</h4>
+                                <p>Monotheism</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Belief_in_Angels" class="pillar-item">
+                            <div class="pillar-icon">👼</div>
+                            <div class="pillar-content">
+                                <h4>Belief in Angels</h4>
+                                <p>Divine Messengers</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Belief_in_Revelation" class="pillar-item">
+                            <div class="pillar-icon">📜</div>
+                            <div class="pillar-content">
+                                <h4>Belief in Revelation</h4>
+                                <p>Divine Books</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Belief_in_Prophets" class="pillar-item">
+                            <div class="pillar-icon">👨‍💼</div>
+                            <div class="pillar-content">
+                                <h4>Belief in Prophets</h4>
+                                <p>Divine Messengers</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Belief_in_Day_of_Judgement" class="pillar-item">
+                            <div class="pillar-icon">⚖️</div>
+                            <div class="pillar-content">
+                                <h4>Day of Judgement</h4>
+                                <p>Accountability</p>
+                            </div>
+                        </a>
+                        <a href="/wiki/Belief_in_Divine_Decree" class="pillar-item">
+                            <div class="pillar-icon">📋</div>
+                            <div class="pillar-content">
+                                <h4>Divine Decree</h4>
+                                <p>Predestination</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Articles Section -->
+    <section class="recent-section">
+        <div class="section-container">
+            <h2 class="section-title">Recent Articles</h2>
+            <div class="recent-grid">
+                <div class="recent-column">
+                    <h3 class="column-title">Newest Articles</h3>
+                    <ul class="article-list">
+                        <li><a href="/wiki/Islamic_Framework">Islamic Framework</a></li>
+                        <li><a href="/wiki/Separation_of_church_and_state">Separation of Church and State</a></li>
+                        <li><a href="/wiki/Dimensions_of_Islam">Dimensions of Islam</a></li>
+                        <li><a href="/wiki/Adhkar">Adhkār (Remembrance)</a></li>
+                        <li><a href="/wiki/Put_Allah_first">Put Allah First in Your Life</a></li>
+                        <li><a href="/wiki/Foundations_of_Islam">The Foundations of Islam</a></li>
+                    </ul>
+                </div>
+
+                <div class="recent-column">
+                    <h3 class="column-title">Featured Articles</h3>
+                    <ul class="article-list">
+                        <li><a href="/wiki/Abdur_Rahman_ibn_Nasir_as_Sa_di">Abdur-Rahman ibn Nasir as-Sa'di</a></li>
+                        <li><a href="/wiki/Tafsir_As_Sa_di">Tafsir As-Sa'di</a></li>
+                        <li><a href="/wiki/Guide_to_understanding_Islam">Guide to Understanding Islam</a></li>
+                        <li><a href="/wiki/New_Muslims_Guide">New Muslims Guide</a></li>
+                        <li><a href="/wiki/Prophet_Muhammad">Prophet Muhammad</a></li>
+                        <li><a href="/wiki/Biography_of_Prophet">Biography of the Prophet</a></li>
+                    </ul>
+                </div>
+
+                <div class="recent-column">
+                    <h3 class="column-title">Community</h3>
+                    <ul class="article-list">
+                        <li><a href="/wiki/Recent_Changes">Recent Changes</a></li>
+                        <li><a href="/wiki/How_to_Contribute">How to Contribute</a></li>
+                        <li><a href="/wiki/About_IslamWiki">About IslamWiki</a></li>
+                        <li><a href="/wiki/Glossary_of_Islam">Glossary of Islam</a></li>
+                        <li><a href="/wiki/Template_index">Template Index</a></li>
+                        <li><a href="/wiki/List_of_masjids_in_US">US Masjids Directory</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Practice Section -->
+    <section class="daily-practice-section">
+        <div class="section-container">
+            <h2 class="section-title">Daily Islamic Practice</h2>
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <div class="practice-icon">🕐</div>
+                    <h3>Prayer Times</h3>
+                    <p>Find accurate prayer times for your location</p>
+                    <a href="/wiki/Prayer_Times" class="practice-link">View Prayer Times →</a>
+                </div>
+                <div class="practice-card">
+                    <div class="practice-icon">🌅</div>
+                    <h3>Morning & Evening Adhkar</h3>
+                    <p>Daily remembrance and supplications</p>
+                    <a href="/wiki/Morning_and_Evening_Adhkar" class="practice-link">Learn Adhkar →</a>
+                </div>
+                <div class="practice-card">
+                    <div class="practice-icon">📖</div>
+                    <h3>Daily Quran Reading</h3>
+                    <p>Structured Quran reading plan</p>
+                    <a href="/wiki/Daily_Quran_Reading" class="practice-link">Start Reading →</a>
+                </div>
+                <div class="practice-card">
+                    <div class="practice-icon">📅</div>
+                    <h3>Hijri Calendar</h3>
+                    <p>Islamic calendar and important dates</p>
+                    <a href="/wiki/Hijri_Calendar" class="practice-link">View Calendar →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Call to Action -->
+    <section class="community-cta">
+        <div class="section-container">
+            <div class="cta-content">
+                <h2>Join Our Community</h2>
+                <p>Help build the world's most comprehensive Islamic knowledge platform</p>
+                <div class="cta-buttons">
+                    <a href="/wiki/How_to_Contribute" class="btn btn-primary">Learn How to Contribute</a>
+                    <a href="/wiki/Recent_Changes" class="btn btn-secondary">See Recent Changes</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p>IslamWiki is a collaborative platform for Islamic knowledge. Please verify information with authentic sources and consult qualified scholars for religious guidance.</p>
     </div>
-</section>
-
-<!-- Categories Section -->
-<section class="categories-section">
-    <div class="section-container">
-        <div class="section-title">
-            <h2>Explore Islamic Knowledge</h2>
-            <p class="section-subtitle">Browse our comprehensive collection of Islamic content organized by category</p>
-        </div>
-
-        <div class="categories-grid">
-            <div class="category-card" onclick="location.href='/{{ locale }}/quran'">
-                <div class="category-icon">📖</div>
-                <h3 class="category-title">Quran & Tafsir</h3>
-                <p class="category-description">Complete Quranic text with translations, commentary, and scholarly interpretations.</p>
-                <div class="category-count">6,236 verses • 47 translations</div>
-            </div>
-
-            <div class="category-card" onclick="location.href='/hadith'">
-                <div class="category-icon">📚</div>
-                <h3 class="category-title">Hadith Collections</h3>
-                <p class="category-description">Authenticated sayings and traditions of Prophet Muhammad (peace be upon him).</p>
-                <div class="category-count">12,847 authenticated hadith</div>
-            </div>
-
-            <div class="category-card" onclick="location.href='/scholars'">
-                <div class="category-icon">👨‍🏫</div>
-                <h3 class="category-title">Islamic Scholars</h3>
-                <p class="category-description">Biographies and works of influential Islamic scholars throughout history.</p>
-                <div class="category-count">892 scholar profiles</div>
-            </div>
-
-            <div class="category-card" onclick="location.href='/fiqh'">
-                <div class="category-icon">⚖️</div>
-                <h3 class="category-title">Fiqh & Jurisprudence</h3>
-                <p class="category-description">Islamic law, jurisprudence, and contemporary legal rulings.</p>
-                <div class="category-count">3,289 rulings & opinions</div>
-            </div>
-
-            <div class="category-card" onclick="location.href='/history'">
-                <div class="category-icon">🕌</div>
-                <h3 class="category-title">Islamic History</h3>
-                <p class="category-description">Chronicles of Islamic civilization, events, and historical analysis.</p>
-                <div class="category-count">1,456 historical articles</div>
-            </div>
-
-            <div class="category-card" onclick="location.href='/practices'">
-                <div class="category-icon">🌙</div>
-                <h3 class="category-title">Islamic Practices</h3>
-                <p class="category-description">Guidance on worship, rituals, and daily Islamic practices.</p>
-                <div class="category-count">567 practice guides</div>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
 {% endblock %}
 
 {% block head %}{% endblock %}

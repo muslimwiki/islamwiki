@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.2.4] - 2025-08-23
+
+### 🔧 **Simplified Routing System & Documentation Update**
+
+#### ✅ Added
+- **Simplified Routing class** (`src/Core/Routing/Routing.php`) replacing the complex SabilRouting system
+- **Working CSS asset routing** - skin CSS files now load correctly via `/skins/{skin}/css/{filename}` routes
+- **Enhanced route debugging** with comprehensive logging and error handling
+- **Parameter extraction** for dynamic routes with proper validation
+- **HEAD request support** - routing system now handles HEAD requests correctly
+
+#### 🔧 Fixed
+- **CSS routing system completely rebuilt** - no more 500 errors when loading skin assets
+- **Autoloader regenerated** - fixed silent failures during class loading
+- **Route parameter handling** - dynamic routes now pass parameters correctly to handlers
+- **Application initialization order** - logger now initializes before first use
+- **SabilRouting removal** - eliminated complex, broken routing system causing constant issues
+
+#### 🚀 Changed
+- **Replaced SabilRouting with simplified Routing** - much more reliable and debuggable system
+- **Streamlined application architecture** - removed unnecessary complexity that was causing issues
+- **Improved error handling** - better logging and debugging throughout the routing process
+- **Updated all documentation** - removed SabilRouting references, added simplified routing info
+
+#### 🗂️ Documentation Updates
+- **Updated all references** from SabilRouting to Simplified Routing across 50+ documentation files
+- **Architecture documentation** revised to reflect new simplified approach
+- **Development guides** updated with new routing system examples
+- **Testing documentation** updated with new class names and structure
+
+---
+
 ## [0.0.2.3] - 2025-08-23
 
 ### 🎉 Major Release: Bismillah Skin Integration & Comprehensive Fixes
@@ -19,7 +51,7 @@ All notable changes to this project will be documented in this file.
 #### 🔧 Fixed
 - **Critical 500 Internal Server Errors** that were blocking core functionality
 - **Authentication system** by implementing missing session methods
-- **Old routing conflicts** - achieved pure Sabil routing system
+- **Old routing conflicts** - achieved simplified routing system
 - **Method visibility issues** in NizamApplication class
 - **File accessibility** for skin assets and JavaScript files
 - **Template syntax errors** in error pages and content templates
@@ -29,7 +61,7 @@ All notable changes to this project will be documented in this file.
 
 #### 🚀 Changed
 - **Complete system recovery** from non-functional state to fully operational
-- **Eliminated old switch-based routing** in favor of pure Sabil system
+- **Eliminated old switch-based routing** in favor of simplified system
 - **Enhanced content processing** with proper HTML output instead of raw Markdown
 - **Improved error handling** with graceful fallbacks and detailed logging
 - **Better asset management** with symbolic links for skin resources

@@ -160,7 +160,7 @@ local.islam.wiki/
 ```
 
 #### **Architecture Principles**
-- ✅ **SabilRouting**: Inline route definitions (no external route files)
+- ✅ **Simplified Routing**: Inline route definitions (no external route files)
 - ✅ **Extension System**: WordPress-inspired plugin architecture
 - ✅ **Skin System**: WordPress-inspired theme architecture
 - ✅ **Multi-Database**: Separate databases for different content types

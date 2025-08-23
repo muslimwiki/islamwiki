@@ -58,25 +58,25 @@ declare(strict_types=1);
 
 namespace IslamWiki\Tests\Unit\Core\Routing;
 
-use IslamWiki\Core\Routing\SabilRouting;
+use IslamWiki\Core\Routing\Routing;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use PHPUnit\Framework\TestCase;
 
 /**
- * SabilRouting Unit Tests
+ * Simplified Routing Unit Tests
  * 
  * @package IslamWiki\Tests\Unit\Core\Routing
  * @author IslamWiki Development Team
  * @license AGPL-3.0
  */
-class ShahidTest_SabilRouting extends TestCase
+class ShahidTest_SimplifiedRouting extends TestCase
 {
-    private SabilRouting $router;
+    private Routing $router;
     
     protected function setUp(): void
     {
-        $this->router = new SabilRouting();
+        $this->router = new Routing();
     }
     
     /**

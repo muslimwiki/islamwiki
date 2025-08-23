@@ -20,7 +20,7 @@ A comprehensive Islamic knowledge platform built with Islamic principles and mod
 - **Content-First**: Powerful content management with version control and collaboration
 - **Community Integration**: Ummah features for user interaction and engagement
 
-### 1. Sabil Routing System (سبيل) - IMPLEMENTED
+### 1. Simplified Routing System (سبيل) - IMPLEMENTED
 - **Features**:
   - RESTful routing with support for all HTTP methods
   - Route grouping and middleware support
@@ -653,7 +653,7 @@ A comprehensive Islamic knowledge platform built with Islamic principles and mod
 ## Development Phases (مراحل التطوير)
 
 ### Phase 1: Foundation (الأساس)
-- [ ] Core routing system (Sabil)
+- [ ] Core routing system (Simplified)
 - [ ] Dependency injection (Asas)
 - [ ] Basic security (Aman)
 - [ ] Error handling (Shahid)

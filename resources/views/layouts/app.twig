@@ -12,8 +12,13 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Bismillah Skin CSS - Beautiful Islamic Theme (CONSOLIDATED) -->
-    <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}">
+    <!-- Skin CSS - Dynamic loading based on active skin -->
+    {% if skin_css_url %}
+        <link rel="stylesheet" href="{{ skin_css_url }}?v={{ 'now'|date('U') }}&v=0.0.2.6">
+    {% else %}
+        <!-- Fallback to Bismillah Skin CSS -->
+        <link rel="stylesheet" href="/skins/Bismillah/css/bismillah.css?v={{ 'now'|date('U') }}&v=0.0.2.6">
+    {% endif %}
     
     <!-- Analytics CSS -->
     <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/analytics.css?v={{ 'now'|date('U') }}">
@@ -22,8 +27,8 @@
     <link rel="stylesheet" href="/extensions/IqraSearchExtension/assets/css/quick-search.css?v={{ 'now'|date('U') }}">
     
     <!-- Additional Skin CSS (if specified) -->
-    {% if skin_css_url %}
-        <link rel="stylesheet" href="{{ skin_css_url }}?v={{ 'now'|date('U') }}">
+    {% if skin_css %}
+        <style>{{ skin_css|raw }}</style>
     {% endif %}
     
     <!-- Extra CSS from child templates -->
@@ -78,24 +83,20 @@
                         <i class="fas fa-book"></i>
                         Wiki
                     </a>
-                    <a href="/quran" class="dropdown-item">
-                        <i class="fas fa-quran"></i>
-                        Quran
-                    </a>
-                    <a href="/hadith" class="dropdown-item">
-                        <i class="fas fa-quote-left"></i>
-                        Hadith
-                    </a>
-                    <a href="/search" class="dropdown-item">
+                    <a href="/iqra-search" class="dropdown-item">
                         <i class="fas fa-search"></i>
                         Search
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="/community" class="dropdown-item">
-                        <i class="fas fa-users"></i>
-                        Community
+                    <a href="/wiki/Recent_Changes" class="dropdown-item">
+                        <i class="fas fa-history"></i>
+                        Recent Changes
                     </a>
-                    <a href="/about" class="dropdown-item">
+                    <div class="dropdown-divider"></div>
+                    <a href="/wiki/How_to_Contribute" class="dropdown-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        Contribute
+                    </a>
+                    <a href="/wiki/About_IslamWiki" class="dropdown-item">
                         <i class="fas fa-info-circle"></i>
                         About
                     </a>
@@ -166,37 +167,37 @@
                             <i class="fas fa-book"></i>
                             Wiki
                         </a>
-                        <a href="/quran" class="dropdown-item">
-                            <i class="fas fa-quran"></i>
-                            Quran
+                        <a href="/iqra-search" class="dropdown-item">
+                            <i class="fas fa-search"></i>
+                            Search
                         </a>
-                        <a href="/hadith" class="dropdown-item">
-                            <i class="fas fa-quote-left"></i>
-                            Hadith
+                        <a href="/wiki/Recent_Changes" class="dropdown-item">
+                            <i class="fas fa-history"></i>
+                            Recent Changes
                         </a>
                     </div>
                     
                     <div class="navigation-section">
                         <h3>🔍 Tools & Search</h3>
-                        <a href="/search" class="dropdown-item">
+                        <a href="/iqra-search" class="dropdown-item">
                             <i class="fas fa-search"></i>
-                            Search
+                            Advanced Search
                         </a>
-                        <a href="/settings" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            Settings
+                        <a href="/wiki/How_to_Contribute" class="dropdown-item">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            How to Contribute
                         </a>
                     </div>
                     
                     <div class="navigation-section">
                         <h3>👥 Community</h3>
-                        <a href="/community" class="dropdown-item">
-                            <i class="fas fa-users"></i>
-                            Community
-                        </a>
-                        <a href="/about" class="dropdown-item">
+                        <a href="/wiki/About_IslamWiki" class="dropdown-item">
                             <i class="fas fa-info-circle"></i>
-                            About
+                            About IslamWiki
+                        </a>
+                        <a href="/wiki/Glossary_of_Islam" class="dropdown-item">
+                            <i class="fas fa-book-open"></i>
+                            Glossary
                         </a>
                     </div>
                 </div>

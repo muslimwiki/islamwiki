@@ -18,7 +18,7 @@ IslamWiki combines the best features of three powerful systems:
 ### **Core Components**
 ```
 Core Systems:
-├── 📁 SabilRouting           # Modern PHP routing system
+├── 📁 Simplified Routing     # Modern PHP routing system
 ├── 📁 Extension System       # WordPress-inspired plugin architecture
 ├── 📁 Skin System            # WordPress-inspired theme architecture
 ├── 📁 Content Management     # MediaWiki-inspired content system

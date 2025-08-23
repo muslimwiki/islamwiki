@@ -23,8 +23,14 @@ Options -Indexes
 # Enable rewrite engine for routing
 RewriteEngine On
 
-# Route ALL requests through our beautiful Islamic design entry point
-# This ensures static files are handled by our SabilRouting system
+# Serve skin assets directly from root skins directory
+# This bypasses PHP routing for static assets
+# TEMPORARILY DISABLED - using PHP routing instead
+# RewriteCond %{REQUEST_URI} ^/skins/
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule ^skins/(.*)$ ../skins/$1 [L]
+
+# Route everything else through index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
