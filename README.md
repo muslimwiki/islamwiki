@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.4-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.5-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,13 +8,13 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.4** represents a major milestone with:
-- ✅ **Complete system recovery** from critical errors
-- ✅ **Beautiful Bismillah skin** fully integrated across all pages
-- ✅ **Comprehensive error handling** with Shahid logging system
-- ✅ **Simplified routing** system with working CSS asset loading (SabilRouting completely removed)
-- ✅ **Enhanced Markdown processing** with beautiful content rendering
-- ✅ **Responsive Islamic-themed UI** with sidebar, header, and footer
+**Version 0.0.2.5** represents a major CSS architecture overhaul with:
+- ✅ **Clean CSS organization** - Global styles + page-specific files
+- ✅ **Beautiful responsive design** - Hero section optimized, full-width layout
+- ✅ **Footer integration** - No more white space, seamless page bottom
+- ✅ **Enhanced UI/UX** - Better proportions, improved spacing, cleaner sections
+- ✅ **Performance improvements** - Eliminated CSS conflicts, cleaner loading
+- ✅ **Mobile-first design** - Responsive breakpoints for all devices
 
 ## 🚀 **Key Features**
 

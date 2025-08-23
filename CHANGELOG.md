@@ -2,35 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.2.4] - 2025-08-23
+## [0.0.2.5] - 2025-08-23
 
-### 🔧 **Simplified Routing System & Documentation Update**
+### 🎨 **Major CSS Architecture Overhaul & UI Improvements**
 
 #### ✅ Added
-- **Simplified Routing class** (`src/Core/Routing/Routing.php`) replacing the complex SabilRouting system
-- **Working CSS asset routing** - skin CSS files now load correctly via `/skins/{skin}/css/{filename}` routes
-- **Enhanced route debugging** with comprehensive logging and error handling
-- **Parameter extraction** for dynamic routes with proper validation
-- **HEAD request support** - routing system now handles HEAD requests correctly
+- **Clean CSS architecture** - Global styles in `bismillah.css`, page-specific styles in separate files
+- **Page-specific CSS files** - Individual CSS for main page, settings, dashboard pages
+- **Proper CSS organization** - All styles consolidated in skin directory, removed from Twig files
+- **Enhanced responsive design** - Better mobile and tablet layouts
+- **Improved footer layout** - No more white space below footer
 
 #### 🔧 Fixed
-- **CSS routing system completely rebuilt** - no more 500 errors when loading skin assets
-- **Autoloader regenerated** - fixed silent failures during class loading
-- **Route parameter handling** - dynamic routes now pass parameters correctly to handlers
-- **Application initialization order** - logger now initializes before first use
-- **SabilRouting removal** - eliminated complex, broken routing system causing constant issues
+- **CSS conflicts eliminated** - Removed all inline CSS from Twig files
+- **White space below footer** - Footer now extends to bottom of page seamlessly
+- **Hero section sizing** - Reduced from oversized to properly proportional
+- **Duplicate content removed** - Time/date stats removed from hero (already in header)
+- **Scrolling restored** - Page now scrolls properly to show all content
+- **Full-width layout** - Content uses entire screen width properly
 
 #### 🚀 Changed
-- **Replaced SabilRouting with simplified Routing** - much more reliable and debuggable system
-- **Streamlined application architecture** - removed unnecessary complexity that was causing issues
-- **Improved error handling** - better logging and debugging throughout the routing process
-- **Updated all documentation** - removed SabilRouting references, added simplified routing info
+- **CSS structure completely reorganized** - One global file + page-specific files
+- **Hero section redesigned** - Smaller, more proportional, focused on essential content
+- **Layout improvements** - Better spacing, cleaner sections, improved readability
+- **Responsive design** - Mobile-first approach with proper breakpoints
 
-#### 🗂️ Documentation Updates
-- **Updated all references** from SabilRouting to Simplified Routing across 50+ documentation files
-- **Architecture documentation** revised to reflect new simplified approach
-- **Development guides** updated with new routing system examples
-- **Testing documentation** updated with new class names and structure
+#### 🎨 UI/UX Improvements
+- **Hero section** - Reduced from 400px to 200px height, better proportions
+- **Typography scaling** - Appropriate font sizes for different screen sizes
+- **Content spacing** - Consistent padding and margins throughout
+- **Visual hierarchy** - Better balance between sections
+- **Footer integration** - Seamless connection to page bottom
+
+#### 📊 Technical Improvements
+- **CSS file organization** - `/skins/Bismillah/css/bismillah.css` (global) + `/pages/` subdirectory
+- **Twig templates cleaned** - No more inline styles, only HTML structure
+- **Asset routing** - Proper CSS file serving through routing system
+- **Performance** - Reduced CSS conflicts, cleaner loading
+
+---
+
+## [0.0.2.4] - 2025-08-23
 
 ---
 
@@ -1243,5 +1255,5 @@ All notable changes to this project will be documented in this file.
 ---
 
 **Last Updated:** 2025-01-20  
-**Version:** 0.0.3.0  
+**Version:** 0.0.2.5  
 **Author:** IslamWiki Development Team

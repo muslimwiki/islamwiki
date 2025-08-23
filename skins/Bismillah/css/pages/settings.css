@@ -1,0 +1,144 @@
+/* ===== SETTINGS PAGE SPECIFIC STYLES ===== */
+/* This file extends bismillah.css with settings page specific styles */
+
+.settings-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.settings-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.settings-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--islamic-dark-blue);
+    margin-bottom: 1rem;
+}
+
+.settings-subtitle {
+    color: #666;
+    font-size: 1.125rem;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.settings-section {
+    background: var(--islamic-white);
+    border: 1px solid var(--islamic-blue);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--islamic-cream);
+}
+
+.section-icon {
+    font-size: 1.5rem;
+    color: var(--islamic-blue);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--islamic-dark-blue);
+}
+
+.settings-form {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--islamic-dark-blue);
+}
+
+.form-input,
+.form-select {
+    padding: 0.75rem;
+    border: 2px solid var(--islamic-blue);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--islamic-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.form-help {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--islamic-cream);
+}
+
+.btn-save {
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+.btn-save:hover {
+    background: #047857;
+}
+
+.btn-reset {
+    background: var(--islamic-cream);
+    color: var(--islamic-dark-blue);
+    border: 2px solid var(--islamic-blue);
+}
+
+.btn-reset:hover {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 1rem;
+    }
+    
+    .settings-title {
+        font-size: 2rem;
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+    }
+} 

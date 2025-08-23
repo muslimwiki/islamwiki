@@ -2,6 +2,10 @@
 
 {% block title %}IslamWiki - Authentic Islamic Knowledge{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/main-page.css?v={{ 'now'|date('U') }}&v=0.0.2.6">
+{% endblock %}
+
 {% block content %}
 <div class="main-page-container">
     <!-- Hero Section with Bismillah -->
@@ -11,22 +15,8 @@
             <h1 class="hero-title">Welcome to IslamWiki</h1>
             <p class="hero-subtitle">Your comprehensive source for authentic Islamic knowledge</p>
             
-            <!-- Live Stats -->
+            <!-- Live Stats (Articles and Languages only) -->
             <div class="main-page-hero-stats">
-                <div class="stat-item">
-                    <div class="stat-icon">🕒</div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ "now"|date("H:i") }}</div>
-                        <div class="stat-label">Current Time</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-content">
-                        <div class="stat-value">28 Safar 1447 AH</div>
-                        <div class="stat-label">Hijri Date</div>
-                    </div>
-                </div>
                 <div class="stat-item">
                     <div class="stat-icon">📚</div>
                     <div class="stat-content">

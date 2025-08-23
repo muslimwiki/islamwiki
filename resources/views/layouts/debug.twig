@@ -14,21 +14,6 @@
     
     <!-- Skin CSS (must come after Safa to take precedence) -->
     {% if skin_css %}
-        <style>{{ skin_css|raw }}</style>
-    {% endif %}
-    
-    <!-- ZamZam.js Flash Prevention -->
-    <style>
-        /* Hide z-show elements by default to prevent flash */
-        [z-show] {
-            display: none !important;
-        }
-        
-        /* Only show when ZamZam.js has processed them */
-        [z-show].zamzam-processed {
-            display: initial !important;
-        }
-    </style>
     
     <!-- ZamZam.js for frontend interactivity -->
     <script defer src="/assets/js/zamzam.js?v={{ 'now'|date('U') }}"></script>
@@ -78,69 +63,6 @@
         });
     </script>
     
-    <style>
-        /* Basic fallback header styling */
-        .default-header {
-            background: #2d5016;
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .default-header .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .default-header .logo {
-            color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .default-header .main-nav {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .default-header .nav-link {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-        }
-        
-        .default-header .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .default-header .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        @media (max-width: 768px) {
-            .default-header .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .default-header .main-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-    </style>
     
     {% block styles %}{% endblock %}
     {% block head %}{% endblock %}
