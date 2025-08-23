@@ -2,6 +2,113 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.2.6] - 2025-01-20
+
+### 🔐 **Authentication System & UI Overhaul - COMPLETE**
+
+#### ✅ Added
+- **Complete authentication system** - Login, logout, and registration through AmanSecurity
+- **Conditional sidebar rendering** - Different content for logged in vs logged out users
+- **User preferences page** - Special:Preferences with comprehensive settings
+- **Default page setting** - Users can choose their landing page preference
+- **Display options in cog wheel** - Text size, color theme, and width settings
+- **User profile integration** - Username display and User namespace links
+- **AmanSecurity Extension** - Complete extension structure with service provider
+- **Enhanced User Management** - Advanced user administration with bulk operations and statistics
+- **Advanced Security Monitoring** - Threat detection, IP blocking, and comprehensive logging
+
+#### 🔧 Fixed
+- **Root domain routing** - Proper redirect from `/` to `/wiki/Main_Page`
+- **Authentication flow** - All login/logout operations go through AmanSecurity via `/auth/` routes
+- **Sidebar authentication states** - Proper display of user status and actions
+- **Preferences page access** - Protected route with authentication check
+- **Hero section color** - Updated to better blue gradient for distinction from header/sidebar
+- **Sidebar layout issues** - Fixed profile links taking over other elements
+- **Logo icon** - Changed from mosque to crescent moon (Islamic symbol)
+- **Header icon** - Changed from mosque to praying hands for salah time
+- **CSS loading** - Fixed page-specific CSS files not loading for auth pages
+- **Sidebar icon visibility** - Icons now properly visible and styled for both authentication states
+- **Dropdown positioning** - Hover menus now extend upward to prevent cutoff at page bottom
+- **Sidebar icon display** - Fixed cog wheel and profile icons showing only white lines
+- **Auth page readability** - Enhanced logo and title visibility with better contrast and sizing
+- **Hover menu functionality** - Fixed cog wheel and profile dropdowns not appearing on hover
+- **Hover menu positioning** - Updated cog wheel and profile dropdowns to use same right-side positioning as hamburger menu
+- **Dropdown cutoff prevention** - Smart positioning system automatically places dropdowns above or below icons based on available viewport space
+- **Profile menu sizing** - Reduced profile dropdown width for better proportions and less overwhelming appearance
+- **Cog wheel grid layout** - Display options now arranged in 2x2 grid instead of vertical stacking for more compact, organized appearance
+- **Profile menu navigation** - Fixed login button to navigate to /login and create account to /register instead of incorrect /profile route
+- **Interactive cog wheel menu** - Display options now functional with click handlers for text size, color theme, and width preferences
+- **CSS-based display options** - Fixed cog wheel to use CSS classes instead of inline styles, preventing style conflicts and maintaining design integrity
+- **User preference persistence** - Display settings now saved to localStorage and automatically applied on page load
+- **Smooth transitions** - All display changes now have smooth animations without breaking existing styles
+- **Sidebar width isolation** - Fixed width setting to only affect main content area, never the sidebar width
+- **Content centering** - Standard and wide width options now properly center content instead of left-aligning
+- **Default width setting** - Changed default width from "Standard" to "Full" for better content utilization
+
+#### 🚀 Changed
+- **Hero section color** - Updated to better blue gradient (#1e40af to #3b82f6) for better distinction
+- **Sidebar structure** - Implemented conditional rendering based on authentication status
+- **Cog wheel functionality** - Replaced settings links with display options
+- **User navigation** - Added profile dropdown with proper User namespace links
+- **AmanSecurity architecture** - Converted from Core class to proper extension structure
+- **Sidebar icons** - Updated logo to crescent moon, header to praying hands
+- **Sidebar layout** - Fixed profile menu containment and element positioning
+- **Default page routing** - Root domain now redirects to `/wiki/Main_Page` instead of home page
+- **Authentication system** - Complete overhaul with proper extension architecture
+
+#### 🎨 UI/UX Improvements
+- **Logged out state** - Shows "Not logged in", language button, create account, and blue login button
+- **Logged in state** - Displays username, profile dropdown, and user-specific options
+- **Language selection** - Clickable language button linking to preferences page
+- **Display preferences** - Cog wheel shows text size, color theme, and width options
+- **User profile header** - Shows username, role, and avatar in profile dropdown
+- **Islamic symbols** - Crescent moon logo and praying hands header icon
+- **Improved layout** - Better sidebar element positioning and profile menu containment
+- **Enhanced sidebar styling** - Icons now have proper backgrounds, borders, and hover effects
+- **Button color coding** - Login button is blue, logout button is red, create account has outline style
+- **Dropdown positioning** - All hover menus extend upward to prevent cutoff at page bottom
+- **Sidebar icon clarity** - Removed subtle backgrounds for clean, fully visible icon display
+- **Auth page transformation** - Dramatically improved logo and title visibility with white text and enhanced backgrounds
+- **Enhanced contrast** - Beautiful blue gradient backgrounds with glass-morphism auth cards
+- **Profile menu sizing** - Reduced profile dropdown width for better proportions and less overwhelming appearance
+- **Cog wheel grid layout** - Display options now arranged in 2x2 grid instead of vertical stacking for more compact, organized appearance
+- **Profile menu navigation** - Fixed login button to navigate to /login and create account to /register instead of incorrect /profile route
+- **Interactive cog wheel menu** - Display options now functional with click handlers for text size, color theme, and width preferences
+- **CSS-based display options** - Fixed cog wheel to use CSS classes instead of inline styles, preventing style conflicts and maintaining design integrity
+- **User preference persistence** - Display settings now saved to localStorage and automatically applied on page load
+- **Smooth transitions** - All display changes now have smooth animations without breaking existing styles
+- **Sidebar width isolation** - Fixed width setting to only affect main content area, never the sidebar width
+- **Content centering** - Standard and wide width options now properly center content instead of left-aligning
+- **Default width setting** - Changed default width from "Standard" to "Full" for better content utilization
+
+#### 📊 Technical Improvements
+- **Database schema** - Added user preferences table with display and language settings
+- **Routing system** - Added authentication routes and Special:Preferences handling
+- **Template system** - Created preferences template with comprehensive form
+- **CSS organization** - Added page-specific styles for preferences page
+- **Authentication middleware** - Proper session handling and user state management
+- **Extension system** - Complete AmanSecurity extension with service provider, configuration, and documentation
+- **Enhanced services** - User management and security monitoring services
+- **Database migrations** - Security tables for advanced monitoring and logging
+- **JavaScript architecture** - Improved event handling and preference management
+- **CSS custom properties** - Implemented proper CSS variables for display options
+- **Layout system** - Fixed flexbox and positioning issues
+
+#### 🔌 Extension Architecture
+- **AmanSecurity Extension** - Complete extension structure in `/extensions/AmanSecurity/`
+- **Service Provider** - `AmanSecurityServiceProvider` for dependency injection
+- **Configuration System** - Comprehensive configuration with environment variables
+- **Documentation** - Complete README, CHANGELOG, and usage examples
+- **Modular Design** - Extensible architecture for future security enhancements
+- **Enhanced Services** - UserManagementService and SecurityMonitoringService
+- **Database Support** - Migration system for security and monitoring tables
+
+---
+
+**Release Status: ✅ COMPLETE - Ready for Production**
+**Release Date: 2025-01-20**
+**Next Version: 0.0.2.7**
+
 ## [0.0.2.5] - 2025-08-23
 
 ### 🎨 **Major CSS Architecture Overhaul & UI Improvements**
@@ -1255,5 +1362,5 @@ All notable changes to this project will be documented in this file.
 ---
 
 **Last Updated:** 2025-01-20  
-**Version:** 0.0.2.5  
+**Version:** 0.0.2.6  
 **Author:** IslamWiki Development Team

@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page_title }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="login-container">
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Login - IslamWiki{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/auth.css?v={{ 'now'|date('U') }}&v=0.0.2.6">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
         <!-- Header -->
-        <div class="login-header">
+        <div class="auth-header">
             <div class="logo">IslamWiki</div>
             <div class="subtitle">Sign in to your account</div>
         </div>
 
         <!-- Login Form -->
-        <form class="login-form" method="POST" action="/auth/login" id="loginForm">
+        <form class="auth-form" method="POST" action="/auth/login" id="loginForm">
             <!-- Error Message -->
             {% if error %}
             <div class="error-message">
@@ -24,7 +25,7 @@
             {% endif %}
 
             <!-- Hidden redirect field -->
-            <input type="hidden" name="redirect" value="/admin">
+            <input type="hidden" name="redirect" value="{{ redirect|default('/wiki/Main_Page') }}">
 
             <!-- Username Field -->
             <div class="form-group">
@@ -54,10 +55,10 @@
             </div>
 
             <!-- CSRF Token -->
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
 
             <!-- Login Button -->
-            <button type="submit" class="login-button" id="loginButton">
+            <button type="submit" class="auth-button" id="loginButton">
                 <span class="button-text">Sign In</span>
                 <span class="loading">Signing in...</span>
             </button>
@@ -73,47 +74,40 @@
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const button = document.getElementById('loginButton');
-            const form = this;
-            
-            // Show loading state
-            button.classList.add('form-loading');
-            
-            // Disable form submission if already submitted
-            if (form.dataset.submitting === 'true') {
-                e.preventDefault();
-                return;
+{% block page_js %}
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const button = document.getElementById('loginButton');
+        const form = this;
+        
+        // Show loading state
+        button.classList.add('form-loading');
+        
+        // Disable form submission if already submitted
+        if (form.dataset.submitting === 'true') {
+            e.preventDefault();
+            return;
+        }
+        
+        form.dataset.submitting = 'true';
+    });
+
+    // Auto-focus username field
+    document.getElementById('username').focus();
+
+    // Handle form validation
+    const inputs = document.querySelectorAll('input[required]');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.add('error');
+            } else {
+                this.classList.remove('error');
             }
-            
-            form.dataset.submitting = 'true';
         });
-
-        // Auto-focus username field
-        document.getElementById('username').focus();
-
-        // Handle form validation
-        const inputs = document.querySelectorAll('input[required]');
-        inputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                if (!this.value.trim()) {
-                    this.style.borderColor = '#DC2626';
-                    this.style.background = '#FEF2F2';
-                } else {
-                    this.style.borderColor = '#E5E7EB';
-                    this.style.background = '#F9FAFB';
-                }
-            });
-
-            input.addEventListener('input', function() {
-                if (this.value.trim()) {
-                    this.style.borderColor = '#E5E7EB';
-                    this.style.background = '#F9FAFB';
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

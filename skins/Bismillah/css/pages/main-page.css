@@ -14,7 +14,7 @@
 
 /* ===== HERO SECTION ===== */
 .main-page-hero {
-    background: linear-gradient(135deg, var(--islamic-dark-blue) 0%, var(--islamic-blue) 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     color: var(--islamic-white);
     border-radius: 0;
     padding: 2rem;

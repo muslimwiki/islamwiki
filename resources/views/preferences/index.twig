@@ -1,0 +1,248 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Preferences - IslamWiki{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/preferences.css?v={{ 'now'|date('U') }}&v=0.0.2.6">
+{% endblock %}
+
+{% block content %}
+<div class="preferences-container">
+    <div class="preferences-header">
+        <h1><i class="fas fa-cog"></i> Preferences</h1>
+        <p>Manage your account settings and preferences</p>
+    </div>
+
+    {% if app.request.getQueryParam('message') %}
+        <div class="alert alert-success">
+            {{ app.request.getQueryParam('message') }}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="/wiki/Special:Preferences" class="preferences-form">
+        <div class="preferences-sections">
+            
+            <!-- User Profile Section -->
+            <div class="preferences-section">
+                <h2>User Profile</h2>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" value="{{ user.username }}" readonly class="form-control">
+                    <small class="form-help">Username cannot be changed</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="real_name">Real Name</label>
+                    <input type="text" id="real_name" name="real_name" value="{{ user.real_name|default('') }}" class="form-control">
+                    <small class="form-help">Real name is optional. If provided, it may be used to give you attribution for your work.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="{{ user.email }}" readonly class="form-control">
+                    <small class="form-help">Email address is required and not revealed to other users</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Member of groups</label>
+                    <div class="user-groups">
+                        {% if user.is_admin %}
+                            <span class="group-badge admin">Administrators</span>
+                            <span class="group-badge">Autoconfirmed users</span>
+                            <span class="group-badge">Bureaucrats</span>
+                            <span class="group-badge">Interface administrators</span>
+                        {% endif %}
+                        <span class="group-badge">Users</span>
+                        <span class="group-badge">autoreview</span>
+                        <span class="group-badge">reviewer</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Number of edits</label>
+                    <input type="text" value="{{ user.edit_count|default('0') }}" readonly class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Registration time</label>
+                    <input type="text" value="{{ user.created_at|default('Unknown') }}" readonly class="form-control">
+                </div>
+            </div>
+
+            <!-- Internationalisation Section -->
+            <div class="preferences-section">
+                <h2>Internationalisation</h2>
+                
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language" name="language" class="form-control">
+                        <option value="en" {% if preferences.language == 'en' %}selected{% endif %}>en - English</option>
+                        <option value="ar" {% if preferences.language == 'ar' %}selected{% endif %}>ar - العربية</option>
+                        <option value="ur" {% if preferences.language == 'ur' %}selected{% endif %}>ur - اردو</option>
+                        <option value="tr" {% if preferences.language == 'tr' %}selected{% endif %}>tr - Türkçe</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>How do you prefer to be described?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="they" {% if user.gender|default('') == 'they' %}checked{% endif %}>
+                            <span>They edit wiki pages</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="she" {% if user.gender|default('') == 'she' %}checked{% endif %}>
+                            <span>She edits wiki pages</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="he" {% if user.gender|default('') == 'he' %}checked{% endif %}>
+                            <span>He edits wiki pages</span>
+                        </label>
+                    </div>
+                    <small class="form-help">This preference is optional and public, used for grammatical gender.</small>
+                </div>
+            </div>
+
+            <!-- Signature Section -->
+            <div class="preferences-section">
+                <h2>Signature</h2>
+                
+                <div class="form-group">
+                    <label for="existing_signature">Your existing signature</label>
+                    <input type="text" id="existing_signature" value="{{ user.username }} (talk)" readonly class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="new_signature">New signature</label>
+                    <input type="text" id="new_signature" name="signature" value="{{ user.signature|default('') }}" class="form-control">
+                    <small class="form-help">Comments on talk pages are signed with "~" which converts to the signature and timestamp.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treat_signature_as_wikitext" {% if user.treat_signature_as_wikitext|default(false) %}checked{% endif %}>
+                        <span>Treat signature as wikitext (without an automatic link to your user page)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Email Options Section -->
+            <div class="preferences-section">
+                <h2>Email Options</h2>
+                
+                <div class="form-group">
+                    <label for="email_confirmation">Email confirmation</label>
+                    <input type="text" id="email_confirmation" value="Your email address was confirmed on {{ user.email_confirmed_at|default('Unknown') }}" readonly class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="allow_emails" {% if user.allow_emails|default(true) %}checked{% endif %}>
+                        <span>Allow other users to email me</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="allow_new_user_emails" {% if user.allow_new_user_emails|default(true) %}checked{% endif %}>
+                        <span>Allow emails from brand-new users</span>
+                    </label>
+                    <small class="form-help">Non-autoconfirmed users</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="send_copies" {% if user.send_copies|default(false) %}checked{% endif %}>
+                        <span>Send me copies of emails I send to other users</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="watchlist_emails" {% if user.watchlist_emails|default(true) %}checked{% endif %}>
+                        <span>Email me when a page or a file on my watchlist is changed</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="minor_edit_emails" {% if user.minor_edit_emails|default(false) %}checked{% endif %}>
+                        <span>Email me also for minor edits of pages and files</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Display Preferences Section -->
+            <div class="preferences-section">
+                <h2>Display Preferences</h2>
+                
+                <div class="form-group">
+                    <label for="default_page">Default Page</label>
+                    <select id="default_page" name="default_page" class="form-control">
+                        <option value="Main_Page" {% if preferences.default_page == 'Main_Page' %}selected{% endif %}>Main Page</option>
+                        <option value="Dashboard" {% if preferences.default_page == 'Dashboard' %}selected{% endif %}>Dashboard</option>
+                        <option value="Recent_Changes" {% if preferences.default_page == 'Recent_Changes' %}selected{% endif %}>Recent Changes</option>
+                        <option value="Random_Page" {% if preferences.default_page == 'Random_Page' %}selected{% endif %}>Random Page</option>
+                    </select>
+                    <small class="form-help">Choose which page to show when you visit the site</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="display_text_size">Text Size</label>
+                    <select id="display_text_size" name="display_text_size" class="form-control">
+                        <option value="small" {% if preferences.display_text_size == 'small' %}selected{% endif %}>Small</option>
+                        <option value="standard" {% if preferences.display_text_size == 'standard' %}selected{% endif %}>Standard</option>
+                        <option value="large" {% if preferences.display_text_size == 'large' %}selected{% endif %}>Large</option>
+                        <option value="extra-large" {% if preferences.display_text_size == 'extra-large' %}selected{% endif %}>Extra Large</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="display_color_theme">Color Theme</label>
+                    <select id="display_color_theme" name="display_color_theme" class="form-control">
+                        <option value="auto" {% if preferences.display_color_theme == 'auto' %}selected{% endif %}>Auto</option>
+                        <option value="light" {% if preferences.display_color_theme == 'light' %}selected{% endif %}>Light</option>
+                        <option value="dark" {% if preferences.display_color_theme == 'dark' %}selected{% endif %}>Dark</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="display_width">Page Width</label>
+                    <select id="display_width" name="display_width" class="form-control">
+                        <option value="standard" {% if preferences.display_width == 'standard' %}selected{% endif %}>Standard</option>
+                        <option value="wide" {% if preferences.display_width == 'wide' %}selected{% endif %}>Wide</option>
+                        <option value="full" {% if preferences.display_width == 'full' %}selected{% endif %}>Full</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Account Data Section -->
+            <div class="preferences-section">
+                <h2>Account Data</h2>
+                
+                <div class="form-group">
+                    <a href="/wiki/Special:AccountData" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> My account data from this project
+                    </a>
+                </div>
+
+                <div class="form-group">
+                    <a href="/wiki/Special:ResetPreferences" class="btn btn-warning">
+                        <i class="fas fa-undo"></i> Restore all default preferences (in all sections)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="preferences-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Preferences
+            </button>
+            <a href="/wiki/Main_Page" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

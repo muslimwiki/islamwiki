@@ -194,11 +194,30 @@ class WikiController extends PageController
             $hijriDate = $this->getHijriDate();
             $totalArticles = $this->getTotalArticleCount();
             
+            // Get user data for sidebar authentication state
+            $user = null;
+            if (isset($this->container)) {
+                try {
+                    $auth = $this->container->get('auth');
+                    if ($auth && method_exists($auth, 'user')) {
+                        $user = $auth->user();
+                    }
+                } catch (\Exception $e) {
+                    // Auth service not available, continue without user
+                    if ($this->logger) {
+                        $this->logger->warning('Auth service not available for Main_Page', [
+                            'error' => $e->getMessage()
+                        ]);
+                    }
+                }
+            }
+            
             return $this->view('wiki/main-page', [
                 'current_time' => $currentTime,
                 'hijri_date' => $hijriDate,
                 'total_articles' => $totalArticles,
-                'title' => 'Main Page - IslamWiki'
+                'title' => 'Main Page - IslamWiki',
+                'user' => $user
             ]);
         } catch (\Exception $e) {
             if ($this->logger) {

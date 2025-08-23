@@ -2,33 +2,21 @@
 
 {% block title %}Main Page - IslamWiki{% endblock %}
 
-{% block extra_css %}{% endblock %}
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/main-page.css?v={{ 'now'|date('U') }}&v=0.0.2.6">
+{% endblock %}
 
 {% block content %}
 <div class="main-page-container">
     <!-- Hero Section with Bismillah -->
     <section class="main-page-hero">
-        <div class="hero-content">
-            <div class="bismillah-text">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
+        <div class="main-page-hero-content">
+            <div class="main-page-hero-bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم</div>
             <h1 class="hero-title">Welcome to IslamWiki</h1>
             <p class="hero-subtitle">Your comprehensive source for authentic Islamic knowledge</p>
             
-            <!-- Live Stats -->
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-icon">🕒</div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ "now"|date("H:i") }}</div>
-                        <div class="stat-label">Current Time</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ hijri_date|default('28 Safar 1447 AH') }}</div>
-                        <div class="stat-label">Hijri Date</div>
-                    </div>
-                </div>
+            <!-- Live Stats (Articles and Languages only) -->
+            <div class="main-page-hero-stats">
                 <div class="stat-item">
                     <div class="stat-icon">📚</div>
                     <div class="stat-content">

@@ -226,12 +226,54 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle user logout.
+     * Logout the current user.
      */
     public function logout(Request $request): Response
     {
         $this->auth->logout();
-        return $this->redirect('/?message=You have been logged out successfully');
+        return $this->redirect('/wiki/Main_Page?message=You have been logged out successfully');
+    }
+
+    /**
+     * Show the user preferences page.
+     */
+    public function showPreferences(Request $request): Response
+    {
+        // Check if user is logged in
+        if (!$this->auth->check()) {
+            return $this->redirect('/login?redirect=' . urlencode('/wiki/Special:Preferences'));
+        }
+
+        $user = $this->auth->user();
+        
+        // Get user preferences from database
+        $preferences = $this->getUserPreferences($user['id']);
+        
+        return $this->view('preferences/index', [
+            'title' => 'Preferences - IslamWiki',
+            'user' => $user,
+            'preferences' => $preferences,
+            'auth' => $this->auth
+        ]);
+    }
+
+    /**
+     * Update user preferences.
+     */
+    public function updatePreferences(Request $request): Response
+    {
+        // Check if user is logged in
+        if (!$this->auth->check()) {
+            return $this->redirect('/login?redirect=' . urlencode('/wiki/Special:Preferences'));
+        }
+
+        $user = $this->auth->user();
+        $data = $request->getParsedBody();
+        
+        // Update user preferences
+        $this->updateUserPreferences($user['id'], $data);
+        
+        return $this->redirect('/wiki/Special:Preferences?message=Preferences updated successfully');
     }
 
     /**
@@ -698,5 +740,116 @@ class AuthController extends Controller
             'version' => '0.0.29',
             'config' => [],
         ];
+    }
+
+    /**
+     * Get user preferences from database.
+     */
+    private function getUserPreferences(int $userId): array
+    {
+        try {
+            $stmt = $this->db->getPdo()->prepare("
+                SELECT * FROM user_preferences 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch();
+            
+            if ($result) {
+                return [
+                    'language' => $result['language'] ?? 'en',
+                    'default_page' => $result['default_page'] ?? 'Main_Page',
+                    'display_text_size' => $result['display_text_size'] ?? 'standard',
+                    'display_color_theme' => $result['display_color_theme'] ?? 'auto',
+                    'display_width' => $result['display_width'] ?? 'standard',
+                    'timezone' => $result['timezone'] ?? 'UTC',
+                    'prayer_method' => $result['prayer_method'] ?? 'MWL'
+                ];
+            }
+            
+            return [
+                'language' => 'en',
+                'default_page' => 'Main_Page',
+                'display_text_size' => 'standard',
+                'display_color_theme' => 'auto',
+                'display_width' => 'standard',
+                'timezone' => 'UTC',
+                'prayer_method' => 'MWL'
+            ];
+        } catch (\Exception $e) {
+            error_log('Error getting user preferences: ' . $e->getMessage());
+            return [
+                'language' => 'en',
+                'default_page' => 'Main_Page',
+                'display_text_size' => 'standard',
+                'display_color_theme' => 'auto',
+                'display_width' => 'standard',
+                'timezone' => 'UTC',
+                'prayer_method' => 'MWL'
+            ];
+        }
+    }
+
+    /**
+     * Update user preferences in database.
+     */
+    private function updateUserPreferences(int $userId, array $data): void
+    {
+        try {
+            // Check if user preferences exist
+            $stmt = $this->db->getPdo()->prepare("
+                SELECT id FROM user_preferences 
+                WHERE user_id = ?
+            ");
+            $stmt->execute([$userId]);
+            $exists = $stmt->fetch();
+            
+            if ($exists) {
+                // Update existing preferences
+                $stmt = $this->db->getPdo()->prepare("
+                    UPDATE user_preferences SET
+                        language = ?,
+                        default_page = ?,
+                        display_text_size = ?,
+                        display_color_theme = ?,
+                        display_width = ?,
+                        timezone = ?,
+                        prayer_method = ?,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE user_id = ?
+                ");
+                $stmt->execute([
+                    $data['language'] ?? 'en',
+                    $data['default_page'] ?? 'Main_Page',
+                    $data['display_text_size'] ?? 'standard',
+                    $data['display_color_theme'] ?? 'auto',
+                    $data['display_width'] ?? 'standard',
+                    $data['timezone'] ?? 'UTC',
+                    $data['prayer_method'] ?? 'MWL',
+                    $userId
+                ]);
+            } else {
+                // Insert new preferences
+                $stmt = $this->db->getPdo()->prepare("
+                    INSERT INTO user_preferences (
+                        user_id, language, default_page, display_text_size, 
+                        display_color_theme, display_width, timezone, prayer_method
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $userId,
+                    $data['language'] ?? 'en',
+                    $data['default_page'] ?? 'Main_Page',
+                    $data['display_text_size'] ?? 'standard',
+                    $data['display_color_theme'] ?? 'auto',
+                    $data['display_width'] ?? 'standard',
+                    $data['timezone'] ?? 'UTC',
+                    $data['prayer_method'] ?? 'MWL'
+                ]);
+            }
+        } catch (\Exception $e) {
+            error_log('Error updating user preferences: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

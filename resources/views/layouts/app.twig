@@ -24,11 +24,11 @@
 <body class="bismillah-body">
     <!-- Condensed Sidebar -->
     <div class="condensed-sidebar">
-        <!-- Top Section: Logo, Search, Hamburger -->
+        <!-- Top Section: Logo, Search, Navigation -->
         <div class="sidebar-top">
             <!-- Logo -->
             <div class="sidebar-logo">
-                <i class="fas fa-mosque"></i>
+                <i class="fas fa-star-and-crescent"></i>
             </div>
             
             <!-- Search Button -->
@@ -93,69 +93,151 @@
         
         <!-- Bottom Section: Settings, Notifications, Navigation, Profile -->
         <div class="sidebar-bottom">
-            <!-- Settings -->
-            <div class="sidebar-icon settings-icon" title="Settings">
+            <!-- Settings (Cog Wheel) - Display Options - Always Visible -->
+            <div class="sidebar-icon settings-icon" title="Display Options">
                 <i class="fas fa-cog"></i>
                 <div class="settings-dropdown">
-                    <a href="/settings" class="dropdown-item">
-                        <i class="fas fa-palette"></i>
-                        Settings
-                    </a>
-                    <a href="/settings/account" class="dropdown-item">
-                        <i class="fas fa-user-cog"></i>
-                        Account
-                    </a>
+                    <div class="dropdown-section">
+                        <h4>Text Size</h4>
+                        <div class="dropdown-options">
+                            <a href="#" class="dropdown-option" data-text-size="small">Small</a>
+                            <a href="#" class="dropdown-option active" data-text-size="standard">Standard</a>
+                            <a href="#" class="dropdown-option" data-text-size="large">Large</a>
+                            <a href="#" class="dropdown-option" data-text-size="extra-large">Extra Large</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-section">
+                        <h4>Color Theme</h4>
+                        <div class="dropdown-options">
+                            <a href="#" class="dropdown-option active" data-color-theme="auto">Auto</a>
+                            <a href="#" class="dropdown-option" data-color-theme="light">Light</a>
+                            <a href="#" class="dropdown-option" data-color-theme="dark">Dark</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-section">
+                        <h4>Width</h4>
+                        <div class="dropdown-options">
+                            <a href="#" class="dropdown-option" data-width="standard">Standard</a>
+                            <a href="#" class="dropdown-option" data-width="wide">Wide</a>
+                            <a href="#" class="dropdown-option active" data-width="full">Full</a>
+                        </div>
+                    </div>
+                    {% if user %}
+                        <div class="dropdown-section">
+                            <p class="preferences-note">Preferences will be saved to your profile</p>
+                        </div>
+                    {% else %}
+                        <div class="dropdown-section">
+                            <p class="preferences-note">Preferences will be saved to your session</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             
-            <!-- Notifications -->
-            <div class="sidebar-icon notifications-icon" title="Notifications">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-                <div class="notifications-panel">
-                    <div class="notifications-header">
-                        <h3>Notifications</h3>
-                        <button class="close-notifications" title="Close">
-                            <i class="fas fa-times"></i>
-                        </button>
+            {% if user %}
+                <!-- User is logged in -->
+                
+                <!-- Notifications -->
+                <div class="sidebar-icon notifications-icon" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notifications-panel">
+                        <div class="notifications-header">
+                            <h3>Notifications</h3>
+                            <button class="close-notifications" title="Close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="notifications-list">
+                            <div class="notification-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span>New article published</span>
+                            </div>
+                            <div class="notification-item">
+                                <i class="fas fa-bell"></i>
+                                <span>Salah time reminder</span>
+                            </div>
+                            <div class="notification-item">
+                                <i class="fas fa-user-plus"></i>
+                                <span>New community member</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="notifications-list">
-                        <div class="notification-item">
-                            <i class="fas fa-info-circle"></i>
-                            <span>New article published</span>
+                </div>
+                
+                <!-- Profile - Logged In State -->
+                <div class="sidebar-icon profile-icon" title="Profile">
+                    <i class="fas fa-user"></i>
+                    <div class="profile-dropdown">
+                        <div class="user-info-header">
+                            <div class="user-avatar">{{ user.username|first|upper }}</div>
+                            <div class="user-details">
+                                <div class="username">{{ user.username }}</div>
+                                <div class="user-role">{{ user.role|default('User') }}</div>
+                            </div>
                         </div>
-                        <div class="notification-item">
-                            <i class="fas fa-bell"></i>
-                            <span>Salah time reminder</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="/wiki/User:{{ user.username }}" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            My Profile
+                        </a>
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                        <a href="/wiki/Special:Preferences" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Preferences
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item logout-button">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                
+            {% else %}
+                <!-- User is not logged in -->
+                
+                <!-- Profile - Logged Out State (contains auth elements) -->
+                <div class="sidebar-icon profile-icon" title="Account">
+                    <i class="fas fa-user"></i>
+                    <div class="profile-dropdown">
+                        <div class="user-info-header">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-slash"></i>
+                            </div>
+                            <div class="user-details">
+                                <div class="username">Not logged in</div>
+                                <div class="user-role">Guest</div>
+                            </div>
                         </div>
-                        <div class="notification-item">
+                        <div class="dropdown-divider"></div>
+                        
+                        <!-- Language Selection -->
+                        <div class="dropdown-section">
+                            <h4>Language</h4>
+                            <a href="/wiki/Special:Preferences" class="dropdown-item">
+                                <span class="language-flag">🇺🇸</span>
+                                <span>English</span>
+                            </a>
+                        </div>
+                        
+                        <div class="dropdown-divider"></div>
+                        
+                        <!-- Authentication Buttons -->
+                        <a href="/register" class="dropdown-item create-account">
                             <i class="fas fa-user-plus"></i>
-                            <span>New community member</span>
-                        </div>
+                            Create Account
+                        </a>
+                        <a href="/login" class="dropdown-item login-button">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Log In
+                        </a>
                     </div>
                 </div>
-            </div>
-            
-
-            
-            <!-- Profile -->
-            <div class="sidebar-icon profile-icon" title="Profile">
-                <i class="fas fa-user"></i>
-                <div class="profile-dropdown">
-                    <a href="/profile" class="dropdown-item">
-                        <i class="fas fa-user-circle"></i>
-                        My Profile
-                    </a>
-                    <a href="/dashboard" class="dropdown-item">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                    <a href="/logout" class="dropdown-item">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
     
@@ -165,7 +247,7 @@
         <header class="bismillah-header-simplified">
             <div class="bismillah-header-content">
                 <div class="bismillah-salah-info">
-                    <span class="salah-icon">🕌</span>
+                    <span class="salah-icon">🙏</span>
                     <span class="salah-text">
                         Next: Asr 3:45 PM
                     </span>
@@ -275,20 +357,6 @@
                 });
             }
             
-            // Dropdown management system
-            let hoverTimeout;
-            let hoveredDropdown = null;
-            
-            // Define navigation targets for each icon
-            const iconNavigation = {
-                'search-icon': '/search',
-                'hamburger-icon': '/wiki/Main_Page',
-                'settings-icon': '/settings',
-                'notifications-icon': '/notifications',
-                'navigation-icon': '/wiki',
-                'profile-icon': '/profile'
-            };
-            
             // Get all sidebar icons
             const sidebarIcons = document.querySelectorAll('.sidebar-icon');
             console.log('Found sidebar icons:', sidebarIcons.length);
@@ -299,38 +367,36 @@
                 
                 console.log(`Icon ${index}: ${iconId}, Has dropdown: ${!!dropdown}`);
                 
-                // Hover to show dropdown
-                icon.addEventListener('mouseenter', () => {
-                    if (!dropdown) return;
-                    
-                    clearTimeout(hoverTimeout);
-                    
-                    // Close any other hovered dropdowns
-                    if (hoveredDropdown && hoveredDropdown !== dropdown) {
-                        hoveredDropdown.style.display = 'none';
-                        hoveredDropdown.classList.remove('dropdown-open');
-                    }
-                    
-                    // Show this dropdown
-                    dropdown.style.display = 'block';
-                    dropdown.classList.add('dropdown-open');
-                    hoveredDropdown = dropdown;
-                    console.log('Hover: Showing dropdown for', iconId);
-                });
-                
-                // Hover to keep dropdown open
-                icon.addEventListener('mouseleave', () => {
-                    if (!dropdown) return;
-                    
-                    hoverTimeout = setTimeout(() => {
-                        if (hoveredDropdown === dropdown) {
-                            dropdown.style.display = 'none';
-                            dropdown.classList.remove('dropdown-open');
-                            hoveredDropdown = null;
-                            console.log('Hover: Closing dropdown for', iconId);
+                // Smart dropdown positioning to prevent cutoff
+                if (dropdown) {
+                    icon.addEventListener('mouseenter', () => {
+                        // Calculate available space above and below the icon
+                        const iconRect = icon.getBoundingClientRect();
+                        const dropdownHeight = dropdown.offsetHeight;
+                        const viewportHeight = window.innerHeight;
+                        
+                        // Check if there's enough space below
+                        const spaceBelow = viewportHeight - iconRect.bottom;
+                        const spaceAbove = iconRect.top;
+                        
+                        // Position dropdown above if not enough space below
+                        if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+                            dropdown.classList.add('bottom-positioned');
+                        } else {
+                            dropdown.classList.remove('bottom-positioned');
                         }
-                    }, 200);
-                });
+                        
+                        console.log('Smart positioning dropdown for', iconId, {
+                            spaceBelow,
+                            spaceAbove,
+                            dropdownHeight,
+                            positionedAbove: spaceBelow < dropdownHeight && spaceAbove > dropdownHeight
+                        });
+                    });
+                }
+                
+                // Remove the complex hover logic and let CSS handle it
+                // CSS :hover states will show/hide dropdowns automatically
                 
                 // Click to navigate to primary function - with multiple event types
                 const handleIconClick = (e) => {
@@ -376,54 +442,184 @@
                     }
                 };
                 
-                // Add multiple event listeners to ensure clicks are caught
+                // Add click event listener
                 icon.addEventListener('click', handleIconClick);
-                icon.addEventListener('mousedown', (e) => {
-                    console.log('👇 Mousedown on icon:', iconId);
-                });
-                icon.addEventListener('mouseup', (e) => {
-                    console.log('👆 Mouseup on icon:', iconId);
-                });
                 
-                // Keep dropdown open when hovering over it
+                // Handle dropdown button clicks for profile menu
+                if (dropdown && icon.classList.contains('profile-icon')) {
+                    const loginButton = dropdown.querySelector('.login-button');
+                    const createAccountButton = dropdown.querySelector('.create-account');
+                    const logoutButton = dropdown.querySelector('.logout-button');
+                    const preferencesLink = dropdown.querySelector('a[href*="Special:Preferences"]');
+                    const languageButton = dropdown.querySelector('.language-selector');
+                    
+                    if (loginButton) {
+                        loginButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🔐 Login button clicked, navigating to /login');
+                            window.location.href = '/login';
+                        });
+                    }
+                    
+                    if (createAccountButton) {
+                        createAccountButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('📝 Create Account button clicked, navigating to /register');
+                            window.location.href = '/register';
+                        });
+                    }
+                    
+                    if (logoutButton) {
+                        logoutButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🚪 Logout button clicked, navigating to /auth/logout');
+                            window.location.href = '/auth/logout';
+                        });
+                    }
+                    
+                    if (preferencesLink) {
+                        preferencesLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('⚙️ Preferences link clicked, navigating to /wiki/Special:Preferences');
+                            window.location.href = '/wiki/Special:Preferences';
+                        });
+                    }
+                    
+                    if (languageButton) {
+                        languageButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('🌐 Language button clicked, navigating to /wiki/Special:Preferences');
+                            window.location.href = '/wiki/Special:Preferences';
+                        });
+                    }
+                }
+                
+                // Handle dropdown button clicks for settings menu
+                if (dropdown && icon.classList.contains('settings-icon')) {
+                    const textSizeOptions = dropdown.querySelectorAll('[data-text-size]');
+                    const colorThemeOptions = dropdown.querySelectorAll('[data-color-theme]');
+                    const widthOptions = dropdown.querySelectorAll('[data-width]');
+                    
+                    // Handle text size options
+                    textSizeOptions.forEach(option => {
+                        option.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Remove active class from all options
+                            textSizeOptions.forEach(opt => opt.classList.remove('active'));
+                            // Add active class to clicked option
+                            option.classList.add('active');
+                            
+                            const textSize = option.getAttribute('data-text-size');
+                            console.log('📏 Text size changed to:', textSize);
+                            
+                            // Remove all text size classes from body
+                            document.body.classList.remove('text-size-small', 'text-size-standard', 'text-size-large', 'text-size-extra-large');
+                            // Add the selected text size class
+                            document.body.classList.add(`text-size-${textSize}`);
+                            
+                            // Save preference if user is logged in
+                            if (typeof saveUserPreference === 'function') {
+                                saveUserPreference('display_text_size', textSize);
+                            }
+                        });
+                    });
+                    
+                    // Handle color theme options
+                    colorThemeOptions.forEach(option => {
+                        option.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Remove active class from all options
+                            colorThemeOptions.forEach(opt => opt.classList.remove('active'));
+                            // Add active class to clicked option
+                            option.classList.add('active');
+                            
+                            const colorTheme = option.getAttribute('data-color-theme');
+                            console.log('🎨 Color theme changed to:', colorTheme);
+                            
+                            // Apply color theme change using data attribute
+                            if (colorTheme === 'auto') {
+                                document.documentElement.removeAttribute('data-theme');
+                            } else {
+                                document.documentElement.setAttribute('data-theme', colorTheme);
+                            }
+                            
+                            // Save preference if user is logged in
+                            if (typeof saveUserPreference === 'function') {
+                                saveUserPreference('display_color_theme', colorTheme);
+                            }
+                        });
+                    });
+                    
+                    // Handle width options
+                    widthOptions.forEach(option => {
+                        option.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Remove active class from all options
+                            widthOptions.forEach(opt => opt.classList.remove('active'));
+                            // Add active class to clicked option
+                            option.classList.add('active');
+                            
+                            const width = option.getAttribute('data-width');
+                            console.log('📐 Width changed to:', width);
+                            
+                            // Remove all width classes from body
+                            document.body.classList.remove('content-width-standard', 'content-width-wide', 'content-width-full');
+                            // Add the selected width class
+                            document.body.classList.add(`content-width-${width}`);
+                            
+                            // Save preference if user is logged in
+                            if (typeof saveUserPreference === 'function') {
+                                saveUserPreference('display_width', width);
+                            }
+                        });
+                    });
+                }
+                
+                // Keep dropdown open when hovering over it (for CSS hover to work properly)
                 if (dropdown) {
                     dropdown.addEventListener('mouseenter', () => {
-                        clearTimeout(hoverTimeout);
+                        // Let CSS handle the hover state
+                        console.log('Hovering over dropdown for', iconId);
                     });
                     
                     dropdown.addEventListener('mouseleave', () => {
-                        hoverTimeout = setTimeout(() => {
-                            if (hoveredDropdown === dropdown) {
-                                dropdown.style.display = 'none';
-                                dropdown.classList.remove('dropdown-open');
-                                hoveredDropdown = null;
-                                console.log('Hover: Closing dropdown from dropdown leave for', iconId);
-                            }
-                        }, 200);
+                        // Let CSS handle the hover state
+                        console.log('Leaving dropdown for', iconId);
                     });
                 }
             });
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('.sidebar-icon') && !e.target.closest('[class*="-dropdown"], [class*="-panel"], [class*="-menu"]')) {
-                    if (hoveredDropdown) {
-                        console.log('Clicking outside, closing hovered dropdown');
-                        hoveredDropdown.style.display = 'none';
-                        hoveredDropdown.classList.remove('dropdown-open');
-                        hoveredDropdown = null;
-                    }
-                }
+                // This logic is now handled by CSS :hover
+                // if (hoveredDropdown) {
+                //     console.log('Clicking outside, closing hovered dropdown');
+                //     hoveredDropdown.style.display = 'none';
+                //     hoveredDropdown.classList.remove('dropdown-open');
+                //     hoveredDropdown = null;
+                // }
             });
             
             // Close dropdowns with Escape key
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && hoveredDropdown) {
-                    console.log('Escape key, closing hovered dropdown');
-                    hoveredDropdown.style.display = 'none';
-                    hoveredDropdown.classList.remove('dropdown-open');
-                    hoveredDropdown = null;
-                }
+                // This logic is now handled by CSS :hover
+                // if (e.key === 'Escape' && hoveredDropdown) {
+                //     console.log('Escape key, closing hovered dropdown');
+                //     hoveredDropdown.style.display = 'none';
+                //     hoveredDropdown.classList.remove('dropdown-open');
+                //     hoveredDropdown = null;
+                // }
             });
             
             // Test: Log all found icons and their properties
@@ -437,6 +633,53 @@
             });
             
             console.log('✅ Smart sidebar navigation system initialized');
+            
+            // Load and apply user preferences on page load
+            function loadUserPreferences() {
+                // Load preferences from localStorage (temporary solution until backend is ready)
+                const savedTextSize = localStorage.getItem('display_text_size') || 'standard';
+                const savedColorTheme = localStorage.getItem('display_color_theme') || 'auto';
+                const savedWidth = localStorage.getItem('display_width') || 'full';
+                
+                // Apply text size
+                document.body.classList.remove('text-size-small', 'text-size-standard', 'text-size-large', 'text-size-extra-large');
+                document.body.classList.add(`text-size-${savedTextSize}`);
+                
+                // Apply color theme
+                if (savedColorTheme === 'auto') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', savedColorTheme);
+                }
+                
+                // Apply width
+                document.body.classList.remove('content-width-standard', 'content-width-wide', 'content-width-full');
+                document.body.classList.add(`content-width-${savedWidth}`);
+                
+                // Update active states in cog wheel menu
+                const textSizeOption = document.querySelector(`[data-text-size="${savedTextSize}"]`);
+                const colorThemeOption = document.querySelector(`[data-color-theme="${savedColorTheme}"]`);
+                const widthOption = document.querySelector(`[data-width="${savedWidth}"]`);
+                
+                if (textSizeOption) textSizeOption.classList.add('active');
+                if (colorThemeOption) colorThemeOption.classList.add('active');
+                if (widthOption) widthOption.classList.add('active');
+                
+                console.log('📋 User preferences loaded:', { savedTextSize, savedColorTheme, savedWidth });
+            }
+            
+            // Load preferences when page is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadUserPreferences);
+            } else {
+                loadUserPreferences();
+            }
+            
+            // Temporary saveUserPreference function for testing
+            window.saveUserPreference = function(key, value) {
+                localStorage.setItem(key, value);
+                console.log(`💾 Preference saved: ${key} = ${value}`);
+            };
             
             // Test: Add a visible alert to confirm JavaScript is working
             setTimeout(() => {

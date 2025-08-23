@@ -23,6 +23,9 @@ Options -Indexes
 # Enable rewrite engine for routing
 RewriteEngine On
 
+# Redirect root domain to Main_Page
+RewriteRule ^$ /wiki/Main_Page [R=301,L]
+
 # Serve skin assets directly from root skins directory
 # This bypasses PHP routing for static assets
 # TEMPORARILY DISABLED - using PHP routing instead

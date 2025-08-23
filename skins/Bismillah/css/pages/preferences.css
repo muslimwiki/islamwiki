@@ -1,0 +1,265 @@
+/* ===== PREFERENCES PAGE STYLES ===== */
+
+.preferences-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preferences-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--islamic-cream);
+}
+
+.preferences-header h1 {
+    color: var(--islamic-dark-blue);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.preferences-header p {
+    color: var(--islamic-dark-blue);
+    opacity: 0.8;
+    font-size: 1.1rem;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.preferences-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.preferences-section {
+    background-color: var(--islamic-cream);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.preferences-section h2 {
+    color: var(--islamic-dark-blue);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--islamic-gold);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: var(--islamic-dark-blue);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: var(--islamic-white);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--islamic-light-blue);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.form-control[readonly] {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.user-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.group-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--islamic-light-blue);
+    color: var(--islamic-white);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.group-badge.admin {
+    background-color: var(--islamic-gold);
+    color: var(--islamic-dark-blue);
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.radio-option:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+}
+
+.radio-option input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--islamic-light-blue);
+}
+
+.radio-option span {
+    color: var(--islamic-dark-blue);
+    font-size: 1rem;
+}
+
+.checkbox-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.checkbox-option:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+}
+
+.checkbox-option input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--islamic-light-blue);
+    margin-top: 0.125rem;
+}
+
+.checkbox-option span {
+    color: var(--islamic-dark-blue);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.preferences-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--islamic-cream);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--islamic-light-blue);
+    color: var(--islamic-white);
+}
+
+.btn-primary:hover {
+    background-color: #4f8fe6;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: var(--islamic-white);
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background-color: #f59e0b;
+    color: var(--islamic-white);
+}
+
+.btn-warning:hover {
+    background-color: #d97706;
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .preferences-container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+    
+    .preferences-section {
+        padding: 1rem;
+    }
+    
+    .preferences-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+} 

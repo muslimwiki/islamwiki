@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.5-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.6-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,19 +8,28 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.5** represents a major CSS architecture overhaul with:
-- ✅ **Clean CSS organization** - Global styles + page-specific files
-- ✅ **Beautiful responsive design** - Hero section optimized, full-width layout
-- ✅ **Footer integration** - No more white space, seamless page bottom
-- ✅ **Enhanced UI/UX** - Better proportions, improved spacing, cleaner sections
-- ✅ **Performance improvements** - Eliminated CSS conflicts, cleaner loading
-- ✅ **Mobile-first design** - Responsive breakpoints for all devices
+**Version 0.0.2.6** represents a complete authentication system and UI overhaul with:
+- ✅ **Complete Authentication System** - Login, logout, and registration through AmanSecurity
+- ✅ **Conditional Sidebar Rendering** - Different content for logged in vs logged out users
+- ✅ **User Preferences System** - Comprehensive settings with display options
+- ✅ **Interactive Cog Wheel Menu** - Text size, color theme, and width settings
+- ✅ **Profile Management** - User profiles, preferences, and settings
+- ✅ **AmanSecurity Extension** - Complete extension architecture for security
+- ✅ **Enhanced UI/UX** - Beautiful auth pages, improved sidebar, and responsive design
+- ✅ **Smart Layout System** - Content width options with proper centering and sidebar isolation
 
 ## 🚀 **Key Features**
 
+### **🔐 Advanced Authentication & Security**
+- **AmanSecurity Extension**: Complete authentication system with extension architecture
+- **User Management**: Advanced user administration with bulk operations
+- **Security Monitoring**: Threat detection, IP blocking, and comprehensive logging
+- **Session Management**: Secure authentication with proper session handling
+- **User Preferences**: Comprehensive settings for display, language, and personalization
+
 ### **🎨 Beautiful Islamic Design**
 - **Bismillah Skin**: Complete Islamic-themed user interface
-- **Responsive Sidebar**: Navigation with mosque icon, search, and profile
+- **Responsive Sidebar**: Navigation with crescent moon icon, search, and profile
 - **Islamic Typography**: Amiri and Noto Naskh Arabic fonts
 - **Prayer Time Display**: Current time and Hijri calendar integration
 - **Professional Layout**: Modern web design with Islamic aesthetics
@@ -36,8 +45,8 @@
 - **Simplified Routing**: Modern, efficient routing system
 - **Comprehensive Error Handling**: Beautiful error pages with detailed logging
 - **Shahid Logging**: Advanced logging and debugging system
-- **Session Management**: Secure authentication and user management
 - **Extension System**: Modular architecture for future enhancements
+- **Database Migrations**: Version-controlled database schema
 
 ### **🌍 Global Accessibility**
 - **Multi-language Support**: English, Arabic, Turkish, Urdu, Indonesian, Malay, Persian, Hebrew
