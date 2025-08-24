@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 // Set content type to HTML
@@ -9,7 +9,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 try {
     // Create application instance
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     $container = $app->getContainer();
 
     // Get skin manager

@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Knowledge\Classifications;
 
 use IslamWiki\Core\Knowledge\Interfaces\ClassificationInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * ScholarClassification
@@ -17,12 +17,12 @@ use IslamWiki\Core\Logging\ShahidLogger;
 class ScholarClassification implements ClassificationInterface
 {
     private Connection $db;
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * Create a new ScholarClassification instance.
      */
-    public function __construct(Connection $db, ShahidLogger $logger)
+    public function __construct(Connection $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

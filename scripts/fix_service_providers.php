@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Fix Service Providers Script
  * 
  * This script fixes all service providers by replacing bind() and singleton()
- * calls with set() calls to match the AsasContainer API.
+ * calls with set() calls to match the Container API.
  * 
  * @package IslamWiki\Scripts
  * @version 0.0.1

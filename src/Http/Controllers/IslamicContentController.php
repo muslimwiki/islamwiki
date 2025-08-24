@@ -29,7 +29,7 @@ class IslamicContentController extends PageController
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\Asas $container
+        \IslamWiki\Core\Container\Container $container
     ) {
         parent::__construct($db, $container);
     }

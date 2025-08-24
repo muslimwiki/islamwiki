@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Queue\Drivers;
 
 use IslamWiki\Core\Queue\Interfaces\QueueDriverInterface;
 use IslamWiki\Core\Queue\Interfaces\JobInterface;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * File Queue Driver
@@ -15,7 +15,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
  */
 class FileQueueDriver implements QueueDriverInterface
 {
-    private ShahidLogger $logger;
+    private Logger $logger;
     private string $storagePath;
     private array $stats = [
         'total_jobs' => 0,
@@ -26,7 +26,7 @@ class FileQueueDriver implements QueueDriverInterface
     /**
      * Create a new file queue driver.
      */
-    public function __construct(ShahidLogger $logger)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
         $this->storagePath = __DIR__ . '/../../../../storage/queue';

@@ -7,8 +7,8 @@ The Template Management Extension has been successfully implemented as a central
 
 ### 1. **Extension Architecture**
 - ✅ Created a fully functional extension implementing `ExtensionInterface`
-- ✅ Proper dependency injection using `AsasContainer`
-- ✅ Integration with `ShahidLogger` for comprehensive logging
+- ✅ Proper dependency injection using `Container`
+- ✅ Integration with `Logger` for comprehensive logging
 - ✅ Clean separation of concerns with well-defined methods
 
 ### 2. **Template Discovery & Management**
@@ -28,8 +28,8 @@ The Template Management Extension has been successfully implemented as a central
 ### 4. **Integration Points**
 - ✅ **Admin Dashboard**: Ready for integration with `/dashboard/templates` and `/dashboard/templates/error`
 - ✅ **Existing Error Pages**: All 9 error templates are now discoverable and manageable
-- ✅ **Shahid Logging**: Full integration with the existing logging system
-- ✅ **Container System**: Properly integrated with `AsasContainer`
+- ✅ **Logging Logging**: Full integration with the existing logging system
+- ✅ **Container System**: Properly integrated with `Container`
 
 ## Technical Implementation
 
@@ -103,7 +103,7 @@ Each template type includes:
 The extension seamlessly integrates with:
 - **Error Handling**: All 9 error templates are now discoverable
 - **Admin System**: Ready for dashboard integration
-- **Logging**: Full Shahid logging integration
+- **Logging**: Full Logging logging integration
 - **Container**: Proper dependency injection
 - **Routing**: Compatible with existing route structure
 

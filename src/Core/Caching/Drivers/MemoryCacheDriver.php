@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 /**
  * Memory Cache Driver
@@ -14,7 +14,7 @@ use IslamWiki\Core\Logging\Shahid;
  */
 class MemoryCacheDriver implements CacheDriverInterface
 {
-    private Shahid $logger;
+    private Logging $logger;
     private array $stats = [
         'hits' => 0,
         'misses' => 0,
@@ -25,7 +25,7 @@ class MemoryCacheDriver implements CacheDriverInterface
     /**
      * Create a new memory cache driver.
      */
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
 

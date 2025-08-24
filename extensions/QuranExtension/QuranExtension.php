@@ -3,12 +3,12 @@
 namespace IslamWiki\Extensions\QuranExtension;
 
 use IslamWiki\Core\Extensions\Extension;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use QuranExtension\BreadcrumbsExtension;
 
 class QuranExtension extends Extension
 {
-    public function __construct(AsasContainer $container)
+    public function __construct(Container $container)
     {
         parent::__construct($container);
     }

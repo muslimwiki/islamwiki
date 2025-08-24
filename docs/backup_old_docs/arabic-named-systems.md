@@ -4,7 +4,7 @@ IslamWiki uses meaningful Arabic names for its core systems, reflecting the cult
 
 ## 🏗️ Core Systems Overview
 
-### Aman (أمان) - Security System
+### Security (أمان) - Security System
 **File:** `src/Core/Auth/AmanSecurity.php`
 
 **Meaning:** "Security" or "safety" in Arabic, representing the protective layer that ensures user authentication and authorization.
@@ -21,9 +21,9 @@ IslamWiki uses meaningful Arabic names for its core systems, reflecting the cult
 
 **Usage:**
 ```php
-use IslamWiki\Core\Auth\AmanSecurity;
+use AmanSecurity;\Security
 
-$aman = new AmanSecurity($session, $db);
+$aman = new SecuritySecurity($session, $db);
 if ($aman->attempt($username, $password)) {
     // User authenticated successfully
 }
@@ -31,7 +31,7 @@ if ($aman->attempt($username, $password)) {
 
 ---
 
-### Wisal (وصال) - Connection Manager
+### Session (وصال) - Connection Manager
 **File:** `src/Core/Session/Wisal.php`
 
 **Meaning:** "Connection" or "link" in Arabic, representing the persistent connection between users and the application.
@@ -48,16 +48,16 @@ if ($aman->attempt($username, $password)) {
 
 **Usage:**
 ```php
-use IslamWiki\Core\Session\WisalSession;
+use WisalSession;\Session
 
-$wisal = new WisalSession($config);
+$wisal = new SessionSession($config);
 $wisal->start();
 $wisal->login($userId, $username, $isAdmin);
 ```
 
 ---
 
-### Shahid (شاهد) - Witness System
+### Logger (شاهد) - Witness System
 **File:** `src/Core/Logging/Shahid.php`
 
 **Meaning:** "Witness" or "testimony" in Arabic, representing the system that bears witness to all application events and activities.
@@ -75,16 +75,16 @@ $wisal->login($userId, $username, $isAdmin);
 
 **Usage:**
 ```php
-use IslamWiki\Core\Logging\ShahidLogger;
+use ShahidLogger;\Logger
 
-$shahid = new ShahidLogger($logDir, 'debug');
+$shahid = new LoggerLogger($logDir, 'debug');
 $shahid->info('User logged in', ['user_id' => $userId]);
 $shahid->error('Database connection failed', ['error' => $e->getMessage()]);
 ```
 
 ---
 
-### Asas (أساس) - Foundation Container
+### Container (أساس) - Foundation Container
 **File:** `src/Core/Container/AsasContainer.php`
 
 **Meaning:** "Foundation" or "base" in Arabic, representing the foundational layer that holds and manages all application services.
@@ -101,18 +101,18 @@ $shahid->error('Database connection failed', ['error' => $e->getMessage()]);
 
 **Usage:**
 ```php
-use IslamWiki\Core\Container\AsasContainer;
+use AsasContainer;\Container
 
-$container = new AsasContainer();
+$container = new ContainerContainer();
 $asas->singleton('auth', function() {
-    return new AmanSecurity($session, $db);
+    return new SecuritySecurity($session, $db);
 });
 $auth = $asas->get('auth');
 ```
 
 ---
 
-### Siraj (سراج) - API Management System
+### API (سراج) - API Management System
 **File:** `src/Core/API/Siraj.php`
 
 **Meaning:** "Lamp" or "light" in Arabic, representing the system that illuminates and guides API interactions.
@@ -129,9 +129,9 @@ $auth = $asas->get('auth');
 
 **Usage:**
 ```php
-use IslamWiki\Core\API\SirajAPI;
+use SirajAPI;\API
 
-$siraj = new SirajAPI($container, $logger, $session);
+$siraj = new APIAPI($container, $logger, $session);
 
 // Handle API request with full lifecycle management
 $response = $siraj->handleRequest($request, function($req) {
@@ -148,24 +148,24 @@ $response = $siraj->handleRequest($request, function($req) {
 All systems are properly registered through service providers:
 
 ```php
-// Aman (Authentication)
+// Security (Authentication)
 $container->singleton('auth', function() {
-    return new Aman($session, $db);
+    return new Security($session, $db);
 });
 
-// Wisal (Session)
+// Session (Session)
 $container->singleton('session', function() {
-    return new WisalSession($config);
+    return new SessionSession($config);
 });
 
-// Shahid (Logging)
+// Logger (Logging)
 $container->singleton(LoggerInterface::class, function() {
-    return new ShahidLogger($logDir, $config['level']);
+    return new LoggerLogger($logDir, $config['level']);
 });
 
-// Siraj (API)
+// API (API)
 $container->singleton('api', function() {
-    return new SirajAPI($container, $logger, $session);
+    return new APIAPI($container, $logger, $session);
 });
 ```
 
@@ -196,7 +196,7 @@ class HomeController extends Controller
 
 The following systems are planned for implementation:
 
-### Usul (أصول) - Knowledge System
+### Knowledge (أصول) - Knowledge System
 **Meaning:** "Principles" or "roots" in Arabic, especially in Islamic jurisprudence (uṣūl al-fiqh).
 
 **Purpose:** Knowledge engine, ontology, and data modeling system including:
@@ -206,7 +206,7 @@ The following systems are planned for implementation:
 - Schema layers
 - Semantic core and knowledge ontology engine
 
-### Rihlah (رحلة) - Caching System
+### Routing (رحلة) - Caching System
 **File:** `src/Core/Caching/Rihlah.php`
 
 **Meaning:** "Journey" in Arabic, representing the system that manages the journey of data through various cache layers for optimal performance.
@@ -224,7 +224,7 @@ The following systems are planned for implementation:
 
 **Usage:**
 ```php
-use IslamWiki\Core\Caching\RihlahCaching;
+use RihlahCaching;\Routing
 
 $cache = $container->get('cache');
 
@@ -254,7 +254,7 @@ $apiResponse = $cache->rememberApiResponse('quran:verses', function() {
 - **SessionCacheDriver** - User-specific session caching
 - **RedisCacheDriver** - High-performance Redis caching with pattern invalidation
 
-### Sabr (صبر) - Queue System
+### Queue (صبر) - Queue System
 **Meaning:** "Patience" in Arabic.
 
 **Purpose:** Asynchronous job processing and queue management.
@@ -269,7 +269,7 @@ $apiResponse = $cache->rememberApiResponse('quran:verses', function() {
 
 **Purpose:** File storage and document management system.
 
-### Mizan (ميزان) - Config Manager
+### Database (ميزان) - Config Manager
 **Meaning:** "Balance" or "measure" in Arabic.
 
 **Purpose:** Configuration management and system settings.
@@ -305,7 +305,7 @@ The new systems maintain the same interfaces and functionality as the old system
 
 ---
 
-### Sabr (صبر) - Queue System
+### Queue (صبر) - Queue System
 **File:** `src/Core/Queue/Sabr.php`
 
 **Meaning:** "Patience" in Arabic, representing the system that patiently processes background tasks and time-consuming operations.
@@ -326,9 +326,9 @@ The new systems maintain the same interfaces and functionality as the old system
 
 **Usage:**
 ```php
-use IslamWiki\Core\Queue\SabrQueue;
+use SabrQueue;\Queue
 
-$sabr = new SabrQueue($container, $logger, $db);
+$sabr = new QueueQueue($container, $logger, $db);
 $sabr->email('user@example.com', 'Welcome', 'Welcome to IslamWiki!');
 $sabr->notify(123, 'welcome', ['message' => 'Welcome!']);
 $sabr->report('user_activity', ['period' => 'daily']);

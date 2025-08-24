@@ -5,7 +5,7 @@
  */
 
 // Direct include approach
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 require_once __DIR__ . '/../src/Core/Container.php';
 require_once __DIR__ . '/../src/Core/Database/Connection.php';
 require_once __DIR__ . '/../src/Core/Logging/Logger.php';
@@ -13,7 +13,7 @@ require_once __DIR__ . '/../src/Core/Routing/ControllerFactory.php';
 require_once __DIR__ . '/../src/Http/Controllers/Controller.php';
 require_once __DIR__ . '/../src/Http/Controllers/IqraSearchController.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Container;
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\ControllerFactory;
@@ -23,7 +23,7 @@ echo "<h1>Container Test</h1>";
 
 try {
     // Create application
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     echo "✅ Application created<br>";
 
     // Get container

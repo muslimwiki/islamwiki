@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Knowledge\SchemaLayers;
 
 use IslamWiki\Core\Knowledge\Interfaces\SchemaLayerInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * RelationshipSchemaLayer
@@ -17,12 +17,12 @@ use IslamWiki\Core\Logging\ShahidLogger;
 class RelationshipSchemaLayer implements SchemaLayerInterface
 {
     private Connection $db;
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * Create a new RelationshipSchemaLayer instance.
      */
-    public function __construct(Connection $db, ShahidLogger $logger)
+    public function __construct(Connection $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

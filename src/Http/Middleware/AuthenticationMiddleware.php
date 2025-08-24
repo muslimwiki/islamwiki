@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -25,7 +25,7 @@ namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\WisalSession;
+use Session;\Session
 
 /**
  * Authentication Middleware
@@ -35,14 +35,14 @@ use IslamWiki\Core\Session\WisalSession;
 class AuthenticationMiddleware
 {
     /**
-     * @var WisalSession Session manager instance
+     * @var Session Session manager instance
      */
-    private WisalSession $session;
+    private Session $session;
 
     /**
      * Create a new authentication middleware instance.
      */
-    public function __construct(WisalSession $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }

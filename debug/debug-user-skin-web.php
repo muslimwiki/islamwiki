@@ -25,7 +25,7 @@ if (file_exists($autoloadPath)) {
 $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
 $dotenv->load();
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Database\Connection;
 
 echo "<!DOCTYPE html>
@@ -50,7 +50,7 @@ echo "<!DOCTYPE html>
 
 try {
     // Initialize the application
-    $app = new NizamApplication(BASE_PATH);
+    $app = new Application(BASE_PATH);
     echo "<p class='success'>✅ Application created successfully</p>";
 
     // Get database connection

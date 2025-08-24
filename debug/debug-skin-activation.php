@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\NizamApplication;
+use Container;\Container
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 use IslamWiki\Providers\SkinServiceProvider;
 
 try {
     // Create application with base path
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
 
     // Register skin service provider
     $skinProvider = new SkinServiceProvider($app);

@@ -6,7 +6,7 @@ namespace IslamWiki\Extensions\HijriCalendar;
 
 use IslamWiki\Core\Extensions\Extension;
 use IslamWiki\Core\Extensions\Hooks\HookManager;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * Hijri Calendar Extension
@@ -17,9 +17,9 @@ use IslamWiki\Core\Logging\ShahidLogger;
 class HijriCalendar extends Extension
 {
     /**
-     * @var ShahidLogger Logger instance
+     * @var Logger Logger instance
      */
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * @var HijriDateConverter Date converter instance
@@ -68,7 +68,7 @@ class HijriCalendar extends Extension
      */
     private function loadDependencies(): void
     {
-        $this->logger = new ShahidLogger($this->getExtensionPath() . '/logs');
+        $this->logger = new LoggerLogger($this->getExtensionPath() . '/logs');
         $this->dateConverter = new HijriDateConverter($this->logger);
         $this->eventsManager = new IslamicEventsManager($this->logger);
         $this->lunarPhaseCalculator = new LunarPhaseCalculator($this->logger);

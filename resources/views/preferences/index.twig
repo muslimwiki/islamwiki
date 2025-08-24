@@ -180,7 +180,7 @@
                 <div class="form-group">
                     <label for="default_page">Default Page</label>
                     <select id="default_page" name="default_page" class="form-control">
-                        <option value="Main_Page" {% if preferences.default_page == 'Main_Page' %}selected{% endif %}>Main Page</option>
+                        <option value="Home" {% if preferences.default_page == 'Home' %}selected{% endif %}>Home Page</option>
                         <option value="Dashboard" {% if preferences.default_page == 'Dashboard' %}selected{% endif %}>Dashboard</option>
                         <option value="Recent_Changes" {% if preferences.default_page == 'Recent_Changes' %}selected{% endif %}>Recent Changes</option>
                         <option value="Random_Page" {% if preferences.default_page == 'Random_Page' %}selected{% endif %}>Random Page</option>
@@ -239,7 +239,7 @@
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Save Preferences
             </button>
-            <a href="/wiki/Main_Page" class="btn btn-secondary">
+            <a href="/wiki/Home" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Cancel
             </a>
         </div>

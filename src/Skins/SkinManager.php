@@ -14,16 +14,16 @@ declare(strict_types=1);
 
 namespace IslamWiki\Skins;
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 
 class SkinManager
 {
-    private NizamApplication $app;
+    private Application $app;
     private array $skins = [];
     private string $activeSkin;
     private ?Skin $currentSkin = null;
 
-    public function __construct(NizamApplication $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->loadSkins();
@@ -108,7 +108,7 @@ class SkinManager
         $this->activeSkin = $wgActiveSkin ?? 'Bismillah';
     }
 
-    public static function getActiveSkinNameStatic(NizamApplication $app): string
+    public static function getActiveSkinNameStatic(Application $app): string
     {
         try {
             $container = $app->getContainer();
@@ -120,7 +120,7 @@ class SkinManager
         }
     }
 
-    public static function setActiveSkinStatic(NizamApplication $app, string $skinName): bool
+    public static function setActiveSkinStatic(Application $app, string $skinName): bool
     {
         try {
             $container = $app->getContainer();

@@ -2,15 +2,15 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
-use IslamWiki\Core\Container\AsasContainer;
+use Application;\Application
+use Container;\Container
 use Psr\Log\LoggerInterface;
 
 echo "Testing logger binding in full app context...\n";
 
 try {
     // Create application (this should set up the container properly)
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     $app->bootstrap();
 
     // Get the container from the application

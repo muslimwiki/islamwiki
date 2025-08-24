@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "title": "Main Page",
+        "title": "Home Page",
         "source_type": "wiki_page",
         "original_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
         "template_converted_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",

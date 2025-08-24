@@ -1,7 +1,7 @@
 <?php
 
 // Debug script to check skin loading
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 require_once __DIR__ . '/../src/Core/Container.php';
 require_once __DIR__ . '/../src/Skins/SkinManager.php';
 

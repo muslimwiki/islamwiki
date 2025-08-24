@@ -8,7 +8,7 @@ use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\JsonResponse;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Extensions\HadithExtension\Models\HadithCollection;
 use IslamWiki\Extensions\HadithExtension\Models\HadithBook;
 use IslamWiki\Extensions\HadithExtension\Models\HadithNarration;
@@ -29,7 +29,7 @@ class HadithController extends BaseController
     private $narratorModel;
     private $logger;
     
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
         

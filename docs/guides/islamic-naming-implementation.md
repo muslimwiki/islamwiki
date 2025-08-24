@@ -12,7 +12,7 @@ This document provides a comprehensive list of all files, folders, and component
 ```
 Current Name          → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────
-src/                 → asas/                 → Foundation (Core code)
+src/                 → asas/                 → Container (Core code)
 config/              → tadbir/               → Management/Planning (Configuration)
 cache/               → rihlah/               → Journey (Caching)
 routes/              → simplified-routing/   → Path/Way (Routing)
@@ -33,20 +33,20 @@ docs/                → ilm/                  → Knowledge (Documentation)
 ### **System Purpose Alignment**
 ```
 Core Systems:
-├── Asas (Foundation) - Dependency injection container
-├── Aman (Security) - Security, authentication, authorization
-├── Siraj (Light/Lamp) - API management and routing
-├── Shahid (Witness) - Logging and error handling
-├── Wisal (Connection) - Session management
-├── Rihlah (Journey) - Caching system
-├── Sabr (Patience) - Job queue system
-├── Usul (Principles/Roots) - Knowledge management
+├── Container (Container) - Dependency injection container
+├── Security (Security) - Security, authentication, authorization
+├── API (Light/Lamp) - API management and routing
+├── Logging (Witness) - Logging and error handling
+├── Session (Connection) - Session management
+├── Routing (Journey) - Caching system
+├── Queue (Patience) - Job queue system
+├── Knowledge (Principles/Roots) - Knowledge management
 ├── Iqra (Read) - Islamic search engine
 ├── Bayan (Explanation) - Content formatting system
 ├── Simplified Routing (Path/Way) - Advanced routing system
-├── Nizam (System/Order) - Main application system
-├── Mizan (Balance/Scale) - Database system
-├── Tadbir (Management/Planning) - Configuration management
+├── Application (System/Order) - Main application system
+├── Database (Balance/Scale) - Database system
+├── Configuration (Management/Planning) - Configuration management
 ├── Safa (Purity) - CSS framework
 └── Marwa (Excellence) - JavaScript framework
 ```
@@ -60,7 +60,7 @@ Core Systems:
 asas/
 ├── 📁 Core/                    # Core framework components
 │   ├── 📁 Container/          # Dependency injection
-│   │   ├── 📄 AsasContainer.php        # Foundation container
+│   │   ├── 📄 Container.php        # Container container
 │   │   └── 📄 ContainerInterface.php   # Container interface
 │   ├── 📁 Routing/            # Routing system
 │   │   ├── 📄 Routing.php             # Path routing
@@ -73,10 +73,10 @@ asas/
 │   │   ├── 📄 TwigRenderer.php        # Template renderer
 │   │   └── 📄 ViewInterface.php       # View interface
 │   ├── 📁 Error/              # Error handling
-│   │   ├── 📄 ShahidErrorHandler.php  # Witness error handler
+│   │   ├── 📄 LoggingErrorHandler.php  # Witness error handler
 │   │   └── 📄 ExceptionHandler.php    # Exception handler
 │   └── 📁 Logging/            # Logging system
-│       ├── 📄 ShahidLogger.php        # Witness logger
+│       ├── 📄 Logger.php        # Witness logger
 │       └── 📄 LogInterface.php        # Log interface
 ├── 📁 Http/                    # HTTP layer
 │   ├── 📁 Controllers/        # Request controllers
@@ -84,12 +84,12 @@ asas/
 │   │   ├── 📄 WikiController.php      # Wiki controller
 │   │   └── 📄 AuthController.php      # Authentication controller
 │   └── 📁 Middleware/         # Request middleware
-│       ├── 📄 AmanMiddleware.php      # Security middleware
-│       ├── 📄 WisalMiddleware.php     # Session middleware
+│       ├── 📄 SecurityMiddleware.php      # Security middleware
+│       ├── 📄 SessionMiddleware.php     # Session middleware
 │       └── 📄 LocaleMiddleware.php    # Language middleware
 ├── 📁 Providers/               # Service providers
-│   ├── 📄 AsasServiceProvider.php     # Foundation service provider
-│   ├── 📄 AmanServiceProvider.php     # Security service provider
+│   ├── 📄 ContainerServiceProvider.php     # Container service provider
+│   ├── 📄 SecurityServiceProvider.php     # Security service provider
 │   └── 📄 ViewServiceProvider.php     # View service provider
 └── 📁 Models/                  # Data models
     ├── 📄 User.php                    # User model
@@ -204,22 +204,22 @@ mizan/
 ```
 aman/
 ├── 📁 authentication/           # Authentication system
-│   ├── 📄 AmanAuthenticator.php       # Main authenticator
+│   ├── 📄 SecurityAuthenticator.php       # Main authenticator
 │   ├── 📄 UserAuthenticator.php       # User authentication
 │   └── 📄 TokenAuthenticator.php      # Token authentication
 ├── 📁 authorization/            # Authorization system
-│   ├── 📄 AmanAuthorizer.php          # Main authorizer
+│   ├── 📄 SecurityAuthorizer.php          # Main authorizer
 │   ├── 📄 RoleAuthorizer.php          # Role-based authorization
 │   └── 📄 PermissionAuthorizer.php    # Permission-based authorization
 ├── 📁 validation/              # Input validation
-│   ├── 📄 AmanValidator.php           # Main validator
+│   ├── 📄 SecurityValidator.php           # Main validator
 │   ├── 📄 InputValidator.php          # Input validation
 │   └── 📄 ContentValidator.php        # Content validation
 ├── 📁 encryption/              # Encryption system
-│   ├── 📄 AmanEncryptor.php           # Main encryptor
+│   ├── 📄 SecurityEncryptor.php           # Main encryptor
 │   ├── 📄 PasswordEncryptor.php       # Password encryption
 │   └── 📄 DataEncryptor.php           # Data encryption
-└── 📄 aman-security.php                # Main security file
+└── 📄 security.php                # Main security file
 ```
 
 ---
@@ -230,16 +230,16 @@ aman/
 ```
 rihlah/
 ├── 📁 caching/                 # Caching system
-│   ├── 📄 RihlahCache.php              # Journey cache
+│   ├── 📄 RoutingCache.php              # Journey cache
 │   ├── 📄 PageCache.php                # Page caching
 │   ├── 📄 ObjectCache.php              # Object caching
 │   └── 📄 RouteCache.php               # Route caching
 ├── 📁 monitoring/              # Performance monitoring
-│   ├── 📄 RihlahMonitor.php            # Journey monitor
+│   ├── 📄 RoutingMonitor.php            # Journey monitor
 │   ├── 📄 PerformanceMonitor.php       # Performance metrics
 │   └── 📄 ResourceMonitor.php          # Resource monitoring
 ├── 📁 optimization/            # Optimization system
-│   ├── 📄 RihlahOptimizer.php          # Journey optimizer
+│   ├── 📄 RoutingOptimizer.php          # Journey optimizer
 │   ├── 📄 DatabaseOptimizer.php        # Database optimization
 │   └── 📄 AssetOptimizer.php           # Asset optimization
 └── 📄 rihlah-performance.php            # Main performance file
@@ -271,16 +271,16 @@ simplified-routing/
 ```
 nizam/
 ├── 📁 content/                 # Content management
-│   ├── 📄 NizamContent.php             # Main content manager
+│   ├── 📄 ApplicationContent.php             # Main content manager
 │   ├── 📄 PageContent.php              # Page content
 │   ├── 📄 ArticleContent.php           # Article content
 │   └── 📄 MediaContent.php             # Media content
 ├── 📁 reading/                 # Reading system
-│   ├── 📄 NizamReader.php              # Main reader
+│   ├── 📄 ApplicationReader.php              # Main reader
 │   ├── 📄 PageReader.php               # Page reader
 │   └── 📄 ContentReader.php            # Content reader
 ├── 📁 delivery/                # Content delivery
-│   ├── 📄 NizamDelivery.php            # Main delivery system
+│   ├── 📄 ApplicationDelivery.php            # Main delivery system
 │   ├── 📄 ContentDelivery.php          # Content delivery
 │   └── 📄 MediaDelivery.php            # Media delivery
 └── 📄 nizam-content.php                # Main content file
@@ -317,16 +317,16 @@ iqra/
 ```
 usul/
 ├── 📁 knowledge/               # Knowledge management
-│   ├── 📄 UsulKnowledge.php            # Main knowledge manager
+│   ├── 📄 Knowledge.php            # Main knowledge manager
 │   ├── 📄 ContentKnowledge.php         # Content knowledge
 │   ├── 📄 UserKnowledge.php            # User knowledge
 │   └── 📄 SystemKnowledge.php          # System knowledge
 ├── 📁 principles/              # Knowledge principles
-│   ├── 📄 UsulPrinciples.php           # Main principles
+│   ├── 📄 KnowledgePrinciples.php           # Main principles
 │   ├── 📄 ContentPrinciples.php        # Content principles
 │   └── 📄 UserPrinciples.php           # User principles
 ├── 📁 management/              # Knowledge management
-│   ├── 📄 UsulManager.php              # Main manager
+│   ├── 📄 KnowledgeManager.php              # Main manager
 │   ├── 📄 ContentManager.php           # Content manager
 │   └── 📄 UserManager.php              # User manager
 └── 📄 usul-knowledge.php               # Main knowledge file
@@ -424,7 +424,7 @@ ilm/
 ### **PHP Files**
 ```
 Core Files:
-├── asas-{component}.php        # Foundation files
+├── asas-{component}.php        # Container files
 ├── aman-{component}.php        # Security files
 ├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files

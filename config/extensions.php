@@ -24,18 +24,7 @@ return [
     |
     */
     'active_extensions' => [
-        // Core System Extensions
-        'SafaSkinExtension' => [
-            'enabled' => true,
-            'priority' => 1,
-            'config' => [
-                'default_skin' => 'Bismillah',
-                'allow_user_skin_selection' => true,
-                'admin_only_skin_management' => true,
-                'live_preview_enabled' => true,
-                'customization_enabled' => true,
-            ]
-        ],
+        // Core System Extensions (SafaSkinExtension consolidated into core)
         
         'DashboardExtension' => [
             'enabled' => true,

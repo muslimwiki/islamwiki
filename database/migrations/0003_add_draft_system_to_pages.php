@@ -263,7 +263,7 @@ if (php_sapi_name() === 'cli') {
     $dotenv->load();
     
     // Initialize application
-    $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/../..');
+    $app = new \IslamWiki\Core\Application . '/../..');
     $container = $app->getContainer();
     
     // Get database connection

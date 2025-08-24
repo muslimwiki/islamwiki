@@ -5,130 +5,111 @@ declare(strict_types=1);
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Http\Controllers\PageController;
-use IslamWiki\Http\Controllers\HomeController;
-use IslamWiki\Http\Controllers\WikiController;
-use IslamWiki\Http\Controllers\Auth\AuthController;
-use IslamWiki\Http\Controllers\ErrorTemplateController;
 
-return function (\IslamWiki\Core\NizamApplication $app) {
+return function (\IslamWiki\Core\Application $app) {
     $container = $app->getContainer();
     $db = $container->get(Connection::class);
-
-    // Get the router from the application
     $router = $app->getRouter();
 
     // Register auth service manually since extension is not auto-loaded
     if (!$container->has('auth')) {
         try {
             $session = $container->get('session');
-            $auth = new \IslamWiki\Core\Auth\AmanSecurity($session, $db);
-            $container->set(\IslamWiki\Core\Auth\AmanSecurity::class, $auth);
-            $container->alias('auth', \IslamWiki\Core\Auth\AmanSecurity::class);
-            $container->alias('aman.security', \IslamWiki\Core\Auth\AmanSecurity::class);
-            error_log('Auth service registered successfully');
+            $auth = new \IslamWiki\Core\Auth\Security($session, $db, $container->get('logger'), []);
+            $container->set(\IslamWiki\Core\Auth\Security::class, $auth);
+            $container->alias('auth', \IslamWiki\Core\Auth\Security::class);
+            $container->alias('security', \IslamWiki\Core\Auth\Security::class);
         } catch (\Exception $e) {
             error_log('Failed to register auth service: ' . $e->getMessage());
         }
-    } else {
-        error_log('Auth service already exists in container');
     }
 
     // Create controllers
-    $pageController = new PageController($db, $container);
-    $homeController = new HomeController($db, $container);
-    $wikiController = new WikiController($db, $container);
-    $authController = new AuthController($db, $container);
+    $pageController = new \IslamWiki\Http\Controllers\PageController($db, $container);
+    $homeController = new \IslamWiki\Http\Controllers\HomeController($db, $container);
+    $wikiController = new \IslamWiki\Http\Controllers\WikiController($db, $container);
+    $authController = new \IslamWiki\Http\Controllers\Auth\AuthController($db, $container);
     $dashboardController = new \IslamWiki\Http\Controllers\DashboardController($db, $container);
-    $searchApiController = new \IslamWiki\Http\Controllers\SearchApiController($db, null);
-    $errorTemplateController = new ErrorTemplateController($db, $container);
+    $searchController = new \IslamWiki\Http\Controllers\SearchController($db, $container);
 
-    // Root redirect - handled by .htaccess to /wiki/Main_Page
-    // $router->get('/', [$homeController, 'index']);
+    // Test route to verify routing is working
+    $router->get('/test-routing', function ($request) {
+        return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], 'Routing test works!');
+    });
+
+    // Essential wiki routes
+    $router->get('/wiki/Home', [$wikiController, 'showMainPage']);
+    $router->get('/wiki', [$wikiController, 'dashboard']);
+    $router->get('/wiki/index', [$wikiController, 'index']);
+    $router->get('/wiki/create', [$wikiController, 'showCreatePage']);
 
     // Authentication routes
     $router->post('/auth/login', [$authController, 'login']);
     $router->post('/auth/register', [$authController, 'register']);
     $router->get('/auth/logout', [$authController, 'logout']);
-    
-    // Auth page routes
     $router->get('/login', [$authController, 'showLogin']);
     $router->get('/register', [$authController, 'showRegister']);
 
-    // Essential wiki routes
-    $router->get('/wiki', [$wikiController, 'dashboard']); // Main wiki dashboard
-    $router->get('/wiki/index', [$wikiController, 'index']); // All pages list
-    $router->get('/wiki/Main_Page', [$wikiController, 'showMainPage']);
-    $router->get('/wiki/Special:Preferences', [$authController, 'showPreferences']);
-    $router->post('/wiki/Special:Preferences', [$authController, 'updatePreferences']);
-    // $router->get('/wiki/templates', [$wikiController, 'templates']); // Removed - now handled by /templates
-    $router->get('/wiki/drafts', [$wikiController, 'drafts']); // Draft management
-    $router->post('/wiki/drafts/{id}/approve', [$wikiController, 'approveDraft']); // Approve draft
-    $router->post('/wiki/drafts/{id}/reject', [$wikiController, 'rejectDraft']); // Reject draft
-    $router->get('/wiki/create', [$wikiController, 'showCreatePage']); // Simple page creation form
-    
-    // Collaborative editing routes
-    $router->get('/wiki/{slug}/collaborative', [$wikiController, 'getCollaborativeSession']); // Get collaborative session
-    $router->post('/wiki/{slug}/collaborative/join', [$wikiController, 'joinCollaborativeSession']); // Join editing session
-    $router->post('/wiki/{slug}/collaborative/leave', [$wikiController, 'leaveCollaborativeSession']); // Leave editing session
-    $router->post('/wiki/{slug}/collaborative/save', [$wikiController, 'saveCollaborativeEdit']); // Save collaborative edit
-    
+    // Dashboard route
+    $router->get('/dashboard', [$dashboardController, 'index']);
 
-    
-    // Primary search route - used by all domains
-$router->get('/search', [$wikiController, 'enhancedSearch']); // Primary search functionality
+    // Search routes
+    $router->get('/search', [$wikiController, 'enhancedSearch']);
+    $router->get('/api/search/suggestions', [$searchController, 'getSuggestions']);
 
-// Wiki-specific search route - redirects to main search
-$router->get('/wiki/search', [$wikiController, 'redirectToSearch']); // Redirect to main search
-
-// Search API routes for live search and advanced features
-$router->get('/api/search/suggestions', [$searchApiController, 'getSuggestions']);
-$router->post('/api/search/save', [$searchApiController, 'saveSearch']);
-$router->get('/api/search/saved', [$searchApiController, 'getSavedSearches']);
-$router->delete('/api/search/saved/{id}', [$searchApiController, 'deleteSavedSearch']);
-$router->post('/api/search/history/clear', [$searchApiController, 'clearSearchHistory']);
-    
-    // User namespace routes - must come before generic slug route
-    $router->get('/wiki/User/{username}', [$wikiController, 'showUserProfile']);
-    
-    // Red link handling routes - must come before generic slug route
-    // Note: Red links now redirect directly to /wiki/create with title parameter
-    // $router->get('/wiki/{slug}/redlink', [$wikiController, 'handleRedLink']); // Removed - confusing duplicate
-    // $router->post('/wiki/{slug}/create', [$wikiController, 'createFromRedLink']); // Removed - confusing duplicate
-    
-    // Test route to trigger enhanced error handler
-    $router->get('/test-error', function() {
-        throw new \Exception('This is a test error to demonstrate the enhanced error handler');
+    // Skin management routes (using core skin services)
+    $router->get('/admin/skins', function ($request) use ($container) {
+        $skinManager = $container->get('skin.manager');
+        $skins = $skinManager->getAvailableSkins();
+        
+        $html = '<!DOCTYPE html><html><head><title>Skin Management - IslamWiki</title>';
+        $html .= '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">';
+        $html .= '</head><body><h1>Skin Management</h1>';
+        $html .= '<p>Active Skin: <strong>' . htmlspecialchars($skinManager->getActiveSkinName()) . '</strong></p>';
+        $html .= '<h2>Available Skins:</h2><ul>';
+        
+        foreach ($skins as $name => $config) {
+            $isActive = $name === $skinManager->getActiveSkinName() ? ' (Active)' : '';
+            $html .= '<li><strong>' . htmlspecialchars($name) . '</strong>' . htmlspecialchars($isActive) . '</li>';
+            $html .= '<ul><li>Description: ' . htmlspecialchars($config['description'] ?? 'No description') . '</li>';
+            $html .= '<li>Version: ' . htmlspecialchars($config['version'] ?? 'Unknown') . '</li>';
+            $html .= '<li>Author: ' . htmlspecialchars($config['author'] ?? 'Unknown') . '</li></ul>';
+        }
+        
+        $html .= '</ul><a href="/wiki/Home">← Back to Home Page</a></body></html>';
+        
+        return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], $html);
     });
-    
-    // Test route to trigger WikiController enhanced error handling
-    $router->get('/test-wiki-error', [$wikiController, 'testError']);
-    
-    // Regular wiki page routes
+
+    $router->post('/admin/skins/{skinName}/activate', function ($request, $params) use ($container) {
+        $skinName = $params['skinName'];
+        $skinManager = $container->get('skin.manager');
+        
+        if ($skinManager->setActiveSkin($skinName)) {
+            $html = '<!DOCTYPE html><html><head><title>Skin Activated - IslamWiki</title>';
+            $html .= '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">';
+            $html .= '</head><body><h1>Skin Activated Successfully</h1>';
+            $html .= '<p>The skin <strong>' . htmlspecialchars($skinName) . '</strong> has been activated.</p>';
+            $html .= '<a href="/admin/skins">← Back to Skin Management</a></body></html>';
+            
+            return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], $html);
+        } else {
+            $html = '<!DOCTYPE html><html><head><title>Skin Activation Failed - IslamWiki</title>';
+            $html .= '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">';
+            $html .= '</head><body><h1>Skin Activation Failed</h1>';
+            $html .= '<p>The skin <strong>' . htmlspecialchars($skinName) . '</strong> could not be activated.</p>';
+            $html .= '<a href="/admin/skins">← Back to Skin Management</a></body></html>';
+            
+            return new \IslamWiki\Core\Http\Response(400, ['Content-Type' => 'text/html'], $html);
+        }
+    });
+
+    // Page routes
     $router->get('/wiki/{slug}', [$pageController, 'show']);
-    $router->get('/wiki/{slug}/history', [$wikiController, 'history']); // Enhanced history with WikiController
     $router->get('/wiki/{slug}/edit', [$pageController, 'edit']);
     $router->post('/wiki/{slug}', [$pageController, 'update']);
     $router->delete('/wiki/{slug}', [$pageController, 'destroy']);
-    
-    // Enhanced revision management routes
-    $router->get('/wiki/{slug}/compare', [$wikiController, 'compareRevisions']); // Compare two revisions
-    $router->post('/wiki/{slug}/revert', [$wikiController, 'revertToRevision']); // Revert to specific revision
-    $router->get('/wiki/{slug}/revision/{id}', [$wikiController, 'showRevision']); // View specific revision
-    // Redirect /create to wiki create page
-    $router->get('/create', function($request) {
-        return new \IslamWiki\Core\Http\Response(302, ['Location' => '/wiki/create'], '');
-    });
-    
-    // Test route to verify routing is working
-    $router->get('/test-routing', function ($request) {
-        return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], 'Routing test works!');
-    });
-    
 
-    
-
-    
     // Settings route
     $router->get('/settings', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
@@ -142,12 +123,12 @@ $router->post('/api/search/history/clear', [$searchApiController, 'clearSearchHi
         <body>
             <h1>Settings</h1>
             <p>Settings page coming soon...</p>
-            <a href="/wiki/Main_Page">← Back to Main Page</a>
+            <a href="/wiki/Home">← Back to Home Page</a>
         </body>
         </html>
         ');
     });
-    
+
     // Profile route
     $router->get('/profile', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
@@ -161,232 +142,9 @@ $router->post('/api/search/history/clear', [$searchApiController, 'clearSearchHi
         <body>
             <h1>Profile</h1>
             <p>Profile page coming soon...</p>
-            <a href="/wiki/Main_Page">← Back to Main Page</a>
+            <a href="/wiki/Home">← Back to Home Page</a>
         </body>
         </html>
         ');
-    });
-    
-    // Dashboard route - use the proper DashboardController
-    $router->get('/dashboard', [$dashboardController, 'index']);
-    
-    // Skin asset routes - serve CSS and JS files directly through Sabil routing
-    $router->get('/skins/Bismillah/css/bismillah.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/bismillah.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/js/bismillah.js', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/js/bismillah.js';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'application/javascript; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'JS file not found');
-    });
-    
-    // Page-specific CSS routes
-    $router->get('/skins/Bismillah/css/pages/main-page.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/main-page.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/auth.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/auth.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/settings.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/settings.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/dashboard.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/dashboard.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/all-dashboards.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/all-dashboards.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/admin-dashboard.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/admin-dashboard.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/user-dashboard.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/user-dashboard.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/scholar-dashboard.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/scholar-dashboard.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/contributor-dashboard.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/contributor-dashboard.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/preferences.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/preferences.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    $router->get('/skins/Bismillah/css/pages/admin-error-templates.css', function($request) {
-        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/admin-error-templates.css';
-        if (file_exists($filePath)) {
-            $content = file_get_contents($filePath);
-            return new \IslamWiki\Core\Http\Response(200, [
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'public, max-age=3600',
-                'X-Content-Type-Options' => 'nosniff'
-            ], $content);
-        }
-        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
-    });
-    
-    // Unified Template Management routes
-    $router->get('/templates', [$errorTemplateController, 'templatesHub']);
-    $router->get('/templates/error', [$errorTemplateController, 'errorTemplates']);
-    $router->get('/templates/error/{template}/edit', [$errorTemplateController, 'editErrorTemplate']);
-    $router->post('/templates/error/{template}/update', [$errorTemplateController, 'updateErrorTemplate']);
-    $router->get('/templates/error/{template}/preview', [$errorTemplateController, 'previewErrorTemplate']);
-    $router->get('/templates/error/{template}/preview-content', [$errorTemplateController, 'previewErrorTemplateContent']);
-    
-    // Admin Template Management routes (redirects to /templates)
-    $router->get('/dashboard/templates', [$errorTemplateController, 'redirectToTemplates']);
-    $router->get('/dashboard/templates/error', [$errorTemplateController, 'redirectToErrorTemplates']);
-    $router->get('/dashboard/templates/error/{template}/edit', [$errorTemplateController, 'redirectToEditTemplate']);
-    $router->post('/dashboard/templates/error/{template}/update', [$errorTemplateController, 'redirectToUpdateTemplate']);
-    $router->get('/dashboard/templates/error/{template}/preview', [$errorTemplateController, 'redirectToPreviewTemplate']);
-    $router->get('/dashboard/templates/error/{template}/preview-content', [$errorTemplateController, 'redirectToPreviewContent']);
-    
-    // Template management API routes
-    $router->post('/dashboard/templates/backup', [$errorTemplateController, 'backupTemplates']);
-    $router->post('/dashboard/templates/restore', [$errorTemplateController, 'restoreTemplates']);
-    $router->post('/dashboard/templates/validate', [$errorTemplateController, 'validateTemplates']);
-    $router->post('/dashboard/templates/export', [$errorTemplateController, 'exportTemplates']);
-    $router->post('/dashboard/templates/share', [$errorTemplateController, 'shareTemplates']);
-    $router->get('/dashboard/templates/versions/{template}', [$errorTemplateController, 'getTemplateVersions']);
-    $router->post('/dashboard/templates/versions/{template}/create', [$errorTemplateController, 'createTemplateVersion']);
-    $router->post('/dashboard/templates/versions/{template}/restore/{version}', [$errorTemplateController, 'restoreTemplateVersion']);
-
-    // API catch-all route for non-existent API endpoints
-    $router->get('/api/{endpoint}', function($request, $endpoint) {
-        // Use Shahid error handler for 404
-        throw new \IslamWiki\Core\Http\Exceptions\HttpException(404, 'API endpoint not found');
-    });
-    
-    // Catch-all route for root domain pages
-    // This handles {domain}/{page} and redirects to /wiki/{page}
-    // If the page doesn't exist, it will be handled by the wiki routing system
-    $router->get('/{page}', function($request, $page) use ($wikiController) {
-        // Skip core pages that should not be redirected
-        $corePages = ['settings', 'profile', 'dashboard', 'search', 'login', 'register', 'auth', 'skins'];
-        
-        if (in_array(strtolower($page), $corePages)) {
-            // Let the request continue to find the actual route
-            // Use Shahid error handler for 404
-            throw new \IslamWiki\Core\Http\Exceptions\HttpException(404, 'Page not found');
-        }
-        
-        // Redirect to wiki namespace
-        return new \IslamWiki\Core\Http\Response(302, ['Location' => '/wiki/' . urlencode($page)], '');
     });
 };

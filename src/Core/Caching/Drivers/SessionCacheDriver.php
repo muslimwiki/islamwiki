@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * Session Cache Driver
@@ -14,7 +14,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
  */
 class SessionCacheDriver implements CacheDriverInterface
 {
-    private ShahidLogger $logger;
+    private Logger $logger;
     private array $stats = [
         'hits' => 0,
         'misses' => 0,
@@ -25,7 +25,7 @@ class SessionCacheDriver implements CacheDriverInterface
     /**
      * Create a new session cache driver.
      */
-    public function __construct(ShahidLogger $logger)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
 

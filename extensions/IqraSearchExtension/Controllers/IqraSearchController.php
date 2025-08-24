@@ -9,7 +9,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\View\TwigRenderer;
 use IslamWiki\Core\Search\IqraSearch;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use Exception;
 
 /**
@@ -23,7 +23,7 @@ class IqraSearchController extends Controller
 {
     protected IqraSearch $searchEngine;
 
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
         $this->searchEngine = new IqraSearch($this->db);

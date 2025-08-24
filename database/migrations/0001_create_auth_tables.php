@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Create Authentication and User Management Tables
  * 
  * Migration for user authentication, roles, and skin preferences.
- * Uses Mizan database system with Islamic naming conventions.
+ * Uses Database database system with Islamic naming conventions.
  * 
  * @package IslamWiki\Database\Migrations
  * @version 0.0.1
@@ -17,7 +17,7 @@ declare(strict_types=1);
 /**
  * Create Authentication Tables Migration
  * 
- * This migration creates all necessary tables for the Aman authentication system,
+ * This migration creates all necessary tables for the Security authentication system,
  * including users, roles, permissions, and skin preferences.
  */
 class CreateAuthTables
@@ -136,7 +136,7 @@ class CreateAuthTables
             $table->index('skin_name');
         });
 
-        // Sessions table (Wisal system)
+        // Sessions table (Session system)
         $this->schema->create('mizan_sessions', function ($table) {
             $table->string('id')->primary();
             $table->unsignedBigInteger('user_id')->nullable();

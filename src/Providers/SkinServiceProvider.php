@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Skins\SkinManager;
 
 class SkinServiceProvider
@@ -22,7 +22,7 @@ class SkinServiceProvider
     /**
      * Register skin services
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // For now, just register basic skin data without complex dependencies
         // This will be expanded once the basic authentication system is working
@@ -40,7 +40,7 @@ class SkinServiceProvider
     /**
      * Boot the skin service provider
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Get the view renderer
         $viewRenderer = $container->get('view');

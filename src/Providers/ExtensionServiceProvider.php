@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\Extensions\ExtensionManager;
 use IslamWiki\Core\Extensions\Hooks\HookManager;
 
@@ -18,7 +18,7 @@ class ExtensionServiceProvider
     /**
      * Register the service provider.
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the HookManager
         $container->set(HookManager::class, function () {
@@ -26,12 +26,12 @@ class ExtensionServiceProvider
         });
 
         // Register the ExtensionManager
-        $container->set(ExtensionManager::class, function (AsasContainer $container) {
+        $container->set(ExtensionManager::class, function (Container $container) {
             return new ExtensionManager($container);
         });
 
         // Also register with alias for extension instantiation
-        $container->set('extension.manager', function (AsasContainer $container) {
+        $container->set('extension.manager', function (Container $container) {
             return new ExtensionManager($container);
         });
     }
@@ -39,7 +39,7 @@ class ExtensionServiceProvider
     /**
      * Bootstrap the service provider.
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Don't load extensions during boot to avoid circular dependencies
         // Extensions will be loaded when the ExtensionManager is first accessed

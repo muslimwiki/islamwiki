@@ -7,7 +7,7 @@ namespace IslamWiki\Core\Error;
 use Throwable;
 use Psr\Log\LoggerInterface;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 /**
  * Handles application errors and exceptions with detailed debugging information

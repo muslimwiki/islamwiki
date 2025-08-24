@@ -27,7 +27,7 @@ if (file_exists(BASE_PATH . '/.env')) {
     $dotenv->load();
 }
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Database\Connection;
 
 echo "<h1>🔍 Profile System Test</h1>\n";
@@ -35,7 +35,7 @@ echo "<h2>Testing Profile System Functionality</h2>\n";
 
 try {
     // Create application
-    $app = new NizamApplication(BASE_PATH);
+    $app = new Application(BASE_PATH);
     $container = $app->getContainer();
     $db = $container->get('db');
 

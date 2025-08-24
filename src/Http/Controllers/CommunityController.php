@@ -7,7 +7,7 @@
  * discussions, moderation, and community features.
  *
  * @package IslamWiki\Http\Controllers
- * @version 0.0.23
+ * @version 0.0.3.0
  * @license AGPL-3.0-only
  */
 
@@ -15,548 +15,132 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Community\CommunityManager;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Container\Container;
 
+/**
+ * Community Controller - Handles Community Management Functionality
+ */
 class CommunityController extends Controller
 {
     /**
-     * The community manager instance.
-     */
-    private CommunityManager $communityManager;
-
-
-
-    /**
-     * The logger instance.
-     */
-    private ShahidLogger $logger;
-
-    /**
-     * Create a new community controller instance.
-     */
-    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
-    {
-        parent::__construct($db, $container);
-        $this->logger = $container->get(ShahidLogger::class);
-        $this->communityManager = new CommunityManager($this->db, $this->logger);
-    }
-
-    /**
      * Display the community dashboard.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            $stats = $this->communityManager->getCommunityStats();
-            $recentDiscussions = $this->communityManager->getCommunityDiscussions(10);
+            $stats = $this->getCommunityStats();
+            $recentDiscussions = $this->getRecentDiscussions(10);
             $topContributors = $this->getTopContributors();
 
             return $this->view('community/index', [
                 'stats' => $stats,
                 'recent_discussions' => $recentDiscussions,
                 'top_contributors' => $topContributors,
-                'title' => 'Community Dashboard'
-            ]);
+                'title' => 'Community Dashboard - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Community dashboard error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load community dashboard', 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
      * Display the users directory.
      */
-    public function users(): Response
+    public function users(Request $request): Response
     {
         try {
-            // Get search and filter parameters
-            $search = $_GET['search'] ?? '';
-            $sort = $_GET['sort'] ?? 'recent';
-            $page = max(1, (int)($_GET['page'] ?? 1));
+            $search = $request->getQueryParams()['search'] ?? '';
+            $sort = $request->getQueryParams()['sort'] ?? 'recent';
+            $page = max(1, (int)($request->getQueryParams()['page'] ?? 1));
             $perPage = 20;
 
-            // Build query
-            $query = $this->db->table('users')
-                ->select([
-                    'id', 'username', 'display_name', 'bio', 'created_at',
-                    'last_login_at', 'is_active', 'is_admin'
-                ])
-                ->where('is_active', true);
-
-            // Apply search filter
-            if (!empty($search)) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('username', 'LIKE', "%{$search}%")
-                      ->orWhere('display_name', 'LIKE', "%{$search}%")
-                      ->orWhere('bio', 'LIKE', "%{$search}%");
-                });
-            }
-
-            // Apply sorting
-            switch ($sort) {
-                case 'contributions':
-                    $query->orderBy('contributions_count', 'desc');
-                    break;
-                case 'name':
-                    $query->orderBy('display_name', 'asc');
-                    break;
-                case 'joined':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                default: // recent
-                    $query->orderBy('last_login_at', 'desc');
-                    break;
-            }
-
-            // Get total count for pagination
-            $totalUsers = $query->count();
-            $totalPages = ceil($totalUsers / $perPage);
-
-            // Get paginated results
-            $users = $query->offset(($page - 1) * $perPage)
-                          ->limit($perPage)
-                          ->get();
-
-            // Enhance user data with additional information
-            foreach ($users as &$user) {
-                $user['contributions'] = $this->getUserContributionsCount($user['id']);
-                $user['is_online'] = $this->isUserOnline($user['id']);
-                $user['last_active'] = $this->getUserLastActivity($user['id']);
-            }
-
-            // Build pagination data
-            $pagination = [
-                'current_page' => $page,
-                'total_pages' => $totalPages,
-                'total_users' => $totalUsers,
-                'per_page' => $perPage,
-                'pages' => range(max(1, $page - 2), min($totalPages, $page + 2))
-            ];
+            $users = $this->getUsers($search, $sort, $page, $perPage);
+            $totalUsers = $this->getTotalUsers($search);
 
             return $this->view('community/users', [
                 'users' => $users,
-                'pagination' => $pagination,
-                'search_query' => $search,
+                'search' => $search,
                 'sort' => $sort,
-                'title' => 'Community Members'
-            ]);
+                'currentPage' => $page,
+                'totalPages' => ceil($totalUsers / $perPage),
+                'title' => 'Community Users - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Community users error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load community users', 500);
-        }
-    }
-
-    /**
-     * Display the activity feed.
-     */
-    public function activity(): Response
-    {
-        try {
-            $activities = $this->communityManager->getCommunityActivity();
-
-            return $this->view('community/activity', [
-                'activities' => $activities,
-                'title' => 'Community Activity'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Community activity error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load community activity', 500);
-        }
-    }
-
-
-
-
-
-    /**
-     * Show a specific discussion.
-     */
-    public function showDiscussion(int $id): Response
-    {
-        try {
-            $discussion = $this->communityManager->getDiscussion($id);
-            $replies = $this->communityManager->getDiscussionReplies($id);
-
-            return $this->view('community/show-discussion', [
-                'discussion' => $discussion,
-                'replies' => $replies,
-                'title' => $discussion['title'] ?? 'Discussion'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Show discussion error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load discussion', 500);
-        }
-    }
-
-    /**
-     * Add a reply to a discussion.
-     */
-    public function addReply(Request $request, int $id): Response
-    {
-        try {
-            $data = $request->getParsedBody();
-            $userId = $this->getCurrentUserId();
-
-            if (!$userId) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'You must be logged in to reply'
-                ], 401);
-            }
-
-            if (empty($data['content'])) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Reply content is required'
-                ], 400);
-            }
-
-            $replyId = $this->communityManager->addDiscussionReply($id, $userId, $data['content']);
-
-            return $this->jsonResponse([
-                'success' => true,
-                'message' => 'Reply added successfully',
-                'reply_id' => $replyId
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Add reply error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Failed to add reply'
-            ], 500);
-        }
-    }
-
-    /**
-     * Display the contribution form.
-     */
-    public function contribute(): Response
-    {
-        try {
-            $categories = $this->getContributionCategories();
-            $contributionTypes = $this->getContributionTypes();
-
-            return $this->view('community/contribute', [
-                'categories' => $categories,
-                'contribution_types' => $contributionTypes,
-                'title' => 'Submit Contribution'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Contribution form error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load contribution form', 500);
-        }
-    }
-
-    /**
-     * Submit a contribution.
-     */
-    public function submitContribution(Request $request): Response
-    {
-        try {
-            $userId = $this->getCurrentUserId();
-            if (!$userId) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Authentication required'
-                ], 401);
-            }
-
-            $data = $request->getParsedBody();
-
-            $contributionData = [
-                'type' => $data['type'] ?? '',
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? '',
-                'category' => $data['category'] ?? '',
-                'tags' => $data['tags'] ?? []
-            ];
-
-            $result = $this->communityManager->submitContribution($userId, $contributionData);
-
-            return $this->jsonResponse($result, $result['success'] ? 200 : 400);
-        } catch (\Exception $e) {
-            $this->logger->error('Contribution submission error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Failed to submit contribution'
-            ], 500);
-        }
-    }
-
-    /**
-     * Display user contributions.
-     */
-    public function myContributions(): Response
-    {
-        try {
-            $userId = $this->getCurrentUserId();
-            if (!$userId) {
-                return $this->errorResponse('Authentication required', 401);
-            }
-
-            $contributions = $this->communityManager->getUserContributions($userId);
-            $reputation = $this->communityManager->getUserReputation($userId);
-
-            return $this->view('community/my-contributions', [
-                'contributions' => $contributions,
-                'reputation' => $reputation,
-                'title' => 'My Contributions'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('User contributions error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load contributions', 500);
-        }
-    }
-
-    /**
-     * Display moderation panel.
-     */
-    public function moderation(): Response
-    {
-        try {
-            if (!$this->isModerator()) {
-                return $this->errorResponse('Access denied', 403);
-            }
-
-            $pendingContributions = $this->communityManager->getPendingContributions();
-            $moderationStats = $this->getModerationStats();
-
-            return $this->view('community/moderation', [
-                'pending_contributions' => $pendingContributions,
-                'moderation_stats' => $moderationStats,
-                'title' => 'Moderation Panel'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Moderation panel error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load moderation panel', 500);
-        }
-    }
-
-    /**
-     * Approve a contribution.
-     */
-    public function approveContribution(Request $request): Response
-    {
-        try {
-            if (!$this->isModerator()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            $data = $request->getParsedBody();
-            $contributionId = (int) ($data['contribution_id'] ?? 0);
-            $notes = $data['notes'] ?? '';
-            $moderatorId = $this->getCurrentUserId();
-
-            $result = $this->communityManager->approveContribution($contributionId, $moderatorId, $notes);
-
-            return $this->jsonResponse($result, $result['success'] ? 200 : 400);
-        } catch (\Exception $e) {
-            $this->logger->error('Contribution approval error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Failed to approve contribution'
-            ], 500);
-        }
-    }
-
-    /**
-     * Reject a contribution.
-     */
-    public function rejectContribution(Request $request): Response
-    {
-        try {
-            if (!$this->isModerator()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            $data = $request->getParsedBody();
-            $contributionId = (int) ($data['contribution_id'] ?? 0);
-            $reason = $data['reason'] ?? '';
-            $moderatorId = $this->getCurrentUserId();
-
-            $result = $this->communityManager->rejectContribution($contributionId, $moderatorId, $reason);
-
-            return $this->jsonResponse($result, $result['success'] ? 200 : 400);
-        } catch (\Exception $e) {
-            $this->logger->error('Contribution rejection error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Failed to reject contribution'
-            ], 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
      * Display community discussions.
      */
-    public function discussions(): Response
+    public function discussions(Request $request): Response
     {
         try {
-            $discussions = $this->communityManager->getCommunityDiscussions(50);
-            $categories = $this->getDiscussionCategories();
+            $page = max(1, (int)($request->getQueryParams()['page'] ?? 1));
+            $perPage = 20;
+
+            $discussions = $this->getDiscussions($page, $perPage);
+            $totalDiscussions = $this->getTotalDiscussions();
 
             return $this->view('community/discussions', [
                 'discussions' => $discussions,
-                'categories' => $categories,
-                'title' => 'Community Discussions'
-            ]);
+                'currentPage' => $page,
+                'totalPages' => ceil($totalDiscussions / $perPage),
+                'title' => 'Community Discussions - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Discussions error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load discussions', 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Display discussion creation form.
+     * Get community statistics.
      */
-    public function createDiscussion(): Response
+    private function getCommunityStats(): array
     {
         try {
-            $categories = $this->getDiscussionCategories();
-
-            return $this->view('community/create-discussion', [
-                'categories' => $categories,
-                'title' => 'Create Discussion'
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Discussion creation form error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load discussion form', 500);
-        }
-    }
-
-    /**
-     * Submit a discussion.
-     */
-    public function submitDiscussion(Request $request): Response
-    {
-        try {
-            $userId = $this->getCurrentUserId();
-            if (!$userId) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Authentication required'
-                ], 401);
-            }
-
-            $data = $request->getParsedBody();
-
-            $discussionData = [
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? '',
-                'category' => $data['category'] ?? '',
-                'tags' => $data['tags'] ?? []
+            $sql = "SELECT COUNT(*) as total_users FROM users WHERE is_active = 1";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            
+            $totalUsers = (int)($result['total_users'] ?? 0);
+            
+            return [
+                'total_users' => $totalUsers,
+                'active_users' => $totalUsers,
+                'total_discussions' => 0,
+                'total_contributions' => 0,
+                'last_activity' => date('Y-m-d H:i:s')
             ];
-
-            $result = $this->communityManager->createDiscussion($userId, $discussionData);
-
-            return $this->jsonResponse($result, $result['success'] ? 200 : 400);
         } catch (\Exception $e) {
-            $this->logger->error('Discussion submission error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Failed to create discussion'
-            ], 500);
+            return [
+                'total_users' => 0,
+                'active_users' => 0,
+                'total_discussions' => 0,
+                'total_contributions' => 0,
+                'last_activity' => date('Y-m-d H:i:s')
+            ];
         }
     }
 
     /**
-     * Display user profile.
+     * Get recent discussions.
      */
-    public function profile(int $userId): Response
+    private function getRecentDiscussions(int $limit): array
     {
         try {
-            $user = $this->getUserById($userId);
-            if (!$user) {
-                return $this->errorResponse('User not found', 404);
-            }
-
-            $contributions = $this->communityManager->getUserContributions($userId);
-            $reputation = $this->communityManager->getUserReputation($userId);
-            $userStats = $this->getUserStats($userId);
-
-            return $this->view('community/profile', [
-                'user' => $user,
-                'contributions' => $contributions,
-                'reputation' => $reputation,
-                'user_stats' => $userStats,
-                'title' => 'User Profile'
-            ]);
+            $sql = "SELECT id, title, content, created_at FROM discussions ORDER BY created_at DESC LIMIT ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$limit]);
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('User profile error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load user profile', 500);
+            return [];
         }
-    }
-
-    /**
-     * Get contribution categories.
-     */
-    private function getContributionCategories(): array
-    {
-        return [
-            'quran' => 'Quran & Tafsir',
-            'hadith' => 'Hadith & Sunnah',
-            'fiqh' => 'Islamic Law & Jurisprudence',
-            'aqeedah' => 'Islamic Beliefs & Creed',
-            'seerah' => 'Prophet Muhammad (PBUH)',
-            'history' => 'Islamic History',
-            'scholars' => 'Islamic Scholars',
-            'prayer' => 'Prayer & Worship',
-            'ramadan' => 'Ramadan & Fasting',
-            'hajj' => 'Hajj & Umrah',
-            'charity' => 'Charity & Zakat',
-            'family' => 'Family & Marriage',
-            'education' => 'Islamic Education',
-            'modern' => 'Modern Islamic Issues'
-        ];
-    }
-
-    /**
-     * Get contribution types.
-     */
-    private function getContributionTypes(): array
-    {
-        return [
-            'article' => 'Article',
-            'hadith' => 'Hadith',
-            'quran' => 'Quran Ayah',
-            'scholar' => 'Scholar Biography',
-            'event' => 'Islamic Event'
-        ];
-    }
-
-    /**
-     * Get discussion categories.
-     */
-    private function getDiscussionCategories(): array
-    {
-        return [
-            'general' => 'General Discussion',
-            'quran' => 'Quran Discussion',
-            'hadith' => 'Hadith Discussion',
-            'fiqh' => 'Islamic Law Discussion',
-            'aqeedah' => 'Beliefs Discussion',
-            'seerah' => 'Prophet Muhammad (PBUH)',
-            'history' => 'Islamic History',
-            'scholars' => 'Islamic Scholars',
-            'prayer' => 'Prayer & Worship',
-            'ramadan' => 'Ramadan & Fasting',
-            'hajj' => 'Hajj & Umrah',
-            'charity' => 'Charity & Zakat',
-            'family' => 'Family & Marriage',
-            'education' => 'Islamic Education',
-            'modern' => 'Modern Issues'
-        ];
     }
 
     /**
@@ -565,192 +149,107 @@ class CommunityController extends Controller
     private function getTopContributors(): array
     {
         try {
-            // Return empty array when database methods are not available
-            return [];
+            $sql = "SELECT id, username, display_name, created_at FROM users 
+                    WHERE is_active = 1 ORDER BY created_at DESC LIMIT 10";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Top contributors retrieval failed: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Get moderation stats.
-     */
-    private function getModerationStats(): array
-    {
-        try {
-            $stats = [];
-
-            // Return default stats when database methods are not available
-            $stats['pending_count'] = 0;
-            $stats['approved_today'] = 0;
-            $stats['rejected_today'] = 0;
-
-            return $stats;
-        } catch (\Exception $e) {
-            $this->logger->error('Moderation stats retrieval failed: ' . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * Get user by ID.
+     * Get users with pagination and search.
      */
-    private function getUserById(int $userId): ?array
+    private function getUsers(string $search, string $sort, int $page, int $perPage): array
     {
         try {
-            return $this->db->table('users')
-                ->where('id', $userId)
-                ->first();
-        } catch (\Exception $e) {
-            $this->logger->error('User retrieval failed: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Get user stats.
-     */
-    private function getUserStats(int $userId): array
-    {
-        try {
-            $stats = [];
-
-            // Return default stats when database methods are not available
-            $stats['total_contributions'] = 0;
-            $stats['approved_contributions'] = 0;
-            $stats['pending_contributions'] = 0;
-            $stats['discussions_created'] = 0;
-
-            return $stats;
-        } catch (\Exception $e) {
-            $this->logger->error('User stats retrieval failed: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Check if user is moderator.
-     */
-    private function isModerator(): bool
-    {
-        try {
-            $userId = $this->getCurrentUserId();
-            if (!$userId) {
-                return false;
+            $offset = ($page - 1) * $perPage;
+            $searchTerm = "%{$search}%";
+            
+            $sql = "SELECT id, username, display_name, bio, created_at, last_login_at, is_active, is_admin 
+                    FROM users WHERE is_active = 1";
+            
+            if (!empty($search)) {
+                $sql .= " AND (username LIKE ? OR display_name LIKE ? OR bio LIKE ?)";
             }
-
-            $user = $this->db->table('users')
-                ->where('id', $userId)
-                ->first();
-
-            return $user && in_array($user['role'], ['admin', 'moderator']);
+            
+            $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            
+            if (!empty($search)) {
+                $stmt->execute([$searchTerm, $searchTerm, $searchTerm, $perPage, $offset]);
+            } else {
+                $stmt->execute([$perPage, $offset]);
+            }
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Moderator check failed: ' . $e->getMessage());
-            return false;
+            return [];
         }
     }
 
     /**
-     * Get current user ID from session.
+     * Get total users count for pagination.
      */
-    private function getCurrentUserId(): ?int
+    private function getTotalUsers(string $search): int
     {
         try {
-            $session = $this->container->get('session');
-            return $session?->get('user_id');
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Render a template with data.
-     */
-    private function render(string $template, array $data = []): Response
-    {
-        $renderer = $this->container->get('view');
-        $content = $renderer->render($template, $data);
-
-        return new Response(200, ['Content-Type' => 'text/html'], $content);
-    }
-
-    /**
-     * Create JSON response.
-     */
-    private function jsonResponse(array $data, int $status = 200): Response
-    {
-        return new Response(
-            $status,
-            ['Content-Type' => 'application/json'],
-            json_encode($data)
-        );
-    }
-
-    /**
-     * Create error response.
-     */
-    /**
-     * Get user contributions count.
-     */
-    private function getUserContributionsCount(int $userId): int
-    {
-        try {
-            return $this->db->table('user_contributions')
-                ->where('user_id', $userId)
-                ->where('status', 'approved')
-                ->count();
+            $searchTerm = "%{$search}%";
+            
+            $sql = "SELECT COUNT(*) as count FROM users WHERE is_active = 1";
+            
+            if (!empty($search)) {
+                $sql .= " AND (username LIKE ? OR display_name LIKE ? OR bio LIKE ?)";
+                $stmt = $this->db->getPdo()->prepare($sql);
+                $stmt->execute([$searchTerm, $searchTerm, $searchTerm]);
+            } else {
+                $stmt = $this->db->getPdo()->prepare($sql);
+                $stmt->execute();
+            }
+            
+            $result = $stmt->fetch();
+            return (int)($result['count'] ?? 0);
         } catch (\Exception $e) {
             return 0;
         }
     }
 
     /**
-     * Check if user is online.
+     * Get discussions with pagination.
      */
-    private function isUserOnline(int $userId): bool
+    private function getDiscussions(int $page, int $perPage): array
     {
         try {
-            $lastActivity = $this->db->table('user_activity')
-                ->select('last_activity')
-                ->where('user_id', $userId)
-                ->first();
-
-            if (!$lastActivity) {
-                return false;
-            }
-
-            // Consider user online if last activity was within 15 minutes
-            $lastActivityTime = strtotime($lastActivity['last_activity']);
-            return (time() - $lastActivityTime) < 900; // 15 minutes
+            $offset = ($page - 1) * $perPage;
+            
+            $sql = "SELECT id, title, content, created_at FROM discussions ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$perPage, $offset]);
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            return false;
+            return [];
         }
     }
 
     /**
-     * Get user last activity.
+     * Get total discussions count for pagination.
      */
-    private function getUserLastActivity(int $userId): ?string
+    private function getTotalDiscussions(): int
     {
         try {
-            $lastActivity = $this->db->table('user_activity')
-                ->select('last_activity')
-                ->where('user_id', $userId)
-                ->first();
-
-            return $lastActivity ? $lastActivity['last_activity'] : null;
+            $sql = "SELECT COUNT(*) as count FROM discussions";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            $result = $stmt->fetch();
+            return (int)($result['count'] ?? 0);
         } catch (\Exception $e) {
-            return null;
+            return 0;
         }
-    }
-
-    private function errorResponse(string $message, int $status = 500): Response
-    {
-        return new Response(
-            $status,
-            ['Content-Type' => 'text/html'],
-            "<h1>Error {$status}</h1><p>{$message}</p>"
-        );
     }
 }

@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -180,7 +180,7 @@ class SampleDataCreator
                     "- Study of hadith terminology\n- Classification of narrations\n" .
                     "- Authentication methods\n\n### Rijal (Biography)\n" .
                     "- Study of hadith narrators\n- Reliability assessment\n" .
-                    "- Chain of transmission\n\n## Islamic Law (Fiqh)\n\n### Usul al-Fiqh\n" .
+                    "- Chain of transmission\n\n## Islamic Law (Fiqh)\n\n### Knowledge al-Fiqh\n" .
                     "- Principles of Islamic jurisprudence\n- Sources of law\n" .
                     "- Legal reasoning\n\n### Madhahib (Schools of Thought)\n" .
                     "- Hanafi, Maliki, Shafi'i, Hanbali\n- Differences in methodology\n" .

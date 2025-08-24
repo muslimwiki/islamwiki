@@ -6,7 +6,7 @@ namespace IslamWiki\Extensions\HadithExtension\Http\Controllers\Api;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Extensions\HadithExtension\Models\HadithCollection;
 use IslamWiki\Extensions\HadithExtension\Models\HadithNarration;
 use IslamWiki\Extensions\HadithExtension\Models\HadithNarrator;
@@ -37,7 +37,7 @@ class HadithController extends BaseController
     /**
      * Constructor
      */
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
         

@@ -7,7 +7,7 @@ namespace IslamWiki\Extensions\SalahTime;
 use IslamWiki\Core\Extensions\Extension;
 use IslamWiki\Core\Extensions\Hooks\HookManager;
 use IslamWiki\Core\Islamic\PrayerTimeCalculator;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * Salah Time Extension
@@ -23,9 +23,9 @@ class SalahTime extends Extension
     private PrayerTimeCalculator $prayerTimeCalculator;
 
     /**
-     * @var ShahidLogger Logger instance
+     * @var Logger Logger instance
      */
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * @var array Available calculation methods
@@ -59,7 +59,7 @@ class SalahTime extends Extension
      */
     private function loadDependencies(): void
     {
-        $this->logger = new ShahidLogger($this->getExtensionPath() . '/logs');
+        $this->logger = new LoggerLogger($this->getExtensionPath() . '/logs');
         $this->prayerTimeCalculator = new PrayerTimeCalculator($this->logger);
     }
 

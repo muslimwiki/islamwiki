@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 /**
  * Extension Manager
@@ -18,11 +18,11 @@ use IslamWiki\Core\Container\AsasContainer;
  */
 class ExtensionManager
 {
-    private AsasContainer $container;
+    private Container $container;
     private array $extensions = [];
     private array $activeExtensions = [];
 
-    public function __construct(AsasContainer $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }

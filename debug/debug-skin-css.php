@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../LocalSettings.php';
 require_once __DIR__ . '/../../src/helpers.php';
 
 // Create application
-$app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/../..');
+$app = new \IslamWiki\Core\Application . '/../..');
 
 // Get container
 $container = $app->getContainer();

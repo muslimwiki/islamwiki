@@ -13,7 +13,7 @@
     },
     "test_results": {
         "content_integrity": {
-            "1-Main_Page.md": {
+            "1-Home.md": {
                 "file_exists": true,
                 "content_length": 160,
                 "has_content": true,

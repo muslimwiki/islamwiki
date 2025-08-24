@@ -65,7 +65,7 @@ class UserController extends Controller
         // Update last login timestamp
         $user->recordLogin($request->getServerParam('REMOTE_ADDR'));
         
-        // Set session using WisalSession to ensure consistency
+        // Set session using Session to ensure consistency
         $session = $this->container->get('session');
         $session->login(
             (int) $user->getAttribute('id'),

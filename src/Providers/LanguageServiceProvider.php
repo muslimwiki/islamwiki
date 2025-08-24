@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\Language\LanguageService;
 use IslamWiki\Core\Language\TranslationService;
 use IslamWiki\Core\Http\Middleware\LanguageMiddleware;
@@ -21,7 +21,7 @@ class LanguageServiceProvider
     /**
      * Register language services with the container.
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         error_log("LanguageServiceProvider: Starting registration");
         
@@ -32,7 +32,7 @@ class LanguageServiceProvider
         });
         
         // Register LanguageService as singleton, and connect it to TranslationService
-        $container->set(LanguageService::class, function (AsasContainer $container) {
+        $container->set(LanguageService::class, function (Container $container) {
             error_log("LanguageServiceProvider: Creating LanguageService");
             $languageService = new LanguageService();
             // Connect the TranslationService to LanguageService
@@ -43,14 +43,14 @@ class LanguageServiceProvider
         });
 
         // Register LanguageMiddleware
-        $container->set(LanguageMiddleware::class, function (AsasContainer $container) {
+        $container->set(LanguageMiddleware::class, function (Container $container) {
             error_log("LanguageServiceProvider: Creating LanguageMiddleware");
             $languageService = $container->get(LanguageService::class);
             return new LanguageMiddleware($languageService);
         });
         
         // Register TwigTranslationExtension
-        $container->set(TwigTranslationExtension::class, function (AsasContainer $container) {
+        $container->set(TwigTranslationExtension::class, function (Container $container) {
             error_log("LanguageServiceProvider: Creating TwigTranslationExtension");
             $translationService = $container->get(TranslationService::class);
             $extension = new TwigTranslationExtension($translationService);
@@ -80,7 +80,7 @@ class LanguageServiceProvider
     /**
      * Boot the language service provider.
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Initialize language service
         $languageService = $container->get(LanguageService::class);

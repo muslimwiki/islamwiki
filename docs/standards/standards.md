@@ -19,20 +19,20 @@ This document defines the comprehensive development standards for IslamWiki, ens
 ### **System Architecture**
 ```
 IslamWiki Architecture:
-├── 📁 Asas (Foundation) - Core foundation and dependency injection
-├── 📁 Aman (Security) - Comprehensive security framework
-├── 📁 Siraj (Light) - API management and routing system
-├── 📁 Shahid (Witness) - Logging and error handling
-├── 📁 Wisal (Connection) - Session management
-├── 📁 Rihlah (Journey) - Caching system
-├── 📁 Sabr (Patience) - Job queue system
-├── 📁 Usul (Principles) - Knowledge management
+├── 📁 Container (Container) - Core foundation and dependency injection
+├── 📁 Security (Security) - Comprehensive security framework
+├── 📁 API (Light) - API management and routing system
+├── 📁 Logger (Witness) - Logging and error handling
+├── 📁 Session (Connection) - Session management
+├── 📁 Routing (Journey) - Caching system
+├── 📁 Queue (Patience) - Job queue system
+├── 📁 Knowledge (Principles) - Knowledge management
 ├── 📁 Iqra (Read) - Islamic search engine
 ├── 📁 Bayan (Explanation) - Content formatting
 ├── 📁 Sabil (Path) - Advanced routing system
-├── 📁 Nizam (Order) - Main application system
-├── 📁 Mizan (Balance) - Database system
-├── 📁 Tadbir (Management) - Configuration management
+├── 📁 Application (Order) - Main application system
+├── 📁 Database (Balance) - Database system
+├── 📁 Configuration (Management) - Configuration management
 ├── 📁 Safa (Purity) - CSS framework
 └── 📁 Marwa (Excellence) - JavaScript framework
 ```
@@ -316,20 +316,20 @@ All core systems, components, and files must use Islamic names:
 
 ```php
 // ✅ Correct - Using Islamic naming
-class AsasContainer {}           // Foundation container
-class AmanAuthenticator {}       // Security authenticator
+class ContainerContainer {}           // Container container
+class SecurityAuthenticator {}       // Security authenticator
 class SabilRouter {}             // Path router
-class NizamApplication {}        // Order application
-class MizanDatabase {}           // Balance database
-class TadbirConfiguration {}     // Management configuration
-class RihlahCache {}             // Journey cache
-class SabrQueue {}               // Patience queue
-class UsulKnowledge {}           // Principles knowledge
+class Application {}        // Order application
+class Database {}           // Balance database
+class Configuration {}     // Management configuration
+class RoutingCache {}             // Journey cache
+class Queue {}               // Patience queue
+class Knowledge {}           // Principles knowledge
 class IqraSearch {}              // Read search
 class BayanFormatter {}          // Explanation formatter
-class SirajAPI {}                // Light API
-class ShahidLogger {}            // Witness logger
-class WisalSession {}            // Connection session
+class APIAPI {}                // Light API
+class LoggerLogger {}            // Witness logger
+class SessionSession {}            // Connection session
 class SafaTheme {}               // Purity theme
 class MarwaComponent {}          // Excellence component
 
@@ -343,7 +343,7 @@ class Configuration {}            // No prefix
 ### **File Naming Standards**
 ```
 PHP Files:
-├── asas-{component}.php        # Foundation files
+├── asas-{component}.php        # Container files
 ├── aman-{component}.php        # Security files
 ├── simplified-routing-{component}.php  # Routing files
 ├── tadbir-{component}.php      # Configuration files
@@ -364,20 +364,20 @@ PHP Files:
 ### **Namespace Standards**
 ```php
 // Core Framework
-namespace IslamWiki\Core\Container;      // Asas
-namespace IslamWiki\Core\Security;       // Aman
+namespace IslamWiki\Core\Container;      // Container
+namespace IslamWiki\Core\Security;       // Security
 namespace IslamWiki\Core\Routing;        // Simplified Routing
-namespace IslamWiki\Core\Application;    // Nizam
-namespace IslamWiki\Core\Database;       // Mizan
-namespace IslamWiki\Core\Configuration;  // Tadbir
-namespace IslamWiki\Core\Caching;        // Rihlah
-namespace IslamWiki\Core\Queues;         // Sabr
-namespace IslamWiki\Core\Knowledge;      // Usul
+namespace IslamWiki\Core\Application;    // Application
+namespace IslamWiki\Core\Database;       // Database
+namespace IslamWiki\Core\Configuration;  // Configuration
+namespace IslamWiki\Core\Caching;        // Routing
+namespace IslamWiki\Core\Queues;         // Queue
+namespace IslamWiki\Core\Knowledge;      // Knowledge
 namespace IslamWiki\Core\Search;         // Iqra
 namespace IslamWiki\Core\Formatting;     // Bayan
-namespace IslamWiki\Core\API;            // Siraj
-namespace IslamWiki\Core\Logging;        // Shahid
-namespace IslamWiki\Core\Sessions;       // Wisal
+namespace IslamWiki\Core\API;            // API
+namespace IslamWiki\Core\Logging;        // Logging
+namespace IslamWiki\Core\Sessions;       // Session
 namespace IslamWiki\Core\CSS;            // Safa
 namespace IslamWiki\Core\JavaScript;     // Marwa
 
@@ -507,7 +507,7 @@ CREATE TABLE users (
 ### **Migration Standards**
 ```php
 // ✅ Correct - Using Islamic naming
-class SabrMigration_0001_CreateUsersTable extends SabrMigration
+class QueueMigration_0001_CreateUsersTable extends QueueMigration
 {
     public function up(): void
     {
@@ -539,7 +539,7 @@ class CreateUsersTable extends Migration
 
 ```php
 // ✅ Correct - Secure input handling
-class AmanValidator
+class SecurityValidator
 {
     public function validateEmail(string $email): bool
     {
@@ -586,7 +586,7 @@ $query = "SELECT * FROM users WHERE email = '$email'"; // SQL injection risk
 ### **Test Naming**
 ```php
 // ✅ Correct - Using Islamic naming
-class ShahidTest_UserAuthentication extends ShahidTestCase
+class LoggerTest_UserAuthentication extends LoggerTestCase
 {
     public function testUserCanLoginWithValidCredentials(): void
     {

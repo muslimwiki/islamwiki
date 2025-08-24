@@ -7,8 +7,8 @@ namespace IslamWiki\Core\Auth;
 use IslamWiki\Core\Http\Controllers\Controller;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Auth\Services\AmanAuthService;
-use IslamWiki\Core\Auth\Services\AmanUserService;
+use AuthService;\Security
+use SecurityUserService;\Security
 use IslamWiki\Extensions\SafaSkinExtension\Services\SkinManager;
 
 /**
@@ -23,13 +23,13 @@ use IslamWiki\Extensions\SafaSkinExtension\Services\SkinManager;
  */
 class UserSettingsController extends Controller
 {
-    private AmanAuthService $authService;
-    private AmanUserService $userService;
+    private AuthService $authService;
+    private SecurityUserService $userService;
     private SkinManager $skinManager;
 
     public function __construct(
-        AmanAuthService $authService,
-        AmanUserService $userService,
+        AuthService $authService,
+        SecurityUserService $userService,
         SkinManager $skinManager
     ) {
         $this->authService = $authService;

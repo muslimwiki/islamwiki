@@ -8,7 +8,7 @@ use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\JsonResponse;
 use IslamWiki\Core\Http\RedirectResponse;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\View\View;
 
 /**
@@ -24,14 +24,14 @@ class BaseController
     protected $db;
     
     /**
-     * @var AsasContainer Application container
+     * @var Container Application container
      */
     protected $container;
     
     /**
      * Constructor
      */
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         $this->db = $db;
         $this->container = $container;

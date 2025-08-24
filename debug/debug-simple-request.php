@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 
 echo "🔍 Debug Simple Request Test\n";
 echo "============================\n\n";
 
 try {
     // Create application instance
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
 
     echo "✅ Application loaded successfully\n\n";
 

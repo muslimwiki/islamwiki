@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Session\Wisal;
+use Container;\Container
+use Session;\Session
 
 // Start session before any output
-$session = new Wisal([
+$session = new Session([
     'name' => 'islamwiki_session',
     'lifetime' => 86400,
     'path' => '/',

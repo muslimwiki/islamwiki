@@ -13,7 +13,7 @@ declare(strict_types=1);
  * @license AGPL-3.0
  */
 
-use IslamWiki\Core\Auth\AmanAuthenticationController;
+use AuthenticationController;\Security
 use IslamWiki\Core\Auth\UserSettingsController;
 use IslamWiki\Core\Admin\AdminController;
 use IslamWiki\Extensions\SafaSkinExtension\Controllers\SkinSettingsController;
@@ -22,41 +22,41 @@ use IslamWiki\Extensions\SafaSkinExtension\Controllers\SkinSettingsController;
 $router->group(['prefix' => '/auth'], function ($router) {
     
     // Login routes
-    $router->get('/login', [AmanAuthenticationController::class, 'showLogin'])
+    $router->get('/login', [AuthenticationController::class, 'showLogin'])
            ->name('auth.login');
-    $router->post('/login', [AmanAuthenticationController::class, 'login'])
+    $router->post('/login', [AuthenticationController::class, 'login'])
            ->name('auth.login.post');
     
     // Registration routes
-    $router->get('/register', [AmanAuthenticationController::class, 'showRegister'])
+    $router->get('/register', [AuthenticationController::class, 'showRegister'])
            ->name('auth.register');
-    $router->post('/register', [AmanAuthenticationController::class, 'register'])
+    $router->post('/register', [AuthenticationController::class, 'register'])
            ->name('auth.register.post');
     
     // Logout route
-    $router->post('/logout', [AmanAuthenticationController::class, 'logout'])
+    $router->post('/logout', [AuthenticationController::class, 'logout'])
            ->name('auth.logout');
     
     // Password reset routes
-    $router->get('/forgot-password', [AmanAuthenticationController::class, 'showForgotPassword'])
+    $router->get('/forgot-password', [AuthenticationController::class, 'showForgotPassword'])
            ->name('auth.forgot-password');
-    $router->post('/forgot-password', [AmanAuthenticationController::class, 'forgotPassword'])
+    $router->post('/forgot-password', [AuthenticationController::class, 'forgotPassword'])
            ->name('auth.forgot-password.post');
     
-    $router->get('/reset-password/{token}', [AmanAuthenticationController::class, 'showResetPassword'])
+    $router->get('/reset-password/{token}', [AuthenticationController::class, 'showResetPassword'])
            ->name('auth.reset-password');
-    $router->post('/reset-password', [AmanAuthenticationController::class, 'resetPassword'])
+    $router->post('/reset-password', [AuthenticationController::class, 'resetPassword'])
            ->name('auth.reset-password.post');
 });
 
 // User Profile Routes (Authenticated Users)
 $router->group(['prefix' => '/profile', 'middleware' => ['auth']], function ($router) {
     
-    $router->get('/', [AmanAuthenticationController::class, 'showProfile'])
+    $router->get('/', [AuthenticationController::class, 'showProfile'])
            ->name('auth.profile');
-    $router->post('/update', [AmanAuthenticationController::class, 'updateProfile'])
+    $router->post('/update', [AuthenticationController::class, 'updateProfile'])
            ->name('auth.profile.update');
-    $router->post('/change-password', [AmanAuthenticationController::class, 'changePassword'])
+    $router->post('/change-password', [AuthenticationController::class, 'changePassword'])
            ->name('auth.profile.change-password');
 });
 

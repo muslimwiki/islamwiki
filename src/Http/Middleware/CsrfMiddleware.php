@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -25,7 +25,7 @@ namespace IslamWiki\Http\Middleware;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Session\WisalSession;
+use Session;\Session
 
 /**
  * CSRF Protection Middleware
@@ -35,9 +35,9 @@ use IslamWiki\Core\Session\WisalSession;
 class CsrfMiddleware
 {
     /**
-     * @var Wisal Session manager instance
+     * @var Session Session manager instance
      */
-    private Wisal $session;
+    private Session $session;
 
     /**
      * @var array Routes that should be excluded from CSRF protection
@@ -53,7 +53,7 @@ class CsrfMiddleware
     /**
      * Create a new CSRF middleware instance.
      */
-    public function __construct(Wisal $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }

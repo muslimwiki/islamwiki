@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\HijriCalendar;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 /**
  * Islamic Events Manager
@@ -15,9 +15,9 @@ use IslamWiki\Core\Logging\Shahid;
 class IslamicEventsManager
 {
     /**
-     * @var Shahid Logger instance
+     * @var Logging Logger instance
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * @var array Islamic events database
@@ -43,7 +43,7 @@ class IslamicEventsManager
     /**
      * Constructor
      */
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
         $this->loadEvents();

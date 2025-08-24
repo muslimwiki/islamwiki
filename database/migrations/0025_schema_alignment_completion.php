@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -166,7 +166,7 @@ class SchemaAlignmentCompletion extends Migration
         $this->log('Optimizing indexes for Islamic architecture...');
 
         $indexOptimizations = [
-            // Foundation Layer indexes
+            // Container Layer indexes
             'asas_foundation' => [
                 'idx_foundation_service_type' => ['service_type'],
                 'idx_foundation_status' => ['status'],
@@ -298,7 +298,7 @@ class SchemaAlignmentCompletion extends Migration
     {
         $this->log('Migrating existing data to Islamic architecture...');
 
-        // Migrate user data to Aman (Security) structure
+        // Migrate user data to Security (Security) structure
         if ($this->tableExists('aman_users') && $this->tableExists('users')) {
             $this->execute("
                 INSERT INTO aman_users (username, email, password_hash, created_at, updated_at)
@@ -308,10 +308,10 @@ class SchemaAlignmentCompletion extends Migration
                     SELECT 1 FROM aman_users WHERE aman_users.email = users.email
                 )
             ");
-            $this->log('Migrated user data to Aman security structure');
+            $this->log('Migrated user data to Security security structure');
         }
 
-        // Migrate session data to Wisal (Session) structure
+        // Migrate session data to Session (Session) structure
         if ($this->tableExists('wisal_sessions') && $this->tableExists('sessions')) {
             $this->execute("
                 INSERT INTO wisal_sessions (session_id, user_id, ip_address, user_agent, last_activity)
@@ -321,10 +321,10 @@ class SchemaAlignmentCompletion extends Migration
                     SELECT 1 FROM wisal_sessions WHERE wisal_sessions.session_id = sessions.id
                 )
             ");
-            $this->log('Migrated session data to Wisal session structure');
+            $this->log('Migrated session data to Session session structure');
         }
 
-        // Migrate configuration data to Tadbir (Configuration) structure
+        // Migrate configuration data to Configuration (Configuration) structure
         if ($this->tableExists('tadbir_config') && $this->tableExists('configuration')) {
             $this->execute("
                 INSERT INTO tadbir_config (category, config_key, config_value, created_at, updated_at)
@@ -334,7 +334,7 @@ class SchemaAlignmentCompletion extends Migration
                     SELECT 1 FROM tadbir_config WHERE tadbir_config.config_key = configuration.config_key
                 )
             ");
-            $this->log('Migrated configuration data to Tadbir configuration structure');
+            $this->log('Migrated configuration data to Configuration configuration structure');
         }
 
         // Migrate search data to Iqra (Search) structure

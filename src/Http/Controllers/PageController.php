@@ -36,11 +36,11 @@ class PageController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container\AsasContainer $container The dependency injection container
+     * @param \IslamWiki\Core\Container\Container $container The dependency injection container
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\AsasContainer $container
+        \IslamWiki\Core\Container\Container $container
     ) {
         parent::__construct($db, $container);
         $this->logger = $container->get(LoggerInterface::class);
@@ -233,9 +233,9 @@ class PageController extends Controller
             if (!$page) {
                 // Try different slug formats
                 $possibleSlugs = [
-                    strtolower(str_replace(['_', ' '], '-', $slug)), // Main_Page -> main-page
-                    strtolower(str_replace(['-', ' '], '_', $slug)), // main-page -> main_page
-                    strtolower($slug), // Main_Page -> main_page
+                    strtolower(str_replace(['_', ' '], '-', $slug)), // Home -> home-page
+                    strtolower(str_replace(['-', ' '], '_', $slug)), // home-page -> home_page
+                    strtolower($slug), // Home -> home_page
                 ];
                 
                 foreach ($possibleSlugs as $possibleSlug) {

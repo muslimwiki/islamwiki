@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Routing\IslamRouter;
 
 try {
     echo "<h1>Testing IslamRouter</h1>";
 
     // Create application
-    $app = new NizamApplication();
+    $app = new Application();
     echo "<p>✅ Application created</p>";
 
     // Create router

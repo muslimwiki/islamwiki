@@ -8,9 +8,9 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
 
 ## 🌟 **Core System Overview**
 
-### **Foundation Systems**
+### **Container Systems**
 
-#### **1. Asas (Foundation)**
+#### **1. Container (Container)**
 - **Purpose**: Core foundation and dependency injection container
 - **Responsibility**: System initialization, core services, dependency injection
 - **Components**: 
@@ -19,7 +19,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Core configuration
   - System bootstrapping
 
-#### **2. Aman (Security)**
+#### **2. Security (Security)**
 - **Purpose**: Comprehensive security framework
 - **Responsibility**: Authentication, authorization, content validation
 - **Components**:
@@ -29,7 +29,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Rate limiting
   - Security monitoring
 
-#### **3. Siraj (Light/Illumination)**
+#### **3. API (Light/Illumination)**
 - **Purpose**: API management and routing system
 - **Responsibility**: API endpoints, API routing, API management
 - **Components**:
@@ -41,7 +41,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
 
 ### **Content Management Systems**
 
-#### **4. Shahid (Witness/Evidence)**
+#### **4. Logging (Witness/Evidence)**
 - **Purpose**: Comprehensive logging and error handling system
 - **Responsibility**: System logging, error handling, monitoring
 - **Components**:
@@ -51,7 +51,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Audit trails
   - Debug information
 
-#### **5. Wisal (Connection)**
+#### **5. Session (Connection)**
 - **Purpose**: Session management system
 - **Responsibility**: User sessions, connections, state management
 - **Components**:
@@ -61,7 +61,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Connection pooling
   - Session security
 
-#### **6. Rihlah (Journey)**
+#### **6. Routing (Journey)**
 - **Purpose**: Caching system
 - **Responsibility**: Multi-level caching, performance optimization
 - **Components**:
@@ -73,7 +73,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
 
 ### **Knowledge Systems**
 
-#### **7. Sabr (Patience/Persistence)**
+#### **7. Queue (Patience/Persistence)**
 - **Purpose**: Job queue system
 - **Responsibility**: Background processing, task management, job queues
 - **Components**:
@@ -83,7 +83,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Progress monitoring
   - Error handling
 
-#### **8. Usul (Principles/Roots)**
+#### **8. Knowledge (Principles/Roots)**
 - **Purpose**: Knowledge management system
 - **Responsibility**: Knowledge organization, content principles, knowledge structure
 - **Components**:
@@ -125,7 +125,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Route optimization
   - Request validation
 
-#### **12. Nizam (System/Order)**
+#### **12. Application (System/Order)**
 - **Purpose**: Main application system
 - **Responsibility**: Application coordination, system integration, main entry point
 - **Components**:
@@ -135,7 +135,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Application lifecycle
   - System management
 
-#### **13. Mizan (Balance/Scale)**
+#### **13. Database (Balance/Scale)**
 - **Purpose**: Database system
 - **Responsibility**: Database management, data storage, data optimization
 - **Components**:
@@ -145,7 +145,7 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
   - Database scaling
   - Data integrity
 
-#### **14. Tadbir (Management/Planning)**
+#### **14. Configuration (Management/Planning)**
 - **Purpose**: Configuration management system
 - **Responsibility**: System configuration, settings management, configuration optimization
 - **Components**:
@@ -189,26 +189,26 @@ IslamWiki is built around a comprehensive set of core systems, each named after 
 
 ### **Data Flow**
 ```
-User Request → Simplified Routing → Aman (Security) → 
-Content Request → Iqra (Search) → Usul (Knowledge) → 
-Response → Rihlah (Caching) → User
+User Request → Simplified Routing → Security (Security) → 
+Content Request → Iqra (Search) → Knowledge (Knowledge) → 
+Response → Routing (Caching) → User
 ```
 
 ### **Authentication Flow**
 ```
-Login Request → Aman (Security) → Wisal (Session) → 
-User Validation → Asas (Foundation) → Response
+Login Request → Security (Security) → Session (Session) → 
+User Validation → Container (Container) → Response
 ```
 
 ### **Content Processing Flow**
 ```
-Content Input → Shahid (Logging) → Usul (Knowledge) → 
-Storage → Mizan (Database) → Iqra (Search) → Bayan (Formatting)
+Content Input → Logging (Logging) → Knowledge (Knowledge) → 
+Storage → Database (Database) → Iqra (Search) → Bayan (Formatting)
 ```
 
 ### **Frontend Rendering Flow**
 ```
-Content Data → Usul (Knowledge) → Safa (Styling) → 
+Content Data → Knowledge (Knowledge) → Safa (Styling) → 
 Marwa (Interactivity) → User Interface
 ```
 
@@ -221,57 +221,57 @@ Marwa (Interactivity) → User Interface
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                       │
 │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │
-│  │  Bayan  │ │  Siraj  │ │  Rihlah │ │  Safa   │         │
+│  │  Bayan  │ │  API  │ │  Routing │ │  Safa   │         │
 │  │(Explain)│ │ (Light) │ │(Journey)│ │(Purity) │         │
 │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │
 ├─────────────────────────────────────────────────────────────┤
 │                   Application Layer                         │
 │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │
-│  │   Aman  │ │  Wisal  │ │  Sabr   │ │  Usul   │         │
+│  │   Security  │ │  Session  │ │  Queue   │ │  Knowledge   │         │
 │  │(Security)│ │(Session)│ │(Patience)│ │(Principles)│     │
 │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │
 ├─────────────────────────────────────────────────────────────┤
 │                  Domain Layer                              │
 │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │
-│  │  Sabil  │ │  Nizam  │ │  Mizan  │ │ Tadbir  │         │
+│  │  Sabil  │ │  Application  │ │  Database  │ │ Configuration  │         │
 │  │ (Path)  │ │ (Order) │ │(Balance)│ │(Manage) │         │
 │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │
 ├─────────────────────────────────────────────────────────────┤
 │                  Infrastructure Layer                       │
 │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │
-│  │  Asas   │ │  Iqra   │ │ Marwa   │ │ Shahid  │         │
-│  │(Foundation)│(Search)│(Excellence)│(Witness)│         │
+│  │  Container   │ │  Iqra   │ │ Marwa   │ │ Logging  │         │
+│  │(Container)│(Search)│(Excellence)│(Witness)│         │
 │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### **System Dependencies**
 ```
-Asas (Foundation)
-├── Aman (Security)
+Container (Container)
+├── Security (Security)
 ├── Simplified Routing
-├── Nizam (Application)
-└── Mizan (Database)
+├── Application (Application)
+└── Database (Database)
 
-Aman (Security)
-├── Wisal (Sessions)
-├── Shahid (Logging)
-└── Usul (Knowledge)
+Security (Security)
+├── Session (Sessions)
+├── Logging (Logging)
+└── Knowledge (Knowledge)
 
 Simplified Routing
 ├── Bayan (Explanation)
-├── Siraj (API)
-└── Rihlah (Caching)
+├── API (API)
+└── Routing (Caching)
 
-Nizam (Application)
-├── Tadbir (Configuration)
+Application (Application)
+├── Configuration (Configuration)
 ├── Safa (Styling)
 └── Marwa (Interactivity)
 
 Frontend Systems
 ├── Safa (CSS) - Independent styling system
 ├── Marwa (JS) - Depends on Safa for styling
-└── Both integrate with Usul for knowledge
+└── Both integrate with Knowledge for knowledge
 ```
 
 ---
@@ -279,28 +279,28 @@ Frontend Systems
 ## 🚀 **System Features**
 
 ### **Performance Features**
-- **Rihlah**: Multi-level caching system
+- **Routing**: Multi-level caching system
 - **Simplified Routing**: Optimized routing and request handling
-- **Sabr**: Asynchronous task processing
-- **Mizan**: Database optimization and scaling
+- **Queue**: Asynchronous task processing
+- **Database**: Database optimization and scaling
 
 ### **Security Features**
-- **Aman**: Multi-layer security framework
-- **Shahid**: Comprehensive logging and monitoring
-- **Usul**: Knowledge-based security policies
-- **Wisal**: Secure session management
+- **Security**: Multi-layer security framework
+- **Logging**: Comprehensive logging and monitoring
+- **Knowledge**: Knowledge-based security policies
+- **Session**: Secure session management
 
 ### **Content Features**
 - **Iqra**: Advanced Islamic search engine
 - **Bayan**: Comprehensive content formatting
-- **Siraj**: API-first content delivery
-- **Usul**: Knowledge organization and management
+- **API**: API-first content delivery
+- **Knowledge**: Knowledge organization and management
 
 ### **Frontend Features**
 - **Safa**: Clean, responsive CSS framework with Islamic themes
 - **Marwa**: Progressive JavaScript enhancement with accessibility
-- **Nizam**: Optimized application coordination
-- **Tadbir**: Flexible configuration management
+- **Application**: Optimized application coordination
+- **Configuration**: Flexible configuration management
 
 ---
 
@@ -311,12 +311,12 @@ Each system can be configured independently through the main configuration files
 
 ```php
 // LocalSettings.php
-$wgAsasConfig = [
+$wgContainerConfig = [
     'debug' => true,
     'environment' => 'development'
 ];
 
-$wgAmanConfig = [
+$wgSecurityConfig = [
     'authentication' => 'database',
     'session_timeout' => 3600
 ];
@@ -344,13 +344,13 @@ $wgMarwaConfig = [
 
 ### **Performance Configuration**
 ```php
-$wgRihlahConfig = [
+$wgRoutingConfig = [
     'caching' => true,
     'cache_driver' => 'redis',
     'cache_ttl' => 3600
 ];
 
-$wgSabrConfig = [
+$wgQueueConfig = [
     'queue_driver' => 'redis',
     'max_workers' => 10
 ];
@@ -361,15 +361,15 @@ $wgSabrConfig = [
 ## 📊 **Monitoring and Metrics**
 
 ### **System Health Monitoring**
-- **Asas**: System stability and core services
-- **Aman**: Security events and authentication
+- **Container**: System stability and core services
+- **Security**: Security events and authentication
 - **Simplified Routing**: Routing performance and request handling
-- **Rihlah**: Caching performance and optimization
+- **Routing**: Caching performance and optimization
 
 ### **Frontend Performance Monitoring**
 - **Safa**: CSS loading and rendering performance
 - **Marwa**: JavaScript execution and interaction performance
-- **Nizam**: Application coordination and performance
+- **Application**: Application coordination and performance
 - **Iqra**: Search performance and optimization
 
 ### **Performance Metrics**
@@ -397,19 +397,19 @@ $wgSabrConfig = [
 - **Marwa**: AI-driven user interaction optimization
 
 ### **Blockchain Integration**
-- **Shahid**: Blockchain-based logging and verification
-- **Aman**: Decentralized authentication
-- **Asas**: Immutable system foundation
+- **Logging**: Blockchain-based logging and verification
+- **Security**: Decentralized authentication
+- **Container**: Immutable system foundation
 
 ### **Microservices Architecture**
-- **Nizam**: Service orchestration
-- **Rihlah**: Service performance monitoring
-- **Tadbir**: Service management and deployment
+- **Application**: Service orchestration
+- **Routing**: Service performance monitoring
+- **Configuration**: Service management and deployment
 
 ### **Advanced Frontend Features**
 - **Safa**: Advanced CSS-in-JS, CSS custom properties
 - **Marwa**: Web Components, Progressive Web App features
-- **Nizam**: Advanced application analytics
+- **Application**: Advanced application analytics
 
 ---
 

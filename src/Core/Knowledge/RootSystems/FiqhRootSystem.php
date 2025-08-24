@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Knowledge\RootSystems;
 
 use IslamWiki\Core\Knowledge\Interfaces\RootSystemInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * Fiqh Root System
@@ -17,12 +17,12 @@ use IslamWiki\Core\Logging\ShahidLogger;
 class FiqhRootSystem implements RootSystemInterface
 {
     private Connection $db;
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * Create a new Fiqh root system.
      */
-    public function __construct(Connection $db, ShahidLogger $logger)
+    public function __construct(Connection $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

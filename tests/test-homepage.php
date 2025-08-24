@@ -3,11 +3,11 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../LocalSettings.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Http\Request;
 
 // Create application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 $app->bootstrap();
 
 // Create request

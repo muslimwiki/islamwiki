@@ -481,7 +481,7 @@ class ProductionMigration
         // In production, this would read from database or file system
         // For now, return mock content based on page title
         $mockContent = [
-            'Main Page' => "=== Welcome ===\n\nWelcome to '''IslamWiki'''!\n\nThis page contains:\n* [[Quran]] references\n* {{Infobox|title=Welcome}}\n* [Category:Main]\n\n----\n\n<nowiki>Some code here</nowiki>",
+            'Home Page' => "=== Welcome ===\n\nWelcome to '''IslamWiki'''!\n\nThis page contains:\n* [[Quran]] references\n* {{Infobox|title=Welcome}}\n* [Category:Main]\n\n----\n\n<nowiki>Some code here</nowiki>",
             'Quran' => "The [[Quran]] is the holy book of Islam. It contains {{Quran|surah=1|ayah=1-7}} and many other verses.",
             'Hadith' => "[[Hadith]] are the sayings of Prophet Muhammad. Example: {{Hadith|book=Bukhari|number=1}}"
         ];

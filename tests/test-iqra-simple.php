@@ -4,9 +4,9 @@
  * Simple Iqra Search Engine Test
  */
 
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Search\IqraSearchEngine;
 
 echo "<!DOCTYPE html>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Generate placeholder classes for Usul knowledge system
+ * Generate placeholder classes for Knowledge knowledge system
  */
 
 $placeholders = [
@@ -79,7 +79,7 @@ namespace {$config['namespace']};
 
 use IslamWiki\Core\Knowledge\Interfaces\\{$config['interface']};
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 /**
  * {$config['class']}
@@ -90,12 +90,12 @@ use IslamWiki\Core\Logging\Shahid;
 class {$config['class']} implements {$config['interface']}
 {
     private Connection \$db;
-    private Shahid \$logger;
+    private Logging \$logger;
     
     /**
      * Create a new {$config['class']} instance.
      */
-    public function __construct(Connection \$db, Shahid \$logger)
+    public function __construct(Connection \$db, Logging \$logger)
     {
         \$this->db = \$db;
         \$this->logger = \$logger;

@@ -6,16 +6,16 @@
 
 require_once __DIR__ . '/../src/helpers.php';
 require_once __DIR__ . '/../src/Core/Container.php';
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 require_once __DIR__ . '/../src/Skins/SkinManager.php';
 require_once __DIR__ . '/../src/Skins/Skin.php';
 require_once __DIR__ . '/../src/Skins/UserSkin.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 // Initialize application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 
 // Create skin manager
 $skinManager = new SkinManager($app);

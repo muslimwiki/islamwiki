@@ -94,15 +94,15 @@ docs/
 ```
 Presentation Layer:
 ├── Bayan (Explanation) - Content reading and consumption
-├── Siraj (Light) - Knowledge discovery and API management
-├── Rihlah (Journey) - User experience and navigation
+├── API (Light) - Knowledge discovery and API management
+├── Routing (Journey) - User experience and navigation
 └── Safa (Purity) - CSS framework and styling system
 
 Infrastructure Layer:
-├── Asas (Foundation) - Core foundation and services
+├── Container (Container) - Core foundation and services
 ├── Iqra (Read) - Islamic search engine and content discovery
 ├── Marwa (Excellence) - JavaScript framework and interactivity
-└── Shahid (Witness) - Logging, monitoring, and content verification
+└── Logging (Witness) - Logging, monitoring, and content verification
 ```
 
 ---

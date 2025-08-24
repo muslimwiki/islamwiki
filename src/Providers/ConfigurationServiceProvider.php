@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Configuration\ConfigurationManager;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 /**
  * ConfigurationServiceProvider - Configuration System Integration
@@ -40,10 +40,10 @@ class ConfigurationServiceProvider
     /**
      * Register configuration services
      *
-     * @param AsasContainer $container The dependency injection container
+     * @param Container $container The dependency injection container
      * @return void
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register configuration manager as a singleton
         $container->set(ConfigurationManager::class, function ($container) {
@@ -70,7 +70,7 @@ class ConfigurationServiceProvider
      *
      * @return void
      */
-    private function registerConfigurationValidation(AsasContainer $container): void
+    private function registerConfigurationValidation(Container $container): void
     {
         // Temporarily disable configuration validation to debug bootstrap issues
         /*
@@ -126,10 +126,10 @@ class ConfigurationServiceProvider
     /**
      * Boot configuration services
      *
-     * @param AsasContainer $container The dependency injection container
+     * @param Container $container The dependency injection container
      * @return void
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Register configuration validation (only after database is ready)
         try {

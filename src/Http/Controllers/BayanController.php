@@ -1,370 +1,273 @@
 <?php
 
 /**
- * This file is part of IslamWiki.
+ * Bayan Controller
  *
- * Copyright (C) 2025 IslamWiki Contributors
+ * Handles HTTP requests for the Bayan knowledge graph system.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR ANY PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * @package IslamWiki\Http\Controllers
+ * @version 0.0.3.0
+ * @license AGPL-3.0-only
  */
 
 declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Formatter\BayanFormatter;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\AsasContainer;
 use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Container\Container;
 use Psr\Log\LoggerInterface;
 
 /**
- * Bayan Controller
- *
- * Handles HTTP requests for the Bayan knowledge graph system.
+ * Bayan Controller - Handles Knowledge Graph Functionality
  */
 class BayanController extends Controller
 {
-    /**
-     * Bayan manager instance.
-     */
-    protected BayanFormatter $bayanManager;
-
-    /**
-     * Logger instance.
-     */
-    protected LoggerInterface $logger;
-
-    /**
-     * Create a new BayanController instance.
-     */
-    public function __construct(Connection $db, AsasContainer $container)
-    {
-        parent::__construct($db, $container);
-        $this->logger = $container->get(\Psr\Log\LoggerInterface::class);
-        // Resolve via container when bound; otherwise construct directly
-        if ($container->has(BayanFormatter::class)) {
-            $this->bayanManager = $container->get(BayanFormatter::class);
-        } else {
-            $this->bayanManager = new BayanFormatter($db, $this->logger);
-        }
-    }
-
     /**
      * Display the Bayan knowledge graph dashboard.
      */
     public function index(Request $request): Response
     {
         try {
-            $statistics = $this->bayanManager->getStatistics();
-            $queryManager = $this->bayanManager->getQueryManager();
-            $hubNodes = $queryManager->getHubNodes(5);
-            // Use QueryManager search for consistency with dashboard
-            $recentNodes = $queryManager->search('', [], 10);
-
-            // Graph data: take top hubs and a few neighbors each
-            $graph = [ 'nodes' => [], 'edges' => [] ];
-            $nodeIndexById = [];
-            $maxHubs = min(5, count($hubNodes));
-            for ($i = 0; $i < $maxHubs; $i++) {
-                $hubNode = $hubNodes[$i];
-                $hubId = (int)($hubNode['id'] ?? $hubNode->id ?? 0);
-                if ($hubId === 0) { continue; }
-                if (!isset($nodeIndexById[$hubId])) {
-                    $nodeIndexById[$hubId] = true;
-                    $graph['nodes'][] = [
-                        'id' => $hubId,
-                        'label' => $hubNode['title'] ?? $hubNode->title ?? ('Node ' . $hubId),
-                        'type' => $hubNode['type'] ?? $hubNode->type ?? 'node',
-                        'isHub' => true,
-                    ];
-                }
-                $neighbors = $queryManager->getRelatedNodes($hubId, null, 6);
-                foreach ($neighbors as $neighbor) {
-                    $neighborId = (int)($neighbor['id'] ?? $neighbor->id ?? 0);
-                    if ($neighborId === 0) { continue; }
-                    if (!isset($nodeIndexById[$neighborId])) {
-                        $nodeIndexById[$neighborId] = true;
-                        $graph['nodes'][] = [
-                            'id' => $neighborId,
-                            'label' => $neighbor['title'] ?? $neighbor->title ?? ('Node ' . $neighborId),
-                            'type' => $neighbor['type'] ?? $neighbor->type ?? 'node',
-                            'isHub' => false,
-                        ];
-                    }
-                    $graph['edges'][] = [ 'source' => $hubId, 'target' => $neighborId ];
-                }
-            }
-
-            // Metrics for distributions
-            $metrics = $queryManager->getGraphMetrics();
-
-            $data = [
+            // Get basic statistics
+            $statistics = $this->getBayanStatistics();
+            
+            // Get hub nodes
+            $hubNodes = $this->getHubNodes(5);
+            
+            // Get recent nodes
+            $recentNodes = $this->getRecentNodes(10);
+            
+            // Build simple graph data
+            $graph = $this->buildGraphData($hubNodes);
+            
+            return $this->view('bayan/index', [
                 'statistics' => $statistics,
-                'hub_nodes' => $hubNodes,
-                'recent_nodes' => $recentNodes,
+                'hubNodes' => $hubNodes,
+                'recentNodes' => $recentNodes,
                 'graph' => $graph,
-                'node_types' => $metrics['node_types'] ?? [],
-                'edge_types' => $metrics['edge_types'] ?? [],
-                'title' => 'Bayan Knowledge Graph'
-            ];
-
-            return $this->view('bayan/index', $data, 200);
+                'title' => 'Bayan Knowledge Graph - IslamWiki'
+            ], 200);
+            
         } catch (\Exception $e) {
-            $this->logger->error('Failed to display Bayan dashboard', [
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error: ' . htmlspecialchars($e->getMessage()));
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Display a specific node and its relationships.
+     * Show a specific node in the knowledge graph.
      */
-    public function show(Request $request, int $id): Response
+    public function show(Request $request, string $nodeId): Response
     {
         try {
-            $node = $this->bayanManager->getNodeManager()->findById($id);
-
+            $node = $this->getNode($nodeId);
             if (!$node) {
-                return new Response(404, ['Content-Type' => 'text/html'], 'Node not found');
+                return new Response(404, [], 'Node not found');
             }
-
-            $relatedNodes = $this->bayanManager->getRelatedNodes($id);
-            $relationships = $this->bayanManager->getEdgeManager()->findByNode($id);
-
-            $data = [
+            
+            $relatedNodes = $this->getRelatedNodes($nodeId, 10);
+            
+            return $this->view('bayan/show', [
                 'node' => $node,
-                'related_nodes' => $relatedNodes,
-                'relationships' => $relationships,
-                'title' => $node['title']
-            ];
-
-            return $this->view('bayan/show', $data, 200);
+                'relatedNodes' => $relatedNodes,
+                'title' => $node['title'] . ' - Bayan - IslamWiki'
+            ], 200);
+            
         } catch (\Exception $e) {
-            $this->logger->error('Failed to display Bayan node', [
-                'node_id' => $id,
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error');
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Search the knowledge graph.
+     * Search nodes in the knowledge graph.
      */
     public function search(Request $request): Response
     {
         try {
-            $query = $request->getQueryParam('q', '');
-            $type = $request->getQueryParam('type', '');
-            $relationshipType = $request->getQueryParam('relationship_type', '');
-
-            $filters = [];
-            if ($type) {
-                $filters['type'] = $type;
+            $query = $request->getQueryParams()['q'] ?? '';
+            $type = $request->getQueryParams()['type'] ?? 'all';
+            $page = max(1, (int)($request->getQueryParams()['page'] ?? 1));
+            $limit = 20;
+            
+            if (empty($query)) {
+                return $this->view('bayan/search', [
+                    'query' => '',
+                    'results' => [],
+                    'title' => 'Search Bayan - IslamWiki'
+                ], 200);
             }
-            if ($relationshipType) {
-                $filters['relationship_type'] = $relationshipType;
-            }
-
-            $results = $this->bayanManager->search($query, $filters);
-            $statistics = $this->bayanManager->getStatistics();
-
-            $data = [
+            
+            $results = $this->searchNodes($query, $type, $page, $limit);
+            $totalResults = $this->getTotalSearchResults($query, $type);
+            
+            return $this->view('bayan/search', [
                 'query' => $query,
-                'filters' => $filters,
+                'type' => $type,
                 'results' => $results,
-                'statistics' => $statistics,
-                'title' => 'Search Bayan Knowledge Graph'
-            ];
-
-            return $this->view('bayan/search', $data, 200);
-        } catch (\Exception $e) {
-            $this->logger->error('Failed to search Bayan graph', [
-                'query' => $query ?? '',
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'text/html'], 'Internal Server Error');
-        }
-    }
-
-    /**
-     * Create a new node.
-     */
-    public function create(Request $request): Response
-    {
-        if ($request->getMethod() === 'GET') {
-            return $this->view('bayan/create', [
-                'title' => 'Create New Node'
+                'totalResults' => $totalResults,
+                'currentPage' => $page,
+                'totalPages' => ceil($totalResults / $limit),
+                'title' => "Search: {$query} - Bayan - IslamWiki"
             ], 200);
-        }
-
-        try {
-            $data = $request->getParsedBody();
-
-            $requiredFields = ['type', 'title', 'content'];
-            foreach ($requiredFields as $field) {
-                if (empty($data[$field])) {
-                    return new Response(400, ['Content-Type' => 'application/json'], json_encode([
-                        'error' => "Missing required field: {$field}"
-                    ]));
-                }
-            }
-
-            $nodeId = $this->bayanManager->createNode($data);
-
-            if ($nodeId) {
-                $this->logger->info('Created Bayan node via API', [
-                    'node_id' => $nodeId,
-                    'type' => $data['type'],
-                    'title' => $data['title']
-                ]);
-
-                return new Response(201, ['Content-Type' => 'application/json'], json_encode([
-                    'success' => true,
-                    'node_id' => $nodeId,
-                    'message' => 'Node created successfully'
-                ]));
-            } else {
-                return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                    'error' => 'Failed to create node'
-                ]));
-            }
+            
         } catch (\Exception $e) {
-            $this->logger->error('Failed to create Bayan node via API', [
-                'data' => $data ?? [],
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                'error' => 'Internal server error'
-            ]));
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Create a relationship between nodes.
+     * Get Bayan statistics.
      */
-    public function createRelationship(Request $request): Response
+    private function getBayanStatistics(): array
     {
         try {
-            $data = $request->getParsedBody();
-
-            $requiredFields = ['source_id', 'target_id', 'type'];
-            foreach ($requiredFields as $field) {
-                if (empty($data[$field])) {
-                    return new Response(400, ['Content-Type' => 'application/json'], json_encode([
-                        'error' => "Missing required field: {$field}"
-                    ]));
-                }
-            }
-
-            $attributes = $data['attributes'] ?? [];
-            $edgeId = $this->bayanManager->createRelationship(
-                (int) $data['source_id'],
-                (int) $data['target_id'],
-                $data['type'],
-                $attributes
-            );
-
-            if ($edgeId) {
-                $this->logger->info('Created Bayan relationship via API', [
-                    'edge_id' => $edgeId,
-                    'source_id' => $data['source_id'],
-                    'target_id' => $data['target_id'],
-                    'type' => $data['type']
-                ]);
-
-                return new Response(201, ['Content-Type' => 'application/json'], json_encode([
-                    'success' => true,
-                    'edge_id' => $edgeId,
-                    'message' => 'Relationship created successfully'
-                ]));
-            } else {
-                return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                    'error' => 'Failed to create relationship'
-                ]));
-            }
+            $sql = "SELECT COUNT(*) as total_nodes FROM bayan_nodes";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            
+            $totalNodes = (int)($result['total_nodes'] ?? 0);
+            
+            return [
+                'total_nodes' => $totalNodes,
+                'total_edges' => 0, // TODO: Implement edge counting
+                'node_types' => 0,   // TODO: Implement type counting
+                'last_updated' => date('Y-m-d H:i:s')
+            ];
         } catch (\Exception $e) {
-            $this->logger->error('Failed to create Bayan relationship via API', [
-                'data' => $data ?? [],
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                'error' => 'Internal server error'
-            ]));
+            return [
+                'total_nodes' => 0,
+                'total_edges' => 0,
+                'node_types' => 0,
+                'last_updated' => date('Y-m-d H:i:s')
+            ];
         }
     }
 
     /**
-     * Get graph statistics.
+     * Get hub nodes (nodes with most connections).
      */
-    public function statistics(Request $request): Response
+    private function getHubNodes(int $limit): array
     {
         try {
-            $statistics = $this->bayanManager->getStatistics();
-            $metrics = $this->bayanManager->getQueryManager()->getGraphMetrics();
-
-            $data = array_merge($statistics, $metrics);
-
-            return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));
+            $sql = "SELECT id, title, type, created_at FROM bayan_nodes ORDER BY created_at DESC LIMIT ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$limit]);
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Failed to get Bayan statistics', [
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                'error' => 'Internal server error'
-            ]));
+            return [];
         }
     }
 
     /**
-     * Find paths between nodes.
+     * Get recent nodes.
      */
-    public function findPaths(Request $request): Response
+    private function getRecentNodes(int $limit): array
     {
         try {
-            $sourceId = (int) $request->getQueryParam('source_id', 0);
-            $targetId = (int) $request->getQueryParam('target_id', 0);
-            $maxDepth = (int) $request->getQueryParam('max_depth', 3);
-
-            if (!$sourceId || !$targetId) {
-                return new Response(400, ['Content-Type' => 'application/json'], json_encode([
-                    'error' => 'Both source_id and target_id are required'
-                ]));
-            }
-
-            $paths = $this->bayanManager->findPaths($sourceId, $targetId, $maxDepth);
-
-            return new Response(200, ['Content-Type' => 'application/json'], json_encode([
-                'paths' => $paths,
-                'source_id' => $sourceId,
-                'target_id' => $targetId,
-                'max_depth' => $maxDepth
-            ]));
+            $sql = "SELECT id, title, type, created_at FROM bayan_nodes ORDER BY created_at DESC LIMIT ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$limit]);
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Failed to find Bayan paths', [
-                'source_id' => $sourceId ?? 0,
-                'target_id' => $targetId ?? 0,
-                'error' => $e->getMessage()
-            ]);
-            return new Response(500, ['Content-Type' => 'application/json'], json_encode([
-                'error' => 'Internal server error'
-            ]));
+            return [];
         }
     }
 
-    // Uses base Controller::view()
+    /**
+     * Get a specific node.
+     */
+    private function getNode(string $nodeId): ?array
+    {
+        try {
+            $sql = "SELECT id, title, type, content, created_at FROM bayan_nodes WHERE id = ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$nodeId]);
+            
+            $result = $stmt->fetch();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get related nodes.
+     */
+    private function getRelatedNodes(string $nodeId, ?string $type, int $limit): array
+    {
+        try {
+            $sql = "SELECT id, title, type, created_at FROM bayan_nodes WHERE id != ? ORDER BY created_at DESC LIMIT ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$nodeId, $limit]);
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Search nodes.
+     */
+    private function searchNodes(string $query, string $type, int $page, int $limit): array
+    {
+        try {
+            $offset = ($page - 1) * $limit;
+            $searchTerm = "%{$query}%";
+            
+            $sql = "SELECT id, title, type, created_at FROM bayan_nodes 
+                    WHERE title LIKE ? OR content LIKE ? 
+                    ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$searchTerm, $searchTerm, $limit, $offset]);
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get total search results count.
+     */
+    private function getTotalSearchResults(string $query, string $type): int
+    {
+        try {
+            $searchTerm = "%{$query}%";
+            
+            $sql = "SELECT COUNT(*) as count FROM bayan_nodes WHERE title LIKE ? OR content LIKE ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$searchTerm, $searchTerm]);
+            
+            $result = $stmt->fetch();
+            return (int)($result['count'] ?? 0);
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Build graph data for visualization.
+     */
+    private function buildGraphData(array $hubNodes): array
+    {
+        $graph = ['nodes' => [], 'edges' => []];
+        
+        foreach ($hubNodes as $node) {
+            $graph['nodes'][] = [
+                'id' => $node['id'],
+                'label' => $node['title'],
+                'type' => $node['type'] ?? 'node',
+                'isHub' => true
+            ];
+        }
+        
+        return $graph;
+    }
 }

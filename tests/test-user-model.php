@@ -39,7 +39,7 @@ if (file_exists($autoloadPath)) {
     }
 }
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Models\User;
 
@@ -48,7 +48,7 @@ echo "<h2>Testing User Model toArray Method</h2>\n";
 
 try {
     // Create application
-    $app = new NizamApplication(BASE_PATH);
+    $app = new Application(BASE_PATH);
     $container = $app->getContainer();
     $db = $container->get('db');
 

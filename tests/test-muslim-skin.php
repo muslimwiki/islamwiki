@@ -7,14 +7,14 @@
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 require_once __DIR__ . '/../src/Skins/SkinManager.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 // Initialize application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 
 // Get skin manager and reload skins to ensure Muslim is loaded
 $container = $app->getContainer();

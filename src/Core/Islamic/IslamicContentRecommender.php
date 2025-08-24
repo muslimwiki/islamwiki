@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Islamic;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 class IslamicContentRecommender
 {
@@ -28,7 +28,7 @@ class IslamicContentRecommender
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * Content categories.
@@ -73,7 +73,7 @@ class IslamicContentRecommender
     /**
      * Create a new Islamic content recommender instance.
      */
-    public function __construct(Connection $db, Shahid $logger)
+    public function __construct(Connection $db, Logging $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

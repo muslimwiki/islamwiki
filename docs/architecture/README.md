@@ -15,27 +15,27 @@ This directory contains comprehensive documentation of the IslamWiki system arch
 
 ### **1. Presentation Layer**
 - **Bayan** (Explanation) - Content reading and consumption
-- **Siraj** (Light) - Knowledge discovery and API management
-- **Rihlah** (Journey) - User experience and navigation
+- **API** (Light) - Knowledge discovery and API management
+- **Routing** (Journey) - User experience and navigation
 - **Safa** (Purity) - CSS framework and styling system
 
 ### **2. Application Layer**
-- **Aman** (Security) - Security and authentication
-- **Wisal** (Connection) - Session management
-- **Sabr** (Patience) - Background processing
-- **Usul** (Principles) - Business rules and validation
+- **Security** (Security) - Security and authentication
+- **Session** (Connection) - Session management
+- **Queue** (Patience) - Background processing
+- **Knowledge** (Principles) - Business rules and validation
 
 ### **3. Domain Layer**
 - **Simplified Routing** (Path) - Routing and request handling
-- **Nizam** (Order) - System organization
-- **Mizan** (Balance) - Database and data management
-- **Tadbir** (Management) - Configuration and administration
+- **Application** (Order) - System organization
+- **Database** (Balance) - Database and data management
+- **Configuration** (Management) - Configuration and administration
 
 ### **4. Infrastructure Layer**
-- **Asas** (Foundation) - Core foundation and services
+- **Container** (Container) - Core foundation and services
 - **Iqra** (Read) - Islamic search engine and content discovery
 - **Marwa** (Excellence) - JavaScript framework and interactivity
-- **Shahid** (Witness) - Logging, monitoring, and content verification
+- **Logging** (Witness) - Logging, monitoring, and content verification
 
 ## 🌟 **Architecture Philosophy**
 
@@ -58,15 +58,15 @@ This directory contains comprehensive documentation of the IslamWiki system arch
 
 ### **Data Flow**
 ```
-User Request → Simplified Routing → Aman (Security) → 
+User Request → Simplified Routing → Security (Security) → 
 Content Request → Bayan (Explanation) → Iqra (Search) → 
-Response → Rihlah (Caching) → User
+Response → Routing (Caching) → User
 ```
 
 ### **Authentication Flow**
 ```
-Login Request → Aman (Security) → Wisal (Session) → 
-User Validation → Asas (Foundation) → Response
+Login Request → Security (Security) → Session (Session) → 
+User Validation → Container (Container) → Response
 ```
 
 ## 📊 **Architecture Benefits**

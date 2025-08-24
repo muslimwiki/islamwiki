@@ -29,7 +29,7 @@ class SettingsController extends Controller
     /**
      * Constructor
      */
-    public function __construct(Connection $database, \IslamWiki\Core\Container\AsasContainer $container, LanguageService $languageService)
+    public function __construct(Connection $database, \IslamWiki\Core\Container\Container $container, LanguageService $languageService)
     {
         parent::__construct($database, $container);
         $this->languageService = $languageService;

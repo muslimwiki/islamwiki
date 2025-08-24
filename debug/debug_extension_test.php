@@ -13,14 +13,14 @@ define('BASE_PATH', __DIR__);
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Load required files
-require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
+require_once BASE_PATH . '/src/Core/Container/Container.php';
 require_once BASE_PATH . '/src/Core/Extensions/ExtensionManager.php';
 require_once BASE_PATH . '/src/Core/Extensions/Extension.php';
 
 echo "1. Core classes loaded successfully\n";
 
 // Create container
-$container = new \IslamWiki\Core\Container\AsasContainer();
+$container = new \IslamWiki\Core\Container\Container
 
 echo "2. Container created successfully\n";
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 use IslamWiki\Core\Database\Connection;
 
 /**
@@ -15,7 +15,7 @@ use IslamWiki\Core\Database\Connection;
  */
 class DatabaseCacheDriver implements CacheDriverInterface
 {
-    private ShahidLogger $logger;
+    private Logger $logger;
     private Connection $db;
     private array $stats = [
         'hits' => 0,
@@ -27,7 +27,7 @@ class DatabaseCacheDriver implements CacheDriverInterface
     /**
      * Create a new database cache driver.
      */
-    public function __construct(ShahidLogger $logger, Connection $db)
+    public function __construct(Logger $logger, Connection $db)
     {
         $this->logger = $logger;
         $this->db = $db;

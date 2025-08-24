@@ -32,20 +32,20 @@ IslamWiki uses Islamic naming conventions throughout its architecture to:
 
 ### **Core Systems (Already Documented)**
 ```
-1. Asas (Foundation) - Core foundation and dependency injection container
-2. Aman (Security) - Comprehensive security framework
-3. Siraj (Light/Illumination) - API management and routing system
-4. Shahid (Witness/Evidence) - Comprehensive logging and error handling system
-5. Wisal (Connection) - Session management system
-6. Rihlah (Journey) - Caching system
-7. Sabr (Patience/Persistence) - Job queue system
-8. Usul (Principles/Roots) - Knowledge management system
+1. Container (Container) - Core foundation and dependency injection container
+2. Security (Security) - Comprehensive security framework
+3. API (Light/Illumination) - API management and routing system
+4. Logging (Witness/Evidence) - Comprehensive logging and error handling system
+5. Session (Connection) - Session management system
+6. Routing (Journey) - Caching system
+7. Queue (Patience/Persistence) - Job queue system
+8. Knowledge (Principles/Roots) - Knowledge management system
 9. Iqra (Read) - Islamic search engine
 10. Bayan (Explanation/Clarification) - Content formatting system
 11. Simplified Routing (Path/Way) - Advanced routing system
-12. Nizam (System/Order) - Main application system
-13. Mizan (Balance/Scale) - Database system
-14. Tadbir (Management/Planning) - Configuration management system
+12. Application (System/Order) - Main application system
+13. Database (Balance/Scale) - Database system
+14. Configuration (Management/Planning) - Configuration management system
 15. Safa (Purity/Cleanliness) - CSS framework and styling system
 16. Marwa (Elevation/Excellence) - JavaScript framework and interactivity
 ```
@@ -103,27 +103,27 @@ local.islam.wiki/
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Extension                      → RihlahExtension       → Journey (Extension)
+Extension                      → RoutingExtension       → Journey (Extension)
 Controller                     → SabilController       → Path (Controller)
-Service                       → UsulService            → Principles (Service)
-Provider                      → AsasProvider           → Foundation (Provider)
-Model                         → MizanModel             → Balance (Data Model)
+Service                       → KnowledgeService            → Principles (Service)
+Provider                      → ContainerProvider           → Container (Provider)
+Model                         → DatabaseModel             → Balance (Data Model)
 Widget                        → BayanWidget            → Explanation (Widget)
-Migration                     → SabrMigration          → Patience (Database Migration)
-Config                        → TadbirConfig           → Management (Configuration)
+Migration                     → QueueMigration          → Patience (Database Migration)
+Config                        → ConfigurationConfig           → Management (Configuration)
 ```
 
 ### **2. Database & Data Components**
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Database                      → MizanDatabase          → Balance (Database)
+Database                      → Database          → Balance (Database)
 Query                         → IqraQuery              → Read (Query)
-Connection                    → WisalConnection         → Connection (Database)
-Migration                     → SabrMigration          → Patience (Migration)
-Seed                          → UsulSeed               → Principles (Seed Data)
-Model                         → MizanModel             → Balance (Data Model)
-Collection                    → ShahidCollection        → Witness (Data Collection)
+Connection                    → SessionConnection         → Connection (Database)
+Migration                     → QueueMigration          → Patience (Migration)
+Seed                          → KnowledgeSeed               → Principles (Seed Data)
+Model                         → DatabaseModel             → Balance (Data Model)
+Collection                    → LoggingCollection        → Witness (Data Collection)
 Repository                    → BayanRepository         → Explanation (Data Access)
 ```
 
@@ -133,10 +133,10 @@ Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
 Request                       → SabilRequest           → Path (HTTP Request)
 Response                      → BayanResponse          → Explanation (HTTP Response)
-Middleware                    → AmanMiddleware         → Security (Middleware)
+Middleware                    → SecurityMiddleware         → Security (Middleware)
 Route                         → SabilRoute             → Path (Route)
-API                           → SirajAPI               → Light (API)
-Endpoint                      → SirajEndpoint          → Light (API Endpoint)
+API                           → API               → Light (API)
+Endpoint                      → APIEndpoint          → Light (API Endpoint)
 ```
 
 ### **4. View & Template Components**
@@ -148,7 +148,7 @@ Template                      → BayanTemplate          → Explanation (Templa
 Renderer                      → BayanRenderer          → Explanation (Renderer)
 Theme                         → SafaTheme              → Purity (Theme)
 Skin                          → SafaSkin               → Purity (Skin)
-Layout                        → NizamLayout            → Order (Layout)
+Layout                        → ApplicationLayout            → Order (Layout)
 Component                     → BayanComponent         → Explanation (Component)
 ```
 
@@ -156,23 +156,23 @@ Component                     → BayanComponent         → Explanation (Compon
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Test                          → ShahidTest             → Witness (Test)
-Unit                          → UsulUnit               → Principles (Unit Test)
-Integration                   → WisalIntegration       → Connection (Integration)
-Fixture                       → UsulFixture            → Principles (Test Data)
-Mock                          → ShahidMock             → Witness (Mock)
-Assertion                     → ShahidAssertion        → Witness (Assertion)
+Test                          → LoggingTest             → Witness (Test)
+Unit                          → KnowledgeUnit               → Principles (Unit Test)
+Integration                   → SessionIntegration       → Connection (Integration)
+Fixture                       → KnowledgeFixture            → Principles (Test Data)
+Mock                          → LoggingMock             → Witness (Mock)
+Assertion                     → LoggingAssertion        → Witness (Assertion)
 ```
 
 ### **6. Utility & Helper Components**
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Utility                       → UsulUtility            → Principles (Utility)
+Utility                       → KnowledgeUtility            → Principles (Utility)
 Helper                        → BayanHelper            → Explanation (Helper)
-Factory                       → AsasFactory            → Foundation (Factory)
-Builder                       → NizamBuilder           → Order (Builder)
-Validator                     → AmanValidator          → Security (Validator)
+Factory                       → ContainerFactory            → Container (Factory)
+Builder                       → ApplicationBuilder           → Order (Builder)
+Validator                     → SecurityValidator          → Security (Validator)
 Formatter                     → BayanFormatter         → Explanation (Formatter)
 ```
 
@@ -180,36 +180,36 @@ Formatter                     → BayanFormatter         → Explanation (Format
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Event                         → SirajEvent             → Light (Event)
+Event                         → APIEvent             → Light (Event)
 Listener                      → IqraListener           → Read (Listener)
-Dispatcher                    → SirajDispatcher        → Light (Event Dispatcher)
+Dispatcher                    → APIDispatcher        → Light (Event Dispatcher)
 Notification                  → BayanNotification      → Explanation (Notification)
-Observer                      → ShahidObserver         → Witness (Observer)
+Observer                      → LoggingObserver         → Witness (Observer)
 ```
 
 ### **8. Cache & Performance Components**
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Cache                         → RihlahCache            → Journey (Cache)
-Store                         → MizanStore             → Balance (Data Store)
-Pool                          → WisalPool              → Connection (Connection Pool)
-Queue                         → SabrQueue              → Patience (Job Queue)
-Job                           → SabrJob                → Patience (Background Job)
-Worker                        → SabrWorker             → Patience (Background Worker)
+Cache                         → RoutingCache            → Journey (Cache)
+Store                         → DatabaseStore             → Balance (Data Store)
+Pool                          → SessionPool              → Connection (Connection Pool)
+Queue                         → Queue              → Patience (Job Queue)
+Job                           → QueueJob                → Patience (Background Job)
+Worker                        → QueueWorker             → Patience (Background Worker)
 ```
 
 ### **9. Security & Authentication Components**
 ```
 Current Name                    → Islamic Name          → Meaning & Purpose
 ─────────────────────────────────────────────────────────────────────────────
-Auth                          → AmanAuth               → Security (Authentication)
-Guard                         → AmanGuard              → Security (Guard)
-Policy                        → UsulPolicy             → Principles (Policy)
-Permission                    → UsulPermission         → Principles (Permission)
-Role                          → UsulRole               → Principles (Role)
-Token                         → AmanToken              → Security (Token)
-Hash                          → AmanHash               → Security (Hash)
+Auth                          → SecurityAuth               → Security (Authentication)
+Guard                         → SecurityGuard              → Security (Guard)
+Policy                        → KnowledgePolicy             → Principles (Policy)
+Permission                    → KnowledgePermission         → Principles (Permission)
+Role                          → KnowledgeRole               → Principles (Role)
+Token                         → SecurityToken              → Security (Token)
+Hash                          → SecurityHash               → Security (Hash)
 ```
 
 ### **10. File & Asset Components**
@@ -220,8 +220,8 @@ File                          → IqraFile               → Read (File)
 Asset                         → BayanAsset             → Explanation (Asset)
 Upload                        → IqraUpload             → Read (File Upload)
 Download                      → IqraDownload           → Read (File Download)
-Storage                       → SabrStorage            → Patience (File Storage)
-Manager                       → TadbirManager          → Management (Manager)
+Storage                       → QueueStorage            → Patience (File Storage)
+Manager                       → ConfigurationManager          → Management (Manager)
 ```
 
 ---
@@ -238,7 +238,7 @@ Manager                       → TadbirManager          → Management (Manager
 ### **File Naming Examples**
 ```
 ✅ Correct:
-- asas-container.php (Foundation container)
+- container.php (Container container)
 - aman-authentication.php (Security authentication)
 - sabil-router.php (Path router)
 - tadbir-config.php (Management configuration)
@@ -247,9 +247,9 @@ Manager                       → TadbirManager          → Management (Manager
 - usul-knowledge.php (Principles knowledge)
 - iqra-search.php (Read search)
 - bayan-formatter.php (Explanation formatter)
-- siraj-api.php (Light API)
-- shahid-logger.php (Witness logging)
-- wisal-session.php (Connection session)
+- api.php (Light API)
+- logger.php (Witness logging)
+- session.php (Connection session)
 - sabr-queue.php (Patience queue)
 - safa-theme.php (Purity theme)
 - marwa-component.php (Excellence component)
@@ -264,19 +264,19 @@ Manager                       → TadbirManager          → Management (Manager
 ### **Class Naming Examples**
 ```
 ✅ Correct:
-- AsasContainer (Foundation container)
-- AmanAuthentication (Security authentication)
+- Container (Container container)
+- SecurityAuthentication (Security authentication)
 - SabilRouter (Path router)
-- TadbirConfiguration (Management configuration)
-- RihlahCache (Journey cache)
-- MizanDatabase (Balance database)
-- UsulKnowledge (Principles knowledge)
+- Configuration (Management configuration)
+- RoutingCache (Journey cache)
+- Database (Balance database)
+- Knowledge (Principles knowledge)
 - IqraSearch (Read search)
 - BayanFormatter (Explanation formatter)
-- SirajAPI (Light API)
-- ShahidLogger (Witness logger)
-- WisalSession (Connection session)
-- SabrQueue (Patience queue)
+- API (Light API)
+- Logger (Witness logger)
+- Session (Connection session)
+- Queue (Patience queue)
 - SafaTheme (Purity theme)
 - MarwaComponent (Excellence component)
 
@@ -294,20 +294,20 @@ Manager                       → TadbirManager          → Management (Manager
 ### **System Components**
 ```
 Core Systems:
-├── Asas (Foundation) - Base system, containers, services
-├── Aman (Security) - Authentication, authorization, validation
-├── Siraj (Light) - API management, endpoints, routing
-├── Shahid (Witness) - Logging, monitoring, error handling
-├── Wisal (Connection) - Sessions, connections, state
-├── Rihlah (Journey) - Caching, performance, optimization
-├── Sabr (Patience) - Queues, background jobs, persistence
-├── Usul (Principles) - Knowledge, rules, policies
+├── Container (Container) - Base system, containers, services
+├── Security (Security) - Authentication, authorization, validation
+├── API (Light) - API management, endpoints, routing
+├── Logging (Witness) - Logging, monitoring, error handling
+├── Session (Connection) - Sessions, connections, state
+├── Routing (Journey) - Caching, performance, optimization
+├── Queue (Patience) - Queues, background jobs, persistence
+├── Knowledge (Principles) - Knowledge, rules, policies
 ├── Iqra (Read) - Search, discovery, reading
 ├── Bayan (Explanation) - Formatting, presentation, clarification
 ├── Simplified Routing (Path) - Routing, requests, middleware
-├── Nizam (Order) - Application, coordination, management
-├── Mizan (Balance) - Database, data, storage
-├── Tadbir (Management) - Configuration, planning, administration
+├── Application (Order) - Application, coordination, management
+├── Database (Balance) - Database, data, storage
+├── Configuration (Management) - Configuration, planning, administration
 ├── Safa (Purity) - CSS, styling, aesthetics
 └── Marwa (Excellence) - JavaScript, interactivity, enhancement
 ```
@@ -382,30 +382,30 @@ JavaScript Files:
 ## 📖 **References & Resources**
 
 ### **Islamic Terms Dictionary**
-- **Asas**: Foundation, basis, fundamental
-- **Aman**: Security, safety, trust
-- **Siraj**: Lamp, light, illumination
-- **Shahid**: Witness, evidence, martyr
-- **Wisal**: Connection, joining, union
-- **Rihlah**: Journey, travel, expedition
-- **Sabr**: Patience, perseverance, endurance
-- **Usul**: Principles, fundamentals, methodology
+- **Container**: Container, basis, fundamental
+- **Security**: Security, safety, trust
+- **API**: Lamp, light, illumination
+- **Logging**: Witness, evidence, martyr
+- **Session**: Connection, joining, union
+- **Routing**: Journey, travel, expedition
+- **Queue**: Patience, perseverance, endurance
+- **Knowledge**: Principles, fundamentals, methodology
 - **Iqra**: Read, recite, proclaim
 - **Bayan**: Explanation, clarification, statement
 - **Simplified Routing**: Path, way, method
-- **Nizam**: System, order, organization
-- **Mizan**: Balance, scale, measure
-- **Tadbir**: Management, administration, planning
+- **Application**: System, order, organization
+- **Database**: Balance, scale, measure
+- **Configuration**: Management, administration, planning
 - **Safa**: Purity, cleanliness, clarity
 - **Marwa**: Excellence, elevation, distinction
 
 ### **Additional Islamic Terms for Future Use**
-- **Hikmah** (Wisdom) - AI/ML systems
+- **Wisdom** (Wisdom) - AI/ML systems
 - **Fadhilah** (Virtue) - Quality assurance
 - **Tawheed** (Unity) - System integration
 - **Ihsan** (Excellence) - Performance optimization
 - **Adab** (Etiquette) - User interface guidelines
-- **Taqwa** (Consciousness) - Monitoring systems
+- **Piety** (Consciousness) - Monitoring systems
 
 ---
 

@@ -16,15 +16,15 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Skin;
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 class StaticDataManager
 {
     /**
-     * @var NizamApplication The application instance
+     * @var Application The application instance
      */
-    private NizamApplication $app;
+    private Application $app;
 
     /**
      * @var SkinManager The skin manager instance
@@ -44,7 +44,7 @@ class StaticDataManager
     /**
      * Constructor
      */
-    public function __construct(NizamApplication $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->skinManager = new SkinManager($app);

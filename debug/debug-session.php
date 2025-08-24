@@ -19,11 +19,11 @@ try {
     echo "Step 2: Autoloader loaded successfully<br>";
 
     echo "Step 3: Creating container...<br>";
-    $container = new \IslamWiki\Core\Container\AsasContainer();
+    $container = new \IslamWiki\Core\Container\Container
     echo "Step 4: Container created successfully<br>";
 
     echo "Step 5: Creating session manager...<br>";
-    $sessionManager = new \IslamWiki\Core\Session\WisalSession();
+    $sessionManager = new \IslamWiki\Core\Session\Session
     echo "Step 6: Session manager created successfully<br>";
 
     echo "Step 7: Starting session...<br>";

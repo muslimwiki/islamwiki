@@ -13,8 +13,8 @@ The IslamWiki skin system provides a flexible, WordPress-inspired theme architec
 Skin System Architecture:
 ├── 📁 Safa (CSS Framework) - Purity and cleanliness in styling
 ├── 📁 Marwa (JavaScript Framework) - Excellence in interactivity
-├── 📁 Nizam (Application System) - Order and organization
-├── 📁 Tadbir (Configuration) - Management and planning
+├── 📁 Application (Application System) - Order and organization
+├── 📁 Configuration (Configuration) - Management and planning
 └── 📁 Bayan (Formatting) - Explanation and presentation
 ```
 

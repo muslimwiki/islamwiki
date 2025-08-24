@@ -22,7 +22,7 @@
     padding: var(--spacing-xl) 0;
 }
 
-/* Line 7249 - Main Page Hero */
+/* Line 7249 - Home Page Hero */
 .hero {
     background: linear-gradient(135deg, #17203D 0%, #3b82f6 100%);
     color: white;
@@ -48,7 +48,7 @@
     margin-bottom: 1rem;
 }
 
-/* Line 7269 - Main Page Hero Content */
+/* Line 7269 - Home Page Hero Content */
 .hero-content {
     position: relative;
     z-index: 2;
@@ -70,7 +70,7 @@
     justify-content: center;
 }
 
-/* Line 7299 - Main Page Hero Stats */
+/* Line 7299 - Home Page Hero Stats */
 .hero-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -91,7 +91,7 @@ skins/Bismillah/css/bismillah.css
 │   ├── .hero { } ← CONFLICT 1
 │   ├── .hero-content { } ← CONFLICT 2
 │   └── .hero-stats { } ← CONFLICT 3
-├── Main Page Styles (lines 5000-6000)
+├── Home Page Styles (lines 5000-6000)
 │   ├── .hero { } ← CONFLICT 1
 │   ├── .hero-content { } ← CONFLICT 2
 │   └── .hero-stats { } ← CONFLICT 3
@@ -105,7 +105,7 @@ skins/Bismillah/css/bismillah.css
 ├── CSS Variables & Base Styles
 ├── Component Library (reusable, namespaced)
 ├── Page-Specific Styles
-│   ├── .main-page-* (Main page only)
+│   ├── .home-page-* (Main page only)
 │   ├── .dashboard-* (Dashboard only)
 │   ├── .wiki-page-* (Wiki pages only)
 │   └── .auth-page-* (Authentication pages only)
@@ -116,16 +116,16 @@ skins/Bismillah/css/bismillah.css
 
 ### **Priority 1: Fix Hero Conflicts (Today)**
 
-1. **Rename main page hero classes:**
+1. **Rename home page hero classes:**
    ```css
-   .main-page-hero → .main-page-hero
-   .main-page-hero-content → .main-page-hero-content
-   .main-page-hero-stats → .main-page-hero-stats
+   .home-page-hero → .home-page-hero
+   .home-page-hero-content → .home-page-hero-content
+   .home-page-hero-stats → .home-page-hero-stats
    ```
 
 2. **Update HTML template** to use new class names
 
-3. **Test main page styling** to ensure conflicts resolved
+3. **Test home page styling** to ensure conflicts resolved
 
 ### **Priority 2: Implement Namespace Strategy (This Week)**
 
@@ -152,9 +152,9 @@ skins/Bismillah/css/bismillah.css
 .hero-stats { }
 
 /* AFTER (NAMESPACED) */
-.main-page-hero { }
-.main-page-hero-content { }
-.main-page-hero-stats { }
+.home-page-hero { }
+.home-page-hero-content { }
+.home-page-hero-stats { }
 
 .dashboard-hero { }
 .dashboard-hero-content { }
@@ -165,11 +165,11 @@ skins/Bismillah/css/bismillah.css
 
 ```css
 /* Use compound selectors for high specificity */
-.main-page-container .main-page-hero { }
-.main-page-container .main-page-hero .main-page-hero-content { }
+.home-page-container .home-page-hero { }
+.home-page-container .home-page-hero .home-page-hero-content { }
 
 /* Avoid !important unless necessary */
-.main-page-hero {
+.home-page-hero {
     background: var(--color-primary);
     color: var(--color-white);
 }
@@ -186,7 +186,7 @@ skins/Bismillah/css/bismillah.css
 }
 
 /* Use variables consistently */
-.main-page-hero {
+.home-page-hero {
     background: var(--color-primary);
     padding: var(--spacing-lg);
 }
@@ -197,12 +197,12 @@ skins/Bismillah/css/bismillah.css
 - [ ] **Zero CSS conflicts** between page types
 - [ ] **100% predictable styling** behavior
 - [ ] **Main page displays correctly** with all styles applied
-- [ ] **Dashboard functionality** unaffected by main page styles
+- [ ] **Dashboard functionality** unaffected by home page styles
 - [ ] **CSS maintenance time** reduced by 80%
 
 ## 🚀 **IMPLEMENTATION TIMELINE**
 
-**Day 1:** Fix hero conflicts and test main page
+**Day 1:** Fix hero conflicts and test home page
 **Day 2-3:** Implement namespace strategy
 **Day 4-5:** CSS architecture overhaul
 **Day 6-7:** Testing and documentation

@@ -18,7 +18,7 @@ echo "🔍 Testing Twig Configuration\n";
 echo "=============================\n\n";
 
 // Initialize application
-$app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
+$app = new \IslamWiki\Core\Application . '/..');
 $container = $app->getContainer();
 
 echo "✅ Application initialized\n";

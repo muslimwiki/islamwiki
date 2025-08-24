@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Media;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use Psr\Log\LoggerInterface;
 
 /**
@@ -17,12 +17,12 @@ use Psr\Log\LoggerInterface;
 class MediaManager
 {
     private Connection $db;
-    private AsasContainer $container;
+    private Container $container;
     private string $uploadPath;
     private string $publicPath;
     private LoggerInterface $logger;
     
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         $this->db = $db;
         $this->container = $container;

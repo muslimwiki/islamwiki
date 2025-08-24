@@ -6,18 +6,18 @@
 
 require_once __DIR__ . '/../src/helpers.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Auth\AmanSecurity;
-use IslamWiki\Core\Session\WisalSession;
+use Container;\Container
+use Security;\Security
+use Session;\Session
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 echo "🔍 Debugging Non-Admin User Authentication\n";
 echo "==========================================\n\n";
 
 try {
     // Initialize container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
     
     // Register basic services
     $container->set('db', function() {
@@ -30,22 +30,22 @@ try {
     });
     
     $container->set('session', function() {
-        return new WisalSession(new ShahidLogger(__DIR__ . '/../logs'));
+        return new SessionSession(new LoggerLogger(__DIR__ . '/../logs'));
     });
     
     // Register auth service like the provider does
-    $container->set(AmanSecurity::class, function (AsasContainer $container) {
+    $container->set(Security::class, function (Container $container) {
         $session = $container->get('session');
         $db = $container->get('db');
-        return new AmanSecurity($session, $db);
+        return new SecuritySecurity($session, $db);
     });
     
     // Register 'auth' alias
-    $container->alias('auth', AmanSecurity::class);
+    $container->alias('auth', Security::class);
     echo "✅ Container loaded successfully\n";
     
     // Get the auth service
-    $auth = $container->get(\IslamWiki\Core\Auth\AmanSecurity::class);
+    $auth = $container->get(\IslamWiki\Core\Auth\Security
     echo "✅ Auth service loaded successfully\n";
     
     // Check if any user is currently logged in
@@ -125,7 +125,7 @@ try {
     echo "\n🔐 Session State Test:\n";
     echo "----------------------\n";
     
-    $session = $container->get(\IslamWiki\Core\Session\WisalSession::class);
+    $session = $container->get(\IslamWiki\Core\Session\Session
     echo "✅ Session service loaded\n";
     echo "Session ID: " . session_id() . "\n";
     echo "Session status: " . session_status() . "\n";

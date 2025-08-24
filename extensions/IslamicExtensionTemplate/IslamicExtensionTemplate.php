@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -33,8 +33,8 @@ namespace IslamWiki\Extensions\IslamicExtensionTemplate;
 use IslamWiki\Core\Extensions\IslamicExtension;
 use IslamWiki\Core\Search\IqraSearch;
 use IslamWiki\Core\Formatter\BayanFormatter;
-use IslamWiki\Core\API\SirajAPI;
-use IslamWiki\Core\Caching\RihlahCaching;
+use API;\API
+use Caching;\Routing
 
 /**
  * Islamic Extension Template
@@ -217,16 +217,16 @@ class IslamicExtensionTemplate extends IslamicExtension
             $this->log('info', 'Registered with Bayan formatter system');
         }
 
-        // Register with Siraj (API)
+        // Register with API (API)
         if ($this->hasService('siraj.api')) {
             $apiService = $this->getService('siraj.api');
-            $this->log('info', 'Registered with Siraj API system');
+            $this->log('info', 'Registered with API API system');
         }
 
-        // Register with Rihlah (Caching)
+        // Register with Routing (Caching)
         if ($this->hasService('rihlah.caching')) {
             $cachingService = $this->getService('rihlah.caching');
-            $this->log('info', 'Registered with Rihlah caching system');
+            $this->log('info', 'Registered with Routing caching system');
         }
     }
 

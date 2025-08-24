@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Islamic;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 use const M_PI_2;
 
 class SalahTimeCalculator
 {
-    private Shahid $logger;
+    private Logging $logger;
     private array $methods = [];
 
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
         $this->initializeMethods();

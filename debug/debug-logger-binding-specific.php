@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Providers\LoggingServiceProvider;
 use Psr\Log\LoggerInterface;
 
@@ -10,7 +10,7 @@ echo "Testing LoggerInterface binding specifically...\n";
 
 try {
     // Create container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
 
     // Bind settings
     $container->singleton('settings', function () {

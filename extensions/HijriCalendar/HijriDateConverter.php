@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\HijriCalendar;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 /**
  * Hijri Date Converter
@@ -15,9 +15,9 @@ use IslamWiki\Core\Logging\Shahid;
 class HijriDateConverter
 {
     /**
-     * @var Shahid Logger instance
+     * @var Logging Logger instance
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * @var array Supported calculation methods
@@ -68,7 +68,7 @@ class HijriDateConverter
     /**
      * Constructor
      */
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
     }

@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Session\WisalSession;
+use Container;\Container
+use Session;\Session
 
 /**
  * Session Service Provider
@@ -36,7 +36,7 @@ class SessionServiceProvider
     /**
      * Register the session services.
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register session manager as singleton
         $container->set('session', function () use ($container) {
@@ -50,11 +50,11 @@ class SessionServiceProvider
             ];
 
             $logger = $container->get('logger');
-            return new WisalSession($logger, $config);
+            return new SessionSession($logger, $config);
         });
         
         // Also register with the class name for type-hinted injection
-        $container->set(WisalSession::class, function () use ($container) {
+        $container->set(Session::class, function () use ($container) {
             $config = [
                 'name' => getenv('SESSION_NAME') ?: 'islamwiki_session',
                 'lifetime' => (int)(getenv('SESSION_LIFETIME') ?: 86400),
@@ -65,14 +65,14 @@ class SessionServiceProvider
             ];
 
             $logger = $container->get('logger');
-            return new WisalSession($logger, $config);
+            return new SessionSession($logger, $config);
         });
     }
 
     /**
      * Boot the session services.
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Start the session when the provider boots, but only if not already started
         try {

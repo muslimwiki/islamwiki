@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Queue\Drivers;
 
 use IslamWiki\Core\Queue\Interfaces\QueueDriverInterface;
 use IslamWiki\Core\Queue\Interfaces\JobInterface;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * Redis Queue Driver
@@ -15,7 +15,7 @@ use IslamWiki\Core\Logging\ShahidLogger;
  */
 class RedisQueueDriver implements QueueDriverInterface
 {
-    private ShahidLogger $logger;
+    private Logger $logger;
     private ?\Redis $redis;
     private array $stats = [
         'total_jobs' => 0,
@@ -26,7 +26,7 @@ class RedisQueueDriver implements QueueDriverInterface
     /**
      * Create a new Redis queue driver.
      */
-    public function __construct(ShahidLogger $logger)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
         $this->redis = null;

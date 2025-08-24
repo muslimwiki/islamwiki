@@ -70,7 +70,7 @@ use PHPUnit\Framework\TestCase;
  * @author IslamWiki Development Team
  * @license AGPL-3.0
  */
-class ShahidTest_SimplifiedRouting extends TestCase
+class LoggerTest_SimplifiedRouting extends TestCase
 {
     private Routing $router;
     
@@ -143,7 +143,7 @@ class ShahidTest_SimplifiedRouting extends TestCase
 /**
  * Integration Test Example
  */
-class ShahidTest_Integration_UserAuthentication extends TestCase
+class LoggerTest_Integration_UserAuthentication extends TestCase
 {
     private TestDatabase $database;
     private Application $app;
@@ -273,7 +273,7 @@ class TestDatabase
 /**
  * Security Test Example
  */
-class ShahidTest_Security_InputValidation extends TestCase
+class LoggerTest_Security_InputValidation extends TestCase
 {
     /**
      * Test XSS prevention
@@ -282,7 +282,7 @@ class ShahidTest_Security_InputValidation extends TestCase
     {
         $maliciousInput = '<script>alert("xss")</script>';
         
-        $validator = new AmanValidationService();
+        $validator = new SecurityValidationService();
         $result = $validator->validate(['content' => $maliciousInput], [
             'content' => 'required|safe_html'
         ]);
@@ -322,7 +322,7 @@ class ShahidTest_Security_InputValidation extends TestCase
 /**
  * Performance Test Example
  */
-class ShahidTest_Performance_ApiResponse extends TestCase
+class LoggerTest_Performance_ApiResponse extends TestCase
 {
     /**
      * Test API response time

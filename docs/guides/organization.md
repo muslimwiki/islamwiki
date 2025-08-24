@@ -12,9 +12,9 @@ This guide explains the organization structure of the Islam Wiki project and the
 ```
 src/
 ├── Core/           # Framework core components
-│   ├── NizamApplication.php
+│   ├── Application.php
 │   ├── Container/
-│   │   └── AsasContainer.php
+│   │   └── Container.php
 │   ├── Database/   # Database abstraction layer
 │   ├── Error/      # Error handling
 │   ├── Http/       # HTTP request/response

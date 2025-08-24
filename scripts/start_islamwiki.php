@@ -18,29 +18,29 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 try {
     // Step 1: Initialize Container
-    echo "🏗️  Step 1: Initializing AsasContainer (Foundation Container)...\n";
-    $container = new \IslamWiki\Core\Container\AsasContainer();
+    echo "🏗️  Step 1: Initializing Container (Container Container)...\n";
+    $container = new \IslamWiki\Core\Container\Container
     echo "✅ Container initialized successfully\n\n";
 
-    // Step 2: Initialize Foundation Layer
-    echo "🏗️  Step 2: Initializing Foundation Layer (أساس)...\n";
+    // Step 2: Initialize Container Layer
+    echo "🏗️  Step 2: Initializing Container Layer (أساس)...\n";
     
     // Create logger
-    $logger = new \IslamWiki\Core\Logging\ShahidLogger(__DIR__ . '/../logs');
+    $logger = new \IslamWiki\Core\Logging\Logger . '/../logs');
     $container->set('shahid.logger', $logger);
-    $container->set(\IslamWiki\Core\Logging\ShahidLogger::class, $logger);
+    $container->set(\IslamWiki\Core\Logging\Logger $logger);
     echo "✅ Logger created\n";
     
     // Create configuration
-    $config = new \IslamWiki\Core\Configuration\TadbirConfiguration($container);
+    $config = new \IslamWiki\Core\Configuration\Configuration($container);
     $container->set('tadbir.config', $config);
-    $container->set(\IslamWiki\Core\Configuration\TadbirConfiguration::class, $config);
+    $container->set(\IslamWiki\Core\Configuration\Configuration::class, $config);
     echo "✅ Configuration created\n";
     
     // Create database
-    $database = new \IslamWiki\Core\Database\MizanDatabase($logger, []);
+    $database = new \IslamWiki\Core\Database\Database []);
     $container->set('mizan.database', $database);
-    $container->set(\IslamWiki\Core\Database\MizanDatabase::class, $database);
+    $container->set(\IslamWiki\Core\Database\Database $database);
     echo "✅ Database created\n";
     
     // Create routing
@@ -50,11 +50,11 @@ try {
     echo "✅ Routing created\n";
     
     // Create application
-    $application = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..', $container);
+    $application = new \IslamWiki\Core\Application . '/..', $container);
     $container->set('nizam.application', $application);
-    $container->set(\IslamWiki\Core\NizamApplication::class, $application);
+    $container->set(\IslamWiki\Core\Application $application);
     echo "✅ Application created\n";
-    echo "✅ Foundation Layer initialized\n\n";
+    echo "✅ Container Layer initialized\n\n";
 
     // Step 3: Initialize Infrastructure Layer
     echo "🏗️  Step 3: Initializing Infrastructure Layer...\n";
@@ -62,14 +62,14 @@ try {
     // Database and routing are already created above, just add aliases
     $container->set('database', $database);
     $container->set('routing', $routing);
-    echo "   ✅ MizanDatabase (Database) initialized\n";
+    echo "   ✅ Database (Database) initialized\n";
     echo "   ✅ SabilRouting (Routing) initialized\n";
     
-    // Initialize NizamApplication
-    $nizam = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..', $container);
+    // Initialize Application
+    $nizam = new \IslamWiki\Core\Application . '/..', $container);
     $container->set('nizam.application', $nizam);
     $container->set('application', $nizam);
-    echo "   ✅ NizamApplication (Application) initialized\n";
+    echo "   ✅ Application (Application) initialized\n";
     echo "✅ Infrastructure Layer initialized\n\n";
 
     // Step 4: Initialize Application Layer
@@ -89,10 +89,10 @@ try {
         public function __construct($logger) {}
     });
     
-    echo "   ✅ AmanSecurity (Security) initialized\n";
-    echo "   ✅ WisalSession (Session) initialized\n";
-    echo "   ✅ SabrQueue (Queue) initialized\n";
-    echo "   ✅ UsulKnowledge (Knowledge) initialized\n";
+    echo "   ✅ Security (Security) initialized\n";
+    echo "   ✅ Session (Session) initialized\n";
+    echo "   ✅ Queue (Queue) initialized\n";
+    echo "   ✅ Knowledge (Knowledge) initialized\n";
     echo "✅ Application Layer initialized\n\n";
 
     // Step 5: Initialize User Interface Layer
@@ -114,8 +114,8 @@ try {
     
     echo "   ✅ IqraSearch (Search) initialized\n";
     echo "   ✅ BayanFormatter (Formatter) initialized\n";
-    echo "   ✅ SirajAPI (API) initialized\n";
-    echo "   ✅ RihlahCaching (Caching) initialized\n";
+    echo "   ✅ API (API) initialized\n";
+    echo "   ✅ Caching (Caching) initialized\n";
     echo "✅ User Interface Layer initialized\n\n";
 
     // Step 6: Initialize Extensions
@@ -165,7 +165,7 @@ try {
     echo "====================================================\n\n";
     
     echo "📊 System Status:\n";
-    echo "   ✅ Foundation Layer (أساس) - Active\n";
+    echo "   ✅ Container Layer (أساس) - Active\n";
     echo "   ✅ Infrastructure Layer - Active\n";
     echo "   ✅ Application Layer - Active\n";
     echo "   ✅ User Interface Layer - Active\n";

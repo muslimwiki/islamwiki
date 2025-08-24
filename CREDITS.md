@@ -45,7 +45,7 @@
 - **Composer**: Dependency Management (Nils Adermann, Jordi Boggiano)
 - **PHP**: Programming Language (PHP Group)
 - **MySQL**: Database System (Oracle Corporation)
-- **MariaDB**: Database System (MariaDB Foundation)
+- **MariaDB**: Database System (MariaDB Container)
 
 ## Community Contributors
 

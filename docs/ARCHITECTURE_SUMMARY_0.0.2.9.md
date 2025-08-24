@@ -12,12 +12,12 @@ Version 0.0.2.9 introduces a **Comprehensive Template Management System** that t
 
 ### **Application Layer**
 ```
-NizamApplication (Main Orchestrator)
+Application (Main Orchestrator)
 ├── Routing System (Sabil)
-├── Container Management (AsasContainer)
+├── Container Management (Container)
 ├── Service Providers
 ├── Middleware Stack
-└── Error Handling (Shahid)
+└── Error Handling (Logging)
 ```
 
 ### **Template Management System**
@@ -166,7 +166,7 @@ Container-Based Services
 │   ├── Template Management
 │   ├── Access Control
 │   └── Error Handling
-└── Shahid Logging
+└── Logging Logging
     ├── Template Operations
     ├── Error Logging
     └── Debug Information
@@ -324,7 +324,7 @@ System Integration
 - **Role-Based Access**: Appropriate functionality for each user type
 - **Security Integration**: Proper permission checking and access control
 
-### **Scalable Foundation**
+### **Scalable Container**
 - **Extension Architecture**: Modular system for future enhancements
 - **Service Integration**: Clean integration with existing systems
 - **Performance Optimization**: Efficient operations and responsive design

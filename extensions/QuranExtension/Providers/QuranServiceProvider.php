@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\QuranExtension\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Extensions\QuranExtension\QuranExtension;
 use IslamWiki\Extensions\QuranExtension\Models\QuranAyah;
 use IslamWiki\Extensions\QuranExtension\Models\QuranSurah;
@@ -21,7 +21,7 @@ class QuranServiceProvider
     /**
      * Register services
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the main extension
         $container->singleton(QuranExtension::class, function ($container) {
@@ -63,7 +63,7 @@ class QuranServiceProvider
                     'default' => 'mishary_rashid_alafasy',
                     'available' => [
                         'mishary_rashid_alafasy' => 'Mishary Rashid Alafasy',
-                        'abdul_rahman_al_sudais' => 'Abdul Rahman Al-Sudais',
+                        'abdul_rahman_al_sudais' => 'Abdul Mercyn Al-Sudais',
                         'saad_al_ghamdi' => 'Saad Al-Ghamdi',
                         'maher_al_mueaqly' => 'Maher Al-Mueaqly'
                     ]
@@ -102,7 +102,7 @@ class QuranServiceProvider
     /**
      * Boot services
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Initialize the extension
         $extension = $container->get(QuranExtension::class);
@@ -118,7 +118,7 @@ class QuranServiceProvider
     /**
      * Register Quran routes
      */
-    protected function registerRoutes(AsasContainer $container): void
+    protected function registerRoutes(Container $container): void
     {
         // Routes are now registered by QuranExtension.php to avoid duplication
         // This method is kept for future use if needed
@@ -127,7 +127,7 @@ class QuranServiceProvider
     /**
      * Register Quran views
      */
-    protected function registerViews(AsasContainer $container): void
+    protected function registerViews(Container $container): void
     {
         $viewManager = $container->get('view');
         
@@ -146,7 +146,7 @@ class QuranServiceProvider
     /**
      * Register Quran middleware
      */
-    protected function registerMiddleware(AsasContainer $container): void
+    protected function registerMiddleware(Container $container): void
     {
         $middlewareManager = $container->get('middleware');
         
@@ -160,7 +160,7 @@ class QuranServiceProvider
     /**
      * Register Quran assets
      */
-    protected function registerAssets(AsasContainer $container): void
+    protected function registerAssets(Container $container): void
     {
         $assetManager = $container->get('assets');
         
@@ -186,7 +186,7 @@ class QuranServiceProvider
     /**
      * Register Quran commands
      */
-    protected function registerCommands(AsasContainer $container): void
+    protected function registerCommands(Container $container): void
     {
         $commandManager = $container->get('commands');
         

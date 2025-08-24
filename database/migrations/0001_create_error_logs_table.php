@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Create Error Logs Table Migration
  * 
- * This migration creates the database table structure for the Shahid
+ * This migration creates the database table structure for the Logging
  * error logging system, allowing comprehensive error tracking and analysis.
  * 
  * @package IslamWiki\Database\Migrations

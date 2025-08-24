@@ -13,7 +13,7 @@ This release represents a **complete transformation** of IslamWiki from a docume
 
 ### **🏗️ Complete Islamic Architecture Implementation**
 - **All 16 Islamic Systems Operational**: Every core system is now fully implemented and functional
-- **4-Layer Architecture**: Foundation, Infrastructure, Application, and User Interface layers complete
+- **4-Layer Architecture**: Container, Infrastructure, Application, and User Interface layers complete
 - **Islamic Naming Conventions**: All systems use proper Islamic naming standards
 - **Modern Development Practices**: PHP 8.1+, SOLID principles, Clean Architecture, DDD patterns
 
@@ -43,28 +43,28 @@ This release represents a **complete transformation** of IslamWiki from a docume
 
 ## 🏗️ **Architecture Overview**
 
-### **Foundation Layer (أساس) - Core Foundation**
-- **AsasContainer**: PSR-11 compliant dependency injection container
-- **AsasFoundation**: Core foundation services and utilities management
-- **AsasBootstrap**: Application bootstrap and initialization system
+### **Container Layer (أساس) - Core Container**
+- **Container**: PSR-11 compliant dependency injection container
+- **Container**: Core foundation services and utilities management
+- **ContainerBootstrap**: Application bootstrap and initialization system
 
-### **Infrastructure Layer - System Foundation**
+### **Infrastructure Layer - System Container**
 - **Simplified Routing (سبيل)**: Islamic routing system for organized path management
-- **NizamApplication (نظام)**: Central application orchestrator and order management
-- **MizanDatabase (ميزان)**: Database system with balance and optimization
-- **TadbirConfiguration (تدبير)**: Configuration management and system administration
+- **Application (نظام)**: Central application orchestrator and order management
+- **Database (ميزان)**: Database system with balance and optimization
+- **Configuration (تدبير)**: Configuration management and system administration
 
 ### **Application Layer - Core Services**
-- **AmanSecurity (أمان)**: Security, authentication, and access control
-- **WisalSession (وصل)**: Session management and user connection handling
-- **SabrQueue (صبر)**: Background processing and queue management
-- **UsulKnowledge (أصول)**: Business rules and Islamic knowledge validation
+- **Security (أمان)**: Security, authentication, and access control
+- **Session (وصل)**: Session management and user connection handling
+- **Queue (صبر)**: Background processing and queue management
+- **Knowledge (أصول)**: Business rules and Islamic knowledge validation
 
 ### **User Interface Layer - User Experience**
 - **IqraSearch (إقرأ)**: Islamic search engine and content discovery
 - **BayanFormatter (بيان)**: Content formatting and Islamic presentation
-- **SirajAPI (سراج)**: API management and knowledge discovery
-- **RihlahCaching (رحلة)**: Caching system for performance optimization
+- **API (سراج)**: API management and knowledge discovery
+- **Caching (رحلة)**: Caching system for performance optimization
 
 ## 🔧 **Technical Improvements**
 
@@ -89,7 +89,7 @@ This release represents a **complete transformation** of IslamWiki from a docume
 ## 📊 **Implementation Status**
 
 ### **✅ Completed (100%)**
-- **Foundation Layer**: 3/3 components fully operational
+- **Container Layer**: 3/3 components fully operational
 - **Infrastructure Layer**: 4/4 components fully operational
 - **Application Layer**: 4/4 components fully operational
 - **User Interface Layer**: 4/4 components fully operational

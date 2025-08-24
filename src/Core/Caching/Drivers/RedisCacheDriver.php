@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Caching\Drivers;
 
 use IslamWiki\Core\Caching\Interfaces\CacheDriverInterface;
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 /**
  * Redis Cache Driver
@@ -14,7 +14,7 @@ use IslamWiki\Core\Logging\Shahid;
  */
 class RedisCacheDriver implements CacheDriverInterface
 {
-    private Shahid $logger;
+    private Logging $logger;
     private \Redis $redis;
     private array $config;
     private array $stats = [
@@ -27,7 +27,7 @@ class RedisCacheDriver implements CacheDriverInterface
     /**
      * Create a new Redis cache driver.
      */
-    public function __construct(Shahid $logger, array $config = [])
+    public function __construct(Logging $logger, array $config = [])
     {
         $this->logger = $logger;
         $this->config = array_merge([

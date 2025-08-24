@@ -11,17 +11,17 @@
 
 require_once __DIR__ . '/../src/helpers.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Auth\AmanSecurity;
-use IslamWiki\Core\Session\WisalSession;
+use Container;\Container
+use Security;\Security
+use Session;\Session
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 echo "=== Authentication State Debug ===\n\n";
 
 try {
     // Initialize container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
     
     // Register basic services
     $container->set('db', function() {
@@ -34,18 +34,18 @@ try {
     });
     
     $container->set('session', function() {
-        return new WisalSession(new ShahidLogger(__DIR__ . '/../logs'));
+        return new SessionSession(new LoggerLogger(__DIR__ . '/../logs'));
     });
     
     // Register auth service like the provider does
-    $container->set(AmanSecurity::class, function (AsasContainer $container) {
+    $container->set(Security::class, function (Container $container) {
         $session = $container->get('session');
         $db = $container->get('db');
-        return new AmanSecurity($session, $db);
+        return new SecuritySecurity($session, $db);
     });
     
     // Register 'auth' alias
-    $container->alias('auth', AmanSecurity::class);
+    $container->alias('auth', Security::class);
     
     echo "✅ Container initialized successfully\n";
     
@@ -94,7 +94,7 @@ try {
     // Test auth service retrieval by class name
     echo "\n--- Testing Auth Service by Class Name ---\n";
     try {
-        $authByClass = $container->get(AmanSecurity::class);
+        $authByClass = $container->get(Security::class);
         echo "✅ Auth service retrieved by class name: " . get_class($authByClass) . "\n";
         
         $userByClass = $authByClass->user();

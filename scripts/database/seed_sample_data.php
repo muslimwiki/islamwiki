@@ -92,9 +92,9 @@ try {
                     "- **30 Juz** (parts)\n\n" .
                     "## Key Themes\n\n- **Tawhid**: Monotheism\n" .
                     "- **Akhirah**: Afterlife\n" .
-                    "- **Adl**: Justice\n" .
+                    "- **Justice**: Justice\n" .
                     "- **Ihsan**: Excellence\n" .
-                    "- **Taqwa**: God-consciousness\n\n" .
+                    "- **Piety**: God-consciousness\n\n" .
                     "## Study Methods\n\n- **Tajweed**: Proper recitation\n" .
                     "- **Tafsir**: Interpretation and commentary\n" .
                     "- **Memorization**: Hifz\n" .

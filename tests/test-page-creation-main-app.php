@@ -63,11 +63,11 @@ if ($user && password_verify($password, $user['password'])) {
     exit(1);
 }
 
-// Step 2: Test SessionManager (like the main app does)
-echo "\n2. Testing SessionManager authentication...\n";
+// Step 2: Test Session (like the main app does)
+echo "\n2. Testing Session authentication...\n";
 
 try {
-    // Create SessionManager with the same configuration as the main app
+    // Create Session with the same configuration as the main app
     $config = [
         'name' => 'islamwiki_session',
         'lifetime' => 86400,
@@ -77,19 +77,19 @@ try {
         'same_site' => 'Lax',
     ];
 
-    $sessionManager = new \IslamWiki\Core\Session\SessionManager($config);
+    $sessionManager = new \IslamWiki\Core\Session\Session($config);
 
-    echo "   SessionManager created successfully\n";
-    echo "   SessionManager::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
-    echo "   SessionManager::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
-    echo "   SessionManager::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
-    echo "   SessionManager::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
+    echo "   Session created successfully\n";
+    echo "   Session::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
+    echo "   Session::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
+    echo "   Session::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
+    echo "   Session::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
 
     // Simulate the PageController authentication check
     echo "\n3. Simulating PageController authentication check...\n";
 
     if ($sessionManager->isLoggedIn()) {
-        echo "   ✅ User is authenticated (SessionManager)\n";
+        echo "   ✅ User is authenticated (Session)\n";
 
         // Check if user can create pages (basic check)
         $canCreatePages = true; // All authenticated users can create pages
@@ -102,7 +102,7 @@ try {
             echo "   ❌ User does not have permission to create pages\n";
         }
     } else {
-        echo "   ❌ User is not authenticated (SessionManager)\n";
+        echo "   ❌ User is not authenticated (Session)\n";
         echo "   ❌ Page creation should redirect to login\n";
     }
 } catch (Exception $e) {

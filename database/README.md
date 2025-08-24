@@ -79,6 +79,6 @@ DROP TABLE IF EXISTS
 ## Future Migrations
 
 For future migrations, we'll implement a proper migration system using:
-- `IslamWiki\Core\Database\MizanMigration` base class
-- `IslamWiki\Core\Database\MizanSchema` for table operations
+- `IslamWiki\Core\Database\Database base class
+- `IslamWiki\Core\Database\Database for table operations
 - Migration versioning and rollback support 

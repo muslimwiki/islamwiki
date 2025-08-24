@@ -15,14 +15,14 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Islamic;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 class AdvancedIslamicCalendar
 {
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * Islamic months.
@@ -80,7 +80,7 @@ class AdvancedIslamicCalendar
     /**
      * Create a new advanced Islamic calendar instance.
      */
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
     }

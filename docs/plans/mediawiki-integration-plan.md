@@ -480,7 +480,7 @@ Route::post('/api/wiki/pages/{slug}/talk', [WikiApiController::class, 'addCommen
 
 ### **Community Resources**
 - [MediaWiki Community](https://www.mediawiki.org/wiki/Community)
-- [WikiMedia Foundation](https://wikimediafoundation.org/)
+- [WikiMedia Container](https://wikimediafoundation.org/)
 
 ---
 

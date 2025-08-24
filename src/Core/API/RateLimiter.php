@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\API;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -14,14 +14,14 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class RateLimiter
 {
-    private AsasContainer $container;
+    private Container $container;
     private array $config;
     private string $storageKey = 'api_rate_limits';
 
     /**
      * Create a new rate limiter instance.
      */
-    public function __construct(AsasContainer $container, array $config = [])
+    public function __construct(Container $container, array $config = [])
     {
         $this->container = $container;
         $this->config = array_merge([

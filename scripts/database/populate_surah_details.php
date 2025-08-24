@@ -12,8 +12,8 @@
 require_once __DIR__ . '/../../src/helpers.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Nizam\Core\Database\DatabaseManager;
-use Nizam\Core\Database\Connection;
+use Application\Core\Database\DatabaseManager;
+use Application\Core\Database\Connection;
 
 echo "Populating Surah Details...\n";
 echo "==========================\n\n";

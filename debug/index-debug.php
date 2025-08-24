@@ -21,7 +21,7 @@ ini_set('error_log', '/tmp/islamwiki-debug.log');
 define('BASE_PATH', dirname(__DIR__));
 
 // Use statements
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Routing\IslamRouter;
 use IslamWiki\Core\Http\Request;
@@ -37,15 +37,15 @@ try {
 
     // Include necessary files
     echo "<p>Loading core files...</p>";
-    require_once BASE_PATH . '/src/Core/Container/AsasContainer.php';
+    require_once BASE_PATH . '/src/Core/Container/Container.php';
     require_once BASE_PATH . '/src/Core/Database/Connection.php';
     require_once BASE_PATH . '/src/Core/Routing/IslamRouter.php';
-    require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
-    require_once BASE_PATH . '/src/Core/Session/Wisal.php';
+    require_once BASE_PATH . '/src/Core/Auth/Security.php';
+    require_once BASE_PATH . '/src/Core/Session/Session.php';
     require_once BASE_PATH . '/src/Core/Routing/ControllerFactory.php';
-    require_once BASE_PATH . '/src/Core/Auth/AmanSecurity.php';
+    require_once BASE_PATH . '/src/Core/Auth/Security.php';
     require_once BASE_PATH . '/src/Providers/SkinServiceProvider.php';
-    require_once BASE_PATH . '/src/Core/NizamApplication.php';
+    require_once BASE_PATH . '/src/Core/Application.php';
     require_once BASE_PATH . '/src/Http/Controllers/Auth/AuthController.php';
     require_once BASE_PATH . '/src/Http/Controllers/DashboardController.php';
     require_once BASE_PATH . '/src/Http/Controllers/ProfileController.php';
@@ -80,16 +80,16 @@ try {
     $db = $container->get('db');
     echo "<p>✅ Database connection retrieved</p>";
 
-    // Initialize and register Wisal connection manager
+    // Initialize and register Session connection manager
     echo "<p>Initializing session manager...</p>";
-    $sessionManager = new \IslamWiki\Core\Session\Wisal();
+    $sessionManager = new \IslamWiki\Core\Session\Session
     $sessionManager->start(); // Start the session
     $container->instance('session', $sessionManager);
     echo "<p>✅ Session manager initialized</p>";
 
-    // Initialize and register Aman
+    // Initialize and register Security
     echo "<p>Initializing auth manager...</p>";
-    $authManager = new \IslamWiki\Core\Auth\AmanSecurity($sessionManager, $db);
+    $authManager = new \IslamWiki\Core\Auth\Security $db);
     $container->instance('auth', $authManager);
     echo "<p>✅ Auth manager initialized</p>";
 

@@ -1,496 +1,359 @@
 <?php
 
+/**
+ * Hadith Controller
+ *
+ * Handles HTTP requests for Hadith content and collections.
+ *
+ * @package IslamWiki\Http\Controllers
+ * @version 0.0.3.0
+ * @license AGPL-3.0-only
+ */
+
+declare(strict_types=1);
+
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Models\Hadith;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use IslamWiki\Core\Container\Container;
 
 /**
- * HadithController
- *
- * Handles Hadith-related requests and operations for Phase 4 Islamic features integration.
- * Provides API endpoints and web interfaces for Hadith functionality.
- *
- * @package IslamWiki\Http\Controllers
- * @version 0.0.14
- * @since Phase 4
+ * Hadith Controller - Handles Hadith Content Functionality
  */
 class HadithController extends Controller
 {
-    private $hadith;
-
-    public function __construct(Connection $db, AsasContainer $container)
-    {
-        parent::__construct($db, $container);
-        $this->hadith = new Hadith();
-    }
-
     /**
      * Display Hadith index page
-     *
-     * @param Request $request
-     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        $stats = $this->hadith->getStatistics();
-        $collections = $this->hadith->getCollections();
-        $randomHadith = $this->hadith->getRandomHadith();
+        try {
+            $stats = $this->getHadithStatistics();
+            $collections = $this->getHadithCollections();
+            $randomHadith = $this->getRandomHadith();
 
-        $data = [
-            'title' => 'Hadith - IslamWiki',
-            'stats' => $stats,
-            'collections' => $collections,
-            'random_hadith' => $randomHadith
-        ];
-
-        return $this->view('hadith/index', $data);
+            return $this->view('hadith/index', [
+                'title' => 'Hadith - IslamWiki',
+                'stats' => $stats,
+                'collections' => $collections,
+                'random_hadith' => $randomHadith
+            ], 200);
+        } catch (\Exception $e) {
+            return new Response(500, [], 'Internal Server Error');
+        }
     }
 
     /**
      * Display specific Hadith page
-     *
-     * @param Request $request
-     * @param int $collectionId Collection ID
-     * @param string $hadithNumber Hadith number within collection
-     * @return Response
      */
-    public function show(Request $request, $collectionId, $hadithNumber)
+    public function show(Request $request, int $collectionId, string $hadithNumber): Response
     {
-        $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
+        try {
+            $hadithData = $this->getHadithByReference($collectionId, $hadithNumber);
+            $collectionInfo = $this->getCollectionInfo($collectionId);
+            
+            if (!$hadithData) {
+                $collectionName = $collectionInfo['name'] ?? "Collection {$collectionId}";
+                $data = [
+                    'title' => "Hadith {$collectionName} {$hadithNumber} - IslamWiki",
+                    'hadith' => null,
+                    'chain' => [],
+                    'commentary' => null,
+                    'collection_id' => $collectionId,
+                    'hadith_number' => $hadithNumber
+                ];
+            } else {
+                $chain = $this->getHadithChain($hadithData['id']);
+                $commentary = $this->getHadithCommentary($hadithData['id'], 'en');
 
-        // Get collection info even if hadith not found
-        $collectionInfo = $this->hadith->getCollectionInfo($collectionId);
-        
-        if (!$hadithData) {
-            // Instead of 404, show the page with no data message
-            $collectionName = isset($collectionInfo['name']) ? $collectionInfo['name'] : "Collection {$collectionId}";
-            $data = [
-                'title' => "Hadith {$collectionName} {$hadithNumber} - IslamWiki",
-                'hadith' => null,
-                'chain' => [],
-                'commentary' => null,
-                'collection_id' => $collectionId,
-                'hadith_number' => $hadithNumber
-            ];
-        } else {
-            // Get chain of narrators
-            $chain = $this->hadith->getChain($hadithData['id']);
+                $data = [
+                    'title' => "Hadith {$hadithData['collection_name']} {$hadithData['hadith_number']} - IslamWiki",
+                    'hadith' => $hadithData,
+                    'chain' => $chain,
+                    'commentary' => $commentary,
+                    'collection_id' => $hadithData['collection_id'],
+                    'hadith_number' => $hadithData['hadith_number']
+                ];
+            }
 
-            // Get commentary if available
-            $commentary = $this->hadith->getCommentary($hadithData['id'], 'en');
-
-            $data = [
-                'title' => "Hadith {$hadithData['collection_name']} {$hadithData['hadith_number']} - IslamWiki",
-                'hadith' => $hadithData,
-                'chain' => $chain,
-                'commentary' => $commentary,
-                'collection_id' => $hadithData['collection_id'],
-                'hadith_number' => $hadithData['hadith_number']
-            ];
+            return $this->view('hadith/hadith', $data, 200);
+        } catch (\Exception $e) {
+            return new Response(500, [], 'Internal Server Error');
         }
-
-        return $this->view('hadith/hadith', $data);
     }
 
     /**
      * Display collection page
-     *
-     * @param Request $request
-     * @param int $collection Collection ID
-     * @return Response
      */
-    public function collection(Request $request, $collection)
+    public function collection(Request $request, int $collection): Response
     {
-        $hadiths = $this->hadith->getByCollection($collection);
-        $collectionInfo = $this->hadith->getCollectionInfo($collection);
+        try {
+            $hadiths = $this->getHadithsByCollection($collection);
+            $collectionInfo = $this->getCollectionInfo($collection);
 
-        if (!$collectionInfo) {
-            return $this->notFound('Collection not found');
+            if (!$collectionInfo) {
+                return new Response(404, [], 'Collection not found');
+            }
+
+            return $this->view('hadith/collection', [
+                'title' => "Hadith Collection - {$collectionInfo['name']} - IslamWiki",
+                'hadiths' => $hadiths,
+                'collection' => $collectionInfo
+            ], 200);
+        } catch (\Exception $e) {
+            return new Response(500, [], 'Internal Server Error');
         }
-
-        $data = [
-            'title' => "Hadith Collection {$collectionInfo['name']} - IslamWiki",
-            'hadiths' => $hadiths,
-            'collection_info' => $collectionInfo,
-            'collection_id' => $collection
-        ];
-
-        return $this->view('hadith/collection', $data);
     }
 
     /**
-     * Display Hadith search page
-     *
-     * @param Request $request
-     * @return Response
+     * Search Hadith
      */
-    public function search(Request $request)
+    public function search(Request $request): Response
     {
-        $query = $request->getQueryParam('q', '');
-        $language = $request->getQueryParam('lang', 'en');
-        $collection = $request->getQueryParam('collection', '');
-        $results = [];
+        try {
+            $query = $request->getQueryParams()['q'] ?? '';
+            $collection = $request->getQueryParams()['collection'] ?? '';
+            $page = max(1, (int)($request->getQueryParams()['page'] ?? 1));
+            $limit = 20;
 
-        if (!empty($query)) {
-            $results = $this->hadith->search($query, $language, 20);
+            if (empty($query)) {
+                return $this->view('hadith/search', [
+                    'query' => '',
+                    'results' => [],
+                    'title' => 'Search Hadith - IslamWiki'
+                ], 200);
+            }
+
+            $results = $this->searchHadiths($query, $collection, $page, $limit);
+            $totalResults = $this->getTotalSearchResults($query, $collection);
+
+            return $this->view('hadith/search', [
+                'query' => $query,
+                'collection' => $collection,
+                'results' => $results,
+                'totalResults' => $totalResults,
+                'currentPage' => $page,
+                'totalPages' => ceil($totalResults / $limit),
+                'title' => "Search Hadith: {$query} - IslamWiki"
+            ], 200);
+        } catch (\Exception $e) {
+            return new Response(500, [], 'Internal Server Error');
         }
-
-        $collections = $this->hadith->getCollections();
-
-        $data = [
-            'title' => 'Hadith Search - IslamWiki',
-            'query' => $query,
-            'language' => $language,
-            'collection' => $collection,
-            'results' => $results,
-            'collections' => $collections,
-            'total_results' => count($results)
-        ];
-
-        return $this->view('hadith/search', $data);
     }
 
     /**
-     * API endpoint to get Hadiths
-     *
-     * @param Request $request
-     * @return Response
+     * Get Hadith statistics
      */
-    public function apiHadiths(Request $request)
+    private function getHadithStatistics(): array
     {
-        $collectionId = $request->getQueryParam('collection');
-        $limit = (int)$request->getQueryParam('limit', 50);
-
-        if ($collectionId) {
-            $hadiths = $this->hadith->getByCollection($collectionId, $limit);
-        } else {
-            $hadiths = $this->hadith->getDailyHadiths($limit);
+        try {
+            $sql = "SELECT COUNT(*) as total_hadith FROM hadiths";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            
+            $totalHadith = (int)($result['total_hadith'] ?? 0);
+            
+            return [
+                'total_hadith' => $totalHadith,
+                'total_collections' => 0,
+                'total_narrators' => 0,
+                'last_updated' => date('Y-m-d H:i:s')
+            ];
+        } catch (\Exception $e) {
+            return [
+                'total_hadith' => 0,
+                'total_collections' => 0,
+                'total_narrators' => 0,
+                'last_updated' => date('Y-m-d H:i:s')
+            ];
         }
-
-        $response = [
-            'success' => true,
-            'data' => $hadiths,
-            'total' => count($hadiths)
-        ];
-
-        return Response::json($response, 200);
     }
 
     /**
-     * API endpoint to get specific Hadith
-     *
-     * @param Request $request
-     * @param int $id Hadith ID
-     * @return Response
+     * Get Hadith collections
      */
-    public function apiHadith(Request $request, $id)
+    private function getHadithCollections(): array
     {
-        $hadith = $this->hadith->findById($id);
-
-        if (!$hadith) {
-            return new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode(['success' => false, 'error' => 'Hadith not found'])
-            );
+        try {
+            $sql = "SELECT id, name, description, total_hadith FROM hadith_collections ORDER BY name";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
         }
-
-        $response = [
-            'success' => true,
-            'data' => $hadith
-        ];
-
-        return Response::json($response, 200);
     }
 
     /**
-     * API endpoint to search Hadiths
-     *
-     * @param Request $request
-     * @return Response
+     * Get random Hadith
      */
-    public function apiSearch(Request $request)
+    private function getRandomHadith(): ?array
     {
-        $query = $request->getQueryParam('q', '');
-        $language = $request->getQueryParam('lang', 'en');
-        $limit = (int)$request->getQueryParam('limit', 50);
-
-        if (empty($query)) {
-            return new Response(
-                400,
-                ['Content-Type' => 'application/json'],
-                json_encode(['success' => false, 'error' => 'Search query required'])
-            );
+        try {
+            $sql = "SELECT h.*, c.name as collection_name FROM hadiths h 
+                    JOIN hadith_collections c ON h.collection_id = c.id 
+                    ORDER BY RAND() LIMIT 1";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            $result = $stmt->fetch();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        $results = $this->hadith->search($query, $language, $limit);
-
-        $response = [
-            'success' => true,
-            'data' => $results,
-            'total' => count($results),
-            'query' => $query
-        ];
-
-        return Response::json($response, 200);
     }
 
     /**
-     * API endpoint to get Hadith by reference
-     *
-     * @param Request $request
-     * @param int $collectionId Collection ID
-     * @param int $hadithNumber Hadith number
-     * @return Response
+     * Get Hadith by reference
      */
-    public function apiHadithByReference(Request $request, $collectionId, $hadithNumber)
+    private function getHadithByReference(int $collectionId, string $hadithNumber): ?array
     {
-        $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
-
-        if (!$hadithData) {
-            return new Response(
-                json_encode(['success' => false, 'error' => 'Hadith not found']),
-                404,
-                ['Content-Type' => 'application/json']
-            );
+        try {
+            $sql = "SELECT h.*, c.name as collection_name FROM hadiths h 
+                    JOIN hadith_collections c ON h.collection_id = c.id 
+                    WHERE h.collection_id = ? AND h.hadith_number = ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$collectionId, $hadithNumber]);
+            
+            $result = $stmt->fetch();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        $response = [
-            'success' => true,
-            'data' => $hadithData,
-            'reference' => "{$hadithData['collection_name']} {$hadithNumber}"
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
     }
 
     /**
-     * API endpoint to get Hadith chain
-     *
-     * @param Request $request
-     * @param int $hadithId Hadith ID
-     * @return Response
+     * Get collection info
      */
-    public function apiChain(Request $request, $hadithId)
+    private function getCollectionInfo(int $collectionId): ?array
     {
-        $chain = $this->hadith->getChain($hadithId);
-
-        $response = [
-            'success' => true,
-            'data' => $chain,
-            'hadith_id' => $hadithId
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
-    }
-
-    /**
-     * API endpoint to get Hadith commentary
-     *
-     * @param Request $request
-     * @param int $hadithId Hadith ID
-     * @return Response
-     */
-    public function apiCommentary(Request $request, $hadithId)
-    {
-        $language = $request->getQueryParam('lang', 'en');
-        $commentary = $this->hadith->getCommentary($hadithId, $language);
-
-        if (!$commentary) {
-            return new Response(
-                json_encode(['success' => false, 'error' => 'Commentary not found']),
-                404,
-                ['Content-Type' => 'application/json']
-            );
+        try {
+            $sql = "SELECT id, name, description, total_hadith FROM hadith_collections WHERE id = ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$collectionId]);
+            
+            $result = $stmt->fetch();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        $response = [
-            'success' => true,
-            'data' => $commentary
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
     }
 
     /**
-     * API endpoint to get Hadith collections
-     *
-     * @param Request $request
-     * @return Response
+     * Get Hadith chain
      */
-    public function apiCollections(Request $request)
+    private function getHadithChain(int $hadithId): array
     {
-        $collections = $this->hadith->getCollections();
-
-        $response = [
-            'success' => true,
-            'data' => $collections,
-            'total' => count($collections)
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
-    }
-
-    /**
-     * API endpoint to get Hadith statistics
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function apiStatistics(Request $request)
-    {
-        $stats = $this->hadith->getStatistics();
-
-        $response = [
-            'success' => true,
-            'data' => $stats
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
-    }
-
-    /**
-     * API endpoint to get random Hadith
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function apiRandomHadith(Request $request)
-    {
-        $hadith = $this->hadith->getRandomHadith();
-
-        if (!$hadith) {
-            return new Response(
-                json_encode(['success' => false, 'error' => 'No Hadiths available']),
-                404,
-                ['Content-Type' => 'application/json']
-            );
+        try {
+            $sql = "SELECT narrator_name, narrator_level FROM hadith_narrators 
+                    WHERE hadith_id = ? ORDER BY level";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$hadithId]);
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
         }
-
-        $response = [
-            'success' => true,
-            'data' => $hadith
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
     }
 
     /**
-     * API endpoint to get Hadiths by authenticity
-     *
-     * @param Request $request
-     * @param string $authenticityLevel Authenticity level
-     * @return Response
+     * Get Hadith commentary
      */
-    public function apiByAuthenticity(Request $request, $authenticityLevel)
+    private function getHadithCommentary(int $hadithId, string $language): ?array
     {
-        $limit = (int)$request->getQueryParam('limit', 50);
-        $hadiths = $this->hadith->getByAuthenticity($authenticityLevel, $limit);
-
-        $response = [
-            'success' => true,
-            'data' => $hadiths,
-            'total' => count($hadiths),
-            'authenticity_level' => $authenticityLevel
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
-    }
-
-    /**
-     * Widget endpoint for embedding Hadiths
-     *
-     * @param Request $request
-     * @param int $collectionId Collection ID
-     * @param int $hadithNumber Hadith number
-     * @return Response
-     */
-    public function widget(Request $request, $collectionId, $hadithNumber)
-    {
-        $hadithData = $this->hadith->getByReference($collectionId, $hadithNumber);
-
-        if (!$hadithData) {
-            return $this->notFound('Hadith not found');
+        try {
+            $sql = "SELECT commentary_text, commentator, language FROM hadith_commentary 
+                    WHERE hadith_id = ? AND language = ?";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$hadithId, $language]);
+            
+            $result = $stmt->fetch();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            return null;
         }
-
-        $data = [
-            'hadith' => $hadithData,
-            'collection_id' => $collectionId,
-            'hadith_number' => $hadithNumber,
-            'is_widget' => true
-        ];
-
-        return $this->view('hadith/widget', $data);
     }
 
     /**
-     * Generate Hadith reference for wiki pages
-     *
-     * @param Request $request
-     * @param int $pageId Wiki page ID
-     * @return Response
+     * Get Hadiths by collection
      */
-    public function apiReferences(Request $request, $pageId)
+    private function getHadithsByCollection(int $collectionId): array
     {
-        // This would integrate with the wiki page system
-        // For now, return empty references
-        $response = [
-            'success' => true,
-            'data' => [],
-            'page_id' => $pageId
-        ];
-
-        return new Response(
-            json_encode($response),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        try {
+            $sql = "SELECT id, hadith_number, title, narrator, grade FROM hadiths 
+                    WHERE collection_id = ? ORDER BY hadith_number";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute([$collectionId]);
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     /**
-     * Handle 404 errors
-     *
-     * @param string $message Error message
-     * @return Response
+     * Search Hadiths
      */
-    private function notFound($message = 'Not Found')
+    private function searchHadiths(string $query, string $collection, int $page, int $limit): array
     {
-        return new Response(
-            json_encode(['success' => false, 'error' => $message]),
-            404,
-            ['Content-Type' => 'application/json']
-        );
+        try {
+            $offset = ($page - 1) * $limit;
+            $searchTerm = "%{$query}%";
+            
+            $sql = "SELECT h.*, c.name as collection_name FROM hadiths h 
+                    JOIN hadith_collections c ON h.collection_id = c.id 
+                    WHERE (h.arabic_text LIKE ? OR h.english_text LIKE ?)";
+            
+            $params = [$searchTerm, $searchTerm];
+            
+            if (!empty($collection)) {
+                $sql .= " AND c.name = ?";
+                $params[] = $collection;
+            }
+            
+            $sql .= " ORDER BY h.hadith_number LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute($params);
+            
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get total search results
+     */
+    private function getTotalSearchResults(string $query, string $collection): int
+    {
+        try {
+            $searchTerm = "%{$query}%";
+            
+            $sql = "SELECT COUNT(*) as count FROM hadiths h 
+                    JOIN hadith_collections c ON h.collection_id = c.id 
+                    WHERE (h.arabic_text LIKE ? OR h.english_text LIKE ?)";
+            
+            $params = [$searchTerm, $searchTerm];
+            
+            if (!empty($collection)) {
+                $sql .= " AND c.name = ?";
+                $params[] = $collection;
+            }
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute($params);
+            
+            $result = $stmt->fetch();
+            return (int)($result['count'] ?? 0);
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 }

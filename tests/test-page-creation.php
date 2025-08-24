@@ -4,7 +4,7 @@
  * Test script for page creation functionality
  */
 
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 
 try {
     // Initialize application with base path

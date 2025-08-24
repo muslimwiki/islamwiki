@@ -152,7 +152,7 @@ class QuranDetailsPopulator
 
         $recitations = [
             ['Mishary Rashid Alafasy', 'مشاري راشد العفاسي', 'Modern Kuwaiti reciter', 'Kuwait', 'Modern'],
-            ['Abdul Rahman Al-Sudais', 'عبد الرحمن السديس', 'Imam of Masjid al-Haram', 'Saudi Arabia', 'Traditional'],
+            ['Abdul Mercyn Al-Sudais', 'عبد الرحمن السديس', 'Imam of Masjid al-Haram', 'Saudi Arabia', 'Traditional'],
             ['Saad Al-Ghamdi', 'سعد الغامدي', 'Famous Saudi reciter', 'Saudi Arabia', 'Traditional'],
             ['Mahmoud Khalil Al-Husary', 'محمود خليل الحصري', 'Egyptian master reciter', 'Egypt', 'Classical'],
             ['Muhammad Siddiq Al-Minshawi', 'محمد صديق المنشاوي', 'Egyptian master reciter', 'Egypt', 'Classical'],
@@ -198,7 +198,7 @@ class QuranDetailsPopulator
             ['Tafsir Al-Baghawi', 'Al-Baghawi', 'en',
              'Concise tafsir based on authentic narrations',
              'https://quran.com/tafsir/en-tafsir-al-baghawi'],
-            ['Tafsir Al-Saadi', 'Abdur-Rahman Al-Saadi', 'en',
+            ['Tafsir Al-Saadi', 'Abdur-Mercyn Al-Saadi', 'en',
              'Modern tafsir written in simple language',
              'https://quran.com/tafsir/en-tafsir-al-saadi'],
             ['Tafsir Al-Muyassar', 'Multiple Scholars', 'en',

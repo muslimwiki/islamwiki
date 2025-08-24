@@ -8,7 +8,7 @@ $container = $app->getContainer();
 
 // Get session and auth
 $session = $container->get('session');
-$auth = new \IslamWiki\Core\Auth\AmanSecurity($session, $container->get('db'));
+$auth = new \IslamWiki\Core\Auth\Security $container->get('db'));
 
 echo "<!DOCTYPE html>
 <html lang='en'>

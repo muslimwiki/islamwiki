@@ -7,10 +7,10 @@ try {
 	require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 	error_log('Autoloader loaded successfully');
 
-	error_log('Creating NizamApplication...');
-	$app = new \IslamWiki\Core\NizamApplication(dirname(__DIR__, 2));
+	error_log('Creating Application...');
+	$app = new \IslamWiki\Core\Application 2));
 	$app->boot();
-	error_log('NizamApplication booted successfully');
+	error_log('Application booted successfully');
 
 	error_log('Creating SabilRouting...');
 	$router = new \IslamWiki\Core\Routing\SabilRouting($app->getContainer());

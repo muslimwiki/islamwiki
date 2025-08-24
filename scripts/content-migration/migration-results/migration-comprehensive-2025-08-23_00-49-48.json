@@ -3,7 +3,7 @@
         "wiki_pages": [
             {
                 "id": 1,
-                "title": "Main Page",
+                "title": "Home Page",
                 "analysis": {
                     "hasWikiMarkup": true,
                     "patterns": {

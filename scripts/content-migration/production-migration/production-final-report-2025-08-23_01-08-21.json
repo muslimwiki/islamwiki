@@ -35,7 +35,7 @@
             "wiki_pages": [
                 {
                     "id": 1,
-                    "title": "Main Page",
+                    "title": "Home Page",
                     "analysis": {
                         "hasWikiMarkup": true,
                         "patterns": {
@@ -203,7 +203,7 @@
         "migration": [
             {
                 "id": 1,
-                "title": "Main Page",
+                "title": "Home Page",
                 "priority": "high",
                 "original_content": "=== Welcome ===\n\nWelcome to '''IslamWiki'''!\n\nThis page contains:\n* [[Quran]] references\n* {{Infobox|title=Welcome}}\n* [Category:Main]\n\n----\n\n<nowiki>Some code here<\/nowiki>",
                 "converted_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
@@ -235,7 +235,7 @@
         "templates": [
             {
                 "id": 1,
-                "title": "Main Page",
+                "title": "Home Page",
                 "source_type": "wiki_page",
                 "original_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
                 "template_converted_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
@@ -264,7 +264,7 @@
         "links": [
             {
                 "id": 1,
-                "title": "Main Page",
+                "title": "Home Page",
                 "source_type": "wiki_page",
                 "original_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",
                 "link_updated_content": "          1. Welcome\n\nWelcome to **IslamWiki**!\n\nThis page contains:\n- [[Quran]] references\n- {{Infobox|title=Welcome}}\n- [Category:Main]\n\n---\n\n`Some code here`",

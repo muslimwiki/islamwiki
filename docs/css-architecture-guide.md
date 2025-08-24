@@ -19,7 +19,7 @@ The CSS system is experiencing **class name conflicts** and **specificity wars**
 ```
 
 **Examples:**
-- `.main-page-hero-title` (Main page hero title)
+- `.home-page-hero-title` (Main page hero title)
 - `.wiki-page-content-text` (Wiki page content text)
 - `.dashboard-stats-card` (Dashboard stats card)
 - `.sidebar-navigation-item` (Sidebar navigation item)
@@ -47,10 +47,10 @@ The CSS system is experiencing **class name conflicts** and **specificity wars**
 /* ===== PAGE-SPECIFIC STYLES ===== */
 /* Each page type gets its own section */
 
-/* Main Page Styles */
-.main-page-container { }
-.main-page-hero { }
-.main-page-quick-actions { }
+/* Home Page Styles */
+.home-page-container { }
+.home-page-hero { }
+.home-page-quick-actions { }
 
 /* Wiki Page Styles */
 .wiki-page-container { }
@@ -139,7 +139,7 @@ The CSS system is experiencing **class name conflicts** and **specificity wars**
 
 - [ ] Audit all CSS class names for conflicts
 - [ ] Create namespace strategy document
-- [ ] Refactor main page styles with proper namespacing
+- [ ] Refactor home page styles with proper namespacing
 - [ ] Update HTML templates to use new class names
 - [ ] Test CSS specificity and inheritance
 - [ ] Document CSS architecture for future development
@@ -158,7 +158,7 @@ The CSS system is experiencing **class name conflicts** and **specificity wars**
 
 1. **Complete CSS audit** (in progress)
 2. **Implement namespace strategy**
-3. **Refactor main page styles**
+3. **Refactor home page styles**
 4. **Test and validate**
 5. **Document and train team**
 

@@ -41,7 +41,7 @@ This is a **major release** that transforms IslamWiki from a fragmented system i
 - **Clear separation of concerns** for all file types
 
 ### **✅ CSS & Styling Improvements**
-- **Dashboard-specific styles** properly isolated from main page
+- **Dashboard-specific styles** properly isolated from home page
 - **Responsive design** for all screen sizes
 - **Islamic color scheme** with golden accents
 - **Smooth animations** and hover effects

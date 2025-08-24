@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../src/helpers.php';
 
 // Initialize database connection
 try {
-    $container = new \IslamWiki\Core\Container\AsasContainer();
+    $container = new \IslamWiki\Core\Container\Container
     $container->bind('config', function () {
         return require __DIR__ . '/../../config/config.php';
     });

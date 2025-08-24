@@ -17,8 +17,8 @@ try {
 
 // Test application creation
 try {
-    $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
-    echo "✓ NizamApplication created\n";
+    $app = new \IslamWiki\Core\Application . '/..');
+    echo "✓ Application created\n";
 
     $container = $app->getContainer();
     echo "✓ Container created\n";

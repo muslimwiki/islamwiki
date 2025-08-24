@@ -125,7 +125,7 @@ class ExampleController extends AbstractController
 
 ### **Controller Method Patterns**
 ```php
-// Index method - Display list or main page
+// Index method - Display list or home page
 public function index(Request $request): Response
 
 // Show method - Display single item

@@ -8,7 +8,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     // Initialize the application
-    $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
+    $app = new \IslamWiki\Core\Application . '/..');
     $container = $app->getContainer();
 
     // Create Bayan formatter

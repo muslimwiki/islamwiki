@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Error Handling Configuration
  * 
- * Configuration for the Shahid error handling and logging system.
+ * Configuration for the Logging error handling and logging system.
  * This file defines how errors are handled, logged, and displayed.
  * 
  * @package IslamWiki\Core\Configuration
@@ -169,12 +169,12 @@ return [
             'enabled' => false,
             'webhook_url' => null,
             'channel' => '#errors',
-            'username' => 'Shahid Logger',
+            'username' => 'Logging Logger',
         ],
         'discord' => [
             'enabled' => false,
             'webhook_url' => null,
-            'username' => 'Shahid Logger',
+            'username' => 'Logging Logger',
         ],
     ],
     

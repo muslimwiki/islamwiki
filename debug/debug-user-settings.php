@@ -12,10 +12,10 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 
 // Initialize application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 $container = $app->getContainer();
 
 // Get services

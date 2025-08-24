@@ -2,7 +2,28 @@
 
 ## Overview
 
-IslamWiki uses a modular skin system where each skin has its own directory containing CSS, JavaScript, and template files. The current active skin is **Bismillah**, which provides a beautiful Islamic-themed interface.
+IslamWiki uses a **unified core skin system** where skin management is handled directly by the core architecture. The current active skin is **Bismillah**, which provides a beautiful Islamic-themed interface. All skin functionality has been consolidated into the core, providing enhanced capabilities and better performance.
+
+## 🏗️ **Core Architecture**
+
+### **Enhanced Core Services**
+IslamWiki now provides comprehensive skin management through core services:
+
+- **`skin.manager`** - Enhanced skin management with discovery and configuration
+- **`skin.registry`** - Skin discovery, registration, and metadata management
+- **`skin.assets`** - Asset management for CSS, JavaScript, and images
+- **`skin.templates`** - Template engine for skin customization
+
+### **Service Registration**
+All skin services are automatically registered in the core container:
+
+```php
+// Services available in container
+$skinManager = $container->get('skin.manager');
+$skinRegistry = $container->get('skin.registry');
+$assetManager = $container->get('skin.assets');
+$templateEngine = $container->get('skin.templates');
+```
 
 ## CSS Architecture
 
@@ -19,7 +40,7 @@ Individual CSS files for specific page types that extend the global styles:
 
 ```
 /skins/Bismillah/css/pages/
-├── main-page.css      # Main page specific styles
+├── home.css           # Home page specific styles (updated naming)
 ├── settings.css       # Settings page styles
 └── dashboard.css      # Dashboard page styles
 ```
@@ -27,7 +48,7 @@ Individual CSS files for specific page types that extend the global styles:
 ### **CSS Loading System**
 - **Global CSS**: Always loaded via `app.twig`
 - **Page CSS**: Loaded via `{% block page_css %}` in individual templates
-- **Asset Routing**: CSS files served through `/skins/{skin}/css/` routes
+- **Asset Routing**: CSS files served directly by web server for optimal performance
 
 ## File Structure
 
@@ -36,7 +57,7 @@ Individual CSS files for specific page types that extend the global styles:
 ├── css/
 │   ├── bismillah.css          # Global styles
 │   └── pages/                 # Page-specific styles
-│       ├── main-page.css
+│       ├── home-page.css
 │       ├── settings.css
 │       └── dashboard.css
 ├── js/
@@ -151,123 +172,3 @@ Use `{% block page_css %}` in your Twig template:
 <!-- Your page content here -->
 {% endblock %}
 ```
-
-## Best Practices
-
-### **1. CSS Naming Conventions**
-- Use descriptive class names: `.hero-section`, `.featured-card`
-- Follow BEM methodology for complex components
-- Use kebab-case for class names
-
-### **2. Organization**
-- Group related styles together with clear comments
-- Use consistent spacing and indentation
-- Keep CSS files focused and single-purpose
-
-### **3. Performance**
-- Minimize CSS specificity conflicts
-- Use CSS variables for consistent values
-- Optimize selectors for performance
-
-### **4. Responsiveness**
-- Design mobile-first
-- Use relative units (rem, em, %) when possible
-- Test on multiple device sizes
-
-## Common Patterns
-
-### **Card Components**
-```css
-.card {
-    background: var(--islamic-white);
-    border: 1px solid var(--islamic-blue);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: var(--transition);
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-```
-
-### **Section Layouts**
-```css
-.section {
-    padding: 4rem 2rem;
-    background: var(--islamic-white);
-}
-
-.section-container {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--islamic-dark-blue);
-    margin-bottom: 2rem;
-    text-align: center;
-}
-```
-
-### **Grid Layouts**
-```css
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-}
-```
-
-## Troubleshooting
-
-### **Common Issues**
-
-1. **CSS Not Loading**
-   - Check route is properly defined in `config/routes.php`
-   - Verify file path is correct
-   - Check browser console for 404 errors
-
-2. **Styles Not Applying**
-   - Ensure CSS file is loaded via `{% block page_css %}`
-   - Check CSS specificity (use browser dev tools)
-   - Verify CSS variables are defined
-
-3. **Responsive Issues**
-   - Test breakpoints in browser dev tools
-   - Ensure mobile-first approach is followed
-   - Check media query syntax
-
-### **Debugging Tools**
-- **Browser Dev Tools**: Inspect elements and CSS
-- **CSS Validator**: Check for syntax errors
-- **Performance Tab**: Monitor CSS loading times
-
-## Future Enhancements
-
-### **Planned Features**
-- **CSS Minification**: Compressed CSS for production
-- **Critical CSS**: Inline critical styles for above-the-fold content
-- **Theme System**: Multiple color schemes
-- **Advanced Animations**: Enhanced hover effects
-
-### **Performance Optimizations**
-- **Lazy Loading**: CSS loaded as needed
-- **Enhanced Caching**: Better browser caching strategies
-- **CSS Splitting**: Load only necessary styles per page
-
----
-
-**Version:** 0.0.2.5  
-**Last Updated:** January 20, 2025  
-**Author:** IslamWiki Development Team 

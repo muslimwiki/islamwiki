@@ -82,7 +82,7 @@ try {
         }
     }
 
-    class MockSessionManager
+    class MockSession
     {
         private $sessionData;
 
@@ -112,7 +112,7 @@ try {
         }
     }
 
-    $sessionManager = new MockSessionManager($_SESSION);
+    $sessionManager = new MockSession($_SESSION);
     $container = new MockContainer($sessionManager);
 
     // Create AuthManager

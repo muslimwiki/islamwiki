@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
-use IslamWiki\Core\Container\AsasContainer;
+use Application;\Application
+use Container;\Container
 
 // Create container
-$container = new AsasContainer();
+$container = new ContainerContainer();
 
 // Create application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 $app->bootstrap();
 
 // Test logger binding

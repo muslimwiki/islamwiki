@@ -24,8 +24,8 @@ This release focuses on major architectural improvements and code organization. 
 ### 📝 Comprehensive File Updates
 Updated 100+ files across the codebase:
 - All `require_once` statements updated
-- All `new Application()` → `new NizamApplication()`
-- All `new Asas()` → `new AsasContainer()`
+- All `new Application()` → `new ApplicationApplication()`
+- All `new Container()` → `new ContainerContainer()`
 - All `use` statements updated
 - All type hints updated (`Asas $container` → `AsasContainer $container`)
 - All constructor parameters updated
@@ -80,7 +80,7 @@ Updated 100+ files across the codebase:
 
 ### Verification Completed
 - ✅ All `require_once` statements updated correctly
-- ✅ All class instantiations updated (`new NizamApplication()`, `new AsasContainer()`)
+- ✅ All class instantiations updated (`new ApplicationApplication()`, `new ContainerContainer()`)
 - ✅ All type hints updated to use new class names
 - ✅ All use statements updated
 - ✅ All documentation references updated

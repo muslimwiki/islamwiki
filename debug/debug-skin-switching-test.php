@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 echo "🔍 Debug Skin Switching Test\n";
@@ -10,7 +10,7 @@ echo "============================\n\n";
 
 try {
     // Create application instance
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     $container = $app->getContainer();
 
     // Get skin manager

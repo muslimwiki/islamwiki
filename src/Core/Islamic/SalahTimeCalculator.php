@@ -15,14 +15,14 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Islamic;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 class SalahTimeCalculator
 {
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * Calculation methods.
@@ -72,7 +72,7 @@ class SalahTimeCalculator
     /**
      * Create a new salah time calculator instance.
      */
-    public function __construct(Shahid $logger)
+    public function __construct(Logging $logger)
     {
         $this->logger = $logger;
     }

@@ -1,7 +1,7 @@
 <?php
 
 // Direct test of SettingsController without authentication
-require_once __DIR__ . '/../src/Core/NizamApplication.php';
+require_once __DIR__ . '/../src/Core/Application.php';
 require_once __DIR__ . '/../src/Http/Controllers/SettingsController.php';
 
 echo "<h1>Direct SettingsController Test</h1>";

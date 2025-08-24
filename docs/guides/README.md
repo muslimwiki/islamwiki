@@ -89,8 +89,8 @@ This directory contains comprehensive guides for developers and users of the Isl
 ### **Islamic Naming Examples**
 ```php
 // ✅ Correct - Using Islamic naming
-class AsasContainer {}           // Foundation container
-class AmanAuthenticator {}       // Security authenticator
+class ContainerContainer {}           // Container container
+class SecurityAuthenticator {}       // Security authenticator
 class SabilRouter {}             // Path router
 class IqraSearch {}              // Search engine
 class BayanFormatter {}          // Content formatter

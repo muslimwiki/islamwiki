@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -27,7 +27,7 @@ use IslamWiki\Core\Formatter\BayanFormatter;
 use IslamWiki\Core\Formatter\NodeManager;
 use IslamWiki\Core\Formatter\EdgeManager;
 use IslamWiki\Core\Formatter\QueryManager;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use Psr\Log\LoggerInterface;
 
 /**
@@ -40,7 +40,7 @@ class BayanServiceProvider
     /**
      * Register Bayan services with the container.
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register BayanFormatter as singleton (acts as Bayan manager)
         $container->set(BayanFormatter::class, function () use ($container) {
@@ -50,7 +50,7 @@ class BayanServiceProvider
         });
 
         // Also expose under simple key 'bayan' for places resolving by string alias
-        $container->set('bayan', function (AsasContainer $c) {
+        $container->set('bayan', function (Container $c) {
             return $c->get(BayanFormatter::class);
         });
 
@@ -88,7 +88,7 @@ class BayanServiceProvider
     /**
      * Boot the Bayan service provider.
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Log that Bayan system is ready
         $logger = $container->get(LoggerInterface::class);

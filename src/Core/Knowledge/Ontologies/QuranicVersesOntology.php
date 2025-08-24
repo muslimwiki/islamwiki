@@ -6,7 +6,7 @@ namespace IslamWiki\Core\Knowledge\Ontologies;
 
 use IslamWiki\Core\Knowledge\Interfaces\OntologyInterface;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 /**
  * QuranicVersesOntology
@@ -17,12 +17,12 @@ use IslamWiki\Core\Logging\ShahidLogger;
 class QuranicVersesOntology implements OntologyInterface
 {
     private Connection $db;
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * Create a new QuranicVersesOntology instance.
      */
-    public function __construct(Connection $db, ShahidLogger $logger)
+    public function __construct(Connection $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

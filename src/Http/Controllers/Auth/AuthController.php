@@ -17,19 +17,19 @@ namespace IslamWiki\Http\Controllers\Auth;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\Http\Exceptions\HttpException;
-use IslamWiki\Core\Auth\AmanSecurity;
+use IslamWiki\Core\Auth\Security;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use IslamWiki\Core\Container\Container;
 use IslamWiki\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
-    private AmanSecurity $auth;
+    private Security $auth;
 
     /**
      * Create a new authentication controller instance.
      */
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         error_log("AuthController::__construct - Starting constructor");
         parent::__construct($db, $container);
@@ -231,7 +231,7 @@ class AuthController extends Controller
     public function logout(Request $request): Response
     {
         $this->auth->logout();
-        return $this->redirect('/wiki/Main_Page?message=You have been logged out successfully');
+        return $this->redirect('/wiki/Home?message=You have been logged out successfully');
     }
 
     /**
@@ -758,7 +758,7 @@ class AuthController extends Controller
             if ($result) {
                 return [
                     'language' => $result['language'] ?? 'en',
-                    'default_page' => $result['default_page'] ?? 'Main_Page',
+                    'default_page' => $result['default_page'] ?? 'Home',
                     'display_text_size' => $result['display_text_size'] ?? 'standard',
                     'display_color_theme' => $result['display_color_theme'] ?? 'auto',
                     'display_width' => $result['display_width'] ?? 'standard',
@@ -769,7 +769,7 @@ class AuthController extends Controller
             
             return [
                 'language' => 'en',
-                'default_page' => 'Main_Page',
+                'default_page' => 'Home',
                 'display_text_size' => 'standard',
                 'display_color_theme' => 'auto',
                 'display_width' => 'standard',
@@ -780,7 +780,7 @@ class AuthController extends Controller
             error_log('Error getting user preferences: ' . $e->getMessage());
             return [
                 'language' => 'en',
-                'default_page' => 'Main_Page',
+                'default_page' => 'Home',
                 'display_text_size' => 'standard',
                 'display_color_theme' => 'auto',
                 'display_width' => 'standard',
@@ -820,7 +820,7 @@ class AuthController extends Controller
                 ");
                 $stmt->execute([
                     $data['language'] ?? 'en',
-                    $data['default_page'] ?? 'Main_Page',
+                    $data['default_page'] ?? 'Home',
                     $data['display_text_size'] ?? 'standard',
                     $data['display_color_theme'] ?? 'auto',
                     $data['display_width'] ?? 'standard',
@@ -839,7 +839,7 @@ class AuthController extends Controller
                 $stmt->execute([
                     $userId,
                     $data['language'] ?? 'en',
-                    $data['default_page'] ?? 'Main_Page',
+                    $data['default_page'] ?? 'Home',
                     $data['display_text_size'] ?? 'standard',
                     $data['display_color_theme'] ?? 'auto',
                     $data['display_width'] ?? 'standard',

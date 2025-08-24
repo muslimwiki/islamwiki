@@ -97,21 +97,21 @@ This document summarizes the comprehensive update to standardize all core archit
 ## Type of Updates Applied
 
 ### **Use Statements:**
-- ✅ `use IslamWiki\Core\Logging\Shahid;` → `use IslamWiki\Core\Logging\ShahidLogger;`
-- ✅ `use IslamWiki\Core\Session\Wisal;` → `use IslamWiki\Core\Session\WisalSession;`
-- ✅ `use IslamWiki\Core\Caching\Rihlah;` → `use IslamWiki\Core\Caching\RihlahCaching;`
-- ✅ `use IslamWiki\Core\Queue\Sabr;` → `use IslamWiki\Core\Queue\SabrQueue;`
-- ✅ `use IslamWiki\Core\Knowledge\Usul;` → `use IslamWiki\Core\Knowledge\UsulKnowledge;`
-- ✅ `use IslamWiki\Core\API\Siraj;` → `use IslamWiki\Core\API\SirajAPI;`
+- ✅ `use ShahidLogger;`\Logger
+- ✅ `use WisalSession;`\Session
+- ✅ `use RihlahCaching;`\Routing
+- ✅ `use SabrQueue;`\Queue
+- ✅ `use UsulKnowledge;`\Knowledge
+- ✅ `use SirajAPI;`\API
 - ✅ `use IslamWiki\Core\Formatter\Bayan;` → `use IslamWiki\Core\Formatter\BayanFormatter;`
 
 ### **Class Instantiations:**
-- ✅ `new Shahid(...)` → `new ShahidLogger(...)`
-- ✅ `new Wisal(...)` → `new WisalSession(...)`
-- ✅ `new Rihlah(...)` → `new RihlahCaching(...)`
-- ✅ `new Sabr(...)` → `new SabrQueue(...)`
-- ✅ `new Usul(...)` → `new UsulKnowledge(...)`
-- ✅ `new Siraj(...)` → `new SirajAPI(...)`
+- ✅ `new Logger(...)` → `new LoggerLogger(...)`
+- ✅ `new Session(...)` → `new SessionSession(...)`
+- ✅ `new Routing(...)` → `new RoutingCaching(...)`
+- ✅ `new Queue(...)` → `new QueueQueue(...)`
+- ✅ `new Knowledge(...)` → `new KnowledgeKnowledge(...)`
+- ✅ `new API(...)` → `new APIAPI(...)`
 - ✅ `new Bayan(...)` → `new BayanFormatter(...)`
 
 ### **Type Hints:**

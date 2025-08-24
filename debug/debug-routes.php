@@ -12,10 +12,10 @@ try {
     require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
     echo "Step 2: Autoloader loaded successfully<br>";
 
-    echo "Step 3: Creating NizamApplication...<br>";
-    $app = new \IslamWiki\Core\NizamApplication(dirname(__DIR__, 2));
+    echo "Step 3: Creating Application...<br>";
+    $app = new \IslamWiki\Core\Application 2));
     $app->boot();
-    echo "Step 4: NizamApplication booted successfully<br>";
+    echo "Step 4: Application booted successfully<br>";
 
     echo "Step 5: Creating SabilRouting...<br>";
     $router = new \IslamWiki\Core\Routing\SabilRouting($app->getContainer());

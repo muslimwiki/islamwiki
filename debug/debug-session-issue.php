@@ -2,13 +2,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Session\Wisal;
+use Container;\Container
+use Session;\Session
 use IslamWiki\Providers\SessionServiceProvider;
 
 try {
     // Create container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
 
     // Register session service provider
     $sessionProvider = new SessionServiceProvider();
@@ -23,7 +23,7 @@ try {
     // For CLI, we need to modify session configuration
     if (php_sapi_name() === 'cli') {
         echo "🖥️  CLI Environment Detected\n";
-        echo "- Session configuration will be handled by Wisal class\n";
+        echo "- Session configuration will be handled by Session class\n";
     }
 
     // Get session manager
@@ -95,9 +95,9 @@ try {
         session_write_close();
         echo "- Session written and closed\n";
 
-        // Reopen session using Wisal
+        // Reopen session using Session
         $session->start();
-        echo "- Session reopened using Wisal\n";
+        echo "- Session reopened using Session\n";
 
         // Check if data persists
         $session = $container->get('session');

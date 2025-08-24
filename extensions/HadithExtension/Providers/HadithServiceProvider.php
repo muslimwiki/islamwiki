@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\HadithExtension\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Extensions\HadithExtension\HadithExtension;
 use IslamWiki\Extensions\HadithExtension\Models\HadithCollection;
 use IslamWiki\Extensions\HadithExtension\Models\HadithBook;
@@ -23,7 +23,7 @@ class HadithServiceProvider
     /**
      * Register services
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the main extension
         $container->singleton(HadithExtension::class, function ($container) {
@@ -52,7 +52,7 @@ class HadithServiceProvider
     /**
      * Register Hadith models with the container
      */
-    protected function registerModels(AsasContainer $container): void
+    protected function registerModels(Container $container): void
     {
         $container->singleton(HadithCollection::class, function ($container) {
             return new HadithCollection($container->get('db'));
@@ -78,7 +78,7 @@ class HadithServiceProvider
     /**
      * Register Hadith services with the container
      */
-    protected function registerServices(AsasContainer $container): void
+    protected function registerServices(Container $container): void
     {
         // Register any services here
         // Example:
@@ -93,7 +93,7 @@ class HadithServiceProvider
     /**
      * Register Hadith repositories with the container
      */
-    protected function registerRepositories(AsasContainer $container): void
+    protected function registerRepositories(Container $container): void
     {
         // Register any repositories here
         // Example:
@@ -107,7 +107,7 @@ class HadithServiceProvider
     /**
      * Register Hadith routes
      */
-    protected function registerRoutes(AsasContainer $container): void
+    protected function registerRoutes(Container $container): void
     {
         $router = $container->get('router');
         
@@ -170,7 +170,7 @@ class HadithServiceProvider
     /**
      * Register Hadith views
      */
-    protected function registerViews(AsasContainer $container): void
+    protected function registerViews(Container $container): void
     {
         $view = $container->get('view');
         
@@ -192,7 +192,7 @@ class HadithServiceProvider
     /**
      * Register Hadith middleware
      */
-    protected function registerMiddleware(AsasContainer $container): void
+    protected function registerMiddleware(Container $container): void
     {
         $middlewareManager = $container->get('middleware');
         
@@ -207,7 +207,7 @@ class HadithServiceProvider
     /**
      * Bootstrap services
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Publish configuration
         $this->publishConfig($container);
@@ -225,7 +225,7 @@ class HadithServiceProvider
     /**
      * Publish configuration files
      */
-    protected function publishConfig(AsasContainer $container): void
+    protected function publishConfig(Container $container): void
     {
         $config = $container->get('config');
         
@@ -241,7 +241,7 @@ class HadithServiceProvider
     /**
      * Load database migrations
      */
-    protected function loadMigrations(AsasContainer $container): void
+    protected function loadMigrations(Container $container): void
     {
         $migrationManager = $container->get('migration');
         
@@ -253,7 +253,7 @@ class HadithServiceProvider
     /**
      * Load translations
      */
-    protected function loadTranslations(AsasContainer $container): void
+    protected function loadTranslations(Container $container): void
     {
         $translator = $container->get('translator');
         
@@ -265,7 +265,7 @@ class HadithServiceProvider
     /**
      * Register console commands
      */
-    protected function registerCommands(AsasContainer $container): void
+    protected function registerCommands(Container $container): void
     {
         $console = $container->get('console');
         

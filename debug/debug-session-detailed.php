@@ -23,7 +23,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
 // Create container
 echo "🏗️  Creating Container...\n";
-$container = new \IslamWiki\Core\Container\AsasContainer();
+$container = new \IslamWiki\Core\Container\Container
 echo "✅ Container created\n\n";
 
 // Register session service provider

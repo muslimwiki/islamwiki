@@ -79,7 +79,7 @@ try {
         echo "  - $key: " . $temp_652d084b;
     }
 
-    $session = new \IslamWiki\Core\Session\Wisal($config);
+    $session = new \IslamWiki\Core\Session\Session
     echo "\n✅ Session manager created successfully\n";
 
     // Start session

@@ -38,7 +38,7 @@ This document summarizes all the major improvements made to IslamWiki, transform
 - **Clear separation of concerns** for all file types
 
 ### **✅ CSS & Styling Improvements**
-- **Dashboard-specific styles** properly isolated from main page
+- **Dashboard-specific styles** properly isolated from home page
 - **Responsive design** for all screen sizes
 - **Islamic color scheme** with golden accents
 - **Smooth animations** and hover effects

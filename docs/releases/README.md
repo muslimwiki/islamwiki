@@ -47,10 +47,10 @@ This directory contains release notes and documentation for all IslamWiki versio
 - Automated structure verification tools
 - Development guidelines and best practices
 
-#### **[Release 0.0.1.0](RELEASE-0.0.1.0.md)** - Initial Release & Core Foundation
+#### **[Release 0.0.1.0](RELEASE-0.0.1.0.md)** - Initial Release & Core Container
 - **Release Date**: 2025-08-17
 - **Status**: Complete ✅
-- **Type**: Foundation Release
+- **Type**: Container Release
 
 **Achievements:**
 - Core framework with 16 Islamic-named systems
@@ -130,7 +130,7 @@ This directory contains release notes and documentation for all IslamWiki versio
 | **0.0.2.0** | 🚀 **Production Ready** | 2025-08-21 | **Major Release** | Unified UI, Clean Organization |
 | 0.0.1.2 | ✅ Complete | 2025-08-19 | Documentation | Architecture Alignment |
 | 0.0.1.1 | ✅ Complete | 2025-08-18 | Organization | Project Structure |
-| 0.0.1.0 | ✅ Complete | 2025-08-17 | Foundation | Core Systems |
+| 0.0.1.0 | ✅ Complete | 2025-08-17 | Container | Core Systems |
 
 ---
 

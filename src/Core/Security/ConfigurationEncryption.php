@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Security;
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 class ConfigurationEncryption
 {
@@ -27,7 +27,7 @@ class ConfigurationEncryption
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * The encryption key.
@@ -42,7 +42,7 @@ class ConfigurationEncryption
     /**
      * Create a new configuration encryption instance.
      */
-    public function __construct(Shahid $logger, string $key = null)
+    public function __construct(Logging $logger, string $key = null)
     {
         $this->logger = $logger;
         $this->key = $key ?? $this->generateKey();

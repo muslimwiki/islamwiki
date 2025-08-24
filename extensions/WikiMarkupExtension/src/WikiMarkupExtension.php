@@ -78,8 +78,8 @@ class WikiMarkupExtension extends Extension
             $container = $this->getContainer();
             if ($container && $container->has('mizan.database')) {
                 $database = $container->get('mizan.database');
-                // For now, we'll create a mock connection since we need to adapt to Mizan
-                // This will be properly implemented when we integrate with Mizan's connection system
+                // For now, we'll create a mock connection since we need to adapt to Database
+                // This will be properly implemented when we integrate with Database's connection system
                 $this->templateEngine = new TemplateEngine(null, $this->extensionConfig);
                 error_log('WikiMarkupExtension: TemplateEngine initialized (mock mode)');
             } else {

@@ -27,7 +27,7 @@ if (file_exists(BASE_PATH . '/.env')) {
     $dotenv->load();
 }
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Skins\SkinManager;
 
 echo "<h1>🔍 Comprehensive Skin Debug</h1>\n";
@@ -51,7 +51,7 @@ try {
 
     // Test 2: Application Creation
     echo "<h3>2. Application Creation</h3>\n";
-    $app = new NizamApplication(BASE_PATH);
+    $app = new Application(BASE_PATH);
     echo "✅ Application created successfully<br>\n";
 
     // Test 3: Container Access

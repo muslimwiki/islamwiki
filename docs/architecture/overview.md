@@ -12,28 +12,28 @@ IslamWiki has been transformed into a **production-ready, wiki-focused platform*
 
 ### **✅ Core Systems (100% Operational)**
 
-#### **Foundation Layer (أساس) - Core Foundation** ✅ **100% Complete**
-- **AsasContainer** - PSR-11 compliant dependency injection container
-- **AsasFoundation** - Core foundation services and utilities management
-- **AsasBootstrap** - Application bootstrap and initialization system
+#### **Container Layer (أساس) - Core Container** ✅ **100% Complete**
+- **Container** - PSR-11 compliant dependency injection container
+- **Container** - Core foundation services and utilities management
+- **ContainerBootstrap** - Application bootstrap and initialization system
 
 #### **Infrastructure Layer** ✅ **100% Complete**
 - **Simplified Routing (سبيل)** - Islamic routing system with dynamic wiki page support
-- **NizamApplication (نظام)** - Central application orchestrator and order management
-- **MizanDatabase (ميزان)** - Database system with balance and optimization
-- **TadbirConfiguration (تدبير)** - Configuration management and system administration
+- **Application (نظام)** - Central application orchestrator and order management
+- **Database (ميزان)** - Database system with balance and optimization
+- **Configuration (تدبير)** - Configuration management and system administration
 
 #### **Application Layer** ✅ **100% Complete**
-- **AmanSecurity (أمان)** - Security, authentication, and access control
-- **WisalSession (وصل)** - Session management and user connection handling
-- **SabrQueue (صبر)** - Background processing and queue management
-- **UsulKnowledge (أصول)** - Business rules and Islamic knowledge validation
+- **Security (أمان)** - Security, authentication, and access control
+- **Session (وصل)** - Session management and user connection handling
+- **Queue (صبر)** - Background processing and queue management
+- **Knowledge (أصول)** - Business rules and Islamic knowledge validation
 
 #### **User Interface Layer** ✅ **100% Complete**
 - **IqraSearch (إقرأ)** - Unified Islamic search engine with single endpoint
 - **BayanFormatter (بيان)** - Content formatting and Islamic presentation
-- **SirajAPI (سراج)** - API management and knowledge discovery
-- **RihlahCaching (رحلة)** - Caching system for performance optimization
+- **API (سراج)** - API management and knowledge discovery
+- **Caching (رحلة)** - Caching system for performance optimization
 
 ---
 

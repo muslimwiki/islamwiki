@@ -22,11 +22,11 @@ class HomeController extends Controller
      * Create a new controller instance.
      *
      * @param \IslamWiki\Core\Database\Connection $db Database connection
-     * @param \IslamWiki\Core\Container\AsasContainer $container The container instance
+     * @param \IslamWiki\Core\Container\Container $container The container instance
      */
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\AsasContainer $container
+        \IslamWiki\Core\Container\Container $container
     ) {
         // Constructor completed successfully
 
@@ -113,7 +113,7 @@ class HomeController extends Controller
                 $recentPages = [];
             }
 
-            // Get current user from Aman
+            // Get current user from Security
             $user = null;
             try {
                 $auth = $this->container->get('auth');

@@ -36,11 +36,11 @@ This document summarizes the comprehensive update to ensure `AmanSecurity` is pr
 ### 🔧 Type of Updates Applied
 
 #### **Use Statements:**
-- ✅ `use IslamWiki\Core\Auth\Aman;` → `use IslamWiki\Core\Auth\AmanSecurity;`
+- ✅ `use AmanSecurity;`\Security
 
 #### **Class Instantiations:**
-- ✅ `new Aman($session, $db)` → `new AmanSecurity($session, $db)`
-- ✅ `new \IslamWiki\Core\Auth\Aman(...)` → `new \IslamWiki\Core\Auth\AmanSecurity(...)`
+- ✅ `new Security($session, $db)` → `new SecuritySecurity($session, $db)`
+- ✅ `new \IslamWiki\Core\Auth\Security → `new \IslamWiki\Core\Auth\Security
 
 #### **Type Hints:**
 - ✅ `private Aman $auth;` → `private AmanSecurity $auth;`
@@ -52,7 +52,7 @@ This document summarizes the comprehensive update to ensure `AmanSecurity` is pr
 #### **Container Registration:**
 ```php
 - ✅ `$container->singleton(Aman::class, ...)` → `$container->singleton(AmanSecurity::class, ...)`
-- ✅ `$this->container->alias('auth', \IslamWiki\Core\Auth\Aman::class);` → `$this->container->alias('auth', \IslamWiki\Core\Auth\AmanSecurity::class);`
+- ✅ `$this->container->alias('auth', \IslamWiki\Core\Auth\Security → `$this->container->alias('auth', \IslamWiki\Core\Auth\Security
 ```
 
 #### **Return Type Hints:**

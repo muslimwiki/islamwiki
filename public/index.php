@@ -46,7 +46,7 @@ try {
     }
 
     // Load application configuration and bootstrap
-    $app = new \IslamWiki\Core\NizamApplication(__DIR__ . '/..');
+    $app = new \IslamWiki\Core\Application(__DIR__ . '/..');
 
     // Load and register routes
     $routes = require __DIR__ . '/../config/routes.php';
@@ -104,14 +104,14 @@ try {
     http_response_code($statusCode);
     header('Content-Type: text/html; charset=UTF-8');
     
-    // Use Shahid error handling system
+    // Use Logging error handling system
     try {
         // Try to use our enhanced error templates
-        $response = self::handleErrorWithShahid($e, $statusCode);
+        $response = handleErrorWithLogging($e, $statusCode);
         $response->send();
     } catch (\Throwable $templateError) {
         // Fallback to basic error display if template rendering fails
-        self::displayBasicError($e, $statusCode);
+        displayBasicError($e, $statusCode);
     }
     exit;
 
@@ -138,9 +138,9 @@ try {
 ob_end_flush();
 
 /**
- * Handle error with Shahid system
+ * Handle error with Logging system
  */
-function handleErrorWithShahid(\Throwable $e, int $statusCode) {
+function handleErrorWithLogging(\Throwable $e, int $statusCode) {
     // Create a simple response with our enhanced error template
     $templatePath = __DIR__ . '/../resources/views/errors/';
     

@@ -6,15 +6,14 @@ namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Database\Connection;
+use Container;;
 
 /**
  * AssetController handles serving of static assets with security headers
  */
 class AssetController extends Controller
 {
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
     }

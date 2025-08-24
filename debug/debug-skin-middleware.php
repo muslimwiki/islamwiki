@@ -2,14 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Http\Middleware\SkinMiddleware;
 
 echo "=== Debug Skin Middleware ===\n\n";
 
 try {
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     $container = $app->getContainer();
 
     echo "✅ Application loaded\n";

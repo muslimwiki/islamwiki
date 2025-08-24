@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -63,7 +63,7 @@ class IslamicArchitectureRestructure extends Migration
      */
     public function up(): void
     {
-        $this->createFoundationLayer();
+        $this->createContainerLayer();
         $this->createInfrastructureLayer();
         $this->createApplicationLayer();
         $this->createUserInterfaceLayer();
@@ -82,17 +82,17 @@ class IslamicArchitectureRestructure extends Migration
         $this->dropUserInterfaceLayer();
         $this->dropApplicationLayer();
         $this->dropInfrastructureLayer();
-        $this->dropFoundationLayer();
+        $this->dropContainerLayer();
     }
 
     /**
-     * Create Foundation Layer (أساس) tables.
+     * Create Container Layer (أساس) tables.
      *
      * @return void
      */
-    protected function createFoundationLayer(): void
+    protected function createContainerLayer(): void
     {
-        // Asas Foundation Services
+        // Container Container Services
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS asas_foundation (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,7 +109,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Asas Utilities
+        // Container Utilities
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS asas_utilities (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -130,9 +130,9 @@ class IslamicArchitectureRestructure extends Migration
         // Insert default foundation services
         $this->db->exec("
             INSERT INTO asas_foundation (service_name, service_class, service_description) VALUES
-            ('container', 'IslamWiki\\Core\\Container\\AsasContainer', 'Dependency injection container'),
-            ('foundation', 'IslamWiki\\Core\\Foundation\\AsasFoundation', 'Core foundation services'),
-            ('bootstrap', 'IslamWiki\\Core\\Foundation\\AsasBootstrap', 'Application bootstrap system')
+            ('container', 'IslamWiki\\Core\\Container\\Container 'Dependency injection container'),
+            ('foundation', 'IslamWiki\\Core\\Container\\Container 'Core foundation services'),
+            ('bootstrap', 'IslamWiki\\Core\\Container\\Container 'Application bootstrap system')
             ON DUPLICATE KEY UPDATE service_class = VALUES(service_class)
         ");
     }
@@ -166,7 +166,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Nizam Systems (نظام - Order)
+        // Application Systems (نظام - Order)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS nizam_systems (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -186,7 +186,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Mizan Metrics (ميزان - Balance)
+        // Database Metrics (ميزان - Balance)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS mizan_metrics (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -202,7 +202,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Tadbir Configuration (تدبير - Management)
+        // Configuration Configuration (تدبير - Management)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS tadbir_config (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -231,7 +231,7 @@ class IslamicArchitectureRestructure extends Migration
      */
     protected function createApplicationLayer(): void
     {
-        // Aman Security (أمان - Security)
+        // Security Security (أمان - Security)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS aman_security (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -249,7 +249,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Wisal Sessions (وصل - Connection)
+        // Session Sessions (وصل - Connection)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS wisal_sessions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -271,7 +271,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Sabr Queues (صبر - Patience)
+        // Queue Queues (صبر - Patience)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS sabr_queues (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -295,7 +295,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Usul Rules (أصول - Principles)
+        // Knowledge Rules (أصول - Principles)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS usul_rules (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -368,7 +368,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Siraj API (سراج - Light)
+        // API API (سراج - Light)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS siraj_api (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -389,7 +389,7 @@ class IslamicArchitectureRestructure extends Migration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Rihlah Cache (رحلة - Journey)
+        // Routing Cache (رحلة - Journey)
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS rihlah_cache (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -458,7 +458,7 @@ class IslamicArchitectureRestructure extends Migration
      */
     protected function migrateExistingData(): void
     {
-        // Migrate existing configuration to Tadbir
+        // Migrate existing configuration to Configuration
         $this->db->exec("
             INSERT INTO tadbir_config (config_key, config_value, config_type, config_category, config_description)
             SELECT 
@@ -543,11 +543,11 @@ class IslamicArchitectureRestructure extends Migration
     }
 
     /**
-     * Drop Foundation Layer tables.
+     * Drop Container Layer tables.
      *
      * @return void
      */
-    protected function dropFoundationLayer(): void
+    protected function dropContainerLayer(): void
     {
         $this->db->exec("DROP TABLE IF EXISTS asas_utilities");
         $this->db->exec("DROP TABLE IF EXISTS asas_foundation");

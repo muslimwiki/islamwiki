@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -43,28 +43,28 @@ declare(strict_types=1);
  */
 
 return [
-    // Foundation Layer (أساس) - Core system routes
+    // Container Layer (أساس) - Core system routes
     'asas' => [
-        'name' => 'Foundation Layer',
+        'name' => 'Container Layer',
         'description' => 'Core system and foundation routes',
         'prefix' => '/asas',
         'middleware' => ['asas.foundation'],
         'routes' => [
             'GET' => [
                 '/health' => [
-                    'controller' => 'AsasHealthController',
+                    'controller' => 'ContainerHealthController',
                     'action' => 'check',
                     'name' => 'asas.health',
                     'description' => 'System health check'
                 ],
                 '/status' => [
-                    'controller' => 'AsasStatusController',
+                    'controller' => 'ContainerStatusController',
                     'action' => 'status',
                     'name' => 'asas.status',
                     'description' => 'System status overview'
                 ],
                 '/bootstrap' => [
-                    'controller' => 'AsasBootstrapController',
+                    'controller' => 'ContainerBootstrapController',
                     'action' => 'bootstrap',
                     'name' => 'asas.bootstrap',
                     'description' => 'Application bootstrap status'
@@ -113,19 +113,19 @@ return [
         'routes' => [
             'GET' => [
                 '/systems' => [
-                    'controller' => 'NizamSystemController',
+                    'controller' => 'ApplicationSystemController',
                     'action' => 'list',
                     'name' => 'nizam.systems.list',
                     'description' => 'List all Islamic systems'
                 ],
                 '/systems/{system}' => [
-                    'controller' => 'NizamSystemController',
+                    'controller' => 'ApplicationSystemController',
                     'action' => 'status',
                     'name' => 'nizam.systems.status',
                     'description' => 'Get system status'
                 ],
                 '/metrics' => [
-                    'controller' => 'NizamSystemController',
+                    'controller' => 'ApplicationSystemController',
                     'action' => 'metrics',
                     'name' => 'nizam.systems.metrics',
                     'description' => 'Get system metrics'
@@ -133,7 +133,7 @@ return [
             ],
             'POST' => [
                 '/systems/{system}/restart' => [
-                    'controller' => 'NizamSystemController',
+                    'controller' => 'ApplicationSystemController',
                     'action' => 'restart',
                     'name' => 'nizam.systems.restart',
                     'description' => 'Restart a system'
@@ -150,19 +150,19 @@ return [
         'routes' => [
             'GET' => [
                 '/status' => [
-                    'controller' => 'MizanDatabaseController',
+                    'controller' => 'DatabaseController',
                     'action' => 'status',
                     'name' => 'mizan.database.status',
                     'description' => 'Database connection status'
                 ],
                 '/tables' => [
-                    'controller' => 'MizanDatabaseController',
+                    'controller' => 'DatabaseController',
                     'action' => 'tables',
                     'name' => 'mizan.database.tables',
                     'description' => 'List database tables'
                 ],
                 '/queries' => [
-                    'controller' => 'MizanDatabaseController',
+                    'controller' => 'DatabaseController',
                     'action' => 'queries',
                     'name' => 'mizan.database.queries',
                     'description' => 'Get query statistics'
@@ -170,7 +170,7 @@ return [
             ],
             'POST' => [
                 '/migrate' => [
-                    'controller' => 'MizanDatabaseController',
+                    'controller' => 'DatabaseController',
                     'action' => 'migrate',
                     'name' => 'mizan.database.migrate',
                     'description' => 'Run database migrations'
@@ -187,13 +187,13 @@ return [
         'routes' => [
             'GET' => [
                 '/config' => [
-                    'controller' => 'TadbirConfigController',
+                    'controller' => 'ConfigurationConfigController',
                     'action' => 'list',
                     'name' => 'tadbir.config.list',
                     'description' => 'List all configurations'
                 ],
                 '/config/{key}' => [
-                    'controller' => 'TadbirConfigController',
+                    'controller' => 'ConfigurationConfigController',
                     'action' => 'get',
                     'name' => 'tadbir.config.get',
                     'description' => 'Get configuration value'
@@ -201,7 +201,7 @@ return [
             ],
             'POST' => [
                 '/config' => [
-                    'controller' => 'TadbirConfigController',
+                    'controller' => 'ConfigurationConfigController',
                     'action' => 'set',
                     'name' => 'tadbir.config.set',
                     'description' => 'Set configuration value'
@@ -209,7 +209,7 @@ return [
             ],
             'PUT' => [
                 '/config/{key}' => [
-                    'controller' => 'TadbirConfigController',
+                    'controller' => 'ConfigurationConfigController',
                     'action' => 'update',
                     'name' => 'tadbir.config.update',
                     'description' => 'Update configuration value'
@@ -227,25 +227,25 @@ return [
         'routes' => [
             'GET' => [
                 '/login' => [
-                    'controller' => 'AmanAuthController',
+                    'controller' => 'SecurityAuthController',
                     'action' => 'showLogin',
                     'name' => 'aman.auth.login',
                     'description' => 'Show login form'
                 ],
                 '/logout' => [
-                    'controller' => 'AmanAuthController',
+                    'controller' => 'SecurityAuthController',
                     'action' => 'logout',
                     'name' => 'aman.auth.logout',
                     'description' => 'User logout'
                 ],
                 '/profile' => [
-                    'controller' => 'AmanUserController',
+                    'controller' => 'SecurityUserController',
                     'action' => 'profile',
                     'name' => 'aman.user.profile',
                     'description' => 'User profile'
                 ],
                 '/users' => [
-                    'controller' => 'AmanUserController',
+                    'controller' => 'SecurityUserController',
                     'action' => 'list',
                     'name' => 'aman.users.list',
                     'description' => 'List users'
@@ -253,13 +253,13 @@ return [
             ],
             'POST' => [
                 '/login' => [
-                    'controller' => 'AmanAuthController',
+                    'controller' => 'SecurityAuthController',
                     'action' => 'login',
                     'name' => 'aman.auth.authenticate',
                     'description' => 'Authenticate user'
                 ],
                 '/register' => [
-                    'controller' => 'AmanAuthController',
+                    'controller' => 'SecurityAuthController',
                     'action' => 'register',
                     'name' => 'aman.auth.register',
                     'description' => 'User registration'
@@ -276,13 +276,13 @@ return [
         'routes' => [
             'GET' => [
                 '/sessions' => [
-                    'controller' => 'WisalSessionController',
+                    'controller' => 'SessionController',
                     'action' => 'list',
                     'name' => 'wisal.sessions.list',
                     'description' => 'List active sessions'
                 ],
                 '/sessions/{id}' => [
-                    'controller' => 'WisalSessionController',
+                    'controller' => 'SessionController',
                     'action' => 'show',
                     'name' => 'wisal.sessions.show',
                     'description' => 'Show session details'
@@ -290,7 +290,7 @@ return [
             ],
             'POST' => [
                 '/sessions/refresh' => [
-                    'controller' => 'WisalSessionController',
+                    'controller' => 'SessionController',
                     'action' => 'refresh',
                     'name' => 'wisal.sessions.refresh',
                     'description' => 'Refresh session'
@@ -298,7 +298,7 @@ return [
             ],
             'DELETE' => [
                 '/sessions/{id}' => [
-                    'controller' => 'WisalSessionController',
+                    'controller' => 'SessionController',
                     'action' => 'destroy',
                     'name' => 'wisal.sessions.destroy',
                     'description' => 'Destroy session'
@@ -315,19 +315,19 @@ return [
         'routes' => [
             'GET' => [
                 '/jobs' => [
-                    'controller' => 'SabrQueueController',
+                    'controller' => 'QueueController',
                     'action' => 'list',
                     'name' => 'sabr.jobs.list',
                     'description' => 'List queued jobs'
                 ],
                 '/jobs/{id}' => [
-                    'controller' => 'SabrQueueController',
+                    'controller' => 'QueueController',
                     'action' => 'show',
                     'name' => 'sabr.jobs.show',
                     'description' => 'Show job details'
                 ],
                 '/queues' => [
-                    'controller' => 'SabrQueueController',
+                    'controller' => 'QueueController',
                     'action' => 'queues',
                     'name' => 'sabr.queues.list',
                     'description' => 'List all queues'
@@ -335,7 +335,7 @@ return [
             ],
             'POST' => [
                 '/jobs' => [
-                    'controller' => 'SabrQueueController',
+                    'controller' => 'QueueController',
                     'action' => 'dispatch',
                     'name' => 'sabr.jobs.dispatch',
                     'description' => 'Dispatch new job'
@@ -352,19 +352,19 @@ return [
         'routes' => [
             'GET' => [
                 '/rules' => [
-                    'controller' => 'UsulKnowledgeController',
+                    'controller' => 'KnowledgeController',
                     'action' => 'list',
                     'name' => 'usul.rules.list',
                     'description' => 'List business rules'
                 ],
                 '/rules/{id}' => [
-                    'controller' => 'UsulKnowledgeController',
+                    'controller' => 'KnowledgeController',
                     'action' => 'show',
                     'name' => 'usul.rules.show',
                     'description' => 'Show business rule'
                 ],
                 '/validation' => [
-                    'controller' => 'UsulKnowledgeController',
+                    'controller' => 'KnowledgeController',
                     'action' => 'validate',
                     'name' => 'usul.validation.validate',
                     'description' => 'Validate data against rules'
@@ -442,19 +442,19 @@ return [
         'routes' => [
             'GET' => [
                 '/docs' => [
-                    'controller' => 'SirajApiController',
+                    'controller' => 'APIApiController',
                     'action' => 'documentation',
                     'name' => 'siraj.api.docs',
                     'description' => 'API documentation'
                 ],
                 '/endpoints' => [
-                    'controller' => 'SirajApiController',
+                    'controller' => 'APIApiController',
                     'action' => 'endpoints',
                     'name' => 'siraj.api.endpoints',
                     'description' => 'List API endpoints'
                 ],
                 '/stats' => [
-                    'controller' => 'SirajApiController',
+                    'controller' => 'APIApiController',
                     'action' => 'statistics',
                     'name' => 'siraj.api.stats',
                     'description' => 'API usage statistics'
@@ -471,13 +471,13 @@ return [
         'routes' => [
             'GET' => [
                 '/cache/status' => [
-                    'controller' => 'RihlahCacheController',
+                    'controller' => 'RoutingCacheController',
                     'action' => 'status',
                     'name' => 'rihlah.cache.status',
                     'description' => 'Cache system status'
                 ],
                 '/cache/stats' => [
-                    'controller' => 'RihlahCacheController',
+                    'controller' => 'RoutingCacheController',
                     'action' => 'statistics',
                     'name' => 'rihlah.cache.stats',
                     'description' => 'Cache statistics'
@@ -485,13 +485,13 @@ return [
             ],
             'POST' => [
                 '/cache/clear' => [
-                    'controller' => 'RihlahCacheController',
+                    'controller' => 'RoutingCacheController',
                     'action' => 'clear',
                     'name' => 'rihlah.cache.clear',
                     'description' => 'Clear all caches'
                 ],
                 '/cache/clear/{store}' => [
-                    'controller' => 'RihlahCacheController',
+                    'controller' => 'RoutingCacheController',
                     'action' => 'clearStore',
                     'name' => 'rihlah.cache.clear-store',
                     'description' => 'Clear specific cache store'

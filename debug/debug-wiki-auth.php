@@ -6,18 +6,18 @@
 
 require_once __DIR__ . '/../src/helpers.php';
 
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Auth\AmanSecurity;
-use IslamWiki\Core\Session\WisalSession;
+use Container;\Container
+use Security;\Security
+use Session;\Session
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 echo "🔍 Debugging Wiki Authentication Issue\n";
 echo "=====================================\n\n";
 
 try {
     // Initialize container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
     
     // Register basic services
     $container->set('db', function() {
@@ -30,14 +30,14 @@ try {
     });
     
     $container->set('session', function() {
-        return new WisalSession(new ShahidLogger(__DIR__ . '/../logs'));
+        return new SessionSession(new LoggerLogger(__DIR__ . '/../logs'));
     });
     
     // Register auth service
-    $container->set(AmanSecurity::class, function (AsasContainer $container) {
+    $container->set(Security::class, function (Container $container) {
         $session = $container->get('session');
         $db = $container->get('db');
-        return new AmanSecurity($session, $db);
+        return new SecuritySecurity($session, $db);
     });
     
     echo "✅ Container initialized successfully\n";
@@ -58,7 +58,7 @@ try {
     }
     
     // Test auth service
-    $auth = $container->get(AmanSecurity::class);
+    $auth = $container->get(Security::class);
     echo "\n🔑 Auth Service Test:\n";
     echo "---------------------\n";
     echo "Auth service class: " . get_class($auth) . "\n";
@@ -138,7 +138,7 @@ try {
         $user = null;
         if (isset($container)) {
             try {
-                $auth = $container->get(\IslamWiki\Core\Auth\AmanSecurity::class);
+                $auth = $container->get(\IslamWiki\Core\Auth\Security
                 if ($auth && method_exists($auth, 'user')) {
                     $user = $auth->user();
                     echo "✅ User retrieved from auth service: " . ($user ? 'YES' : 'NO') . "\n";

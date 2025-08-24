@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Security;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
 class ConfigurationAccessControl
 {
@@ -28,7 +28,7 @@ class ConfigurationAccessControl
     /**
      * The logger instance.
      */
-    private Shahid $logger;
+    private Logging $logger;
 
     /**
      * The current user ID.
@@ -97,7 +97,7 @@ class ConfigurationAccessControl
     /**
      * Create a new configuration access control instance.
      */
-    public function __construct(Connection $db, Shahid $logger, ?int $userId = null)
+    public function __construct(Connection $db, Logging $logger, ?int $userId = null)
     {
         $this->db = $db;
         $this->logger = $logger;

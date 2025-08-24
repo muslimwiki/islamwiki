@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace IslamWiki\Core\Community;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 
 class CommunityManager
 {
@@ -28,12 +28,12 @@ class CommunityManager
     /**
      * The logger instance.
      */
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * Create a new community manager instance.
      */
-    public function __construct(Connection $db, ShahidLogger $logger)
+    public function __construct(Connection $db, Logger $logger)
     {
         $this->db = $db;
         $this->logger = $logger;

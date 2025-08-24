@@ -23,7 +23,7 @@ class DiscussionController extends BaseController
     public function show(Request $request, string $pageSlug): Response
     {
         try {
-            // Get the main page
+            // Get the home page
             $page = $this->getPage($pageSlug);
             if (!$page) {
                 throw new HttpException(404, 'Page not found');

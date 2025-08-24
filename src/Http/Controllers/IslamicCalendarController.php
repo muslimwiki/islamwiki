@@ -22,7 +22,7 @@ class IslamicCalendarController extends Controller
     private $calendar;
     private $renderer;
 
-    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\AsasContainer $container)
+    public function __construct(\IslamWiki\Core\Database\Connection $db, \IslamWiki\Core\Container\Container $container)
     {
         parent::__construct($db, $container);
         $this->calendar = new HijriCalendar($db);

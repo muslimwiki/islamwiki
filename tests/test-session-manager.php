@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Test SessionManager Authentication
+ * Test Session Authentication
  *
- * This script tests what the SessionManager sees for authentication.
+ * This script tests what the Session sees for authentication.
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -24,7 +24,7 @@ $pdo = new PDO(
     ]
 );
 
-echo "=== Test SessionManager Authentication ===\n\n";
+echo "=== Test Session Authentication ===\n\n";
 
 // Step 1: Login the user
 echo "1. Logging in user...\n";
@@ -51,11 +51,11 @@ if ($user && password_verify($password, $user['password'])) {
     exit(1);
 }
 
-// Step 2: Test SessionManager
-echo "\n2. Testing SessionManager...\n";
+// Step 2: Test Session
+echo "\n2. Testing Session...\n";
 
 try {
-    // Create SessionManager with the same configuration as the main app
+    // Create Session with the same configuration as the main app
     $config = [
         'name' => 'islamwiki_session',
         'lifetime' => 86400,
@@ -65,16 +65,16 @@ try {
         'same_site' => 'Lax',
     ];
 
-    $sessionManager = new \IslamWiki\Core\Session\SessionManager($config);
+    $sessionManager = new \IslamWiki\Core\Session\Session($config);
 
-    echo "   SessionManager created successfully\n";
-    echo "   SessionManager::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
-    echo "   SessionManager::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
-    echo "   SessionManager::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
-    echo "   SessionManager::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
+    echo "   Session created successfully\n";
+    echo "   Session::isLoggedIn(): " . ($sessionManager->isLoggedIn() ? 'true' : 'false') . "\n";
+    echo "   Session::getUserId(): " . ($sessionManager->getUserId() ?? 'null') . "\n";
+    echo "   Session::getUsername(): " . ($sessionManager->getUsername() ?? 'null') . "\n";
+    echo "   Session::isAdmin(): " . ($sessionManager->isAdmin() ? 'true' : 'false') . "\n";
 
-    // Test AuthManager with SessionManager
-    echo "\n3. Testing AuthManager with SessionManager...\n";
+    // Test AuthManager with Session
+    echo "\n3. Testing AuthManager with Session...\n";
 
     // Create a mock Connection class for testing
     class MockConnection

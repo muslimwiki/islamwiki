@@ -2,6 +2,70 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.3.0] - 2025-08-24
+
+### 🏗️ **Core Architecture Consolidation - MAJOR VERSION - COMPLETE**
+
+#### ✅ Added
+- **Enhanced Core SkinManager** - Consolidated all skin management functionality into core architecture
+- **Skin Registry Service** - Comprehensive skin discovery, registration, and metadata management
+- **Asset Management System** - Integrated CSS, JavaScript, and image asset handling
+- **Template Engine** - Skin template rendering and customization capabilities
+- **Configuration Service** - Unified configuration management for all core systems
+- **Skin Management Routes** - Admin interface at `/admin/skins` for comprehensive skin management
+- **Enhanced Service Registration** - All enhanced skin services properly registered in core container
+- **Professional Architecture** - Clean, standardized core system architecture following industry best practices
+
+#### 🔧 Fixed
+- **CSS file naming consistency** - Updated from `main-page.css` to `home.css` for Home page
+- **CSS class naming consistency** - Updated all classes from `main-page-*` to `home-*`
+- **Template file naming** - Renamed `main-page.twig` to `home.twig` for consistency
+- **Web server configuration** - Fixed .htaccess and created symbolic link for proper skin asset serving
+- **Skin extension consolidation** - SafaSkinExtension completely removed and functionality integrated into core
+- **CSS loading issues** - Fixed 404 errors for skin assets by properly configuring web server
+
+#### 🚀 Changed
+- **Skin architecture** - Moved from extension-based to core-based skin management system
+- **File organization** - Consolidated all skin functionality into `src/Core/Skin/` directory
+- **Service architecture** - Enhanced core services with advanced skin management capabilities
+- **Asset serving** - Improved web server configuration for better static asset handling
+- **Template structure** - Updated all templates to use consistent naming conventions
+
+#### 🎨 UI/UX Improvements
+- **Enhanced skin management** - Professional admin interface for skin configuration and switching
+- **Improved asset loading** - Faster, more reliable CSS and JavaScript loading
+- **Consistent styling** - All pages now use unified skin system with proper styling
+- **Professional appearance** - Clean, modern interface with Islamic design principles
+
+#### 📊 Technical Improvements
+- **Performance enhancement** - Direct core integration eliminates extension overhead
+- **Memory optimization** - Reduced duplicate code and service instances
+- **Dependency simplification** - Cleaner dependency graph without circular references
+- **Service lifecycle management** - Better service initialization and cleanup
+- **Configuration management** - Centralized configuration for all core systems
+
+#### 🔌 Extension Integration
+- **SafaSkinExtension removed** - All functionality consolidated into core skin management
+- **Enhanced core services** - Core now provides all skin management capabilities
+- **Unified architecture** - Single source of truth for all skin operations
+- **Backward compatibility** - Maintained existing API contracts while consolidating implementation
+
+#### 🚨 Breaking Changes
+- **SafaSkinExtension removed** - All functionality moved to core `src/Core/Skin/` services
+- **Service registration changes** - Enhanced skin services now registered in core container
+- **File structure changes** - Skin management files moved from extensions to core
+- **Configuration updates** - Skin configuration now handled through core services
+
+#### 🏗️ **Directory Structure Changes**
+- **src/Core/Skin/** - New consolidated skin management directory
+- **src/Core/Skin/SkinManager.php** - Enhanced core skin manager
+- **src/Core/Skin/SkinRegistry.php** - Skin discovery and registration service
+- **src/Core/Skin/AssetManager.php** - Asset management service
+- **src/Core/Skin/TemplateEngine.php** - Template engine service
+- **src/Core/Configuration/Configuration.php** - Unified configuration service
+
+---
+
 ## [0.0.2.9] - 2025-08-24
 
 ### 🔧 **Comprehensive Template Management System & Unified Platform Architecture - COMPLETE**
@@ -15,7 +79,7 @@ All notable changes to this project will be documented in this file.
 - **Version Control System** - Template backup, restore, and version management capabilities
 - **Role-Based Access Control** - Admin (full access), User (browse), Guest (public showcase) views
 - **Dashboard Integration** - Template management widget integrated into admin dashboard
-- **Enhanced Error Handling** - All error pages now use Shahid logging system with comprehensive debug information
+- **Enhanced Error Handling** - All error pages now use Logging logging system with comprehensive debug information
 - **Template Management Extension** - Modular extension architecture for centralized template operations
 
 #### 🔧 Fixed
@@ -33,7 +97,7 @@ All notable changes to this project will be documented in this file.
 - **Route structure** - Consolidated template routes with proper admin permission checks
 - **CSS architecture** - Fixed template CSS loading to use proper block names from app.twig layout
 - **Admin dashboard layout** - Improved flex box behavior with responsive grid layout
-- **Error template system** - Enhanced error pages with comprehensive debugging and Shahid logging
+- **Error template system** - Enhanced error pages with comprehensive debugging and Logging logging
 - **Navigation structure** - Eliminated duplicate routes, all template management through unified system
 - **Security model** - Implemented proper role-based access control for template management
 
@@ -48,7 +112,7 @@ All notable changes to this project will be documented in this file.
 
 #### 📊 Technical Improvements
 - **Template management extension** - Modular architecture for centralized template operations
-- **Error handling integration** - All error pages now use Shahid logging with enhanced debug information
+- **Error handling integration** - All error pages now use Logging logging with enhanced debug information
 - **CSS block architecture** - Fixed template CSS loading to use proper Twig block inheritance
 - **Admin dashboard CSS** - Improved grid layout with responsive behavior and proper flex box display
 - **Template validation** - Built-in syntax checking and error validation for templates
@@ -58,7 +122,7 @@ All notable changes to this project will be documented in this file.
 #### 🔌 Extension Integration
 - **TemplateManagementExtension** - New extension for centralized template management
 - **ErrorTemplateController** - Enhanced controller with role-based access and comprehensive functionality
-- **Shahid logging** - All template operations now properly logged through the enhanced system
+- **Logging logging** - All template operations now properly logged through the enhanced system
 - **Dashboard integration** - Template management fully integrated into admin dashboard system
 
 ---
@@ -101,9 +165,9 @@ All notable changes to this project will be documented in this file.
 - **Container debugging** - Service availability and dependency checking
 
 #### 🔌 Extension Integration
-- **Error handling system** - Integrated with Shahid logging and error handling middleware
-- **Authentication system** - Enhanced AmanSecurity integration with proper role handling
-- **Session management** - Improved WisalSession integration for better debugging
+- **Error handling system** - Integrated with Logging logging and error handling middleware
+- **Authentication system** - Enhanced Security integration with proper role handling
+- **Session management** - Improved Session integration for better debugging
 
 ---
 
@@ -168,7 +232,7 @@ All notable changes to this project will be documented in this file.
 #### 🔌 Extension Integration
 - **Dashboard system** - Integrated with existing authentication and user management
 - **Wiki functionality** - Enhanced with proper namespace and profile support
-- **Error handling** - Integrated with Shahid logging system
+- **Error handling** - Integrated with Logging logging system
 - **Skin system** - Consistent Bismillah skin across all new components
 
 ---
@@ -178,19 +242,19 @@ All notable changes to this project will be documented in this file.
 ### 🔐 **Authentication System & UI Overhaul - COMPLETE**
 
 #### ✅ Added
-- **Complete authentication system** - Login, logout, and registration through AmanSecurity
+- **Complete authentication system** - Login, logout, and registration through Security
 - **Conditional sidebar rendering** - Different content for logged in vs logged out users
 - **User preferences page** - Special:Preferences with comprehensive settings
 - **Default page setting** - Users can choose their landing page preference
 - **Display options in cog wheel** - Text size, color theme, and width settings
 - **User profile integration** - Username display and User namespace links
-- **AmanSecurity Extension** - Complete extension structure with service provider
+- **Security Extension** - Complete extension structure with service provider
 - **Enhanced User Management** - Advanced user administration with bulk operations and statistics
 - **Advanced Security Monitoring** - Threat detection, IP blocking, and comprehensive logging
 
 #### 🔧 Fixed
-- **Root domain routing** - Proper redirect from `/` to `/wiki/Main_Page`
-- **Authentication flow** - All login/logout operations go through AmanSecurity via `/auth/` routes
+- **Root domain routing** - Proper redirect from `/` to `/wiki/Home`
+- **Authentication flow** - All login/logout operations go through Security via `/auth/` routes
 - **Sidebar authentication states** - Proper display of user status and actions
 - **Preferences page access** - Protected route with authentication check
 - **Hero section color** - Updated to better blue gradient for distinction from header/sidebar
@@ -221,10 +285,10 @@ All notable changes to this project will be documented in this file.
 - **Sidebar structure** - Implemented conditional rendering based on authentication status
 - **Cog wheel functionality** - Replaced settings links with display options
 - **User navigation** - Added profile dropdown with proper User namespace links
-- **AmanSecurity architecture** - Converted from Core class to proper extension structure
+- **Security architecture** - Converted from Core class to proper extension structure
 - **Sidebar icons** - Updated logo to crescent moon, header to praying hands
 - **Sidebar layout** - Fixed profile menu containment and element positioning
-- **Default page routing** - Root domain now redirects to `/wiki/Main_Page` instead of home page
+- **Default page routing** - Root domain now redirects to `/wiki/Home` instead of home page
 - **Authentication system** - Complete overhaul with proper extension architecture
 
 #### 🎨 UI/UX Improvements
@@ -258,7 +322,7 @@ All notable changes to this project will be documented in this file.
 - **Template system** - Created preferences template with comprehensive form
 - **CSS organization** - Added page-specific styles for preferences page
 - **Authentication middleware** - Proper session handling and user state management
-- **Extension system** - Complete AmanSecurity extension with service provider, configuration, and documentation
+- **Extension system** - Complete Security extension with service provider, configuration, and documentation
 - **Enhanced services** - User management and security monitoring services
 - **Database migrations** - Security tables for advanced monitoring and logging
 - **JavaScript architecture** - Improved event handling and preference management
@@ -266,8 +330,8 @@ All notable changes to this project will be documented in this file.
 - **Layout system** - Fixed flexbox and positioning issues
 
 #### 🔌 Extension Architecture
-- **AmanSecurity Extension** - Complete extension structure in `/extensions/AmanSecurity/`
-- **Service Provider** - `AmanSecurityServiceProvider` for dependency injection
+- **Security Extension** - Complete extension structure in `/extensions/Security/`
+- **Service Provider** - `SecurityServiceProvider` for dependency injection
 - **Configuration System** - Comprehensive configuration with environment variables
 - **Documentation** - Complete README, CHANGELOG, and usage examples
 - **Modular Design** - Extensible architecture for future security enhancements
@@ -286,7 +350,7 @@ All notable changes to this project will be documented in this file.
 
 #### ✅ Added
 - **Clean CSS architecture** - Global styles in `bismillah.css`, page-specific styles in separate files
-- **Page-specific CSS files** - Individual CSS for main page, settings, dashboard pages
+- **Page-specific CSS files** - Individual CSS for home page, settings, dashboard pages
 - **Proper CSS organization** - All styles consolidated in skin directory, removed from Twig files
 - **Enhanced responsive design** - Better mobile and tablet layouts
 - **Improved footer layout** - No more white space below footer
@@ -334,20 +398,20 @@ All notable changes to this project will be documented in this file.
 - **Islamic-themed header** with prayer times, current time, and Hijri calendar
 - **Beautiful footer** with comprehensive links and Islamic content
 - **Enhanced Markdown processing** with intelligent paragraph handling
-- **Comprehensive error handling** through Shahid logging system
+- **Comprehensive error handling** through Logging logging system
 - **Islamic-themed error pages** (404, 500) with professional presentation
-- **Missing session methods** in WisalSession class (isLoggedIn, getUserId, etc.)
+- **Missing session methods** in Session class (isLoggedIn, getUserId, etc.)
 
 #### 🔧 Fixed
 - **Critical 500 Internal Server Errors** that were blocking core functionality
 - **Authentication system** by implementing missing session methods
 - **Old routing conflicts** - achieved simplified routing system
-- **Method visibility issues** in NizamApplication class
+- **Method visibility issues** in Application class
 - **File accessibility** for skin assets and JavaScript files
 - **Template syntax errors** in error pages and content templates
 - **Excessive line breaks** in content rendering
 - **Page title display** issues in templates
-- **Homepage redirect** from `/` to `/wiki/Main_Page`
+- **Homepage redirect** from `/` to `/wiki/Home`
 
 #### 🚀 Changed
 - **Complete system recovery** from non-functional state to fully operational
@@ -387,7 +451,7 @@ All notable changes to this project will be documented in this file.
 - **Content Versioning**: Page history and revision management
 
 #### **Technical Improvements**
-- **Mizan Integration**: Database abstraction layer for all wiki operations
+- **Database Integration**: Database abstraction layer for all wiki operations
 - **RESTful API**: Clean API endpoints for wiki operations
 - **Template System**: Flexible template rendering with Twig
 - **Security Features**: CSRF protection, input validation, and sanitization
@@ -496,7 +560,7 @@ All notable changes to this project will be documented in this file.
 - **Dashboard**: User dashboard and navigation
 - **Basic Content**: Initial content and pages
 
-#### **Technical Foundation**
+#### **Technical Container**
 - **PHP Framework**: Core framework implementation
 - **Database**: Basic database structure
 - **Security**: Basic security measures
@@ -1506,7 +1570,7 @@ All notable changes to this project will be documented in this file.
 - **Dashboard**: User dashboard and navigation
 - **Basic Content**: Initial content and pages
 
-#### **Technical Foundation**
+#### **Technical Container**
 - **PHP Framework**: Core framework implementation
 - **Database**: Basic database structure
 - **Security**: Basic security measures

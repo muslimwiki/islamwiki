@@ -2,13 +2,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 echo "Testing container resolve method...\n";
 
 try {
     // Create container
-    $container = new AsasContainer();
+    $container = new ContainerContainer();
 
     // Bind a simple closure
     $container->bind('test', function ($container) {

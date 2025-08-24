@@ -41,8 +41,8 @@ This document summarizes the comprehensive refactoring work completed in version
 
 ### Type of Updates
 - ✅ All `require_once` statements updated
-- ✅ All `new Application()` → `new NizamApplication()`
-- ✅ All `new Asas()` → `new AsasContainer()`
+- ✅ All `new Application()` → `new ApplicationApplication()`
+- ✅ All `new Container()` → `new ContainerContainer()`
 - ✅ All `use` statements updated
 - ✅ All type hints updated (`Asas $container` → `AsasContainer $container`)
 - ✅ All constructor parameters updated
@@ -69,7 +69,7 @@ This document summarizes the comprehensive refactoring work completed in version
 - ✅ No remaining references to `Asas.php`
 - ✅ No remaining references to `Application.php`
 - ✅ No remaining references to `new Application()`
-- ✅ No remaining references to `new Asas()`
+- ✅ No remaining references to `new Container()`
 - ✅ All type hints updated to `AsasContainer`
 - ✅ All use statements updated to `NizamApplication`
 

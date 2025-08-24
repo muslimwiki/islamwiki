@@ -104,25 +104,25 @@ docs/
 - ✅ **`docs/architecture/core-systems.md`**: Complete documentation of all 16 core Islamic systems
 - ✅ **`docs/architecture/overview.md`**: High-level architecture overview with system interactions
 - ✅ **System Naming**: All systems properly named with Islamic meanings:
-  - **Asas** (Foundation) - Core foundation and base system
-  - **Aman** (Security) - Comprehensive security framework
-  - **Siraj** (Light/Illumination) - Knowledge discovery and search
-  - **Shahid** (Witness/Evidence) - Content verification and authenticity
-  - **Wisal** (Connection) - Session management and user connections
-  - **Rihlah** (Journey) - User experience and navigation
-  - **Sabr** (Patience/Persistence) - Background processing and task management
-  - **Usul** (Principles) - Core principles and rules engine
+  - **Container** (Container) - Core foundation and base system
+  - **Security** (Security) - Comprehensive security framework
+  - **API** (Light/Illumination) - Knowledge discovery and search
+  - **Logging** (Witness/Evidence) - Content verification and authenticity
+  - **Session** (Connection) - Session management and user connections
+  - **Routing** (Journey) - User experience and navigation
+  - **Queue** (Patience/Persistence) - Background processing and task management
+  - **Knowledge** (Principles) - Core principles and rules engine
   - **Iqra** (Read/Knowledge) - Content reading and consumption
   - **Bayan** (Explanation/Clarification) - Content explanation and clarification
   - **Sabil** (Path/Way) - Routing and request handling
-  - **Nizam** (System/Order) - System organization and management
-  - **Mizan** (Balance/Scale) - Performance monitoring and optimization
-  - **Tadbir** (Management/Administration) - System administration and management
+  - **Application** (System/Order) - System organization and management
+  - **Database** (Balance/Scale) - Performance monitoring and optimization
+  - **Configuration** (Management/Administration) - System administration and management
   - **Safa** (Purity/Cleanliness) - Data integrity and cleanliness
   - **Marwa** (Elevation/Excellence) - Content quality and excellence
 
 #### **System Architecture Documentation**
-- ✅ **Layer Structure**: 4-layer architecture (User Interface, Application, Infrastructure, Foundation)
+- ✅ **Layer Structure**: 4-layer architecture (User Interface, Application, Infrastructure, Container)
 - ✅ **System Interactions**: Data flow, authentication flow, content processing flow
 - ✅ **Dependencies**: Clear system dependency relationships
 - ✅ **Configuration**: System-specific configuration options

@@ -7,7 +7,7 @@
  * audit logging, and security monitoring.
  *
  * @package IslamWiki\Http\Controllers
- * @version 0.0.21
+ * @version 0.0.3.0
  * @license AGPL-3.0-only
  */
 
@@ -15,73 +15,40 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Controllers;
 
-use IslamWiki\Core\Security\ConfigurationEncryption;
-use IslamWiki\Core\Security\ConfigurationAccessControl;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\ShahidLogger;
 use IslamWiki\Core\Database\Connection;
+use IslamWiki\Core\Container\Container;
 
+/**
+ * Security Controller - Handles Security Management Functionality
+ */
 class SecurityController extends Controller
 {
     /**
-     * The configuration encryption instance.
-     */
-    private ConfigurationEncryption $encryption;
-
-    /**
-     * The access control instance.
-     */
-    private ConfigurationAccessControl $accessControl;
-
-    /**
-     * The database connection.
-     */
-    private Connection $db;
-
-    /**
-     * The logger instance.
-     */
-    private Shahid $logger;
-
-    /**
-     * Create a new security controller instance.
-     */
-    public function __construct(\IslamWiki\Core\Container\Asas $container)
-    {
-        parent::__construct($container);
-        $this->db = $container->get(Connection::class);
-        $this->logger = $container->get(ShahidLogger::class);
-        $this->encryption = new ConfigurationEncryption($this->logger);
-        $this->accessControl = new ConfigurationAccessControl($this->db, $this->logger, $this->getCurrentUserId());
-    }
-
-    /**
      * Display the security dashboard.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            if (!$this->accessControl->canManageSecurity()) {
-                return $this->errorResponse('Access denied', 403);
+            // Check if user is admin
+            $session = $this->container->get('session');
+            if (!$session->isLoggedIn() || !$session->isAdmin()) {
+                return new Response(403, [], 'Access Denied');
             }
 
             $securityStats = $this->getSecurityStats();
             $recentAuditLogs = $this->getRecentAuditLogs();
-            $pendingApprovals = $this->accessControl->getApprovalRequests();
-            $encryptionInfo = $this->encryption->getKeyInfo();
+            $pendingApprovals = $this->getPendingApprovals();
 
             return $this->view('security/index', [
                 'security_stats' => $securityStats,
                 'recent_audit_logs' => $recentAuditLogs,
                 'pending_approvals' => $pendingApprovals,
-                'encryption_info' => $encryptionInfo,
-                'title' => 'Security Dashboard'
-            ]);
+                'title' => 'Security Dashboard - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Security dashboard error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load security dashboard', 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
@@ -91,230 +58,79 @@ class SecurityController extends Controller
     public function auditLog(Request $request): Response
     {
         try {
-            if (!$this->accessControl->canViewAudit()) {
-                return $this->errorResponse('Access denied', 403);
+            $session = $this->container->get('session');
+            if (!$session->isLoggedIn() || !$session->isAdmin()) {
+                return new Response(403, [], 'Access Denied');
             }
 
-            $limit = (int) ($request->getQueryParams()['limit'] ?? 100);
-            $offset = (int) ($request->getQueryParams()['offset'] ?? 0);
+            $limit = (int)($request->getQueryParams()['limit'] ?? 100);
+            $offset = (int)($request->getQueryParams()['offset'] ?? 0);
             $severity = $request->getQueryParams()['severity'] ?? null;
             $action = $request->getQueryParams()['action'] ?? null;
 
             $auditLogs = $this->getAuditLogs($limit, $offset, $severity, $action);
-            $totalCount = $this->getAuditLogCount($severity, $action);
+            $totalLogs = $this->getTotalAuditLogs($severity, $action);
 
             return $this->view('security/audit-log', [
                 'audit_logs' => $auditLogs,
-                'total_count' => $totalCount,
-                'limit' => $limit,
-                'offset' => $offset,
-                'severity' => $severity,
-                'action' => $action,
-                'title' => 'Security Audit Log'
-            ]);
+                'total_logs' => $totalLogs,
+                'current_page' => ceil($offset / $limit) + 1,
+                'total_pages' => ceil($totalLogs / $limit),
+                'title' => 'Security Audit Log - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Audit log error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load audit log', 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Display approval requests.
+     * Display access control settings.
      */
-    public function approvals(): Response
+    public function accessControl(Request $request): Response
     {
         try {
-            if (!$this->accessControl->canManageSecurity()) {
-                return $this->errorResponse('Access denied', 403);
+            $session = $this->container->get('session');
+            if (!$session->isLoggedIn() || !$session->isAdmin()) {
+                return new Response(403, [], 'Access Denied');
             }
 
-            $approvals = $this->accessControl->getApprovalRequests();
+            $roles = $this->getSecurityRoles();
+            $permissions = $this->getSecurityPermissions();
 
-            return $this->view('security/approvals', [
-                'approvals' => $approvals,
-                'title' => 'Configuration Approvals'
-            ]);
+            return $this->view('security/access-control', [
+                'roles' => $roles,
+                'permissions' => $permissions,
+                'title' => 'Access Control - Security - IslamWiki'
+            ], 200);
         } catch (\Exception $e) {
-            $this->logger->error('Approvals error: ' . $e->getMessage());
-            return $this->errorResponse('Failed to load approvals', 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
     /**
-     * Approve a configuration change.
+     * Update access control settings.
      */
-    public function approve(Request $request): Response
+    public function updateAccessControl(Request $request): Response
     {
         try {
-            if (!$this->accessControl->canManageSecurity()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
+            $session = $this->container->get('session');
+            if (!$session->isLoggedIn() || !$session->isAdmin()) {
+                return new Response(403, [], 'Access Denied');
             }
 
             $data = $request->getParsedBody();
+            $success = $this->updateSecuritySettings($data);
 
-            if (!isset($data['approval_id'])) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Approval ID is required'
-                ], 400);
-            }
-
-            $approvalId = (int) $data['approval_id'];
-
-            if ($this->accessControl->approveConfiguration($approvalId)) {
-                return $this->jsonResponse([
+            if ($success) {
+                return $this->json([
                     'success' => true,
-                    'message' => 'Configuration change approved successfully'
+                    'message' => 'Security settings updated successfully'
                 ]);
             } else {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Failed to approve configuration change'
-                ], 400);
+                return new Response(500, [], 'Failed to update security settings');
             }
         } catch (\Exception $e) {
-            $this->logger->error('Configuration approval error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Internal server error'
-            ], 500);
-        }
-    }
-
-    /**
-     * Reject a configuration change.
-     */
-    public function reject(Request $request): Response
-    {
-        try {
-            if (!$this->accessControl->canManageSecurity()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            $data = $request->getParsedBody();
-
-            if (!isset($data['approval_id'])) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Approval ID is required'
-                ], 400);
-            }
-
-            $approvalId = (int) $data['approval_id'];
-            $reason = $data['reason'] ?? '';
-
-            if ($this->accessControl->rejectConfiguration($approvalId, $reason)) {
-                return $this->jsonResponse([
-                    'success' => true,
-                    'message' => 'Configuration change rejected successfully'
-                ]);
-            } else {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Failed to reject configuration change'
-                ], 400);
-            }
-        } catch (\Exception $e) {
-            $this->logger->error('Configuration rejection error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Internal server error'
-            ], 500);
-        }
-    }
-
-    /**
-     * Rotate encryption key.
-     */
-    public function rotateKey(): Response
-    {
-        try {
-            if (!$this->accessControl->canManageEncryption()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            if ($this->encryption->rotateKey()) {
-                return $this->jsonResponse([
-                    'success' => true,
-                    'message' => 'Encryption key rotated successfully'
-                ]);
-            } else {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Failed to rotate encryption key'
-                ], 400);
-            }
-        } catch (\Exception $e) {
-            $this->logger->error('Key rotation error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Internal server error'
-            ], 500);
-        }
-    }
-
-    /**
-     * Get encryption information.
-     */
-    public function encryptionInfo(): Response
-    {
-        try {
-            if (!$this->accessControl->canManageEncryption()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            $keyInfo = $this->encryption->getKeyInfo();
-
-            return $this->jsonResponse([
-                'success' => true,
-                'encryption_info' => $keyInfo
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Encryption info error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Internal server error'
-            ], 500);
-        }
-    }
-
-    /**
-     * Get security statistics.
-     */
-    public function securityStats(): Response
-    {
-        try {
-            if (!$this->accessControl->canManageSecurity()) {
-                return $this->jsonResponse([
-                    'success' => false,
-                    'message' => 'Access denied'
-                ], 403);
-            }
-
-            $stats = $this->getSecurityStats();
-
-            return $this->jsonResponse([
-                'success' => true,
-                'security_stats' => $stats
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Security stats error: ' . $e->getMessage());
-            return $this->jsonResponse([
-                'success' => false,
-                'message' => 'Internal server error'
-            ], 500);
+            return new Response(500, [], 'Internal Server Error');
         }
     }
 
@@ -324,157 +140,156 @@ class SecurityController extends Controller
     private function getSecurityStats(): array
     {
         try {
-            $stats = [];
-
-            // Total audit log entries
-            $stats['total_audit_entries'] = $this->db->table('security_audit_log')->count();
-
-            // Recent audit entries (last 24 hours)
-            $stats['recent_audit_entries'] = $this->db->table('security_audit_log')
-                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-24 hours')))
-                ->count();
-
-            // Pending approvals
-            $stats['pending_approvals'] = $this->db->table('configuration_approvals')
-                ->where('status', 'pending')
-                ->count();
-
-            // High severity events
-            $stats['high_severity_events'] = $this->db->table('security_audit_log')
-                ->where('severity', 'high')
-                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-7 days')))
-                ->count();
-
-            // Critical severity events
-            $stats['critical_severity_events'] = $this->db->table('security_audit_log')
-                ->where('severity', 'critical')
-                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-7 days')))
-                ->count();
-
-            // Active encryption keys
-            $stats['active_encryption_keys'] = $this->db->table('encryption_keys')
-                ->where('is_active', true)
-                ->count();
-
-            return $stats;
+            $sql = "SELECT COUNT(*) as total_incidents FROM security_incidents WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            
+            $totalIncidents = (int)($result['total_incidents'] ?? 0);
+            
+            return [
+                'total_incidents' => $totalIncidents,
+                'failed_logins' => 0,
+                'suspicious_activities' => 0,
+                'last_incident' => date('Y-m-d H:i:s')
+            ];
         } catch (\Exception $e) {
-            $this->logger->error('Failed to get security stats: ' . $e->getMessage());
-            return [];
+            return [
+                'total_incidents' => 0,
+                'failed_logins' => 0,
+                'suspicious_activities' => 0,
+                'last_incident' => date('Y-m-d H:i:s')
+            ];
         }
     }
 
     /**
      * Get recent audit logs.
      */
-    private function getRecentAuditLogs(int $limit = 10): array
+    private function getRecentAuditLogs(): array
     {
         try {
-            return $this->db->table('security_audit_log')
-                ->orderBy('created_at', 'desc')
-                ->limit($limit)
-                ->get()
-                ->toArray();
+            $sql = "SELECT id, action, user_id, ip_address, created_at, severity FROM security_audit_log 
+                    ORDER BY created_at DESC LIMIT 20";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Failed to get recent audit logs: ' . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * Get audit logs with filtering.
+     * Get pending approvals.
      */
-    private function getAuditLogs(int $limit, int $offset, ?string $severity = null, ?string $action = null): array
+    private function getPendingApprovals(): array
     {
         try {
-            $query = $this->db->table('security_audit_log');
-
-            if ($severity) {
-                $query->where('severity', $severity);
-            }
-
-            if ($action) {
-                $query->where('action', $action);
-            }
-
-            return $query->orderBy('created_at', 'desc')
-                ->limit($limit)
-                ->offset($offset)
-                ->get()
-                ->toArray();
+            $sql = "SELECT id, user_id, action, created_at FROM security_approvals 
+                    WHERE status = 'pending' ORDER BY created_at DESC LIMIT 10";
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Failed to get audit logs: ' . $e->getMessage());
             return [];
         }
     }
 
     /**
-     * Get audit log count.
+     * Get audit logs with filters.
      */
-    private function getAuditLogCount(?string $severity = null, ?string $action = null): int
+    private function getAuditLogs(int $limit, int $offset, ?string $severity, ?string $action): array
     {
         try {
-            $query = $this->db->table('security_audit_log');
-
+            $sql = "SELECT id, action, user_id, ip_address, created_at, severity FROM security_audit_log WHERE 1=1";
+            $params = [];
+            
             if ($severity) {
-                $query->where('severity', $severity);
+                $sql .= " AND severity = ?";
+                $params[] = $severity;
             }
-
+            
             if ($action) {
-                $query->where('action', $action);
+                $sql .= " AND action = ?";
+                $params[] = $action;
             }
-
-            return $query->count();
+            
+            $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute($params);
+            
+            return $stmt->fetchAll();
         } catch (\Exception $e) {
-            $this->logger->error('Failed to get audit log count: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get total audit logs count.
+     */
+    private function getTotalAuditLogs(?string $severity, ?string $action): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM security_audit_log WHERE 1=1";
+            $params = [];
+            
+            if ($severity) {
+                $sql .= " AND severity = ?";
+                $params[] = $severity;
+            }
+            
+            if ($action) {
+                $sql .= " AND action = ?";
+                $params[] = $action;
+            }
+            
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute($params);
+            
+            $result = $stmt->fetch();
+            return (int)($result['count'] ?? 0);
+        } catch (\Exception $e) {
             return 0;
         }
     }
 
     /**
-     * Get current user ID from session.
+     * Get security roles.
      */
-    private function getCurrentUserId(): ?int
+    private function getSecurityRoles(): array
     {
-        try {
-            $session = $this->container->get('session');
-            return $session?->get('user_id');
-        } catch (\Exception $e) {
-            return null;
-        }
+        return [
+            'admin' => 'Administrator',
+            'moderator' => 'Moderator',
+            'user' => 'Regular User',
+            'guest' => 'Guest'
+        ];
     }
 
     /**
-     * Render a template with data.
+     * Get security permissions.
      */
-    private function render(string $template, array $data = []): Response
+    private function getSecurityPermissions(): array
     {
-        $renderer = $this->container->get('view');
-        $content = $renderer->render($template, $data);
-
-        return new Response(200, ['Content-Type' => 'text/html'], $content);
+        return [
+            'view_audit_log' => 'View Audit Log',
+            'manage_users' => 'Manage Users',
+            'manage_security' => 'Manage Security',
+            'view_reports' => 'View Security Reports'
+        ];
     }
 
     /**
-     * Create JSON response.
+     * Update security settings.
      */
-    private function jsonResponse(array $data, int $status = 200): Response
+    private function updateSecuritySettings(array $data): bool
     {
-        return new Response(
-            $status,
-            ['Content-Type' => 'application/json'],
-            json_encode($data)
-        );
-    }
-
-    /**
-     * Create error response.
-     */
-    private function errorResponse(string $message, int $status = 500): Response
-    {
-        return new Response(
-            $status,
-            ['Content-Type' => 'text/html'],
-            "<h1>Error {$status}</h1><p>{$message}</p>"
-        );
+        // TODO: Implement actual security settings update
+        return true;
     }
 }

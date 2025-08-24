@@ -2,21 +2,21 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Logging\Shahid;
-use IslamWiki\Core\Logging\ShahidInterface;
+use Logging;\Logger
+use LoggingInterface;\Logger
 
-echo "Testing Shahid class compatibility with ShahidInterface...\n";
+echo "Testing Logging class compatibility with LoggingInterface...\n";
 
 try {
     // Test instantiation
-    $shahid = new Shahid('/tmp', 'debug');
-    echo "✓ Shahid class instantiated successfully\n";
+    $shahid = new Logger('/tmp', 'debug');
+    echo "✓ Logging class instantiated successfully\n";
 
     // Test interface implementation
-    if ($shahid instanceof ShahidInterface) {
-        echo "✓ Shahid implements ShahidInterface correctly\n";
+    if ($shahid instanceof LoggingInterface) {
+        echo "✓ Logging implements LoggerInterface correctly\n";
     } else {
-        echo "✗ Shahid does not implement ShahidInterface\n";
+        echo "✗ Logging does not implement LoggingInterface\n";
     }
 
     // Test method calls

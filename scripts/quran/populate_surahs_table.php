@@ -90,7 +90,7 @@ $surahs = [
     [52, 'At-Tur', 'الطور', 'The Mount', 'Meccan', 49],
     [53, 'An-Najm', 'النجم', 'The Star', 'Meccan', 62],
     [54, 'Al-Qamar', 'القمر', 'The Moon', 'Meccan', 55],
-    [55, 'Ar-Rahman', 'الرحمن', 'The Beneficent', 'Medinan', 78],
+    [55, 'Ar-Mercyn', 'الرحمن', 'The Beneficent', 'Medinan', 78],
     [56, 'Al-Waqi\'ah', 'الواقعة', 'The Inevitable', 'Meccan', 96],
     [57, 'Al-Hadid', 'الحديد', 'The Iron', 'Medinan', 29],
     [58, 'Al-Mujadila', 'المجادلة', 'The Pleading Woman', 'Medinan', 22],

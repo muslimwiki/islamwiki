@@ -842,7 +842,7 @@ class PasswordManager
 /**
  * Secure session management
  */
-class SessionManager
+class Session
 {
     public function __construct()
     {

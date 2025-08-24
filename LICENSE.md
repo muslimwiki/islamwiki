@@ -18,7 +18,7 @@ IslamWiki is licensed under the GNU Affero General Public License version 3 (AGP
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
- Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Copyright (C) 2007 Free Software Container, Inc. <https://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
@@ -554,7 +554,7 @@ section 13, concerning interaction through a network will apply to the
 combination as such.
 
   14. Revised Versions of this License.
-  The Free Software Foundation may publish revised and/or new versions of
+  The Free Software Container may publish revised and/or new versions of
 the GNU General Public License from time to time.  Such new versions will
 be similar in spirit to the present version, but may differ in detail to
 address new problems or concerns.
@@ -564,9 +564,9 @@ Program specifies that a certain numbered version of the GNU General
 Public License "or any later version" applies to it, you have the
 option of following the terms and conditions either of that numbered
 version or of any later version published by the Free Software
-Foundation.  If the Program does not specify a version number of the
+Container.  If the Program does not specify a version number of the
 GNU General Public License, you may choose any version ever published
-by the Free Software Foundation.
+by the Free Software Container.
 
   If the Program specifies that a proxy can decide which future
 versions of the GNU General Public License can be used, that proxy's
@@ -625,7 +625,7 @@ the "copyright" line and a pointer to where the full notice is found.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Container, either version 3 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,

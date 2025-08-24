@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Http\Middleware;
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Skins\SkinManager;
@@ -36,16 +36,16 @@ use IslamWiki\Core\View\ParamsBag;
 class SkinMiddleware
 {
     /**
-     * @var NizamApplication The application instance
+     * @var Application The application instance
      */
-    private NizamApplication $app;
+    private Application $app;
 
     /**
      * Constructor
      *
-     * @param NizamApplication $app The application instance
+     * @param Application $app The application instance
      */
-    public function __construct(NizamApplication $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }

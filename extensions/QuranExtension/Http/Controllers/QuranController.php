@@ -25,7 +25,7 @@ class QuranController extends Controller
 
     public function __construct(
         \IslamWiki\Core\Database\Connection $db,
-        \IslamWiki\Core\Container\AsasContainer $container
+        \IslamWiki\Core\Container\Container $container
     ) {
         parent::__construct($db, $container);
         

@@ -12,13 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 
 echo "Creating user_settings table...\n";
 
 try {
     // Initialize the application
-    $app = new NizamApplication(__DIR__ . '/..');
+    $app = new Application(__DIR__ . '/..');
     $container = $app->getContainer();
     $db = $container->get('db');
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use IslamWiki\Core\Container\Container;
 use IslamWiki\Core\View\TwigRenderer;
 use IslamWiki\Core\View\TwigTranslationExtension;
 
@@ -18,7 +18,7 @@ class ViewServiceProvider
      *
      * @param Container $container The dependency injection container
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Get the base path from the application if available
         $basePath = null;
@@ -85,9 +85,9 @@ class ViewServiceProvider
     /**
      * Boot the view services.
      *
-     * @param AsasContainer $container The dependency injection container
+     * @param Container $container The dependency injection container
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Add translation extension if available (after all services are registered)
         try {

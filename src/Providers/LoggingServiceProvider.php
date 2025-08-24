@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Logging\ShahidLogger;
+use Logger;\Logger
 use Psr\Container\ContainerInterface;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use Psr\Log\LoggerInterface;
 
 /**
  * Logging Service Provider
  *
- * This service provider sets up the logging system for the application.
+ * This service provider sets up the core logging system for the application.
  * It configures and registers the logger instance with the container.
  */
 class LoggingServiceProvider
@@ -23,17 +23,19 @@ class LoggingServiceProvider
      * @param ContainerInterface $container
      * @return void
      */
-    public function register(AsasContainer $container): void
+    public function register(ContainerInterface $container): void
     {
-        // error_log('LoggingServiceProvider: register() called');
+        // Cast to Container to access set/alias methods
+        if (!$container instanceof \IslamWiki\Core\Container\Container {
+            throw new \InvalidArgumentException('Container must be an instance of Container');
+        }
+        
         $container->set(LoggerInterface::class, function (ContainerInterface $c) {
-            // error_log('LoggingServiceProvider: Creating Shahid logger');
             $config = [];
             try {
                 $config = $c->get('settings')['logging'] ?? [];
             } catch (\Exception $e) {
                 // If settings binding doesn't exist, use defaults
-                // error_log('LoggingServiceProvider: No settings binding found, using defaults');
             }
 
             // Ensure logs directory exists
@@ -42,15 +44,14 @@ class LoggingServiceProvider
                 mkdir($logDir, 0755, true);
             }
 
-            // Create Shahid witness system instance
-            $logger = new ShahidLogger(
+            // Create core logging system instance
+            $logger = new LoggerLogger(
                 $logDir,
                 $config['level'] ?? \Psr\Log\LogLevel::DEBUG,
                 $config['max_file_size'] ?? 10, // MB
                 $config['max_files'] ?? 5
             );
 
-            // error_log('LoggingServiceProvider: Shahid logger created successfully');
             return $logger;
         });
 
@@ -59,36 +60,42 @@ class LoggingServiceProvider
             return $c->get(LoggerInterface::class);
         });
 
-        // error_log('LoggingServiceProvider: register() completed');
-        
-        // Initialize Shahid Error Handler
-        $this->initializeShahidErrorHandler($container);
-        
-        // Register Template Management Extension
-        $this->registerTemplateManagementExtension($container);
+        // Logger is already registered as LoggerInterface above
+        // No need to register it again to avoid circular dependency
+
+        // Register template management extension
+        try {
+            $extension = new \IslamWiki\Extensions\TemplateManagementExtension\TemplateManagementExtension($container);
+            $container->set('template.management', $extension);
+            $container->alias('template.management', \IslamWiki\Extensions\TemplateManagementExtension\TemplateManagementExtension::class);
+            
+            $container->get('logger')->info('Template Management Extension registered successfully');
+        } catch (\Exception $e) {
+            error_log('Failed to register Template Management Extension: ' . $e->getMessage());
+        }
     }
     
     /**
-     * Initialize Shahid error handler
+     * Initialize Logging error handler
      */
-    private function initializeShahidErrorHandler(AsasContainer $container): void
+    private function initializeLoggingErrorHandler(Container $container): void
     {
         try {
             $logger = $container->get(LoggerInterface::class);
             $debug = $container->get('settings')['debug'] ?? false;
             
-            \IslamWiki\Core\Error\ShahidErrorHandler::initialize($logger, $debug);
+            \IslamWiki\Core\Error\Logger $debug);
             
-            $container->get('shahid.logger')->info('Shahid Error Handler initialized successfully');
+            $container->get('shahid.logger')->info('Logging Error Handler initialized successfully');
         } catch (\Exception $e) {
-            error_log('Failed to initialize Shahid Error Handler: ' . $e->getMessage());
+            error_log('Failed to initialize Logging Error Handler: ' . $e->getMessage());
         }
     }
 
     /**
      * Register Template Management Extension
      */
-    private function registerTemplateManagementExtension(AsasContainer $container): void
+    private function registerTemplateManagementExtension(Container $container): void
     {
         try {
             $extension = new \IslamWiki\Extensions\TemplateManagementExtension\TemplateManagementExtension($container);

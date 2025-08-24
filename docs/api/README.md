@@ -12,10 +12,10 @@ This directory contains comprehensive documentation for the IslamWiki API system
 ## 🏗️ **API Architecture**
 
 ### **API Layers**
-- **Siraj (Light)** - API management and routing system
-- **Aman (Security)** - API authentication and authorization
-- **Shahid (Witness)** - API monitoring and logging
-- **Rihlah (Journey)** - API caching and performance
+- **API (Light)** - API management and routing system
+- **Security (Security)** - API authentication and authorization
+- **Logging (Witness)** - API monitoring and logging
+- **Routing (Journey)** - API caching and performance
 
 ### **API Types**
 

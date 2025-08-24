@@ -6,7 +6,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Http\Controllers\PageController;
 use IslamWiki\Core\Http\Request;
 
@@ -22,11 +22,11 @@ try {
     }
     echo "   ✅ Connection class loaded\n";
     
-    if (!class_exists(AsasContainer::class)) {
-        echo "   ❌ AsasContainer class not found\n";
+    if (!class_exists(Container::class)) {
+        echo "   ❌ Container class not found\n";
         exit(1);
     }
-    echo "   ✅ AsasContainer class loaded\n";
+    echo "   ✅ Container class loaded\n";
     
     if (!class_exists(PageController::class)) {
         echo "   ❌ PageController class not found\n";
@@ -63,7 +63,7 @@ try {
     echo "\n3. Testing container and database...\n";
     
     try {
-        $container = new AsasContainer();
+        $container = new ContainerContainer();
         echo "   ✅ Container created\n";
         
         // Try to get database connection

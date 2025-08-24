@@ -132,7 +132,7 @@ If you have questions about the AGPL-3.0 license:
 - **Documentation**: Check the official GNU documentation
 - **Community**: Ask in the IslamWiki community forums
 - **Legal Advice**: Consult with a qualified attorney
-- **GNU Organization**: Contact the Free Software Foundation
+- **GNU Organization**: Contact the Free Software Container
 
 ### **Compliance Help**
 - **Source Code**: Ensure all source code is available
@@ -147,7 +147,7 @@ If you have questions about the AGPL-3.0 license:
 ### **GNU Resources**
 - [GNU AGPL-3.0 License](https://www.gnu.org/licenses/agpl-3.0.en.html)
 - [GNU License FAQ](https://www.gnu.org/licenses/gpl-faq.html)
-- [Free Software Foundation](https://www.fsf.org/)
+- [Free Software Container](https://www.fsf.org/)
 
 ### **IslamWiki Resources**
 - [Development Standards](../standards.md)
@@ -164,7 +164,7 @@ Copyright (c) 2025 IslamWiki Development Team
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Container, either version 3 of the License, or
 (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,

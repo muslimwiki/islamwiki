@@ -2,12 +2,12 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\Logging\Shahid;
+use Logging;\Logger
 
-echo "Testing Shahid logger creation...\n";
+echo "Testing Logging logger creation...\n";
 
 try {
-    $logger = new Shahid(__DIR__ . '/../storage/logs');
+    $logger = new Logger(__DIR__ . '/../storage/logs');
     echo "Logger created successfully\n";
     echo "Logger type: " . gettype($logger) . "\n";
     echo "Logger class: " . get_class($logger) . "\n";

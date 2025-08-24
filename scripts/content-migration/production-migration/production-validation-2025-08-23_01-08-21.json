@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "title": "Main Page",
+        "title": "Home Page",
         "link_validation": {
             "total_links": 1,
             "valid_links": 1,

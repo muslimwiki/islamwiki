@@ -1,58 +1,89 @@
 <?php
 
+/**
+ * Extension Interface
+ *
+ * Defines the contract for all extensions in IslamWiki.
+ *
+ * @package IslamWiki\Core\Extensions
+ * @version 0.0.3.0
+ * @license AGPL-3.0-only
+ */
+
 declare(strict_types=1);
 
 namespace IslamWiki\Core\Extensions;
 
+use IslamWiki\Core\Container\Container;
+
 /**
- * Extension Interface
- * 
- * Base interface that all extensions must implement.
- * 
- * @package IslamWiki\Core\Extensions
- * @version 0.0.1
- * @author IslamWiki Development Team
- * @license AGPL-3.0
+ * Extension Interface - Contract for all extensions
  */
 interface ExtensionInterface
 {
     /**
-     * Get extension name
+     * Get the extension name.
+     *
+     * @return string The extension name
      */
     public function getName(): string;
 
     /**
-     * Get extension version
+     * Get the extension version.
+     *
+     * @return string The extension version
      */
     public function getVersion(): string;
 
     /**
-     * Get extension description
+     * Get the extension description.
+     *
+     * @return string The extension description
      */
     public function getDescription(): string;
 
     /**
-     * Install the extension
+     * Get the extension author.
+     *
+     * @return string The extension author
      */
-    public function install(): bool;
+    public function getAuthor(): string;
 
     /**
-     * Uninstall the extension
+     * Get the extension website.
+     *
+     * @return string The extension website
      */
-    public function uninstall(): bool;
+    public function getWebsite(): string;
 
     /**
-     * Activate the extension
+     * Register the extension with the container.
+     *
+     * @param Container $container The container instance
      */
-    public function activate(): bool;
+    public function register(Container $container): void;
 
     /**
-     * Deactivate the extension
+     * Boot the extension.
+     *
+     * @param Container $container The container instance
      */
-    public function deactivate(): bool;
+    public function boot(Container $container): void;
 
     /**
-     * Initialize the extension
+     * Check if the extension is enabled.
+     *
+     * @return bool True if enabled
      */
-    public function init(): void;
+    public function isEnabled(): bool;
+
+    /**
+     * Enable the extension.
+     */
+    public function enable(): void;
+
+    /**
+     * Disable the extension.
+     */
+    public function disable(): void;
 } 

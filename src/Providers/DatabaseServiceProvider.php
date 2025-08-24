@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Container, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\Database\Connection;
 use IslamWiki\Core\Database\Migrations\Migrator;
 
@@ -37,7 +37,7 @@ class DatabaseServiceProvider
     /**
      * Register database services with the container.
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register database connection
         $container->set('db', function () {

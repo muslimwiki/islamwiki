@@ -45,7 +45,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core\Security;
 
-use IslamWiki\Core\Security\AmanAuthenticator;
+use SecurityAuthenticator;\Security
 
 /**
  * Authentication Service - User authentication management
@@ -54,11 +54,11 @@ use IslamWiki\Core\Security\AmanAuthenticator;
  * @author IslamWiki Development Team
  * @license AGPL-3.0
  */
-class AmanAuthenticationService
+class SecurityAuthenticationService
 {
-    private AmanAuthenticator $authenticator;
+    private SecurityAuthenticator $authenticator;
     
-    public function __construct(AmanAuthenticator $authenticator)
+    public function __construct(SecurityAuthenticator $authenticator)
     {
         $this->authenticator = $authenticator;
     }
@@ -105,7 +105,7 @@ class AmanAuthenticationService
 /**
  * Authorization Service - Access control management
  */
-class AmanAuthorizationService
+class SecurityAuthorizationService
 {
     /**
      * Check if user has permission
@@ -147,7 +147,7 @@ class AmanAuthorizationService
 /**
  * Input Validation Service
  */
-class AmanValidationService
+class SecurityValidationService
 {
     /**
      * Validate user input
@@ -230,7 +230,7 @@ class AmanValidationService
 /**
  * Session Security Service
  */
-class WisalSessionSecurityService
+class SessionSessionSecurityService
 {
     /**
      * Configure secure session settings
@@ -275,7 +275,7 @@ class WisalSessionSecurityService
 /**
  * API Security Middleware
  */
-class SirajApiSecurityMiddleware
+class APIApiSecurityMiddleware
 {
     /**
      * Process API request
@@ -317,7 +317,7 @@ class SirajApiSecurityMiddleware
 /**
  * Security Monitoring Service
  */
-class ShahidSecurityMonitoringService
+class LoggerSecurityMonitoringService
 {
     /**
      * Log security event

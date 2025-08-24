@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Core\Skin\StaticDataManager;
 
 /**
@@ -36,14 +36,14 @@ class StaticDataServiceProvider
     /**
      * Register static data services
      *
-     * @param AsasContainer $container The dependency injection container
+     * @param Container $container The dependency injection container
      *
      * @return void
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the static data manager as a singleton
-        $container->set('static.data', function (AsasContainer $container) {
+        $container->set('static.data', function (Container $container) {
             // For now, return a simple mock implementation
             return new class {
                 public function getStaticData(string $key = null): array
@@ -96,12 +96,12 @@ class StaticDataServiceProvider
         });
 
         // Register the static data manager as a factory for dynamic updates
-        $container->set('static.data.manager', function (AsasContainer $container) {
+        $container->set('static.data.manager', function (Container $container) {
             return $container->get('static.data');
         });
 
         // Register global static data as a singleton
-        $container->set('static.data.global', function (AsasContainer $container) {
+        $container->set('static.data.global', function (Container $container) {
             $manager = $container->get('static.data');
             return $manager->getStaticData();
         });
@@ -110,11 +110,11 @@ class StaticDataServiceProvider
     /**
      * Boot the static data service provider
      *
-     * @param AsasContainer $container The dependency injection container
+     * @param Container $container The dependency injection container
      *
      * @return void
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         try {
             // Get the static data manager

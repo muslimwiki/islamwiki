@@ -3,8 +3,7 @@
 namespace IslamWiki\Http\Controllers;
 
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Http\Request;
+use Container;;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Extensions\EnhancedMarkdown\Managers\TemplateManager;
 
@@ -21,7 +20,7 @@ class TemplateController extends Controller
 {
     private TemplateManager $templateManager;
     
-    public function __construct(Connection $db, AsasContainer $container)
+    public function __construct(Connection $db, Container $container)
     {
         parent::__construct($db, $container);
         

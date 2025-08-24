@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use IslamWiki\Core\NizamApplication;
+use Application;\Application
 use IslamWiki\Core\Container;
 use IslamWiki\Core\Database\Connection;
-use IslamWiki\Core\Session\SessionManager;
+use IslamWiki\Core\Session\Session;
 use IslamWiki\Skins\SkinManager;
 
 // Initialize application
-$app = new NizamApplication(__DIR__ . '/..');
+$app = new Application(__DIR__ . '/..');
 $container = $app->getContainer();
 
 // Get services

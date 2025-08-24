@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\WikiMarkupExtension;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 /**
  * Wiki Markup Service Provider
@@ -18,7 +18,7 @@ class WikiMarkupServiceProvider
     /**
      * Register services with the container
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the parser
         $container->set(WikiMarkupParser::class, function () {
@@ -34,7 +34,7 @@ class WikiMarkupServiceProvider
         });
 
         // Register the extension
-        $container->set(WikiMarkupExtension::class, function (AsasContainer $container) {
+        $container->set(WikiMarkupExtension::class, function (Container $container) {
             return new WikiMarkupExtension($container);
         });
     }

@@ -2,7 +2,7 @@
 
 namespace IslamWiki\Extensions\EnhancedMarkdown\Providers;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 use IslamWiki\Extensions\EnhancedMarkdown\EnhancedMarkdown;
 use IslamWiki\Extensions\EnhancedMarkdown\Managers\TemplateManager;
 use IslamWiki\Extensions\EnhancedMarkdown\Managers\CategoryManager;
@@ -21,7 +21,7 @@ class EnhancedMarkdownServiceProvider
     /**
      * Register services with the container
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register TemplateManager
         $container->register('EnhancedMarkdown.TemplateManager', function($container) {
@@ -60,7 +60,7 @@ class EnhancedMarkdownServiceProvider
     /**
      * Boot the service provider
      */
-    public function boot(AsasContainer $container): void
+    public function boot(Container $container): void
     {
         // Any initialization that needs to happen after all services are registered
         
@@ -74,7 +74,7 @@ class EnhancedMarkdownServiceProvider
     /**
      * Register template-related routes
      */
-    private function registerTemplateRoutes(AsasContainer $container): void
+    private function registerTemplateRoutes(Container $container): void
     {
         // This would register routes like:
         // GET /wiki/Template:{name} - View template
@@ -89,7 +89,7 @@ class EnhancedMarkdownServiceProvider
     /**
      * Initialize template cache
      */
-    private function initializeTemplateCache(AsasContainer $container): void
+    private function initializeTemplateCache(Container $container): void
     {
         try {
             $templateManager = $container->resolve('EnhancedMarkdown.TemplateManager');

@@ -24,7 +24,7 @@ try {
 
     $classes = [
         'IslamWiki\Core\Application',
-        'IslamWiki\Core\Container\Asas',
+        'IslamWiki\Core\Container\Container
         'IslamWiki\Core\Routing\IslamRouter',
         'IslamWiki\Core\Http\Request',
         'IslamWiki\Core\Http\Response'

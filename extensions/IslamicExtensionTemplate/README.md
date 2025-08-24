@@ -6,37 +6,37 @@ The Islamic Extension Template demonstrates how to properly integrate extensions
 
 ## Features
 
-- **Islamic Architecture Integration**: Full integration with Foundation, Infrastructure, Application, and User Interface layers
+- **Islamic Architecture Integration**: Full integration with Container, Infrastructure, Application, and User Interface layers
 - **Modern Extension System**: Uses the new `IslamicExtension` base class with comprehensive lifecycle management
 - **Hook System**: Enhanced hook system with priority management and context passing
-- **Service Integration**: Direct access to all Islamic systems (Iqra, Bayan, Siraj, Rihlah, etc.)
+- **Service Integration**: Direct access to all Islamic systems (Iqra, Bayan, API, Routing, etc.)
 - **Statistics & Monitoring**: Built-in performance tracking and integration monitoring
 - **Dependency Management**: Automatic dependency resolution and validation
 
 ## Architecture Integration
 
-### Foundation Layer (أساس)
-- **AsasContainer**: Dependency injection container access
-- **AsasFoundation**: Foundation services integration
-- **AsasBootstrap**: Application bootstrap integration
+### Container Layer (أساس)
+- **Container**: Dependency injection container access
+- **Container**: Container services integration
+- **ContainerBootstrap**: Application bootstrap integration
 
 ### Infrastructure Layer (سبيل, نظام, ميزان, تدبير)
 - **Simplified Routing**: Route management and navigation
-- **NizamApplication**: System orchestration
-- **MizanDatabase**: Database management
-- **TadbirConfiguration**: Configuration management
+- **Application**: System orchestration
+- **Database**: Database management
+- **Configuration**: Configuration management
 
 ### Application Layer (أمان, وصل, صبر, أصول)
-- **AmanSecurity**: Security and authentication
-- **WisalSession**: Session management
-- **SabrQueue**: Background processing
-- **UsulKnowledge**: Business rules and validation
+- **Security**: Security and authentication
+- **Session**: Session management
+- **Queue**: Background processing
+- **Knowledge**: Business rules and validation
 
 ### User Interface Layer (إقرأ, بيان, سراج, رحلة)
 - **IqraSearch**: Search and content discovery
 - **BayanFormatter**: Content formatting
-- **SirajAPI**: API management
-- **RihlahCaching**: Caching and optimization
+- **API**: API management
+- **Caching**: Caching and optimization
 
 ## Usage
 
@@ -220,13 +220,13 @@ protected function trackPerformance(string $operation, float $time): void
 - Provide meaningful error messages
 
 ### 3. Performance
-- Use caching when appropriate (RihlahCaching)
+- Use caching when appropriate (Caching)
 - Implement lazy loading for heavy resources
 - Monitor and log performance metrics
 
 ### 4. Security
 - Validate all input data
-- Use the AmanSecurity system for authentication
+- Use the Security system for authentication
 - Follow security best practices
 
 ### 5. Integration

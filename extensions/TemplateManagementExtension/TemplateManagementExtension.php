@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace IslamWiki\Extensions\TemplateManagementExtension;
 
 use IslamWiki\Core\Extensions\ExtensionInterface;
-use IslamWiki\Core\Container\AsasContainer;
-use IslamWiki\Core\Logging\ShahidLogger;
+use IslamWiki\Core\Container\Container;
+use IslamWiki\Core\Logging\Logger;
 
 /**
  * Template Management Extension
@@ -73,14 +73,14 @@ class TemplateManagementExtension implements ExtensionInterface
     ];
 
     /**
-     * @var AsasContainer
+     * @var Container
      */
-    private AsasContainer $container;
+    private Container $container;
 
     /**
-     * @var ShahidLogger
+     * @var Logger
      */
-    private ShahidLogger $logger;
+    private Logger $logger;
 
     /**
      * @var string
@@ -90,11 +90,11 @@ class TemplateManagementExtension implements ExtensionInterface
     /**
      * Initialize the extension
      */
-    public function __construct(AsasContainer $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
         $this->basePath = dirname(__DIR__, 2); // Go up to project root
-        $this->logger = $container->get(ShahidLogger::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     /**

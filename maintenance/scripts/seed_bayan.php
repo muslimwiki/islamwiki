@@ -50,9 +50,9 @@ function main(): void {
 
     $nodes = [
         ['concept', 'Fitrah (Primordial Nature)', 'Human primordial disposition towards truth.'],
-        ['concept', 'Iman (Faith)', 'Faith consisting of belief in the heart, statement by the tongue, action by limbs.'],
+        ['concept', 'Faith (Faith)', 'Faith consisting of belief in the heart, statement by the tongue, action by limbs.'],
         ['concept', 'Islam (Submission)', 'Submission to Allah with Tawhid, yielding to Him in obedience.'],
-        ['concept', 'Kufr (Disbelief)', 'Covering/rejecting truth; opposite of Iman.'],
+        ['concept', 'Kufr (Disbelief)', 'Covering/rejecting truth; opposite of Faith.'],
         ['ayah',  "Qur'an 30:30", 'So set your face toward the religion, inclining to truth. Adhere to the fitrah of Allah...'],
         ['hadith', 'Religion is sincere advice', 'Ad-din an-nasihah. We said: To whom? He said: To Allah, His Book, His Messenger...'],
         ['scholar', 'Imam al-Nawawi', 'Muhyiddin Yahya ibn Sharaf an-Nawawi (631–676 AH).'],
@@ -69,12 +69,12 @@ function main(): void {
     // Relationships
     $rels = [
         // source, target, type
-        ['Kufr (Disbelief)', 'Iman (Faith)', 'opposes'],
-        ['Fitrah (Primordial Nature)', 'Iman (Faith)', 'supports'],
+        ['Kufr (Disbelief)', 'Faith (Faith)', 'opposes'],
+        ['Fitrah (Primordial Nature)', 'Faith (Faith)', 'supports'],
         ["Fitrah (Primordial Nature)", "Qur'an 30:30", 'explains'],
         ['Riyadh al-Salihin', 'Imam al-Nawawi', 'authored_by'],
         ['Riyadh al-Salihin', 'Religion is sincere advice', 'references'],
-        ['Islam (Submission)', 'Iman (Faith)', 'related_to'],
+        ['Islam (Submission)', 'Faith (Faith)', 'related_to'],
     ];
 
     foreach ($rels as [$srcTitle, $tgtTitle, $type]) {

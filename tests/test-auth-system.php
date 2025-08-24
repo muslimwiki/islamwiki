@@ -168,7 +168,7 @@ try {
 echo "\n5. Testing AuthManager class...\n";
 try {
     // Create a simple mock for testing
-    class MockSessionManager
+    class MockSession
     {
         private $sessionData = [];
 
@@ -249,7 +249,7 @@ try {
         }
     }
 
-    $sessionManager = new MockSessionManager();
+    $sessionManager = new MockSession();
     $connection = new MockConnection($pdo);
 
     // Test AuthManager instantiation

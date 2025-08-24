@@ -66,7 +66,7 @@ Unified Skin System:
 - **Interactive Components**: Dropdowns, tooltips, notifications
 
 ### **3. Layout Views**
-- **Base Layouts**: Foundation page structures
+- **Base Layouts**: Container page structures
 - **Specialized Layouts**: Dashboard, admin, content layouts
 - **Responsive Layouts**: Mobile-first design patterns
 

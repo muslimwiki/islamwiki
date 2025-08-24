@@ -53,7 +53,7 @@ class ContentAnalyzer
         $mockPages = [
             [
                 'id' => 1,
-                'title' => 'Main Page',
+                'title' => 'Home Page',
                 'content' => 'Welcome to [[IslamWiki]]! This is a **bold** and *italic* text with {{Infobox|title=Welcome}} and [Category:Main]'
             ],
             [

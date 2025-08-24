@@ -290,7 +290,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Extensions\WikiMarkupExtension;
 
-use IslamWiki\Core\Container\AsasContainer;
+use Container;\Container
 
 /**
  * Wiki Markup Service Provider
@@ -300,7 +300,7 @@ class WikiMarkupServiceProvider
     /**
      * Register services with the container
      */
-    public function register(AsasContainer $container): void
+    public function register(Container $container): void
     {
         // Register the parser as a singleton
         $container->singleton(WikiMarkupParser::class, function () {
