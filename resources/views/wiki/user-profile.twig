@@ -1,0 +1,114 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ user.display_name|default(user.username) }} - User Profile - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="user-profile-container">
+    <!-- User Profile Header -->
+    <div class="user-profile-header">
+        <div class="user-profile-avatar">
+            <span class="avatar-initials">{{ user.username|first|upper }}</span>
+        </div>
+        <div class="user-profile-info">
+            <h1 class="user-profile-name">{{ user.display_name|default(user.username) }}</h1>
+            <p class="user-profile-username">@{{ user.username }}</p>
+            {% if user.bio %}
+                <p class="user-profile-bio">{{ user.bio }}</p>
+            {% endif %}
+            <div class="user-profile-meta">
+                <span class="meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    Joined {{ user.created_at|date('F Y') }}
+                </span>
+                {% if user.location %}
+                <span class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ user.location }}
+                </span>
+                {% endif %}
+                {% if user.website %}
+                <span class="meta-item">
+                    <i class="fas fa-globe"></i>
+                    <a href="{{ user.website }}" target="_blank" rel="noopener">{{ user.website|replace({'https://': '', 'http://': ''}) }}</a>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="user-stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">✏️</div>
+            <div class="stat-value">{{ stats.total_edits|default(0) }}</div>
+            <div class="stat-label">Total Edits</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value">{{ stats.pages_edited|default(0) }}</div>
+            <div class="stat-label">Pages Edited</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🕐</div>
+            <div class="stat-value">{{ stats.first_edit ? stats.first_edit|date('M Y') : 'N/A' }}</div>
+            <div class="stat-label">First Edit</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-value">{{ stats.last_edit ? stats.last_edit|date('M Y') : 'N/A' }}</div>
+            <div class="stat-label">Last Edit</div>
+        </div>
+    </div>
+
+    <!-- User Contributions -->
+    <div class="user-contributions">
+        <h2 class="section-title">Recent Contributions</h2>
+        {% if contributions %}
+            <div class="contributions-list">
+                {% for contribution in contributions %}
+                <div class="contribution-item">
+                    <div class="contribution-icon">📝</div>
+                    <div class="contribution-content">
+                        <div class="contribution-title">
+                            <a href="/wiki/{{ contribution.page_slug }}" class="contribution-link">
+                                {{ contribution.page_title|default('Untitled Page') }}
+                            </a>
+                        </div>
+                        <div class="contribution-meta">
+                            <span class="contribution-date">{{ contribution.created_at|date('M j, Y') }}</span>
+                            {% if contribution.edit_summary %}
+                                <span class="contribution-summary">{{ contribution.edit_summary }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-contributions">
+                <div class="no-contributions-icon">📚</div>
+                <p>No contributions yet. Start editing to build your profile!</p>
+                <a href="/create" class="btn btn-primary">Create Your First Page</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- User Activity Timeline -->
+    {% if contributions %}
+    <div class="user-activity">
+        <h2 class="section-title">Activity Timeline</h2>
+        <div class="activity-timeline">
+            {% for contribution in contributions|slice(0, 10) %}
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Edited {{ contribution.page_title|default('Untitled Page') }}</div>
+                    <div class="timeline-date">{{ contribution.created_at|date('M j, Y g:i A') }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

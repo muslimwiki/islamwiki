@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.6-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.7-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,15 +8,16 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.6** represents a complete authentication system and UI overhaul with:
-- ✅ **Complete Authentication System** - Login, logout, and registration through AmanSecurity
-- ✅ **Conditional Sidebar Rendering** - Different content for logged in vs logged out users
-- ✅ **User Preferences System** - Comprehensive settings with display options
-- ✅ **Interactive Cog Wheel Menu** - Text size, color theme, and width settings
-- ✅ **Profile Management** - User profiles, preferences, and settings
-- ✅ **AmanSecurity Extension** - Complete extension architecture for security
-- ✅ **Enhanced UI/UX** - Beautiful auth pages, improved sidebar, and responsive design
-- ✅ **Smart Layout System** - Content width options with proper centering and sidebar isolation
+**Version 0.0.2.7** represents a complete dashboard system and error handling overhaul with:
+- ✅ **Complete Dashboard System** - Role-based admin and user dashboards with Bismillah skin
+- ✅ **Admin Dashboard** - Comprehensive system administration with secondary navigation
+- ✅ **User Dashboard** - Personal dashboard for regular users with learning progress
+- ✅ **View Mode Toggle** - Admin users can switch between admin and user dashboard views
+- ✅ **Secondary Navigation** - Left-aligned navigation for dashboard functions
+- ✅ **500 Error Page** - Beautiful Bismillah-themed error page with comprehensive information
+- ✅ **User Profile System** - `/wiki/User/{username}` namespace with profile pages
+- ✅ **Wiki Index Page** - Complete wiki page listing with Bismillah skin
+- ✅ **Enhanced CSS Architecture** - Centralized styling in bismillah.css with responsive design
 
 ## 🚀 **Key Features**
 
@@ -26,6 +27,14 @@
 - **Security Monitoring**: Threat detection, IP blocking, and comprehensive logging
 - **Session Management**: Secure authentication with proper session handling
 - **User Preferences**: Comprehensive settings for display, language, and personalization
+
+### **📊 Comprehensive Dashboard System**
+- **Role-Based Dashboards**: Separate admin and user dashboards with appropriate functionality
+- **Admin Dashboard**: System administration, user management, and system monitoring
+- **User Dashboard**: Personal learning progress, contributions, and activity tracking
+- **View Mode Toggle**: Admin users can switch between admin and user perspectives
+- **Secondary Navigation**: Left-aligned navigation for dashboard-specific functions
+- **Quick Actions**: Integrated action buttons for common administrative tasks
 
 ### **🎨 Beautiful Islamic Design**
 - **Bismillah Skin**: Complete Islamic-themed user interface
@@ -40,6 +49,9 @@
 - **Enhanced Markdown**: Wiki extensions and Islamic content features
 - **Content Management**: Edit, delete, and version control capabilities
 - **Search & Navigation**: Easy discovery of Islamic knowledge
+- **User Profiles**: `/wiki/User/{username}` namespace with comprehensive user information
+- **Wiki Index**: Complete page listing with search, categories, and navigation
+- **Error Handling**: Beautiful 500 error pages with Islamic themes and detailed information
 
 ### **🛡️ Robust System Architecture**
 - **Simplified Routing**: Modern, efficient routing system
@@ -62,6 +74,8 @@
 - **WisalSession**: Advanced session management
 - **AmanSecurity**: Comprehensive authentication system
 - **ShahidLogger**: Advanced logging and debugging
+- **Dashboard System**: Role-based dashboard management with view switching
+- **Wiki Controller**: Enhanced wiki functionality with user profiles and index pages
 
 ### **Content Processing**
 - **Enhanced Markdown**: Wiki extensions and Islamic syntax

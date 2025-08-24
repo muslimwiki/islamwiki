@@ -1,0 +1,248 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Wiki - All Pages - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="wiki-index-container">
+    <!-- Wiki Header -->
+    <div class="wiki-header">
+        <div class="wiki-header-content">
+            <h1 class="wiki-title">📚 Islamic Knowledge Wiki</h1>
+            <p class="wiki-subtitle">Explore authentic Islamic knowledge, verified by scholars and accessible to the global Muslim community</p>
+            <div class="wiki-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">📄</span>
+                    <span class="stat-value">{{ pagination.total }}</span>
+                    <span class="stat-label">Total Pages</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">👥</span>
+                    <span class="stat-value">{{ pages|length }}</span>
+                    <span class="stat-label">Available</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🔍</span>
+                    <span class="stat-value">{{ filters.search ? 'Active' : 'None' }}</span>
+                    <span class="stat-label">Search Filter</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wiki Content Grid -->
+    <div class="wiki-content-grid">
+        <!-- Left Sidebar: Quick Actions -->
+        <div class="wiki-sidebar">
+            <div class="wiki-card">
+                <div class="wiki-card-header">
+                    <h3>📝 Create Content</h3>
+                </div>
+                <div class="wiki-card-content">
+                    <a href="/create" class="wiki-action-btn primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Create New Page</span>
+                    </a>
+                    <a href="/wiki/create?template=article" class="wiki-action-btn">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Article Template</span>
+                    </a>
+                    <a href="/wiki/create?template=guide" class="wiki-action-btn">
+                        <i class="fas fa-book"></i>
+                        <span>Guide Template</span>
+                    </a>
+                    <a href="/wiki/create?template=reference" class="wiki-action-btn">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Reference Template</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="wiki-card">
+                <div class="wiki-card-header">
+                    <h3>🔍 Quick Search</h3>
+                </div>
+                <div class="wiki-card-content">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search pages..." class="search-input" id="quick-search">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wiki-card">
+                <div class="wiki-card-header">
+                    <h3>📊 Categories</h3>
+                </div>
+                <div class="wiki-card-content">
+                    <div class="category-list">
+                        <a href="/wiki/Category:Quran" class="category-item">
+                            <i class="fas fa-book-open"></i>
+                            <span>Quran</span>
+                        </a>
+                        <a href="/wiki/Category:Hadith" class="category-item">
+                            <i class="fas fa-quote-left"></i>
+                            <span>Hadith</span>
+                        </a>
+                        <a href="/wiki/Category:Islamic_Practices" class="category-item">
+                            <i class="fas fa-mosque"></i>
+                            <span>Islamic Practices</span>
+                        </a>
+                        <a href="/wiki/Category:Islamic_History" class="category-item">
+                            <i class="fas fa-landmark"></i>
+                            <span>Islamic History</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: Pages List -->
+        <div class="wiki-main-content">
+            <!-- Pages Header -->
+            <div class="pages-header">
+                <h2>📚 All Pages</h2>
+                <div class="pages-controls">
+                    <div class="sort-controls">
+                        <label for="sort-select">Sort by:</label>
+                        <select id="sort-select" class="sort-select">
+                            <option value="title" {{ filters.sort == 'title' ? 'selected' : '' }}>Title</option>
+                            <option value="updated_at" {{ filters.sort == 'updated_at' ? 'selected' : '' }}>Last Updated</option>
+                            <option value="view_count" {{ filters.sort == 'view_count' ? 'selected' : '' }}>Views</option>
+                        </select>
+                        <button class="sort-btn" id="sort-order-btn" data-order="{{ filters.order }}">
+                            <i class="fas fa-sort-{{ filters.order == 'desc' ? 'down' : 'up' }}"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pages List -->
+            <div class="pages-list">
+                {% if pages is empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3>No pages found</h3>
+                        <p>There are no pages available yet. Be the first to create content!</p>
+                        <a href="/create" class="btn btn-primary">Create First Page</a>
+                    </div>
+                {% else %}
+                    {% for page in pages %}
+                    <div class="page-item">
+                        <div class="page-icon">
+                            {% if page.namespace == 'Main' %}
+                                <i class="fas fa-home"></i>
+                            {% elseif page.namespace == 'wiki' %}
+                                <i class="fas fa-book"></i>
+                            {% else %}
+                                <i class="fas fa-file-alt"></i>
+                            {% endif %}
+                        </div>
+                        <div class="page-content">
+                            <div class="page-title">
+                                <a href="{{ page.url }}" class="page-link">{{ page.title }}</a>
+                                {% if page.namespace %}
+                                    <span class="page-namespace">{{ page.namespace }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="page-meta">
+                                <span class="page-author">
+                                    <i class="fas fa-user"></i>
+                                    {{ page.author_name }}
+                                </span>
+                                <span class="page-updated">
+                                    <i class="fas fa-clock"></i>
+                                    {{ page.updated_at|date('M j, Y') }}
+                                </span>
+                                <span class="page-views">
+                                    <i class="fas fa-eye"></i>
+                                    {{ page.view_count|default(0) }} views
+                                </span>
+                                <span class="page-revisions">
+                                    <i class="fas fa-history"></i>
+                                    {{ page.revision_count|default(0) }} revisions
+                                </span>
+                            </div>
+                        </div>
+                        <div class="page-actions">
+                            <a href="{{ page.url }}" class="page-action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ page.url }}/edit" class="page-action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ page.url }}/history" class="page-action-btn" title="History">
+                                <i class="fas fa-history"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination.last_page > 1 %}
+            <div class="pagination">
+                {% if pagination.current_page > 1 %}
+                    <a href="?page={{ pagination.current_page - 1 }}" class="pagination-btn">
+                        <i class="fas fa-chevron-left"></i>
+                        Previous
+                    </a>
+                {% endif %}
+                
+                <span class="pagination-info">
+                    Page {{ pagination.current_page }} of {{ pagination.last_page }}
+                </span>
+                
+                {% if pagination.current_page < pagination.last_page %}
+                    <a href="?page={{ pagination.current_page + 1 }}" class="pagination-btn">
+                        Next
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quick search functionality
+    const quickSearch = document.getElementById('quick-search');
+    if (quickSearch) {
+        quickSearch.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    }
+
+    // Sort functionality
+    const sortSelect = document.getElementById('sort-select');
+    const sortOrderBtn = document.getElementById('sort-order-btn');
+    
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('sort', this.value);
+            window.location.href = currentUrl.toString();
+        });
+    }
+    
+    if (sortOrderBtn) {
+        sortOrderBtn.addEventListener('click', function() {
+            const currentUrl = new URL(window.location);
+            const currentOrder = currentUrl.searchParams.get('order') || 'asc';
+            const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            currentUrl.searchParams.set('order', newOrder);
+            window.location.href = currentUrl.toString();
+        });
+    }
+});
+</script>
+{% endblock %} 

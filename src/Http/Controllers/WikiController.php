@@ -49,6 +49,136 @@ class WikiController extends PageController
     }
 
     /**
+     * Display a user profile page.
+     *
+     * @param Request $request The HTTP request
+     * @param string $username The username to display
+     * @return Response
+     */
+    public function showUserProfile(Request $request, string $username): Response
+    {
+        try {
+            if ($this->logger) {
+                $this->logger->info('User profile requested', [
+                    'username' => $username,
+                    'ip' => $request->getServerParams()['REMOTE_ADDR'] ?? 'unknown',
+                ]);
+            }
+
+            // Try to get user data from database, fallback to mock data if tables don't exist
+            $user = null;
+            $contributions = [];
+            $stats = [
+                'total_edits' => 0,
+                'pages_edited' => 0,
+                'first_edit' => null,
+                'last_edit' => null
+            ];
+
+            try {
+                // Check if users table exists
+                $stmt = $this->db->getPdo()->prepare("SHOW TABLES LIKE 'users'");
+                $stmt->execute();
+                $tableExists = $stmt->fetch();
+
+                if ($tableExists) {
+                    // Get user data
+                    $stmt = $this->db->getPdo()->prepare('
+                        SELECT id, username, email, display_name, bio, location, website, 
+                               created_at, updated_at, last_login, is_admin, edit_count
+                        FROM users 
+                        WHERE username = ?
+                    ');
+                    $stmt->execute([$username]);
+                    $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                    if ($user) {
+                        // Try to get contributions if page_revisions table exists
+                        try {
+                            $stmt = $this->db->getPdo()->prepare("SHOW TABLES LIKE 'page_revisions'");
+                            $stmt->execute();
+                            if ($stmt->fetch()) {
+                                $stmt = $this->db->getPdo()->prepare('
+                                    SELECT pr.id, pr.page_id, pr.content, pr.created_at, pr.edit_summary,
+                                           p.title as page_title, p.slug as page_slug
+                                    FROM page_revisions pr
+                                    LEFT JOIN pages p ON pr.page_id = p.id
+                                    WHERE pr.user_id = ?
+                                    ORDER BY pr.created_at DESC
+                                    LIMIT 20
+                                ');
+                                $stmt->execute([$user['id']]);
+                                $contributions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+                                // Get user statistics
+                                $stmt = $this->db->getPdo()->prepare('
+                                    SELECT COUNT(*) as total_edits,
+                                           COUNT(DISTINCT page_id) as pages_edited,
+                                           MIN(created_at) as first_edit,
+                                           MAX(created_at) as last_edit
+                                    FROM page_revisions 
+                                    WHERE user_id = ?
+                                ');
+                                $stmt->execute([$user['id']]);
+                                $stats = $stmt->fetch(\PDO::FETCH_ASSOC);
+                            }
+                        } catch (\Exception $e) {
+                            // Page revisions table doesn't exist or query failed, use default stats
+                            if ($this->logger) {
+                                $this->logger->warning('Could not load user contributions', [
+                                    'username' => $username,
+                                    'error' => $e->getMessage()
+                                ]);
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                // Database query failed, use mock data
+                if ($this->logger) {
+                    $this->logger->warning('Database query failed, using mock data', [
+                        'username' => $username,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // If no user found in database, create mock user data
+            if (!$user) {
+                $user = [
+                    'username' => $username,
+                    'display_name' => $username,
+                    'bio' => 'User profile coming soon...',
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'location' => 'Unknown',
+                    'website' => null,
+                    'email' => null,
+                    'updated_at' => null,
+                    'last_login' => null,
+                    'is_admin' => false,
+                    'edit_count' => 0
+                ];
+            }
+
+            return $this->view('wiki/user-profile', [
+                'user' => $user,
+                'contributions' => $contributions,
+                'stats' => $stats
+            ]);
+
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Error displaying user profile', [
+                    'username' => $username,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+            throw new HttpException(500, 'Internal server error');
+        }
+    }
+
+    /**
      * Display the wiki index page.
      *
      * @param Request $request The HTTP request
@@ -141,8 +271,8 @@ class WikiController extends PageController
                 ]);
             }
 
-            // Use pages/index template for now until wiki templates are created
-            return $this->view('pages/index', [
+            // Use wiki/index template with Bismillah skin
+            return $this->view('wiki/index', [
                 'pages' => $pages,
                 'pagination' => [
                     'total' => count($pages),

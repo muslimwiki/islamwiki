@@ -1,0 +1,818 @@
+/* ===== ALL DASHBOARD STYLES COMBINED ===== */
+/* This file combines all role-based dashboard styles to avoid import issues */
+
+/* ===== BASE DASHBOARD STYLES ===== */
+/* This file extends bismillah.css with dashboard page specific styles */
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--islamic-dark-blue);
+    margin-bottom: 1rem;
+}
+
+.dashboard-subtitle {
+    color: #666;
+    font-size: 1.125rem;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--islamic-white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--islamic-blue);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.primary {
+    border-left-color: var(--islamic-blue);
+}
+
+.stat-card.success {
+    border-left-color: var(--islamic-green);
+}
+
+.stat-card.warning {
+    border-left-color: var(--islamic-gold);
+}
+
+.stat-card.info {
+    border-left-color: var(--islamic-teal);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--islamic-dark-blue);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.dashboard-main {
+    display: grid;
+    gap: 2rem;
+}
+
+.dashboard-sidebar {
+    display: grid;
+    gap: 2rem;
+}
+
+.content-card {
+    background: var(--islamic-white);
+    border: 1px solid var(--islamic-blue);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--islamic-cream);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--islamic-dark-blue);
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    border: none;
+    background: var(--islamic-cream);
+    color: var(--islamic-dark-blue);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-icon:hover {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+}
+
+.activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--islamic-cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--islamic-blue);
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 500;
+    color: var(--islamic-dark-blue);
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.quick-actions {
+    display: grid;
+    gap: 1rem;
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+.quick-action:hover {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    transform: translateX(8px);
+}
+
+.quick-action-icon {
+    font-size: 1.25rem;
+}
+
+.quick-action-text {
+    font-weight: 500;
+}
+
+.recent-articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.recent-articles li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recent-articles li:last-child {
+    border-bottom: none;
+}
+
+.recent-articles a {
+    color: var(--islamic-dark-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.recent-articles a:hover {
+    color: var(--islamic-blue);
+}
+
+.article-meta {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* ===== ADMIN DASHBOARD SPECIFIC STYLES ===== */
+/* This file extends dashboard.css with admin-specific styling */
+
+/* ===== ADMIN DASHBOARD HEADER ===== */
+.admin-dashboard-header {
+    background: linear-gradient(135deg, var(--islamic-dark-blue) 0%, var(--islamic-blue) 100%);
+    color: var(--islamic-white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><circle cx="50" cy="50" r="25" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+    opacity: 0.3;
+}
+
+.admin-dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--islamic-white);
+}
+
+.admin-dashboard-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.admin-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.admin-status-badge i {
+    color: var(--islamic-gold);
+}
+
+/* ===== ADMIN STATS GRID ===== */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-stat-card {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--islamic-blue);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: var(--islamic-cream);
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+    opacity: 0.3;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.admin-stat-card.critical {
+    border-left-color: #ef4444;
+}
+
+.admin-stat-card.warning {
+    border-left-color: #f59e0b;
+}
+
+.admin-stat-card.success {
+    border-left-color: var(--islamic-green);
+}
+
+.admin-stat-card.info {
+    border-left-color: var(--islamic-teal);
+}
+
+.admin-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.admin-stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--islamic-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.admin-stat-card.critical .admin-stat-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.admin-stat-card.warning .admin-stat-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.admin-stat-card.success .admin-stat-icon {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--islamic-green);
+}
+
+.admin-stat-card.info .admin-stat-icon {
+    background: rgba(13, 148, 136, 0.1);
+    color: var(--islamic-teal);
+}
+
+.admin-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.admin-stat-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.admin-stat-change.positive {
+    color: var(--islamic-green);
+}
+
+.admin-stat-change.negative {
+    color: #ef4444;
+}
+
+.admin-stat-change.neutral {
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== USER DASHBOARD SPECIFIC STYLES ===== */
+/* This file extends dashboard.css with user-specific styling */
+
+/* ===== USER DASHBOARD HEADER ===== */
+.user-dashboard-header {
+    background: linear-gradient(135deg, var(--islamic-green) 0%, var(--islamic-teal) 100%);
+    color: var(--islamic-white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10 L90 90 L10 90 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><path d="M50 30 L70 80 L30 80 Z" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+    opacity: 0.3;
+}
+
+.user-dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--islamic-white);
+}
+
+.user-dashboard-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+    color: var(--islamic-white);
+}
+
+.user-welcome-message {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+    color: var(--islamic-white);
+}
+
+.user-learning-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-learning-streak i {
+    color: var(--islamic-gold);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ===== USER LEARNING PROGRESS ===== */
+.user-learning-progress {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.user-progress-header {
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-progress-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-progress-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.user-progress-content {
+    padding: 1.5rem;
+}
+
+.progress-category {
+    margin-bottom: 1.5rem;
+}
+
+.progress-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.progress-category-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-category-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.progress-category-percentage {
+    font-weight: 600;
+    color: var(--islamic-green);
+    font-size: 1.125rem;
+}
+
+.progress-bar-container {
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    height: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--islamic-green) 0%, var(--islamic-teal) 100%);
+    border-radius: var(--radius-md);
+    transition: width 0.8s ease;
+    position: relative;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ===== USER LEARNING STATS ===== */
+.user-learning-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.user-learning-stat {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--islamic-green);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-learning-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--islamic-cream);
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+    opacity: 0.3;
+}
+
+.user-learning-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.user-learning-stat.achievement {
+    border-left-color: var(--islamic-gold);
+}
+
+.user-learning-stat.contribution {
+    border-left-color: var(--islamic-blue);
+}
+
+.user-learning-stat.activity {
+    border-left-color: var(--islamic-purple);
+}
+
+.user-learning-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.user-learning-stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--islamic-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-learning-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.user-learning-stat.achievement .user-learning-stat-icon {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--islamic-gold);
+}
+
+.user-learning-stat.contribution .user-learning-stat-icon {
+    background: rgba(23, 32, 61, 0.1);
+    color: var(--islamic-blue);
+}
+
+.user-learning-stat.activity .user-learning-stat-icon {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--islamic-purple);
+}
+
+.user-learning-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.user-learning-stat-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.user-learning-stat-change.positive {
+    color: var(--islamic-green);
+}
+
+.user-learning-stat-change.negative {
+    color: #ef4444;
+}
+
+.user-learning-stat-change.neutral {
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== ROLE-BASED DASHBOARD CLASSES ===== */
+/* These classes are applied based on user role */
+
+/* Admin Dashboard Classes */
+.dashboard-admin .admin-dashboard-header,
+.dashboard-admin .admin-stats-grid,
+.dashboard-admin .admin-control-panel,
+.dashboard-admin .admin-widgets-grid,
+.dashboard-admin .admin-quick-actions {
+    display: block;
+}
+
+.dashboard-admin .user-dashboard-header,
+.dashboard-admin .scholar-dashboard-header,
+.dashboard-admin .contributor-dashboard-header {
+    display: none;
+}
+
+/* User Dashboard Classes */
+.dashboard-user .user-dashboard-header,
+.dashboard-user .user-learning-progress,
+.dashboard-user .user-learning-stats,
+.dashboard-user .user-recent-activity,
+.dashboard-user .user-learning-goals,
+.dashboard-user .user-quick-actions {
+    display: block;
+}
+
+.dashboard-user .admin-dashboard-header,
+.dashboard-user .scholar-dashboard-header,
+.dashboard-user .contributor-dashboard-header {
+    display: none;
+}
+
+/* ===== ROLE-BASED DASHBOARD THEMING ===== */
+/* Admin Theme */
+.dashboard-admin {
+    --dashboard-primary-color: var(--islamic-blue);
+    --dashboard-secondary-color: var(--islamic-gold);
+    --dashboard-accent-color: var(--islamic-dark-blue);
+}
+
+/* User Theme */
+.dashboard-user {
+    --dashboard-primary-color: var(--islamic-green);
+    --dashboard-secondary-color: var(--islamic-teal);
+    --dashboard-accent-color: var(--islamic-purple);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .user-learning-stats {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .content-card {
+        padding: 1.5rem;
+    }
+    
+    .admin-dashboard-header,
+    .user-dashboard-header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .admin-dashboard-title,
+    .user-dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .admin-stats-grid,
+    .user-learning-stats {
+        grid-template-columns: 1fr;
+    }
+} 

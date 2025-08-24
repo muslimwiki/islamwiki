@@ -14,6 +14,9 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     $container = $app->getContainer();
     $db = $container->get(Connection::class);
 
+    // Get the router from the application
+    $router = $app->getRouter();
+
     // Register auth service manually since extension is not auto-loaded
     if (!$container->has('auth')) {
         try {
@@ -35,39 +38,47 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     $homeController = new HomeController($db, $container);
     $wikiController = new WikiController($db, $container);
     $authController = new AuthController($db, $container);
+    $dashboardController = new \IslamWiki\Http\Controllers\DashboardController($db, $container);
 
     // Root redirect - handled by .htaccess to /wiki/Main_Page
-    // $app->get('/', [$homeController, 'index']);
+    // $router->get('/', [$homeController, 'index']);
 
     // Authentication routes
-    $app->post('/auth/login', [$authController, 'login']);
-    $app->post('/auth/register', [$authController, 'register']);
-    $app->get('/auth/logout', [$authController, 'logout']);
+    $router->post('/auth/login', [$authController, 'login']);
+    $router->post('/auth/register', [$authController, 'register']);
+    $router->get('/auth/logout', [$authController, 'logout']);
     
     // Auth page routes
-    $app->get('/login', [$authController, 'showLogin']);
-    $app->get('/register', [$authController, 'showRegister']);
+    $router->get('/login', [$authController, 'showLogin']);
+    $router->get('/register', [$authController, 'showRegister']);
 
     // Essential wiki routes
-    $app->get('/wiki', [$wikiController, 'index']);
-    $app->get('/wiki/Main_Page', [$wikiController, 'showMainPage']);
-    $app->get('/wiki/Special:Preferences', [$authController, 'showPreferences']);
-    $app->post('/wiki/Special:Preferences', [$authController, 'updatePreferences']);
-    $app->get('/wiki/{slug}', [$pageController, 'show']);
-    $app->get('/wiki/{slug}/history', [$pageController, 'history']);
-    $app->get('/wiki/{slug}/edit', [$pageController, 'edit']);
-    $app->post('/wiki/{slug}', [$pageController, 'update']);
-    $app->delete('/wiki/{slug}', [$pageController, 'destroy']);
-    $app->get('/create', [$pageController, 'create']);
-    $app->post('/create', [$pageController, 'store']);
+    $router->get('/wiki', [$wikiController, 'index']);
+    $router->get('/wiki/Main_Page', [$wikiController, 'showMainPage']);
+    $router->get('/wiki/Special:Preferences', [$authController, 'showPreferences']);
+    $router->post('/wiki/Special:Preferences', [$authController, 'updatePreferences']);
+    
+    // User namespace routes - must come before generic slug route
+    $router->get('/wiki/User/{username}', [$wikiController, 'showUserProfile']);
+    
+    // Regular wiki page routes
+    $router->get('/wiki/{slug}', [$pageController, 'show']);
+    $router->get('/wiki/{slug}/history', [$pageController, 'history']);
+    $router->get('/wiki/{slug}/edit', [$pageController, 'edit']);
+    $router->post('/wiki/{slug}', [$pageController, 'update']);
+    $router->delete('/wiki/{slug}', [$pageController, 'destroy']);
+    $router->get('/create', [$pageController, 'create']);
+    $router->post('/create', [$pageController, 'store']);
     
     // Test route to verify routing is working
-    $app->get('/test-routing', function ($request) {
+    $router->get('/test-routing', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], 'Routing test works!');
     });
     
+
+    
     // Search route
-    $app->get('/search', function ($request) {
+    $router->get('/search', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
         <!DOCTYPE html>
         <html>
@@ -86,7 +97,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     });
     
     // Settings route
-    $app->get('/settings', function ($request) {
+    $router->get('/settings', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
         <!DOCTYPE html>
         <html>
@@ -105,7 +116,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     });
     
     // Profile route
-    $app->get('/profile', function ($request) {
+    $router->get('/profile', function ($request) {
         return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
         <!DOCTYPE html>
         <html>
@@ -123,17 +134,11 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         ');
     });
     
-    // Dashboard route
-    $app->get('/dashboard', function ($request) {
-        return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
-        <h1>Dashboard</h1>
-        <p>Dashboard functionality coming soon...</p>
-        <a href="/wiki/Main_Page">← Back to Main Page</a>
-        ');
-    });
+    // Dashboard route - use the proper DashboardController
+    $router->get('/dashboard', [$dashboardController, 'index']);
     
     // Skin asset routes - serve CSS and JS files directly through Sabil routing
-    $app->get('/skins/Bismillah/css/bismillah.css', function($request) {
+    $router->get('/skins/Bismillah/css/bismillah.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/bismillah.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -146,7 +151,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
     });
     
-    $app->get('/skins/Bismillah/js/bismillah.js', function($request) {
+    $router->get('/skins/Bismillah/js/bismillah.js', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/js/bismillah.js';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -160,7 +165,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     });
     
     // Page-specific CSS routes
-    $app->get('/skins/Bismillah/css/pages/main-page.css', function($request) {
+    $router->get('/skins/Bismillah/css/pages/main-page.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/main-page.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -173,7 +178,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
     });
     
-    $app->get('/skins/Bismillah/css/pages/auth.css', function($request) {
+    $router->get('/skins/Bismillah/css/pages/auth.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/auth.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -186,7 +191,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
     });
     
-    $app->get('/skins/Bismillah/css/pages/settings.css', function($request) {
+    $router->get('/skins/Bismillah/css/pages/settings.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/settings.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -199,7 +204,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
     });
     
-    $app->get('/skins/Bismillah/css/pages/dashboard.css', function($request) {
+    $router->get('/skins/Bismillah/css/pages/dashboard.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/dashboard.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);
@@ -212,7 +217,72 @@ return function (\IslamWiki\Core\NizamApplication $app) {
         return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
     });
     
-    $app->get('/skins/Bismillah/css/pages/preferences.css', function($request) {
+    $router->get('/skins/Bismillah/css/pages/all-dashboards.css', function($request) {
+        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/all-dashboards.css';
+        if (file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            return new \IslamWiki\Core\Http\Response(200, [
+                'Content-Type' => 'text/css; charset=utf-8',
+                'Cache-Control' => 'public, max-age=3600',
+                'X-Content-Type-Options' => 'nosniff'
+            ], $content);
+        }
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
+    });
+    
+    $router->get('/skins/Bismillah/css/pages/admin-dashboard.css', function($request) {
+        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/admin-dashboard.css';
+        if (file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            return new \IslamWiki\Core\Http\Response(200, [
+                'Content-Type' => 'text/css; charset=utf-8',
+                'Cache-Control' => 'public, max-age=3600',
+                'X-Content-Type-Options' => 'nosniff'
+            ], $content);
+        }
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
+    });
+    
+    $router->get('/skins/Bismillah/css/pages/user-dashboard.css', function($request) {
+        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/user-dashboard.css';
+        if (file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            return new \IslamWiki\Core\Http\Response(200, [
+                'Content-Type' => 'text/css; charset=utf-8',
+                'Cache-Control' => 'public, max-age=3600',
+                'X-Content-Type-Options' => 'nosniff'
+            ], $content);
+        }
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
+    });
+    
+    $router->get('/skins/Bismillah/css/pages/scholar-dashboard.css', function($request) {
+        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/scholar-dashboard.css';
+        if (file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            return new \IslamWiki\Core\Http\Response(200, [
+                'Content-Type' => 'text/css; charset=utf-8',
+                'Cache-Control' => 'public, max-age=3600',
+                'X-Content-Type-Options' => 'nosniff'
+            ], $content);
+        }
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
+    });
+    
+    $router->get('/skins/Bismillah/css/pages/contributor-dashboard.css', function($request) {
+        $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/contributor-dashboard.css';
+        if (file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            return new \IslamWiki\Core\Http\Response(200, [
+                'Content-Type' => 'text/css; charset=utf-8',
+                'Cache-Control' => 'public, max-age=3600',
+                'X-Content-Type-Options' => 'nosniff'
+            ], $content);
+        }
+        return new \IslamWiki\Core\Http\Response(404, ['Content-Type' => 'text/plain'], 'CSS file not found');
+    });
+    
+    $router->get('/skins/Bismillah/css/pages/preferences.css', function($request) {
         $filePath = dirname(__DIR__) . '/skins/Bismillah/css/pages/preferences.css';
         if (file_exists($filePath)) {
             $content = file_get_contents($filePath);

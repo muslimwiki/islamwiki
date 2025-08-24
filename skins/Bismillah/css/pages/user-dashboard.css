@@ -1,0 +1,599 @@
+/* ===== USER DASHBOARD SPECIFIC STYLES ===== */
+/* This file extends dashboard.css with user-specific styling */
+
+/* ===== USER DASHBOARD HEADER ===== */
+.user-dashboard-header {
+    background: linear-gradient(135deg, var(--islamic-green) 0%, var(--islamic-teal) 100%);
+    color: var(--islamic-white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10 L90 90 L10 90 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><path d="M50 30 L70 80 L30 80 Z" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+    opacity: 0.3;
+}
+
+.user-dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--islamic-white);
+}
+
+.user-dashboard-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.user-welcome-message {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.user-learning-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-learning-streak i {
+    color: var(--islamic-gold);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ===== USER LEARNING PROGRESS ===== */
+.user-learning-progress {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.user-progress-header {
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-progress-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-progress-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.user-progress-content {
+    padding: 1.5rem;
+}
+
+.progress-category {
+    margin-bottom: 1.5rem;
+}
+
+.progress-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.progress-category-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-category-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.progress-category-percentage {
+    font-weight: 600;
+    color: var(--islamic-green);
+    font-size: 1.125rem;
+}
+
+.progress-bar-container {
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    height: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--islamic-green) 0%, var(--islamic-teal) 100%);
+    border-radius: var(--radius-md);
+    transition: width 0.8s ease;
+    position: relative;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ===== USER LEARNING STATS ===== */
+.user-learning-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.user-learning-stat {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--islamic-green);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-learning-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--islamic-cream);
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+    opacity: 0.3;
+}
+
+.user-learning-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.user-learning-stat.achievement {
+    border-left-color: var(--islamic-gold);
+}
+
+.user-learning-stat.contribution {
+    border-left-color: var(--islamic-blue);
+}
+
+.user-learning-stat.activity {
+    border-left-color: var(--islamic-purple);
+}
+
+.user-learning-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.user-learning-stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--islamic-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-learning-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.user-learning-stat.achievement .user-learning-stat-icon {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--islamic-gold);
+}
+
+.user-learning-stat.contribution .user-learning-stat-icon {
+    background: rgba(23, 32, 61, 0.1);
+    color: var(--islamic-blue);
+}
+
+.user-learning-stat.activity .user-learning-stat-icon {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--islamic-purple);
+}
+
+.user-learning-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.user-learning-stat-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.user-learning-stat-change.positive {
+    color: var(--islamic-green);
+}
+
+.user-learning-stat-change.negative {
+    color: #ef4444;
+}
+
+.user-learning-stat-change.neutral {
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== USER RECENT ACTIVITY ===== */
+.user-recent-activity {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.user-activity-header {
+    background: var(--islamic-teal);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-activity-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-activity-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.user-activity-content {
+    padding: 1.5rem;
+}
+
+.user-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.user-activity-item:hover {
+    background: var(--islamic-cream);
+    margin: 0 -1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+}
+
+.user-activity-item:last-child {
+    border-bottom: none;
+}
+
+.user-activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.user-activity-icon.read {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--islamic-green);
+}
+
+.user-activity-icon.edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.user-activity-icon.contribute {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--islamic-gold);
+}
+
+.user-activity-icon.learn {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--islamic-purple);
+}
+
+.user-activity-content {
+    flex: 1;
+}
+
+.user-activity-title {
+    font-weight: 500;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.user-activity-description {
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.user-activity-time {
+    font-size: 0.75rem;
+    color: var(--islamic-text-muted);
+}
+
+/* ===== USER LEARNING GOALS ===== */
+.user-learning-goals {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.user-goals-header {
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-goals-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-goals-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.user-goals-content {
+    padding: 1.5rem;
+}
+
+.user-goal-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.user-goal-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-goal-item:last-child {
+    margin-bottom: 0;
+}
+
+.user-goal-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--islamic-purple);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.user-goal-checkbox.checked {
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+}
+
+.user-goal-content {
+    flex: 1;
+}
+
+.user-goal-title {
+    font-weight: 500;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.user-goal-description {
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+}
+
+.user-goal-progress {
+    width: 100px;
+    height: 6px;
+    background: rgba(124, 58, 237, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.user-goal-progress-fill {
+    height: 100%;
+    background: var(--islamic-purple);
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+/* ===== USER QUICK ACTIONS ===== */
+.user-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.user-quick-action {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-quick-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--islamic-green) 0%, var(--islamic-teal) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.user-quick-action:hover::before {
+    opacity: 0.1;
+}
+
+.user-quick-action:hover {
+    border-color: var(--islamic-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-quick-action > * {
+    position: relative;
+    z-index: 1;
+}
+
+.user-quick-action-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--islamic-green);
+}
+
+.user-quick-action-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.user-quick-action-desc {
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== USER RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .user-learning-stats {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    
+    .user-quick-actions {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .user-dashboard-header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .user-dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .user-progress-header,
+    .user-activity-header,
+    .user-goals-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .user-learning-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-activity-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .user-goal-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .user-quick-actions {
+        grid-template-columns: 1fr;
+    }
+} 

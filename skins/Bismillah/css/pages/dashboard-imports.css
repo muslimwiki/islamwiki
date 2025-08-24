@@ -1,0 +1,195 @@
+/* ===== DASHBOARD ROLE-BASED STYLES IMPORTS ===== */
+/* This file imports role-specific dashboard styles */
+
+/* Import base dashboard styles */
+@import url('pages/dashboard.css');
+
+/* Import role-specific dashboard styles */
+@import url('pages/admin-dashboard.css');
+@import url('pages/user-dashboard.css');
+@import url('pages/scholar-dashboard.css');
+@import url('pages/contributor-dashboard.css');
+
+/* ===== ROLE-BASED DASHBOARD CLASSES ===== */
+/* These classes are applied based on user role */
+
+/* Admin Dashboard Classes */
+.dashboard-admin .admin-dashboard-header,
+.dashboard-admin .admin-stats-grid,
+.dashboard-admin .admin-control-panel,
+.dashboard-admin .admin-widgets-grid,
+.dashboard-admin .admin-quick-actions {
+    display: block;
+}
+
+.dashboard-admin .user-dashboard-header,
+.dashboard-admin .scholar-dashboard-header,
+.dashboard-admin .contributor-dashboard-header {
+    display: none;
+}
+
+/* User Dashboard Classes */
+.dashboard-user .user-dashboard-header,
+.dashboard-user .user-learning-progress,
+.dashboard-user .user-learning-stats,
+.dashboard-user .user-recent-activity,
+.dashboard-user .user-learning-goals,
+.dashboard-user .user-quick-actions {
+    display: block;
+}
+
+.dashboard-user .admin-dashboard-header,
+.dashboard-user .scholar-dashboard-header,
+.dashboard-user .contributor-dashboard-header {
+    display: none;
+}
+
+/* Scholar Dashboard Classes */
+.dashboard-scholar .scholar-dashboard-header,
+.dashboard-scholar .scholar-knowledge-stats,
+.dashboard-scholar .scholar-research-panel,
+.dashboard-scholar .scholar-publications,
+.dashboard-scholar .scholar-quick-actions {
+    display: block;
+}
+
+.dashboard-scholar .admin-dashboard-header,
+.dashboard-scholar .user-dashboard-header,
+.dashboard-scholar .contributor-dashboard-header {
+    display: none;
+}
+
+/* Contributor Dashboard Classes */
+.dashboard-contributor .contributor-dashboard-header,
+.dashboard-contributor .contributor-contribution-stats,
+.dashboard-contributor .contributor-content-creation,
+.dashboard-contributor .contributor-recent-contributions,
+.dashboard-contributor .contributor-collaboration-panel,
+.dashboard-contributor .contributor-quick-actions {
+    display: block;
+}
+
+.dashboard-contributor .admin-dashboard-header,
+.dashboard-contributor .user-dashboard-header,
+.dashboard-contributor .scholar-dashboard-header {
+    display: none;
+}
+
+/* ===== ROLE-BASED DASHBOARD THEMING ===== */
+/* Admin Theme */
+.dashboard-admin {
+    --dashboard-primary-color: var(--islamic-blue);
+    --dashboard-secondary-color: var(--islamic-gold);
+    --dashboard-accent-color: var(--islamic-dark-blue);
+}
+
+/* User Theme */
+.dashboard-user {
+    --dashboard-primary-color: var(--islamic-green);
+    --dashboard-secondary-color: var(--islamic-teal);
+    --dashboard-accent-color: var(--islamic-purple);
+}
+
+/* Scholar Theme */
+.dashboard-scholar {
+    --dashboard-primary-color: var(--islamic-gold);
+    --dashboard-secondary-color: var(--islamic-dark-blue);
+    --dashboard-accent-color: var(--islamic-blue);
+}
+
+/* Contributor Theme */
+.dashboard-contributor {
+    --dashboard-primary-color: var(--islamic-purple);
+    --dashboard-secondary-color: var(--islamic-blue);
+    --dashboard-accent-color: var(--islamic-teal);
+}
+
+/* ===== ROLE-BASED DASHBOARD ANIMATIONS ===== */
+/* Admin Dashboard Animations */
+.dashboard-admin .admin-stat-card {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.dashboard-admin .admin-widget {
+    animation: slideInRight 0.6s ease-out;
+}
+
+/* User Dashboard Animations */
+.dashboard-user .user-learning-stat {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.dashboard-user .user-activity-item {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+/* Scholar Dashboard Animations */
+.dashboard-scholar .scholar-knowledge-stat {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.dashboard-scholar .scholar-research-topic {
+    animation: slideInRight 0.6s ease-out;
+}
+
+/* Contributor Dashboard Animations */
+.dashboard-contributor .contributor-contribution-stat {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.dashboard-contributor .contributor-content-idea {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+/* ===== ANIMATION KEYFRAMES ===== */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== ROLE-BASED DASHBOARD RESPONSIVE ===== */
+@media (max-width: 768px) {
+    /* Hide decorative elements on mobile for all roles */
+    .admin-dashboard-header::before,
+    .user-dashboard-header::before,
+    .scholar-dashboard-header::before,
+    .contributor-dashboard-header::before {
+        display: none;
+    }
+    
+    /* Adjust spacing for mobile */
+    .dashboard-admin,
+    .dashboard-user,
+    .dashboard-scholar,
+    .dashboard-contributor {
+        padding: 1rem;
+    }
+} 

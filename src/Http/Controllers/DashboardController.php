@@ -53,6 +53,9 @@ class DashboardController extends Controller
 
     /**
      * Show the application dashboard.
+     * 
+     * SECURITY: This method requires authentication. Unauthenticated users
+     * are redirected to the login page.
      *
      * @param Request $request The incoming request
      *
@@ -60,6 +63,35 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
+        // Check if user is authenticated
+        $session = $this->container->get('session');
+        if (!$session->isLoggedIn()) {
+            // Redirect to login page if not authenticated
+            return new \IslamWiki\Core\Http\Response(
+                302, 
+                [
+                    'Location' => '/login',
+                    'Content-Type' => 'text/html; charset=UTF-8'
+                ], 
+                '<!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Authentication Required - IslamWiki</title>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <meta http-equiv="refresh" content="3;url=/login">
+                </head>
+                <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+                    <h1>🔒 Authentication Required</h1>
+                    <p>You must be logged in to access the dashboard.</p>
+                    <p>Redirecting to login page in 3 seconds...</p>
+                    <p><a href="/login">Click here to login now</a></p>
+                    <p><a href="/wiki/Main_Page">← Back to Main Page</a></p>
+                </body>
+                </html>'
+            );
+        }
+
         // Get current user from Aman
         $user = null;
         $userStats = [];
@@ -116,8 +148,8 @@ class DashboardController extends Controller
             } else {
                 // Fallback: compute stats if we have a session user ID, even if auth is null
                 $fallbackUserId = $this->session->getUserId();
-                $userData = $this->session->getUserData();
-                $fallbackUsername = $userData['username'] ?? 'User';
+                $fallbackUsername = $this->session->get('username') ?? 'User';
+                $fallbackIsAdmin = $this->session->get('is_admin') ?? 0;
                 error_log("DashboardController::index - No auth user. Session fallback user ID: " . ($fallbackUserId ?? 'null'));
 
                 if ($fallbackUserId) {
@@ -131,7 +163,7 @@ class DashboardController extends Controller
                     $user = [
                         'id' => $fallbackUserId,
                         'username' => $fallbackUsername,
-                        'is_admin' => ($userData['role'] ?? '') === 'admin',
+                        'is_admin' => $fallbackIsAdmin === 1,
                     ];
                 } else {
                     error_log("DashboardController::index - No user found");

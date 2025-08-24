@@ -4,77 +4,135 @@
 
 {% block content %}
 <!-- Dashboard-specific content starts here -->
-<div class="dashboard dashboard-container">
+<div class="dashboard dashboard-container {% if user.is_admin %}admin-dashboard{% else %}user-dashboard{% endif %}">
     <!-- Islamic Pattern Background -->
     <div class="islamic-pattern"></div>
     
-    <!-- Sidebar -->
+    <!-- Global Sidebar -->
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>Dashboard</h2>
-        </div>
-        
-        <div class="user-info">
-            <div class="user-role">{{ user.is_admin ? 'Admin' : 'User' }}</div>
-            <div class="user-islamic-role">{{ user.is_admin ? 'Administrator' : 'Regular User' }}</div>
-            <div class="user-name">{{ user.username }}</div>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="/dashboard" class="nav-link">
-                        <span class="nav-icon">📊</span>
-                        Overview
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/profile" class="nav-link">
-                        <span class="nav-icon">👤</span>
-                        Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/settings" class="nav-link">
-                        <span class="nav-icon">⚙️</span>
-                        Settings
-                    </a>
-                </li>
-                {% if user.is_admin %}
-                <li class="nav-item">
-                    <a href="/admin" class="nav-link">
-                        <span class="nav-icon">🔧</span>
-                        Admin Panel
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/admin/users" class="nav-link">
-                        <span class="nav-icon">👥</span>
-                        User Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/admin/extensions" class="nav-link">
-                        <span class="nav-icon">🔌</span>
-                        Extensions
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/admin/system" class="nav-link">
-                        <span class="nav-icon">⚙️</span>
-                        System Settings
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
+        <!-- Empty sidebar for admin dashboard -->
     </aside>
     
     <!-- Main Content Area -->
-    <main class="main-content">
-        {% block dashboard_content %}
-        <!-- Dashboard content will be inserted here by child templates -->
-        {% endblock %}
+    <main class="main-content {% if user.is_admin %}admin-main-content{% else %}user-main-content{% endif %}">
+        <!-- Secondary Navigation Sidebar -->
+        <div class="{% if user.is_admin %}admin-secondary-nav{% else %}user-secondary-nav{% endif %}">
+            <!-- Navigation Section -->
+            <div class="admin-nav-section">
+                <h4 class="admin-nav-title">Navigation</h4>
+                <!-- View Mode Toggle for Admin Users -->
+                {% if user.is_admin %}
+                <div class="view-mode-toggle">
+                    <button class="toggle-btn active" data-view="admin" onclick="switchView('admin')">
+                        <span class="toggle-icon">🛡️</span>
+                        Admin View
+                    </button>
+                    <button class="toggle-btn" data-view="user" onclick="switchView('user')">
+                        <span class="toggle-icon">👤</span>
+                        User View
+                    </button>
+                </div>
+                {% endif %}
+                <ul class="admin-nav-list">
+                    {% if user.is_admin %}
+                    <!-- Admin Navigation Items -->
+                    <li class="admin-nav-item">
+                        <a href="#overview" class="admin-nav-link active">
+                            <span class="admin-nav-icon">📊</span>
+                            Overview
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#user-management" class="admin-nav-link">
+                            <span class="admin-nav-icon">👥</span>
+                            User Management
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#extensions" class="admin-nav-link">
+                            <span class="admin-nav-icon">🔌</span>
+                            Extensions
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#system-settings" class="admin-nav-link">
+                            <span class="admin-nav-icon">⚙️</span>
+                            System Settings
+                        </a>
+                    </li>
+                    
+                    <!-- Quick Actions integrated into navigation -->
+                    <li class="admin-nav-item">
+                        <button class="admin-nav-link quick-action-btn" onclick="backupSystem()">
+                            <span class="admin-nav-icon">💾</span>
+                            Backup System
+                        </button>
+                    </li>
+                    <li class="admin-nav-item">
+                        <button class="admin-nav-link quick-action-btn" onclick="clearCache()">
+                            <span class="admin-nav-icon">🧹</span>
+                            Clear Cache
+                        </button>
+                    </li>
+                    <li class="admin-nav-item">
+                        <button class="admin-nav-link quick-action-btn" onclick="updateSystem()">
+                            <span class="admin-nav-icon">🔄</span>
+                            Check Updates
+                        </button>
+                    </li>
+                    <li class="admin-nav-item">
+                        <button class="admin-nav-link quick-action-btn" onclick="viewLogs()">
+                            <span class="admin-nav-icon">📋</span>
+                            View Logs
+                        </button>
+                    </li>
+                    {% else %}
+                    <!-- User Navigation Items -->
+                    <li class="admin-nav-item">
+                        <a href="#overview" class="admin-nav-link active">
+                            <span class="admin-nav-icon">📊</span>
+                            Overview
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#learning" class="admin-nav-link">
+                            <span class="admin-nav-icon">📚</span>
+                            Learning
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#contributions" class="admin-nav-link">
+                            <span class="admin-nav-icon">✏️</span>
+                            Contributions
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#community" class="admin-nav-link">
+                            <span class="admin-nav-icon">🤝</span>
+                            Community
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="#help" class="admin-nav-link">
+                            <span class="admin-nav-icon">❓</span>
+                            Help
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Remove the separate Quick Actions section -->
+        </div>
+        
+        <!-- Dashboard Content Area -->
+        <div class="dashboard-content-area">
+            {% block dashboard_content %}
+            <!-- Dashboard content will be inserted here by child templates -->
+            {% endblock %}
+        </div>
     </main>
 </div>
 {% endblock %} 

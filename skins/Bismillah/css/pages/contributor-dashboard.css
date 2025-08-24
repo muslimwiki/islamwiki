@@ -1,0 +1,815 @@
+/* ===== CONTRIBUTOR DASHBOARD SPECIFIC STYLES ===== */
+/* This file extends dashboard.css with contributor-specific styling */
+
+/* ===== CONTRIBUTOR DASHBOARD HEADER ===== */
+.contributor-dashboard-header {
+    background: linear-gradient(135deg, var(--islamic-purple) 0%, #6d28d9 100%);
+    color: var(--islamic-white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.contributor-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 160px;
+    height: 160px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><polygon points="50,25 75,75 25,75" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+    opacity: 0.3;
+}
+
+.contributor-dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--islamic-white);
+}
+
+.contributor-dashboard-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+    color: var(--islamic-white);
+}
+
+.contributor-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.contributor-status-badge i {
+    color: var(--islamic-gold);
+}
+
+.contributor-contribution-level {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.contributor-level-indicator {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.contributor-level-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+.contributor-level-dot.active {
+    background: var(--islamic-gold);
+    transform: scale(1.2);
+}
+
+.contributor-level-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--islamic-white);
+}
+
+/* ===== CONTRIBUTOR CONTRIBUTION STATS ===== */
+.contributor-contribution-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.contributor-contribution-stat {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--islamic-purple);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.contributor-contribution-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: var(--islamic-cream);
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+    opacity: 0.3;
+}
+
+.contributor-contribution-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.contributor-contribution-stat.articles {
+    border-left-color: var(--islamic-blue);
+}
+
+.contributor-contribution-stat.edits {
+    border-left-color: var(--islamic-green);
+}
+
+.contributor-contribution-stat.reviews {
+    border-left-color: var(--islamic-gold);
+}
+
+.contributor-contribution-stat.collaborations {
+    border-left-color: var(--islamic-teal);
+}
+
+.contributor-contribution-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.contributor-contribution-stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--islamic-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.contributor-contribution-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.contributor-contribution-stat.articles .contributor-contribution-stat-icon {
+    background: rgba(23, 32, 61, 0.1);
+    color: var(--islamic-blue);
+}
+
+.contributor-contribution-stat.edits .contributor-contribution-stat-icon {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--islamic-green);
+}
+
+.contributor-contribution-stat.reviews .contributor-contribution-stat-icon {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--islamic-gold);
+}
+
+.contributor-contribution-stat.collaborations .contributor-contribution-stat-icon {
+    background: rgba(13, 148, 136, 0.1);
+    color: var(--islamic-teal);
+}
+
+.contributor-contribution-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.contributor-contribution-stat-change {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.contributor-contribution-stat-change.positive {
+    color: var(--islamic-green);
+}
+
+.contributor-contribution-stat-change.negative {
+    color: #ef4444;
+}
+
+.contributor-contribution-stat-change.neutral {
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== CONTRIBUTOR CONTENT CREATION PANEL ===== */
+.contributor-content-creation {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.contributor-creation-header {
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contributor-creation-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.contributor-creation-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.contributor-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.contributor-btn-primary {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-blue);
+}
+
+.contributor-btn-primary:hover {
+    background: #c19b2e;
+    transform: translateY(-1px);
+}
+
+.contributor-btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--islamic-white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.contributor-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.contributor-btn-success {
+    background: var(--islamic-green);
+    color: var(--islamic-white);
+}
+
+.contributor-btn-success:hover {
+    background: #047857;
+}
+
+/* ===== CONTRIBUTOR CONTENT IDEAS ===== */
+.contributor-creation-content {
+    padding: 1.5rem;
+}
+
+.contributor-content-ideas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.contributor-content-idea {
+    background: var(--islamic-cream);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 2px solid transparent;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.contributor-content-idea::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--islamic-purple) 0%, #6d28d9 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.contributor-content-idea:hover::before {
+    opacity: 0.05;
+}
+
+.contributor-content-idea:hover {
+    border-color: var(--islamic-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-content-idea > * {
+    position: relative;
+    z-index: 1;
+}
+
+.contributor-content-idea-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contributor-content-idea-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.contributor-content-idea-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    font-size: 1.125rem;
+}
+
+.contributor-content-idea-description {
+    color: var(--islamic-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.contributor-content-idea-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.contributor-content-idea-difficulty {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.contributor-difficulty-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(124, 58, 237, 0.3);
+}
+
+.contributor-difficulty-dot.active {
+    background: var(--islamic-purple);
+}
+
+.contributor-content-idea-time {
+    font-size: 0.75rem;
+    color: var(--islamic-text-muted);
+}
+
+.contributor-content-idea-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contributor-content-idea-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.contributor-content-idea-btn.primary {
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+}
+
+.contributor-content-idea-btn.primary:hover {
+    background: #6d28d9;
+}
+
+.contributor-content-idea-btn.secondary {
+    background: transparent;
+    color: var(--islamic-text-secondary);
+    border: 1px solid var(--islamic-text-secondary);
+}
+
+.contributor-content-idea-btn.secondary:hover {
+    background: var(--islamic-text-secondary);
+    color: var(--islamic-white);
+}
+
+/* ===== CONTRIBUTOR RECENT CONTRIBUTIONS ===== */
+.contributor-recent-contributions {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.contributor-contributions-header {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contributor-contributions-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.contributor-contributions-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.contributor-contributions-content {
+    padding: 1.5rem;
+}
+
+.contributor-contribution-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.contributor-contribution-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-contribution-item:last-child {
+    margin-bottom: 0;
+}
+
+.contributor-contribution-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.contributor-contribution-content {
+    flex: 1;
+}
+
+.contributor-contribution-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.125rem;
+}
+
+.contributor-contribution-description {
+    color: var(--islamic-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.contributor-contribution-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--islamic-text-muted);
+}
+
+.contributor-contribution-type {
+    background: var(--islamic-purple);
+    color: var(--islamic-white);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+.contributor-contribution-date {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.contributor-contribution-status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.contributor-contribution-status.pending {
+    color: #f59e0b;
+}
+
+.contributor-contribution-status.approved {
+    color: var(--islamic-green);
+}
+
+.contributor-contribution-status.rejected {
+    color: #ef4444;
+}
+
+/* ===== CONTRIBUTOR COLLABORATION PANEL ===== */
+.contributor-collaboration-panel {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.contributor-collaboration-header {
+    background: var(--islamic-teal);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contributor-collaboration-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.contributor-collaboration-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.contributor-collaboration-content {
+    padding: 1.5rem;
+}
+
+.contributor-collaboration-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.contributor-collaboration-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-collaboration-item:last-child {
+    margin-bottom: 0;
+}
+
+.contributor-collaboration-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--islamic-teal);
+    color: var(--islamic-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.contributor-collaboration-content {
+    flex: 1;
+}
+
+.contributor-collaboration-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.contributor-collaboration-role {
+    color: var(--islamic-text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.contributor-collaboration-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(13, 148, 136, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.contributor-collaboration-progress-fill {
+    height: 100%;
+    background: var(--islamic-teal);
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+.contributor-collaboration-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contributor-collaboration-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.contributor-collaboration-btn.primary {
+    background: var(--islamic-teal);
+    color: var(--islamic-white);
+}
+
+.contributor-collaboration-btn.primary:hover {
+    background: #0d9488;
+}
+
+.contributor-collaboration-btn.secondary {
+    background: transparent;
+    color: var(--islamic-text-secondary);
+    border: 1px solid var(--islamic-text-secondary);
+}
+
+.contributor-collaboration-btn.secondary:hover {
+    background: var(--islamic-text-secondary);
+    color: var(--islamic-white);
+}
+
+/* ===== CONTRIBUTOR QUICK ACTIONS ===== */
+.contributor-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.contributor-quick-action {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.contributor-quick-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--islamic-purple) 0%, #6d28d9 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.contributor-quick-action:hover::before {
+    opacity: 0.1;
+}
+
+.contributor-quick-action:hover {
+    border-color: var(--islamic-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contributor-quick-action > * {
+    position: relative;
+    z-index: 1;
+}
+
+.contributor-quick-action-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--islamic-purple);
+}
+
+.contributor-quick-action-title {
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.contributor-quick-action-desc {
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+}
+
+/* ===== CONTRIBUTOR RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .contributor-contribution-stats {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .contributor-content-ideas {
+        grid-template-columns: 1fr;
+    }
+    
+    .contributor-quick-actions {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .contributor-dashboard-header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .contributor-dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .contributor-creation-header,
+    .contributor-contributions-header,
+    .contributor-collaboration-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .contributor-contribution-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .contributor-content-idea {
+        text-align: center;
+    }
+    
+    .contributor-content-idea-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contributor-content-idea-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .contributor-contribution-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contributor-contribution-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .contributor-collaboration-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contributor-quick-actions {
+        grid-template-columns: 1fr;
+    }
+} 

@@ -763,6 +763,23 @@ class WisalSession
     }
     
     /**
+     * Set user as logged out by clearing session data.
+     */
+    public function setUserLoggedOut(): void
+    {
+        // Remove user-specific session data
+        unset($_SESSION['user_id']);
+        unset($_SESSION['username']);
+        unset($_SESSION['is_admin']);
+        unset($_SESSION['logged_in_at']);
+        
+        // Optionally regenerate session ID for security
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
+    }
+    
+    /**
      * Validate CSRF token.
      *
      * @param string $token Token to validate
