@@ -1,0 +1,377 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Edit {{ template.name|upper }} Template - Admin Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/twig/twig.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchtags.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchtags.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <div class="header-content">
+            <h1>✏️ Edit {{ template.name|upper }} Template</h1>
+            <p>Customize the {{ template.name|upper }} error page template</p>
+        </div>
+        <div class="header-actions">
+            <a href="/dashboard/templates/error" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Templates
+            </a>
+            <a href="/dashboard/templates/error/{{ template.name }}/preview" class="btn btn-info">
+                <i class="fas fa-eye"></i> Preview
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Template Info -->
+        <div class="template-info-card">
+            <div class="info-header">
+                <h3>📋 Template Information</h3>
+            </div>
+            <div class="info-content">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Template Name:</strong>
+                        <span>{{ template.name|upper }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>File:</strong>
+                        <span>{{ template.filename }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Size:</strong>
+                        <span>{{ (template.size / 1024)|round(2) }} KB</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Modified:</strong>
+                        <span>{{ template.modified|date('M j, Y g:i A') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        <span class="status-badge status-{{ template.status }}">
+                            {% if template.status == 'active' %}✅ Active
+                            {% elseif template.status == 'recently_modified' %}🔄 Recently Modified
+                            {% else %}❌ Missing
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Type:</strong>
+                        <span>{{ template.description }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Editor -->
+        <div class="template-editor">
+            <div class="editor-header">
+                <h3>📝 Template Editor</h3>
+                <div class="editor-actions">
+                    <button class="btn btn-success" onclick="saveTemplate()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button class="btn btn-warning" onclick="resetToOriginal()">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="editor-content">
+                <div class="editor-toolbar">
+                    <div class="toolbar-section">
+                        <label for="syntax-theme">Theme:</label>
+                        <select id="syntax-theme" onchange="changeTheme(this.value)">
+                            <option value="default">Default</option>
+                            <option value="monokai">Monokai</option>
+                            <option value="eclipse">Eclipse</option>
+                            <option value="dracula">Dracula</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-section">
+                        <label for="font-size">Font Size:</label>
+                        <select id="font-size" onchange="changeFontSize(this.value)">
+                            <option value="12">12px</option>
+                            <option value="14" selected>14px</option>
+                            <option value="16">16px</option>
+                            <option value="18">18px</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-section">
+                        <label for="word-wrap">Word Wrap:</label>
+                        <select id="word-wrap" onchange="changeWordWrap(this.value)">
+                            <option value="off">Off</option>
+                            <option value="on" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-section">
+                        <button class="btn btn-sm btn-secondary" onclick="formatCode()">
+                            <i class="fas fa-code"></i> Format
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="toggleFullscreen()">
+                            <i class="fas fa-expand"></i> Fullscreen
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="editor-main">
+                    <textarea id="template-content" name="content">{{ template.content }}</textarea>
+                </div>
+                
+                <div class="editor-status">
+                    <span id="line-info">Line 1, Column 1</span>
+                    <span id="char-count">0 characters</span>
+                    <span id="save-status" class="save-status"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Validation -->
+        <div class="template-validation">
+            <div class="validation-header">
+                <h3>🔍 Template Validation</h3>
+                <button class="btn btn-info" onclick="validateTemplate()">
+                    <i class="fas fa-check-circle"></i> Validate
+                </button>
+            </div>
+            <div class="validation-content">
+                <div id="validation-results">
+                    <p class="validation-placeholder">Click "Validate" to check template syntax and structure</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/dashboard/templates/error" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Templates
+            </a>
+            <a href="/dashboard/templates/error/{{ template.name }}/preview" class="btn btn-outline">
+                <i class="fas fa-eye"></i> Preview Template
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+let editor;
+let originalContent = `{{ template.content|raw|e('js') }}`;
+let hasUnsavedChanges = false;
+
+// Initialize CodeMirror editor
+document.addEventListener('DOMContentLoaded', function() {
+    editor = CodeMirror.fromTextArea(document.getElementById('template-content'), {
+        mode: 'twig',
+        theme: 'default',
+        lineNumbers: true,
+        lineWrapping: true,
+        matchBrackets: true,
+        matchTags: true,
+        autoCloseBrackets: true,
+        autoCloseTags: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        lineWrapping: true,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+            'Ctrl-S': function(cm) {
+                saveTemplate();
+            },
+            'Ctrl-Z': function(cm) {
+                cm.undo();
+            },
+            'Ctrl-Y': function(cm) {
+                cm.redo();
+            }
+        }
+    });
+
+    // Track changes
+    editor.on('change', function() {
+        hasUnsavedChanges = true;
+        updateCharCount();
+        updateSaveStatus('Unsaved changes');
+    });
+
+    // Track cursor position
+    editor.on('cursorActivity', function() {
+        updateLineInfo();
+    });
+
+    // Initial setup
+    updateCharCount();
+    updateLineInfo();
+});
+
+// Editor functions
+function changeTheme(theme) {
+    if (theme === 'default') {
+        editor.setOption('theme', null);
+    } else {
+        editor.setOption('theme', theme);
+    }
+}
+
+function changeFontSize(size) {
+    document.querySelector('.CodeMirror').style.fontSize = size + 'px';
+}
+
+function changeWordWrap(wrap) {
+    editor.setOption('lineWrapping', wrap === 'on');
+}
+
+function formatCode() {
+    // Basic formatting - in a real implementation, you might use a proper formatter
+    const content = editor.getValue();
+    // This is a placeholder - you'd implement proper Twig formatting
+    alert('Code formatting will be implemented here');
+}
+
+function toggleFullscreen() {
+    const editorContainer = document.querySelector('.editor-main');
+    editorContainer.classList.toggle('fullscreen');
+    
+    if (editorContainer.classList.contains('fullscreen')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+    
+    // Refresh editor
+    setTimeout(() => editor.refresh(), 100);
+}
+
+function updateLineInfo() {
+    const cursor = editor.getCursor();
+    document.getElementById('line-info').textContent = 
+        `Line ${cursor.line + 1}, Column ${cursor.ch + 1}`;
+}
+
+function updateCharCount() {
+    const content = editor.getValue();
+    document.getElementById('char-count').textContent = 
+        `${content.length} characters`;
+}
+
+function updateSaveStatus(status) {
+    const statusElement = document.getElementById('save-status');
+    statusElement.textContent = status;
+    statusElement.className = 'save-status ' + (status.includes('Saved') ? 'saved' : 'unsaved');
+}
+
+// Template management functions
+function saveTemplate() {
+    const content = editor.getValue();
+    
+    // Show saving status
+    updateSaveStatus('Saving...');
+    
+    fetch('/dashboard/templates/error/{{ template.name }}/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            hasUnsavedChanges = false;
+            updateSaveStatus('Saved successfully!');
+            setTimeout(() => updateSaveStatus(''), 3000);
+        } else {
+            updateSaveStatus('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        updateSaveStatus('Error: ' + error.message);
+    });
+}
+
+function resetToOriginal() {
+    if (hasUnsavedChanges && !confirm('Are you sure you want to reset? Unsaved changes will be lost.')) {
+        return;
+    }
+    
+    editor.setValue(originalContent);
+    hasUnsavedChanges = false;
+    updateSaveStatus('Reset to original');
+    setTimeout(() => updateSaveStatus(''), 3000);
+}
+
+function validateTemplate() {
+    const content = editor.getValue();
+    const resultsDiv = document.getElementById('validation-results');
+    
+    resultsDiv.innerHTML = '<p>Validating template...</p>';
+    
+    // Basic validation - in a real implementation, you'd call the extension's validate method
+    const errors = [];
+    const warnings = [];
+    
+    // Check for basic Twig syntax
+    if (content.includes('{{') && !content.includes('}}')) {
+        errors.push('Unclosed Twig variable');
+    }
+    
+    if (content.includes('{%') && !content.includes('%}')) {
+        errors.push('Unclosed Twig tag');
+    }
+    
+    // Check for common issues
+    if (!content.includes('{% extends')) {
+        warnings.push('Template does not extend a layout');
+    }
+    
+    if (!content.includes('{% block content')) {
+        warnings.push('Template missing content block');
+    }
+    
+    // Display results
+    let html = '';
+    if (errors.length === 0 && warnings.length === 0) {
+        html = '<div class="validation-success"><i class="fas fa-check-circle"></i> Template is valid!</div>';
+    } else {
+        if (errors.length > 0) {
+            html += '<div class="validation-errors"><h4>Errors:</h4><ul>';
+            errors.forEach(error => html += `<li>❌ ${error}</li>`);
+            html += '</ul></div>';
+        }
+        
+        if (warnings.length > 0) {
+            html += '<div class="validation-warnings"><h4>Warnings:</h4><ul>';
+            warnings.forEach(warning => html += `<li>⚠️ ${warning}</li>`);
+            html += '</ul></div>';
+        }
+    }
+    
+    resultsDiv.innerHTML = html;
+}
+
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload', function(e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+    }
+});
+</script>
+{% endblock %} 

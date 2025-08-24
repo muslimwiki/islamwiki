@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.8-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.9-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,17 +8,17 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.8** represents an authentication fix and enhanced error handling system with:
-- ✅ **Complete Dashboard System** - Role-based admin and user dashboards with Bismillah skin
-- ✅ **Admin Dashboard** - Comprehensive system administration with secondary navigation
-- ✅ **User Dashboard** - Personal dashboard for regular users with learning progress
-- ✅ **View Mode Toggle** - Admin users can switch between admin and user dashboard views
-- ✅ **Secondary Navigation** - Left-aligned navigation for dashboard functions
-- ✅ **500 Error Page** - Beautiful Bismillah-themed error page with comprehensive information
-- ✅ **Authentication Fix** - Resolved non-admin user access issues to /wiki pages
-- ✅ **User Profile System** - `/wiki/User/{username}` namespace with profile pages
-- ✅ **Wiki Index Page** - Complete wiki page listing with Bismillah skin
-- ✅ **Enhanced CSS Architecture** - Centralized styling in bismillah.css with responsive design
+**Version 0.0.2.9** represents a comprehensive template management system and unified platform architecture with:
+- ✅ **Unified Template Management System** - Centralized hub at `/templates` with role-based access
+- ✅ **Admin Template Management** - Full editing, preview, validation, and version control capabilities
+- ✅ **Error Template System** - Beautiful, styled error pages (404, 500, 403, etc.) with enhanced debugging
+- ✅ **Template Editor & Preview** - CodeMirror-based editor with live preview and customization options
+- ✅ **Role-Based Access Control** - Admin, user, and guest views with appropriate functionality levels
+- ✅ **Dashboard Integration** - Template management widget integrated into admin dashboard
+- ✅ **Enhanced Error Handling** - All error pages now use Shahid logging system with comprehensive debug information
+- ✅ **Unified Navigation** - Eliminated redundant routes, all template management through `/templates`
+- ✅ **Professional Styling** - All pages now use consistent Bismillah skin styling
+- ✅ **Security Improvements** - Proper admin permission checks for all template management routes
 
 ## 🚀 **Key Features**
 
@@ -52,7 +52,16 @@
 - **Search & Navigation**: Easy discovery of Islamic knowledge
 - **User Profiles**: `/wiki/User/{username}` namespace with comprehensive user information
 - **Wiki Index**: Complete page listing with search, categories, and navigation
-- **Error Handling**: Beautiful 500 error pages with Islamic themes and detailed information
+- **Error Handling**: Beautiful error pages (404, 500, 403, etc.) with Islamic themes and comprehensive debug information
+
+### **🔧 Advanced Template Management**
+- **Unified Template Hub**: Centralized management at `/templates` with role-based access
+- **Admin Template Editor**: CodeMirror-based editor with syntax highlighting and validation
+- **Live Preview System**: Real-time template preview with theme, device, and language customization
+- **Error Template Management**: Comprehensive management of all HTTP error page templates
+- **Template Validation**: Built-in validation and error checking for template syntax
+- **Version Control**: Template backup, restore, and version management capabilities
+- **Role-Based Access**: Admin (full access), User (browse), Guest (public showcase) views
 
 ### **🛡️ Robust System Architecture**
 - **Simplified Routing**: Modern, efficient routing system

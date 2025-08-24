@@ -1,138 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>503 Service Unavailable - IslamWiki</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div class="error-header">
-            <span class="error-icon">🔧</span>
-            <h1 class="error-code">503</h1>
-            <h2 class="error-title">Service Unavailable</h2>
-            <p class="error-message">We're currently performing maintenance to improve your experience. Please check back soon.</p>
+{% extends "layouts/app.twig" %}
+
+{% block title %}503 - Service Unavailable - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="error-500-container" data-error-type="503">
+    <!-- Error Header -->
+    <div class="error-500-header">
+        <div class="error-500-icon">🔧</div>
+        <h1 class="error-500-title">503</h1>
+        <h2 class="error-500-subtitle">Service Unavailable</h2>
+        <p class="error-500-description">عذراً، الخدمة غير متاحة حالياً<br>Sorry, the service is temporarily unavailable</p>
+    </div>
+
+    <!-- Error Content -->
+    <div class="error-500-content">
+        <!-- Navigation Options - Moved below hero section -->
+        <div class="error-500-navigation">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🧭 Navigation Options</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="navigation-grid">
+                        <a href="/" class="nav-option home">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="/wiki" class="nav-option wiki">
+                            <i class="fas fa-book"></i>
+                            <span>Wiki</span>
+                        </a>
+                        <a href="/search" class="nav-option search">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                        <a href="/help" class="nav-option help">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="error-content">
-            <div class="maintenance-info">
-                <h3>Maintenance Status</h3>
-                <div class="maintenance-status">{{ maintenance_status|default('Scheduled maintenance in progress') }}</div>
-                <div class="estimated-time">Estimated completion: {{ estimated_completion|default('2-3 hours') }}</div>
-                <p>We apologize for the inconvenience. Our team is working hard to get everything back up and running.</p>
-            </div>
-            
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3>Request Information</h3>
-                    <div class="info-item">
-                        <span class="info-label">URL:</span>
-                        <span class="info-value" title="{{ request_uri|default('Unknown') }}">{{ request_uri|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Method:</span>
-                        <span class="info-value">{{ request_method|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">IP Address:</span>
-                        <span class="info-value">{{ request_ip|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">User Agent:</span>
-                        <span class="info-value" title="{{ request_user_agent|default('Unknown') }}">{{ request_user_agent|default('Unknown')|length > 50 ? request_user_agent|default('Unknown')|slice(0, 50) ~ '...' : request_user_agent|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Timestamp:</span>
-                        <span class="info-value">{{ timestamp|default('Unknown') }}</span>
-                    </div>
+        <!-- Error Message -->
+        <div class="error-500-message">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📋 Error Information</h3>
                 </div>
-                
-                <div class="info-card">
-                    <h3>Service Status</h3>
-                    <div class="info-item">
-                        <span class="info-label">Service:</span>
-                        <span class="info-value">{{ service_name|default('IslamWiki') }}</span>
+                <div class="error-500-card-content">
+                    <div class="error-detail">
+                        <strong>Time:</strong>
+                        <span>{{ "now"|date("Y-m-d H:i:s T") }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Status:</span>
-                        <span class="info-value">{{ service_status|default('Maintenance') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Request ID:</strong>
+                        <span>{{ request_id|default('Unknown') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Start Time:</span>
-                        <span class="info-value">{{ maintenance_start|default('Unknown') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Status Code:</strong>
+                        <span class="status-badge">{{ status_code|default('503') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Duration:</span>
-                        <span class="info-value">{{ maintenance_duration|default('Unknown') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Requested URL:</strong>
+                        <span>{{ debug_info.request_info.uri|default('Unknown') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Reason:</span>
-                        <span class="info-value">{{ maintenance_reason|default('System improvements') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Method:</strong>
+                        <span>{{ debug_info.request_info.method|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>IP Address:</strong>
+                        <span>{{ debug_info.request_info.remote_addr|default('Unknown') }}</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="suggestions">
-                <h3>What you can do:</h3>
-                <ul>
-                    <li>Check our <a href="{{ url('/status') }}">status page</a> for updates</li>
-                    <li>Follow us on social media for real-time updates</li>
-                    <li>Try again in a few hours</li>
-                    <li>Contact support if this is urgent</li>
-                    <li>Check our <a href="{{ url('/help') }}">help center</a> for common questions</li>
-                </ul>
-            </div>
-            
-            <div class="actions">
-                <a href="javascript:location.reload()" class="btn btn-success">🔄 Check Status</a>
-                <a href="{{ url('/status') }}" class="btn btn-primary">📊 Status Page</a>
-                <a href="{{ url('/contact') }}" class="btn">📧 Contact Support</a>
-                <a href="{{ url('/help') }}" class="btn btn-secondary">❓ Help Center</a>
-            </div>
-            
-            {% if debug %}
-                <div class="debug-info">
-                    <h3>🐛 Debug Information</h3>
-                    
-                    {% if exception is defined and exception %}
-                        <h4>🚨 Exception Details</h4>
-                        <p><strong>Type:</strong> {{ exception.class|default('Unknown') }}</p>
-                        <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
-                        <p><strong>File:</strong> {{ exception.file|default('Unknown') }}</p>
-                        <p><strong>Line:</strong> {{ exception.line|default('Unknown') }}</p>
-                        <p><strong>Code:</strong> {{ exception.code|default('Unknown') }}</p>
-                        
-                        {% if exception.trace is defined and exception.trace %}
-                            <h4>📚 Stack Trace</h4>
-                            <pre>{{ exception.trace|default('No stack trace available') }}</pre>
-                        {% endif %}
-                    {% endif %}
-                    
-                    <h4>🔧 Maintenance Context</h4>
-                    <p><strong>Maintenance Mode:</strong> {{ maintenance_mode|default('Enabled') }}</p>
-                    <p><strong>Affected Services:</strong> {{ affected_services|default('All services') }}</p>
-                    <p><strong>Maintenance Type:</strong> {{ maintenance_type|default('Scheduled') }}</p>
-                    <p><strong>Priority:</strong> {{ maintenance_priority|default('Normal') }}</p>
-                    
-                    <h4>⚙️ Server Environment</h4>
-                    <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
-                    <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
-                    <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
-                    <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
-                    
-                    {% if server_info is defined and server_info %}
-                        <h4>🔧 Additional Server Info</h4>
-                        <pre>{{ server_info|default('Server information not available') }}</pre>
-                    {% endif %}
-                </div>
-            {% endif %}
         </div>
-        
-        <div class="footer">
-            <p>IslamWiki - Islamic Knowledge Platform</p>
-            <p>We appreciate your patience during this maintenance period.</p>
+
+        <!-- Service Status Information -->
+        <div class="error-500-service-status">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔧 Service Status</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="service-status-grid">
+                        <div class="service-status-item">
+                            <strong>Database:</strong>
+                            <span>{{ service_status.database|default('Unknown') }}</span>
+                        </div>
+                        
+                        <div class="service-status-item">
+                            <strong>Cache:</strong>
+                            <span>{{ service_status.cache|default('Unknown') }}</span>
+                        </div>
+                        
+                        <div class="service-status-item">
+                            <strong>External APIs:</strong>
+                            <span>{{ service_status.external_apis|default('Unknown') }}</span>
+                        </div>
+                        
+                        <div class="service-status-item">
+                            <strong>Estimated Recovery:</strong>
+                            <span>{{ estimated_recovery|default('Unknown') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exception Details -->
+        <div class="error-500-exception">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🐛 Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="exception-grid">
+                        <div class="exception-item">
+                            <strong>Exception Class:</strong>
+                            <span>{{ debug_info.error_type|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>File:</strong>
+                            <span>{{ debug_info.file|default('N/A') }}:{{ debug_info.line|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Message:</strong>
+                            <span>{{ debug_info.error_message|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Error Code:</strong>
+                            <span>{{ debug_info.error_code|default('N/A') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Stack Trace -->
+                    <div class="stack-trace-section">
+                        <details class="stack-trace-details">
+                            <summary class="stack-trace-summary">
+                                <span>📚 Stack Trace</span>
+                                <span class="expand-icon">▼</span>
+                            </summary>
+                            <div class="stack-trace-content">
+                                <pre class="stack-trace-code">{{ debug_info.stack_trace|default('N/A') }}</pre>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Debug Information -->
+        <div class="error-500-enhanced-debug">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔍 Enhanced Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="enhanced-debug-section">
+                        <div class="debug-header">
+                            <h4>📋 Copy-Paste Debug Report</h4>
+                            <button class="copy-debug-btn" onclick="copyDebugReport()">
+                                <i class="fas fa-copy"></i> Copy Report
+                            </button>
+                        </div>
+                        <p><strong>Copy the text below and paste it in your support request:</strong></p>
+                        <textarea class="debug-report-textarea" id="debugReport" readonly>🔧 SERVICE UNAVAILABLE DEBUG REPORT
+📅 Timestamp: {{ debug_info.timestamp|default('N/A') }}
+🔍 Context: {{ debug_info.context|default('N/A') }}
+❌ Error Type: {{ debug_info.error_type|default('N/A') }}
+💬 Error Message: {{ debug_info.error_message|default('N/A') }}
+🔢 Error Code: {{ debug_info.error_code|default('N/A') }}
+📁 File: {{ debug_info.file|default('N/A') }}
+📍 Line: {{ debug_info.line|default('N/A') }}
+
+🌐 REQUEST INFORMATION
+📡 Method: {{ debug_info.request_info.method|default('N/A') }}
+🔗 URI: {{ debug_info.request_info.uri|default('N/A') }}
+🌍 User Agent: {{ debug_info.request_info.user_agent|default('N/A') }}
+🌐 Remote Address: {{ debug_info.request_info.remote_addr|default('N/A') }}
+🏠 HTTP Host: {{ debug_info.request_info.http_host|default('N/A') }}
+
+🔧 SERVICE STATUS
+🗄️ Database: {{ service_status.database|default('N/A') }}
+💾 Cache: {{ service_status.cache|default('N/A') }}
+🌐 External APIs: {{ service_status.external_apis|default('N/A') }}
+⏰ Estimated Recovery: {{ estimated_recovery|default('N/A') }}
+
+🔐 SESSION INFORMATION
+🆔 Session ID: {{ debug_info.session_info.session_id|default('N/A') }}
+📊 Session Status: {{ debug_info.session_info.session_status|default('N/A') }}
+📝 Session Data: {{ debug_info.session_info.session_data|json_encode|default('N/A') }}
+🏷️ Session Name: {{ debug_info.session_info.session_name|default('N/A') }}
+
+💾 MEMORY USAGE
+📊 Memory Usage: {{ debug_info.memory_usage.memory_usage|default('N/A') }} bytes
+📈 Memory Peak: {{ debug_info.memory_usage.memory_peak|default('N/A') }} bytes
+🚫 Memory Limit: {{ debug_info.memory_usage.memory_limit|default('N/A') }}
+
+🐘 PHP INFORMATION
+📋 PHP Version: {{ debug_info.php_info.php_version|default('N/A') }}
+🔧 Extensions: {{ debug_info.php_info.extensions|join(', ')|default('N/A') }}
+📊 Error Reporting: {{ debug_info.php_info.error_reporting|default('N/A') }}
+👁️ Display Errors: {{ debug_info.php_info.display_errors|default('N/A') }}
+📝 Log Errors: {{ debug_info.php_info.log_errors|default('N/A') }}
+
+📚 STACK TRACE
+{{ debug_info.stack_trace|default('N/A') }}
+
+🔧 END SERVICE UNAVAILABLE DEBUG REPORT</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shahid Logging Information -->
+        <div class="error-500-logging">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📊 Shahid Logging System</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="logging-info">
+                        <p>This 503 error has been automatically logged through the Shahid logging system with comprehensive context.</p>
+                        <p>Check the application logs for detailed debugging information.</p>
+                        <div class="log-file-info">
+                            <strong>Log File:</strong>
+                            <code>storage/logs/application-{{ "now"|date("Y-m-d") }}.log</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Quote -->
+        <div class="error-500-quote">
+            <div class="islamic-quote-card">
+                <div class="quote-icon">🕌</div>
+                <div class="quote-content">
+                    <p class="quote-text-arabic">"إِنَّ مَعَ الْعُسْرِ يُسْرًا"</p>
+                    <p class="quote-text-english">"Indeed, with hardship [will be] ease."</p>
+                    <p class="quote-reference">- Quran 94:5</p>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html> 
+</div>
+
+<script>
+function copyDebugReport() {
+    const textarea = document.getElementById('debugReport');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        
+        // Show success feedback
+        const btn = event.target.closest('.copy-debug-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        
+        // Fallback for modern browsers
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = event.target.closest('.copy-debug-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+}
+</script>
+{% endblock %} 

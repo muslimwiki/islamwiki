@@ -425,7 +425,7 @@ class WikiController extends PageController
                 $this->logger->info('Page not found, redirecting to create page', ['slug' => $slug]);
             }
             
-            // Use MediaWiki-style URL without locale prefix
+            // Redirect to the main create page with the title parameter
             return $this->redirect("/wiki/create?title=" . urlencode($slug), 302);
         }
 
@@ -1725,7 +1725,7 @@ class WikiController extends PageController
                 'title' => 'Create New Page',
                 'description' => 'Start a new wiki page',
                 'icon' => 'fas fa-plus',
-                'url' => '/create',
+                'url' => '/wiki/create',
                 'color' => 'primary',
                 'requires_auth' => true
             ],

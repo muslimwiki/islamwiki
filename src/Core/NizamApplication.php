@@ -542,7 +542,7 @@ class NizamApplication
             }
 
             
-            // Route not found - return 404 with proper logging
+            // Route not found - throw exception to trigger main error handler
             $this->_logger->warning('Route not found', [
                 'request_uri' => $request->getUri()->getPath(),
                 'request_method' => $request->getMethod(),
@@ -551,10 +551,8 @@ class NizamApplication
                 'context' => 'route_not_found'
             ]);
 
-            return new Response(404, [
-                'Content-Type' => 'text/html; charset=UTF-8',
-                'X-Error-Type' => 'route_not_found'
-            ], $this->renderErrorPage(404));
+            // Throw exception to trigger main error handler with enhanced templates
+            throw new \IslamWiki\Core\Http\Exceptions\HttpException(404, 'Page not found');
         } catch (\Exception $e) {
             return $this->handleRouterException($e, $request);
         }
@@ -598,11 +596,17 @@ class NizamApplication
             'context' => 'router_exception'
         ], 'error');
 
-        // Return a proper error response
-        return new Response(500, [
+        // Preserve original status code for HTTP exceptions
+        $statusCode = 500;
+        if ($e instanceof \IslamWiki\Core\Http\Exceptions\HttpException) {
+            $statusCode = $e->getStatusCode();
+        }
+
+        // Return a proper error response with correct status code
+        return new Response($statusCode, [
             'Content-Type' => 'text/html; charset=UTF-8',
             'X-Error-Type' => 'router_exception'
-        ], $this->renderErrorPage(500, $e));
+        ], $this->renderErrorPage($statusCode, $e));
     }
 
     /**
@@ -622,7 +626,8 @@ class NizamApplication
                     'exception' => $e,
                     'current_language' => 'en',
                     'timestamp' => date('Y-m-d H:i:s'),
-                    'request_id' => uniqid('req_', true)
+                    'request_id' => uniqid('req_', true),
+                    'debug_info' => $this->generateDebugInfo($e, $statusCode)
                 ];
 
                 // Log additional context for debugging
@@ -651,6 +656,48 @@ class NizamApplication
 
         // Fallback to simple HTML error page
         return $this->getFallbackErrorPage($statusCode, $e);
+    }
+
+    /**
+     * Generate comprehensive debug information
+     */
+    protected function generateDebugInfo(\Throwable $e, int $statusCode): array
+    {
+        return [
+            'timestamp' => date('Y-m-d H:i:s T'),
+            'context' => 'Error Handler',
+            'error_type' => get_class($e),
+            'error_message' => $e->getMessage(),
+            'error_code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'request_info' => [
+                'method' => $_SERVER['REQUEST_METHOD'] ?? 'N/A',
+                'uri' => $_SERVER['REQUEST_URI'] ?? 'N/A',
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'N/A',
+                'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? 'N/A',
+                'http_host' => $_SERVER['HTTP_HOST'] ?? 'N/A'
+            ],
+            'session_info' => [
+                'session_id' => session_id() ?: 'N/A',
+                'session_status' => session_status() === PHP_SESSION_ACTIVE ? 'Active' : 'Inactive',
+                'session_data' => isset($_SESSION) ? $_SESSION : [],
+                'session_name' => session_name()
+            ],
+            'memory_usage' => [
+                'memory_usage' => memory_get_usage(),
+                'memory_peak' => memory_get_peak_usage(),
+                'memory_limit' => ini_get('memory_limit')
+            ],
+            'php_info' => [
+                'php_version' => PHP_VERSION,
+                'extensions' => get_loaded_extensions(),
+                'error_reporting' => error_reporting(),
+                'display_errors' => ini_get('display_errors'),
+                'log_errors' => ini_get('log_errors')
+            ],
+            'stack_trace' => $e->getTraceAsString()
+        ];
     }
 
     /**

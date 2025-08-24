@@ -1,0 +1,107 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Template Showcase - Public View{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>🌟 Template Showcase</h1>
+        <p>Discover the beautiful templates that power IslamWiki</p>
+        <div class="admin-mode-indicator">
+            <span class="mode-badge mode-guest">Public View</span>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Template Overview -->
+        <div class="template-overview">
+            <div class="overview-card">
+                <h3>📊 Template Collection</h3>
+                <div class="overview-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ templateStats.total_templates }}</span>
+                        <span class="stat-label">Total Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ templateTypes|length }}</span>
+                        <span class="stat-label">Template Types</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ (templateStats.total_size / 1024)|round(2) }}</span>
+                        <span class="stat-label">Total Size (KB)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Types Grid -->
+        <div class="template-types-grid">
+            <div class="types-header">
+                <h3>📁 Template Categories</h3>
+                <p>Explore our collection of professionally designed templates</p>
+            </div>
+            
+            <div class="types-grid">
+                {% for type, config in templateTypes %}
+                <div class="type-card" data-type="{{ type }}">
+                    <div class="type-header">
+                        <div class="type-icon">
+                            {{ config.icon }}
+                        </div>
+                        <div class="type-info">
+                            <h4>{{ config.name }}</h4>
+                            <span class="type-count">
+                                {{ allTemplates[type]|length }} templates
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="type-description">
+                        <p>{{ config.description }}</p>
+                    </div>
+                    
+                    <div class="type-actions">
+                        <a href="/templates/{{ type }}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Templates
+                        </a>
+                        <a href="/register" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> Join to Customize
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="call-to-action">
+            <div class="cta-content">
+                <h3>🚀 Ready to Get Started?</h3>
+                <p>Join IslamWiki to access advanced template features and customization options</p>
+                <div class="cta-buttons">
+                    <a href="/register" class="btn btn-success">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </a>
+                    <a href="/login" class="btn btn-outline">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/" class="btn btn-outline">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/templates" class="btn btn-outline">
+                <i class="fas fa-th-large"></i> All Templates
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

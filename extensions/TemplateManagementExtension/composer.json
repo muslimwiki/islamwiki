@@ -1,0 +1,33 @@
+{
+    "name": "islamwiki/template-management-extension",
+    "description": "Centralized template management system for all template types",
+    "type": "islamwiki-extension",
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "IslamWiki Team",
+            "email": "team@islam.wiki",
+            "homepage": "https://islam.wiki"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "islamwiki/core": "^0.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "IslamWiki\\Extensions\\TemplateManagementExtension\\": ""
+        }
+    },
+    "extra": {
+        "islamwiki-extension": {
+            "name": "Template Management Extension",
+            "version": "0.0.1.0",
+            "description": "Centralized template management system for all template types",
+            "author": "IslamWiki Team",
+            "website": "https://islam.wiki"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+} 

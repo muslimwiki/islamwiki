@@ -1,0 +1,210 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Edit Error Template - Admin Dashboard{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/twig/twig.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>✏️ Edit Error Template: {{ template.name }}</h1>
+        <p>Modify the {{ template.name }} error template content and styling</p>
+        <div class="admin-mode-indicator">
+            <span class="mode-badge mode-admin">Admin Mode</span>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Template Info -->
+        <div class="template-info">
+            <div class="info-card">
+                <h3>📋 Template Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Name:</strong>
+                        <span>{{ template.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Type:</strong>
+                        <span>{{ template.type }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        <span class="status-badge status-{{ template.status }}">{{ template.status }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Modified:</strong>
+                        <span>{{ template.last_modified }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Editor -->
+        <div class="template-editor">
+            <div class="editor-header">
+                <h3>📝 Template Content</h3>
+                <div class="editor-controls">
+                    <button class="btn btn-success" onclick="saveTemplate()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="/templates/error/{{ template.name }}/preview" class="btn btn-secondary">
+                        <i class="fas fa-eye"></i> Preview
+                    </a>
+                    <a href="/templates/error" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            
+            <div class="editor-container">
+                <textarea id="template-content" name="content">{{ template.content }}</textarea>
+            </div>
+        </div>
+
+        <!-- Template Actions -->
+        <div class="template-actions">
+            <div class="action-group">
+                <h4>🔄 Template Operations</h4>
+                <div class="action-buttons">
+                    <button class="btn btn-warning" onclick="validateTemplate()">
+                        <i class="fas fa-check-circle"></i> Validate
+                    </button>
+                    <button class="btn btn-info" onclick="backupTemplate()">
+                        <i class="fas fa-download"></i> Backup
+                    </button>
+                    <button class="btn btn-secondary" onclick="restoreTemplate()">
+                        <i class="fas fa-upload"></i> Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize CodeMirror
+var editor = CodeMirror.fromTextArea(document.getElementById('template-content'), {
+    mode: 'twig',
+    theme: 'monokai',
+    lineNumbers: true,
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    indentUnit: 4,
+    tabSize: 4,
+    lineWrapping: true,
+    extraKeys: {
+        "Tab": function(cm) {
+            cm.replaceSelection("    ", "end");
+        }
+    }
+});
+
+// Set editor height
+editor.setSize(null, 500);
+
+// Save template function
+function saveTemplate() {
+    const content = editor.getValue();
+    const formData = new FormData();
+    formData.append('content', content);
+    
+    fetch('/templates/error/{{ template.name }}/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Template saved successfully!');
+        } else {
+            alert('Error saving template: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving template');
+    });
+}
+
+// Validate template function
+function validateTemplate() {
+    const content = editor.getValue();
+    const formData = new FormData();
+    formData.append('content', content);
+    
+    fetch('/dashboard/templates/validate', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.valid) {
+            alert('Template is valid!');
+        } else {
+            alert('Template validation failed: ' + data.errors.join(', '));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error validating template');
+    });
+}
+
+// Backup template function
+function backupTemplate() {
+    const content = editor.getValue();
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('template_name', '{{ template.name }}');
+    
+    fetch('/dashboard/templates/backup', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Template backed up successfully!');
+        } else {
+            alert('Error backing up template: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error backing up template');
+    });
+}
+
+// Restore template function
+function restoreTemplate() {
+    if (confirm('Are you sure you want to restore this template? This will overwrite current changes.')) {
+        fetch('/dashboard/templates/restore', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                editor.setValue(data.content);
+                alert('Template restored successfully!');
+            } else {
+                alert('Error restoring template: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error restoring template');
+        });
+    }
+}
+</script>
+{% endblock %} 

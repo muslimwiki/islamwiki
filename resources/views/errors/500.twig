@@ -14,6 +14,35 @@
 
     <!-- Error Content -->
     <div class="error-500-content">
+        <!-- Navigation Options - Moved below hero section -->
+        <div class="error-500-navigation">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🧭 Navigation Options</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="navigation-grid">
+                        <a href="/" class="nav-option home">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="/wiki" class="nav-option wiki">
+                            <i class="fas fa-book"></i>
+                            <span>Wiki</span>
+                        </a>
+                        <a href="/search" class="nav-option search">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                        <a href="/dashboard" class="nav-option dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Error Message -->
         <div class="error-500-message">
             <div class="error-500-card">
@@ -42,12 +71,21 @@
                         <strong>Status Code:</strong>
                         <span class="status-badge">{{ status_code|default('500') }}</span>
                     </div>
+                    
+                    <div class="error-detail">
+                        <strong>Requested URL:</strong>
+                        <span>{{ debug_info.request_info.uri|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>Method:</strong>
+                        <span>{{ debug_info.request_info.method|default('Unknown') }}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Exception Details (if available) -->
-        {% if exception %}
+        <!-- Exception Details -->
         <div class="error-500-exception">
             <div class="error-500-card">
                 <div class="error-500-card-header">
@@ -57,25 +95,23 @@
                     <div class="exception-grid">
                         <div class="exception-item">
                             <strong>Exception Class:</strong>
-                            <span>{{ exception.__class__ }}</span>
+                            <span>{{ debug_info.error_type|default('N/A') }}</span>
                         </div>
                         
                         <div class="exception-item">
                             <strong>File:</strong>
-                            <span>{{ exception.file }}:{{ exception.line }}</span>
+                            <span>{{ debug_info.file|default('N/A') }}:{{ debug_info.line|default('N/A') }}</span>
                         </div>
                         
                         <div class="exception-item">
                             <strong>Message:</strong>
-                            <span>{{ exception.message }}</span>
+                            <span>{{ debug_info.error_message|default('N/A') }}</span>
                         </div>
                         
-                        {% if exception.code %}
                         <div class="exception-item">
                             <strong>Error Code:</strong>
-                            <span>{{ exception.code }}</span>
+                            <span>{{ debug_info.error_code|default('N/A') }}</span>
                         </div>
-                        {% endif %}
                     </div>
                     
                     <!-- Stack Trace -->
@@ -86,14 +122,13 @@
                                 <span class="expand-icon">▼</span>
                             </summary>
                             <div class="stack-trace-content">
-                                <pre class="stack-trace-code">{{ exception.traceAsString }}</pre>
+                                <pre class="stack-trace-code">{{ debug_info.stack_trace|default('N/A') }}</pre>
                             </div>
                         </details>
                     </div>
                 </div>
             </div>
         </div>
-        {% endif %}
 
         <!-- Enhanced Debug Information (if available) -->
         {% if debug_info %}
@@ -104,9 +139,14 @@
                 </div>
                 <div class="error-500-card-content">
                     <div class="enhanced-debug-section">
-                        <h4>📋 Copy-Paste Debug Report</h4>
+                        <div class="debug-header">
+                            <h4>📋 Copy-Paste Debug Report</h4>
+                            <button class="copy-debug-btn" onclick="copyDebugReport()">
+                                <i class="fas fa-copy"></i> Copy Report
+                            </button>
+                        </div>
                         <p><strong>Copy the text below and paste it in your support request:</strong></p>
-                        <textarea class="debug-report-textarea" readonly>🐛 ENHANCED DEBUG REPORT
+                        <textarea class="debug-report-textarea" id="debugReport" readonly>🐛 ENHANCED DEBUG REPORT
 📅 Timestamp: {{ debug_info.timestamp|default('N/A') }}
 🔍 Context: {{ debug_info.context|default('N/A') }}
 ❌ Error Type: {{ debug_info.error_type|default('N/A') }}
@@ -192,34 +232,7 @@
             </div>
         </div>
 
-        <!-- Navigation Options -->
-        <div class="error-500-navigation">
-            <div class="error-500-card">
-                <div class="error-500-card-header">
-                    <h3>🧭 Navigation Options</h3>
-                </div>
-                <div class="error-500-card-content">
-                    <div class="navigation-grid">
-                        <a href="/" class="nav-option home">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                        <a href="/wiki" class="nav-option wiki">
-                            <i class="fas fa-book"></i>
-                            <span>Wiki</span>
-                        </a>
-                        <a href="/search" class="nav-option search">
-                            <i class="fas fa-search"></i>
-                            <span>Search</span>
-                        </a>
-                        <a href="/dashboard" class="nav-option dashboard">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Islamic Quote -->
         <div class="error-500-quote">
@@ -234,4 +247,42 @@
         </div>
     </div>
 </div>
+
+<script>
+function copyDebugReport() {
+    const textarea = document.getElementById('debugReport');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        
+        // Show success feedback
+        const btn = event.target.closest('.copy-debug-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        
+        // Fallback for modern browsers
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = event.target.closest('.copy-debug-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+}
+</script>
 {% endblock %}

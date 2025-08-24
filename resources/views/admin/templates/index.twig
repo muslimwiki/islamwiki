@@ -1,0 +1,329 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Template Management - Admin Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>🔧 Template Management Dashboard</h1>
+        <p>Manage all template types across the IslamWiki platform</p>
+    </div>
+
+    <div class="admin-content">
+        <!-- Global Template Overview -->
+        <div class="template-overview">
+            <div class="overview-card">
+                <h3>📊 Global Template Overview</h3>
+                <div class="overview-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ templateStats.total_templates }}</span>
+                        <span class="stat-label">Total Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ (templateStats.total_size / 1024)|round(2) }}</span>
+                        <span class="stat-label">Total Size (KB)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ templateStats.recently_modified }}</span>
+                        <span class="stat-label">Recently Modified</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ templateStats.missing_templates }}</span>
+                        <span class="stat-label">Missing Templates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Types Grid -->
+        <div class="template-types-grid">
+            <div class="types-header">
+                <h3>📁 Template Types</h3>
+                <p>Click on any template type to manage its templates</p>
+            </div>
+            
+            <div class="types-grid">
+                {% for type, config in templateTypes %}
+                <div class="type-card" data-type="{{ type }}">
+                    <div class="type-header">
+                        <div class="type-icon">
+                            {{ config.icon }}
+                        </div>
+                        <div class="type-info">
+                            <h4>{{ config.name }}</h4>
+                            <span class="type-count">
+                                {{ allTemplates[type]|length }} templates
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="type-description">
+                        <p>{{ config.description }}</p>
+                    </div>
+                    
+                    <div class="type-stats">
+                        {% set typeStats = templateStats.by_type[type] %}
+                        <div class="stat-item">
+                            <strong>Count:</strong>
+                            <span>{{ typeStats.count }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Size:</strong>
+                            <span>{{ (typeStats.size / 1024)|round(2) }} KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Modified:</strong>
+                            <span>{{ typeStats.recently_modified }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="type-actions">
+                        <a href="/dashboard/templates/{{ type }}" class="btn btn-primary">
+                            <i class="fas fa-folder-open"></i> Manage
+                        </a>
+                        <button class="btn btn-secondary" onclick="quickActions('{{ type }}')">
+                            <i class="fas fa-bolt"></i> Quick Actions
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Global Quick Actions -->
+        <div class="global-quick-actions">
+            <div class="actions-header">
+                <h3>⚡ Global Quick Actions</h3>
+                <p>Perform operations across all template types</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="backupAllTemplates()">
+                    <i class="fas fa-download"></i> Backup All Templates
+                </button>
+                <button class="btn btn-warning" onclick="validateAllTemplates()">
+                    <i class="fas fa-check-circle"></i> Validate All Templates
+                </button>
+                <button class="btn btn-info" onclick="exportAllTemplates()">
+                    <i class="fas fa-file-export"></i> Export All Templates
+                </button>
+                <button class="btn btn-danger" onclick="restoreFromBackup()">
+                    <i class="fas fa-upload"></i> Restore from Backup
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <div class="activity-header">
+                <h3>🕒 Recent Activity</h3>
+                <p>Latest changes across all template types</p>
+            </div>
+            
+            <div class="activity-list">
+                {% set recentTemplates = [] %}
+                {% for type, templates in allTemplates %}
+                    {% for template in templates %}
+                        {% if template.status == 'recently_modified' %}
+                            {% set recentTemplates = recentTemplates|merge([template|merge({'type': type})]) %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                
+                {% if recentTemplates|length > 0 %}
+                    {% for template in recentTemplates|slice(0, 5) %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {{ templateTypes[template.type].icon }}
+                        </div>
+                        <div class="activity-content">
+                            <strong>{{ template.name|upper }}</strong> template was recently modified
+                            <span class="activity-time">{{ template.modified|date('M j, Y g:i A') }}</span>
+                        </div>
+                        <div class="activity-actions">
+                            <a href="/dashboard/templates/{{ template.type }}/{{ template.name }}/edit" class="btn btn-sm btn-primary">
+                                Edit
+                            </a>
+                            <a href="/dashboard/templates/{{ template.type }}/{{ template.name }}/preview" class="btn btn-sm btn-secondary">
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-activity">No recent template modifications</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/dashboard" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="/dashboard/templates/error" class="btn btn-outline">
+                <i class="fas fa-exclamation-triangle"></i> Error Templates
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global quick action functions
+function backupAllTemplates() {
+    if (confirm('Create backup of all templates? This may take a moment.')) {
+        fetch('/dashboard/templates/backup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Backup created successfully! ${data.templates_count} templates backed up.`);
+            } else {
+                alert('Backup failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Backup failed: ' + error.message);
+        });
+    }
+}
+
+function validateAllTemplates() {
+    if (confirm('Validate all templates? This will check syntax and structure.')) {
+        fetch('/dashboard/templates/validate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const summary = data.summary;
+                alert(`Validation complete!\n\nTotal: ${summary.total_templates}\nValid: ${summary.valid_templates}\nInvalid: ${summary.invalid_templates}\nErrors: ${summary.total_errors}\nWarnings: ${summary.total_warnings}`);
+            } else {
+                alert('Validation failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Validation failed: ' + error.message);
+        });
+    }
+}
+
+function exportAllTemplates() {
+    const format = prompt('Enter export format (json or zip):', 'json');
+    if (format && ['json', 'zip'].includes(format.toLowerCase())) {
+        fetch('/dashboard/templates/export', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'all',
+                format: format.toLowerCase()
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Export failed');
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `templates_export_all_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            alert('Export failed: ' + error.message);
+        });
+    }
+}
+
+function restoreFromBackup() {
+    const backupFile = prompt('Enter backup filename to restore from:');
+    if (backupFile) {
+        if (confirm('Are you sure you want to restore from backup? This will overwrite current templates.')) {
+            fetch('/dashboard/templates/restore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    backup_file: backupFile
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Restore completed! ${data.restored_count} templates restored.`);
+                    location.reload();
+                } else {
+                    alert('Restore failed: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Restore failed: ' + error.message);
+            });
+        }
+    }
+}
+
+function quickActions(type) {
+    const actions = [
+        'Backup ' + type + ' templates',
+        'Validate ' + type + ' templates',
+        'Export ' + type + ' templates',
+        'View ' + type + ' templates'
+    ];
+    
+    const action = prompt('Select action:\n\n' + actions.map((a, i) => `${i + 1}. ${a}`).join('\n'));
+    
+    if (action) {
+        switch (action) {
+            case '1':
+                backupTemplateType(type);
+                break;
+            case '2':
+                validateTemplateType(type);
+                break;
+            case '3':
+                exportTemplateType(type);
+                break;
+            case '4':
+                window.location.href = `/dashboard/templates/${type}`;
+                break;
+        }
+    }
+}
+
+function backupTemplateType(type) {
+    // Implementation for backing up specific template type
+    alert(`${type} template backup functionality will be implemented here`);
+}
+
+function validateTemplateType(type) {
+    // Implementation for validating specific template type
+    alert(`${type} template validation functionality will be implemented here`);
+}
+
+function exportTemplateType(type) {
+    // Implementation for exporting specific template type
+    alert(`${type} template export functionality will be implemented here`);
+}
+</script>
+{% endblock %} 

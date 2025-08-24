@@ -1,131 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>403 Forbidden - IslamWiki</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div class="error-header">
-            <span class="error-icon">🚫</span>
-            <h1 class="error-code">403</h1>
-            <h2 class="error-title">Access Forbidden</h2>
-            <p class="error-message">You don't have permission to access this resource. This area is restricted to authorized users only.</p>
+{% extends "layouts/app.twig" %}
+
+{% block title %}403 - Access Forbidden - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="error-500-container" data-error-type="403">
+    <!-- Error Header -->
+    <div class="error-500-header">
+        <div class="error-500-icon">🚫</div>
+        <h1 class="error-500-title">403</h1>
+        <h2 class="error-500-subtitle">Access Forbidden</h2>
+        <p class="error-500-description">عذراً، لا يمكنك الوصول إلى هذا المورد<br>Sorry, you don't have permission to access this resource</p>
+    </div>
+
+    <!-- Error Content -->
+    <div class="error-500-content">
+        <!-- Navigation Options - Moved below hero section -->
+        <div class="error-500-navigation">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🧭 Navigation Options</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="navigation-grid">
+                        <a href="/" class="nav-option home">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="/wiki" class="nav-option wiki">
+                            <i class="fas fa-book"></i>
+                            <span>Wiki</span>
+                        </a>
+                        <a href="/search" class="nav-option search">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                        <a href="/contact" class="nav-option contact">
+                            <i class="fas fa-envelope"></i>
+                            <span>Contact</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="error-content">
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3>Request Information</h3>
-                    <div class="info-item">
-                        <span class="info-label">URL:</span>
-                        <span class="info-value" title="{{ request_uri|default('Unknown') }}">{{ request_uri|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Method:</span>
-                        <span class="info-value">{{ request_method|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">IP Address:</span>
-                        <span class="info-value">{{ request_ip|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">User Agent:</span>
-                        <span class="info-value" title="{{ request_user_agent|default('Unknown') }}">{{ request_user_agent|default('Unknown')|length > 50 ? request_user_agent|default('Unknown')|slice(0, 50) ~ '...' : request_user_agent|default('Unknown') }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Timestamp:</span>
-                        <span class="info-value">{{ timestamp|default('Unknown') }}</span>
-                    </div>
+        <!-- Error Message -->
+        <div class="error-500-message">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📋 Error Information</h3>
                 </div>
-                
-                <div class="info-card">
-                    <h3>Access Control</h3>
-                    <div class="info-item">
-                        <span class="info-label">User ID:</span>
-                        <span class="info-value">{{ user_id|default('Not Logged In') }}</span>
+                <div class="error-500-card-content">
+                    <div class="error-detail">
+                        <strong>Time:</strong>
+                        <span>{{ "now"|date("Y-m-d H:i:s T") }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">User Role:</span>
-                        <span class="info-value">{{ user_role|default('None') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Request ID:</strong>
+                        <span>{{ request_id|default('Unknown') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Required Role:</span>
-                        <span class="info-value">{{ required_role|default('Administrator') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Status Code:</strong>
+                        <span class="status-badge">{{ status_code|default('403') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Resource Type:</span>
-                        <span class="info-value">{{ resource_type|default('Unknown') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Requested URL:</strong>
+                        <span>{{ debug_info.request_info.uri|default('Unknown') }}</span>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Permission Level:</span>
-                        <span class="info-value">{{ permission_level|default('None') }}</span>
+                    
+                    <div class="error-detail">
+                        <strong>Method:</strong>
+                        <span>{{ debug_info.request_info.method|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>IP Address:</strong>
+                        <span>{{ debug_info.request_info.remote_addr|default('Unknown') }}</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="suggestions">
-                <h3>What you can do:</h3>
-                <ul>
-                    <li>Contact an administrator to request access</li>
-                    <li>Check if you're logged in with the correct account</li>
-                    <li>Verify you have the required permissions</li>
-                    <li>Go back to the <a href="{{ url('/') }}">homepage</a></li>
-                    <li>Contact support if you believe this is an error</li>
-                </ul>
-            </div>
-            
-            <div class="actions">
-                <a href="{{ url('/') }}" class="btn btn-primary">🏠 Go to Homepage</a>
-                <a href="{{ url('/contact') }}" class="btn">📧 Contact Support</a>
-                <a href="javascript:history.back()" class="btn btn-secondary">⬅️ Go Back</a>
-                <a href="{{ url('/help') }}" class="btn btn-secondary">❓ Help Center</a>
-            </div>
-            
-            {% if debug %}
-                <div class="debug-info">
-                    <h3>🐛 Debug Information</h3>
-                    
-                    {% if exception is defined and exception %}
-                        <h4>🚨 Exception Details</h4>
-                        <p><strong>Type:</strong> {{ exception.class|default('Unknown') }}</p>
-                        <p><strong>Message:</strong> {{ exception.message|default('Unknown') }}</p>
-                        <p><strong>File:</strong> {{ exception.file|default('Unknown') }}</p>
-                        <p><strong>Line:</strong> {{ exception.line|default('Unknown') }}</p>
-                        <p><strong>Code:</strong> {{ exception.code|default('Unknown') }}</p>
-                        
-                        {% if exception.trace is defined and exception.trace %}
-                            <h4>📚 Stack Trace</h4>
-                            <pre>{{ exception.trace|default('No stack trace available') }}</pre>
-                        {% endif %}
-                    {% endif %}
-                    
-                    <h4>🔐 Access Control Context</h4>
-                    <p><strong>Current User:</strong> {{ current_user|default('Not authenticated') }}</p>
-                    <p><strong>User Permissions:</strong> {{ user_permissions|default('None') }}</p>
-                    <p><strong>Required Permissions:</strong> {{ required_permissions|default('None specified') }}</p>
-                    <p><strong>Access Control List:</strong> {{ acl|default('Not available') }}</p>
-                    
-                    <h4>⚙️ Server Environment</h4>
-                    <p><strong>Error Time:</strong> {{ timestamp|default('Unknown') }}</p>
-                    <p><strong>PHP Version:</strong> {{ php_version|default('Unknown') }}</p>
-                    <p><strong>Server Software:</strong> {{ server_software|default('Unknown') }}</p>
-                    <p><strong>Server Name:</strong> {{ server_name|default('Unknown') }}</p>
-                    
-                    {% if server_info is defined and server_info %}
-                        <h4>🔧 Additional Server Info</h4>
-                        <pre>{{ server_info|default('Server information not available') }}</pre>
-                    {% endif %}
-                </div>
-            {% endif %}
         </div>
-        
-        <div class="footer">
-            <p>IslamWiki - Islamic Knowledge Platform</p>
-            <p>If you continue to experience issues, please contact our support team.</p>
+
+        <!-- Access Control Information -->
+        <div class="error-500-access-control">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔐 Access Control Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="access-control-grid">
+                        <div class="access-control-item">
+                            <strong>User ID:</strong>
+                            <span>{{ user_id|default('Not Logged In') }}</span>
+                        </div>
+                        
+                        <div class="access-control-item">
+                            <strong>User Role:</strong>
+                            <span>{{ user_role|default('None') }}</span>
+                        </div>
+                        
+                        <div class="access-control-item">
+                            <strong>Required Role:</strong>
+                            <span>{{ required_role|default('Administrator') }}</span>
+                        </div>
+                        
+                        <div class="access-control-item">
+                            <strong>Resource Type:</strong>
+                            <span>{{ resource_type|default('Unknown') }}</span>
+                        </div>
+                        
+                        <div class="access-control-item">
+                            <strong>Permission Level:</strong>
+                            <span>{{ permission_level|default('None') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exception Details -->
+        <div class="error-500-exception">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🐛 Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="exception-grid">
+                        <div class="exception-item">
+                            <strong>Exception Class:</strong>
+                            <span>{{ debug_info.error_type|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>File:</strong>
+                            <span>{{ debug_info.file|default('N/A') }}:{{ debug_info.line|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Message:</strong>
+                            <span>{{ debug_info.error_message|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Error Code:</strong>
+                            <span>{{ debug_info.error_code|default('N/A') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Stack Trace -->
+                    <div class="stack-trace-section">
+                        <details class="stack-trace-details">
+                            <summary class="stack-trace-summary">
+                                <span>📚 Stack Trace</span>
+                                <span class="expand-icon">▼</span>
+                            </summary>
+                            <div class="stack-trace-content">
+                                <pre class="stack-trace-code">{{ debug_info.stack_trace|default('N/A') }}</pre>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Debug Information -->
+        <div class="error-500-enhanced-debug">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔍 Enhanced Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="enhanced-debug-section">
+                        <div class="debug-header">
+                            <h4>📋 Copy-Paste Debug Report</h4>
+                            <button class="copy-debug-btn" onclick="copyDebugReport()">
+                                <i class="fas fa-copy"></i> Copy Report
+                            </button>
+                        </div>
+                        <p><strong>Copy the text below and paste it in your support request:</strong></p>
+                        <textarea class="debug-report-textarea" id="debugReport" readonly>🚫 ACCESS FORBIDDEN DEBUG REPORT
+📅 Timestamp: {{ debug_info.timestamp|default('N/A') }}
+🔍 Context: {{ debug_info.context|default('N/A') }}
+❌ Error Type: {{ debug_info.error_type|default('N/A') }}
+💬 Error Message: {{ debug_info.error_message|default('N/A') }}
+🔢 Error Code: {{ debug_info.error_code|default('N/A') }}
+📁 File: {{ debug_info.file|default('N/A') }}
+📍 Line: {{ debug_info.line|default('N/A') }}
+
+🌐 REQUEST INFORMATION
+📡 Method: {{ debug_info.request_info.method|default('N/A') }}
+🔗 URI: {{ debug_info.request_info.uri|default('N/A') }}
+🌍 User Agent: {{ debug_info.request_info.user_agent|default('N/A') }}
+🌐 Remote Address: {{ debug_info.request_info.remote_addr|default('N/A') }}
+🏠 HTTP Host: {{ debug_info.request_info.http_host|default('N/A') }}
+
+🔐 ACCESS CONTROL INFORMATION
+🆔 User ID: {{ user_id|default('N/A') }}
+📊 User Role: {{ user_role|default('N/A') }}
+🔑 Required Role: {{ required_role|default('N/A') }}
+📁 Resource Type: {{ resource_type|default('N/A') }}
+🔒 Permission Level: {{ permission_level|default('N/A') }}
+
+🔐 SESSION INFORMATION
+🆔 Session ID: {{ debug_info.session_info.session_id|default('N/A') }}
+📊 Session Status: {{ debug_info.session_info.session_status|default('N/A') }}
+📝 Session Data: {{ debug_info.session_info.session_data|json_encode|default('N/A') }}
+🏷️ Session Name: {{ debug_info.session_info.session_name|default('N/A') }}
+
+💾 MEMORY USAGE
+📊 Memory Usage: {{ debug_info.memory_usage.memory_usage|default('N/A') }} bytes
+📈 Memory Peak: {{ debug_info.memory_usage.memory_peak|default('N/A') }} bytes
+🚫 Memory Limit: {{ debug_info.memory_usage.memory_limit|default('N/A') }}
+
+🐘 PHP INFORMATION
+📋 PHP Version: {{ debug_info.php_info.php_version|default('N/A') }}
+🔧 Extensions: {{ debug_info.php_info.extensions|join(', ')|default('N/A') }}
+📊 Error Reporting: {{ debug_info.php_info.error_reporting|default('N/A') }}
+👁️ Display Errors: {{ debug_info.php_info.display_errors|default('N/A') }}
+📝 Log Errors: {{ debug_info.php_info.log_errors|default('N/A') }}
+
+📚 STACK TRACE
+{{ debug_info.stack_trace|default('N/A') }}
+
+🚫 END ACCESS FORBIDDEN DEBUG REPORT</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shahid Logging Information -->
+        <div class="error-500-logging">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📊 Shahid Logging System</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="logging-info">
+                        <p>This 403 error has been automatically logged through the Shahid logging system with comprehensive context.</p>
+                        <p>Check the application logs for detailed debugging information.</p>
+                        <div class="log-file-info">
+                            <strong>Log File:</strong>
+                            <code>storage/logs/application-{{ "now"|date("Y-m-d") }}.log</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Quote -->
+        <div class="error-500-quote">
+            <div class="islamic-quote-card">
+                <div class="quote-icon">🕌</div>
+                <div class="quote-content">
+                    <p class="quote-text-arabic">"إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ"</p>
+                    <p class="quote-text-english">"Indeed, Allah orders justice and good conduct."</p>
+                    <p class="quote-reference">- Quran 16:90</p>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html> 
+</div>
+
+<script>
+function copyDebugReport() {
+    const textarea = document.getElementById('debugReport');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        
+        // Show success feedback
+        const btn = event.target.closest('.copy-debug-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        
+        // Fallback for modern browsers
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = event.target.closest('.copy-debug-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+}
+</script>
+{% endblock %} 

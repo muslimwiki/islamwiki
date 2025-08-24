@@ -6,6 +6,7 @@ namespace IslamWiki\Providers;
 
 use IslamWiki\Core\Logging\ShahidLogger;
 use Psr\Container\ContainerInterface;
+use IslamWiki\Core\Container\AsasContainer;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,7 +23,7 @@ class LoggingServiceProvider
      * @param ContainerInterface $container
      * @return void
      */
-    public function register(ContainerInterface $container): void
+    public function register(AsasContainer $container): void
     {
         // error_log('LoggingServiceProvider: register() called');
         $container->set(LoggerInterface::class, function (ContainerInterface $c) {
@@ -59,6 +60,45 @@ class LoggingServiceProvider
         });
 
         // error_log('LoggingServiceProvider: register() completed');
+        
+        // Initialize Shahid Error Handler
+        $this->initializeShahidErrorHandler($container);
+        
+        // Register Template Management Extension
+        $this->registerTemplateManagementExtension($container);
+    }
+    
+    /**
+     * Initialize Shahid error handler
+     */
+    private function initializeShahidErrorHandler(AsasContainer $container): void
+    {
+        try {
+            $logger = $container->get(LoggerInterface::class);
+            $debug = $container->get('settings')['debug'] ?? false;
+            
+            \IslamWiki\Core\Error\ShahidErrorHandler::initialize($logger, $debug);
+            
+            $container->get('shahid.logger')->info('Shahid Error Handler initialized successfully');
+        } catch (\Exception $e) {
+            error_log('Failed to initialize Shahid Error Handler: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Register Template Management Extension
+     */
+    private function registerTemplateManagementExtension(AsasContainer $container): void
+    {
+        try {
+            $extension = new \IslamWiki\Extensions\TemplateManagementExtension\TemplateManagementExtension($container);
+            $container->set('template.management', $extension);
+            $container->alias('template.management', \IslamWiki\Extensions\TemplateManagementExtension\TemplateManagementExtension::class);
+            
+            $container->get('shahid.logger')->info('Template Management Extension registered successfully');
+        } catch (\Exception $e) {
+            error_log('Failed to register Template Management Extension: ' . $e->getMessage());
+        }
     }
 
     /**

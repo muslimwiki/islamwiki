@@ -1457,6 +1457,13 @@ body {
     z-index: 1;
 }
 
+/* Ensure admin grid maintains horizontal layout */
+.admin-dashboard .admin-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+    gap: 2rem !important;
+}
+
 .dashboard-widget {
     background: var(--islamic-white);
     border-radius: var(--radius-lg);
@@ -2387,7 +2394,8 @@ body {
     }
     
     .admin-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+        gap: 1.5rem !important;
     }
     
     .widget-large {
@@ -9332,4 +9340,501 @@ body {
 
 .debug-report-textarea::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
+}
+
+/* ===== 404 ERROR PAGE STYLES ===== */
+.error-page-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--islamic-dark-blue) 0%, var(--islamic-blue) 100%);
+}
+
+.error-content {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    background: var(--islamic-white);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.error-header {
+    margin-bottom: 2rem;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--islamic-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    line-height: 1;
+}
+
+.error-title {
+    font-size: 2.5rem;
+    color: var(--islamic-dark-blue);
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.error-subtitle {
+    font-size: 1.5rem;
+    color: var(--islamic-text-secondary);
+    margin: 0;
+    font-weight: 500;
+}
+
+.error-message {
+    margin-bottom: 2.5rem;
+}
+
+.error-description,
+.error-description-en {
+    font-size: 1.25rem;
+    color: var(--islamic-text-primary);
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.error-suggestions {
+    margin-bottom: 2.5rem;
+}
+
+.suggestions-title,
+.suggestions-title-en {
+    font-size: 1.5rem;
+    color: var(--islamic-dark-blue);
+    margin: 0 0 1.5rem 0;
+    font-weight: 600;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.suggestion-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--islamic-dark-blue);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--islamic-gold);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+}
+
+.suggestion-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.suggestion-text,
+.suggestion-text-en {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0.25rem 0;
+}
+
+.error-quote {
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--islamic-cream) 0%, #f0ede5 100%);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--islamic-gold);
+}
+
+.arabic-quote {
+    font-size: 1.5rem;
+    color: var(--islamic-dark-blue);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    line-height: 1.8;
+}
+
+.english-quote {
+    font-size: 1.1rem;
+    color: var(--islamic-text-secondary);
+    margin: 0;
+    font-style: italic;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-blue);
+}
+
+.btn-primary:hover {
+    background: #c19b2e;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--islamic-dark-blue);
+    border: 2px solid var(--islamic-gold);
+    border-radius: var(--radius-lg);
+}
+
+.btn-secondary:hover {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-blue);
+    transform: translateY(-1px);
+}
+
+.technical-info {
+    margin-bottom: 2rem;
+}
+
+.tech-details {
+    background: var(--islamic-cream);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.tech-summary {
+    padding: 1rem 1.5rem;
+    background: var(--islamic-dark-blue);
+    color: var(--islamic-white);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.tech-summary:hover {
+    background: var(--islamic-blue);
+}
+
+.tech-content {
+    padding: 1.5rem;
+}
+
+.tech-content p {
+    margin: 0.5rem 0;
+    color: var(--islamic-text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.shahid-logging {
+    margin-top: 2rem;
+}
+
+.logging-info {
+    background: linear-gradient(135deg, var(--islamic-green) 0%, #047857 100%);
+    color: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    text-align: left;
+}
+
+.logging-info h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.logging-info p {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+/* ===== 404 ERROR PAGE STYLES ===== */
+/* 404 errors now use the same structure as 500 errors for consistency */
+/* The header color will be overridden for 404 pages to use blue instead of red */
+
+/* Override header colors for 404 pages */
+.error-500-container .error-500-header[data-error-type="404"] {
+    background: linear-gradient(135deg, var(--islamic-blue) 0%, var(--islamic-dark-blue) 100%);
+    box-shadow: 0 8px 25px rgba(23, 32, 61, 0.3);
+}
+
+/* Add specific 404 styling if needed */
+.error-500-container[data-error-type="404"] .error-500-header {
+    background: linear-gradient(135deg, var(--islamic-blue) 0%, var(--islamic-dark-blue) 100%);
+    box-shadow: 0 8px 25px rgba(23, 32, 61, 0.3);
+}
+
+/* ===== 403 ERROR PAGE STYLES ===== */
+/* 403 errors use red header for forbidden access */
+.error-500-container[data-error-type="403"] .error-500-header {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    box-shadow: 0 8px 25px rgba(183, 28, 28, 0.3);
+}
+
+/* 401 errors use orange header for authentication required */
+.error-500-container[data-error-type="401"] .error-500-header {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    box-shadow: 0 8px 25px rgba(245, 124, 0, 0.3);
+}
+
+/* 400 errors use amber header for bad request */
+.error-500-container[data-error-type="400"] .error-500-header {
+    background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+}
+
+/* 422 errors use deep orange header for unprocessable entity */
+.error-500-container[data-error-type="422"] .error-500-header {
+    background: linear-gradient(135deg, #ff5722 0%, #d84315 100%);
+    box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3);
+}
+
+/* 429 errors use orange header for too many requests */
+.error-500-container[data-error-type="429"] .error-500-header {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    box-shadow: 0 8px 25px rgba(245, 124, 0, 0.3);
+}
+
+/* 503 errors use purple header for service unavailable */
+.error-500-container[data-error-type="503"] .error-500-header {
+    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+    box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+}
+
+/* Generic errors use gray header */
+.error-500-container[data-error-type="generic"] .error-500-header {
+    background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
+    box-shadow: 0 8px 25px rgba(96, 125, 139, 0.3);
+}
+
+/* ===== ACCESS CONTROL STYLES ===== */
+.access-control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.access-control-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--islamic-green);
+}
+
+.access-control-item strong {
+    color: var(--islamic-green);
+    font-weight: 600;
+}
+
+.access-control-item span {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* ===== AUTHENTICATION STATUS STYLES ===== */
+.auth-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.auth-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--islamic-blue);
+}
+
+.auth-status-item strong {
+    color: var(--islamic-blue);
+    font-weight: 600;
+}
+
+.auth-status-item span {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* ===== RATE LIMIT STYLES ===== */
+.rate-limit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.rate-limit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #ff9800;
+}
+
+.rate-limit-item strong {
+    color: #ff9800;
+    font-weight: 600;
+}
+
+.rate-limit-item span {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* ===== SERVICE STATUS STYLES ===== */
+.service-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.service-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #9c27b0;
+}
+
+.service-status-item strong {
+    color: #9c27b0;
+    font-weight: 600;
+}
+
+.service-status-item span {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* ===== COPY BUTTON STYLES ===== */
+.debug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.copy-debug-btn {
+    position: relative;
+    background: #2e7d32;
+    color: white;
+    border: 2px solid #1b5e20;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    min-width: 140px;
+    justify-content: center;
+}
+
+.copy-debug-btn:hover {
+    background: #388e3c;
+    border-color: #2e7d32;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(46, 125, 50, 0.5);
+}
+
+.copy-debug-btn:active {
+    transform: translateY(0);
+    background: #1b5e20;
+}
+
+.copy-debug-btn.copied {
+    background: #1976d2;
+    border-color: #1565c0;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+}
+
+.copy-debug-btn i {
+    font-size: 1.1rem;
+    color: white;
+}
+
+.copy-debug-btn span {
+    color: white;
+    font-weight: 600;
+}
+
+/* Additional button enhancements for better visibility */
+.copy-debug-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.copy-debug-btn:hover::before {
+    opacity: 1;
+}
+
+/* Ensure button text is always readable */
+.copy-debug-btn * {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== NAVIGATION POSITIONING ===== */
+/* Move navigation options to be right after the hero section */
+.error-500-navigation {
+    order: -1; /* This will move it to the top */
+    margin-bottom: 2rem;
 }

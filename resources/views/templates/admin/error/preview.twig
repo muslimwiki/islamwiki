@@ -1,0 +1,155 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Preview Error Template - Admin Dashboard{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>👁️ Preview Error Template: {{ template.name }}</h1>
+        <p>Live preview of the {{ template.name }} error template with customization options</p>
+        <div class="admin-mode-indicator">
+            <span class="mode-badge mode-admin">Admin Mode</span>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Preview Controls -->
+        <div class="preview-controls">
+            <div class="control-group">
+                <h3>🎛️ Preview Customization</h3>
+                <div class="control-grid">
+                    <div class="control-item">
+                        <label for="preview-theme">Theme:</label>
+                        <select id="preview-theme" onchange="updatePreview()">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label for="preview-device">Device:</label>
+                        <select id="preview-device" onchange="updatePreview()">
+                            <option value="desktop">Desktop</option>
+                            <option value="tablet">Tablet</option>
+                            <option value="mobile">Mobile</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label for="preview-language">Language:</label>
+                        <select id="preview-language" onchange="updatePreview()">
+                            <option value="en">English</option>
+                            <option value="ar">Arabic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-actions">
+                <a href="/templates/error/{{ template.name }}/edit" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Template
+                </a>
+                <a href="/templates/error" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+
+        <!-- Preview Frame -->
+        <div class="preview-frame-container">
+            <div class="preview-header">
+                <h3>📱 Live Preview</h3>
+                <div class="preview-info">
+                    <span class="preview-url">{{ template.name }} Error Page</span>
+                    <span class="preview-status">Live</span>
+                </div>
+            </div>
+            
+            <div class="preview-frame-wrapper">
+                <iframe id="preview-frame" 
+                        src="/templates/error/{{ template.name }}/preview-content?theme=light&device=desktop&language=en"
+                        frameborder="0"
+                        width="100%"
+                        height="600">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Template Information -->
+        <div class="template-info">
+            <div class="info-card">
+                <h3>📋 Template Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Name:</strong>
+                        <span>{{ template.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Type:</strong>
+                        <span>{{ template.type }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        <span class="status-badge status-{{ template.status }}">{{ template.status }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Modified:</strong>
+                        <span>{{ template.last_modified }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Data -->
+        <div class="sample-data">
+            <div class="data-card">
+                <h3>📊 Sample Data Used</h3>
+                <p>This preview uses sample data to demonstrate how the template will look with real content.</p>
+                <div class="data-preview">
+                    <div class="data-item">
+                        <strong>Error Code:</strong>
+                        <span>{{ sampleData.error_code }}</span>
+                    </div>
+                    <div class="data-item">
+                        <strong>Error Message:</strong>
+                        <span>{{ sampleData.error_message }}</span>
+                    </div>
+                    <div class="data-item">
+                        <strong>Requested URL:</strong>
+                        <span>{{ sampleData.requested_url }}</span>
+                    </div>
+                    <div class="data-item">
+                        <strong>Timestamp:</strong>
+                        <span>{{ sampleData.timestamp }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updatePreview() {
+    const theme = document.getElementById('preview-theme').value;
+    const device = document.getElementById('preview-device').value;
+    const language = document.getElementById('preview-language').value;
+    
+    const previewUrl = `/templates/error/{{ template.name }}/preview-content?theme=${theme}&device=${device}&language=${language}`;
+    
+    const iframe = document.getElementById('preview-frame');
+    iframe.src = previewUrl;
+    
+    // Update preview info
+    document.querySelector('.preview-url').textContent = `${theme} theme - ${device} view - ${language}`;
+}
+
+// Auto-refresh preview every 30 seconds to catch template changes
+setInterval(() => {
+    const iframe = document.getElementById('preview-frame');
+    iframe.src = iframe.src;
+}, 30000);
+</script>
+{% endblock %} 

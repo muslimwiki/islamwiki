@@ -254,16 +254,16 @@ class PageController extends Controller
                 }
             }
 
-            // If still not found, redirect to red link handler
+            // If still not found, redirect to create page
             if (!$page) {
                 if ($this->logger) {
-                    $this->logger->info('Page not found, redirecting to red link handler', ['slug' => $slug]);
+                    $this->logger->info('Page not found, redirecting to create page', ['slug' => $slug]);
                 }
                 
-                // Redirect to red link handler
+                // Redirect to main create page with title parameter
                 return new Response(
                     302,
-                    ['Location' => '/wiki/' . urlencode($slug) . '/redlink'],
+                    ['Location' => '/wiki/create?title=' . urlencode($slug)],
                     ''
                 );
             }

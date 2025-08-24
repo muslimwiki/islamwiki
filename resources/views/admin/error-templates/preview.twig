@@ -1,0 +1,287 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Preview {{ template.name|upper }} Template - Admin Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <div class="header-content">
+            <h1>👁️ Preview {{ template.name|upper }} Template</h1>
+            <p>Live preview of the {{ template.name|upper }} error page template</p>
+        </div>
+        <div class="header-actions">
+            <a href="/dashboard/templates/error" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Templates
+            </a>
+            <a href="/dashboard/templates/error/{{ template.name }}/edit" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Template
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Preview Controls -->
+        <div class="preview-controls">
+            <div class="controls-header">
+                <h3>🎛️ Preview Controls</h3>
+                <p>Customize the preview environment</p>
+            </div>
+            
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="preview-theme">Theme:</label>
+                    <select id="preview-theme" onchange="changePreviewTheme(this.value)">
+                        <option value="light">Light Theme</option>
+                        <option value="dark">Dark Theme</option>
+                        <option value="auto">Auto (System)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="preview-device">Device:</label>
+                    <select id="preview-device" onchange="changePreviewDevice(this.value)">
+                        <option value="desktop">Desktop</option>
+                        <option value="tablet">Tablet</option>
+                        <option value="mobile">Mobile</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="preview-language">Language:</label>
+                    <select id="preview-language" onchange="changePreviewLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="ar">العربية</option>
+                        <option value="ur">اردو</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <button class="btn btn-info" onclick="refreshPreview()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleFullscreen()">
+                        <i class="fas fa-expand"></i> Fullscreen
+                    </button>
+                    <button class="btn btn-success" onclick="openInNewTab()">
+                        <i class="fas fa-external-link-alt"></i> New Tab
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Frame -->
+        <div class="preview-frame-container">
+            <div class="preview-frame-header">
+                <h3>📱 Live Preview</h3>
+                <div class="frame-info">
+                    <span id="frame-size">Desktop (1920x1080)</span>
+                    <span id="frame-url">Preview URL</span>
+                </div>
+            </div>
+            
+            <div class="preview-frame-wrapper" id="preview-wrapper">
+                <iframe 
+                    id="preview-frame" 
+                    src="/dashboard/templates/error/{{ template.name }}/preview-content"
+                    frameborder="0"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Template Information -->
+        <div class="template-info-section">
+            <div class="info-header">
+                <h3>📋 Template Details</h3>
+            </div>
+            <div class="info-content">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Template Name:</strong>
+                        <span>{{ template.name|upper }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>File:</strong>
+                        <span>{{ template.filename }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Size:</strong>
+                        <span>{{ (template.size / 1024)|round(2) }} KB</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Last Modified:</strong>
+                        <span>{{ template.modified|date('M j, Y g:i A') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong>
+                        <span class="status-badge status-{{ template.status }}">
+                            {% if template.status == 'active' %}✅ Active
+                            {% elseif template.status == 'recently_modified' %}🔄 Recently Modified
+                            {% else %}❌ Missing
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Type:</strong>
+                        <span>{{ template.description }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Data Used -->
+        <div class="sample-data-section">
+            <div class="data-header">
+                <h3>📊 Sample Data Used</h3>
+                <p>This preview uses the following sample data to render the template</p>
+            </div>
+            <div class="data-content">
+                <div class="data-grid">
+                    {% for key, value in sampleData %}
+                    <div class="data-item">
+                        <strong>{{ key }}:</strong>
+                        <span>{{ value|json_encode }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="actions-header">
+                <h3>⚡ Quick Actions</h3>
+                <p>Perform actions on this template</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="testTemplate()">
+                    <i class="fas fa-vial"></i> Test Template
+                </button>
+                <button class="btn btn-info" onclick="compareWithOriginal()">
+                    <i class="fas fa-balance-scale"></i> Compare
+                </button>
+                <button class="btn btn-success" onclick="exportTemplate()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-warning" onclick="shareTemplate()">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/dashboard/templates/error" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Templates
+            </a>
+            <a href="/dashboard/templates/error/{{ template.name }}/edit" class="btn btn-outline">
+                <i class="fas fa-edit"></i> Edit Template
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentTheme = 'light';
+let currentDevice = 'desktop';
+let currentLanguage = 'en';
+
+// Preview control functions
+function changePreviewTheme(theme) {
+    currentTheme = theme;
+    updatePreviewFrame();
+    updateFrameInfo();
+}
+
+function changePreviewDevice(device) {
+    currentDevice = device;
+    updatePreviewFrame();
+    updateFrameInfo();
+}
+
+function changePreviewLanguage(language) {
+    currentLanguage = language;
+    updatePreviewFrame();
+    updateFrameInfo();
+}
+
+function updatePreviewFrame() {
+    const frame = document.getElementById('preview-frame');
+    const currentSrc = frame.src;
+    const baseUrl = currentSrc.split('?')[0];
+    const newUrl = `${baseUrl}?theme=${currentTheme}&device=${currentDevice}&language=${currentLanguage}`;
+    
+    frame.src = newUrl;
+}
+
+function updateFrameInfo() {
+    const sizeElement = document.getElementById('frame-size');
+    const urlElement = document.getElementById('frame-url');
+    
+    // Update size display
+    const sizes = {
+        'desktop': 'Desktop (1920x1080)',
+        'tablet': 'Tablet (768x1024)',
+        'mobile': 'Mobile (375x667)'
+    };
+    sizeElement.textContent = sizes[currentDevice] || 'Desktop (1920x1080)';
+    
+    // Update URL display
+    urlElement.textContent = `Preview with ${currentTheme} theme, ${currentDevice} device, ${currentLanguage} language`;
+}
+
+function refreshPreview() {
+    const frame = document.getElementById('preview-frame');
+    frame.src = frame.src;
+}
+
+function toggleFullscreen() {
+    const wrapper = document.getElementById('preview-wrapper');
+    wrapper.classList.toggle('fullscreen');
+    
+    if (wrapper.classList.contains('fullscreen')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+function openInNewTab() {
+    const frame = document.getElementById('preview-frame');
+    window.open(frame.src, '_blank');
+}
+
+// Quick action functions
+function testTemplate() {
+    alert('Template testing functionality will be implemented here');
+}
+
+function compareWithOriginal() {
+    alert('Template comparison functionality will be implemented here');
+}
+
+function exportTemplate() {
+    alert('Template export functionality will be implemented here');
+}
+
+function shareTemplate() {
+    alert('Template sharing functionality will be implemented here');
+}
+
+// Initialize preview
+document.addEventListener('DOMContentLoaded', function() {
+    updateFrameInfo();
+    
+    // Set default theme based on system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.getElementById('preview-theme').value = 'dark';
+        currentTheme = 'dark';
+    }
+});
+</script>
+{% endblock %} 

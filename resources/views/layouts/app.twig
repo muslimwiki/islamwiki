@@ -177,7 +177,7 @@
                                     <div class="user-role">{{ user.role|default('User') }}</div>
                                     <div class="user-stats">
                                         <span class="user-edits">Edits {{ user.edit_count|default('0') }}</span>
-                                        <span class="user-joined">Joined {{ user.created_at|default('Unknown')|date('j F Y') }}</span>
+                                        <span class="user-joined">Joined {% if user.created_at and user.created_at != 'Unknown' %}{{ user.created_at|date('j F Y') }}{% else %}Recently{% endif %}</span>
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,109 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Error Templates - User Dashboard{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>🚨 Error Templates</h1>
+        <p>Browse error page templates available on IslamWiki</p>
+        <div class="admin-mode-indicator">
+            <span class="mode-badge mode-user">User Mode</span>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Template Overview -->
+        <div class="template-overview">
+            <div class="overview-card">
+                <h3>📊 Error Template Overview</h3>
+                <div class="overview-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.total_templates }}</span>
+                        <span class="stat-label">Total Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.by_type.error.count }}</span>
+                        <span class="stat-label">Error Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ (stats.total_size / 1024)|round(2) }}</span>
+                        <span class="stat-label">Total Size (KB)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template List -->
+        <div class="template-list">
+            <div class="template-list-header">
+                <h3>📋 Available Error Templates</h3>
+                <p>Browse the error templates used by the platform</p>
+            </div>
+
+            <div class="template-grid">
+                {% for template in templates %}
+                <div class="template-card" data-template="{{ template.name }}">
+                    <div class="template-header">
+                        <div class="template-icon">
+                            {{ template.icon }}
+                        </div>
+                        <div class="template-info">
+                            <h4>{{ template.name|upper }}</h4>
+                            <span class="template-status status-{{ template.status }}">
+                                {% if template.status == 'active' %}✅ Active
+                                {% elseif template.status == 'recently_modified' %}🔄 Recently Modified
+                                {% else %}❌ Missing
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="template-details">
+                        <div class="detail-item">
+                            <strong>File:</strong>
+                            <span>{{ template.filename }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Size:</strong>
+                            <span>{{ (template.size / 1024)|round(2) }} KB</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Modified:</strong>
+                            <span>{{ template.modified|date('M j, Y g:i A') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Type:</strong>
+                            <span>{{ template.description }}</span>
+                        </div>
+                    </div>
+
+                    <div class="template-actions">
+                        <a href="/templates" class="btn btn-primary">
+                            <i class="fas fa-th-large"></i> Browse All
+                        </a>
+                        <a href="/dashboard" class="btn btn-secondary">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/templates" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Templates
+            </a>
+            <a href="/dashboard" class="btn btn-outline">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

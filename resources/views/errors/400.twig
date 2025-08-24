@@ -1,137 +1,259 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>400 - Bad Request | IslamWiki</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="error-container">
-        <!-- Error Icon -->
-        <div class="error-icon">⚠️</div>
-        
-        <!-- Error Code -->
-        <div class="error-code">400</div>
-        
-        <!-- Error Title -->
-        <h1 class="error-title">Bad Request</h1>
-        
-        <!-- Error Message -->
-        <p class="error-message">
-            The request could not be understood by the server due to malformed syntax. Please check your request and try again.
-        </p>
-        
-        <!-- Error Details -->
-        <div class="error-details">
-            <h3>Request Information</h3>
-            <ul>
-                <li>
-                    <span class="label">Time:</span>
-                    <span class="value">{{ timestamp|default('now'|date('Y-m-d H:i:s T')) }}</span>
-                </li>
-                <li>
-                    <span class="label">URL:</span>
-                    <span class="value">{{ request_url|default(app.request.uri|default('Unknown')) }}</span>
-                </li>
-                <li>
-                    <span class="label">Method:</span>
-                    <span class="value">{{ request_method|default(app.request.method|default('Unknown')) }}</span>
-                </li>
-                <li>
-                    <span class="label">IP Address:</span>
-                    <span class="value">{{ client_ip|default(app.request.clientIp|default('Unknown')) }}</span>
-                </li>
-                {% if app.debug %}
-                <li>
-                    <span class="label">Error:</span>
-                    <span class="value">{{ error_message|default('Bad request syntax') }}</span>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <a href="{{ path('home') }}" class="btn btn-primary">
-                <span class="button-text">Go to Homepage</span>
-                <span class="loading">↻</span>
-            </a>
-            <button onclick="window.history.back()" class="btn btn-secondary">
-                <span class="button-text">Go Back</span>
-                <span class="loading">↻</span>
-            </button>
-            <button onclick="location.reload()" class="btn btn-secondary">
-                <span class="button-text">Try Again</span>
-                <span class="loading">↻</span>
-            </button>
-            <a href="{{ path('contact')|default('#') }}" class="btn btn-danger">
-                <span class="button-text">Report Issue</span>
-                <span class="loading">↻</span>
-            </a>
-        </div>
-        
-        <!-- Islamic Quote -->
-        <div class="islamic-quote">
-            <div class="quote-text">
-                "And when you speak, be just, even if it be against a near relative."
-            </div>
-            <div class="quote-source">
-                — Quran 6:152
-            </div>
-        </div>
-        
-        <!-- Technical Information -->
-        <div class="technical-info">
-            <h4>What happened?</h4>
-            <p>The server could not understand your request due to:</p>
-            <ul>
-                <li>Malformed URL or parameters</li>
-                <li>Invalid request format</li>
-                <li>Missing required fields</li>
-                <li>Syntax errors in the request</li>
-            </ul>
-            
-            <h4 style="margin-top: 1rem;">What you can do:</h4>
-            <ul>
-                <li>Check the URL for typos or errors</li>
-                <li>Verify all required form fields are filled</li>
-                <li>Try refreshing the page</li>
-                <li>Contact support if the problem persists</li>
-            </ul>
-        </div>
+{% extends "layouts/app.twig" %}
+
+{% block title %}400 - Bad Request - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="error-500-container" data-error-type="400">
+    <!-- Error Header -->
+    <div class="error-500-header">
+        <div class="error-500-icon">⚠️</div>
+        <h1 class="error-500-title">400</h1>
+        <h2 class="error-500-subtitle">Bad Request</h2>
+        <p class="error-500-description">عذراً، الطلب الذي أرسلته غير صحيح<br>Sorry, the request you sent is invalid</p>
     </div>
 
-    <script>
-        // Button loading states
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.tagName === 'A') {
-                    this.classList.add('loading');
-                    setTimeout(() => {
-                        this.classList.remove('loading');
-                    }, 2000);
-                }
-            });
-        });
+    <!-- Error Content -->
+    <div class="error-500-content">
+        <!-- Navigation Options - Moved below hero section -->
+        <div class="error-500-navigation">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🧭 Navigation Options</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="navigation-grid">
+                        <a href="/" class="nav-option home">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="/wiki" class="nav-option wiki">
+                            <i class="fas fa-book"></i>
+                            <span>Wiki</span>
+                        </a>
+                        <a href="/search" class="nav-option search">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </a>
+                        <a href="/help" class="nav-option help">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        // Console logging for debugging
-        console.log('400 Bad Request Error Page Loaded');
-        console.log('Error Details:', {
-            timestamp: '{{ timestamp|default("now"|date("Y-m-d H:i:s T")) }}',
-            url: '{{ request_url|default(app.request.uri|default("Unknown")) }}',
-            method: '{{ request_method|default(app.request.method|default("Unknown")) }}',
-            client_ip: '{{ client_ip|default(app.request.clientIp|default("Unknown")) }}'
-        });
+        <!-- Error Message -->
+        <div class="error-500-message">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📋 Error Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="error-detail">
+                        <strong>Time:</strong>
+                        <span>{{ "now"|date("Y-m-d H:i:s T") }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>Request ID:</strong>
+                        <span>{{ request_id|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>Status Code:</strong>
+                        <span class="status-badge">{{ status_code|default('400') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>Requested URL:</strong>
+                        <span>{{ debug_info.request_info.uri|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>Method:</strong>
+                        <span>{{ debug_info.request_info.method|default('Unknown') }}</span>
+                    </div>
+                    
+                    <div class="error-detail">
+                        <strong>IP Address:</strong>
+                        <span>{{ debug_info.request_info.remote_addr|default('Unknown') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        // Analytics tracking (if available)
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'error_page_view', {
-                'error_code': '400',
-                'error_type': 'bad_request',
-                'page_title': '400 Bad Request'
-            });
-        }
-    </script>
-</body>
-</html> 
+        <!-- Exception Details -->
+        <div class="error-500-exception">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🐛 Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="exception-grid">
+                        <div class="exception-item">
+                            <strong>Exception Class:</strong>
+                            <span>{{ debug_info.error_type|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>File:</strong>
+                            <span>{{ debug_info.file|default('N/A') }}:{{ debug_info.line|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Message:</strong>
+                            <span>{{ debug_info.error_message|default('N/A') }}</span>
+                        </div>
+                        
+                        <div class="exception-item">
+                            <strong>Error Code:</strong>
+                            <span>{{ debug_info.error_code|default('N/A') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Stack Trace -->
+                    <div class="stack-trace-section">
+                        <details class="stack-trace-details">
+                            <summary class="stack-trace-summary">
+                                <span>📚 Stack Trace</span>
+                                <span class="expand-icon">▼</span>
+                            </summary>
+                            <div class="stack-trace-content">
+                                <pre class="stack-trace-code">{{ debug_info.stack_trace|default('N/A') }}</pre>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Debug Information -->
+        <div class="error-500-enhanced-debug">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔍 Enhanced Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="enhanced-debug-section">
+                        <div class="debug-header">
+                            <h4>📋 Copy-Paste Debug Report</h4>
+                            <button class="copy-debug-btn" onclick="copyDebugReport()">
+                                <i class="fas fa-copy"></i> Copy Report
+                            </button>
+                        </div>
+                        <p><strong>Copy the text below and paste it in your support request:</strong></p>
+                        <textarea class="debug-report-textarea" id="debugReport" readonly>⚠️ BAD REQUEST DEBUG REPORT
+📅 Timestamp: {{ debug_info.timestamp|default('N/A') }}
+🔍 Context: {{ debug_info.context|default('N/A') }}
+❌ Error Type: {{ debug_info.error_type|default('N/A') }}
+💬 Error Message: {{ debug_info.error_message|default('N/A') }}
+🔢 Error Code: {{ debug_info.error_code|default('N/A') }}
+📁 File: {{ debug_info.file|default('N/A') }}
+📍 Line: {{ debug_info.line|default('N/A') }}
+
+🌐 REQUEST INFORMATION
+📡 Method: {{ debug_info.request_info.method|default('N/A') }}
+🔗 URI: {{ debug_info.request_info.uri|default('N/A') }}
+🌍 User Agent: {{ debug_info.request_info.user_agent|default('N/A') }}
+🌐 Remote Address: {{ debug_info.request_info.remote_addr|default('N/A') }}
+🏠 HTTP Host: {{ debug_info.request_info.http_host|default('N/A') }}
+
+🔐 SESSION INFORMATION
+🆔 Session ID: {{ debug_info.session_info.session_id|default('N/A') }}
+📊 Session Status: {{ debug_info.session_info.session_status|default('N/A') }}
+📝 Session Data: {{ debug_info.session_info.session_data|json_encode|default('N/A') }}
+🏷️ Session Name: {{ debug_info.session_info.session_name|default('N/A') }}
+
+💾 MEMORY USAGE
+📊 Memory Usage: {{ debug_info.memory_usage.memory_usage|default('N/A') }} bytes
+📈 Memory Peak: {{ debug_info.memory_usage.memory_peak|default('N/A') }} bytes
+🚫 Memory Limit: {{ debug_info.memory_usage.memory_limit|default('N/A') }}
+
+🐘 PHP INFORMATION
+📋 PHP Version: {{ debug_info.php_info.php_version|default('N/A') }}
+🔧 Extensions: {{ debug_info.php_info.extensions|join(', ')|default('N/A') }}
+📊 Error Reporting: {{ debug_info.php_info.error_reporting|default('N/A') }}
+👁️ Display Errors: {{ debug_info.php_info.display_errors|default('N/A') }}
+📝 Log Errors: {{ debug_info.php_info.log_errors|default('N/A') }}
+
+📚 STACK TRACE
+{{ debug_info.stack_trace|default('N/A') }}
+
+⚠️ END BAD REQUEST DEBUG REPORT</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shahid Logging Information -->
+        <div class="error-500-logging">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>📊 Shahid Logging System</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="logging-info">
+                        <p>This 400 error has been automatically logged through the Shahid logging system with comprehensive context.</p>
+                        <p>Check the application logs for detailed debugging information.</p>
+                        <div class="log-file-info">
+                            <strong>Log File:</strong>
+                            <code>storage/logs/application-{{ "now"|date("Y-m-d") }}.log</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Quote -->
+        <div class="error-500-quote">
+            <div class="islamic-quote-card">
+                <div class="quote-icon">🕌</div>
+                <div class="quote-content">
+                    <p class="quote-text-arabic">"إِنَّ اللَّهَ لَا يَظْلِمُ مِثْقَالَ ذَرَّةٍ"</p>
+                    <p class="quote-text-english">"Indeed, Allah does not wrong [anyone] by [as much as] the weight of a speck of dust."</p>
+                    <p class="quote-reference">- Quran 4:40</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyDebugReport() {
+    const textarea = document.getElementById('debugReport');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        
+        // Show success feedback
+        const btn = event.target.closest('.copy-debug-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        
+        // Fallback for modern browsers
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = event.target.closest('.copy-debug-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+}
+</script>
+{% endblock %} 

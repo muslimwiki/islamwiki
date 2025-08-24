@@ -1,0 +1,157 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Error Template Management - Admin Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/skins/Bismillah/css/pages/admin-error-templates.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>🔧 Error Template Management</h1>
+        <p>Manage and customize error page templates for the IslamWiki platform</p>
+    </div>
+
+    <div class="admin-content">
+        <!-- Template Overview -->
+        <div class="template-overview">
+            <div class="overview-card">
+                <h3>📊 Template Overview</h3>
+                <div class="overview-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.total_templates }}</span>
+                        <span class="stat-label">Total Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.total_templates }}</span>
+                        <span class="stat-label">Error Templates</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.recently_modified }}</span>
+                        <span class="stat-label">Recently Modified</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ (stats.total_size / 1024)|round(2) }}</span>
+                        <span class="stat-label">Total Size (KB)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template List -->
+        <div class="template-list">
+            <div class="template-list-header">
+                <h3>📋 Available Templates</h3>
+                <p>Click on any template to edit or preview it</p>
+            </div>
+
+            <div class="template-grid">
+                {% for template in templates %}
+                <div class="template-card" data-template="{{ template.name }}">
+                    <div class="template-header">
+                        <div class="template-icon">
+                            {{ template.icon }}
+                        </div>
+                        <div class="template-info">
+                            <h4>{{ template.name|upper }}</h4>
+                            <span class="template-status status-{{ template.status }}">
+                                {% if template.status == 'active' %}✅ Active
+                                {% elseif template.status == 'recently_modified' %}🔄 Recently Modified
+                                {% else %}❌ Missing
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="template-details">
+                        <div class="detail-item">
+                            <strong>File:</strong>
+                            <span>{{ template.filename }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Size:</strong>
+                            <span>{{ (template.size / 1024)|round(2) }} KB</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Modified:</strong>
+                            <span>{{ template.modified|date('M j, Y g:i A') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Type:</strong>
+                            <span>{{ template.description }}</span>
+                        </div>
+                    </div>
+
+                    <div class="template-actions">
+                        <a href="/dashboard/templates/error/{{ template.name }}/edit" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="/dashboard/templates/error/{{ template.name }}/preview" class="btn btn-secondary">
+                            <i class="fas fa-eye"></i> Preview
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-actions-header">
+                <h3>⚡ Quick Actions</h3>
+                <p>Perform bulk operations on templates</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="backupAllTemplates()">
+                    <i class="fas fa-download"></i> Backup All
+                </button>
+                <button class="btn btn-warning" onclick="validateAllTemplates()">
+                    <i class="fas fa-check-circle"></i> Validate All
+                </button>
+                <button class="btn btn-info" onclick="exportTemplates()">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+                <button class="btn btn-danger" onclick="restoreDefaults()">
+                    <i class="fas fa-undo"></i> Restore Defaults
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="admin-navigation">
+            <a href="/dashboard" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="/dashboard/templates" class="btn btn-outline">
+                <i class="fas fa-th-large"></i> All Templates
+            </a>
+            <a href="/dashboard/templates/error" class="btn btn-outline active">
+                <i class="fas fa-exclamation-triangle"></i> Error Templates
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Quick action functions
+function backupAllTemplates() {
+    alert('Backup functionality will be implemented here');
+}
+
+function validateAllTemplates() {
+    alert('Validation functionality will be implemented here');
+}
+
+function exportTemplates() {
+    alert('Export functionality will be implemented here');
+}
+
+function restoreDefaults() {
+    if (confirm('Are you sure you want to restore all templates to their default state? This will overwrite any customizations.')) {
+        alert('Restore functionality will be implemented here');
+    }
+}
+</script>
+{% endblock %} 

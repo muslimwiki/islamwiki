@@ -48,7 +48,7 @@
             {% if ':' in page.slug %}
                 {% set displaySlug = page.slug|split(':')|last %}
             {% endif %}
-            <a href="/create?title={{ displaySlug }}" class="btn btn-primary">
+            <a href="/wiki/create?title={{ displaySlug }}" class="btn btn-primary">
                 <span>✏️</span>
                 Edit Page
             </a>
