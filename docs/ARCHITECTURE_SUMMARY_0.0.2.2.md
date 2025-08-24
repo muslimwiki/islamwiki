@@ -1,8 +1,8 @@
-# 🏗️ **IslamWiki Architecture Summary: Version 0.0.2.2**
+# 🏗️ **IslamWiki Architecture Summary: Version 0.0.2.8**
 
 ## 📋 **Overview**
 
-This document summarizes the **correct architecture** for IslamWiki version 0.0.2.2, specifically addressing the file organization and asset serving structure.
+This document summarizes the **correct architecture** for IslamWiki version 0.0.2.8, specifically addressing the file organization, asset serving structure, and enhanced error handling system.
 
 ---
 

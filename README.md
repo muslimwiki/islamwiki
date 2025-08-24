@@ -1,6 +1,6 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.2.7-blue.svg)](https://github.com/islamwiki/islamwiki)
+[![Version](https://img.shields.io/badge/version-0.0.2.8-blue.svg)](https://github.com/islamwiki/islamwiki)
 [![Status](https://img.shields.io/badge/status-Fully%20Operational-green.svg)](https://github.com/islamwiki/islamwiki)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
@@ -8,13 +8,14 @@
 
 ## 🌟 **Current Status: FULLY OPERATIONAL** ✅
 
-**Version 0.0.2.7** represents a complete dashboard system and error handling overhaul with:
+**Version 0.0.2.8** represents an authentication fix and enhanced error handling system with:
 - ✅ **Complete Dashboard System** - Role-based admin and user dashboards with Bismillah skin
 - ✅ **Admin Dashboard** - Comprehensive system administration with secondary navigation
 - ✅ **User Dashboard** - Personal dashboard for regular users with learning progress
 - ✅ **View Mode Toggle** - Admin users can switch between admin and user dashboard views
 - ✅ **Secondary Navigation** - Left-aligned navigation for dashboard functions
 - ✅ **500 Error Page** - Beautiful Bismillah-themed error page with comprehensive information
+- ✅ **Authentication Fix** - Resolved non-admin user access issues to /wiki pages
 - ✅ **User Profile System** - `/wiki/User/{username}` namespace with profile pages
 - ✅ **Wiki Index Page** - Complete wiki page listing with Bismillah skin
 - ✅ **Enhanced CSS Architecture** - Centralized styling in bismillah.css with responsive design

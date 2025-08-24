@@ -1,0 +1,324 @@
+{% extends "layouts/bismillah.twig" %}
+
+{% block title %}{{ page.title }} - Compare Revisions - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="compare-container">
+    <!-- Compare Header -->
+    <div class="compare-header">
+        <div class="compare-title">
+            <h1><i class="fas fa-balance-scale"></i> Compare Revisions</h1>
+            <p>Comparing revisions of: <strong>{{ page.title }}</strong></p>
+        </div>
+        <div class="compare-actions">
+            <a href="/wiki/{{ page.slug }}/history" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to History
+            </a>
+            <a href="/wiki/{{ page.slug }}" class="btn btn-primary">
+                <i class="fas fa-eye"></i> View Current Page
+            </a>
+        </div>
+    </div>
+
+    <!-- Revision Info -->
+    <div class="revision-info-panel">
+        <div class="revision-card old-revision">
+            <div class="revision-header">
+                <h3><i class="fas fa-history"></i> Old Revision</h3>
+                <span class="revision-id">#{{ old_revision.id }}</span>
+            </div>
+            <div class="revision-meta">
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span class="editor">{{ old_revision.username }}</span>
+                    {% if old_revision.role %}
+                    <span class="role-badge">{{ old_revision.role }}</span>
+                    {% endif %}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span class="timestamp">{{ old_revision.created_at|date('M j, Y \a\t g:i A') }}</span>
+                </div>
+                {% if old_revision.comment %}
+                <div class="meta-item">
+                    <i class="fas fa-comment"></i>
+                    <span class="comment">{{ old_revision.comment }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="revision-arrow">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+
+        <div class="revision-card new-revision">
+            <div class="revision-header">
+                <h3><i class="fas fa-file-alt"></i> New Revision</h3>
+                <span class="revision-id">#{{ new_revision.id }}</span>
+            </div>
+            <div class="revision-meta">
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span class="editor">{{ new_revision.username }}</span>
+                    {% if new_revision.role %}
+                    <span class="role-badge">{{ new_revision.role }}</span>
+                    {% endif %}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span class="timestamp">{{ new_revision.created_at|date('M j, Y \a\t g:i A') }}</span>
+                </div>
+                {% if new_revision.comment %}
+                <div class="meta-item">
+                    <i class="fas fa-comment"></i>
+                    <span class="comment">{{ new_revision.comment }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Diff Summary -->
+    <div class="diff-summary">
+        <div class="summary-header">
+            <h3><i class="fas fa-chart-bar"></i> Changes Summary</h3>
+        </div>
+        <div class="summary-stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ diff.additions }}</div>
+                <div class="stat-label">Lines Added</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ diff.deletions }}</div>
+                <div class="stat-label">Lines Removed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ diff.changes }}</div>
+                <div class="stat-label">Lines Changed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ diff.total }}</div>
+                <div class="stat-label">Total Changes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diff Content -->
+    <div class="diff-content">
+        <div class="diff-header">
+            <h3><i class="fas fa-code-branch"></i> Content Differences</h3>
+            <div class="diff-controls">
+                <button class="btn btn-sm btn-outline" id="toggleInline">
+                    <i class="fas fa-columns"></i> Toggle View
+                </button>
+                <button class="btn btn-sm btn-outline" id="expandAll">
+                    <i class="fas fa-expand"></i> Expand All
+                </button>
+                <button class="btn btn-sm btn-outline" id="collapseAll">
+                    <i class="fas fa-compress"></i> Collapse All
+                </button>
+            </div>
+        </div>
+
+        <div class="diff-view" id="diffView">
+            {% if diff.lines %}
+            <div class="diff-lines">
+                {% for line in diff.lines %}
+                <div class="diff-line {{ line.type }}" data-line-number="{{ loop.index }}">
+                    <div class="line-number old-line">
+                        {% if line.old_number %}
+                        {{ line.old_number }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </div>
+                    <div class="line-number new-line">
+                        {% if line.new_number %}
+                        {{ line.new_number }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </div>
+                    <div class="line-content">
+                        <span class="line-type">
+                            {% if line.type == 'added' %}
+                            <i class="fas fa-plus"></i>
+                            {% elseif line.type == 'deleted' %}
+                            <i class="fas fa-minus"></i>
+                            {% elseif line.type == 'changed' %}
+                            <i class="fas fa-exchange-alt"></i>
+                            {% else %}
+                            <i class="fas fa-circle"></i>
+                            {% endif %}
+                        </span>
+                        <span class="line-text {{ line.type }}">
+                            {% if line.type == 'deleted' %}
+                            <del>{{ line.old_content }}</del>
+                            {% elseif line.type == 'added' %}
+                            <ins>{{ line.new_content }}</ins>
+                            {% elseif line.type == 'changed' %}
+                            <div class="changed-line">
+                                <div class="old-content"><del>{{ line.old_content }}</del></div>
+                                <div class="new-content"><ins>{{ line.new_content }}</ins></div>
+                            </div>
+                            {% else %}
+                            {{ line.content }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-diff">
+                <div class="no-diff-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4>No Differences Found</h4>
+                <p>The content of these two revisions is identical.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="compare-actions">
+        <div class="action-group">
+            <a href="/wiki/{{ page.slug }}/revision/{{ old_revision.id }}" class="btn btn-outline">
+                <i class="fas fa-eye"></i> View Old Revision
+            </a>
+            <a href="/wiki/{{ page.slug }}/revision/{{ new_revision.id }}" class="btn btn-outline">
+                <i class="fas fa-eye"></i> View New Revision
+            </a>
+        </div>
+        <div class="action-group">
+            <button class="btn btn-warning" id="revertToOld">
+                <i class="fas fa-undo"></i> Revert to Old Revision
+            </button>
+            <button class="btn btn-warning" id="revertToNew">
+                <i class="fas fa-undo"></i> Revert to New Revision
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Revert Confirmation Modal -->
+<div class="modal" id="revertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Revert</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to revert this page to revision <strong id="revertRevisionId"></strong>?</p>
+            <p><strong>Warning:</strong> This action will create a new revision and cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelRevert">Cancel</button>
+            <button class="btn btn-warning" id="confirmRevert">Confirm Revert</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle between inline and side-by-side diff view
+    document.getElementById('toggleInline').addEventListener('click', function() {
+        const diffView = document.getElementById('diffView');
+        diffView.classList.toggle('inline-view');
+        this.innerHTML = diffView.classList.contains('inline-view') 
+            ? '<i class="fas fa-columns"></i> Side-by-Side' 
+            : '<i class="fas fa-columns"></i> Inline';
+    });
+
+    // Expand all diff sections
+    document.getElementById('expandAll').addEventListener('click', function() {
+        document.querySelectorAll('.diff-line.changed').forEach(line => {
+            line.classList.add('expanded');
+        });
+    });
+
+    // Collapse all diff sections
+    document.getElementById('collapseAll').addEventListener('click', function() {
+        document.querySelectorAll('.diff-line.changed').forEach(line => {
+            line.classList.remove('expanded');
+        });
+    });
+
+    // Toggle changed lines expansion
+    document.querySelectorAll('.diff-line.changed').forEach(line => {
+        line.addEventListener('click', function() {
+            this.classList.toggle('expanded');
+        });
+    });
+
+    // Revert functionality
+    document.getElementById('revertToOld').addEventListener('click', function() {
+        showRevertModal({{ old_revision.id }}, 'old');
+    });
+
+    document.getElementById('revertToNew').addEventListener('click', function() {
+        showRevertModal({{ new_revision.id }}, 'new');
+    });
+
+    function showRevertModal(revisionId, type) {
+        document.getElementById('revertRevisionId').textContent = revisionId;
+        document.getElementById('revertModal').style.display = 'block';
+        
+        // Store which revision to revert to
+        document.getElementById('confirmRevert').dataset.revision = revisionId;
+    }
+
+    // Modal functionality
+    const modal = document.getElementById('revertModal');
+    const closeBtn = modal.querySelector('.close');
+    const cancelBtn = document.getElementById('cancelRevert');
+    
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    cancelBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    // Handle revert confirmation
+    document.getElementById('confirmRevert').addEventListener('click', function() {
+        const revisionId = this.dataset.revision;
+        
+        fetch(`/wiki/{{ page.slug }}/revert?revision=${revisionId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert('Error reverting page: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error reverting page. Please try again.');
+        });
+    });
+
+    // Syntax highlighting for code blocks
+    document.querySelectorAll('.line-text pre code').forEach(block => {
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightBlock(block);
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -39,6 +39,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     $wikiController = new WikiController($db, $container);
     $authController = new AuthController($db, $container);
     $dashboardController = new \IslamWiki\Http\Controllers\DashboardController($db, $container);
+    $searchApiController = new \IslamWiki\Http\Controllers\SearchApiController($db, null);
 
     // Root redirect - handled by .htaccess to /wiki/Main_Page
     // $router->get('/', [$homeController, 'index']);
@@ -53,22 +54,68 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     $router->get('/register', [$authController, 'showRegister']);
 
     // Essential wiki routes
-    $router->get('/wiki', [$wikiController, 'index']);
+    $router->get('/wiki', [$wikiController, 'dashboard']); // Main wiki dashboard
+    $router->get('/wiki/index', [$wikiController, 'index']); // All pages list
     $router->get('/wiki/Main_Page', [$wikiController, 'showMainPage']);
     $router->get('/wiki/Special:Preferences', [$authController, 'showPreferences']);
     $router->post('/wiki/Special:Preferences', [$authController, 'updatePreferences']);
+    $router->get('/wiki/templates', [$wikiController, 'templates']); // Template gallery
+    $router->get('/wiki/drafts', [$wikiController, 'drafts']); // Draft management
+    $router->post('/wiki/drafts/{id}/approve', [$wikiController, 'approveDraft']); // Approve draft
+    $router->post('/wiki/drafts/{id}/reject', [$wikiController, 'rejectDraft']); // Reject draft
+    $router->get('/wiki/create', [$wikiController, 'showCreatePage']); // Simple page creation form
+    
+    // Collaborative editing routes
+    $router->get('/wiki/{slug}/collaborative', [$wikiController, 'getCollaborativeSession']); // Get collaborative session
+    $router->post('/wiki/{slug}/collaborative/join', [$wikiController, 'joinCollaborativeSession']); // Join editing session
+    $router->post('/wiki/{slug}/collaborative/leave', [$wikiController, 'leaveCollaborativeSession']); // Leave editing session
+    $router->post('/wiki/{slug}/collaborative/save', [$wikiController, 'saveCollaborativeEdit']); // Save collaborative edit
+    
+
+    
+    // Primary search route - used by all domains
+$router->get('/search', [$wikiController, 'enhancedSearch']); // Primary search functionality
+
+// Wiki-specific search route - redirects to main search
+$router->get('/wiki/search', [$wikiController, 'redirectToSearch']); // Redirect to main search
+
+// Search API routes for live search and advanced features
+$router->get('/api/search/suggestions', [$searchApiController, 'getSuggestions']);
+$router->post('/api/search/save', [$searchApiController, 'saveSearch']);
+$router->get('/api/search/saved', [$searchApiController, 'getSavedSearches']);
+$router->delete('/api/search/saved/{id}', [$searchApiController, 'deleteSavedSearch']);
+$router->post('/api/search/history/clear', [$searchApiController, 'clearSearchHistory']);
     
     // User namespace routes - must come before generic slug route
     $router->get('/wiki/User/{username}', [$wikiController, 'showUserProfile']);
     
+    // Red link handling routes - must come before generic slug route
+    $router->get('/wiki/{slug}/redlink', [$wikiController, 'handleRedLink']); // Handle red links
+    $router->post('/wiki/{slug}/create', [$wikiController, 'createFromRedLink']); // Create page from red link
+    
+    // Test route to trigger enhanced error handler
+    $router->get('/test-error', function() {
+        throw new \Exception('This is a test error to demonstrate the enhanced error handler');
+    });
+    
+    // Test route to trigger WikiController enhanced error handling
+    $router->get('/test-wiki-error', [$wikiController, 'testError']);
+    
     // Regular wiki page routes
     $router->get('/wiki/{slug}', [$pageController, 'show']);
-    $router->get('/wiki/{slug}/history', [$pageController, 'history']);
+    $router->get('/wiki/{slug}/history', [$wikiController, 'history']); // Enhanced history with WikiController
     $router->get('/wiki/{slug}/edit', [$pageController, 'edit']);
     $router->post('/wiki/{slug}', [$pageController, 'update']);
     $router->delete('/wiki/{slug}', [$pageController, 'destroy']);
-    $router->get('/create', [$pageController, 'create']);
-    $router->post('/create', [$pageController, 'store']);
+    
+    // Enhanced revision management routes
+    $router->get('/wiki/{slug}/compare', [$wikiController, 'compareRevisions']); // Compare two revisions
+    $router->post('/wiki/{slug}/revert', [$wikiController, 'revertToRevision']); // Revert to specific revision
+    $router->get('/wiki/{slug}/revision/{id}', [$wikiController, 'showRevision']); // View specific revision
+    // Redirect /create to wiki dashboard (create functionality handled by redlink system)
+    $router->get('/create', function($request) {
+        return new \IslamWiki\Core\Http\Response(302, ['Location' => '/wiki'], '');
+    });
     
     // Test route to verify routing is working
     $router->get('/test-routing', function ($request) {
@@ -77,24 +124,7 @@ return function (\IslamWiki\Core\NizamApplication $app) {
     
 
     
-    // Search route
-    $router->get('/search', function ($request) {
-        return new \IslamWiki\Core\Http\Response(200, ['Content-Type' => 'text/html'], '
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Search - IslamWiki</title>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body>
-            <h1>Search Page</h1>
-            <p>Advanced search functionality coming soon...</p>
-            <a href="/wiki/Main_Page">← Back to Main Page</a>
-        </body>
-        </html>
-        ');
-    });
+
     
     // Settings route
     $router->get('/settings', function ($request) {

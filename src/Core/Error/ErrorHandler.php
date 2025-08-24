@@ -206,9 +206,9 @@ class ErrorHandler
                 $response->send();
             } else {
                 $response = new Response(
-                    'A fatal error occurred. Please check the server logs for more information.',
                     500,
-                    ['Content-Type' => 'text/plain']
+                    ['Content-Type' => 'text/plain'],
+                    'A fatal error occurred. Please check the server logs for more information.'
                 );
                 $response->send();
             }
@@ -287,6 +287,78 @@ class ErrorHandler
                     <p><strong>Code:</strong> ' . $e->getCode() . '</p>
                     <h3>Stack Trace</h3>
                     <pre>' . htmlspecialchars($e->getTraceAsString(), ENT_QUOTES, 'UTF-8') . '</pre>';
+                
+                // Check for additional debug info from our enhanced error handling
+                if (isset($_SESSION['debug_error_info'])) {
+                    $debugInfo = $_SESSION['debug_error_info'];
+                    $html .= '
+                        <h3>Enhanced Debug Information</h3>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                            <h4>📋 Copy-Paste Debug Report</h4>
+                            <p><strong>Copy the text below and paste it in your support request:</strong></p>
+                            <textarea style="width: 100%; height: 300px; font-family: monospace; font-size: 12px; background: #fff; border: 1px solid #ddd; padding: 10px;" readonly>🐛 ENHANCED DEBUG REPORT
+📅 Timestamp: ' . ($debugInfo['timestamp'] ?? 'N/A') . '
+🔍 Context: ' . ($debugInfo['context'] ?? 'N/A') . '
+❌ Error Type: ' . ($debugInfo['error_type'] ?? 'N/A') . '
+💬 Error Message: ' . ($debugInfo['error_message'] ?? 'N/A') . '
+🔢 Error Code: ' . ($debugInfo['error_code'] ?? 'N/A') . '
+📁 File: ' . ($debugInfo['file'] ?? 'N/A') . '
+📍 Line: ' . ($debugInfo['line'] ?? 'N/A') . '
+
+🌐 REQUEST INFORMATION
+📡 Method: ' . ($debugInfo['request_info']['method'] ?? 'N/A') . '
+🔗 URI: ' . ($debugInfo['request_info']['uri'] ?? 'N/A') . '
+🌍 User Agent: ' . ($debugInfo['request_info']['user_agent'] ?? 'N/A') . '
+🌐 Remote Address: ' . ($debugInfo['request_info']['remote_addr'] ?? 'N/A') . '
+🏠 HTTP Host: ' . ($debugInfo['request_info']['http_host'] ?? 'N/A') . '
+
+🔐 SESSION INFORMATION
+🆔 Session ID: ' . ($debugInfo['session_info']['session_id'] ?? 'N/A') . '
+📊 Session Status: ' . ($debugInfo['session_info']['session_status'] ?? 'N/A') . '
+📝 Session Data: ' . json_encode($debugInfo['session_info']['session_data'], JSON_PRETTY_PRINT) . '
+🏷️ Session Name: ' . ($debugInfo['session_info']['session_name'] ?? 'N/A') . '
+
+🔑 AUTHENTICATION INFORMATION
+✅ Auth Service Available: ' . ($debugInfo['authentication_info']['auth_service_available'] ? 'YES' : 'NO') . '
+👤 User Data: ' . json_encode($debugInfo['authentication_info']['user_data'], JSON_PRETTY_PRINT) . '
+📋 Session User Data: ' . json_encode($debugInfo['authentication_info']['session_user_data'], JSON_PRETTY_PRINT) . '
+' . (isset($debugInfo['authentication_info']['auth_error']) ? '❌ Auth Error: ' . $debugInfo['authentication_info']['auth_error'] . '
+' : '') . '
+
+🗄️ DATABASE INFORMATION
+✅ Database Available: ' . ($debugInfo['database_info']['database_available'] ? 'YES' : 'NO') . '
+🔗 Connection Status: ' . ($debugInfo['database_info']['connection_status'] ?? 'N/A') . '
+📊 Tables Exist: ' . json_encode($debugInfo['database_info']['tables_exist'], JSON_PRETTY_PRINT) . '
+' . (isset($debugInfo['database_info']['database_error']) ? '❌ Database Error: ' . $debugInfo['database_info']['database_error'] . '
+' : '') . '
+
+📦 CONTAINER INFORMATION
+✅ Container Available: ' . ($debugInfo['container_info']['container_available'] ? 'YES' : 'NO') . '
+🔧 Services: ' . json_encode($debugInfo['container_info']['services'], JSON_PRETTY_PRINT) . '
+' . (isset($debugInfo['container_info']['container_error']) ? '❌ Container Error: ' . $debugInfo['container_info']['container_error'] . '
+' : '') . '
+
+💾 MEMORY USAGE
+📊 Memory Usage: ' . ($debugInfo['memory_usage']['memory_usage'] ?? 'N/A') . ' bytes
+📈 Memory Peak: ' . ($debugInfo['memory_usage']['memory_peak'] ?? 'N/A') . ' bytes
+🚫 Memory Limit: ' . ($debugInfo['memory_usage']['memory_limit'] ?? 'N/A') . '
+
+🐘 PHP INFORMATION
+📋 PHP Version: ' . ($debugInfo['php_info']['php_version'] ?? 'N/A') . '
+🔧 Extensions: ' . implode(', ', $debugInfo['php_info']['extensions'] ?? []) . '
+📊 Error Reporting: ' . ($debugInfo['php_info']['error_reporting'] ?? 'N/A') . '
+👁️ Display Errors: ' . ($debugInfo['php_info']['display_errors'] ?? 'N/A') . '
+📝 Log Errors: ' . ($debugInfo['php_info']['log_errors'] ?? 'N/A') . '
+
+📚 STACK TRACE
+' . ($debugInfo['stack_trace'] ?? 'N/A') . '
+
+🐛 END DEBUG REPORT</textarea>
+                        </div>';
+                    
+                    // Clear the debug info from session after displaying
+                    unset($_SESSION['debug_error_info']);
+                }
             }
 
             $html .= '

@@ -1,0 +1,324 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="wiki-dashboard-container">
+    <!-- Wiki Dashboard Header -->
+    <div class="wiki-dashboard-header">
+        <div class="wiki-dashboard-header-content">
+            <h1 class="wiki-dashboard-title">📚 Wiki Dashboard</h1>
+            <p class="wiki-dashboard-subtitle">Manage and monitor your Islamic knowledge wiki</p>
+            {% if user %}
+                <div class="user-welcome">
+                    <span class="welcome-text">Welcome back, {{ user.display_name|default(user.username) }}!</span>
+                    <span class="user-role">{{ user.role|default('User')|title }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions Row -->
+    <div class="quick-actions-row">
+        {% for action in quickActions %}
+            {% if not action.requires_auth or user %}
+                <a href="{{ action.url }}" class="quick-action-card {{ action.color }}">
+                    <div class="action-icon">
+                        <i class="{{ action.icon }}"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3 class="action-title">{{ action.title }}</h3>
+                        <p class="action-description">{{ action.description }}</p>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-main-grid">
+        <!-- Left Column: Statistics and Overview -->
+        <div class="dashboard-column">
+            <!-- Wiki Statistics -->
+            <div class="dashboard-widget stats-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-chart-bar"></i> Wiki Statistics</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="stats-grid">
+                        <div class="stat-item primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ stats.total_pages }}</div>
+                                <div class="stat-label">Total Pages</div>
+                            </div>
+                        </div>
+                        <div class="stat-item success">
+                            <div class="stat-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ stats.total_revisions }}</div>
+                                <div class="stat-label">Total Revisions</div>
+                            </div>
+                        </div>
+                        <div class="stat-item info">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ stats.total_users }}</div>
+                                <div class="stat-label">Registered Users</div>
+                            </div>
+                        </div>
+                        <div class="stat-item warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ stats.pages_this_month }}</div>
+                                <div class="stat-label">Pages This Month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Changes -->
+            <div class="dashboard-widget recent-changes-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-clock"></i> Recent Changes</h3>
+                    <a href="/wiki/index" class="widget-action">View All</a>
+                </div>
+                <div class="widget-content">
+                    {% if recentChanges is empty %}
+                        <div class="empty-state">
+                            <p>No recent changes</p>
+                        </div>
+                    {% else %}
+                        <div class="recent-changes-list">
+                            {% for change in recentChanges|slice(0, 5) %}
+                                <div class="change-item">
+                                    <div class="change-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="change-content">
+                                        <div class="change-title">
+                                            <a href="/wiki/{{ change.page_slug }}">{{ change.page_title }}</a>
+                                        </div>
+                                        <div class="change-meta">
+                                            <span class="change-editor">{{ change.editor_name|default('Unknown') }}</span>
+                                            <span class="change-time">{{ change.created_at|date('M j, Y H:i') }}</span>
+                                        </div>
+                                        {% if change.edit_summary %}
+                                            <div class="change-summary">{{ change.edit_summary }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Most Viewed Pages -->
+            <div class="dashboard-widget popular-pages-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-eye"></i> Most Viewed Pages</h3>
+                </div>
+                <div class="widget-content">
+                    {% if stats.most_viewed_pages is empty %}
+                        <div class="empty-state">
+                            <p>No view data available</p>
+                        </div>
+                    {% else %}
+                        <div class="popular-pages-list">
+                            {% for page in stats.most_viewed_pages %}
+                                <div class="popular-page-item">
+                                    <div class="page-rank">{{ loop.index }}</div>
+                                    <div class="page-content">
+                                        <div class="page-title">
+                                            <a href="/wiki/{{ page.slug }}">{{ page.title }}</a>
+                                        </div>
+                                        <div class="page-views">{{ page.view_count|default(0) }} views</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Categories and User Info -->
+        <div class="dashboard-column">
+            <!-- Categories Overview -->
+            <div class="dashboard-widget categories-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-tags"></i> Categories</h3>
+                    <a href="/wiki/index" class="widget-action">Browse All</a>
+                </div>
+                <div class="widget-content">
+                    <div class="categories-grid">
+                        {% for category in categories %}
+                            <a href="/wiki/{{ category.slug }}" class="category-card">
+                                <div class="category-icon">
+                                    <i class="{{ category.icon }}"></i>
+                                </div>
+                                <div class="category-content">
+                                    <h4 class="category-name">{{ category.name }}</h4>
+                                    <p class="category-description">{{ category.description }}</p>
+                                    <div class="category-count">{{ category.page_count }} pages</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Contributions (if logged in) -->
+            {% if user and userContributions is not empty %}
+                <div class="dashboard-widget user-contributions-widget">
+                    <div class="widget-header">
+                        <h3><i class="fas fa-user-edit"></i> Your Contributions</h3>
+                        <a href="/wiki/User/{{ user.username }}" class="widget-action">View Profile</a>
+                    </div>
+                    <div class="widget-content">
+                        <div class="contributions-list">
+                            {% for contribution in userContributions|slice(0, 5) %}
+                                <div class="contribution-item">
+                                    <div class="contribution-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="contribution-content">
+                                        <div class="contribution-title">
+                                            <a href="/wiki/{{ contribution.page_slug }}">{{ contribution.page_title }}</a>
+                                        </div>
+                                        <div class="contribution-time">{{ contribution.created_at|date('M j, Y') }}</div>
+                                        {% if contribution.edit_summary %}
+                                            <div class="contribution-summary">{{ contribution.edit_summary }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Quick Start Guide -->
+            <div class="dashboard-widget quick-start-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-rocket"></i> Quick Start Guide</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="quick-start-steps">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Create Your First Page</h4>
+                                <p>Use templates to get started quickly</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Learn Wiki Markup</h4>
+                                <p>Use our enhanced markdown and wiki syntax</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Collaborate</h4>
+                                <p>Work with others in real-time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quick-start-actions">
+                        <a href="/create" class="btn btn-primary">Start Creating</a>
+                        <a href="/wiki/templates" class="btn btn-secondary">View Templates</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Additional Features -->
+    <div class="dashboard-bottom-row">
+        <!-- Search Integration -->
+        <div class="dashboard-widget search-widget">
+            <div class="widget-header">
+                <h3><i class="fas fa-search"></i> Advanced Search</h3>
+            </div>
+            <div class="widget-content">
+                <div class="search-integration">
+                    <p>Use our powerful Iqra search engine to find content across the wiki</p>
+                    <form action="/search" method="GET" class="search-form">
+                        <div class="search-input-group">
+                            <input type="text" name="q" placeholder="Search wiki content..." class="search-input" required>
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="search-options">
+                            <label class="search-option">
+                                <input type="checkbox" name="include_content" checked>
+                                Search page content
+                            </label>
+                            <label class="search-option">
+                                <input type="checkbox" name="include_titles" checked>
+                                Search page titles
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="dashboard-widget system-status-widget">
+            <div class="widget-header">
+                <h3><i class="fas fa-server"></i> System Status</h3>
+            </div>
+            <div class="widget-content">
+                <div class="system-status-grid">
+                    <div class="status-item online">
+                        <div class="status-indicator"></div>
+                        <div class="status-content">
+                            <div class="status-name">Wiki System</div>
+                            <div class="status-detail">Online</div>
+                        </div>
+                    </div>
+                    <div class="status-item online">
+                        <div class="status-indicator"></div>
+                        <div class="status-content">
+                            <div class="status-name">Database</div>
+                            <div class="status-detail">Connected</div>
+                        </div>
+                    </div>
+                    <div class="status-item online">
+                        <div class="status-indicator"></div>
+                        <div class="status-content">
+                            <div class="status-name">Search Engine</div>
+                            <div class="status-detail">Iqra Active</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dashboard functionality
+    console.log('Wiki Dashboard loaded successfully');
+    
+    // Add any interactive features here
+    // For example: real-time updates, notifications, etc.
+});
+</script>
+{% endblock %} 

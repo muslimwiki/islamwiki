@@ -28,7 +28,7 @@ class WisalSessionService
         $this->database = $database;
         $this->config = array_merge([
             'driver' => 'file',
-            'lifetime' => 120,
+            'lifetime' => 7200,
             'expire_on_close' => false,
             'encrypt' => false,
             'files' => __DIR__ . '/../../storage/framework/sessions',

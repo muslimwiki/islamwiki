@@ -1,0 +1,255 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="template-gallery-container">
+    <!-- Template Gallery Header -->
+    <div class="template-gallery-header">
+        <div class="template-gallery-header-content">
+            <h1 class="template-gallery-title">📋 Page Templates</h1>
+            <p class="template-gallery-subtitle">Choose from our pre-built templates to create professional wiki pages quickly</p>
+            <div class="template-gallery-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">📄</span>
+                    <span class="stat-value">{{ templates|length }}</span>
+                    <span class="stat-label">Available Templates</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-value">6</span>
+                    <span class="stat-label">Categories</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Categories -->
+    <div class="template-categories">
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all">All Templates</button>
+            <button class="category-tab" data-category="Content">Content</button>
+            <button class="category-tab" data-category="Educational">Educational</button>
+            <button class="category-tab" data-category="Reference">Reference</button>
+            <button class="category-tab" data-category="Biography">Biography</button>
+            <button class="category-tab" data-category="Quran">Quran</button>
+            <button class="category-tab" data-category="Hadith">Hadith</button>
+        </div>
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="templates-grid">
+        {% for template in templates %}
+            <div class="template-card" data-category="{{ template.category }}">
+                <div class="template-header">
+                    <div class="template-icon">
+                        <i class="{{ template.icon }}"></i>
+                    </div>
+                    <div class="template-category-badge">{{ template.category }}</div>
+                </div>
+                <div class="template-content">
+                    <h3 class="template-name">{{ template.name }}</h3>
+                    <p class="template-description">{{ template.description }}</p>
+                    <div class="template-preview">
+                        <h4>Template Includes:</h4>
+                        <p>{{ template.preview }}</p>
+                    </div>
+                </div>
+                <div class="template-actions">
+                    <a href="/create?template={{ template.slug }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Use Template
+                    </a>
+                    <button class="btn btn-secondary preview-template" data-template="{{ template.slug }}">
+                        <i class="fas fa-eye"></i>
+                        Preview
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Template Preview Modal -->
+    <div id="template-preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-template-name">Template Preview</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modal-template-content">
+                    <!-- Template preview content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="use-template-btn">Use This Template</button>
+                <button class="btn btn-secondary" id="close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="quick-start-section">
+        <div class="quick-start-content">
+            <h2>🚀 Getting Started with Templates</h2>
+            <div class="quick-start-steps">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Choose a Template</h3>
+                        <p>Browse our collection and select the template that best fits your content type</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Preview the Structure</h3>
+                        <p>Click preview to see how your page will be organized</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Start Creating</h3>
+                        <p>Use the template to create your page with proper structure</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Tips -->
+    <div class="template-tips">
+        <div class="tips-header">
+            <h2>💡 Template Tips</h2>
+        </div>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Customize as Needed</h3>
+                    <p>Templates are starting points - feel free to modify them to fit your specific needs</p>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Collaborate</h3>
+                    <p>Work with others in real-time while creating your pages</p>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-save"></i>
+                </div>
+                <div class="tip-content">
+                    <h3>Save as Draft</h3>
+                    <p>Your work is automatically saved as you type</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category filtering
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    const templateCards = document.querySelectorAll('.template-card');
+
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Update active tab
+            categoryTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter templates
+            templateCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Template preview modal
+    const modal = document.getElementById('template-preview-modal');
+    const previewButtons = document.querySelectorAll('.preview-template');
+    const closeModal = document.querySelector('.close');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const useTemplateBtn = document.getElementById('use-template-btn');
+
+    previewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const templateSlug = this.dataset.template;
+            const templateName = this.closest('.template-card').querySelector('.template-name').textContent;
+            
+            // Update modal content
+            document.getElementById('modal-template-name').textContent = templateName;
+            document.getElementById('modal-template-content').innerHTML = `
+                <div class="template-preview-content">
+                    <h4>Template Structure:</h4>
+                    <div class="template-structure">
+                        <div class="structure-item">
+                            <i class="fas fa-heading"></i>
+                            <span>Page Title</span>
+                        </div>
+                        <div class="structure-item">
+                            <i class="fas fa-paragraph"></i>
+                            <span>Introduction</span>
+                        </div>
+                        <div class="structure-item">
+                            <i class="fas fa-list"></i>
+                            <span>Main Content Sections</span>
+                        </div>
+                        <div class="structure-item">
+                            <i class="fas fa-link"></i>
+                            <span>References & Links</span>
+                        </div>
+                    </div>
+                    <div class="template-features">
+                        <h4>Features:</h4>
+                        <ul>
+                            <li>Responsive design</li>
+                            <li>SEO optimized</li>
+                            <li>Easy to customize</li>
+                            <li>Mobile friendly</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Update use template button
+            useTemplateBtn.onclick = function() {
+                window.location.href = `/create?template=${templateSlug}`;
+            };
+            
+            modal.style.display = 'block';
+        });
+    });
+
+    // Close modal
+    function closeModalFunction() {
+        modal.style.display = 'none';
+    }
+
+    closeModal.onclick = closeModalFunction;
+    closeModalBtn.onclick = closeModalFunction;
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModalFunction();
+        }
+    };
+});
+</script>
+{% endblock %} 

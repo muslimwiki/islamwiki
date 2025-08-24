@@ -176,7 +176,10 @@ class AmanSecurity
             $user = $this->db->select('SELECT * FROM users WHERE id = ?', [$userId]);
 
             if (!empty($user)) {
-                $this->currentUser = $user[0];
+                $userData = $user[0];
+                // Add computed role field based on is_admin
+                $userData['role'] = $userData['is_admin'] ? 'admin' : 'user';
+                $this->currentUser = $userData;
                 return $this->currentUser;
             }
 

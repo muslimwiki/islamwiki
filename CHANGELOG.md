@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.2.8] - 2025-01-20
+
+### 🔐 **Authentication Fix & Enhanced Error Handling - COMPLETE**
+
+#### ✅ Added
+- **Enhanced error handling system** - Comprehensive debug information capture and display
+- **Debug report generation** - Detailed error reports with copy-paste functionality
+- **Session debugging** - Authentication and session state debugging information
+- **Database connection debugging** - Database status and table verification
+- **Container service debugging** - Service availability and dependency checking
+
+#### 🔧 Fixed
+- **Authentication issue for non-admin users** - Resolved 500 error when non-admin users access /wiki
+- **Missing role field in user data** - Fixed authentication service not returning user role information
+- **Session data retrieval** - Fixed session data not being properly retrieved for non-admin users
+- **User access to wiki pages** - All user types (guest, non-admin, admin) can now access /wiki
+- **Quick action buttons visibility** - Non-admin users can now see and use wiki quick actions
+- **Enhanced debug information display** - Debug reports now properly show on 500 error pages
+
+#### 🚀 Changed
+- **Authentication service** - Enhanced to properly compute and return user role information
+- **Error handling middleware** - Improved to capture and display comprehensive debug information
+- **Session management** - Enhanced session debugging and error reporting
+- **Debug information capture** - Added detailed error context, session state, and system information
+
+#### 🎨 UI/UX Improvements
+- **Error page debugging** - Enhanced 500 error pages with copy-paste friendly debug reports
+- **Authentication status display** - Better visibility of authentication state in error reports
+- **Debug information formatting** - Structured debug reports for easier troubleshooting
+
+#### 📊 Technical Improvements
+- **Error report generation** - Comprehensive error context capture including request, session, auth, and database info
+- **Session debugging** - Enhanced session state monitoring and debugging
+- **Authentication debugging** - Detailed authentication service status and user data verification
+- **Database debugging** - Connection status and table existence verification
+- **Container debugging** - Service availability and dependency checking
+
+#### 🔌 Extension Integration
+- **Error handling system** - Integrated with Shahid logging and error handling middleware
+- **Authentication system** - Enhanced AmanSecurity integration with proper role handling
+- **Session management** - Improved WisalSession integration for better debugging
+
+---
+
 ## [0.0.2.7] - 2025-01-20
 
 ### 🎯 **Dashboard System & Error Handling Overhaul - COMPLETE**

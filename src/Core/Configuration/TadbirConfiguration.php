@@ -104,7 +104,7 @@ class TadbirConfiguration
             ],
             'session' => [
                 'driver' => $_ENV['SESSION_DRIVER'] ?? 'file',
-                'lifetime' => $_ENV['SESSION_LIFETIME'] ?? 120,
+                'lifetime' => $_ENV['SESSION_LIFETIME'] ?? 7200,
                 'expire_on_close' => false,
                 'encrypt' => false,
                 'files' => __DIR__ . '/../../storage/framework/sessions',

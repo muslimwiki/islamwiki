@@ -1,0 +1,233 @@
+{% extends "layouts/bismillah.twig" %}
+
+{% block title %}{{ page.title }} - Revision {{ revision.id }} - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="revision-view-container">
+    <!-- Revision Header -->
+    <div class="revision-view-header">
+        <div class="revision-view-title">
+            <h1><i class="fas fa-file-alt"></i> Revision {{ revision.id }}</h1>
+            <p>Viewing revision of: <strong>{{ page.title }}</strong></p>
+        </div>
+        <div class="revision-view-actions">
+            <a href="/wiki/{{ page.slug }}/history" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to History
+            </a>
+            <a href="/wiki/{{ page.slug }}" class="btn btn-primary">
+                <i class="fas fa-eye"></i> View Current Page
+            </a>
+        </div>
+    </div>
+
+    <!-- Revision Info -->
+    <div class="revision-view-info">
+        <div class="revision-meta-card">
+            <div class="meta-header">
+                <h3><i class="fas fa-info-circle"></i> Revision Information</h3>
+            </div>
+            <div class="meta-content">
+                <div class="meta-row">
+                    <div class="meta-label">Revision ID:</div>
+                    <div class="meta-value">#{{ revision.id }}</div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Editor:</div>
+                    <div class="meta-value">
+                        <a href="/wiki/User:{{ revision.username }}" class="editor-link">
+                            {{ revision.display_name ?: revision.username }}
+                        </a>
+                        {% if revision.role %}
+                        <span class="role-badge">{{ revision.role }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="meta-row">
+                    <div class="meta-label">Date:</div>
+                    <div class="meta-value">
+                        {{ revision.created_at|date('F j, Y \a\t g:i A') }}
+                        <span class="time-ago">({{ revision.created_at|time_ago }})</span>
+                    </div>
+                </div>
+                {% if revision.comment %}
+                <div class="meta-row">
+                    <div class="meta-label">Edit Comment:</div>
+                    <div class="meta-value comment-text">{{ revision.comment }}</div>
+                </div>
+                {% endif %}
+                <div class="meta-row">
+                    <div class="meta-label">Content Length:</div>
+                    <div class="meta-value">{{ revision.content|length }} characters</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revision Content -->
+    <div class="revision-content">
+        <div class="content-header">
+            <h3><i class="fas fa-file-text"></i> Page Content</h3>
+            <div class="content-actions">
+                <button class="btn btn-sm btn-outline" id="toggleRaw">
+                    <i class="fas fa-code"></i> Toggle Raw
+                </button>
+                <button class="btn btn-sm btn-outline" id="copyContent">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+        </div>
+        
+        <div class="content-body">
+            <div class="rendered-content" id="renderedContent">
+                {{ revision.content|raw }}
+            </div>
+            <div class="raw-content" id="rawContent" style="display: none;">
+                <pre><code>{{ revision.content }}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revision Actions -->
+    <div class="revision-actions-panel">
+        <div class="actions-header">
+            <h3><i class="fas fa-tools"></i> Actions</h3>
+        </div>
+        <div class="actions-content">
+            <div class="action-group">
+                <a href="/wiki/{{ page.slug }}/compare?rev1={{ revision.id }}&rev2={{ current_revision_id }}" 
+                   class="btn btn-outline">
+                    <i class="fas fa-balance-scale"></i> Compare with Current
+                </a>
+                {% if revision.id != current_revision_id %}
+                <button class="btn btn-warning" id="revertToThis">
+                    <i class="fas fa-undo"></i> Revert to This Revision
+                </button>
+                {% endif %}
+            </div>
+            <div class="action-group">
+                <a href="/wiki/{{ page.slug }}/edit?revision={{ revision.id }}" 
+                   class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit from This Revision
+                </a>
+                <a href="/wiki/{{ page.slug }}/history" class="btn btn-secondary">
+                    <i class="fas fa-history"></i> View All Revisions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revert Confirmation Modal -->
+<div class="modal" id="revertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Revert</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to revert this page to revision <strong>{{ revision.id }}</strong>?</p>
+            <p><strong>Warning:</strong> This action will create a new revision and cannot be undone.</p>
+            <div class="revert-preview">
+                <h4>Revision Preview:</h4>
+                <div class="content-snippet">{{ revision.content|slice(0, 200) }}{% if revision.content|length > 200 %}...{% endif %}</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelRevert">Cancel</button>
+            <button class="btn btn-warning" id="confirmRevert">Confirm Revert</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle between rendered and raw content
+    document.getElementById('toggleRaw').addEventListener('click', function() {
+        const renderedContent = document.getElementById('renderedContent');
+        const rawContent = document.getElementById('rawContent');
+        const button = this;
+        
+        if (renderedContent.style.display === 'none') {
+            renderedContent.style.display = 'block';
+            rawContent.style.display = 'none';
+            button.innerHTML = '<i class="fas fa-code"></i> Toggle Raw';
+        } else {
+            renderedContent.style.display = 'none';
+            rawContent.style.display = 'block';
+            button.innerHTML = '<i class="fas fa-eye"></i> Toggle Rendered';
+        }
+    });
+    
+    // Copy content functionality
+    document.getElementById('copyContent').addEventListener('click', function() {
+        const content = `{{ revision.content|replace({'\n': '\\n', '\r': '\\r', '\t': '\\t'}) }}`;
+        navigator.clipboard.writeText(content).then(function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            this.classList.add('btn-success');
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('btn-success');
+            }, 2000);
+        }.bind(this)).catch(function(err) {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy content to clipboard');
+        });
+    });
+    
+    // Revert functionality
+    document.getElementById('revertToThis').addEventListener('click', function() {
+        document.getElementById('revertModal').style.display = 'block';
+    });
+    
+    // Modal functionality
+    const modal = document.getElementById('revertModal');
+    const closeBtn = modal.querySelector('.close');
+    const cancelBtn = document.getElementById('cancelRevert');
+    
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    cancelBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    // Handle revert confirmation
+    document.getElementById('confirmRevert').addEventListener('click', function() {
+        fetch(`/wiki/{{ page.slug }}/revert?revision={{ revision.id }}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert('Error reverting page: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error reverting page. Please try again.');
+        });
+    });
+    
+    // Syntax highlighting for code blocks in raw content
+    document.querySelectorAll('#rawContent pre code').forEach(block => {
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightBlock(block);
+        }
+    });
+});
+</script>
+{% endblock %} 

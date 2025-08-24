@@ -1,0 +1,394 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="drafts-container">
+    <!-- Drafts Header -->
+    <div class="drafts-header">
+        <div class="drafts-header-content">
+            <h1 class="drafts-title">📝 Draft Management</h1>
+            <p class="drafts-subtitle">Review and manage pending wiki page drafts</p>
+            <div class="drafts-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">⏳</span>
+                    <span class="stat-value">{{ pendingDrafts|length }}</span>
+                    <span class="stat-label">Pending Approval</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">📄</span>
+                    <span class="stat-value">{{ userDrafts|length }}</span>
+                    <span class="stat-label">Your Drafts</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Draft Management Tabs -->
+    <div class="draft-tabs">
+        <button class="tab-button active" data-tab="pending">
+            <i class="fas fa-clock"></i>
+            Pending Approval ({{ pendingDrafts|length }})
+        </button>
+        <button class="tab-button" data-tab="user-drafts">
+            <i class="fas fa-user-edit"></i>
+            Your Drafts ({{ userDrafts|length }})
+        </button>
+    </div>
+
+    <!-- Pending Drafts Tab -->
+    <div class="tab-content active" id="pending-tab">
+        {% if pendingDrafts is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">✅</div>
+                <h3>No Pending Drafts</h3>
+                <p>All drafts have been reviewed and processed.</p>
+            </div>
+        {% else %}
+            <div class="drafts-grid">
+                {% for draft in pendingDrafts %}
+                    <div class="draft-card pending" data-draft-id="{{ draft.id }}">
+                        <div class="draft-header">
+                            <div class="draft-status pending">
+                                <i class="fas fa-clock"></i>
+                                Pending Review
+                            </div>
+                            <div class="draft-actions">
+                                <button class="btn btn-success approve-draft" data-draft-id="{{ draft.id }}">
+                                    <i class="fas fa-check"></i>
+                                    Approve
+                                </button>
+                                <button class="btn btn-danger reject-draft" data-draft-id="{{ draft.id }}">
+                                    <i class="fas fa-times"></i>
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                        <div class="draft-content">
+                            <h3 class="draft-title">{{ draft.title }}</h3>
+                            <div class="draft-meta">
+                                <span class="draft-author">
+                                    <i class="fas fa-user"></i>
+                                    {{ draft.author_display_name|default(draft.author_name) }}
+                                </span>
+                                <span class="draft-date">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ draft.created_at|date('M j, Y H:i') }}
+                                </span>
+                                <span class="draft-namespace">
+                                    <i class="fas fa-tag"></i>
+                                    {{ draft.namespace|default('Main') }}
+                                </span>
+                            </div>
+                            {% if draft.draft_notes %}
+                                <div class="draft-notes">
+                                    <strong>Author Notes:</strong> {{ draft.draft_notes }}
+                                </div>
+                            {% endif %}
+                            <div class="draft-preview">
+                                <strong>Content Preview:</strong>
+                                <div class="content-snippet">
+                                    {{ draft.content|striptags|slice(0, 200) }}{% if draft.content|length > 200 %}...{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- User Drafts Tab -->
+    <div class="tab-content" id="user-drafts-tab">
+        {% if userDrafts is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h3>No Drafts Found</h3>
+                <p>You haven't created any drafts yet.</p>
+                <a href="/create" class="btn btn-primary">Create Your First Page</a>
+            </div>
+        {% else %}
+            <div class="drafts-grid">
+                {% for draft in userDrafts %}
+                    <div class="draft-card {{ draft.draft_status }}" data-draft-id="{{ draft.id }}">
+                        <div class="draft-header">
+                            <div class="draft-status {{ draft.draft_status }}">
+                                {% if draft.draft_status == 'pending' %}
+                                    <i class="fas fa-clock"></i>
+                                    Pending Review
+                                {% elseif draft.draft_status == 'rejected' %}
+                                    <i class="fas fa-times-circle"></i>
+                                    Rejected
+                                {% elseif draft.draft_status == 'draft' %}
+                                    <i class="fas fa-edit"></i>
+                                    Draft
+                                {% endif %}
+                            </div>
+                            <div class="draft-actions">
+                                <a href="/wiki/{{ draft.slug }}/edit" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+                                </a>
+                                {% if draft.draft_status == 'rejected' %}
+                                    <button class="btn btn-info view-rejection" data-draft-id="{{ draft.id }}">
+                                        <i class="fas fa-eye"></i>
+                                        View Feedback
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="draft-content">
+                            <h3 class="draft-title">{{ draft.title }}</h3>
+                            <div class="draft-meta">
+                                <span class="draft-date">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ draft.updated_at|date('M j, Y H:i') }}
+                                </span>
+                                <span class="draft-namespace">
+                                    <i class="fas fa-tag"></i>
+                                    {{ draft.namespace|default('Main') }}
+                                </span>
+                            </div>
+                            {% if draft.draft_notes %}
+                                <div class="draft-notes">
+                                    <strong>Your Notes:</strong> {{ draft.draft_notes }}
+                                </div>
+                            {% endif %}
+                            <div class="draft-preview">
+                                <strong>Content Preview:</strong>
+                                <div class="content-snippet">
+                                    {{ draft.content|striptags|slice(0, 200) }}{% if draft.content|length > 200 %}...{% endif %}
+                                </div>
+                            </div>
+                            {% if draft.draft_status == 'rejected' %}
+                                <div class="rejection-feedback" style="display: none;">
+                                    <strong>Rejection Reason:</strong>
+                                    <div class="feedback-content">
+                                        {{ draft.rejection_reason|default('No reason provided') }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Rejection Modal -->
+<div id="rejection-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Reject Draft</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="rejection-form">
+                <div class="form-group">
+                    <label for="rejection-reason">Rejection Reason:</label>
+                    <textarea id="rejection-reason" name="rejection_reason" rows="4" 
+                              placeholder="Please provide a reason for rejecting this draft..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rejection-suggestions">Suggestions for Improvement:</label>
+                    <textarea id="rejection-suggestions" name="suggestions" rows="3" 
+                              placeholder="Optional suggestions to help the author improve the draft..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-rejection">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirm-rejection">Reject Draft</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetTab = this.dataset.tab;
+            
+            // Update active tab button
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update active tab content
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === targetTab + '-tab') {
+                    content.classList.add('active');
+                }
+            });
+        });
+    });
+
+    // Approve draft functionality
+    const approveButtons = document.querySelectorAll('.approve-draft');
+    approveButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const draftId = this.dataset.draftId;
+            if (confirm('Are you sure you want to approve this draft? It will be published immediately.')) {
+                approveDraft(draftId);
+            }
+        });
+    });
+
+    // Reject draft functionality
+    const rejectButtons = document.querySelectorAll('.reject-draft');
+    rejectButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const draftId = this.dataset.draftId;
+            showRejectionModal(draftId);
+        });
+    });
+
+    // View rejection feedback
+    const viewRejectionButtons = document.querySelectorAll('.view-rejection');
+    viewRejectionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const draftId = this.dataset.draftId;
+            const draftCard = this.closest('.draft-card');
+            const feedbackDiv = draftCard.querySelector('.rejection-feedback');
+            feedbackDiv.style.display = feedbackDiv.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('rejection-modal');
+    const closeModal = document.querySelector('.close');
+    const cancelButton = document.getElementById('cancel-rejection');
+    const confirmButton = document.getElementById('confirm-rejection');
+    let currentDraftId = null;
+
+    function showRejectionModal(draftId) {
+        currentDraftId = draftId;
+        modal.style.display = 'block';
+        document.getElementById('rejection-form').reset();
+    }
+
+    function closeRejectionModal() {
+        modal.style.display = 'none';
+        currentDraftId = null;
+    }
+
+    closeModal.onclick = closeRejectionModal;
+    cancelButton.onclick = closeRejectionModal;
+    confirmButton.onclick = function() {
+        const reason = document.getElementById('rejection-reason').value.trim();
+        if (reason) {
+            rejectDraft(currentDraftId, reason);
+            closeRejectionModal();
+        } else {
+            alert('Please provide a rejection reason.');
+        }
+    };
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeRejectionModal();
+        }
+    };
+
+    // API functions
+    async function approveDraft(draftId) {
+        try {
+            const response = await fetch(`/wiki/drafts/${draftId}/approve`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // Remove the draft card from the UI
+                const draftCard = document.querySelector(`[data-draft-id="${draftId}"]`);
+                if (draftCard) {
+                    draftCard.remove();
+                }
+                
+                // Update counts
+                updateDraftCounts();
+                
+                alert('Draft approved successfully!');
+            } else {
+                alert('Failed to approve draft: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error approving draft:', error);
+            alert('An error occurred while approving the draft.');
+        }
+    }
+
+    async function rejectDraft(draftId, reason) {
+        try {
+            const response = await fetch(`/wiki/drafts/${draftId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rejection_reason: reason
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // Update the draft card to show rejected status
+                const draftCard = document.querySelector(`[data-draft-id="${draftId}"]`);
+                if (draftCard) {
+                    draftCard.classList.remove('pending');
+                    draftCard.classList.add('rejected');
+                    
+                    // Update the status display
+                    const statusDiv = draftCard.querySelector('.draft-status');
+                    statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Rejected';
+                    statusDiv.className = 'draft-status rejected';
+                    
+                    // Remove action buttons
+                    const actionsDiv = draftCard.querySelector('.draft-actions');
+                    actionsDiv.innerHTML = '<span class="rejected-message">Draft rejected</span>';
+                }
+                
+                // Update counts
+                updateDraftCounts();
+                
+                alert('Draft rejected successfully!');
+            } else {
+                alert('Failed to reject draft: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error rejecting draft:', error);
+            alert('An error occurred while rejecting the draft.');
+        }
+    }
+
+    function updateDraftCounts() {
+        // Update pending count
+        const pendingCount = document.querySelectorAll('.draft-card.pending').length;
+        const pendingTab = document.querySelector('[data-tab="pending"]');
+        pendingTab.innerHTML = `<i class="fas fa-clock"></i> Pending Approval (${pendingCount})`;
+        
+        // Update user drafts count
+        const userDraftsCount = document.querySelectorAll('#user-drafts-tab .draft-card').length;
+        const userDraftsTab = document.querySelector('[data-tab="user-drafts"]');
+        userDraftsTab.innerHTML = `<i class="fas fa-user-edit"></i> Your Drafts (${userDraftsCount})`;
+        
+        // Update header stats
+        const headerPendingCount = document.querySelector('.drafts-stats .stat-item:first-child .stat-value');
+        if (headerPendingCount) {
+            headerPendingCount.textContent = pendingCount;
+        }
+    }
+});
+</script>
+{% endblock %} 

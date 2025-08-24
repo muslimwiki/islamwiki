@@ -1,0 +1,421 @@
+{% extends "layouts/bismillah.twig" %}
+
+{% block title %}{{ page.title }} - History - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <!-- History Header -->
+    <div class="history-header">
+        <div class="history-title">
+            <h1><i class="fas fa-history"></i> Page History: {{ page.title }}</h1>
+            <p>View and compare all revisions of this page</p>
+        </div>
+        <div class="history-actions">
+            <a href="/wiki/{{ page.slug }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Page
+            </a>
+            <a href="/wiki/{{ page.slug }}/edit" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Page
+            </a>
+        </div>
+    </div>
+
+    <!-- History Statistics -->
+    <div class="history-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.total_revisions }}</div>
+                <div class="stat-label">Total Revisions</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.major_revisions }}</div>
+                <div class="stat-label">Major Changes</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.unique_editors }}</div>
+                <div class="stat-label">Contributors</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ stats.first_edit|date('M Y') }}</div>
+                <div class="stat-label">First Edit</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Filters -->
+    <div class="history-filters">
+        <form method="GET" action="/wiki/{{ page.slug }}/history" class="filters-form">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="filter">Revision Type</label>
+                    <select name="filter" id="filter" class="filter-select">
+                        <option value="all" {{ filters.filter == 'all' ? 'selected' : '' }}>All Revisions</option>
+                        <option value="major" {{ filters.filter == 'major' ? 'selected' : '' }}>Major Changes Only</option>
+                        <option value="minor" {{ filters.filter == 'minor' ? 'selected' : '' }}>Minor Changes Only</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="user">Editor</label>
+                    <select name="user" id="user" class="filter-select">
+                        <option value="">All Editors</option>
+                        {% for editor in editors %}
+                        <option value="{{ editor.username }}" {{ filters.user == editor.username ? 'selected' : '' }}>
+                            {{ editor.display_name ?: editor.username }} ({{ editor.edit_count }} edits)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="date_from">From Date</label>
+                    <input type="date" name="date_from" id="date_from" class="filter-input" 
+                           value="{{ filters.date_from }}" max="{{ 'now'|date('Y-m-d') }}">
+                </div>
+                <div class="filter-group">
+                    <label for="date_to">To Date</label>
+                    <input type="date" name="date_to" id="date_to" class="filter-input" 
+                           value="{{ filters.date_to }}" max="{{ 'now'|date('Y-m-d') }}">
+                </div>
+                <div class="filter-group">
+                    <label for="per_page">Per Page</label>
+                    <select name="per_page" id="per_page" class="filter-select">
+                        <option value="10" {{ pagination.per_page == 10 ? 'selected' : '' }}>10</option>
+                        <option value="20" {{ pagination.per_page == 20 ? 'selected' : '' }}>20</option>
+                        <option value="50" {{ pagination.per_page == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ pagination.per_page == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filters-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <a href="/wiki/{{ page.slug }}/history" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Clear Filters
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Revisions List -->
+    <div class="revisions-container">
+        <div class="revisions-header">
+            <h2>Revision History</h2>
+            <div class="revisions-info">
+                Showing {{ pagination.total_items }} revisions
+                {% if pagination.total > 1 %}
+                (Page {{ pagination.current }} of {{ pagination.total }})
+                {% endif %}
+            </div>
+        </div>
+
+        {% if revisions %}
+        <div class="revisions-list">
+            {% for revision in revisions %}
+            <div class="revision-item" data-revision-id="{{ revision.id }}">
+                <div class="revision-header">
+                    <div class="revision-meta">
+                        <div class="revision-number">
+                            <span class="revision-id">#{{ revision.id }}</span>
+                            {% if revision.is_major %}
+                            <span class="major-badge">Major</span>
+                            {% else %}
+                            <span class="minor-badge">Minor</span>
+                            {% endif %}
+                        </div>
+                        <div class="revision-info">
+                            <div class="revision-editor">
+                                <i class="fas fa-user"></i>
+                                <a href="/wiki/User:{{ revision.username }}" class="editor-link">
+                                    {{ revision.display_name ?: revision.username }}
+                                </a>
+                                {% if revision.role %}
+                                <span class="role-badge">{{ revision.role }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="revision-time">
+                                <i class="fas fa-clock"></i>
+                                {{ revision.created_at|date('M j, Y \a\t g:i A') }}
+                                <span class="time-ago">({{ revision.created_at|time_ago }})</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="revision-actions">
+                        <button class="btn btn-sm btn-outline compare-btn" 
+                                data-revision="{{ revision.id }}" 
+                                title="Select for comparison">
+                            <i class="fas fa-balance-scale"></i> Compare
+                        </button>
+                        <a href="/wiki/{{ page.slug }}/revision/{{ revision.id }}" 
+                           class="btn btn-sm btn-outline" title="View this revision">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        {% if revision.id != revisions[0].id %}
+                        <button class="btn btn-sm btn-warning revert-btn" 
+                                data-revision="{{ revision.id }}" 
+                                title="Revert to this revision">
+                            <i class="fas fa-undo"></i> Revert
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if revision.comment %}
+                <div class="revision-comment">
+                    <i class="fas fa-comment"></i>
+                    <span class="comment-text">{{ revision.comment }}</span>
+                </div>
+                {% endif %}
+
+                <div class="revision-preview">
+                    <div class="preview-header">
+                        <strong>Content Preview:</strong>
+                        <span class="preview-length">{{ revision.content|length }} characters</span>
+                    </div>
+                    <div class="content-snippet">
+                        {{ revision.content|slice(0, 200) }}{% if revision.content|length > 200 %}...{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.total > 1 %}
+        <div class="pagination">
+            {% if pagination.current > 1 %}
+            <a href="?page={{ pagination.current - 1 }}&per_page={{ pagination.per_page }}&filter={{ filters.filter }}&user={{ filters.user }}&date_from={{ filters.date_from }}&date_to={{ filters.date_to }}" 
+               class="pagination-btn">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+            {% endif %}
+
+            <div class="pagination-info">
+                Page {{ pagination.current }} of {{ pagination.total }}
+            </div>
+
+            {% if pagination.current < pagination.total %}
+            <a href="?page={{ pagination.current + 1 }}&per_page={{ pagination.per_page }}&filter={{ filters.filter }}&user={{ filters.user }}&date_from={{ filters.date_from }}&date_to={{ filters.date_to }}" 
+               class="pagination-btn">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-history"></i>
+            </div>
+            <h3>No Revisions Found</h3>
+            <p>No revisions match the current filters. Try adjusting your search criteria.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Comparison Panel -->
+    <div class="comparison-panel" id="comparisonPanel" style="display: none;">
+        <div class="comparison-header">
+            <h3><i class="fas fa-balance-scale"></i> Compare Revisions</h3>
+            <button class="close-comparison" id="closeComparison">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="comparison-content">
+            <div class="comparison-selection">
+                <div class="selection-group">
+                    <label>Revision 1:</label>
+                    <select id="revision1" class="comparison-select">
+                        <option value="">Select first revision...</option>
+                        {% for revision in revisions %}
+                        <option value="{{ revision.id }}">#{{ revision.id }} - {{ revision.created_at|date('M j, Y g:i A') }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="selection-group">
+                    <label>Revision 2:</label>
+                    <select id="revision2" class="comparison-select">
+                        <option value="">Select second revision...</option>
+                        {% for revision in revisions %}
+                        <option value="{{ revision.id }}">#{{ revision.id }} - {{ revision.created_at|date('M j, Y g:i A') }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="compareRevisions" disabled>
+                    <i class="fas fa-balance-scale"></i> Compare Selected
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revert Confirmation Modal -->
+<div class="modal" id="revertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Revert</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to revert this page to revision <strong id="revertRevisionId"></strong>?</p>
+            <p><strong>Warning:</strong> This action will create a new revision and cannot be undone.</p>
+            <div class="revert-preview">
+                <h4>Revision Preview:</h4>
+                <div id="revertPreview" class="content-snippet"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelRevert">Cancel</button>
+            <button class="btn btn-warning" id="confirmRevert">Confirm Revert</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Comparison functionality
+    let selectedRevisions = [];
+    
+    // Handle revision selection for comparison
+    document.querySelectorAll('.compare-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const revisionId = this.dataset.revision;
+            const revisionItem = this.closest('.revision-item');
+            
+            if (selectedRevisions.includes(revisionId)) {
+                // Deselect
+                selectedRevisions = selectedRevisions.filter(id => id !== revisionId);
+                revisionItem.classList.remove('selected-for-comparison');
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-outline');
+            } else {
+                // Select (max 2)
+                if (selectedRevisions.length < 2) {
+                    selectedRevisions.push(revisionId);
+                    revisionItem.classList.add('selected-for-comparison');
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary');
+                } else {
+                    alert('You can only compare 2 revisions at a time. Please deselect one first.');
+                    return;
+                }
+            }
+            
+            // Show/hide comparison panel
+            if (selectedRevisions.length === 2) {
+                document.getElementById('comparisonPanel').style.display = 'block';
+                document.getElementById('revision1').value = selectedRevisions[0];
+                document.getElementById('revision2').value = selectedRevisions[1];
+            } else {
+                document.getElementById('comparisonPanel').style.display = 'none';
+            }
+        });
+    });
+    
+    // Handle comparison execution
+    document.getElementById('compareRevisions').addEventListener('click', function() {
+        const rev1 = document.getElementById('revision1').value;
+        const rev2 = document.getElementById('revision2').value;
+        
+        if (rev1 && rev2) {
+            window.location.href = `/wiki/{{ page.slug }}/compare?rev1=${rev1}&rev2=${rev2}`;
+        }
+    });
+    
+    // Close comparison panel
+    document.getElementById('closeComparison').addEventListener('click', function() {
+        document.getElementById('comparisonPanel').style.display = 'none';
+        // Clear selection
+        selectedRevisions = [];
+        document.querySelectorAll('.revision-item').forEach(item => {
+            item.classList.remove('selected-for-comparison');
+        });
+        document.querySelectorAll('.compare-btn').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline');
+        });
+    });
+    
+    // Revert functionality
+    document.querySelectorAll('.revert-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const revisionId = this.dataset.revision;
+            const revisionItem = this.closest('.revision-item');
+            const preview = revisionItem.querySelector('.content-snippet').textContent;
+            
+            document.getElementById('revertRevisionId').textContent = revisionId;
+            document.getElementById('revertPreview').textContent = preview;
+            document.getElementById('revertModal').style.display = 'block';
+        });
+    });
+    
+    // Modal functionality
+    const modal = document.getElementById('revertModal');
+    const closeBtn = modal.querySelector('.close');
+    const cancelBtn = document.getElementById('cancelRevert');
+    
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    cancelBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    // Handle revert confirmation
+    document.getElementById('confirmRevert').addEventListener('click', function() {
+        const revisionId = document.getElementById('revertRevisionId').textContent;
+        
+        fetch(`/wiki/{{ page.slug }}/revert?revision=${revisionId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert('Error reverting page: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error reverting page. Please try again.');
+        });
+    });
+    
+    // Auto-submit form when filters change
+    document.querySelectorAll('.filters-form select, .filters-form input[type="date"]').forEach(element => {
+        element.addEventListener('change', function() {
+            document.querySelector('.filters-form').submit();
+        });
+    });
+});
+</script>
+{% endblock %} 

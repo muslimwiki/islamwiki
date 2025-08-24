@@ -95,6 +95,84 @@
         </div>
         {% endif %}
 
+        <!-- Enhanced Debug Information (if available) -->
+        {% if debug_info %}
+        <div class="error-500-enhanced-debug">
+            <div class="error-500-card">
+                <div class="error-500-card-header">
+                    <h3>🔍 Enhanced Debug Information</h3>
+                </div>
+                <div class="error-500-card-content">
+                    <div class="enhanced-debug-section">
+                        <h4>📋 Copy-Paste Debug Report</h4>
+                        <p><strong>Copy the text below and paste it in your support request:</strong></p>
+                        <textarea class="debug-report-textarea" readonly>🐛 ENHANCED DEBUG REPORT
+📅 Timestamp: {{ debug_info.timestamp|default('N/A') }}
+🔍 Context: {{ debug_info.context|default('N/A') }}
+❌ Error Type: {{ debug_info.error_type|default('N/A') }}
+💬 Error Message: {{ debug_info.error_message|default('N/A') }}
+🔢 Error Code: {{ debug_info.error_code|default('N/A') }}
+📁 File: {{ debug_info.file|default('N/A') }}
+📍 Line: {{ debug_info.line|default('N/A') }}
+
+🌐 REQUEST INFORMATION
+📡 Method: {{ debug_info.request_info.method|default('N/A') }}
+🔗 URI: {{ debug_info.request_info.uri|default('N/A') }}
+🌍 User Agent: {{ debug_info.request_info.user_agent|default('N/A') }}
+🌐 Remote Address: {{ debug_info.request_info.remote_addr|default('N/A') }}
+🏠 HTTP Host: {{ debug_info.request_info.http_host|default('N/A') }}
+
+🔐 SESSION INFORMATION
+🆔 Session ID: {{ debug_info.session_info.session_id|default('N/A') }}
+📊 Session Status: {{ debug_info.session_info.session_status|default('N/A') }}
+📝 Session Data: {{ debug_info.session_info.session_data|json_encode|default('N/A') }}
+🏷️ Session Name: {{ debug_info.session_info.session_name|default('N/A') }}
+
+🔑 AUTHENTICATION INFORMATION
+✅ Auth Service Available: {{ debug_info.authentication_info.auth_service_available ? 'YES' : 'NO' }}
+👤 User Data: {{ debug_info.authentication_info.user_data|json_encode|default('N/A') }}
+📋 Session User Data: {{ debug_info.authentication_info.session_user_data|json_encode|default('N/A') }}
+{% if debug_info.authentication_info.auth_error %}
+❌ Auth Error: {{ debug_info.authentication_info.auth_error }}
+{% endif %}
+
+🗄️ DATABASE INFORMATION
+✅ Database Available: {{ debug_info.database_info.database_available ? 'YES' : 'NO' }}
+🔗 Connection Status: {{ debug_info.database_info.connection_status|default('N/A') }}
+📊 Tables Exist: {{ debug_info.database_info.tables_exist|json_encode|default('N/A') }}
+{% if debug_info.database_info.database_error %}
+❌ Database Error: {{ debug_info.database_info.database_error }}
+{% endif %}
+
+📦 CONTAINER INFORMATION
+✅ Container Available: {{ debug_info.container_info.container_available ? 'YES' : 'NO' }}
+🔧 Services: {{ debug_info.container_info.services|json_encode|default('N/A') }}
+{% if debug_info.container_info.container_error %}
+❌ Container Error: {{ debug_info.container_info.container_error }}
+{% endif %}
+
+💾 MEMORY USAGE
+📊 Memory Usage: {{ debug_info.memory_usage.memory_usage|default('N/A') }} bytes
+📈 Memory Peak: {{ debug_info.memory_usage.memory_peak|default('N/A') }} bytes
+🚫 Memory Limit: {{ debug_info.memory_usage.memory_limit|default('N/A') }}
+
+🐘 PHP INFORMATION
+📋 PHP Version: {{ debug_info.php_info.php_version|default('N/A') }}
+🔧 Extensions: {{ debug_info.php_info.extensions|join(', ')|default('N/A') }}
+📊 Error Reporting: {{ debug_info.php_info.error_reporting|default('N/A') }}
+👁️ Display Errors: {{ debug_info.php_info.display_errors|default('N/A') }}
+📝 Log Errors: {{ debug_info.php_info.log_errors|default('N/A') }}
+
+📚 STACK TRACE
+{{ debug_info.stack_trace|default('N/A') }}
+
+🐛 END DEBUG REPORT</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Shahid Logging Information -->
         <div class="error-500-logging">
             <div class="error-500-card">

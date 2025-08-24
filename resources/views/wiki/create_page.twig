@@ -1,0 +1,199 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+<div class="create-page-container">
+    <!-- Create Page Header -->
+    <div class="create-page-header">
+        <div class="create-page-title">
+            <h1><i class="fas fa-plus-circle"></i> Create New Page</h1>
+            <p>Start building knowledge by creating a new wiki page</p>
+        </div>
+        <div class="create-page-actions">
+            <a href="/wiki" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Create Page Form -->
+    <div class="create-page-form-container">
+        <div class="create-page-form">
+            <div class="form-header">
+                <h3><i class="fas fa-edit"></i> Page Creation</h3>
+                <p>Enter the name of the page you want to create. You'll be taken to a comprehensive creation interface.</p>
+            </div>
+
+            <form id="createPageForm" method="GET" action="/wiki/create">
+                <div class="form-group">
+                    <label for="pageName">Page Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">/wiki/</span>
+                        <input type="text" 
+                               id="pageName" 
+                               name="pageName" 
+                               class="form-input" 
+                               placeholder="Enter page name (e.g., Islamic_History, Quran_Studies)"
+                               required
+                               pattern="[A-Za-z0-9_]+"
+                               title="Page names can contain letters, numbers, and underscores">
+                    </div>
+                    <div class="form-help">
+                        <i class="fas fa-info-circle"></i>
+                        Use underscores for spaces. The page will be created at <code>/wiki/[PageName]</code>
+                    </div>
+                </div>
+
+                {% if user %}
+                <div class="auth-status auth-status-logged-in">
+                    <i class="fas fa-check-circle"></i>
+                    <span>You are logged in as <strong>{{ user.username }}</strong>. You can create pages immediately.</span>
+                </div>
+                {% else %}
+                <div class="auth-status auth-status-not-logged-in">
+                    <i class="fas fa-info-circle"></i>
+                    <span>You are not logged in. You'll be redirected to login when you submit this form.</span>
+                    <a href="/login" class="btn btn-sm btn-outline">Login Now</a>
+                </div>
+                {% endif %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="createPageBtn">
+                        <i class="fas fa-arrow-right"></i> Continue to Creation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="quick-start-guide">
+        <div class="guide-header">
+            <h3><i class="fas fa-lightbulb"></i> Quick Start Guide</h3>
+            <p>Tips for creating great wiki pages</p>
+        </div>
+        
+        <div class="guide-steps">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Choose a Clear Name</h4>
+                    <p>Use descriptive names that clearly indicate the page content (e.g., "Islamic_Architecture" not "Stuff")</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Select a Template</h4>
+                    <p>Choose from our pre-built templates to get started quickly with proper structure</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Add Categories</h4>
+                    <p>Organize your page with relevant categories to help others find it</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Write Quality Content</h4>
+                    <p>Provide comprehensive, well-researched information with proper citations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <div class="links-header">
+            <h3><i class="fas fa-link"></i> Quick Links</h3>
+            <p>Access other wiki creation tools</p>
+        </div>
+        
+        <div class="links-grid">
+            <a href="/wiki/templates" class="link-card">
+                <div class="link-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="link-content">
+                    <h4>Template Gallery</h4>
+                    <p>Browse available page templates</p>
+                </div>
+            </a>
+            
+            <a href="/wiki/drafts" class="link-card">
+                <div class="link-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="link-content">
+                    <h4>Draft Management</h4>
+                    <p>Manage your page drafts</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('createPageForm');
+    const pageNameInput = document.getElementById('pageName');
+    const createBtn = document.getElementById('createPageBtn');
+
+    // Auto-format page name as user types
+    pageNameInput.addEventListener('input', function() {
+        let value = this.value;
+        // Replace spaces and special characters with underscores
+        value = value.replace(/[^A-Za-z0-9\s]/g, '');
+        value = value.replace(/\s+/g, '_');
+        // Capitalize first letter of each word
+        value = value.split('_').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join('_');
+        
+        this.value = value;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const pageName = pageNameInput.value.trim();
+        if (!pageName) {
+            alert('Please enter a page name');
+            return;
+        }
+
+        // Validate page name format
+        if (!/^[A-Za-z0-9_]+$/.test(pageName)) {
+            alert('Page name can only contain letters, numbers, and underscores');
+            return;
+        }
+
+        {% if user %}
+        // User is authenticated, redirect to the redlink system for this page
+        const redirectUrl = `/wiki/${pageName}/redlink`;
+        window.location.href = redirectUrl;
+        {% else %}
+        // User is not authenticated, redirect to login with return URL
+        const returnUrl = encodeURIComponent(`/wiki/${pageName}/redlink`);
+        window.location.href = `/login?return=${returnUrl}`;
+        {% endif %}
+    });
+
+    // Enable/disable submit button based on input
+    pageNameInput.addEventListener('input', function() {
+        createBtn.disabled = !this.value.trim();
+    });
+
+    // Initial button state
+    createBtn.disabled = !pageNameInput.value.trim();
+});
+</script>
+{% endblock %} 

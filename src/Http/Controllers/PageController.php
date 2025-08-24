@@ -254,12 +254,18 @@ class PageController extends Controller
                 }
             }
 
-            // If still not found, show 404
+            // If still not found, redirect to red link handler
             if (!$page) {
                 if ($this->logger) {
-                    $this->logger->info('Page not found', ['slug' => $slug]);
+                    $this->logger->info('Page not found, redirecting to red link handler', ['slug' => $slug]);
                 }
-                throw new HttpException(404, 'The requested page was not found.');
+                
+                // Redirect to red link handler
+                return new Response(
+                    302,
+                    ['Location' => '/wiki/' . urlencode($slug) . '/redlink'],
+                    ''
+                );
             }
 
             // Simple page display - just show the content
@@ -766,22 +772,315 @@ class PageController extends Controller
     }
 
     /**
-     * Show the page history.
+     * Show page history with advanced filtering and comparison
      */
     public function history(Request $request, string $slug): Response
     {
-        $page = Page::findBySlug($slug, $this->db);
+        try {
+            // Get page details
+            $page = Page::findBySlug($slug, $this->db);
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
 
-        if (!$page) {
-            $this->abort(404, 'Page not found');
+            // Get query parameters for filtering
+            $pageParam = $request->getQueryParams()['page'] ?? 1;
+            $perPage = $request->getQueryParams()['per_page'] ?? 20;
+            $filter = $request->getQueryParams()['filter'] ?? 'all';
+            $userFilter = $request->getQueryParams()['user'] ?? '';
+            $dateFrom = $request->getQueryParams()['date_from'] ?? '';
+            $dateTo = $request->getQueryParams()['date_to'] ?? '';
+
+            // Build query with filters
+            $whereConditions = ['page_id = ?'];
+            $params = [$page['id']];
+
+            if ($filter === 'major') {
+                $whereConditions[] = 'is_major = 1';
+            } elseif ($filter === 'minor') {
+                $whereConditions[] = 'is_major = 0';
+            }
+
+            if ($userFilter) {
+                $whereConditions[] = 'user_id = (SELECT id FROM users WHERE username = ?)';
+                $params[] = $userFilter;
+            }
+
+            if ($dateFrom) {
+                $whereConditions[] = 'created_at >= ?';
+                $params[] = $dateFrom . ' 00:00:00';
+            }
+
+            if ($dateTo) {
+                $whereConditions[] = 'created_at <= ?';
+                $params[] = $dateTo . ' 23:59:59';
+            }
+
+            $whereClause = implode(' AND ', $whereConditions);
+
+            // Get total count for pagination
+            $countSql = "SELECT COUNT(*) FROM page_revisions WHERE $whereClause";
+            $countStmt = $this->db->prepare($countSql);
+            $countStmt->execute($params);
+            $totalRevisions = $countStmt->fetchColumn();
+
+            // Calculate pagination
+            $totalPages = ceil($totalRevisions / $perPage);
+            $offset = ($pageParam - 1) * $perPage;
+
+            // Get revisions with user information
+            $sql = "SELECT pr.*, u.username, u.display_name, u.role
+                    FROM page_revisions pr
+                    LEFT JOIN users u ON pr.user_id = u.id
+                    WHERE $whereClause
+                    ORDER BY pr.created_at DESC
+                    LIMIT ? OFFSET ?";
+
+            $params[] = (int) $perPage;
+            $params[] = (int) $offset;
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+            $revisions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Get revision statistics
+            $stats = $this->getRevisionStatistics($page['id']);
+
+            // Get users who have edited this page
+            $editors = $this->getPageEditors($page['id']);
+
+            return $this->view('wiki/history', [
+                'page' => $page,
+                'revisions' => $revisions,
+                'stats' => $stats,
+                'editors' => $editors,
+                'pagination' => [
+                    'current' => $pageParam,
+                    'total' => $totalPages,
+                    'per_page' => $perPage,
+                    'total_items' => $totalRevisions
+                ],
+                'filters' => [
+                    'filter' => $filter,
+                    'user' => $userFilter,
+                    'date_from' => $dateFrom,
+                    'date_to' => $dateTo
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->error('Error in history method', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage()
+                ]);
+            }
+            throw new HttpException(500, 'Internal server error while retrieving page history');
         }
+    }
 
-        $revisions = $page->revisions();
+    /**
+     * Compare two revisions
+     */
+    public function compareRevisions(Request $request, string $slug): Response
+    {
+        try {
+            $page = Page::findBySlug($slug, $this->db);
+            if (!$page) {
+                throw new HttpException(404, 'Page not found');
+            }
 
-        return $this->view('pages/history', [
-            'page' => $page,
-            'revisions' => $revisions,
-        ]);
+            $revision1 = $request->getQueryParams()['rev1'] ?? '';
+            $revision2 = $request->getQueryParams()['rev1'] ?? '';
+
+            if (!$revision1 || !$revision2) {
+                throw new HttpException(400, 'Both revision IDs are required');
+            }
+
+            // Get the two revisions
+            $sql = "SELECT pr.*, u.username, u.display_name
+                    FROM page_revisions pr
+                    LEFT JOIN users u ON pr.user_id = u.id
+                    WHERE pr.id IN (?, ?) AND pr.page_id = ?
+                    ORDER BY pr.created_at ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$revision1, $revision2, $page['id']]);
+            $revisions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if (count($revisions) !== 2) {
+                return new Response('One or both revisions not found', 404);
+            }
+
+            $oldRevision = $revisions[0];
+            $newRevision = $revisions[1];
+
+            // Generate diff
+            $diff = $this->generateDiff($oldRevision['content'], $newRevision['content']);
+
+            return $this->render('wiki/compare.twig', [
+                'page' => $page,
+                'old_revision' => $oldRevision,
+                'new_revision' => $newRevision,
+                'diff' => $diff
+            ]);
+
+        } catch (\Exception $e) {
+            error_log("Error in compareRevisions method: " . $e->getMessage());
+            return new Response('Internal server error', 500);
+        }
+    }
+
+    /**
+     * Revert to a specific revision
+     */
+    public function revertToRevision(Request $request, string $slug): Response
+    {
+        try {
+            $page = $this->getPageBySlug($slug);
+            if (!$page) {
+                return new Response('Page not found', 404);
+            }
+
+            $revisionId = $request->getQueryParams()['revision'] ?? '';
+            if (!$revisionId) {
+                return new Response('Revision ID is required', 400);
+            }
+
+            // Get the revision to revert to
+            $sql = "SELECT * FROM page_revisions WHERE id = ? AND page_id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$revisionId, $page['id']]);
+            $revision = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$revision) {
+                return new Response('Revision not found', 404);
+            }
+
+            // Create new revision with old content
+            $newRevisionSql = "INSERT INTO page_revisions (page_id, user_id, title, content, comment, is_major, created_at) 
+                               VALUES (?, ?, ?, ?, ?, 1, NOW())";
+
+            $comment = "Reverted to revision from " . date('Y-m-d H:i:s', strtotime($revision['created_at']));
+            
+            $stmt = $this->db->prepare($newRevisionSql);
+            $stmt->execute([
+                $page['id'],
+                $this->getCurrentUserId(),
+                $revision['title'],
+                $revision['content'],
+                $comment
+            ]);
+
+            // Update the page with reverted content
+            $updatePageSql = "UPDATE pages SET 
+                             title = ?, 
+                             content = ?, 
+                             updated_at = NOW(),
+                             last_editor_id = ?,
+                             last_edit_at = NOW()
+                             WHERE id = ?";
+
+            $stmt = $this->db->prepare($updatePageSql);
+            $stmt->execute([
+                $revision['title'],
+                $revision['content'],
+                $this->getCurrentUserId(),
+                $page['id']
+            ]);
+
+            return new Response(json_encode([
+                'success' => true,
+                'message' => 'Page reverted successfully',
+                'redirect' => "/wiki/$slug"
+            ]), 200, ['Content-Type' => 'application/json']);
+
+        } catch (\Exception $e) {
+            error_log("Error in revertToRevision method: " . $e->getMessage());
+            return new Response('Internal server error', 500);
+        }
+    }
+
+    /**
+     * Get revision statistics for a page
+     */
+    private function getRevisionStatistics(int $pageId): array
+    {
+        $sql = "SELECT 
+                    COUNT(*) as total_revisions,
+                    COUNT(CASE WHEN is_major = 1 THEN 1 END) as major_revisions,
+                    COUNT(CASE WHEN is_major = 0 THEN 1 END) as minor_revisions,
+                    COUNT(DISTINCT user_id) as unique_editors,
+                    MIN(created_at) as first_edit,
+                    MAX(created_at) as last_edit
+                FROM page_revisions 
+                WHERE page_id = ?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$pageId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get users who have edited this page
+     */
+    private function getPageEditors(int $pageId): array
+    {
+        $sql = "SELECT 
+                    u.username, 
+                    u.display_name, 
+                    u.role,
+                    COUNT(pr.id) as edit_count,
+                    MAX(pr.created_at) as last_edit
+                FROM page_revisions pr
+                JOIN users u ON pr.user_id = u.id
+                WHERE pr.page_id = ?
+                GROUP BY u.id, u.username, u.display_name, u.role
+                ORDER BY edit_count DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$pageId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Generate diff between two content strings
+     */
+    private function generateDiff(string $oldContent, string $newContent): array
+    {
+        // Simple diff implementation - split into lines and compare
+        $oldLines = explode("\n", $oldContent);
+        $newLines = explode("\n", $newContent);
+        
+        $diff = [];
+        $maxLines = max(count($oldLines), count($newLines));
+        
+        for ($i = 0; $i < $maxLines; $i++) {
+            $oldLine = $oldLines[$i] ?? '';
+            $newLine = $newLines[$i] ?? '';
+            
+            if ($oldLine === $newLine) {
+                $diff[] = ['type' => 'unchanged', 'old' => $oldLine, 'new' => $newLine, 'line' => $i + 1];
+            } else {
+                if ($oldLine !== '') {
+                    $diff[] = ['type' => 'deleted', 'old' => $oldLine, 'new' => '', 'line' => $i + 1];
+                }
+                if ($newLine !== '') {
+                    $diff[] = ['type' => 'added', 'old' => '', 'new' => $newLine, 'line' => $i + 1];
+                }
+            }
+        }
+        
+        return $diff;
+    }
+
+    /**
+     * Get current user ID from session
+     */
+    private function getCurrentUserId(): ?int
+    {
+        // TODO: Implement based on your authentication system
+        return 1; // Placeholder
     }
 
     /**

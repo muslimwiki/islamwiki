@@ -79,8 +79,8 @@ class ShahidErrorHandlerMiddleware
                 'trace' => $exception->getTraceAsString(),
                 'request_url' => $request->getUri(),
                 'request_method' => $request->getMethod(),
-                'client_ip' => $request->getClientIp(),
-                'user_agent' => $request->getUserAgent(),
+                'client_ip' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
             ]);
         }
 
@@ -98,6 +98,79 @@ class ShahidErrorHandlerMiddleware
         // Render error page
         $errorPage = $this->getErrorPage($errorCode);
         if ($errorPage) {
+                    // Check for enhanced debug info in session
+        $debugInfo = null;
+        
+        // Ensure session is started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['debug_error_info'])) {
+            $debugInfo = $_SESSION['debug_error_info'];
+            // Clear debug info from session after use
+            unset($_SESSION['debug_error_info']);
+        }
+        
+        // If no debug info in session, try to generate basic debug info
+        if (!$debugInfo) {
+            $debugInfo = [
+                'timestamp' => date('Y-m-d H:i:s'),
+                'context' => 'Error Handler Middleware',
+                'error_type' => get_class($exception),
+                'error_message' => $exception->getMessage(),
+                'error_code' => $exception->getCode(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'stack_trace' => $exception->getTraceAsString(),
+                'request_info' => [
+                    'method' => $request->getMethod(),
+                    'uri' => $request->getUri(),
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                    'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                    'http_host' => $_SERVER['HTTP_HOST'] ?? 'Unknown'
+                ],
+                'session_info' => [
+                    'session_id' => session_id() ?: 'NO_SESSION',
+                    'session_status' => session_status(),
+                    'session_data' => $_SESSION ?? [],
+                    'session_name' => session_name()
+                ],
+                'authentication_info' => [
+                    'auth_service_available' => 'UNKNOWN',
+                    'user_data' => null,
+                    'session_user_data' => [
+                        'user_id' => $_SESSION['user_id'] ?? 'NOT_SET',
+                        'username' => $_SESSION['username'] ?? 'NOT_SET',
+                        'is_admin' => $_SESSION['is_admin'] ?? 'NOT_SET',
+                        'logged_in_at' => $_SESSION['logged_in_at'] ?? 'NOT_SET'
+                    ]
+                ],
+                'database_info' => [
+                    'database_available' => 'UNKNOWN',
+                    'connection_status' => 'UNKNOWN',
+                    'tables_exist' => []
+                ],
+                'container_info' => [
+                    'container_available' => 'UNKNOWN',
+                    'services' => [],
+                    'providers' => []
+                ],
+                'memory_usage' => [
+                    'memory_usage' => memory_get_usage(true),
+                    'memory_peak' => memory_get_peak_usage(true),
+                    'memory_limit' => ini_get('memory_limit')
+                ],
+                'php_info' => [
+                    'php_version' => PHP_VERSION,
+                    'extensions' => get_loaded_extensions(),
+                    'error_reporting' => error_reporting(),
+                    'display_errors' => ini_get('display_errors'),
+                    'log_errors' => ini_get('log_errors')
+                ]
+            ];
+        }
+            
             $response->setContent($this->renderErrorPage($errorPage, [
                 'error_code' => $errorCode,
                 'error_message' => $exception->getMessage(),
@@ -110,6 +183,15 @@ class ShahidErrorHandlerMiddleware
                 'user_agent' => $request->getUserAgent(),
                 'timestamp' => date('Y-m-d H:i:s T'),
                 'error_id' => 'ERR_' . uniqid(),
+                'debug_info' => $debugInfo,
+                'exception' => [
+                    '__class__' => get_class($exception),
+                    'message' => $exception->getMessage(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'code' => $exception->getCode(),
+                    'traceAsString' => $exception->getTraceAsString(),
+                ],
             ]));
         } else {
             // Fallback error content
@@ -131,8 +213,8 @@ class ShahidErrorHandlerMiddleware
                 'status_code' => $statusCode,
                 'request_url' => $request->getUri(),
                 'request_method' => $request->getMethod(),
-                'client_ip' => $request->getClientIp(),
-                'user_agent' => $request->getUserAgent(),
+                'client_ip' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
             ]);
         }
     }
@@ -233,6 +315,17 @@ class ShahidErrorHandlerMiddleware
         
         // Simple variable replacement
         foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                // Convert arrays to JSON for display
+                $value = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+            } elseif (is_object($value)) {
+                // Convert objects to string representation
+                $value = (string) $value;
+            } elseif (is_bool($value)) {
+                // Convert booleans to string
+                $value = $value ? 'true' : 'false';
+            }
+            
             $content = str_replace('{{ ' . $key . ' }}', $value, $content);
             $content = str_replace('{{' . $key . '}}', $value, $content);
         }

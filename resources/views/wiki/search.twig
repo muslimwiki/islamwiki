@@ -1,0 +1,1670 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}Search - IslamWiki{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <div class="search-hero">
+        <div class="search-hero-content">
+            <div class="search-hero-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h1>Search IslamWiki</h1>
+            <p>Discover knowledge across Islamic topics, Quran, Hadith, and more</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Search Form with Live Search -->
+    <div class="search-form-container">
+        <form action="/search" method="GET" class="search-form" id="searchForm">
+            <div class="search-input-wrapper">
+                <div class="search-input-group">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-input-icon"></i>
+                        <input 
+                            type="text" 
+                            name="q" 
+                            id="searchInput"
+                            value="{{ query|default('') }}" 
+                            placeholder="Search for Islamic knowledge, Quran verses, Hadith, articles..."
+                            class="search-input"
+                            required
+                            autocomplete="off"
+                        >
+                        {% if query %}
+                        <button type="button" class="clear-search-btn" onclick="clearSearch()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        {% endif %}
+                        
+                        <!-- Live Search Suggestions -->
+                        <div class="live-suggestions" id="liveSuggestions" style="display: none;">
+                            <div class="suggestions-header">
+                                <span>Live Suggestions</span>
+                                <button type="button" class="close-suggestions" onclick="closeSuggestions()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="suggestions-list" id="suggestionsList">
+                                <!-- Suggestions will be populated here -->
+                            </div>
+                            <div class="suggestions-footer">
+                                <span class="suggestions-info">Press Enter to search, ↑↓ to navigate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+                
+                <!-- Advanced Search Options -->
+                <div class="search-options">
+                    <div class="search-option">
+                        <input type="checkbox" id="search-titles" name="search_titles" checked>
+                        <label for="search-titles">
+                            <i class="fas fa-heading"></i>
+                            Titles
+                        </label>
+                    </div>
+                    <div class="search-option">
+                        <input type="checkbox" id="search-content" name="search_content" checked>
+                        <label for="search-content">
+                            <i class="fas fa-file-text"></i>
+                            Content
+                        </label>
+                    </div>
+                    <div class="search-option">
+                        <input type="checkbox" id="search-categories" name="search_categories">
+                        <label for="search-categories">
+                            <i class="fas fa-tags"></i>
+                            Categories
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters -->
+                <div class="advanced-filters" id="advancedFilters">
+                    <div class="filters-toggle">
+                        <button type="button" class="filters-toggle-btn" onclick="toggleAdvancedFilters()">
+                            <i class="fas fa-filter"></i>
+                            Advanced Filters
+                            <i class="fas fa-chevron-down" id="filtersChevron"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-content" id="filtersContent" style="display: none;">
+                        <div class="filters-grid">
+                            <!-- Domain Filter -->
+                            <div class="filter-group">
+                                <label for="domain">Content Domain</label>
+                                <select name="domain" id="domain" class="filter-select">
+                                    <option value="">All Domains</option>
+                                    <option value="wiki" {{ domain == 'wiki' ? 'selected' : '' }}>Wiki Pages</option>
+                                    <option value="quran" {{ domain == 'quran' ? 'selected' : '' }}>Quran</option>
+                                    <option value="hadith" {{ domain == 'hadith' ? 'selected' : '' }}>Hadith</option>
+                                    <option value="articles" {{ domain == 'articles' ? 'selected' : '' }}>Articles</option>
+                                    <option value="news" {{ domain == 'news' ? 'selected' : '' }}>News</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Date Range Filter -->
+                            <div class="filter-group">
+                                <label for="date_from">Date From</label>
+                                <input type="date" name="date_from" id="date_from" class="filter-input" value="{{ date_from|default('') }}">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="date_to">Date To</label>
+                                <input type="date" name="date_to" id="date_to" class="filter-input" value="{{ date_to|default('') }}">
+                            </div>
+                            
+                            <!-- Author Filter -->
+                            <div class="filter-group">
+                                <label for="author">Author</label>
+                                <input type="text" name="author" id="author" class="filter-input" placeholder="Author name" value="{{ author|default('') }}">
+                            </div>
+                            
+                            <!-- Language Filter -->
+                            <div class="filter-group">
+                                <label for="language">Language</label>
+                                <select name="language" id="language" class="filter-select">
+                                    <option value="">All Languages</option>
+                                    <option value="en" {{ language == 'en' ? 'selected' : '' }}>English</option>
+                                    <option value="ar" {{ language == 'ar' ? 'selected' : '' }}>Arabic</option>
+                                    <option value="ur" {{ language == 'ur' ? 'selected' : '' }}>Urdu</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Sort Options -->
+                            <div class="filter-group">
+                                <label for="sort">Sort By</label>
+                                <select name="sort" id="sort" class="filter-select">
+                                    <option value="relevance" {{ sort == 'relevance' ? 'selected' : '' }}>Relevance</option>
+                                    <option value="date" {{ sort == 'date' ? 'selected' : '' }}>Date</option>
+                                    <option value="title" {{ sort == 'title' ? 'selected' : '' }}>Title</option>
+                                    <option value="views" {{ sort == 'views' ? 'selected' : '' }}>Views</option>
+                                    <option value="author" {{ sort == 'author' ? 'selected' : '' }}>Author</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Results Per Page -->
+                            <div class="filter-group">
+                                <label for="per_page">Results Per Page</label>
+                                <select name="per_page" id="per_page" class="filter-select">
+                                    <option value="10" {{ per_page == '10' ? 'selected' : '' }}>10</option>
+                                    <option value="25" {{ per_page == '25' ? 'selected' : '' }}>25</option>
+                                    <option value="50" {{ per_page == '50' ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ per_page == '100' ? 'selected' : '' }}>100</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="filters-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                                <i class="fas fa-eraser"></i> Clear Filters
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="applyFilters()">
+                                <i class="fas fa-check"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if searchResults is defined and searchResults|length > 0 %}
+        <!-- Enhanced Search Results -->
+        <div class="search-results">
+            <div class="results-header">
+                <div class="results-info">
+                    <h2><i class="fas fa-list"></i> Search Results</h2>
+                    <p class="results-count">
+                        <i class="fas fa-info-circle"></i>
+                        {{ totalResults }} result{{ totalResults != 1 ? 's' : '' }} found
+                        {% if query %}
+                            for "<strong>{{ query }}</strong>"
+                        {% endif %}
+                        {% if searchTime %}
+                            in {{ searchTime|round(3) }} seconds
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="results-actions">
+                    <div class="action-buttons">
+                        <button class="btn btn-info" onclick="showSearchAnalytics()" title="Search Analytics">
+                            <i class="fas fa-chart-bar"></i> Analytics
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportResults()" title="Export Results">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-success" onclick="saveSearch()" title="Save Search">
+                            <i class="fas fa-bookmark"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Analytics Panel -->
+            <div class="search-analytics-panel" id="searchAnalyticsPanel" style="display: none;">
+                <div class="analytics-header">
+                    <h3><i class="fas fa-chart-line"></i> Search Analytics</h3>
+                    <button class="close-analytics" onclick="hideSearchAnalytics()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="analytics-content">
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="analytics-info">
+                                <h4>Search Time</h4>
+                                <p>{{ searchTime|default(0)|round(3) }} seconds</p>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="analytics-info">
+                                <h4>Database Queries</h4>
+                                <p>{{ dbQueries|default(0) }} queries</p>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <div class="analytics-info">
+                                <h4>Memory Usage</h4>
+                                <p>{{ memoryUsage|default(0)|round(2) }} MB</p>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div class="analytics-info">
+                                <h4>Performance Score</h4>
+                                <p>{{ performanceScore|default('N/A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Domain Distribution Chart -->
+                    <div class="analytics-chart">
+                        <h4>Results by Domain</h4>
+                        <div class="chart-container" id="domainChart">
+                            <!-- Chart will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Search Suggestions -->
+                    <div class="search-suggestions-analytics">
+                        <h4>Related Searches</h4>
+                        <div class="suggestions-tags">
+                            {% for suggestion in relatedSearches|default([]) %}
+                                <a href="/search?q={{ suggestion.query|url_encode }}" class="suggestion-tag">
+                                    {{ suggestion.query }} ({{ suggestion.count }} results)
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Filters -->
+            {% if currentFilters is defined %}
+            <div class="search-filters">
+                <h3>Current Filters:</h3>
+                <div class="filter-tags">
+                    {% if currentFilters.category %}
+                        <span class="filter-tag">
+                            Category: {{ currentFilters.category }}
+                            <a href="?{{ query ? 'q=' ~ query ~ '&' : '' }}category=&namespace={{ currentFilters.namespace|default('') }}&author={{ currentFilters.author|default('') }}" class="remove-filter">×</a>
+                        </span>
+                    {% endif %}
+                    {% if currentFilters.namespace %}
+                        <span class="filter-tag">
+                            Namespace: {{ currentFilters.namespace }}
+                            <a href="?{{ query ? 'q=' ~ query ~ '&' : '' }}category={{ currentFilters.category|default('') }}&namespace=&author={{ currentFilters.author|default('') }}" class="remove-filter">×</a>
+                        </span>
+                    {% endif %}
+                    {% if currentFilters.author %}
+                        <span class="filter-tag">
+                            Author: {{ currentFilters.author }}
+                            <a href="?{{ query ? 'q=' ~ query ~ '&' : '' }}category={{ currentFilters.category|default('') }}&namespace={{ currentFilters.namespace|default('') }}&author=" class="remove-filter">×</a>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Results List -->
+            <div class="results-list">
+                {% for result in searchResults %}
+                <div class="result-item">
+                    <div class="result-header">
+                        <div class="result-title-section">
+                            <h3 class="result-title">
+                                <a href="/wiki/{{ result.slug }}">
+                                    <i class="fas fa-file-alt result-icon"></i>
+                                    {{ result.title }}
+                                </a>
+                            </h3>
+                            <div class="result-badges">
+                                <span class="result-namespace">{{ result.namespace }}</span>
+                                {% if result.view_count and result.view_count > 100 %}
+                                    <span class="result-popularity">
+                                        <i class="fas fa-fire"></i> Popular
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="result-action-btn" onclick="previewResult('{{ result.slug }}')" title="Preview">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="result-action-btn" onclick="shareResult('{{ result.slug }}')" title="Share">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="result-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>{{ result.author_name|default('Unknown') }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ result.created_at|date('M j, Y') }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span>{{ result.view_count|default(0) }} views</span>
+                        </div>
+                        {% if result.updated_at and result.updated_at != result.created_at %}
+                        <div class="meta-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Updated {{ result.updated_at|date('M j, Y') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="result-excerpt">
+                        <div class="excerpt-content">
+                            {{ result.content|striptags|slice(0, 250) }}...
+                        </div>
+                        <div class="excerpt-highlight">
+                            {% if query %}
+                                <span class="highlight-text">Highlighted terms: {{ query }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if result.categories %}
+                    <div class="result-categories">
+                        <i class="fas fa-tags"></i>
+                        <div class="category-tags">
+                            {% for category in result.categories|split(',') %}
+                                <a href="/search?category={{ category|trim|url_encode }}" class="category-link">
+                                    <i class="fas fa-tag"></i>
+                                    {{ category|trim }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination is defined and pagination.total_pages > 1 %}
+            <div class="pagination">
+                {% if pagination.current_page > 1 %}
+                    <a href="?{{ query ? 'q=' ~ query ~ '&' : '' }}page={{ pagination.current_page - 1 }}" class="pagination-btn">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                {% endif %}
+                
+                <span class="pagination-info">
+                    Page {{ pagination.current_page }} of {{ pagination.total_pages }}
+                </span>
+                
+                {% if pagination.current_page < pagination.total_pages %}
+                    <a href="?{{ query ? 'q=' ~ query ~ '&' : '' }}page={{ pagination.current_page + 1 }}" class="pagination-btn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+    {% elseif query %}
+        <!-- No Results -->
+        <div class="no-results">
+            <div class="no-results-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2>No results found</h2>
+            <p>We couldn't find any pages matching "{{ query }}"</p>
+            
+            <div class="search-suggestions">
+                <h3>Search suggestions:</h3>
+                <ul>
+                    <li>Check your spelling</li>
+                    <li>Try different keywords</li>
+                    <li>Use more general terms</li>
+                    <li>Remove some filters</li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Enhanced Search Tips -->
+    <div class="search-tips">
+        <div class="tips-header">
+            <h3><i class="fas fa-lightbulb"></i> Search Tips & Tricks</h3>
+            <p>Master your search to find exactly what you need</p>
+        </div>
+        <div class="tips-grid">
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Exact Phrases</h4>
+                    <p>Use quotes for exact matches like "Islamic history" or "Quran verses"</p>
+                </div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-asterisk"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Wildcards</h4>
+                    <p>Use * for partial matches like "Islam*" or "Hadith*"</p>
+                </div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Combine Terms</h4>
+                    <p>Use AND, OR, NOT to combine search terms effectively</p>
+                </div>
+            </div>
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Smart Filters</h4>
+                    <p>Narrow results by category, author, or date range</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Recent Searches -->
+    {% if recentSearches is defined and recentSearches|length > 0 %}
+    <div class="recent-searches">
+        <div class="recent-header">
+            <h3><i class="fas fa-history"></i> Recent Searches</h3>
+            <div class="recent-actions">
+                <button class="btn btn-sm btn-outline" onclick="exportSearchHistory()" title="Export History">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="clear-recent-btn" onclick="clearRecentSearches()">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+        <div class="recent-tags">
+            {% for search in recentSearches %}
+                <a href="/search?q={{ search.query|url_encode }}" class="recent-tag">
+                    <i class="fas fa-search"></i>
+                    {{ search.query }}
+                    <span class="search-time">{{ search.created_at|date('M j') }}</span>
+                    <span class="search-count">{{ search.result_count|default(0) }} results</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Saved Searches -->
+    <div class="saved-searches" id="savedSearches">
+        <div class="saved-header">
+            <h3><i class="fas fa-bookmark"></i> Saved Searches</h3>
+            <button class="btn btn-sm btn-primary" onclick="showSaveSearchModal()">
+                <i class="fas fa-plus"></i> New
+            </button>
+        </div>
+        <div class="saved-searches-list" id="savedSearchesList">
+            <!-- Saved searches will be loaded here -->
+        </div>
+    </div>
+    
+    <!-- Save Search Modal -->
+    <div class="modal" id="saveSearchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bookmark"></i> Save Search</h3>
+                <button class="close" onclick="closeSaveSearchModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="saveSearchForm">
+                    <div class="form-group">
+                        <label for="searchName">Search Name</label>
+                        <input type="text" id="searchName" name="searchName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="searchDescription">Description (Optional)</label>
+                        <textarea id="searchDescription" name="searchDescription" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="searchTags">Tags (Optional)</label>
+                        <input type="text" id="searchTags" name="searchTags" class="form-input" placeholder="tag1, tag2, tag3">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="searchPublic" name="searchPublic">
+                            Make this search public
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSaveSearchModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSearchToLibrary()">Save Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Search Suggestions -->
+    <div class="quick-suggestions">
+        <h3><i class="fas fa-bolt"></i> Quick Search</h3>
+        <div class="suggestion-tags">
+            <a href="/search?q=Quran" class="suggestion-tag">
+                <i class="fas fa-book-open"></i> Quran
+            </a>
+            <a href="/search?q=Hadith" class="suggestion-tag">
+                <i class="fas fa-quote-right"></i> Hadith
+            </a>
+            <a href="/search?q=Islamic+History" class="suggestion-tag">
+                <i class="fas fa-landmark"></i> Islamic History
+            </a>
+            <a href="/search?q=Prayer+Times" class="suggestion-tag">
+                <i class="fas fa-clock"></i> Prayer Times
+            </a>
+            <a href="/search?q=Islamic+Calendar" class="suggestion-tag">
+                <i class="fas fa-calendar-alt"></i> Islamic Calendar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Global variables
+let searchTimeout;
+let currentSuggestions = [];
+let selectedSuggestionIndex = -1;
+let searchHistory = [];
+let savedSearches = [];
+
+// Search functionality
+function clearSearch() {
+    document.querySelector('.search-input').value = '';
+    document.querySelector('.search-input').focus();
+    hideSuggestions();
+}
+
+function previewResult(slug) {
+    window.open(`/wiki/${slug}?preview=true`, '_blank');
+}
+
+function shareResult(slug) {
+    const url = `${window.location.origin}/wiki/${slug}`;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Check out this page on IslamWiki',
+            url: url
+        });
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Link copied to clipboard!', 'success');
+        });
+    }
+}
+
+// Live Search Implementation
+function initializeLiveSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timeout
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+        
+        // Hide suggestions if query is too short
+        if (query.length < 2) {
+            hideSuggestions();
+            return;
+        }
+        
+        // Set timeout for live search (debouncing)
+        searchTimeout = setTimeout(() => {
+            performLiveSearch(query);
+        }, 300);
+    });
+
+    // Handle keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        handleSearchKeydown(e);
+    });
+
+    // Handle focus/blur
+    searchInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2) {
+            showSuggestions();
+        }
+    });
+}
+
+function performLiveSearch(query) {
+    // Show loading state
+    showSuggestions();
+    const suggestionsList = document.getElementById('suggestionsList');
+    suggestionsList.innerHTML = '<div class="loading-suggestion"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+    
+    // Make AJAX request to live search endpoint
+    fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            currentSuggestions = data.suggestions || [];
+            renderSuggestions(currentSuggestions);
+        })
+        .catch(error => {
+            console.error('Live search error:', error);
+            suggestionsList.innerHTML = '<div class="error-suggestion">Error loading suggestions</div>';
+        });
+}
+
+function renderSuggestions(suggestions) {
+    const suggestionsList = document.getElementById('suggestionsList');
+    
+    if (!suggestions || suggestions.length === 0) {
+        suggestionsList.innerHTML = '<div class="no-suggestions">No suggestions found</div>';
+        return;
+    }
+    
+    const suggestionsHTML = suggestions.map((suggestion, index) => `
+        <div class="suggestion-item ${index === selectedSuggestionIndex ? 'selected' : ''}" 
+             onclick="selectSuggestion('${suggestion.query}', '${suggestion.type}')">
+            <div class="suggestion-icon">
+                <i class="fas fa-${getSuggestionIcon(suggestion.type)}"></i>
+            </div>
+            <div class="suggestion-content">
+                <div class="suggestion-query">${highlightQuery(suggestion.query)}</div>
+                <div class="suggestion-meta">${suggestion.type} • ${suggestion.count} results</div>
+            </div>
+        </div>
+    `).join('');
+    
+    suggestionsList.innerHTML = suggestionsHTML;
+}
+
+function getSuggestionIcon(type) {
+    const icons = {
+        'wiki': 'file-alt',
+        'quran': 'book-open',
+        'hadith': 'quote-right',
+        'article': 'newspaper',
+        'user': 'user',
+        'category': 'tag'
+    };
+    return icons[type] || 'search';
+}
+
+function highlightQuery(query) {
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.trim();
+    if (!searchTerm) return query;
+    
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return query.replace(regex, '<strong>$1</strong>');
+}
+
+function selectSuggestion(query, type) {
+    document.getElementById('searchInput').value = query;
+    hideSuggestions();
+    
+    // Auto-submit search
+    document.getElementById('searchForm').submit();
+}
+
+function handleSearchKeydown(e) {
+    const suggestions = document.querySelectorAll('.suggestion-item');
+    
+    switch(e.key) {
+        case 'ArrowDown':
+            e.preventDefault();
+            selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+            updateSelectedSuggestion();
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+            updateSelectedSuggestion();
+            break;
+        case 'Enter':
+            if (selectedSuggestionIndex >= 0 && currentSuggestions[selectedSuggestionIndex]) {
+                e.preventDefault();
+                const suggestion = currentSuggestions[selectedSuggestionIndex];
+                selectSuggestion(suggestion.query, suggestion.type);
+            }
+            break;
+        case 'Escape':
+            hideSuggestions();
+            selectedSuggestionIndex = -1;
+            break;
+    }
+}
+
+function updateSelectedSuggestion() {
+    const suggestions = document.querySelectorAll('.suggestion-item');
+    suggestions.forEach((item, index) => {
+        item.classList.toggle('selected', index === selectedSuggestionIndex);
+    });
+}
+
+function showSuggestions() {
+    const suggestionsPanel = document.getElementById('liveSuggestions');
+    if (suggestionsPanel) {
+        suggestionsPanel.style.display = 'block';
+    }
+}
+
+function hideSuggestions() {
+    const suggestionsPanel = document.getElementById('liveSuggestions');
+    if (suggestionsPanel) {
+        suggestionsPanel.style.display = 'none';
+    }
+    selectedSuggestionIndex = -1;
+}
+
+function closeSuggestions() {
+    hideSuggestions();
+}
+
+// Advanced Filters
+function toggleAdvancedFilters() {
+    const filtersContent = document.getElementById('filtersContent');
+    const filtersChevron = document.getElementById('filtersChevron');
+    
+    if (filtersContent.style.display === 'none') {
+        filtersContent.style.display = 'block';
+        filtersChevron.classList.remove('fa-chevron-down');
+        filtersChevron.classList.add('fa-chevron-up');
+    } else {
+        filtersContent.style.display = 'none';
+        filtersChevron.classList.remove('fa-chevron-up');
+        filtersChevron.classList.add('fa-chevron-down');
+    }
+}
+
+function clearFilters() {
+    const filterInputs = document.querySelectorAll('.filter-input, .filter-select');
+    filterInputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            input.checked = false;
+        } else {
+            input.value = '';
+        }
+    });
+}
+
+function applyFilters() {
+    // Collect all filter values
+    const filters = {
+        domain: document.getElementById('domain').value,
+        date_from: document.getElementById('date_from').value,
+        date_to: document.getElementById('date_to').value,
+        author: document.getElementById('author').value,
+        language: document.getElementById('language').value,
+        sort: document.getElementById('sort').value,
+        per_page: document.getElementById('per_page').value
+    };
+    
+    // Build query string
+    const currentUrl = new URL(window.location);
+    Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+            currentUrl.searchParams.set(key, filters[key]);
+        } else {
+            currentUrl.searchParams.delete(key);
+        }
+    });
+    
+    // Navigate to filtered results
+    window.location.href = currentUrl.toString();
+}
+
+// Search Analytics
+function showSearchAnalytics() {
+    const analyticsPanel = document.getElementById('searchAnalyticsPanel');
+    if (analyticsPanel) {
+        analyticsPanel.style.display = 'block';
+        renderDomainChart();
+    }
+}
+
+function hideSearchAnalytics() {
+    const analyticsPanel = document.getElementById('searchAnalyticsPanel');
+    if (analyticsPanel) {
+        analyticsPanel.style.display = 'none';
+    }
+}
+
+function renderDomainChart() {
+    const chartContainer = document.getElementById('domainChart');
+    if (!chartContainer) return;
+    
+    // Simple chart implementation (you can replace with Chart.js or similar)
+    const domainData = getDomainDistribution();
+    const chartHTML = domainData.map(domain => `
+        <div class="chart-bar">
+            <div class="bar-label">${domain.name}</div>
+            <div class="bar-container">
+                <div class="bar-fill" style="width: ${domain.percentage}%"></div>
+            </div>
+            <div class="bar-value">${domain.count}</div>
+        </div>
+    `).join('');
+    
+    chartContainer.innerHTML = chartHTML;
+}
+
+function getDomainDistribution() {
+    // This would come from your search results data
+    // For now, returning mock data
+    return [
+        { name: 'Wiki', count: 45, percentage: 60 },
+        { name: 'Quran', count: 20, percentage: 27 },
+        { name: 'Hadith', count: 10, percentage: 13 }
+    ];
+}
+
+// Export Functionality
+function exportResults() {
+    const format = prompt('Choose export format (csv, json, xml):', 'csv');
+    if (!format) return;
+    
+    const searchData = collectSearchData();
+    
+    switch(format.toLowerCase()) {
+        case 'csv':
+            exportToCSV(searchData);
+            break;
+        case 'json':
+            exportToJSON(searchData);
+            break;
+        case 'xml':
+            exportToXML(searchData);
+            break;
+        default:
+            showNotification('Unsupported format', 'error');
+    }
+}
+
+function collectSearchData() {
+    // Collect current search parameters and results
+    const searchParams = new URLSearchParams(window.location.search);
+    const results = Array.from(document.querySelectorAll('.result-item')).map(item => ({
+        title: item.querySelector('.result-title a')?.textContent || '',
+        url: item.querySelector('.result-title a')?.href || '',
+        excerpt: item.querySelector('.excerpt-content')?.textContent || '',
+        author: item.querySelector('.meta-item:first-child span')?.textContent || '',
+        date: item.querySelector('.meta-item:nth-child(2) span')?.textContent || ''
+    }));
+    
+    return {
+        query: searchParams.get('q') || '',
+        filters: Object.fromEntries(searchParams.entries()),
+        results: results,
+        exportDate: new Date().toISOString()
+    };
+}
+
+function exportToCSV(data) {
+    const csvContent = convertToCSV(data.results);
+    downloadFile(csvContent, `search_results_${data.query}_${Date.now()}.csv`, 'text/csv');
+}
+
+function exportToJSON(data) {
+    const jsonContent = JSON.stringify(data, null, 2);
+    downloadFile(jsonContent, `search_results_${data.query}_${Date.now()}.json`, 'application/json');
+}
+
+function exportToXML(data) {
+    const xmlContent = convertToXML(data);
+    downloadFile(xmlContent, `search_results_${data.query}_${Date.now()}.xml`, 'application/xml');
+}
+
+function convertToCSV(results) {
+    const headers = ['Title', 'URL', 'Excerpt', 'Author', 'Date'];
+    const rows = results.map(result => [
+        result.title,
+        result.url,
+        result.excerpt,
+        result.author,
+        result.date
+    ]);
+    
+    return [headers, ...rows]
+        .map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+}
+
+function convertToXML(data) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<searchResults>
+    <query>${data.query}</query>
+    <exportDate>${data.exportDate}</exportDate>
+    <results>
+        ${data.results.map(result => `
+        <result>
+            <title>${result.title}</title>
+            <url>${result.url}</url>
+            <excerpt>${result.excerpt}</excerpt>
+            <author>${result.author}</author>
+            <date>${result.date}</date>
+        </result>`).join('')}
+    </results>
+</searchResults>`;
+}
+
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showNotification(`Exported ${filename}`, 'success');
+}
+
+// Search History Management
+function exportSearchHistory() {
+    const historyData = searchHistory.map(search => ({
+        query: search.query,
+        date: search.date,
+        resultCount: search.resultCount
+    }));
+    
+    const csvContent = convertToCSV(historyData);
+    downloadFile(csvContent, `search_history_${Date.now()}.csv`, 'text/csv');
+}
+
+function clearRecentSearches() {
+    if (confirm('Are you sure you want to clear your recent searches?')) {
+        fetch('/api/search/history/clear', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('.recent-tags').innerHTML = '';
+                    showNotification('Search history cleared', 'success');
+                }
+            })
+            .catch(error => {
+                console.error('Error clearing history:', error);
+                showNotification('Error clearing history', 'error');
+            });
+    }
+}
+
+// Saved Searches
+function showSaveSearchModal() {
+    const modal = document.getElementById('saveSearchModal');
+    if (modal) {
+        modal.style.display = 'block';
+        
+        // Pre-fill with current search
+        const searchParams = new URLSearchParams(window.location.search);
+        document.getElementById('searchName').value = searchParams.get('q') || 'My Search';
+    }
+}
+
+function closeSaveSearchModal() {
+    const modal = document.getElementById('saveSearchModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function saveSearchToLibrary() {
+    const formData = new FormData(document.getElementById('saveSearchForm'));
+    const searchData = {
+        name: formData.get('searchName'),
+        description: formData.get('searchDescription'),
+        tags: formData.get('searchTags'),
+        public: formData.get('searchPublic') === 'on',
+        query: window.location.search,
+        savedAt: new Date().toISOString()
+    };
+    
+    fetch('/api/search/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Search saved successfully', 'success');
+            closeSaveSearchModal();
+            loadSavedSearches();
+        }
+    })
+    .catch(error => {
+        console.error('Error saving search:', error);
+        showNotification('Error saving search', 'error');
+    });
+}
+
+function loadSavedSearches() {
+    fetch('/api/search/saved')
+        .then(response => response.json())
+        .then(data => {
+            savedSearches = data.searches || [];
+            renderSavedSearches();
+        })
+        .catch(error => {
+            console.error('Error loading saved searches:', error);
+        });
+}
+
+function renderSavedSearches() {
+    const container = document.getElementById('savedSearchesList');
+    if (!container) return;
+    
+    if (savedSearches.length === 0) {
+        container.innerHTML = '<div class="no-saved-searches">No saved searches yet</div>';
+        return;
+    }
+    
+    const searchesHTML = savedSearches.map(search => `
+        <div class="saved-search-item">
+            <div class="saved-search-info">
+                <h4>${search.name}</h4>
+                <p>${search.description || ''}</p>
+                <div class="saved-search-meta">
+                    <span class="saved-date">${new Date(search.savedAt).toLocaleDateString()}</span>
+                    ${search.tags ? `<span class="saved-tags">${search.tags}</span>` : ''}
+                    ${search.public ? '<span class="public-badge">Public</span>' : ''}
+                </div>
+            </div>
+            <div class="saved-search-actions">
+                <button class="btn btn-sm btn-primary" onclick="loadSavedSearch('${search.query}')">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="editSavedSearch('${search.id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteSavedSearch('${search.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = searchesHTML;
+}
+
+function loadSavedSearch(queryString) {
+    window.location.href = `/search${queryString}`;
+}
+
+function editSavedSearch(searchId) {
+    // Implementation for editing saved search
+    showNotification('Edit functionality coming soon', 'info');
+}
+
+function deleteSavedSearch(searchId) {
+    if (confirm('Are you sure you want to delete this saved search?')) {
+        fetch(`/api/search/saved/${searchId}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Search deleted', 'success');
+                    loadSavedSearches();
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting search:', error);
+                showNotification('Error deleting search', 'error');
+            });
+    }
+}
+
+// Utility Functions
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${getNotificationIcon(type)}"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        'success': 'check-circle',
+        'error': 'exclamation-circle',
+        'warning': 'exclamation-triangle',
+        'info': 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLiveSearch();
+    loadSavedSearches();
+    
+    // Auto-focus search input
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput && !searchInput.value) {
+        searchInput.focus();
+    }
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.search-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.search-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--islamic-dark-blue);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.search-header p {
+    font-size: 1.25rem;
+    color: var(--islamic-text-secondary);
+}
+
+.search-form-container {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.search-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--islamic-blue);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    border-color: var(--islamic-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.search-button {
+    padding: 1rem 2rem;
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-button:hover {
+    background: var(--islamic-dark-blue);
+    transform: translateY(-2px);
+}
+
+.search-options {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.search-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+    cursor: pointer;
+}
+
+.search-option input[type="checkbox"] {
+    accent-color: var(--islamic-blue);
+}
+
+.search-results {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--islamic-cream);
+}
+
+.results-header h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin: 0;
+}
+
+.results-count {
+    color: var(--islamic-text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.search-filters {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+}
+
+.search-filters h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--islamic-text-primary);
+    margin-bottom: 1rem;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-tag {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.remove-filter {
+    color: var(--islamic-white);
+    text-decoration: none;
+    font-weight: 700;
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.remove-filter:hover {
+    opacity: 1;
+}
+
+.results-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.result-item {
+    padding: 1.5rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--islamic-blue);
+    transition: var(--transition);
+}
+
+.result-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.result-title {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.result-title a {
+    color: var(--islamic-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.result-title a:hover {
+    text-decoration: underline;
+}
+
+.result-namespace {
+    background: var(--islamic-gold);
+    color: var(--islamic-dark-blue);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.result-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--islamic-text-secondary);
+}
+
+.result-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.result-meta i {
+    color: var(--islamic-blue);
+    width: 16px;
+    text-align: center;
+}
+
+.result-excerpt {
+    color: var(--islamic-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.result-categories {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.result-categories i {
+    color: var(--islamic-blue);
+    width: 16px;
+    text-align: center;
+}
+
+.category-link {
+    background: var(--islamic-white);
+    color: var(--islamic-blue);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    border: 1px solid var(--islamic-blue);
+    transition: var(--transition);
+}
+
+.category-link:hover {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--islamic-cream);
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.pagination-btn:hover {
+    background: var(--islamic-dark-blue);
+    transform: translateY(-2px);
+}
+
+.pagination-info {
+    color: var(--islamic-text-secondary);
+    font-size: 0.875rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    color: var(--islamic-text-secondary);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-results h2 {
+    font-size: 1.75rem;
+    color: var(--islamic-text-primary);
+    margin-bottom: 1rem;
+}
+
+.no-results p {
+    color: var(--islamic-text-secondary);
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+}
+
+.search-suggestions h3 {
+    font-size: 1.125rem;
+    color: var(--islamic-text-primary);
+    margin-bottom: 1rem;
+}
+
+.search-suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.search-suggestions li {
+    color: var(--islamic-text-secondary);
+    padding: 0.5rem 1rem;
+    background: var(--islamic-cream);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--islamic-blue);
+}
+
+.search-tips {
+    background: var(--islamic-cream);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.search-tips h3 {
+    text-align: center;
+    color: var(--islamic-text-primary);
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip-item {
+    background: var(--islamic-white);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tip-item h4 {
+    color: var(--islamic-blue);
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+}
+
+.tip-item p {
+    color: var(--islamic-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.recent-searches {
+    background: var(--islamic-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.recent-searches h3 {
+    color: var(--islamic-text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.recent-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.recent-tag {
+    background: var(--islamic-cream);
+    color: var(--islamic-blue);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    border: 1px solid var(--islamic-blue);
+    transition: var(--transition);
+    font-size: 0.875rem;
+}
+
+.recent-tag:hover {
+    background: var(--islamic-blue);
+    color: var(--islamic-white);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        padding: 1rem;
+    }
+    
+    .search-header h1 {
+        font-size: 2rem;
+    }
+    
+    .search-form-container {
+        padding: 1.5rem;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .search-options {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .results-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .result-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %} 

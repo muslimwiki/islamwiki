@@ -1,0 +1,434 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+<div class="redlink-create-container">
+    <!-- Red Link Header -->
+    <div class="redlink-header">
+        <div class="redlink-header-content">
+            <h1 class="redlink-title">🔗 Create New Page</h1>
+            <p class="redlink-subtitle">You're creating a page for: <strong>{{ title }}</strong></p>
+            <div class="redlink-info">
+                <div class="info-item">
+                    <span class="info-icon">📝</span>
+                    <span class="info-text">This page doesn't exist yet</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">👤</span>
+                    <span class="info-text">Creating as: {{ user.display_name|default(user.username) }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📅</span>
+                    <span class="info-text">{{ "now"|date('M j, Y H:i') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Creation Form -->
+    <div class="create-form-container">
+        <form id="create-page-form" method="POST" action="/wiki/{{ slug }}/create" class="create-page-form">
+            <div class="form-grid">
+                <!-- Main Content Column -->
+                <div class="form-main-column">
+                    <!-- Page Title -->
+                    <div class="form-group">
+                        <label for="page-title">Page Title *</label>
+                        <input type="text" id="page-title" name="title" value="{{ title }}" required 
+                               class="form-input" placeholder="Enter the page title">
+                        <small class="form-help">This will be the main heading of your page</small>
+                    </div>
+
+                    <!-- Page Content -->
+                    <div class="form-group">
+                        <label for="page-content">Page Content *</label>
+                        <textarea id="page-content" name="content" rows="15" required 
+                                  class="form-textarea" placeholder="Write your page content here..."></textarea>
+                        <div class="content-toolbar">
+                            <button type="button" class="toolbar-btn" data-action="bold">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="italic">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="list">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-action="heading">
+                                <i class="fas fa-heading"></i>
+                            </button>
+                        </div>
+                        <small class="form-help">Use Markdown syntax for formatting</small>
+                    </div>
+
+                    <!-- Edit Summary -->
+                    <div class="form-group">
+                        <label for="edit-summary">Edit Summary</label>
+                        <input type="text" id="edit-summary" name="edit_summary" 
+                               class="form-input" placeholder="Briefly describe what you're adding or changing">
+                        <small class="form-help">This helps other editors understand your changes</small>
+                    </div>
+
+                    <!-- Draft Notes -->
+                    <div class="form-group">
+                        <label for="draft-notes">Draft Notes (Optional)</label>
+                        <textarea id="draft-notes" name="draft_notes" rows="3" 
+                                  class="form-textarea" placeholder="Any notes for reviewers or future editors..."></textarea>
+                        <small class="form-help">These notes are only visible to you and reviewers</small>
+                    </div>
+                </div>
+
+                <!-- Sidebar Column -->
+                <div class="form-sidebar-column">
+                    <!-- Template Selection -->
+                    <div class="form-section">
+                        <h3 class="section-title">📋 Choose Template</h3>
+                        <div class="template-options">
+                            {% for template in suggestedTemplates %}
+                                <div class="template-option">
+                                    <input type="radio" id="template-{{ template.slug }}" name="template" 
+                                           value="{{ template.slug }}" class="template-radio">
+                                    <label for="template-{{ template.slug }}" class="template-label">
+                                        <div class="template-icon">
+                                            <i class="{{ template.icon }}"></i>
+                                        </div>
+                                        <div class="template-info">
+                                            <div class="template-name">{{ template.name }}</div>
+                                            <div class="template-description">{{ template.description }}</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <small class="form-help">Select a template to get started with structured content</small>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="form-section">
+                        <h3 class="section-title">🏷️ Categories</h3>
+                        <div class="category-input">
+                            <input type="text" id="category-input" class="form-input" 
+                                   placeholder="Type category names...">
+                            <div id="category-tags" class="category-tags"></div>
+                            <input type="hidden" id="categories-hidden" name="categories" value="">
+                        </div>
+                        
+                        {% if categorySuggestions is not empty %}
+                            <div class="category-suggestions">
+                                <h4>Suggested Categories:</h4>
+                                <div class="suggestion-tags">
+                                    {% for category in categorySuggestions %}
+                                        <span class="suggestion-tag" data-category="{{ category.name }}">
+                                            {{ category.name }} ({{ category.page_count }})
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <small class="form-help">Add categories to help organize your page</small>
+                    </div>
+
+                    <!-- Namespace -->
+                    <div class="form-section">
+                        <h3 class="section-title">📁 Namespace</h3>
+                        <select name="namespace" id="namespace" class="form-select">
+                            <option value="Main">Main</option>
+                            <option value="User">User</option>
+                            <option value="Help">Help</option>
+                            <option value="Template">Template</option>
+                            <option value="Category">Category</option>
+                        </select>
+                        <small class="form-help">Choose the appropriate namespace for your page</small>
+                    </div>
+
+                    <!-- Related Pages -->
+                    {% if relatedPages is not empty %}
+                        <div class="form-section">
+                            <h3 class="section-title">🔗 Related Pages</h3>
+                            <div class="related-pages-list">
+                                {% for page in relatedPages %}
+                                    <div class="related-page-item">
+                                        <a href="/wiki/{{ page.slug }}" class="related-page-link">
+                                            <i class="fas fa-file-alt"></i>
+                                            {{ page.title }}
+                                        </a>
+                                        <div class="page-meta">
+                                            <span class="page-namespace">{{ page.namespace }}</span>
+                                            <span class="page-views">{{ page.view_count }} views</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-help">Check these existing pages to avoid duplication</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="preview-btn">
+                    <i class="fas fa-eye"></i>
+                    Preview
+                </button>
+                <button type="button" class="btn btn-info" id="save-draft-btn">
+                    <i class="fas fa-save"></i>
+                    Save Draft
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Create Page
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Page Preview</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="preview-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="close-preview">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category management
+    const categoryInput = document.getElementById('category-input');
+    const categoryTags = document.getElementById('category-tags');
+    const categoriesHidden = document.getElementById('categories-hidden');
+    const categories = [];
+
+    function addCategory(categoryName) {
+        if (categories.includes(categoryName) || !categoryName.trim()) {
+            return;
+        }
+        
+        categories.push(categoryName);
+        updateCategoryTags();
+        categoryInput.value = '';
+    }
+
+    function removeCategory(categoryName) {
+        const index = categories.indexOf(categoryName);
+        if (index > -1) {
+            categories.splice(index, 1);
+            updateCategoryTags();
+        }
+    }
+
+    function updateCategoryTags() {
+        categoryTags.innerHTML = '';
+        categories.forEach(category => {
+            const tag = document.createElement('span');
+            tag.className = 'category-tag';
+            tag.innerHTML = `
+                ${category}
+                <button type="button" class="remove-category" data-category="${category}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            categoryTags.appendChild(tag);
+        });
+        
+        categoriesHidden.value = JSON.stringify(categories);
+    }
+
+    // Add category on Enter key
+    categoryInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addCategory(this.value);
+        }
+    });
+
+    // Remove category when clicking remove button
+    categoryTags.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-category')) {
+            const category = e.target.closest('.remove-category').dataset.category;
+            removeCategory(category);
+        }
+    });
+
+    // Add suggested categories
+    document.querySelectorAll('.suggestion-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            const category = this.dataset.category;
+            addCategory(category);
+        });
+    });
+
+    // Content toolbar
+    document.querySelectorAll('.toolbar-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.dataset.action;
+            const textarea = document.getElementById('page-content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            let replacement = '';
+            switch (action) {
+                case 'bold':
+                    replacement = `**${selectedText}**`;
+                    break;
+                case 'italic':
+                    replacement = `*${selectedText}*`;
+                    break;
+                case 'link':
+                    replacement = `[${selectedText}](URL)`;
+                    break;
+                case 'list':
+                    replacement = `- ${selectedText}`;
+                    break;
+                case 'heading':
+                    replacement = `# ${selectedText}`;
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+        });
+    });
+
+    // Preview functionality
+    const previewBtn = document.getElementById('preview-btn');
+    const previewModal = document.getElementById('preview-modal');
+    const previewContent = document.getElementById('preview-content');
+    const closePreview = document.querySelector('.close');
+    const closePreviewBtn = document.getElementById('close-preview');
+
+    previewBtn.addEventListener('click', function() {
+        const content = document.getElementById('page-content').value;
+        const title = document.getElementById('page-title').value;
+        
+        // Simple markdown to HTML conversion (basic)
+        let htmlContent = content
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+            .replace(/^- (.*$)/gm, '<li>$1</li>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/^(.+)$/gm, '<p>$1</p>');
+        
+        previewContent.innerHTML = `
+            <h1>${title}</h1>
+            ${htmlContent}
+        `;
+        
+        previewModal.style.display = 'block';
+    });
+
+    function closePreviewModal() {
+        previewModal.style.display = 'none';
+    }
+
+    closePreview.addEventListener('click', closePreviewModal);
+    closePreviewBtn.addEventListener('click', closePreviewModal);
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === previewModal) {
+            closePreviewModal();
+        }
+    });
+
+    // Save draft functionality
+    const saveDraftBtn = document.getElementById('save-draft-btn');
+    
+    saveDraftBtn.addEventListener('click', function() {
+        // Store draft in localStorage
+        const draftData = {
+            title: document.getElementById('page-title').value,
+            content: document.getElementById('page-content').value,
+            editSummary: document.getElementById('edit-summary').value,
+            draftNotes: document.getElementById('draft-notes').value,
+            categories: categories,
+            namespace: document.getElementById('namespace').value,
+            timestamp: new Date().toISOString(),
+            slug: '{{ slug }}'
+        };
+        
+        localStorage.setItem('wiki_draft_{{ slug }}', JSON.stringify(draftData));
+        
+        // Show success message
+        this.innerHTML = '<i class="fas fa-check"></i> Draft Saved!';
+        this.classList.add('btn-success');
+        
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-save"></i> Save Draft';
+            this.classList.remove('btn-success');
+        }, 2000);
+    });
+
+    // Load draft if exists
+    const savedDraft = localStorage.getItem('wiki_draft_{{ slug }}');
+    if (savedDraft) {
+        try {
+            const draft = JSON.parse(savedDraft);
+            document.getElementById('page-title').value = draft.title || '';
+            document.getElementById('page-content').value = draft.content || '';
+            document.getElementById('edit-summary').value = draft.editSummary || '';
+            document.getElementById('draft-notes').value = draft.draftNotes || '';
+            document.getElementById('namespace').value = draft.namespace || 'Main';
+            
+            if (draft.categories && draft.categories.length > 0) {
+                draft.categories.forEach(category => addCategory(category));
+            }
+            
+            // Show draft loaded message
+            const draftMessage = document.createElement('div');
+            draftMessage.className = 'draft-loaded-message';
+            draftMessage.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                Draft loaded from ${new Date(draft.timestamp).toLocaleString()}
+                <button type="button" class="clear-draft-btn">Clear Draft</button>
+            `;
+            
+            document.querySelector('.redlink-header').appendChild(draftMessage);
+            
+            // Clear draft functionality
+            draftMessage.querySelector('.clear-draft-btn').addEventListener('click', function() {
+                localStorage.removeItem('wiki_draft_{{ slug }}');
+                location.reload();
+            });
+        } catch (e) {
+            console.error('Error loading draft:', e);
+        }
+    }
+
+    // Form validation
+    const form = document.getElementById('create-page-form');
+    form.addEventListener('submit', function(e) {
+        const title = document.getElementById('page-title').value.trim();
+        const content = document.getElementById('page-content').value.trim();
+        
+        if (!title || !content) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return;
+        }
+        
+        // Clear draft after successful submission
+        localStorage.removeItem('wiki_draft_{{ slug }}');
+    });
+});
+</script>
+{% endblock %} 
