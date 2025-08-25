@@ -23,8 +23,8 @@ Options -Indexes
 # Enable rewrite engine for routing
 RewriteEngine On
 
-# Redirect root domain to Home
-RewriteRule ^$ /en [R=301,L]
+# Route skin assets through asset server
+RewriteRule ^skins/([^/]+)/(css|js|images)/(.*)$ skin-assets.php [QSA,L]
 
 # Route everything else through index.php
 RewriteCond %{REQUEST_FILENAME} !-f

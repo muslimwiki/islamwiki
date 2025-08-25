@@ -59,6 +59,26 @@ class WikiController extends Controller
     }
 
     /**
+     * Show a specific wiki page.
+     */
+    public function show(Request $request): Response
+    {
+        try {
+            $user = $this->user($request);
+            $path = $request->getUri()->getPath();
+            $pageName = basename($path);
+            
+            return $this->view('wiki/home', [
+                'user' => $user,
+                'title' => $pageName . ' - IslamWiki',
+                'page_name' => $pageName
+            ], 200);
+        } catch (\Exception $e) {
+            return new Response(500, [], 'Internal Server Error');
+        }
+    }
+    
+    /**
      * Show the main page (Home).
      */
     public function showMainPage(Request $request): Response

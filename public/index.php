@@ -6,6 +6,25 @@ require_once __DIR__ . '/../vendor/autoload.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Handle root domain redirect before starting the application
+if ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '') {
+    // Default home page - can be configured later
+    $defaultHomePage = 'en/wiki/Home';
+    
+    // Try to load configuration if available
+    try {
+        $configService = new \IslamWiki\Core\Configuration\ConfigurationService();
+        $homePage = $configService->getHomePage();
+    } catch (Exception $e) {
+        // Fallback to default if configuration fails
+        $homePage = $defaultHomePage;
+    }
+    
+    // Redirect to the configured home page
+    header("Location: /$homePage", true, 301);
+    exit;
+}
+
 // Start the application
 try {
     error_log('INDEX: Starting application bootstrap');

@@ -3,155 +3,242 @@
 {% block title %}{{ __('settings.title') }}{% endblock %}
 
 {% block content %}
-<div class="settings-container">
+<div class="settings-page">
     <div class="settings-header">
-        <h1>{{ __('settings.title') }}</h1>
-        <p>{{ __('settings.subtitle') }}</p>
+        <h1>Settings</h1>
+        <p>Configure your IslamWiki preferences</p>
     </div>
-    <div class="settings-content">
-        <!-- Language Settings Section -->
-        <div class="settings-section">
-            <h2>{{ __('settings.language.title') }}</h2>
-            <p>{{ __('settings.language.description') }}</p>
-            
-            <div class="language-grid">
-                {% for language in supported_languages %}
-                <div class="language-option {% if language.code == current_language %}selected{% endif %}" 
-                     data-language="{{ language.code }}">
-                    <div class="language-flag">{{ language.flag }}</div>
-                    <div class="language-name">{{ language.native_name }}</div>
-                    <div class="language-english">{{ language.name }}</div>
-                    {% if language.code == current_language %}
-                        <div class="current-indicator">{{ __('settings.language.current') }}</div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-
-                            <form id="language-form" method="POST" action="{{ current_language() == 'en' ? '/settings/language' : '/' ~ current_language() ~ '/settings/language' }}" class="settings-form">
-                <input type="hidden" name="language" id="selected-language" value="{{ current_language }}">
-                <button type="submit" class="btn btn-primary">{{ __('settings.language.update') }}</button>
-            </form>
+    
+    {% if success %}
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            {{ success }}
         </div>
-
-        <!-- Skin Settings Section -->
-        <div class="settings-section">
-            <h2>{{ __('settings.theme.title') }}</h2>
-            <p>{{ __('settings.theme.description') }}</p>
-            
-            <div class="skin-options">
-                <div class="skin-option">
-                    <input type="radio" name="skin" id="skin-bismillah" value="Bismillah" checked>
-                    <label for="skin-bismillah">
-                        <span class="skin-name">{{ __('settings.skins.bismillah.name') }}</span>
-                        <span class="skin-description">{{ __('settings.skins.bismillah.description') }}</span>
-                    </label>
-                </div>
-                
-                <div class="skin-option">
-                    <input type="radio" name="skin" id="skin-muslim" value="Muslim">
-                    <label for="skin-muslim">
-                        <span class="skin-name">{{ __('settings.skins.muslim.name') }}</span>
-                        <span class="skin-description">{{ __('settings.skins.muslim.description') }}</span>
-                    </label>
-                </div>
+    {% endif %}
+    
+    {% if error %}
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <div class="settings-section">
+        <h2>General Settings</h2>
+        
+        <form method="POST" action="{{ lang_url('settings') }}" class="settings-form">
+            <div class="form-group">
+                <label for="home_page">Default Home Page</label>
+                <p class="form-help">Set the page that users will see when they visit the root domain (e.g., en/wiki/Home)</p>
+                <input type="text" 
+                       id="home_page" 
+                       name="home_page" 
+                       value="{{ home_page }}" 
+                       placeholder="en/wiki/Home"
+                       pattern="[a-z]{2}/wiki/[A-Za-z0-9_]+"
+                       required>
+                <small class="form-hint">Format: lang/wiki/PageName (e.g., en/wiki/Home, ar/wiki/Home)</small>
             </div>
-
-            <form id="skin-form" method="POST" action="/settings/skin" class="settings-form">
-                <input type="hidden" name="skin" id="selected-skin" value="Bismillah">
-                <button type="submit" class="btn btn-secondary">{{ __('settings.theme.update') }}</button>
-            </form>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Settings
+                </button>
+                <a href="{{ lang_url('wiki/Home') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Current Configuration</h2>
+        <div class="config-info">
+            <p><strong>Home Page:</strong> <code>{{ home_page }}</code></p>
+            <p><strong>Language:</strong> {{ current_language_name }} ({{ current_language }})</p>
+            <p><strong>Current Path:</strong> <code>{{ current_path }}</code></p>
         </div>
     </div>
 </div>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Language selection
-    const languageOptions = document.querySelectorAll('.language-option');
-    const selectedLanguageInput = document.getElementById('selected-language');
+<style>
+    .settings-page {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
     
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            // Remove selected class from all options
-            languageOptions.forEach(opt => opt.classList.remove('selected'));
-            
-            // Add selected class to clicked option
-            this.classList.add('selected');
-            
-            // Update hidden input
-            const language = this.dataset.language;
-            selectedLanguageInput.value = language;
-        });
-    });
+    .settings-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
     
-    // Skin selection
-    const skinOptions = document.querySelectorAll('input[name="skin"]');
-    const selectedSkinInput = document.getElementById('selected-skin');
+    .settings-header h1 {
+        color: #2c5aa0;
+        margin-bottom: 10px;
+    }
     
-    skinOptions.forEach(option => {
-        option.addEventListener('change', function() {
-            selectedSkinInput.value = this.value;
-        });
-    });
+    .settings-header p {
+        color: #6c757d;
+        font-size: 18px;
+    }
     
-    // Form submission feedback
-    const languageForm = document.getElementById('language-form');
-    const skinForm = document.getElementById('skin-form');
+    .settings-section {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
     
-    languageForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    .settings-section h2 {
+        color: #2c5aa0;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+    
+    .form-help {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 10px;
+        font-style: italic;
+    }
+    
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.2s ease;
+    }
+    
+    .form-group input[type="text"]:focus {
+        outline: none;
+        border-color: #2c5aa0;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+    }
+    
+    .form-hint {
+        display: block;
+        color: #6c757d;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+        background: #2c5aa0;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1e3f6b;
+        transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+    }
+    
+    .alert {
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .config-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 6px;
+        border-left: 4px solid #2c5aa0;
+    }
+    
+    .config-info p {
+        margin: 8px 0;
+        color: #495057;
+    }
+    
+    .config-info code {
+        background: #e9ecef;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        color: #e83e8c;
+    }
+    
+    @media (max-width: 768px) {
+        .settings-page {
+            padding: 15px;
+        }
         
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = '{{ __('messages.info.loading') }}';
-        submitBtn.disabled = true;
+        .form-actions {
+            flex-direction: column;
+        }
         
-        // Submit form via AJAX
-        const formData = new FormData(this);
-        
-        // Get the form action URL for the fetch request
-        const formAction = this.action;
-        
-        fetch(formAction, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success message
-                alert(data.message);
-                // Redirect to locale-aware settings page if provided
-                if (data.redirect_url) {
-                    window.location.href = data.redirect_url;
-                } else {
-                    // Fallback: stay on settings page and refresh
-                    window.location.reload();
-                }
-            } else {
-                // Show error message
-                alert(data.message);
-                // Reset button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('{{ __('messages.error.server_error') }}');
-            // Reset button
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        });
-    });
-    
-    skinForm.addEventListener('submit', function(e) {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        submitBtn.textContent = '{{ __('messages.info.loading') }}';
-        submitBtn.disabled = true;
-    });
-});
-</script>
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 {% endblock %} 

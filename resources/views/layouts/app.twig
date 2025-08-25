@@ -20,6 +20,202 @@
     
     <!-- Extra CSS from child templates -->
     {% block extra_css %}{% endblock %}
+    
+    <!-- Custom CSS for enhanced language selector -->
+    <style>
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            display: block;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        
+        .dropdown-section h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            padding: 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .language-selector-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #495057;
+            transition: all 0.2s ease;
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .language-selector-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .current-language-flag {
+            font-size: 16px;
+        }
+        
+        .current-language-name {
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        .language-dropdown {
+            display: none !important;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            margin-top: 4px;
+            min-width: 200px;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        
+        .language-dropdown.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto;
+        }
+        
+        /* Authentication Buttons - Full Width */
+        .create-account,
+        .login-button {
+            display: block !important;
+            width: 100% !important;
+            text-align: center;
+            padding: 10px 12px;
+            margin: 4px 0;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .create-account {
+            background: #28a745;
+            color: white;
+            border: 1px solid #28a745;
+        }
+        
+        .create-account:hover {
+            background: #218838;
+            border-color: #1e7e34;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        
+        .login-button {
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+        
+        .login-button:hover {
+            background: #0056b3;
+            border-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #495057;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .language-option:last-child {
+            border-bottom: none;
+        }
+        
+        .language-option:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+            color: #495057;
+        }
+        
+        .language-option.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .language-flag {
+            font-size: 18px;
+            min-width: 24px;
+        }
+        
+        .language-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .language-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .language-native {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+        
+        .language-option i.fa-check {
+            color: #28a745;
+            font-size: 14px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .language-selector-btn {
+                width: 100%;
+                padding: 8px 12px;
+            }
+            
+            .current-language-name {
+                font-size: 13px;
+            }
+            
+            .language-dropdown {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .create-account,
+            .login-button {
+                width: 100% !important;
+                padding: 12px 16px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body class="bismillah-body">
     <!-- Condensed Sidebar -->
@@ -28,7 +224,9 @@
         <div class="sidebar-top">
             <!-- Logo -->
             <div class="sidebar-logo">
-                <i class="fas fa-star-and-crescent"></i>
+                <a href="{{ lang_url('wiki/Home') }}" title="Go to Wiki Home">
+                    <i class="fas fa-star-and-crescent"></i>
+                </a>
             </div>
             
             <!-- Search Button -->
@@ -62,28 +260,28 @@
             <div class="sidebar-icon hamburger-icon" id="hamburger-trigger" title="Menu">
                 <i class="fas fa-bars"></i>
                 <div class="hamburger-dropdown">
-                    <a href="/" class="dropdown-item">
+                    <a href="{{ lang_url('wiki/Home') }}" class="dropdown-item">
                         <i class="fas fa-home"></i>
                         Home
                     </a>
-                    <a href="/wiki" class="dropdown-item">
+                    <a href="{{ lang_url('wiki') }}" class="dropdown-item">
                         <i class="fas fa-book"></i>
                         Wiki
                     </a>
-                    <a href="/search" class="dropdown-item">
+                    <a href="{{ lang_url('search') }}" class="dropdown-item">
                         <i class="fas fa-search"></i>
                         Search
                     </a>
-                    <a href="/wiki/Recent_Changes" class="dropdown-item">
+                    <a href="{{ lang_url('wiki/Recent_Changes') }}" class="dropdown-item">
                         <i class="fas fa-history"></i>
                         Recent Changes
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="/wiki/How_to_Contribute" class="dropdown-item">
+                    <a href="{{ lang_url('wiki/How_to_Contribute') }}" class="dropdown-item">
                         <i class="fas fa-hand-holding-heart"></i>
                         Contribute
                     </a>
-                    <a href="/wiki/About_IslamWiki" class="dropdown-item">
+                    <a href="{{ lang_url('wiki/About_IslamWiki') }}" class="dropdown-item">
                         <i class="fas fa-info-circle"></i>
                         About
                     </a>
@@ -169,7 +367,7 @@
                 <div class="sidebar-icon profile-icon" title="Profile">
                     <i class="fas fa-user"></i>
                     <div class="profile-dropdown">
-                        <a href="/wiki/User/{{ user.username }}" class="user-info-header-link">
+                        <a href="{{ lang_url('wiki/User/' ~ user.username) }}" class="user-info-header-link">
                             <div class="user-info-header">
                                 <div class="user-avatar">{{ user.username|first|upper }}</div>
                                 <div class="user-details">
@@ -183,19 +381,56 @@
                             </div>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="/dashboard" class="dropdown-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            Dashboard
-                        </a>
-                        <a href="/wiki/Special:Preferences" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            Preferences
-                        </a>
+                        <div class="profile-actions">
+                            <a href="{{ lang_url('dashboard') }}" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="{{ lang_url('wiki/Special:Preferences') }}" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                Preferences
+                            </a>
+                            <a href="{{ lang_url('logout') }}" class="dropdown-item logout-button">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Log out
+                            </a>
+                        </div>
+                        
                         <div class="dropdown-divider"></div>
-                        <a href="/logout" class="dropdown-item logout-button">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Logout
-                        </a>
+                        
+                        <!-- Language Selection -->
+                        <div class="dropdown-section">
+                            <h4>Language</h4>
+                            
+                            <!-- Language Selector -->
+                            <div class="language-selector">
+                                <button class="language-selector-btn" id="languageSelectorBtn">
+                                    <span class="current-language-flag">{{ current_language_flag }}</span>
+                                    <span class="current-language-name">{{ current_language_name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                
+                                <div class="language-dropdown" id="languageDropdown">
+                                    <a href="{{ switch_language('en') }}" class="dropdown-item language-option {{ current_language == 'en' ? 'active' : '' }}">
+                                        <span class="language-flag">🇺🇸</span>
+                                        <div class="language-info">
+                                            <span class="language-name">English</span>
+                                            <span class="language-native">English</span>
+                                        </div>
+                                        {% if current_language == 'en' %}<i class="fas fa-check"></i>{% endif %}
+                                    </a>
+                                    
+                                    <a href="{{ switch_language('ar') }}" class="dropdown-item language-option {{ current_language == 'ar' ? 'active' : '' }}">
+                                        <span class="language-flag">🇸🇦</span>
+                                        <div class="language-info">
+                                            <span class="language-name">العربية</span>
+                                            <span class="language-native">Arabic</span>
+                                        </div>
+                                        {% if current_language == 'ar' %}<i class="fas fa-check"></i>{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -220,20 +455,47 @@
                         <!-- Language Selection -->
                         <div class="dropdown-section">
                             <h4>Language</h4>
-                            <a href="/wiki/Special:Preferences" class="dropdown-item">
-                                <span class="language-flag">🇺🇸</span>
-                                <span>English</span>
-                            </a>
+                            
+                            <!-- Language Selector -->
+                            <div class="language-selector">
+                                <button class="language-selector-btn" id="languageSelectorBtn">
+                                    <span class="current-language-flag">{{ current_language_flag }}</span>
+                                    <span class="current-language-name">{{ current_language_name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                
+                                <div class="language-dropdown" id="languageDropdown">
+                                    <a href="{{ switch_language('en') }}" class="dropdown-item language-option {{ current_language == 'en' ? 'active' : '' }}">
+                                        <span class="language-flag">🇺🇸</span>
+                                        <div class="language-info">
+                                            <span class="language-name">English</span>
+                                            <span class="language-native">English</span>
+                                        </div>
+                                        {% if current_language == 'en' %}<i class="fas fa-check"></i>{% endif %}
+                                    </a>
+                                    
+                                    <a href="{{ switch_language('ar') }}" class="dropdown-item language-option {{ current_language == 'ar' ? 'active' : '' }}">
+                                        <span class="language-flag">🇸🇦</span>
+                                        <div class="language-info">
+                                            <span class="language-name">العربية</span>
+                                            <span class="language-native">Arabic</span>
+                                        </div>
+                                        {% if current_language == 'ar' %}<i class="fas fa-check"></i>{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                            
+
                         </div>
                         
                         <div class="dropdown-divider"></div>
                         
                         <!-- Authentication Buttons -->
-                        <a href="/register" class="dropdown-item create-account">
+                        <a href="{{ lang_url('register') }}" class="dropdown-item create-account">
                             <i class="fas fa-user-plus"></i>
                             Create Account
                         </a>
-                        <a href="/login" class="dropdown-item login-button">
+                        <a href="{{ lang_url('login') }}" class="dropdown-item login-button">
                             <i class="fas fa-sign-in-alt"></i>
                             Log In
                         </a>
@@ -277,19 +539,19 @@
                 <div class="bismillah-footer-section">
                     <h3>Quick Links</h3>
                     <ul class="bismillah-footer-links">
-                        <li><a href="/about">About Us</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/privacy">Privacy Policy</a></li>
-                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="{{ lang_url('about') }}">About Us</a></li>
+                        <li><a href="{{ lang_url('contact') }}">Contact</a></li>
+                        <li><a href="{{ lang_url('privacy') }}">Privacy Policy</a></li>
+                        <li><a href="{{ lang_url('terms') }}">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div class="bismillah-footer-section">
                     <h3>Connect</h3>
                     <ul class="bismillah-footer-links">
-                        <li><a href="/community">Community Forum</a></li>
-                        <li><a href="/newsletter">Newsletter</a></li>
-                        <li><a href="/social">Social Media</a></li>
-                        <li><a href="/support">Support</a></li>
+                        <li><a href="{{ lang_url('community') }}">Community Forum</a></li>
+                        <li><a href="{{ lang_url('newsletter') }}">Newsletter</a></li>
+                        <li><a href="{{ lang_url('social') }}">Social Media</a></li>
+                        <li><a href="{{ lang_url('support') }}">Support</a></li>
                     </ul>
                 </div>
             </div>
@@ -316,11 +578,11 @@
         </div>
         
         <div class="notifications-footer">
-            <a href="/wiki/Special:Notifications">
+            <a href="{{ lang_url('wiki/Special:Notifications') }}">
                 <i class="fas fa-cog"></i>
                 Notification preferences
             </a>
-            <a href="/wiki/Special:Notifications">
+            <a href="{{ lang_url('wiki/Special:Notifications') }}">
                 <i class="fas fa-list"></i>
                 All notifications
             </a>
@@ -351,6 +613,58 @@
     <!-- Smart Sidebar Navigation System -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - Setting up language selector');
+            
+            // Language selector functionality
+            const languageSelectorBtn = document.getElementById('languageSelectorBtn');
+            const languageDropdown = document.getElementById('languageDropdown');
+            
+            console.log('Language selector elements:', { 
+                languageSelectorBtn: languageSelectorBtn, 
+                languageDropdown: languageDropdown,
+                buttonExists: !!languageSelectorBtn,
+                dropdownExists: !!languageDropdown
+            });
+            
+            if (languageSelectorBtn && languageDropdown) {
+                console.log('Setting up language selector event listeners');
+                
+                // Ensure dropdown is hidden initially
+                languageDropdown.classList.remove('show');
+                
+                // Toggle dropdown when button is clicked
+                languageSelectorBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Language selector button clicked');
+                    
+                    // Toggle the show class
+                    const isVisible = languageDropdown.classList.contains('show');
+                    if (isVisible) {
+                        languageDropdown.classList.remove('show');
+                        console.log('Dropdown hidden');
+                    } else {
+                        languageDropdown.classList.add('show');
+                        console.log('Dropdown shown');
+                    }
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!languageSelectorBtn.contains(event.target) && !languageDropdown.contains(event.target)) {
+                        console.log('Clicking outside, closing dropdown');
+                        languageDropdown.classList.remove('show');
+                    }
+                });
+                
+            } else {
+                console.error('Language selector elements not found');
+                console.log('Available elements with similar IDs:');
+                document.querySelectorAll('[id*="language"]').forEach(el => {
+                    console.log('Found element:', el.id, el);
+                });
+            }
+            
             // Setup logo click handler
             const logo = document.querySelector('.sidebar-logo');
             if (logo) {
@@ -492,14 +806,8 @@
                         });
                     }
                     
-                    if (languageButton) {
-                        languageButton.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log('🌐 Language button clicked, navigating to /wiki/Special:Preferences');
-                            window.location.href = '/wiki/Special:Preferences';
-                        });
-                    }
+                    // Remove the language button click handler that was interfering with language switching
+                    // The language selector now has its own event handlers
                 }
                 
                 // Handle dropdown button clicks for settings menu

@@ -15,12 +15,16 @@ declare(strict_types=1);
 
 namespace IslamWiki\Core;
 
+// Include helper functions
+require_once __DIR__ . '/../helpers.php';
+
 use IslamWiki\Core\Container\Container;
 use IslamWiki\Core\Logging\Logger;
 use IslamWiki\Core\Routing\Router;
 use IslamWiki\Core\Http\Request;
 use IslamWiki\Core\Http\Response;
 use IslamWiki\Core\View\TwigRenderer;
+use IslamWiki\Core\Configuration\ConfigurationService;
 
 /**
  * Core Application - Centralized Application System
@@ -121,6 +125,11 @@ class Application
                     []
                 );
             });
+            
+            // Register auth service as alias for security
+            $this->container->set('auth', function (Container $container) {
+                return $container->get('security');
+            });
 
             // Register session service
             $this->container->set('session', function (Container $container) {
@@ -220,6 +229,10 @@ class Application
             });
 
             $this->logger->info('Core services registered');
+            
+            // Set up View container for skin integration
+            \IslamWiki\Http\Views\View::setContainer($this->container);
+            
         } catch (\Exception $e) {
             $this->logger->error('Failed to register core services', [
                 'error' => $e->getMessage()

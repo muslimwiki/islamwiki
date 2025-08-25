@@ -16,7 +16,14 @@
         </div>
 
         <!-- Login Form -->
-        <form class="auth-form" method="POST" action="/auth/login" id="loginForm">
+        <form class="auth-form" method="POST" action="{{ lang_url('login') }}" id="loginForm">
+            <!-- Success Message -->
+            {% if success %}
+            <div class="success-message">
+                {{ success }}
+            </div>
+            {% endif %}
+            
             <!-- Error Message -->
             {% if error %}
             <div class="error-message">
@@ -25,7 +32,7 @@
             {% endif %}
 
             <!-- Hidden redirect field -->
-            <input type="hidden" name="redirect" value="{{ redirect|default('/wiki/Home') }}">
+            <input type="hidden" name="redirect" value="{{ redirect|default(lang_url('wiki/Home')) }}">
 
             <!-- Username Field -->
             <div class="form-group">
@@ -66,11 +73,11 @@
 
         <!-- Form Footer -->
         <div class="form-footer">
-            <a href="/forgot-password">Forgot your password?</a>
+            <a href="{{ lang_url('forgot-password') }}">Forgot your password?</a>
             
             <div class="register-link">
                 <p>Don't have an account?</p>
-                <a href="/register" class="register-button">Create Account</a>
+                <a href="{{ lang_url('register') }}" class="register-button">Create Account</a>
             </div>
         </div>
     </div>

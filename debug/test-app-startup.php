@@ -3,9 +3,8 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use IslamWiki\Core\Application;
-use IslamWiki\Core\Http\Request;
 
-echo "Testing route processing...\n";
+echo "Testing application startup...\n";
 
 try {
     // Create application
@@ -16,21 +15,20 @@ try {
     $router = $app->getRouter();
     echo "✓ Router retrieved successfully\n";
     
-    // Test if routes are loaded
-    echo "\nTesting route loading...\n";
+    // Check if routes were loaded
+    echo "\nChecking if routes were loaded...\n";
     
-    // Create a test request
-    $request = new Request('GET', '/en/login');
+    // Try to access a route
+    $request = new \IslamWiki\Core\Http\Request('GET', '/en/login');
     echo "✓ Test request created: GET /en/login\n";
     
-    // Try to dispatch the request
     try {
         $response = $app->handleRequest($request);
-        echo "✓ Request dispatched successfully\n";
+        echo "✓ Request handled successfully\n";
         echo "Response status: " . $response->getStatusCode() . "\n";
         echo "Response body length: " . strlen($response->getBody()) . "\n";
     } catch (Exception $e) {
-        echo "✗ Request dispatch failed: " . $e->getMessage() . "\n";
+        echo "✗ Request handling failed: " . $e->getMessage() . "\n";
         echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
     }
     

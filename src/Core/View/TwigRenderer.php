@@ -238,32 +238,57 @@ class TwigRenderer
             return $currentPath === $path;
         }));
 
-        $this->_twig->addFunction(new TwigFunction('lang_url', function ($path) {
-            // Get current language from session or URI
-            $currentLanguage = 'en';
-            
-            // Try to get from session first
-            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
-                $currentLanguage = $_SESSION['language'];
+        $this->_twig->addFunction(new TwigFunction('lang_url', function ($path, $language = null) {
+            // If language is specified, use it; otherwise use current language
+            if ($language !== null) {
+                $targetLanguage = $language;
             } else {
-                // Try to extract from current URI
-                $uri = $_SERVER['REQUEST_URI'] ?? '/';
-                $uri = ltrim($uri, '/');
-                $segments = explode('/', $uri);
+                // Get current language from session or URI
+                $targetLanguage = 'en';
                 
-                $supportedLanguages = ['en', 'ar', 'ur', 'tr', 'id', 'ms', 'fa', 'he'];
-                
-                if (!empty($segments[0]) && in_array($segments[0], $supportedLanguages, true)) {
-                    $currentLanguage = $segments[0];
+                // Try to get from session first
+                if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['language'])) {
+                    $targetLanguage = $_SESSION['language'];
+                } else {
+                    // Try to extract from current URI
+                    $uri = $_SERVER['REQUEST_URI'] ?? '/';
+                    $uri = ltrim($uri, '/');
+                    $segments = explode('/', $uri);
+                    
+                    $supportedLanguages = ['en', 'ar', 'ur', 'tr', 'id', 'ms', 'fa', 'he'];
+                    
+                    if (!empty($segments[0]) && in_array($segments[0], $supportedLanguages, true)) {
+                        $targetLanguage = $segments[0];
+                    }
                 }
             }
             
             // Always include language prefix for consistency
             // This makes switching between languages symmetrical
             $path = ltrim($path, '/');
-            $langPath = $currentLanguage . '/' . $path;
+            $langPath = $targetLanguage . '/' . $path;
             
             return url($langPath);
+        }));
+        
+        $this->_twig->addFunction(new TwigFunction('switch_language', function ($targetLanguage) {
+            $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
+            $currentLang = 'en';
+            
+            // Try to extract current language from URI
+            if (preg_match('/^\/([a-z]{2})\//', $currentPath, $matches)) {
+                $currentLang = $matches[1];
+            }
+            
+            // Replace the current language prefix with the target language
+            $switchedPath = preg_replace('/^\/' . preg_quote($currentLang, '/') . '\//', '/' . $targetLanguage . '/', $currentPath);
+            
+            // If no replacement was made, append the target language
+            if ($switchedPath === $currentPath) {
+                $switchedPath = '/' . $targetLanguage . $currentPath;
+            }
+            
+            return url($switchedPath);
         }));
 
         $this->_twig->addFunction(new TwigFunction('current_language', function () {

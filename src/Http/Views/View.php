@@ -5,293 +5,349 @@ declare(strict_types=1);
 namespace IslamWiki\Http\Views;
 
 use IslamWiki\Core\Http\Response;
+use IslamWiki\Core\Container\Container;
 
 /**
- * Simple View class for rendering HTML responses
+ * Enhanced View class for rendering HTML responses with Twig templates and skin integration
  */
 class View
 {
+    private static ?Container $container = null;
+    
     /**
-     * Render a simple HTML page
+     * Set the container for accessing services
      */
-    public static function render(string $title, string $content, array $data = []): Response
+    public static function setContainer(Container $container): void
     {
-        $html = self::generateHtml($title, $content, $data);
+        self::$container = $container;
+    }
+    
+    /**
+     * Get the container
+     */
+    private static function getContainer(): Container
+    {
+        if (!self::$container) {
+            throw new \RuntimeException('Container not set. Call View::setContainer() first.');
+        }
+        return self::$container;
+    }
+    
+    /**
+     * Get the TwigRenderer from the container
+     */
+    private static function getTwigRenderer()
+    {
+        $container = self::getContainer();
+        if ($container->has('view')) {
+            return $container->get('view');
+        }
+        throw new \RuntimeException('TwigRenderer not found in container');
+    }
+    
+    /**
+     * Get user information from session
+     */
+    private static function getUserFromSession(): ?array
+    {
+        // Only start session if not already started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Check if user is authenticated
+        if (isset($_SESSION['is_authenticated']) && $_SESSION['is_authenticated'] === true) {
+            return [
+                'id' => $_SESSION['user_id'] ?? null,
+                'username' => $_SESSION['username'] ?? 'Unknown',
+                'role' => $_SESSION['role'] ?? 'User',
+                'edit_count' => $_SESSION['edit_count'] ?? 0,
+                'created_at' => $_SESSION['created_at'] ?? 'Recently',
+                'is_authenticated' => true
+            ];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get common template data including user information
+     */
+    private static function getCommonTemplateData(): array
+    {
+        try {
+            return [
+                'current_language' => self::getCurrentLanguage(),
+                'current_language_flag' => self::getCurrentLanguageFlag(),
+                'current_language_name' => self::getCurrentLanguageName(),
+                'current_language_native' => self::getCurrentLanguageNativeName(),
+                'supported_languages' => self::getSupportedLanguages(),
+                'user' => self::getUserFromSession(),
+                'current_path' => $_SERVER['REQUEST_URI'] ?? '/',
+            ];
+        } catch (\Exception $e) {
+            // Fallback to basic data if there's an error
+            error_log("Error getting common template data: " . $e->getMessage());
+            return [
+                'current_language' => 'en',
+                'current_language_flag' => '🇺🇸',
+                'current_language_name' => 'English',
+                'current_language_native' => 'English',
+                'supported_languages' => ['en', 'ar'],
+                'user' => null,
+                'current_path' => $_SERVER['REQUEST_URI'] ?? '/',
+            ];
+        }
+    }
+    
+    /**
+     * Render a template with data
+     */
+    public static function render(string $template, array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => ($data['title'] ?? 'Page') . ' - IslamWiki',
+            'page_type' => 'custom'
+        ]);
+        
+        $html = $twig->render($template, $templateData);
         return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
     }
     
     /**
-     * Render an error page
+     * Render home page
+     */
+    public static function home(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Home - IslamWiki',
+            'page_type' => 'home'
+        ]);
+        
+        $html = $twig->render('pages/home.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render dashboard page
+     */
+    public static function dashboard(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Dashboard - IslamWiki',
+            'page_type' => 'dashboard'
+        ]);
+        
+        $html = $twig->render('dashboard/index.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render wiki page
+     */
+    public static function wikiPage(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => ($data['title'] ?? 'Wiki Page') . ' - IslamWiki',
+            'page_type' => 'wiki'
+        ]);
+        
+        $html = $twig->render('wiki/page.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render wiki index page
+     */
+    public static function wikiIndex(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Wiki Index - IslamWiki',
+            'page_type' => 'wiki_index'
+        ]);
+        
+        $html = $twig->render('wiki/index.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render login page
+     */
+    public static function login(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Login - IslamWiki',
+            'page_type' => 'login'
+        ]);
+        
+        $html = $twig->render('auth/login.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render register page
+     */
+    public static function register(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Register - IslamWiki',
+            'page_type' => 'register'
+        ]);
+        
+        $html = $twig->render('auth/register.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render settings page
+     */
+    public static function settings(array $data = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = array_merge(self::getCommonTemplateData(), $data, [
+            'title' => 'Settings - IslamWiki',
+            'page_type' => 'settings'
+        ]);
+        
+        $html = $twig->render('settings/index.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render a search page with Twig templates
+     */
+    public static function search(string $query = '', array $results = []): Response
+    {
+        $twig = self::getTwigRenderer();
+        
+        $templateData = [
+            'title' => 'Search',
+            'query' => $query,
+            'results' => $results,
+            'current_language' => self::getCurrentLanguage(),
+            'current_path' => $_SERVER['REQUEST_URI'] ?? '/',
+            'page_type' => 'search'
+        ];
+        
+        $html = $twig->render('layouts/app.twig', $templateData);
+        return new Response(200, ["Content-Type" => "text/html; charset=UTF-8"], $html);
+    }
+    
+    /**
+     * Render an error page with Twig templates
      */
     public static function error(int $statusCode, string $title, string $message): Response
     {
-        $html = self::generateErrorHtml($statusCode, $title, $message);
+        $twig = self::getTwigRenderer();
+        
+        $templateData = [
+            'title' => $title,
+            'error_code' => $statusCode,
+            'error_message' => $message,
+            'current_language' => self::getCurrentLanguage(),
+            'current_path' => $_SERVER['REQUEST_URI'] ?? '/',
+            'page_type' => 'error'
+        ];
+        
+        $html = $twig->render('layouts/app.twig', $templateData);
         return new Response($statusCode, ["Content-Type" => "text/html; charset=UTF-8"], $html);
     }
     
     /**
-     * Generate HTML structure
+     * Get current language
      */
-    private static function generateHtml(string $title, string $content, array $data): string
+    public static function getCurrentLanguage(): string
     {
-        $html = '<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>' . htmlspecialchars($title) . ' - IslamWiki</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: #2c5aa0; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .header h1 { margin: 0; }
-        .nav { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .nav a { color: #2c5aa0; text-decoration: none; margin-right: 20px; }
-        .nav a:hover { text-decoration: underline; }
-        .content { line-height: 1.6; }
-        .footer { margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center; color: #666; }
-        .language-switch { text-align: right; margin-bottom: 20px; }
-        .language-switch a { color: #2c5aa0; text-decoration: none; margin-left: 15px; }
-        .breadcrumb { background: #e9ecef; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        .breadcrumb a { color: #2c5aa0; text-decoration: none; }
-        .breadcrumb span { color: #666; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="language-switch">
-            <a href="/en">English</a>
-            <a href="/ar">العربية</a>
-        </div>
-        
-        <div class="header">
-            <h1>IslamWiki</h1>
-            <p>Islamic Knowledge Platform</p>
-        </div>
-        
-        <div class="nav">
-            <a href="/en">Home</a>
-            <a href="/en/wiki/Home">Wiki</a>
-            <a href="/en/search">Search</a>
-            <a href="/en/forums">Forums</a>
-            <a href="/en/calendar">Calendar</a>
-            <a href="/en/salah">Salah Times</a>
-            <a href="/en/quran">Quran</a>
-            <a href="/en/hadith">Hadith</a>
-            <a href="/en/learn">Learn</a>
-            <a href="/en/community">Community</a>
-            <a href="/en/help">Help</a>
-            <a href="/en/about">About</a>
-        </div>
-        
-        <div class="breadcrumb">
-            <a href="/en">Home</a> <span>></span> ' . htmlspecialchars($title) . '
-        </div>
-        
-        <div class="content">
-            <h2>' . htmlspecialchars($title) . '</h2>
-            ' . $content . '
-        </div>
-        
-        <div class="footer">
-            <p>&copy; 2024 IslamWiki. All rights reserved.</p>
-            <p><a href="/en/privacy">Privacy Policy</a> | <a href="/en/terms">Terms of Service</a> | <a href="/en/contact">Contact</a></p>
-        </div>
-    </div>
-</body>
-</html>';
-        
-        return $html;
+        // Extract language from current URL path
+        $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
+        if (preg_match('/^\/([a-z]{2})\//', $currentPath, $matches)) {
+            return $matches[1];
+        }
+        return 'en'; // Default fallback
     }
     
     /**
-     * Generate error HTML
+     * Get current language flag
      */
-    private static function generateErrorHtml(int $statusCode, string $title, string $message): string
+    public static function getCurrentLanguageFlag(): string
     {
-        $html = '<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>' . htmlspecialchars($title) . ' - IslamWiki</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        .error-code { font-size: 72px; color: #dc3545; margin: 0; }
-        .error-title { color: #333; margin: 20px 0; }
-        .error-message { color: #666; margin-bottom: 30px; }
-        .back-link { color: #2c5aa0; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="error-code">' . $statusCode . '</h1>
-        <h2 class="error-title">' . htmlspecialchars($title) . '</h2>
-        <p class="error-message">' . htmlspecialchars($message) . '</p>
-        <a href="/en" class="back-link">← Back to Home</a>
-    </div>
-</body>
-</html>';
-        
-        return $html;
+        $lang = self::getCurrentLanguage();
+        $flags = ['en' => '🇺🇸', 'ar' => '🇸🇦'];
+        return $flags[$lang] ?? '🇺🇸';
     }
     
     /**
-     * Render a dashboard view
+     * Get current language name
      */
-    public static function dashboard(array $data = []): Response
+    public static function getCurrentLanguageName(): string
     {
-        $content = '
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h3>Quick Actions</h3>
-                <ul>
-                    <li><a href="/en/wiki/Home">Browse Wiki</a></li>
-                    <li><a href="/en/search">Search Content</a></li>
-                    <li><a href="/en/forums">Visit Forums</a></li>
-                    <li><a href="/en/calendar">View Calendar</a></li>
-                </ul>
-            </div>
-            
-            <div class="dashboard-card">
-                <h3>Recent Activity</h3>
-                <ul>
-                    <li>Last login: ' . ($data["lastLogin"] ?? "Unknown") . '</li>
-                    <li>Pages viewed: ' . ($data["pagesViewed"] ?? "0") . '</li>
-                    <li>Contributions: ' . ($data["contributions"] ?? "0") . '</li>
-                </ul>
-            </div>
-            
-            <div class="dashboard-card">
-                <h3>Islamic Resources</h3>
-                <ul>
-                    <li><a href="/en/quran">Quran</a></li>
-                    <li><a href="/en/hadith">Hadith</a></li>
-                    <li><a href="/en/fatwas">Fatwas</a></li>
-                    <li><a href="/en/scholars">Scholars</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <style>
-            .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-            .dashboard-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #2c5aa0; }
-            .dashboard-card h3 { margin-top: 0; color: #2c5aa0; }
-            .dashboard-card ul { list-style: none; padding: 0; }
-            .dashboard-card li { padding: 8px 0; border-bottom: 1px solid #dee2e6; }
-            .dashboard-card li:last-child { border-bottom: none; }
-            .dashboard-card a { color: #2c5aa0; text-decoration: none; }
-            .dashboard-card a:hover { text-decoration: underline; }
-        </style>';
-        
-        return self::render("Dashboard", $content, $data);
+        $lang = self::getCurrentLanguage();
+        $names = ['en' => 'English', 'ar' => 'العربية'];
+        return $names[$lang] ?? 'English';
     }
     
     /**
-     * Render a wiki page view
+     * Get current language native name
      */
-    public static function wikiPage(string $pageName, array $data = []): Response
+    public static function getCurrentLanguageNativeName(): string
     {
-        $content = '
-        <div class="wiki-content">
-            <div class="wiki-header">
-                <h1>' . htmlspecialchars($pageName) . '</h1>
-                <div class="wiki-actions">
-                    <a href="/en/wiki/' . urlencode($pageName) . '/edit" class="btn btn-primary">Edit</a>
-                    <a href="/en/wiki/' . urlencode($pageName) . '/history" class="btn btn-secondary">History</a>
-                    <a href="/en/wiki/' . urlencode($pageName) . '/discuss" class="btn btn-info">Discuss</a>
-                </div>
-            </div>
-            
-            <div class="wiki-body">
-                <p>This is the content for the wiki page: <strong>' . htmlspecialchars($pageName) . '</strong></p>
-                <p>In a real application, this would contain the actual wiki content, formatting, and media.</p>
-                
-                <h3>Page Information</h3>
-                <ul>
-                    <li><strong>Created:</strong> ' . ($data["created"] ?? "Unknown") . '</li>
-                    <li><strong>Last Modified:</strong> ' . ($data["lastModified"] ?? "Unknown") . '</li>
-                    <li><strong>Author:</strong> ' . ($data["author"] ?? "Unknown") . '</li>
-                    <li><strong>Categories:</strong> ' . ($data["categories"] ?? "None") . '</li>
-                </ul>
-            </div>
-        </div>
-        
-        <style>
-            .wiki-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #e9ecef; }
-            .wiki-actions { display: flex; gap: 10px; }
-            .btn { padding: 8px 16px; border-radius: 4px; text-decoration: none; color: white; }
-            .btn-primary { background: #2c5aa0; }
-            .btn-secondary { background: #6c757d; }
-            .btn-info { background: #17a2b8; }
-            .btn:hover { opacity: 0.9; }
-            .wiki-body { line-height: 1.8; }
-            .wiki-body h3 { color: #2c5aa0; margin-top: 30px; }
-            .wiki-body ul { background: #f8f9fa; padding: 20px; border-radius: 5px; }
-        </style>';
-        
-        return self::render("Wiki: " . $pageName, $content, $data);
+        $lang = self::getCurrentLanguage();
+        $nativeNames = ['en' => 'English', 'ar' => 'العربية'];
+        return $nativeNames[$lang] ?? 'English';
     }
     
     /**
-     * Render a search results view
+     * Get supported languages array
      */
-    public static function searchResults(string $query, array $results = []): Response
+    public static function getSupportedLanguages(): array
     {
-        $content = '
-        <div class="search-results">
-            <div class="search-header">
-                <h3>Search Results for: "' . htmlspecialchars($query) . '"</h3>
-                <p>Found ' . count($results) . ' results</p>
-            </div>
-            
-            <div class="search-form">
-                <form action="/en/search" method="POST">
-                    <input type="text" name="query" value="' . htmlspecialchars($query) . '" placeholder="Search IslamWiki..." style="width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                    <button type="submit" style="padding: 10px 20px; background: #2c5aa0; color: white; border: none; border-radius: 4px; margin-left: 10px;">Search</button>
-                </form>
-            </div>';
+        return [
+            'en' => [
+                'name' => 'English',
+                'native' => 'English',
+                'flag' => '🇺🇸',
+                'code' => 'en'
+            ],
+            'ar' => [
+                'name' => 'العربية',
+                'native' => 'Arabic',
+                'flag' => '🇸🇦',
+                'code' => 'ar'
+            ]
+        ];
+    }
+    
+    /**
+     * Get language-switched URL for current page
+     */
+    public static function getLanguageSwitchedUrl(string $targetLanguage): string
+    {
+        $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
+        $currentLang = self::getCurrentLanguage();
         
-        if (empty($results)) {
-            $content .= '
-            <div class="no-results">
-                <p>No results found for "' . htmlspecialchars($query) . '".</p>
-                <p>Try:</p>
-                <ul>
-                    <li>Using different keywords</li>
-                    <li>Checking your spelling</li>
-                    <li>Using more general terms</li>
-                </ul>
-            </div>';
-        } else {
-            $content .= '<div class="results-list">';
-            foreach ($results as $result) {
-                $content .= '
-                <div class="result-item">
-                    <h4><a href="' . htmlspecialchars($result["url"] ?? "#") . '">' . htmlspecialchars($result["title"] ?? "Untitled") . '</a></h4>
-                    <p>' . htmlspecialchars($result["snippet"] ?? "No description available") . '</p>
-                    <small>Category: ' . htmlspecialchars($result["category"] ?? "General") . ' | Last updated: ' . htmlspecialchars($result["updated"] ?? "Unknown") . '</small>
-                </div>';
-            }
-            $content .= '</div>';
+        // Replace the current language prefix with the target language
+        $switchedPath = preg_replace('/^\/' . preg_quote($currentLang, '/') . '\//', '/' . $targetLanguage . '/', $currentPath);
+        
+        // If no replacement was made, append the target language
+        if ($switchedPath === $currentPath) {
+            $switchedPath = '/' . $targetLanguage . $currentPath;
         }
         
-        $content .= '</div>
-        
-        <style>
-            .search-header { margin-bottom: 20px; }
-            .search-form { margin-bottom: 30px; }
-            .no-results { background: #f8f9fa; padding: 20px; border-radius: 5px; }
-            .results-list { margin-top: 20px; }
-            .result-item { padding: 20px; border: 1px solid #e9ecef; border-radius: 5px; margin-bottom: 15px; }
-            .result-item h4 { margin-top: 0; }
-            .result-item h4 a { color: #2c5aa0; text-decoration: none; }
-            .result-item h4 a:hover { text-decoration: underline; }
-            .result-item small { color: #666; }
-        </style>';
-        
-        return self::render("Search Results", $content, ["query" => $query, "results" => $results]);
+        return $switchedPath;
     }
 } 

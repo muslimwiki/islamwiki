@@ -60,6 +60,12 @@ class I18nMiddleware
             return new Response(302, ['Location' => "/{$defaultLang}"], '');
         }
         
+        // Skip language prefix check for static files and PHP files
+        if ($this->isStaticFile($uri) || $this->isPhpFile($uri)) {
+            $this->logger->info('I18nMiddleware: Skipping language prefix check for static/PHP file', ['uri' => $uri]);
+            return $next($request);
+        }
+        
         // Detect language from request
         $detectedLanguage = $this->i18nService->detectLanguage($uri, $serverParams);
         $this->logger->info('I18nMiddleware: Language detected', ['language' => $detectedLanguage, 'uri' => $uri]);
@@ -92,6 +98,24 @@ class I18nMiddleware
         
         $firstSegment = $segments[0];
         return $this->i18nService->isLanguageSupported($firstSegment);
+    }
+    
+    /**
+     * Check if URI is a static file
+     */
+    protected function isStaticFile(string $uri): bool
+    {
+        $staticExtensions = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'woff', 'woff2', 'ttf', 'eot'];
+        $extension = pathinfo($uri, PATHINFO_EXTENSION);
+        return in_array(strtolower($extension), $staticExtensions);
+    }
+    
+    /**
+     * Check if URI is a PHP file
+     */
+    protected function isPhpFile(string $uri): bool
+    {
+        return pathinfo($uri, PATHINFO_EXTENSION) === 'php';
     }
     
     /**

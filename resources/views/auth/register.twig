@@ -16,7 +16,7 @@
         </div>
 
         <!-- Registration Form -->
-        <form class="auth-form" action="/auth/register" method="POST" id="registerForm">
+        <form class="auth-form" action="{{ lang_url('register') }}" method="POST" id="registerForm">
             <!-- Error Message -->
             {% if error %}
             <div class="error-message">
@@ -102,7 +102,7 @@
                 <label class="checkbox-label">
                     <input type="checkbox" name="agree_terms" required>
                     <span class="checkmark"></span>
-                    I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>
+                    I agree to the <a href="{{ lang_url('terms') }}" target="_blank">Terms of Service</a> and <a href="{{ lang_url('privacy') }}" target="_blank">Privacy Policy</a>
                 </label>
             </div>
 
@@ -117,7 +117,7 @@
         <div class="form-footer">
             <div class="login-link">
                 <p>Already have an account?</p>
-                <a href="/login" class="login-button">Sign In</a>
+                <a href="{{ lang_url('login') }}" class="login-button">Sign In</a>
             </div>
         </div>
     </div>

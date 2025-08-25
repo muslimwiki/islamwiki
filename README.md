@@ -1,12 +1,47 @@
 # IslamWiki - Islamic Knowledge Platform
 
-[![Version](https://img.shields.io/badge/version-0.0.3.1-blue.svg)](https://github.com/your-username/islamwiki/releases)
+[![Version](https://img.shields.io/badge/version-0.0.3.2-blue.svg)](https://github.com/your-username/islamwiki/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/php-8.0+-purple.svg)](https://php.net)
 
 **IslamWiki** is a comprehensive, open-source Islamic knowledge platform designed to provide authentic Islamic content, resources, and community features in multiple languages.
 
-## 🚀 **Latest Release: 0.0.3.1 - Complete Routing System**
+## 🚀 **Latest Release: 0.0.3.2 - Controller System Overhaul & Login Restoration**
+
+**Version 0.0.3.2** represents a major breakthrough in the development of IslamWiki, featuring a complete controller system overhaul that restores login functionality and establishes a solid foundation for the platform.
+
+### ✨ **What's New in 0.0.3.2:**
+
+- **🎯 Controller System Overhaul**: Completely cleaned up duplicate and conflicting controllers
+- **🔐 Login Functionality Restored**: Authentication system now working perfectly in CLI mode
+- **🛠️ Service Registration Fixed**: Resolved missing `auth` service and dependency injection issues
+- **📁 Proper Controller Architecture**: Using existing, well-implemented controllers instead of temporary solutions
+- **🔄 Application Bootstrap Fixed**: Application now starts successfully and loads routes correctly
+- **🎨 Route System Restored**: Comprehensive routing using proper controller methods
+- **🔧 Error Handling Improved**: Better error handling during controller instantiation
+- **📊 Service Container Fixed**: Proper service registration and availability
+
+### 🚀 **Current Status:**
+
+- **✅ CLI Mode**: Fully functional with login page returning 200 status and full HTML
+- **🔄 Web Server Mode**: Application working, web server integration in progress
+- **✅ Authentication System**: Restored and functional
+- **✅ Route Processing**: Working correctly
+- **✅ Controller Dependencies**: Properly resolved
+
+### 📋 **Controllers Now Working:**
+
+- **`AuthController`** - Authentication (login, register, logout)
+- **`HomeController`** - Home page functionality  
+- **`WikiController`** - Wiki page management
+- **`SearchController`** - Search functionality
+- **`DashboardController`** - User dashboard
+- **`SettingsController`** - User settings
+- And many more existing controllers properly integrated
+
+---
+
+## 🚀 **Previous Release: 0.0.3.1 - Complete Routing System**
 
 **Version 0.0.3.1** represents a major milestone in the development of IslamWiki, featuring a complete, production-ready routing system with internationalization, authentication, and beautiful user interfaces.
 

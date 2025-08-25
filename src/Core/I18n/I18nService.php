@@ -55,7 +55,7 @@ class I18nService
      */
     protected function loadConfig(): void
     {
-        $configPath = dirname(__DIR__, 2) . '/i18n/config.php';
+        $configPath = dirname(__DIR__, 3) . '/i18n/config.php';
         if (file_exists($configPath)) {
             error_log("I18nService::loadConfig - Config file found: " . $configPath);
             $this->config = require $configPath;
