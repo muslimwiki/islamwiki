@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace IslamWiki\Providers;
 
-use Container;\Container
+use IslamWiki\Core\Container\Container;
 use IslamWiki\Core\Skin\StaticDataManager;
 
 /**

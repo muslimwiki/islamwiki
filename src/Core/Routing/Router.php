@@ -172,7 +172,7 @@ class Router
         } catch (\Exception $e) {
             $this->logger->error('Route handler execution failed', [
                 'error' => $e->getMessage(),
-                'handler' => is_array($handler) ? implode('::', $handler) : 'closure'
+                'handler' => is_array($handler) ? (is_object($handler[0]) ? get_class($handler[0]) . '::' . $handler[1] : implode('::', $handler)) : 'closure'
             ]);
             
             return new Response(500, [], 'Internal server error');
@@ -203,6 +203,14 @@ class Router
     public function getRoutes(): array
     {
         return $this->routes;
+    }
+    
+    /**
+     * Create a route group
+     */
+    public function group(string $prefix = '', array $middleware = [], array $attributes = []): \IslamWiki\Core\Routing\RouteGroup
+    {
+        return new \IslamWiki\Core\Routing\RouteGroup($this, $prefix, $middleware, $attributes);
     }
 
     /**

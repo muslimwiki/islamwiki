@@ -24,7 +24,7 @@ Options -Indexes
 RewriteEngine On
 
 # Redirect root domain to Home
-RewriteRule ^$ /wiki/Home [R=301,L]
+RewriteRule ^$ /en [R=301,L]
 
 # Route everything else through index.php
 RewriteCond %{REQUEST_FILENAME} !-f

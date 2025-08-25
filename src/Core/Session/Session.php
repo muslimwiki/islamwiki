@@ -47,6 +47,11 @@ class Session
     private array $data = [];
 
     /**
+     * CSRF token storage.
+     */
+    private string $csrfToken = '';
+
+    /**
      * Create a new session manager instance.
      *
      * @param Logger $logger The logging system
@@ -230,5 +235,39 @@ class Session
             'session_id' => session_id(),
             'session_name' => session_name()
         ];
+    }
+
+    /**
+     * Generate a CSRF token.
+     *
+     * @return string The generated CSRF token
+     */
+    public function generateCsrfToken(): string
+    {
+        if (empty($this->csrfToken)) {
+            $this->csrfToken = bin2hex(random_bytes(32));
+        }
+        return $this->csrfToken;
+    }
+
+    /**
+     * Get the current CSRF token.
+     *
+     * @return string The current CSRF token
+     */
+    public function getCsrfToken(): string
+    {
+        return $this->generateCsrfToken();
+    }
+
+    /**
+     * Verify a CSRF token.
+     *
+     * @param string $token The token to verify
+     * @return bool True if token is valid
+     */
+    public function verifyCsrfToken(string $token): bool
+    {
+        return hash_equals($this->csrfToken, $token);
     }
 } 

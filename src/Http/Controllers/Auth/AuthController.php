@@ -703,7 +703,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Get skin data for the current user
+     * Get skin data for the current user or default skin.
      */
     private function getSkinData(): array
     {
@@ -719,13 +719,26 @@ class AuthController extends Controller
                 $activeSkin = $skinManager->getActiveSkin();
 
                 if ($activeSkin) {
-                    return [
-                        'css' => $activeSkin->getCssContent(),
-                        'js' => $activeSkin->getJsContent(),
-                        'name' => $activeSkin->getName(),
-                        'version' => $activeSkin->getVersion(),
-                        'config' => $activeSkin->getConfig() ?? [],
-                    ];
+                    // Handle both array and object return types from different SkinManager implementations
+                    if (is_array($activeSkin)) {
+                        // Core SkinManager returns arrays
+                        return [
+                            'css' => $activeSkin['css'] ?? '',
+                            'js' => $activeSkin['js'] ?? '',
+                            'name' => $activeSkin['name'] ?? 'default',
+                            'version' => $activeSkin['version'] ?? '0.0.29',
+                            'config' => $activeSkin['config'] ?? [],
+                        ];
+                    } else {
+                        // Legacy SkinManager returns objects
+                        return [
+                            'css' => $activeSkin->getCssContent(),
+                            'js' => $activeSkin->getJsContent(),
+                            'name' => $activeSkin->getName(),
+                            'version' => $activeSkin->getVersion(),
+                            'config' => $activeSkin->getConfig() ?? [],
+                        ];
+                    }
                 }
             }
         } catch (\Exception $e) {
