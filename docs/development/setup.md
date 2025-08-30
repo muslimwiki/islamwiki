@@ -4,20 +4,19 @@ This guide will help you set up a local development environment for IslamWiki.
 
 ## Prerequisites
 
-- PHP 8.1 or higher
+- PHP 8.0 or higher
 - Composer (PHP package manager)
-- MariaDB 10.3+ or MySQL 8.0+
-- Node.js 16+ and npm (for frontend assets)
+- SQLite 3.0 or higher (included with PHP)
 - Git
 
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/muslimwiki/islamwiki.git
+git clone https://github.com/yourusername/islamwiki.git
 cd islamwiki
 ```
 
-## 2. Install PHP Dependencies
+## 2. Install Dependencies
 
 ```bash
 composer install
@@ -25,38 +24,46 @@ composer install
 
 ## 3. Configure Environment
 
-1. Copy the example environment file:
+1. The application uses SQLite by default, so no additional database setup is required.
+2. The database file will be automatically created at `database/database.sqlite` on first run.
+3. Ensure the `database` directory is writable by the web server:
    ```bash
-   cp .env.example .env
+   chmod -R 775 database/
    ```
 
-2. Generate an application key:
-   ```bash
-   php artisan key:generate
-   ```
+## 4. Start the Development Server
 
-3. Update the `.env` file with your database credentials:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=islamwiki
-   DB_USERNAME=root
-   DB_PASSWORD=your_password
-   ```
+```bash
+php -S 0.0.0.0:8000 run-app.php
+```
 
-## 4. Database Setup
+Then open `http://localhost:8000` in your browser.
 
-1. Create a new MySQL database:
-   ```sql
-   CREATE DATABASE islamwiki CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
+## 5. Development Workflow
 
-2. Run migrations and seed the database:
-   ```bash
-   php artisan migrate --seed
-   ```
-   This will create all necessary tables and add default data.
+- The main application entry point is `run-app.php`
+- Routes are defined in `config/routes.php`
+- Controllers are in `src/Http/Controllers`
+- Models are in `app/Models`
+- Database migrations are in `database/migrations`
+
+## 6. Testing
+
+To run the test suite:
+
+```bash
+composer test
+```
+
+## 7. Debugging
+
+- Check the error log at `/tmp/php_errors.log`
+- The application uses PSR-3 compatible logging
+- Enable debug mode by setting `display_errors = On` in your `php.ini`
+
+## 8. Contributing
+
+Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## 5. Storage Permissions
 

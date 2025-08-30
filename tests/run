@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Test Runner Wrapper for IslamWiki
+ * 
+ * Usage:
+ *   ./tests/run [options]
+ * 
+ * Options:
+ *   --filter <pattern>  Filter which tests to run
+ *   --testsuite <suite> Run specific test suite (unit,feature)
+ *   --coverage          Generate code coverage report
+ *   --coverage-html     Generate HTML coverage report
+ *   --help              Show this help message
+ */
+
+$options = getopt('', ['filter:', 'testsuite::', 'coverage', 'coverage-html::', 'help']);
+
+if (isset($options['help'])) {
+    echo file_get_contents(__FILE__, false, null, 0, strpos(file_get_contents(__FILE__), '*/') + 2) . "\n";
+    exit(0);
+}
+
+// Build the command
+$command = [
+    PHP_BINARY,
+    __DIR__ . '/run-tests.php',
+];
+
+// Add options
+foreach ($options as $key => $value) {
+    if ($key === 'filter' && $value) {
+        $command[] = "--filter=$value";
+    } elseif ($key === 'testsuite' && $value) {
+        $command[] = "--testsuite=$value";
+    } elseif ($key === 'coverage') {
+        $command[] = '--coverage';
+    } elseif ($key === 'coverage-html') {
+        $command[] = '--coverage-html';
+        if ($value) {
+            $command[] = $value;
+        }
+    }
+}
+
+// Execute the command
+$status = null;
+passthru(implode(' ', array_map('escapeshellarg', $command)), $status);
+exit($status);
