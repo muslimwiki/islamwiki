@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Ask a Question
+    url: https://community.islamwiki.org/c/questions
+    about: Ask a question in our community forum
+  - name: 💬 Discussion
+    url: https://github.com/muslimwiki/islamwiki/discussions
+    about: Start a discussion about features or ideas
