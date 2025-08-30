@@ -1,0 +1,20 @@
+# Default owners for everything in the repo
+* @muslimwiki/owners @muslimwiki/developers
+
+# Core application files
+/app/Core/ @muslimwiki/core-team
+
+# Documentation
+/docs/ @muslimwiki/documentation-team
+
+# API endpoints
+/app/Http/Controllers/Api/ @muslimwiki/api-team
+
+# Frontend resources
+/resources/ @muslimwiki/frontend-team
+
+# Tests
+/tests/ @muslimwiki/qa-team
+
+# GitHub Actions workflows
+.github/workflows/ @muslimwiki/devops
