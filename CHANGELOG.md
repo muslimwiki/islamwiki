@@ -8,13 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial project structure
+- N/A
 
 ### Changed
 - N/A
 
 ### Fixed
 - N/A
+
+## [0.0.2] - 2025-08-30
+
+### Added
+- Admin dashboard with authentication system
+- User login/logout functionality
+- Basic admin interface with responsive design
+- Server status monitoring
+- Quick access to admin tools
+
+### Changed
+- Improved project structure
+- Updated routing system
+- Enhanced security measures
+- Cleaned up test files and routes
+
+### Fixed
+- Fixed routing issues in admin panel
+- Resolved authentication flow
+- Fixed file permission issues
 
 ## [0.0.1] - 2025-08-30
 

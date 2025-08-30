@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+
+# Handle admin routes
+RewriteRule ^admin/(.*)$ admin/$1 [L]
+
+# Redirect all other requests to index.php unless the file exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]

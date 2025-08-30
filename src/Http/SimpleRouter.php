@@ -7,85 +7,100 @@ use Nyholm\Psr7\Response;
 
 class SimpleRouter implements RouterInterface
 {
-    private array $routes = [];
-
-    public function addRoute(string $method, string $path, $handler): void
+    public function handle(ServerRequestInterface $request): void
     {
-        $this->routes[] = [
-            'method' => strtoupper($method),
-            'path' => $path,
-            'handler' => $handler
-        ];
-    }
-
-    public function match(ServerRequestInterface $request): ?array
-    {
-        $method = $request->getMethod();
         $path = $request->getUri()->getPath();
         
-        // Log to both error log and output for visibility
-        $log = function($message) {
-            error_log($message);
-            echo "[DEBUG] $message\n";
-        };
-        
-        $log("\n=== New Request ===");
-        $log("Matching request: $method $path");
-        $log("Available routes: " . print_r($this->routes, true));
-
-        foreach ($this->routes as $i => $route) {
-            $log("\nChecking route #$i: {$route['method']} {$route['path']}");
-            
-            if ($route['method'] !== $method) {
-                $log("  - Method does not match: {$route['method']} !== $method");
-                continue;
-            }
-
-            $pattern = $this->convertToRegex($route['path']);
-            $log("  - Generated pattern: " . $pattern);
-            
-            $matches = [];
-            $result = @preg_match($pattern, $path, $matches);
-            
-            if ($result === false) {
-                $error = error_get_last();
-                $log("  - Pattern error: " . ($error['message'] ?? 'Unknown error'));
-                $log("  - Pattern: " . $pattern);
-                $log("  - Path: " . $path);
-                continue;
-            }
-            
-            if ($result === 1) {
-                $log("  - Match found!");
-                $log("  - Params: " . print_r($matches, true));
-                return [
-                    'handler' => $route['handler'],
-                    'params' => array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY)
-                ];
-            } else {
-                $log("  - No match");
-                $log("  - Pattern: $pattern");
-                $log("  - Path: $path");
-            }
+        // Handle admin routes
+        if (str_starts_with($path, '/admin')) {
+            $this->handleAdminRoute($path);
+            return;
         }
-
-        $log("\nNo matching route found for $method $path");
-        return null;
+        
+        // Handle static files
+        if ($this->shouldSkipRouting($path)) {
+            $this->handleStaticFile($path);
+            return;
+        }
+        
+        // Handle main application routes
+        $this->handleMainRoute($request);
     }
-
-    private function convertToRegex(string $path): string
+    
+    private function handleAdminRoute(string $path): void
     {
-        // Escape all special regex chars except slashes
-        $pattern = preg_quote($path, '~');
+        // Default to dashboard if no specific admin page is requested
+        $adminPage = str_replace('/admin', '', $path) ?: '/dashboard';
+        $adminFile = __DIR__ . "/../../admin/pages{$adminPage}.php";
         
-        // Replace {param} with a named capture group
-        $pattern = str_replace(
-            ['\{', '\}'],
-            ['(?P<', '>[^/]+)'],
-            $pattern
-        );
+        if (file_exists($adminFile)) {
+            require $adminFile;
+        } else {
+            http_response_code(404);
+            echo "Admin page not found";
+        }
+        exit;
+    }
+    
+    private function handleStaticFile(string $path): void
+    {
+        $basePath = __DIR__ . '/../../public';
+        $requestFile = $basePath . $path;
         
-        // Add start/end anchors and use # as delimiter to avoid escaping slashes
-        return '#^' . $pattern . '$#';
+        if (file_exists($requestFile) && is_file($requestFile)) {
+            $mimeTypes = [
+                'css'  => 'text/css',
+                'js'   => 'application/javascript',
+                'png'  => 'image/png',
+                'jpg'  => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'gif'  => 'image/gif',
+                'svg'  => 'image/svg+xml',
+                'ico'  => 'image/x-icon',
+                'woff' => 'font/woff',
+                'woff2'=> 'font/woff2',
+                'ttf'  => 'font/ttf',
+                'eot'  => 'application/vnd.ms-fontobject',
+            ];
+            
+            $ext = strtolower(pathinfo($requestFile, PATHINFO_EXTENSION));
+            if (isset($mimeTypes[$ext])) {
+                header('Content-Type: ' . $mimeTypes[$ext]);
+            }
+            
+            readfile($requestFile);
+            exit;
+        }
+        
+        http_response_code(404);
+        echo '404 Not Found';
+        exit;
+    }
+    
+    private function handleMainRoute(ServerRequestInterface $request): void
+    {
+        // Default route handling
+        $path = $request->getUri()->getPath();
+        
+        if ($path === '/') {
+            echo "Welcome to IslamWiki";
+            return;
+        }
+        
+        http_response_code(404);
+        echo 'Page not found';
+    }
+    
+    private function shouldSkipRouting(string $path): bool
+    {
+        $extensions = ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'ico', 'svg', 'woff', 'woff2', 'ttf', 'eot'];
+        $pathInfo = pathinfo($path);
+        
+        if (isset($pathInfo['extension']) && in_array(strtolower($pathInfo['extension']), $extensions)) {
+            return true;
+        }
+        
+        $fullPath = __DIR__ . '/../../public' . $path;
+        return file_exists($fullPath) && (is_file($fullPath) || is_dir($fullPath));
     }
 }

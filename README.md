@@ -4,11 +4,14 @@ A lightweight, self-contained Islamic knowledge platform built with PHP 8.0+ and
 
 ## Features
 
-- Simple, clean interface
-- SQLite database (no separate database server required)
-- PSR-7/PSR-15 compliant request handling
-- Built-in development server
-- Easy to deploy and maintain
+- 🚀 Simple, clean interface
+- 💾 SQLite database (no separate database server required)
+- 🔄 PSR-7/PSR-15 compliant request handling
+- 🛠 Built-in development server
+- 🔒 Secure admin dashboard with authentication
+- 📱 Responsive design for all devices
+- ⚡ Fast and lightweight
+- 🔄 Easy to deploy and maintain
 
 ## Requirements
 
@@ -19,21 +22,45 @@ A lightweight, self-contained Islamic knowledge platform built with PHP 8.0+ and
 ## Quick Start
 
 1. Clone the repository
-2. Run `composer install`
-3. Start the development server: `php -S 0.0.0.0:80 run-app.php`
-4. Open `http://localhost` in your browser
+   ```bash
+   git clone https://github.com/yourusername/islamwiki.git
+   cd islamwiki
+   ```
+2. Install dependencies
+   ```bash
+   composer install
+   ```
+3. Start the development server
+   ```bash
+   php -S 0.0.0.0:80 -t public
+   ```
+4. Access the application
+   - Main site: http://localhost
+   - Admin panel: http://localhost/admin
+     - Default credentials: admin / admin123 (change these in production!)
 
 ## Development
 
 ### Project Structure
 
-- `/app` - Application models and core classes
-- `/config` - Configuration files
-- `/database` - Database migrations and SQLite database
-- `/public` - Web server document root
-- `/releases` - Release notes for each version
-- `/src` - Source code
-- `/tests` - Test files
+```
+.
+├── admin/              # Admin panel files
+│   ├── assets/         # CSS, JS, and images
+│   └── includes/       # Shared PHP includes
+├── config/            # Configuration files
+├── public/            # Web server document root
+│   └── admin/         # Admin panel entry point
+├── src/               # Source code
+│   └── Http/          # HTTP handlers and routing
+├── tests/             # Test files
+├── vendor/            # Composer dependencies
+├── .env.example       # Example environment variables
+├── .htaccess          # Apache configuration
+├── CHANGELOG.md       # Version history
+├── composer.json      # PHP dependencies
+└── README.md          # This file
+```
 
 ### Running Tests
 

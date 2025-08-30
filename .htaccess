@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+    RewriteEngine On
+RewriteBase /
+
+# Handle admin routes
+RewriteRule ^admin/(.*)$ admin/$1 [L]
+
+# Redirect to public directory if not already there
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_URI} !^/admin/
+RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    <IfModule mod_alias.c>
+        RedirectMatch 302 ^/$ /public/index.php/
+    </IfModule>
+</IfModule>

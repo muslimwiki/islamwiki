@@ -1,22 +1,25 @@
 <?php
-// Load environment variables
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use IslamWiki\Core\Application;
-
-// Start the application
-try {
-    $app = new Application(__DIR__ . '/..');
-    $app->run();
-} catch (\Exception $e) {
-    // Log the error
-    error_log($e->getMessage());
+// Simple index.php for testing
+header('Content-Type: text/html; charset=utf-8');
+echo '<!DOCTYPE html>
+<html>
+<head>
+    <title>IslamWiki</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to IslamWiki</h1>
+    <p>The server is running correctly!</p>
     
-    // Show a generic error message to the user
-    header('HTTP/1.1 500 Internal Server Error');
-    echo 'An error occurred. Please try again later.';
-    if (getenv('APP_DEBUG') === 'true') {
-        echo '\n\n' . $e->getMessage();
-    }
-    exit;
-}
+    <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; display: inline-block;">
+        <a href="/admin/" style="text-decoration: none; color: #fff; background-color: #2c3e50; padding: 10px 20px; border-radius: 4px; font-weight: bold;">
+            <i class="fas fa-tachometer-alt"></i> Go to Admin Panel
+        </a>
+    </div>
+</body>
+</html>';
+
+exit;
