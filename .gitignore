@@ -2,15 +2,18 @@
 /vendor/
 composer.lock
 
-# Environment variables
+# Environment
 .env
+.env.*.local
+!.env.example
 
-# Logs
-/logs/*
-*.log
-
-# Cache
-/cache/*
+# Application
+/storage/*
+!/storage/framework/
+/storage/framework/cache/**
+/storage/framework/sessions/**
+/storage/framework/views/**
+/storage/logs/*
 
 # IDE specific files
 .idea/
@@ -26,3 +29,77 @@ composer.lock
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Testing
+/phpunit.xml
+/coverage/
+.phpunit.result.cache
+
+# Debug
+*.log
+*.cache
+
+# Local development
+Homestead.json
+Homestead.yaml
+Vagrantfile
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# Next.js build output
+.next/
+
+# Nuxt.js build output
+.nuxt/
+
+# Gatsby files
+.cache/
+public
+
+# VuePress build output
+.vuepress/dist/
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test/
+
+# yarn v2
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

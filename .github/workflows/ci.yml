@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: islamwiki_test
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, xml, ctype, json, pdo, pdo_mysql, tokenizer, dom, fileinfo, filter, hash, libxml, openssl, pcntl, pcre, pdo_sqlite, posix, session, simplexml, sqlite3, xmlwriter, zip, gd, intl, exif, iconv, curl
+        coverage: none
+    
+    - name: Validate composer.json
+      run: composer validate --strict
+    
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Copy Environment File
+      run: cp .env.example .env
+    
+    - name: Generate Application Key
+      run: php artisan key:generate
+    
+    - name: Directory Permissions
+      run: chmod -R 777 storage bootstrap/cache
+    
+    - name: Create Database
+      run: |
+        mysql -h 127.0.0.1 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS islamwiki_test;'
+        mysql -h 127.0.0.1 -u root -proot -e 'CREATE USER IF NOT EXISTS "testuser"@"%" IDENTIFIED BY "password";'
+        mysql -h 127.0.0.1 -u root -proot -e 'GRANT ALL PRIVILEGES ON islamwiki_test.* TO "testuser"@"%";'
+        mysql -h 127.0.0.1 -u root -proot -e 'FLUSH PRIVILEGES;'
+    
+    - name: Environment Setup
+      run: |
+        echo "DB_CONNECTION=mysql" >> .env
+        echo "DB_HOST=127.0.0.1" >> .env
+        echo "DB_PORT=3306" >> .env
+        echo "DB_DATABASE=islamwiki_test" >> .env
+        echo "DB_USERNAME=testuser" >> .env
+        echo "DB_PASSWORD=password" >> .env
+        echo "APP_ENV=testing" >> .env
+        echo "APP_DEBUG=true" >> .env
+        echo "APP_KEY=" >> .env
+        php artisan key:generate
+    
+    - name: Run Test Suite
+      run: |
+        composer test
+    
+    - name: Code Style Check
+      run: |
+        composer cs-check
+    
+    - name: Static Analysis
+      run: |
+        composer stan
